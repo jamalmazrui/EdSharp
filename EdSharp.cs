@@ -2,6 +2,15 @@
 // February 22, 2016
 //Copyright 2007 - 2016 by Jamal Mazrui
 // GNU Lesser General Public License (LGPL)
+// Modified by Jim Homme.
+// Last changed September 6, 2016.
+// Fork of the original repository.
+/*
+Change log
+
+- Added comments and change log.
+
+*/
 
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.ApplicationServices;
@@ -32,7 +41,7 @@ using Tektosyne.Win32Api;
 
 [assembly: AssemblyTitle("EdSharp")]
 [assembly: AssemblyProduct("EdSharp")]
-[assembly: AssemblyVersion("3.4.*")]
+[assembly: AssemblyVersion("4.0.*")]
 [assembly: AssemblyDescription("EdSharp editor")]
 [assembly: AssemblyCompany("EmpowermentZone.com")]
 [assembly: AssemblyCopyright("Copyright 2007 - 2016 by Jamal Mazrui")]
@@ -132,8 +141,10 @@ case "&Mail to Developer" :
 Util.Say("Please add steps to reproduce the problem, if possible.");
 string sSubject = "EdSharp error: " + ex.Message;
 KeyValuePair<string, string>[] aAddresses = new KeyValuePair<string, string>[1];
-string sName = "Jamal Mazrui";
-string sAddress = "jamal@EmpowermentZone.com";
+// Author info.
+// Changed to make this version go to Jim Homme.
+string sName = "Jim Homme";
+string sAddress = "jhomme1028@gmail.com";
 aAddresses[0] = new KeyValuePair<String, String>(sName, sAddress);
 try {
 MapiMail.SendMail(sSubject, sMessage, aAddresses, null);
@@ -159,7 +170,7 @@ this.Startup += delegate(object sender, Microsoft.VisualBasic.ApplicationService
 // base.IsSingleInstance = true;
 App.ProgramName = GetAppName();
 App.NetDir = RuntimeEnvironment.GetRuntimeDirectory();
-App.ProgramDir = GetProgramDir();
+// App.ProgramDir = GetProgramDir();
 App.ProgramDir = GetProgramDir();
 App.DataDir = GetDataDir();
 App.TempFile = GetTempFile();
