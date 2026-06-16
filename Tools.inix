@@ -1,0 +1,77 @@
+; Tools.inix -- third-party Convert utilities for the EdSharp build script.
+;
+; Read by FetchConvertTools.ps1 to ensure the LATEST version of each tool is
+; present under .\Convert\<dir>. This is BUILD-TIME data: it records where each
+; tool comes from. It is NOT part of EdSharp's runtime configuration and is not
+; deployed to end users (kept separate from EdSharp.inix on purpose). Add a
+; tool by copying a block; the build script picks it up automatically.
+;
+; Keys per tool:
+;   dir      folder under Convert to populate (matches the EdSharp.ini paths)
+;   file     executable that confirms success (searched for recursively)
+;   flatten  true  = single-exe tool: place the exe's folder contents directly
+;                    in Convert\<dir>
+;            false = multi-part tool: keep the whole tree (e.g. liblouis tables)
+;   src      acquisition source, one of:
+;              github:owner/repo|<asset-name-regex>   newest matching release
+;              https://...                            a direct download URL
+;   page     (optional) "url|<version-regex>|<url-template>" -- fetch url,
+;            capture the version with the regex, then build the download URL
+;            from the template ({v} = version). Tried before src so tools whose
+;            host has no release API (AStyle, Xpdf) still self-update.
+;   winget   (optional) winget package id -- tried only if the download fails
+;   choco    (optional) choco  package id -- tried only if the download fails
+;
+; Latest at last edit (2026-06-16): AStyle 3.6, Pandoc 3.10, Xpdf 4.06;
+; Tidy and liblouis resolve to GitHub "latest" automatically.
+;
+; NOTE on winget/choco: they are FALLBACK only. EdSharp ships its tools as
+; portable files beside the program so end users need no package manager, and
+; winget/choco install system-wide rather than into Convert\<dir>; the direct
+; downloads below are what actually populate the distribution. The winget/choco
+; ids are left blank for you to fill with verified ids if you want that
+; fallback path; an unknown id simply logs and is skipped.
+
+[AStyle]
+; best_release.json reports a build number (e.g. 3.6.16) that does not map to a
+; download path, so AStyle is pinned to its current release on the byte-serving
+; master mirror. AStyle updates rarely; bump the version here when it does.
+dir=astyle
+file=astyle.exe
+flatten=true
+src=https://master.dl.sourceforge.net/project/astyle/astyle/astyle%203.6/astyle-3.6-x64.zip
+winget=
+choco=
+
+[Pandoc]
+dir=Pandoc
+file=pandoc.exe
+flatten=true
+src=github:jgm/pandoc|windows-x86_64\.zip$
+winget=
+choco=
+
+[Tidy]
+dir=Tidy
+file=tidy.exe
+flatten=true
+src=github:htacg/tidy-html5|win64.*\.zip$
+winget=
+choco=
+
+[liblouis]
+dir=liblouis
+file=lou_translate.exe
+flatten=false
+src=github:liblouis/liblouis|win(64|32).*\.zip$
+winget=
+choco=
+
+[Xpdf]
+dir=Xpdf
+file=pdftotext.exe
+flatten=true
+page=https://www.xpdfreader.com/download.html|Current version:\s*([0-9.]+)|https://dl.xpdfreader.com/xpdf-tools-win-{v}.zip
+src=https://dl.xpdfreader.com/xpdf-tools-win-4.06.zip
+winget=
+choco=

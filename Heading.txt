@@ -1,0 +1,2 @@
+text form
+<h%Level=%>%HeadingText=%</h%Level=%>

@@ -1,0 +1,540 @@
+<html>
+<head>
+<title>Re: Collaborative EdSharp development via GitHub</title>
+<link rel="important stylesheet" href="chrome://messagebody/skin/messageBody.css">
+</head>
+<body>
+<table border=0 cellspacing=0 cellpadding=0 width="100%" class="header-part1"><tr><td><b>Subject: </b>Re: Collaborative EdSharp development via GitHub</td></tr><tr><td><b>From: </b>Brandon Keith Biggs &lt;brandonkeithbiggs@gmail.com&gt;</td></tr><tr><td><b>Date: </b>5/28/2017 8:18 AM</td></tr></table><table border=0 cellspacing=0 cellpadding=0 width="100%" class="header-part2"><tr><td><b>To: </b>Jamal Mazrui &lt;jamal@empowermentzone.com&gt;</td></tr><tr><td><b>CC: </b>Joseph Lee &lt;joseph.lee22590@gmail.com&gt;, Jim Homme &lt;jhomme@benderconsult.com&gt;, 
+	Derek Riemer &lt;derek.riemer@colorado.edu&gt;, Mike Forzano &lt;michaeldforzano@gmail.com&gt;</td></tr></table><br>
+<div dir="ltr">Hello Jamal,<div>I forgot to say:</div><div>Once you have updated Github, put the new installer on github by:</div><div>Go to:</div><div><a href="https://github.com/EmpowermentZone/EdSharp/releases/new">https://github.com/EmpowermentZone/EdSharp/releases/new</a><br></div><div><br></div><div>press ctrl+home and e twice to get to the version field. hit enter and choose the version that you created in the last step.</div><div>Hit tab and fill out the title. Hit tab and fill out a description with what has changed and whatnot.</div><div>Get out of edit mode and arrow down. arrow to the place that says:</div><div><div> Attach binaries by dropping them here or </div><div>Browse…</div></div><div>Click on the brows and select the installer for the new version of EdSharp.</div><div>Next arrow down to Publish release and hit enter.</div><div>Then you can go to:</div><div><a href="https://github.com/EmpowermentZone/EdSharp/releases/">https://github.com/EmpowermentZone/EdSharp/releases/</a><br></div><div>and see the release. You can then share a link to the installer by going down to the installer&#39;s name, right-clicking on it and copying the link location which looks something like:</div><div><a href="https://github.com/EmpowermentZone/EdSharp/releases/download/V3.3/edsetup.exe">https://github.com/EmpowermentZone/EdSharp/releases/download/V3.3/edsetup.exe</a><br></div><div>Thanks,</div><div><br></div></div><div class="gmail_extra"><br clear="all"><div><div class="gmail_signature" data-smartmail="gmail_signature"><div dir="ltr"><div><a href="http://brandonkeithbiggs.com/" target="_blank">Brandon Keith Biggs</a></div></div></div></div>
+<br><div class="gmail_quote">On Sun, May 28, 2017 at 7:03 AM, Jamal Mazrui <span dir="ltr">&lt;<a href="mailto:jamal@empowermentzone.com" target="_blank">jamal@empowermentzone.com</a>&gt;</span> wrote:<br><blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+  
+    
+  
+  <div text="#000000" bgcolor="#FFFFFF">
+    <p>For anyone available, I have opened the conference line now.</p>
+    <p><br>
+    </p>
+    <p>Jamal</p>
+    <p><br>
+    </p>
+    On 5/27/2017 8:15 PM, Brandon Keith Biggs wrote:<br>
+    <blockquote type="cite">
+      <div dir="ltr">Hello,
+        <div>My bad, I started a single reply chain. please see Jamal&#39;s
+          message below.</div>
+        <div>Thanks,</div>
+        <div><br>
+        </div>
+      </div>
+      <div class="gmail_extra"><br clear="all">
+        <div>
+          <div class="m_3285736775379079605gmail_signature" data-smartmail="gmail_signature">
+            <div dir="ltr">
+              <div><a href="http://brandonkeithbiggs.com/" target="_blank">Brandon Keith
+                  Biggs</a></div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="gmail_quote">On Sat, May 27, 2017 at 7:07 PM, Jamal
+          Mazrui <span dir="ltr">&lt;<a href="mailto:jamal@empowermentzone.com" target="_blank">jamal@empowermentzone.com</a>&gt;</span>
+          wrote:<br>
+          <blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+            <div text="#000000" bgcolor="#FFFFFF">
+              <p>OK.  Let us plan to have the first call from 7 to 8 AM
+                PT on Sunday, May 28 (alternatively, 10 - 11 AM ET,
+                etc.).  The call-in connection info is a couple messages
+                below.  Here is an initial, rough draft of an EdSharp
+                developer guide, which can inform discussion tomorrow:</p>
+              <p><br>
+              </p>
+              <p>Code deficiencies.  The EdSharp author is a self-taught
+                developer who did not learn professional coding
+                practices that are commonly used in team programming
+                environments today.  He wrote programs in ways that were
+                most efficient for him.  Notably, this included using a
+                large EdSharp.cs file for most of the code and not using
+                white space indentation with code structures.  This code
+                compiles to the current EdSharp.exe binary.<br>
+                <br>
+                It is fine to restructure and reformat the code, but a
+                cautious approach of resisting temptation to fix what is
+                not broken may optimize programming efforts.  These
+                efforts are needed in fixing bugs and adding features. 
+                If doing these things also requires restructuring or
+                reformatting, however, then, by all means, do what is
+                needed.<br>
+                <br>
+                Coding style.  EdSharp uses Hungarian notation for
+                variable names, where a is array, c is character, d is
+                dictionary, f is file, h is handle, i and j are
+                integers, k is key, l is list, n is real number, o is
+                object, s is string, t is tuple or type, v is variant or
+                value, x, y, and z are Caretisian coordinates.  This
+                style has fallen out of fashion, but the EdSharp author
+                still finds it useful.  In this way, an object can have
+                a few data structures related to it that are held in
+                variable names that are the same except for a single
+                letter prefix before the object name.  That letter,
+                moreover, quickly informs the reader of the data type,
+                if it is a base type of the language.  For consistency,
+                it is probably best to continue with Hungarian notation
+                for code edits or editions.<br>
+                <br>
+                Languages.  EdSharp is primarily written in C#.  Some
+                libraries/assemblies are in Visual Basic or JScript.net.<br>
+                <br>
+                .NET version.  The current EdSharp code base is
+                compilable with 32-bit command-line compilers of the
+                .NET Framework version 2.0.  EdSharp 4.0, however, is
+                compiled with 32-bit compilers of .NET 4.6.  Additional
+                coding syntax could be used in developing improvements
+                to EdSharp.  C# 6.0 is the latest version of the
+                language whereas C# 2.0 has been the language of
+                EdSharp.<br>
+                <br>
+                Bits.  EdSharp uses some 32-bit assemblies, which
+                produce some runtime errors if EdSharp is compiled as a
+                64-bit process.  For now, it is probably not worth
+                trying to convert 32-bit dependencies to 64-bit
+                alternatives.<br>
+                <br>
+                Screen reader support.  EdSharp can send direct speech
+                messages to JAWS, NVDA, SAPI, System Access, and
+                Window-Eyes.  It may not be necessary to continue
+                support of them all.  For example, Window-Eyes might be
+                dropped because the product is discontinued.  System
+                Access might be dropped because no such user of EdSharp
+                has been known.<br>
+                <br>
+                File conversions.  EdSharp is intended as a general text
+                editor and viewer, as well as a coding editor.  Almost
+                any file format may be imported as text into EdSharp via
+                the Open Other Format command, Control+Shift+O.  Some
+                conversions may now be considered obsolete or
+                superseded, so support utilities that EdSharp calls
+                behind the scenes could be removed from the setup
+                package.  Sometimes, a 3rd party utility may be
+                sufficiently large so as to recommend its download
+                separately if such conversions are needed, e.g., the
+                Calibre software.<br>
+                <br>
+                Markdown.  Besides maximizing compatibility with NVDA, a
+                development goal is to maximize EdSharp support for
+                writing or navigating text documents in Markdown
+                format.  A step underway is converting the EdSharp.txt
+                user guide from structured text format to Markdown
+                format.  As much as possible, EdSharp import and export
+                commands should be configured to use pandora.exe,
+                included in the setup package.<br>
+                <br>
+                <br>
+                Snippets.  Sets of snippets for more languages may be
+                curated and added to the EdSharp setup package.  Snippet
+                invocation capabilities might also be enhanced.</p>
+              <p><br>
+              </p>
+              <p>...</p>
+              <p><br>
+              </p>
+              <p>Jamal</p>
+              <p><br>
+              </p>
+              <br>
+              <div class="m_3285736775379079605m_1706939098021595375moz-cite-prefix">On
+                5/27/2017 5:22 PM, Brandon Keith Biggs wrote:<br>
+              </div>
+              <blockquote type="cite">
+                <div dir="ltr">Hello,
+                  <div>7 AM will probably work for me tomorrow.</div>
+                  <div>LOL it may shock you older folks, but I really
+                    really suck at manually entering in numbers on my
+                    phone. I can do it, but I&#39;m not a fan.</div>
+                  <div>I think the conference line is probably the best.</div>
+                  <div>If for some reason that doesn&#39;t work, I can setup
+                    a Google Hangouts where all you need to do is click
+                    a link and you will be taken to the call. The only
+                    problem with this is there is currently a brief
+                    period where Firefox doesn&#39;t support Hangouts, so
+                    one would need to use another browser.</div>
+                  <div>Thanks,</div>
+                  <div><br>
+                  </div>
+                </div>
+                <div class="gmail_extra"><br clear="all">
+                  <div>
+                    <div class="m_3285736775379079605m_1706939098021595375gmail_signature" data-smartmail="gmail_signature">
+                      <div dir="ltr">
+                        <div><a href="http://brandonkeithbiggs.com/" target="_blank">Brandon
+                            Keith Biggs</a></div>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="gmail_quote">On Sat, May 27, 2017 at 3:54
+                    PM, Jamal Mazrui <span dir="ltr">&lt;<a href="mailto:jamal@empowermentzone.com" target="_blank">jamal@empowermentzone.com</a>&gt;</span>
+                    wrote:<br>
+                    <blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+                      <div text="#000000" bgcolor="#FFFFFF">
+                        <p>Adding Mike Forzano in case he&#39;s also
+                          inclined (no pressure though, Mike).</p>
+                        <p><br>
+                        </p>
+                        <p>I know this may shock you younger guys
+                          &lt;smile&gt;, but I have hardly used Skype,
+                          so to assure a reliable call without operator
+                          error by me, I would like to use a conference
+                          bridge that my brother has made available for
+                          us:</p>
+                        <p><br>
+                        </p>
+                        <p>Call <a href="tel:%28800%29%20882-3610" value="+18008823610" target="_blank">1-800-882-3610</a><br>
+                          Then enter 4982903 followed by #</p>
+                        <p><br>
+                        </p>
+                        <p>For scheduling, would a Sunday morning call
+                          work for folks, one that is early Pacific
+                          Time, say, from 7 - 8 AM PT tomorrow, May 28?</p>
+                        <p><br>
+                        </p>
+                        <p>We might then do a bit of research or coding
+                          before a follow up call the next day, where we
+                          would report on something we had looked into
+                          based on our first discussion.  The second
+                          call could be at the same time on Monday, May
+                          29 from 7 - 8 AM PT.</p>
+                        <p><br>
+                        </p>
+                        <p>In addition, we could continue email
+                          discussion either via a recipient list like
+                          this or, alternatively, on the EdSharp
+                          listserv which has hardly any traffic.</p>
+                        <p><br>
+                        </p>
+                        <p>If those times do not work, please give some
+                          other times that do.  I was just thinking that
+                          a morning call could leave the rest of the day
+                          free for any scheduled activities this long
+                          weekend.</p>
+                        <p><br>
+                        </p>
+                        <p>Jamal</p>
+                        <p><br>
+                        </p>
+                        <p>P.S.  I am researching Notepad++ today to
+                          help gain ideas for EdSharp improvements.</p>
+                        <p><br>
+                        </p>
+                        On 5/27/2017 2:19 PM, Joseph Lee wrote:<br>
+                        <blockquote type="cite">
+                          <div class="m_3285736775379079605m_1706939098021595375m_-3096295399524642943WordSection1">
+                            <p class="MsoNormal">Hi,</p>
+                            <p class="MsoNormal">My Skype ID is ucr2012,
+                              or failing that, use <a href="mailto:joseph_lee22590@yahoo.com" target="_blank">joseph_lee22590@yahoo.com</a>
+                              to search for me.</p>
+                            <p class="MsoNormal">Cheers,</p>
+                            <p class="MsoNormal">Joseph</p>
+                            <p class="MsoNormal"> </p>
+                            <p class="MsoNormal"><b>From:</b> Brandon
+                              Keith Biggs [<a class="m_3285736775379079605m_1706939098021595375m_-3096295399524642943moz-txt-link-freetext" href="mailto:brandonkeithbiggs@gmail.com" target="_blank">mailto:brandonkeithbiggs@gmai<wbr>l.com</a>]
+                              <br>
+                              <b>Sent:</b> Saturday, May 27, 2017 2:15
+                              PM<br>
+                              <b>To:</b> Jamal Mazrui <a class="m_3285736775379079605m_1706939098021595375m_-3096295399524642943moz-txt-link-rfc2396E" href="mailto:jamal@empowermentzone.com" target="_blank">&lt;jamal@empowermentzone.com&gt;</a><br>
+                              <b>Cc:</b> Jim Homme <a class="m_3285736775379079605m_1706939098021595375m_-3096295399524642943moz-txt-link-rfc2396E" href="mailto:jhomme@benderconsult.com" target="_blank">&lt;jhomme@benderconsult.com&gt;</a>;
+                              Joseph Lee <a class="m_3285736775379079605m_1706939098021595375m_-3096295399524642943moz-txt-link-rfc2396E" href="mailto:joseph.lee22590@gmail.com" target="_blank">&lt;joseph.lee22590@gmail.com&gt;</a>;
+                              Derek Riemer <a class="m_3285736775379079605m_1706939098021595375m_-3096295399524642943moz-txt-link-rfc2396E" href="mailto:derek.riemer@colorado.edu" target="_blank">&lt;derek.riemer@colorado.edu&gt;</a><br>
+                              <b>Subject:</b> Re: Collaborative EdSharp
+                              development via GitHub</p>
+                            <p class="MsoNormal"> </p>
+                            <div>
+                              <p class="MsoNormal">Hello,</p>
+                              <p class="MsoNormal">Sorry, I just got to
+                                my emails and I haven’t read everything
+                                yet. But if we want to do a call later
+                                today, that would be pretty easy. Just
+                                add me on skype, <a href="mailto:brandonkeithbiggs@gmail.com" target="_blank">brandonkeithbiggs@gmail.com</a>
+                                and we can set up a time. How about 4 PM
+                                PST?</p>
+                              <p class="MsoNormal"> </p>
+                              <p class="MsoNormal">Here are the things I
+                                have created:</p>
+                              <p class="MsoNormal">A Github org for
+                                Empowerment Zone:</p>
+                              <p class="MsoNormal"><a href="https://github.com/EmpowermentZone" target="_blank">https://github.com/Empowerment<wbr>Zone</a></p>
+                              <p class="MsoNormal"> </p>
+                              <p class="MsoNormal">and as a project of
+                                the above org there is the EdSharp
+                                repository:</p>
+                              <p class="MsoNormal"><a href="https://github.com/EmpowermentZone/EdSharp" target="_blank">https://github.com/Empowerment<wbr>Zone/EdSharp</a></p>
+                              <p class="MsoNormal"> </p>
+                              <p class="MsoNormal">This is different
+                                than Jamal’s repository at:</p>
+                              <p class="MsoNormal"><a href="http://github.com/JamalMazrui/EdSharp" target="_blank">http://github.com/JamalMazrui/<wbr>EdSharp</a></p>
+                              <p class="MsoNormal">although Jamal has
+                                complete access to the two pages I
+                                created above.</p>
+                              <p class="MsoNormal"> </p>
+                              <p class="MsoNormal">The things that need
+                                to be discussed are:</p>
+                              <p class="MsoNormal"> </p>
+                              <p class="m_3285736775379079605m_1706939098021595375m_-3096295399524642943gmail-msolistparagraph">1.<span>      
+                                </span>Where is the official repository
+                                going to be and how is it going to be
+                                branded?</p>
+                              <p class="m_3285736775379079605m_1706939098021595375m_-3096295399524642943gmail-msolistparagraph">2.<span>      
+                                </span>Who are going to be the core
+                                developers?</p>
+                              <p class="m_3285736775379079605m_1706939098021595375m_-3096295399524642943gmail-msolistparagraph">3.<span>      
+                                </span>Does Jamal have a better thing we
+                                can put in the repository than the
+                                single massive C# file that we currently
+                                have:</p>
+                              <p class="MsoNormal"><a href="https://github.com/EmpowermentZone/EdSharp/blob/master/EdSharp.cs" target="_blank">https://github.com/Empowerment<wbr>Zone/EdSharp/blob/master/EdSha<wbr>rp.cs</a></p>
+                              <p class="MsoNormal">(don’t click on it,
+                                it will probably crash your browser).</p>
+                              <p class="MsoNormal">There is no way I am
+                                even going to attempt reading a 367 KB
+                                file that doesn’t have much
+                                documentation.</p>
+                              <p class="m_3285736775379079605m_1706939098021595375m_-3096295399524642943gmail-msolistparagraph">4.<span>      
+                                </span>What is going into the roadmap
+                                and who is going to do what?</p>
+                              <p class="MsoNormal"> </p>
+                              <p class="MsoNormal">Thanks,</p>
+                              <p class="MsoNormal"> </p>
+                            </div>
+                            <div>
+                              <p class="MsoNormal"><br clear="all">
+                              </p>
+                              <div>
+                                <div>
+                                  <div>
+                                    <div>
+                                      <p class="MsoNormal"><a href="http://brandonkeithbiggs.com/" target="_blank">Brandon
+                                          Keith Biggs</a></p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <p class="MsoNormal"> </p>
+                              <div>
+                                <p class="MsoNormal">On Sat, May 27,
+                                  2017 at 11:10 AM, Jamal Mazrui &lt;<a href="mailto:jamal@empowermentzone.com" target="_blank">jamal@empowermentzone.com</a>&gt;
+                                  wrote:</p>
+                                <blockquote style="border:none;border-left:solid #cccccc 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-right:0in">
+                                  <p class="MsoNormal" style="margin-bottom:12.0pt">I&#39;ve
+                                    read so many C# books that it&#39;s hard
+                                    to recall individual ones.  However,
+                                    the following is one of the best and
+                                    available from Bookshare:<br>
+                                    <br>
+                                    <br>
+                                    CLR via C#, Fourth Edition<br>
+                                    by Jeffrey Richter2012<br>
+                                    <br>
+                                    <br>
+                                    On 5/27/2017 10:04 AM, Jim Homme
+                                    wrote:</p>
+                                  <blockquote style="border:none;border-left:solid #cccccc 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-right:0in">
+                                    <p class="MsoNormal" style="margin-bottom:12.0pt">Hi,<br>
+                                      Jamal, can you suggest reading
+                                      material? I&#39;d like to learn more
+                                      C# than I already know, and more
+                                      .Net than I already know.<br>
+                                      <br>
+                                      On May 27, 2017, at 1:01 PM, Jamal
+                                      Mazrui &lt;<a href="mailto:jamal@empowermentzone.com" target="_blank">jamal@empowermentzone.com</a>&gt;
+                                      wrote:<br>
+                                      <br>
+                                      FYI, anyone who has experience
+                                      coding in Java can learnn C#
+                                      fairly quickly.  The languages are
+                                      very similar -- it is mainly a
+                                      matter of learning differences in
+                                      library and class names.<br>
+                                      <br>
+                                      <br>
+                                    </p>
+                                    <blockquote style="border:none;border-left:solid #cccccc 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-right:0in">
+                                      <p class="MsoNormal" style="margin-bottom:12.0pt">On
+                                        5/27/2017 9:43 AM, Jamal Mazrui
+                                        wrote:<br>
+                                        Thanks, Joseph.  I&#39;m fine with a
+                                        survey.  I&#39;ve never done an FB
+                                        chat before so would need tips. 
+                                        Does it support voice chat as
+                                        opposed to text chat?  I think
+                                        another possibility is a phone
+                                        conference via
+                                        FreeConferenceCall.com.<br>
+                                        <br>
+                                        <br>
+                                        I have a GitHub repo at<br>
+                                        <br>
+                                        <a href="http://github.com/JamalMazrui/EdSharp" target="_blank">http://github.com/JamalMazrui/<wbr>EdSharp</a><br>
+                                        <br>
+                                        <br>
+                                        However, it is just the
+                                        installer file at this time so
+                                        it needs to be properly
+                                        structured.  I have kept meaning
+                                        to do that after cleaning up the
+                                        code base a bit, but now I do
+                                        not want my time and knowledge
+                                        to be an unnecessary dependency
+                                        to future development.<br>
+                                        <br>
+                                        <br>
+                                        As you may know, Brandon set up
+                                        an EdSharp user listserv, <a href="http://EdSharp.FreeLists.org" target="_blank">EdSharp.FreeLists.org</a>,
+                                        where a list of current issues
+                                        was gathered a few months ago. 
+                                        That could be a start in
+                                        addition to the survey you
+                                        mention.<br>
+                                        <br>
+                                        <br>
+                                        Jamal<br>
+                                        <br>
+                                      </p>
+                                      <blockquote style="border:none;border-left:solid #cccccc 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-right:0in">
+                                        <p class="MsoNormal" style="margin-bottom:12.0pt">On
+                                          5/27/2017 9:25 AM, Joseph Lee
+                                          wrote:<br>
+                                          Hi Jamal,<br>
+                                          I think Facebook chats would
+                                          work for this one (as you
+                                          know, I and Derek have FB
+                                          accounts).<br>
+                                          I propose that, in addition to
+                                          a conference call, we conduct
+                                          a survey of current, new, and
+                                          potential NVDA and EdSharp
+                                          users regarding what&#39;s
+                                          working, what&#39;s not, and what
+                                          should be added. If Derek
+                                          agrees, I&#39;ll forward your
+                                          survey to NVDA developers
+                                          (members of the nvda-devel
+                                          list) and ask them to submit a
+                                          response to you.<br>
+                                          Do you have a repo on GitHub
+                                          and willing to accept pull
+                                          requests? I can read some
+                                          C-sharp but not write it at
+                                          the moment, and so does Derek.
+                                          I know Jim is familiar with
+                                          some Python, and don&#39;t know
+                                          what languages Brandon speaks.<br>
+                                          Cheers,<br>
+                                          Joseph<br>
+                                          <br>
+                                          -----Original Message-----<br>
+                                          From: Jamal Mazrui [mailto:<a href="mailto:jamal@empowermentzone.com" target="_blank">jamal@empowermentzone.<wbr>com</a>]<br>
+                                          Sent: Saturday, May 27, 2017
+                                          9:18 AM<br>
+                                          To: Derek Riemer &lt;<a href="mailto:derek.riemer@colorado.edu" target="_blank">derek.riemer@colorado.edu</a>&gt;;
+                                          Brandon Keith Biggs &lt;<a href="mailto:brandonkeithbiggs@gmail.com" target="_blank">brandonkeithbiggs@gmail.com</a>&gt;;
+                                          Jim Homme &lt;<a href="mailto:jhomme@benderconsult.com" target="_blank">jhomme@benderconsult.com</a>&gt;;
+                                          Joseph Lee &lt;<a href="mailto:joseph.lee22590@gmail.com" target="_blank">joseph.lee22590@gmail.com</a>&gt;<br>
+                                          Subject: Collaborative EdSharp
+                                          development via GitHub<br>
+                                          <br>
+                                          On this Memorial Day weekend,
+                                          I want to finally set things
+                                          in motion for improving the
+                                          EdSharp editor via
+                                          collaborative, open source
+                                          development.  I am contacting
+                                          you all in case you have the
+                                          interest and time to help this
+                                          effort.<br>
+                                          <br>
+                                          <br>
+                                          I think EdSharp has the
+                                          potential to be the most
+                                          productive programming editor
+                                          for screen reader users due to
+                                          features such as the
+                                          following:<br>
+                                          direct speech messages,
+                                          comprehensive keyboard
+                                          shortcuts, versatile code
+                                          snippets, and commands to aid
+                                          management of indentation in
+                                          Python.  I now want strong
+                                          compatibility with NVDA to be
+                                          a high priority so that blind
+                                          programmers around the world
+                                          can benefit from an
+                                          EdSharp/NVDA combination.<br>
+                                          <br>
+                                          <br>
+                                          I am thinking that an initial
+                                          step for kicking off future
+                                          development would be for a
+                                          voice conference call to
+                                          happen where I try to explain
+                                          the C# code base and answer
+                                          any questions.  We would then
+                                          develop a prioritized roadmap
+                                          and allocate initial tasks
+                                          among us.  I hope to benefit
+                                          from expertise of others in
+                                          optimally using GitHub,
+                                          improving the structure of the
+                                          code base without regressions
+                                          in functionality, and
+                                          enhancing learning materials,
+                                          including new tutorials for
+                                          both users and developers
+                                          (preferably with audio or
+                                          video in addition to text).<br>
+                                          <br>
+                                          <br>
+                                          If any of you can join the
+                                          effort, please let me know. 
+                                          If someone can help set up a
+                                          free conference call ASAP,
+                                          that would be appreciated.<br>
+                                          <br>
+                                          <br>
+                                          Jamal<br>
+                                          <br>
+                                          Cell <a href="tel:%28703%29%20380-3145" target="_blank">(703)
+                                            380-3145</a><br>
+                                          <br>
+                                        </p>
+                                      </blockquote>
+                                    </blockquote>
+                                  </blockquote>
+                                  <p class="MsoNormal"> </p>
+                                </blockquote>
+                              </div>
+                              <p class="MsoNormal"> </p>
+                            </div>
+                          </div>
+                        </blockquote>
+                        <br>
+                      </div>
+                    </blockquote>
+                  </div>
+                  <br>
+                </div>
+              </blockquote>
+              <br>
+            </div>
+          </blockquote>
+        </div>
+        <br>
+      </div>
+    </blockquote>
+    <br>
+  </div>
+
+</blockquote></div><br></div>
+
+</body>
+</html>

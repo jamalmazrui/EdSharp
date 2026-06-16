@@ -1,0 +1,59 @@
+--smarten-punctuation
+--enable-heuristics
+
+DOCX Input Options
+definition list of 1 items
+--docx-inline-subsup
+
+Render superscripts and subscripts so that they do not affect the line height.
+list end
+
+definition list of 1 items
+--docx-no-cover
+
+Normally, if a large image is present at the start of the document that looks like a cover, it will be removed from the document and used as the cover
+for created e-book. This option turns off that behavior.
+list end
+
+definition list of 1 items
+--docx-no-pagebreaks-between-notes
+
+Do not insert a page break after every endnote.
+list end
+
+definition list of 1 items
+--input-encoding
+
+Specify the character encoding of the input document. If set this option will override any encoding declared by the document itself. Particularly useful
+for documents that do not declare an encoding or that have erroneous encoding declarations.
+list end
+
+EPUB Input Options
+
+TXT Input Options
+definition list of 1 items
+--formatting-type
+
+Formatting used within the document. * auto: Automatically decide which formatting processor to use. * plain: Do not process the document formatting. Everything
+is a paragraph and no styling is applied. * heuristic: Process using heuristics to determine formatting such as chapter headings and italic text. * textile:
+Processing using textile formatting. * markdown: Processing using markdown formatting. To learn more about markdown see 
+https://daringfireball.net/projects/markdown/
+list end
+
+definition list of 1 items
+--input-encoding
+
+--pretty-print
+
+----------
+
+markdown_github (GitHub-Flavored Markdown)
+
+pipe_tables, raw_html, fenced_code_blocks, auto_identifiers, ascii_identifiers, backtick_code_blocks, autolink_bare_uris, intraword_underscores, strikeout,
+hard_line_breaks, emoji, shortcut_reference_links, angle_brackets_escapable. 
+ 
+
+
+----------
+
+c:\program files (x86)\Calibre2\ebook-convert.exe

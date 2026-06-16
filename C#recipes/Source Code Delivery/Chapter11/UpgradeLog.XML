@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="Chapter11">
+</Property><Property Name="Solution File" Value="C:\Users\Adam\Documents\Work\C# Cookbook\Repository\CSHARPRECIPES\SourceCode\Chapter11\Chapter11.sln">
+</Property><Property Name="Date" Value="27 October 2009">
+</Property><Property Name="Time" Value="15:03">
+</Property></Properties><Event ErrorLevel="0" Project="Recipe11-02" Source="Recipe11-02\Recipe11-02.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-02" Source="Recipe11-02\Recipe11-02.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-03" Source="Recipe11-03\Recipe11-03.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-03" Source="Recipe11-03\Recipe11-03.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-04" Source="Recipe11-04\Recipe11-04.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-04" Source="Recipe11-04\Recipe11-04.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-05" Source="Recipe11-05\Recipe11-05.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-05" Source="Recipe11-05\Recipe11-05.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-06" Source="Recipe11-06\Recipe11-06.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-06" Source="Recipe11-06\Recipe11-06.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-07" Source="Recipe11-07\Recipe11-07.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-07" Source="Recipe11-07\Recipe11-07.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-08" Source="Recipe11-08\Recipe11-08.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-08" Source="Recipe11-08\Recipe11-08.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-09" Source="Recipe11-09\Recipe11-09.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-09" Source="Recipe11-09\Recipe11-09.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-10" Source="Recipe11-10\Recipe11-10.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-10" Source="Recipe11-10\Recipe11-10.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-11" Source="Recipe11-11\Recipe11-11.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-11" Source="Recipe11-11\Recipe11-11.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-13" Source="Recipe11-13\Recipe11-13.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-13" Source="Recipe11-13\Recipe11-13.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-14" Source="Recipe11-14\Recipe11-14.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-14" Source="Recipe11-14\Recipe11-14.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-15" Source="Recipe11-15\Recipe11-15.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-15" Source="Recipe11-15\Recipe11-15.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-16" Source="Recipe11-16\Recipe11-16.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-16" Source="Recipe11-16\Recipe11-16.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-17" Source="Recipe11-17\Recipe11-17.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-17" Source="Recipe11-17\Recipe11-17.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-18" Source="Recipe11-18\Recipe11-18.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-18" Source="Recipe11-18\Recipe11-18.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-19" Source="Recipe11-19\Recipe11-19.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-19" Source="Recipe11-19\Recipe11-19.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-12" Source="Recipe11-12\Recipe11-12.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Recipe11-12" Source="Recipe11-12\Recipe11-12.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="Chapter11.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="Chapter11.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Recipe11-02" Source="Recipe11-02\Recipe11-02.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-03" Source="Recipe11-03\Recipe11-03.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-04" Source="Recipe11-04\Recipe11-04.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-05" Source="Recipe11-05\Recipe11-05.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-06" Source="Recipe11-06\Recipe11-06.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-07" Source="Recipe11-07\Recipe11-07.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-08" Source="Recipe11-08\Recipe11-08.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-09" Source="Recipe11-09\Recipe11-09.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-10" Source="Recipe11-10\Recipe11-10.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-11" Source="Recipe11-11\Recipe11-11.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-13" Source="Recipe11-13\Recipe11-13.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-14" Source="Recipe11-14\Recipe11-14.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-15" Source="Recipe11-15\Recipe11-15.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-16" Source="Recipe11-16\Recipe11-16.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-17" Source="Recipe11-17\Recipe11-17.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-18" Source="Recipe11-18\Recipe11-18.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-19" Source="Recipe11-19\Recipe11-19.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Recipe11-12" Source="Recipe11-12\Recipe11-12.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>

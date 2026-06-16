@@ -1,0 +1,107 @@
+dcramer's py-wikimarkup at master - GitHub Home Pricing and Signup Training 
+  Gist Blog Login dcramer / py-wikimarkup Admin 
+  Watch Unwatch Fork 
+  Your Fork 
+  Pull Request 
+  Download Source 20 5 Source Commits Network (5) Issues (1) Downloads (0) Wiki 
+  (1) Graphs Branch: master click here to add a description
+click here to add a homepage
+  Switch Branches (1) master ✓
+     
+  Switch Tags (0) Branch List Sending Request…A MediaWiki-to-HTML parser for 
+Python. — Read more 
+
+  
+Save   Cancel 
+
+  
+Save   Cancel 
+  HTTP Git Read-Only  http://github.com/dcramer/py-wikimarkup.gitThis URL has 
+Read-Only accessHi! dcramer is using GitHub to share code with you!
+But GitHub is more than just a place to share code. It's a place to keep tabs on 
+your favorite developers and projects, easily contribute fixes and new features, 
+and visualize what's going on inside your codebase! 
+Free for open sourceFix truncate_url so it doesn't append spurious ... to full-length URLs  bjj (author)
+January 02, 2010 commit  b9acd4fe7ba4ca058d3d
+tree    ccc1cc73c55427e58bd7
+parent  315c5e9160c1ea28367e 
+py-wikimarkup / 
+      nameagehistory message 
+       .gitignoreSeptember 04, 2009 Added setuptools and wikimarkup.__version__ 
+      [David Cramer] 
+       LICENSEAugust 05, 2009 Added license and readme [David Cramer] 
+       MANIFEST.inAugust 19, 2009 Updated installer and version [David Cramer] 
+       README.rstDecember 09, 2009 Add [[internal link]] hook support [bjj] 
+       setup.pySeptember 04, 2009 Added setuptools and wikimarkup.__version__ 
+      [David Cramer] 
+       wikimarkup/January 02, 2010 Fix truncate_url so it doesn't append 
+      spurious ... [bjj] 
+
+README.rst
+Formats text following the MediaWiki 
+(http://meta.wikimedia.org/wiki/Help:Editing) syntax.
+Usage
+To return HTML from Wiki:
+from wikimarkup import parse
+
+html = parse(text[, show_toc=True])
+To return HTML without certain "annoying" (TODO: define annoying) elements, such 
+as headings:
+from wikimarkup import parselite
+
+parselite(text)
+Adding New Tags
+You can add new tags with the registerTagHook method.:
+from wikimarkup import registerTagHook, parse
+import cgi
+
+def blockquoteTagHook(parser_env, body, attributes={}):
+    """<quote[ cite="Person"]>A paragraph of text.</quote>"""
+    text = ['<blockquote>']
+    if 'cite' in attributes:
+        text.append('<cite>%s</cite>' % (cgi.escape(attributes['cite']),))
+    text.append(parse(body.strip()))
+    text.append('</blockquote>')
+    return u'\n'.join(text)
+registerTagHook('quote', blockquoteTagHook)
+Adding Internal Links
+You can support [[internal links]] with the registerInternalLinkHook method. 
+There is no default handling for internal links. If no hook handles the link, it 
+will appear unchanged in the output. An internal link may have a namespace: 
+prefix. Hooks are registered per namespace, with 'None' for unprefixed links:
+  def internalLinkHook(parser_env, namespace, body): 
+  ... return replacement 
+  registerInternalLinkHook(None, internalLinkHook) # called for [[link]] 
+  registerInternalLinkHook('Wikipedia', hook) # called for [[Wikipedia: Link]] 
+  registerInternalLinkHook(':en', hook) # called for [[:en:link] 
+  registerInternalLinkHook(':', hook) # called for [[:any:link]] 
+  registerInternalLinkHook('*', hook) # called for [[anything]]
+Examples:
+  from wikimarkup import parse, registerInternalLinkHook
+  def wikipediaLinkHook(parser_env, namespace, body): 
+  # namespace is going to be 'Wikipedia' (article, pipe, text) = 
+  body.partition('|') href = article.strip().capitalize().replace(' ', '_') text 
+  = (text or article).strip() return '<a 
+  href="http://en.wikipedia.org/wiki/%s">%s</a>' % (href, text) 
+  registerInternalLinkHook('Wikipedia', wikipediaLinkHook)
+  print parse("[[Wikipedia:public transport|public transportation]]") print 
+  parse("[[Wikipedia: bus]]")
+  import settings from pytils.translit import slugify from blog.models import 
+  Post
+  def byteflowLinkHook(parser_env, namespace, body): 
+  (article, pipe, text) = body.partition('|') slug = slugify(article.strip()) 
+  text = (text or article).strip() try:
+    post = Post.objects.get(slug=slug) href = post.get_absolute_url()
+  except Post.DoesNotExist: 
+  href = '#' 
+  return '<a href="%s">%s</a>' % (href, text)
+  registerInternalLinkHook(None, byteflowLinkHook)
+  parse("[[Blog post title]]")
+ Powered by the Dedicated Servers and
+Cloud Computing of Rackspace Hosting® Blog Support Training Job Board Contact 
+  API Status © 2010 GitHub Inc. All rights reserved. Terms of Service Privacy 
+  Security 
+  English Deutsch Français 日本語 Português (BR) 中文 See all available languages Your 
+current locale selection: English. Choose another?
+  English Afrikaans Català Čeština Deutsch Español Français Hrvatski Indonesia 
+  Italiano 日本語 Nederlands Norsk Polski Português (BR) Српски Svenska 中文 

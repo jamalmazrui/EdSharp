@@ -1,0 +1,6 @@
+c:\edsharp\liblouis\liblouisxml-2.0.0\share\doc\liblouisxml\example_canonical.cfg
+c:\edsharp\liblouis\liblouisxml-2.0.0\share\doc\liblouisxml\example_default.cfg
+c:\edsharp\liblouis\liblouisxml-2.0.0\share\liblouisxml\lbx_files\canonical.cfg
+c:\edsharp\liblouis\liblouisxml-2.0.0\share\liblouisxml\lbx_files\default.cfg
+c:\edsharp\liblouis\liblouisxml-2.0.0\share\liblouisxml\lbx_files\marburg.cfg
+c:\edsharp\liblouis\liblouisxml-2.0.0\share\liblouisxml\lbx_files\ukmaths.cfg

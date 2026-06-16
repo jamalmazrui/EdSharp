@@ -1,0 +1,53 @@
+Subject:
+FW: Escalations Issue # 194639
+From:
+"Pranav Lal" <pranav.lal@gmail.com>
+Date:
+Fri, 19 Feb 2010 09:13:03 +0530
+To:
+"'Jamal Mazrui'" <empower@smart.net>
+
+Now what does one do?
+
+-----Original Message-----
+From: John Carson [mailto:johncarson@FreedomScientific.com] 
+Sent: Friday, February 19, 2010 1:16 AM
+To: pranav.lal@gmail.com
+Subject: Escalations Issue # 194639
+
+Hello Pranav;
+
+ 
+
+Recently you contacted our technical support department via email about an
+issue with a installer package and JAWS 11.0 not able to read the state of
+check boxes in this installer's
+
+ 
+
+This installer package is unfortunately, not tested nor supported by Freedom
+Scientific, so we are closing this issue at this time.
+
+ 
+
+We apologize for any inconvenience.
+
+ 
+
+Kind regards,
+
+ 
+
+ 
+
+ 
+
+John H. Carson, Jr.
+
+escalations Manager
+
+Freedom Scientific, LLC.
+
+ 
+
+

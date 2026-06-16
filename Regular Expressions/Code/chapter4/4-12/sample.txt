@@ -1,0 +1,7 @@
+moo
+http://www.domain.com
+www.garbage.com
+https://www.example.com
+ww.oink
+ftp://www.example.co.fr
+ftps://www.example.co.fr

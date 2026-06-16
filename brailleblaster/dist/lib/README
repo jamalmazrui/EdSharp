@@ -1,0 +1,3 @@
+To compile brailleblaster you must copy swt.jar jdom.jar jeuclid.jar and 
+the jar files for various bindings into this directory.
+

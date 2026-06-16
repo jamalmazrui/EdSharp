@@ -1,0 +1,4 @@
+Active Internet connections
+Proto Recv-Q Send-Q  Local Address          Foreign Address        (state)
+tcp4       0      0  localhost.netinfo-loca localhost.948          ESTABLISHED
+tcp4       0      0  localhost.948          localhost.netinfo-loca ESTABLISHED

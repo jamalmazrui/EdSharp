@@ -1,0 +1,212 @@
+The Code King - Making Your Application UAC AwareThe Code King 
+ Senior software engineer with over 10 years experience in a wide range of 
+technologies. the successful exploitation of new ideas, process, or way of 
+thinking
+Making Your Application UAC Aware 
+
+Introduction
+This article is a guide to making applications UAC aware for Vista, and aims to 
+explain some of the pitfalls of failing to do so. An application can be made 
+Vista aware through the use of an embedded manifest. Without this Windows may 
+virtualize access to resources which effects both file system and registry 
+access.
+ 
+Background
+As you may know, permission control in Vista has changed radically. This is 
+partly due to the realization that the vast majority of Windows users login to 
+their machines with an administrator account, rather than using the recommended 
+limited account which has more restrictive permissions. Applications running on 
+the machine inherit these user permissions and therefore are usually running 
+with full administrative rights. This obviously makes the operating system much 
+more vulnerable to malicious software and viruses than was originally intended. 
+The answer that the Windows team came up with is UAC, or User Account Control. 
+With UAC it doesn't matter if you login as administrator, all accounts run under 
+the same limited set of permissions and are not permitted to access protected 
+resources unless explicitly allowed. Instead applications must now ask 
+permission from the user in order to gain access to these resources, known as 
+elevation. 
+Elevation happens when an application that is flagged as needing administrative 
+permissions is first launched, or when an application is explicitly launched 
+with a run as administrator command by the user. This is the only time 
+applications can do this as applications cannot change their level later and 
+decide to elevate once running. To do this the process must be terminated and 
+relaunched under a new set of permissions, requesting authorization from the 
+user to do so. The only exception to this is if an application is launched from 
+an existing elevated process. In this case the second process inherits the 
+privileges from the first and the user is not prompted. 
+The elevation request takes the form of a dialog box that consumes the desktop 
+and is secured against inter-process communication. The user is required to make 
+a choice to allow the application the requested elevation rights or to refuse 
+it. Applications cannot elevate without this user interaction, and this helps 
+secure the desktop from unsecure access to resources. 
+The impact of UAC is huge, and even effects something as insignificant as the 
+task tray clock. In Vista you will notice you can no longer change the system 
+time by simply clicking on the clock, this is an administrative task and 
+requires elevation. 
+Virtualization
+One of the problems that arise from the introduction of UAC is that many legacy 
+applications still require access to folders and registry settings that are now 
+protected; for instance applications which store configuration data in the 
+Program Files directory instead of using the inbuilt Common AppData path. This 
+is no longer allowed and leads to compatibility issues. 
+In order to improve compatibility and allow legacy applications to run in a UAC 
+enabled environment, the operating system uses virtualization. This creates a 
+virtualized view of file system and registry resources accessed by the 
+application, and redirects the requests transparently behind the scenes to 
+alternative sandboxed locations. In most cases this can allow a legacy 
+application to function as normal, however this comes with a performance 
+overhead and is only a short term solution. These applications ultimately need 
+to be rewritten to remove their reliance on any protected resources, and instead 
+use the recommended locations to store application and user data. 
+File system virtualization:
+    Real path
+    C:\Program Files\Foo\Foo bar\config.ini
+    
+    Virtual path
+    C:\Users\<account>\AppData\Local\VirtualStore\Program Files\Foo\Foo bar\config.ini
+    Registry virtualization:
+    Real path
+    HKEY_LOCAL_MACHINE\Software\FooKey
+    
+    Virtual path
+    HKEY_USERS\<User SID>_Classes\VirtualStore\Machine\Software\FooKey
+    It goes without saying that a developer should never reference these virtual 
+locations in code. The correct locations for storing application and user data 
+are determined by the environment variables and Windows API. Legacy applications 
+that already use these to read/write application data to the Common AppData 
+folder for instance, won't require virtualization. On Vista this path would 
+correctly resolve to C:\ProgramData.
+The Manifest
+The manifest is an xml resource file that can be embedded into the application. 
+In terms of UAC, this serves 2 purposes. Firstly it tells the operating system 
+that the application has been designed with UAC in mind, and that it therefore 
+should not attempt to virtualize any folders or registry settings. If the 
+application still attempts to access protected resources after making it's 
+declaration, then these requests will simply fail rather than virtualize. The 
+other thing it does is allow the application to state the privilege level at 
+which it needs to run, and whether it requires elevation. 
+An example manifest file.
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+        <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+            <security>
+                <requestedPrivileges>
+                    <requestedExecutionLevel level="asInvoker" uiAccess="false"/>
+                </requestedPrivileges>
+            </security>
+        </trustInfo>
+    </assembly> 
+    These files have been around for a while, and the new section added for UAC 
+control is the requestedExecutionLevel element. The level attribute may be one 
+of the following values: 
+      LevelDescription
+      asInvokerDoes not require elevation, runs without requesting elevation 
+      using privileges of it's parent process.
+      highestAvailableRequests the highest available privilege tokens of it's 
+      parent process. An administrator account will attempt to elevate to full 
+      administrator level, but a standard account will only request elevation to 
+      it's own highest set of access tokens.
+      requireAdministratorRequires elevation to full administrator privileges.
+
+Most applications should use the asInvoker level, as this will not prompt the 
+user for elevation every time it's run, and will use the standard set of 
+privileges to access the unprotected resources it needs. Only applications that 
+require access to protected resources should use the higher access levels. 
+The uiAccess attribute determines whether the application requires access to any 
+protected UI elements, such as system dialog boxes or higher-level processes. 
+Only signed applications may do this as it requires additional security tokens. 
+This value defaults to false. 
+Techniques for adding the manifest vary between technologies and languages. For 
+.Net managed applications the following command lines can be used in a 
+post-build step, or via a command prompt using the Microsoft MT.exe tool. Note 
+that the final parameter changes depending on whether the application is a 
+library or an executable. 
+In this example a manifest file saved as Foobar.exe.manifest is added to an 
+application named Foobar.exe. Note the #1 for application.
+    mt.exe -manifest "Foobar.exe.manifest" -outputresource:"Foobar.exe";#1
+    In this example a manifest file saved as Foobar.dll.manifest is added to a class 
+library named Foobar.dll. Note the #2 for a code library. 
+    mt.exe -manifest "Foobar.dll.manifest" -outputresource:"Foobar.dll";#2
+    Other Conciderations
+By default the elevation dialog is an orange box. To turn this into a friendly 
+blue dialog, the application needs to be code signed. See further reading for 
+links to articles regarding this.
+Elevation procedures surrounding installers are a bit too complex to go into 
+detail here, however be warned that the requiresAdministrator flag on an MSI 
+package does not actually provide full administrator permissions. This actually 
+behaves slightly differently and runs as a subset of the full privileges unless 
+you use a bootstrapper to gain full elevation. It's rare that installers would 
+require these additional tokens as the installer's administrator permissions are 
+generally sufficient.
+Summary
+To make an application UAC aware for Vista, a manifest file should be embedded 
+into the executable or code library with the requestedExecutionLevel element. 
+This prevents virtualization of data access requests and improves performance. 
+It also ensures that application data intended for application scope is not 
+limited to the current user scope. 
+When referencing file system and registry data within the application/user 
+scopes, ensure that the relevant environment variables are used to correctly 
+locate the unprotected resources.
+If your application requires access to protected resources then set the 
+requestedExecutionLevel element to an appropriate value (other than asInvoker), 
+and consider signing with an Authenticode certificate. This will ensure that the 
+user is prompted to elevate the process, and ensure that the application has the 
+required level of privileges to perform it’s tasks.
+Further Reading
+  Teach Your Apps To Play Nicely With Windows Vista User Account Control 
+  UI Automation Security Overview 
+  User Account Control Overview 
+  The User Account Control WebLog 
+  Registry Virtualization 
+  Developer Best Practices and Guidelines for Applications in a Least Privileged 
+  Environment 
+  Using Authenticode Code Signing 
+Labels: C# .Net, Vista 
+
+
+
+1 comments: 
+  Anonymous said... 
+  Extremely helpful, thanks.
+  04 November 2008 00:45  
+Post a Comment 
+Newer Post Older Post Home 
+Subscribe to: Post Comments (Atom) Projects & Downloads
+  .Net ActiveButtons Library 
+  OutlookUnlocker - Unlock Blocked Attachments 
+  SimpleUrl.Net Library 
+  SqlHarvester Database Scripting Engine 
+  XDMessaging .Net Library 
+ Open Source Projects
+  CodePlex 
+ Sharepoint
+  Sharepoint Gotchas 
+ C# .Net
+  .Net Cross AppDomain Communication 
+  Adding caption buttons to the Non-client area on Vista 
+  Making Your Application UAC Aware 
+  One of the most useful yet little-known features to come out of C# 2.0 
+  Outlook add-in to unlock blocked attachments in .Net 
+  Programmatically setting control adapters for url rewriting & Ajax 
+ Vista
+  Adding caption buttons to the Non-client area on Vista 
+  Making Your Application UAC Aware 
+  Windows Vista Aero Glass in .Net Managed Win32 Applications 
+ Blogger
+  Hacks Part 1: Creating a static home page 
+  Hacks Part 2: Creating a navigation structure 
+ My Technology Blogs
+  Development Tools 
+  Recommended Free Software 
+  Tricks & Tips 
+ My Personal Links
+  My Music 
+  Google Lively 
+    
+ Keep the dream alive!
+Feeling generous?
+Why not buy some eternal gratitude?!
+    
+ 
+Copyright © 2008 
+ 

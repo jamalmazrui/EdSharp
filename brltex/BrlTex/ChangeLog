@@ -1,0 +1,8 @@
+Michael Whapples, mwhapples@users.sourceforge.net
+Initial import into SVN on sourceforge.net, available to the public under the RPL.
+
+Michael Whapples, mwhapples@users.sourceforge.net
+Changed translate.py to use nfbtrans for text processing, old translate.py is in translate.py.backup. Added some files 
+for nfbtrans.
+25 Aug 2006, Michael Whapples, mwhapples@users.sourceforge.net
+Added install.py for installation, and instructions

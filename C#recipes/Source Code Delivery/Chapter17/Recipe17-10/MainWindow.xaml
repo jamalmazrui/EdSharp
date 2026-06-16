@@ -1,0 +1,68 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title=" Recipe17_10" Height="350" Width="500">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="CommandTarget"
+                            Value="{Binding ElementName=rtbTextBox1}" />
+                </Style>
+            </StackPanel.Resources>
+            <Button Content="Clear" Name="btnClear" Click="btnClear_Click" />
+            <Separator Margin="5"/>
+            <Button Content="Cu_t" Command="ApplicationCommands.Cut" />
+            <Button Content="_Copy" Command="ApplicationCommands.Copy" />
+            <Button Content="_Paste" Command="ApplicationCommands.Paste" />
+            <Separator Margin="5"/>
+            <Button Content="_Undo" Command="ApplicationCommands.Undo" />
+            <Button Content="_Redo" Command="ApplicationCommands.Redo" />
+            <Separator Margin="5"/>
+            <Button Content="_Bold" Command="EditingCommands.ToggleBold" />
+            <Button Content="_Italic" Command="EditingCommands.ToggleItalic" />
+            <Button Content="Underline"
+                    Command="EditingCommands.ToggleUnderline" />
+            <Separator Margin="5"/>
+            <Button Content="_Right" Command="EditingCommands.AlignRight" />
+            <Button Content="C_enter" Command="EditingCommands.AlignCenter" />
+            <Button Content="_Left" Command="EditingCommands.AlignLeft" />
+        </StackPanel>
+        <RichTextBox DockPanel.Dock="Bottom" Name="rtbTextBox1"
+                     HorizontalScrollBarVisibility="Visible"
+                     VerticalScrollBarVisibility="Visible">
+            <FlowDocument>
+                <Paragraph FontSize="12">
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+                    magna aliquam erat volutpat.
+                </Paragraph>
+                <Paragraph FontSize="15">
+                    Ut wisi enim ad minim veniam, quis nostrud exerci tation
+                    ullamcorper suscipit lobortis nisl ut aliquip ex ea
+                    commodo consequat. Duis autem vel eum iriure.
+                </Paragraph>
+
+                <Paragraph FontSize="18">A List</Paragraph>
+
+                <List>
+                    <ListItem>
+                        <Paragraph>
+                            <Bold>Bold List Item</Bold>
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            <Italic>Italic List Item</Italic>
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            <Underline>Underlined List Item</Underline>
+                        </Paragraph>
+                    </ListItem>
+                </List>
+            </FlowDocument>
+        </RichTextBox>
+    </DockPanel>
+</Window>

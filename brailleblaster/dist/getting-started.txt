@@ -1,0 +1,22 @@
+The command to run BrailleBlaster is simply
+
+java -jar brailleblaster.jar 
+
+This command may be placed in a shortcut with a suitable path.
+
+BrailleBlaster accepts subcommands. To use them simply type them after a 
+space after the above command, followed by spaces and suitable 
+arguments. They are:
+
+translate: translate a file into braille
+emboss: translate a file and then emboss it
+help: print a list of subcommands
+help [subcommand]: print detailed information on the subcommand
+
+If no arguments are given after brailleblaster.jar the application 
+enters the wordprocessor. It may display startup dialogs if this is the 
+first time you are usinng it or you have not disabled these dialogs. You 
+can then proceed to work on doocuments as in most other word processors, 
+and you can also view and edit braille translations of documents in a 
+special window.
+

@@ -1,0 +1,10 @@
+"This is a line"
+"Unmatched \"
+"The cow says \"moo\""
+\"Don't know"
+"Another unmatched
+printf ( "hello \" world" );
+"""
+""""
+"""""
+""""""

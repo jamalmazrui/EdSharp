@@ -1,0 +1,25 @@
+Subject:
+Other useful development lists?
+From:
+Øyvind Lode <oyvind.lode@gmail.com>
+Date:
+Mon, 22 Feb 2010 16:54:30 +0100
+To:
+<programmingblind@freelists.org>
+
+Hi list:
+
+I recently joined this list.
+Thanks to a couple of great people on this list I am now a happy user of
+EdSharp.
+I am still a newbie coder though :)
+
+Are there other dev lists I should subscribe to?
+I primarily use Windows and JAWS, but also Linux (though I only use Linux as
+a server OS now). 
+
+
+__________
+View the list's information and change your settings at 
+http://www.freelists.org/list/programmingblind
+

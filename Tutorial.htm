@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>EdSharp Tutorial</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">EdSharp Tutorial</h1>
+</header>
+<h1 id="using-edsharp">Using EdSharp</h1>
+<p>A hands-on tutorial for getting started with the EdSharp text
+editor.</p>
+<p>This tutorial is adapted, with thanks, from the <em>Using
+TextPal</em> tutorial originally written by Jim Homme for TextPal, a
+predecessor of EdSharp that contributed many of its ideas. The text here
+has been revised to match EdSharp's terminology, concepts, and key
+bindings. For the complete reference, see the EdSharp User Guide (press
+F1 in EdSharp).</p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#quick-start">Quick Start</a></li>
+<li><a href="#common-hot-keys">Common Hot Keys</a>
+<ul>
+<li><a href="#working-with-files-on-disk">Working With Files on
+Disk</a></li>
+<li><a href="#navigating-in-the-current-file">Navigating in the Current
+File</a></li>
+<li><a href="#using-the-clipboard">Using the Clipboard</a></li>
+<li><a href="#changing-character-case">Changing Character Case</a></li>
+<li><a href="#searching-and-replacing">Searching and Replacing</a></li>
+<li><a href="#working-with-sections">Working With Sections</a></li>
+<li><a href="#spell-checker-and-thesaurus">Spell Checker and
+Thesaurus</a></li>
+<li><a href="#software-development">Software Development</a></li>
+</ul></li>
+<li><a href="#the-edsharp-window">The EdSharp Window</a></li>
+<li><a href="#working-with-files">Working With Files</a></li>
+<li><a href="#working-with-text">Working With Text</a></li>
+<li><a href="#getting-useful-information">Getting Useful
+Information</a></li>
+<li><a href="#creating-an-address-book">Creating an Address
+Book</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>EdSharp is a full-featured, friendly, powerful, open-source text
+editor. It uses a standard Windows interface that supports multiple
+document windows, and it seeks to optimize efficiency for screen reader
+users by automatically speaking relevant information.</p>
+<p>EdSharp works like Notepad, so you can begin using it with the same
+commands you already know. It adds many more commands that generally
+involve a modifier key such as Shift, Control, or Alt combined with a
+letter that begins the name of the command. Most commands provide
+enhanced speech compared to default screen reader output; for example,
+EdSharp reads the current line after a command completes. In general,
+EdSharp does not limit the size of a file or the number of open files,
+and it includes commands that make it friendly for programmers who want
+to use it to develop software.</p>
+<h2 id="installation">Installation</h2>
+<p>The installation program for EdSharp is called EdSharp_Setup.exe.
+When you run it, it does the following:</p>
+<ul>
+<li>Prompts for a program folder. The default is
+<code>C:\Program Files (x86)\EdSharp</code>.</li>
+<li>Creates a program group on the Windows Start menu with choices to
+launch EdSharp, read the documentation, or uninstall the program.</li>
+<li>Offers to set or clear an association between EdSharp and files with
+a particular extension, such as <code>.txt</code> or <code>.ini</code>.
+Binary formats such as <code>.pdf</code> or <code>.pptx</code> may also
+be associated with EdSharp so they are automatically converted to text
+when opened from Windows Explorer.</li>
+<li>Presents a checkbox for an optional set of JAWS scripts that
+fine-tune the EdSharp speech interface. If you install the scripts and
+later prefer default JAWS behavior, you can disable them from the JAWS
+"Manage Application Settings" dialog.</li>
+<li>Presents a checkbox that sets Alt+Control+E as a system-wide hot key
+for the EdSharp shortcut placed on the Windows desktop. If that hot key
+conflicts with another shortcut, select either shortcut on the desktop,
+press Alt+Enter for its properties, and change or clear the hot
+key.</li>
+<li>Presents a checkbox to open the manual in your default web browser
+after installation.</li>
+</ul>
+<p>You can safely install new versions of EdSharp over previous
+versions; your settings, Favorites and Recent Files lists, and bookmarks
+are preserved. To update an existing installation, just press F11
+(Elevate Version) and EdSharp downloads and installs the current version
+from the author's site. To check your version at any time, use the About
+command, Alt+F1; the History of Changes command, Shift+F1, summarizes
+fixes and improvements over time.</p>
+<h2 id="quick-start">Quick Start</h2>
+<p>If you are impatient to get going, here are some things you can do to
+get up and running.</p>
+<ul>
+<li>Launch EdSharp from the Start menu, the desktop shortcut, or its
+desktop hot key Alt+Control+E.</li>
+<li>Press F1 to open the full documentation in your default web
+browser.</li>
+<li>Press Alt+Shift+H for the Hotkey Summary, an alphabetically sorted
+list of hot keys placed in a new EdSharp window.</li>
+<li>Press Control+F1 for the Key Describer, then press any key to hear
+which command it runs.</li>
+<li>Press Alt+F10 for the Alternate Menu, an alphabetical list of every
+available command.</li>
+<li>Explore the regular menus to get a feel for the large number of
+familiar and new commands available through hot keys.</li>
+</ul>
+<h2 id="common-hot-keys">Common Hot Keys</h2>
+<p>Here is a list of hot keys you will use often. Where EdSharp differs
+from what you may remember from other editors, the EdSharp binding is
+the one shown.</p>
+<h3 id="working-with-files-on-disk">Working With Files on Disk</h3>
+<ul>
+<li>Control+N = New file.</li>
+<li>Control+Shift+N = New file from the current clipboard text.</li>
+<li>Control+O = Open file. Converts Microsoft Word
+(<code>.doc</code>/<code>.docx</code>), Excel, PowerPoint, PDF, Rich
+Text Format (<code>.rtf</code>), and HTML files automatically to plain
+text.</li>
+<li>Control+Shift+O = Open Other Format: open a file without conversion
+(and import <code>.rtf</code> with its formatting). Useful for editing
+HTML source.</li>
+<li>Alt+O = Open Again: reload the current file from disk, discarding
+unsaved changes.</li>
+<li>Control+S = Save.</li>
+<li>Control+Shift+S = Save As.</li>
+<li>Alt+Shift+S = Save Copy (saves a backup copy under a new name).</li>
+<li>Alt+R = Recent Files list.</li>
+<li>Control+L = Add the current document to the Favorites list.</li>
+<li>Alt+L = Open the Favorites list.</li>
+<li>Alt+Shift+F = File Find: locate a file in the current folder by a
+text string and open it.</li>
+<li>Control+H = Convert the current document to HTML (HTML Format).</li>
+<li>F5 = Run: open or run the current file with its associated program
+(for example, an <code>.htm</code> file opens in your web browser).</li>
+<li>Control+Tab and Control+Shift+Tab = Cycle forward and backward
+through open EdSharp windows.</li>
+<li>Control+F4 = Close the current window. Alt+F4 = Exit EdSharp.</li>
+</ul>
+<h3 id="navigating-in-the-current-file">Navigating in the Current
+File</h3>
+<ul>
+<li>Arrow keys, Page Up, and Page Down = Move through text. Add Shift to
+select.</li>
+<li>Alt+Down and Alt+Up = Next and prior sentence (EdSharp speaks the
+sentence).</li>
+<li>Control+Down and Control+Up = Next and prior paragraph (EdSharp
+speaks the paragraph).</li>
+<li>Control+K = Set a bookmark. Alt+K = Go to a bookmark.
+Control+Shift+K = Clear the bookmark (the cursor must be on the exact
+marked character).</li>
+<li>Control+J = Jump to a line number. Alt+J = Jump again. You may add a
+<code>+</code> or <code>-</code> before the number to jump that many
+lines forward or backward from the current line.</li>
+<li>Control+G = Go to a percentage point in the file. Alt+G = Go to that
+percentage again.</li>
+</ul>
+<h3 id="using-the-clipboard">Using the Clipboard</h3>
+<ul>
+<li>F8 = Start Selection. Move the cursor to one character past the end
+of the text you want, then press Shift+F8 to Complete Selection.</li>
+<li>Shift plus the arrow keys = Select by character, word, or line in
+the usual way.</li>
+<li>Control+C = Copy. Control+X = Cut. Control+V = Paste. Each works on
+the current line if there is no selection.</li>
+<li>Alt+C = Copy and append to the clipboard. Alt+X = Cut and append to
+the clipboard.</li>
+<li>Alt+Apostrophe = Speak the current clipboard text.</li>
+</ul>
+<h3 id="changing-character-case">Changing Character Case</h3>
+<ul>
+<li>Control+U = Upper case the current character or selection.</li>
+<li>Control+Shift+U = Lower case the current character or
+selection.</li>
+<li>Alt+U = Proper case (capitalize the first letter of each word, lower
+the rest).</li>
+<li>Alt+Shift+U = Swap case (invert upper and lower case).</li>
+</ul>
+<h3 id="searching-and-replacing">Searching and Replacing</h3>
+<ul>
+<li>Control+F = Find forward. Control+Shift+F = Find backward.</li>
+<li>F3 = Find again forward. Shift+F3 = Find again backward.</li>
+<li>Alt+F3 = Find the chunk at the cursor, or the selected text,
+forward. Alt+Shift+F3 = the same, backward.</li>
+<li>Control+F3 = Find forward with a regular expression.
+Control+Shift+F3 = the same, backward.</li>
+<li>Control+R = Replace throughout all or selected text.</li>
+<li>Control+Shift+R = Replace using a regular expression.</li>
+</ul>
+<h3 id="working-with-sections">Working With Sections</h3>
+<p>EdSharp lets you divide a document into named sections, which is the
+basis of the address-book exercise later in this tutorial.</p>
+<ul>
+<li>Control+Enter = Insert a Section Break.</li>
+<li>Control+PageDown and Control+PageUp = Move to the next and prior
+section.</li>
+<li>F6 = Go to Section: jump from a table-of-contents line to its
+section. Shift+F6 = Go to Contents: jump from a section back to its
+table-of-contents line.</li>
+<li>Alt+T = Speak the current section's topic (its first line).</li>
+<li>Alt+Shift+T = Text Contents: build a table of contents from the
+first line of each section.</li>
+<li>Control+F6 = Search for a topic by name. Alt+F6 = Search for that
+topic again.</li>
+</ul>
+<h3 id="spell-checker-and-thesaurus">Spell Checker and Thesaurus</h3>
+<ul>
+<li>F7 = Spell check.</li>
+<li>Shift+F7 = Thesaurus.</li>
+</ul>
+<h3 id="software-development">Software Development</h3>
+<ul>
+<li>Control+Space = Select Chunk. Good for grabbing a function call or
+header in one step. Shift+Backspace speaks the current chunk.</li>
+<li>Shift+Enter = Insert a new line indented to the current line's
+level. Alt+Shift+Enter does the same but opens the line above.</li>
+<li>Tab = Indent the current or selected lines one level. Shift+Tab =
+Outdent them one level.</li>
+<li>Alt+I = Speak the indentation level of the current line.</li>
+<li>Alt+Shift+I = Indent Mode: toggle the spoken indentation alert on
+and off.</li>
+<li>Control+Q = Quote the selected text or whole document with a prefix
+string. You can set the prefix to match the comment string of your
+programming language to create comments, or use it for quoting
+email.</li>
+<li>Alt+PageDown and Alt+PageUp = Next and prior part: move to the next
+or previous function, method, or class, using the current compiler's
+NavigatePart pattern.</li>
+<li>Control+B and Control+Shift+B = Next and prior block: move by
+indentation, to the next or previous less-indented line.</li>
+<li>Control+F5 = Compile the current file, speak the output, and jump to
+the first error. With no compiler configured, a <code>.cs</code> file is
+compiled with the latest available .NET C# compiler automatically.
+Control+Shift+F5 picks or configures a compiler.</li>
+</ul>
+<h2 id="the-edsharp-window">The EdSharp Window</h2>
+<p>This section briefly explains the parts of the program you use most
+often: the title bar, the menu bar, the document area, and the status
+bar.</p>
+<p>The title bar shows the name of the application and, in brackets, the
+document you are currently editing. The menu bar contains categories of
+commands you use throughout your work. The document area contains the
+document you are editing. The status bar reports information about what
+is happening as you work.</p>
+<h2 id="working-with-files">Working With Files</h2>
+<p>This section explains how to create, open, and save files.</p>
+<p><strong>Creating a new file.</strong> When EdSharp first opens, it
+presents a blank document, ready for typing. To create another new file
+at any time, press Control+N; New is also the first choice on the File
+menu, Alt+F. To start a file from whatever is currently on the
+clipboard, press Control+Shift+N: EdSharp opens a new window, drops in
+the clipboard text, and places the cursor at the start.</p>
+<p><strong>Opening files.</strong> The simplest way to open a file is
+Control+O, which presents the standard Windows Open dialog showing the
+current folder. When you open a file this way, EdSharp converts several
+formats to plain text automatically: Microsoft Word, Excel, PowerPoint,
+PDF, Rich Text Format, and HTML. To open a file without conversion, use
+Control+Shift+O (Open Other Format); this is what you want for editing
+HTML source or importing an <code>.rtf</code> file with its formatting
+intact.</p>
+<p>If you are editing a file and want to return to the version on disk,
+press Alt+O (Open Again). This only helps if you have not already saved
+your changes, since saving replaces the disk copy.</p>
+<p>EdSharp keeps a Recent Files list, reached with Alt+R: pick a file
+and press Enter to load it. The Favorites list, Alt+L, stores files you
+return to often, such as a reference manual for a programming project,
+so you can open them without navigating the Open dialog. To add the file
+you are editing to Favorites, press Control+L while editing it. EdSharp
+does not convert files opened from the Recent Files or Favorites lists,
+so you can re-open a file in its native format; this is most useful for
+HTML files.</p>
+<p>The File Find command, Alt+Shift+F, locates a file in the current
+folder from a text string: type the string and press Enter, then choose
+from the resulting list of matching files and press Enter to open
+it.</p>
+<p><strong>Saving files.</strong> Control+S is the key you will use most
+often. The first time you save a new file, EdSharp opens the Save As
+dialog so you can name it; afterward it simply writes the current
+version over the disk copy. Control+Shift+S (Save As) saves under a
+different name and switches the document window to the new file.
+Alt+Shift+S (Save Copy) writes a separate backup copy and leaves you
+working on the original, which is handy when you want to preserve a
+snapshot. For more file commands, explore the File menu, Alt+F.</p>
+<h2 id="working-with-text">Working With Text</h2>
+<p>Besides entering and reviewing text, you will spend a lot of time
+manipulating it. This section covers the most common and useful
+operations.</p>
+<p><strong>Selecting text.</strong> Besides the usual
+Shift-with-navigation method, EdSharp offers two efficient techniques.
+The first is a two-key selection: place the cursor where the selection
+should start and press F8; move the cursor one character past the end of
+the text you want and press Shift+F8 to complete the selection. This is
+faster than holding Shift, because you do not have to keep a key down or
+wait for your screen reader to speak as you go. The second technique is
+Select Chunk, Control+Space, which is excellent for programmers: place
+the cursor in a function call and press Control+Space to select the
+entire call at once.</p>
+<p><strong>Changing case.</strong> Use Control+U for upper case,
+Control+Shift+U for lower case, Alt+U for proper case (the first letter
+of each word), and Alt+Shift+U to swap (invert) the case of the
+selection. These commands are also at the bottom of the Misc menu,
+Alt+M.</p>
+<p><strong>Working with the clipboard.</strong> You already know
+Control+X to cut and Control+C to copy a selection. EdSharp makes these
+more efficient: with no selection, Control+X cuts the current line and
+Control+C copies it, so you can skip selecting. Using Alt+X and Alt+C
+instead appends the cut or copied text to whatever is already on the
+clipboard, and these also work on the current line. You will find these
+and many more commands on the Edit menu, Alt+E.</p>
+<p><strong>Navigating through text.</strong> As you read, you will reach
+most often for next and prior paragraph (Control+Down and Control+Up),
+next and prior sentence (Alt+Down and Alt+Up), set and go to bookmark
+(Control+K and Alt+K), and find forward and backward (Control+F and
+Control+Shift+F, repeated with F3 and Shift+F3). The remaining
+navigation commands are on the Navigate menu, Alt+N.</p>
+<h2 id="getting-useful-information">Getting Useful Information</h2>
+<p>EdSharp has a set of commands for learning about the document you are
+working on; most are on the Query menu, Alt+Q.</p>
+<ul>
+<li>Alt+Apostrophe speaks what is currently on the clipboard.</li>
+<li>Alt+A (Address) speaks the line and column of the cursor, followed
+by its percentage position from the top of the file.</li>
+<li>Alt+Y (Yield) reports how many characters, words, and lines the
+file, or the selection, contains.</li>
+<li>Alt+Z (Status) tells you whether the document has been modified from
+the version on disk; press it again to hear the character encoding.</li>
+</ul>
+<h2 id="creating-an-address-book">Creating an Address Book</h2>
+<p>In this exercise we will use EdSharp's section feature to build a
+simple address book. Follow along to get a feel for how easily you can
+manipulate text in the program. We will create a section break and a
+template for the first entry, add a few fictitious entries, build and
+sort a table of contents, confirm we can navigate among the entries,
+convert the book to HTML, and view it in a web browser.</p>
+<p><strong>Create the template entry.</strong></p>
+<ul>
+<li>Press Control+N to start a new file.</li>
+<li>Press Control+Enter to insert a section break for the template
+entry.</li>
+<li>Type the following line exactly. Because it begins with an
+exclamation mark, it will sort to the top when we order the table of
+contents:</li>
+</ul>
+<pre><code>!Template</code></pre>
+<ul>
+<li>Below that, add a name line in the form we will reuse for every
+entry:</li>
+</ul>
+<pre><code>LastName, FirstName</code></pre>
+<ul>
+<li>Since this is a simple address book, add only a home address. Put
+these lines below the name line, with a space after each colon so that
+you can press End on a line and start typing the value:</li>
+</ul>
+<pre><code>Street: 
+City: 
+State: 
+Zip: 
+Phone: 
+Email: </code></pre>
+<p><strong>Make the other entries.</strong></p>
+<ul>
+<li>Move to the <code>LastName, FirstName</code> line of the
+template.</li>
+<li>Press F8 to start selecting, move to one character past the last
+line of the template entry, and press Shift+F8 to complete the
+selection.</li>
+<li>Press Control+C to copy the template to the clipboard.</li>
+<li>Move below the template entry and press Control+Enter to start a new
+section.</li>
+<li>Press Control+V to paste the template.</li>
+<li>Move to the first line, replace it with a real last name, comma, and
+first name, for example <code>Jones, Joe</code>. Optionally add a middle
+initial by pressing End, Space, and a capital letter.</li>
+<li>Fill in the remaining lines. As long as you do not change the
+clipboard, you can keep pasting the template (Control+V) under new
+section breaks to add more entries. Create a few until the process feels
+comfortable.</li>
+</ul>
+<p><strong>Build the table of contents.</strong> Press Alt+Shift+T (Text
+Contents). EdSharp adds a "Contents" line near the top of the file
+followed by the first line of each section, which here is the name line
+of each entry. A blank line in the table of contents means a section
+break is missing or misplaced.</p>
+<p><strong>Check the sections.</strong> Use Control+PageDown and
+Control+PageUp to confirm the cursor lands on the first line of each
+entry. If you land on a blank line, delete any text between the previous
+entry's last line and the new entry's first line, place the cursor on
+the first character of the new entry, and press Control+Enter to
+recreate the section break. When the sections are correct, make sure the
+table of contents has a line for each one.</p>
+<p><strong>Sort the table of contents.</strong> Select all of the
+table-of-contents lines and press Alt+Shift+O (Order Items) to sort them
+alphabetically. The <code>!Template</code> line stays at the top because
+of its leading exclamation mark. Now you can press F6 on a contents line
+to jump to that entry, and Shift+F6 to jump back to the contents.</p>
+<p><strong>Convert to HTML and view it.</strong> Press Control+H (HTML
+Format) to convert the file to HTML. Save it with Control+S, then press
+F5 (Run) to open it in your default web browser. The page should show
+same-page links to each address-book entry. If it does not, check the
+section breaks and the table of contents, and compare the structure
+against the examples in the EdSharp documentation (F1).</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This tutorial has covered the commands you will use most often in
+day-to-day work with text, and it has shown how the section feature lets
+you build and navigate a structured document such as an address book and
+convert it to HTML. For the complete set of commands and features,
+including programming, math, word processing, and scripting, press F1 in
+EdSharp to open the full User Guide. EdSharp's author welcomes feedback
+and contributions toward its continued improvement.</p>
+</body>
+</html>

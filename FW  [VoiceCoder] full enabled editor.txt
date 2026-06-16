@@ -1,0 +1,170 @@
+Subject:
+FW: [VoiceCoder] full enabled editor
+From:
+"Pranav Lal" <pranav.lal@gmail.com>
+Date:
+Fri, 30 Jul 2010 06:17:17 +0530
+To:
+"'Jamal Mazrui'" <empower@smart.net>
+
+Just some unrelated feedback on edsharp from sighted users. The context of
+the discussion is that a user was looking for a fully select and say enabled
+editor for coding with speech.
+
+-----Original Message-----
+From: VoiceCoder@yahoogroups.com [mailto:VoiceCoder@yahoogroups.com] On
+Behalf Of Quintijn Hoogenboom
+Sent: Thursday, July 29, 2010 10:03 PM
+To: VoiceCoder@yahoogroups.com
+Subject: RE: [VoiceCoder] full enabled editor
+
+  
+
+NO, UltraEdit is not select & say. For some users most of the time, but not
+consistent. And on my computers NOT AT ALL.
+
+ 
+
+This new edsharp is full select and say, but no tabs and no syntax coloring.
+
+ 
+
+I hope to make Komodo (and Pythonwin) select and say and workable with
+voicecode some time in future.
+
+ 
+
+(but sorry, Komodo is not free either. It has so many good things compared
+to even UltraEdit, that it was at least worth my money)
+
+ 
+
+Quintijn
+
+ 
+
+Van: VoiceCoder@yahoogroups.com [mailto:VoiceCoder@yahoogroups.com] Namens
+Frank Olaf Sem-jacobsen
+Verzonden: donderdag 29 juli 2010 16:39
+Aan: VoiceCoder@yahoogroups.com
+Onderwerp: Re: [VoiceCoder] full enabled editor
+
+ 
+
+
+
+
+
+
+I think UltraEdit is select-and-say, although it is somewhat expensive...,
+not oss at all. 
+
+> > On 7/
+
+__._,_.___
+Reply to sender <mailto:q.hoogenboom@antenna.nl?subject=RE: [VoiceCoder]
+full enabled editor>  | Reply to group
+<mailto:VoiceCoder@yahoogroups.com?subject=RE: [VoiceCoder] full enabled
+editor>  | Reply via web post
+<http://groups.yahoo.com/group/VoiceCoder/post;_ylc=X3oDMTJvMGwwMmp1BF9TAzk3
+MzU5NzE0BGdycElkAzMxMTU3OARncnBzcElkAzE3MDUwMDY3NjQEbXNnSWQDNjM3MwRzZWMDZnRy
+BHNsawNycGx5BHN0aW1lAzEyODA0MjExODY-?act=reply&messageNum=6373>  | Start a
+New Topic
+<http://groups.yahoo.com/group/VoiceCoder/post;_ylc=X3oDMTJkbGJvYmJxBF9TAzk3
+MzU5NzE0BGdycElkAzMxMTU3OARncnBzcElkAzE3MDUwMDY3NjQEc2VjA2Z0cgRzbGsDbnRwYwRz
+dGltZQMxMjgwNDIxMTg2>  
+Messages in this topic
+<http://groups.yahoo.com/group/VoiceCoder/message/6367;_ylc=X3oDMTMzazcycXIy
+BF9TAzk3MzU5NzE0BGdycElkAzMxMTU3OARncnBzcElkAzE3MDUwMDY3NjQEbXNnSWQDNjM3MwRz
+ZWMDZnRyBHNsawN2dHBjBHN0aW1lAzEyODA0MjExODYEdHBjSWQDNjM2Nw-->  (7) 
+Recent Activity: 
+
+Visit Your Group
+<http://groups.yahoo.com/group/VoiceCoder;_ylc=X3oDMTJkdnZwMXU5BF9TAzk3MzU5N
+zE0BGdycElkAzMxMTU3OARncnBzcElkAzE3MDUwMDY3NjQEc2VjA3Z0bARzbGsDdmdocARzdGltZ
+QMxMjgwNDIxMTg2>  
+Community email addresses:
+  Post message: VoiceCoder@onelist.com
+  Subscribe:    VoiceCoder-subscribe@onelist.com
+  Unsubscribe:  VoiceCoder-unsubscribe@onelist.com
+  List owner:   VoiceCoder-owner@onelist.com
+
+Shortcut URL to this page:
+  http://www.onelist.com/community/VoiceCoder 
+MARKETPLACE
+
+Get great advice about dogs and cats. Visit the Dog & Cat Answers Center.
+<http://us.ard.yahoo.com/SIG=15o33erqv/M=493064.13814537.14041040.10835568/D
+=groups/S=1705006764:MKP1/Y=YAHOO/EXP=1280428386/L=f7869ae6-9b2e-11df-a502-5
+711cd859d3b/B=9EwTFWKJiUk-/J=1280421186850969/K=inRtlj4OdfY_3.v0f0tKzg/A=607
+8812/R=0/SIG=114ae4ln1/*http://dogandcatanswers.yahoo.com/> 
+
+ 
+<http://us.bc.yahoo.com/b?P=f7869ae6-9b2e-11df-a502-5711cd859d3b&T=1d8e3fcto
+%2fX%3d1280421186%2fE%3d1705006764%2fR%3dgroups%2fK%3d5%2fV%3d2.1%2fW%3dH%2f
+Y%3dYAHOO%2fF%3d420252360%2fH%3dY29udGVudD0iR287UG9kY2FzdHM7V2Vic2l0ZV9TZXJ2
+aWNlcztXaWRnZXRzO1lhaG9vX1NlYXJjaF9NYXJrZXRpbmc7RmxpY2tyO0JyaWVmY2FzZTtGaW5h
+bmNlO0Jvb2ttYXJrO01vYmlsZTsiIGRpc2FibGVzaHVmZmxpbmc9IjEiIHNlcnZlSWQ9ImY3ODY5
+YWU2LTliMmUtMTFkZi1hNTAyLTU3MTFjZDg1OWQzYiIgc2l0ZUlkPSI0NDUyNTUxIiB0U3RtcD0i
+MTI4MDQyMTE4NjgwMDA4NyIg%2fQ%3d-1%2fS%3d1%2fJ%3d28228962&U=13cpdoojl%2fN%3d9
+EwTFWKJiUk-%2fC%3d493064.13814537.14041040.10835568%2fD%3dMKP1%2fB%3d6078812
+%2fV%3d1> 
+________________________________
+
+
+Hobbies & Activities Zone: Find others who share your passions! Explore new
+interests.
+<http://us.ard.yahoo.com/SIG=15oqag5tl/M=493064.14012770.13963757.13298430/D
+=groups/S=1705006764:MKP1/Y=YAHOO/EXP=1280428386/L=f7869ae6-9b2e-11df-a502-5
+711cd859d3b/B=9kwTFWKJiUk-/J=1280421186850969/K=inRtlj4OdfY_3.v0f0tKzg/A=601
+5306/R=0/SIG=11vlkvigg/*http://advision.webevents.yahoo.com/hobbiesandactivi
+tieszone/> 
+
+ 
+<http://us.bc.yahoo.com/b?P=f7869ae6-9b2e-11df-a502-5711cd859d3b&T=1d92kh3ao
+%2fX%3d1280421186%2fE%3d1705006764%2fR%3dgroups%2fK%3d5%2fV%3d2.1%2fW%3dH%2f
+Y%3dYAHOO%2fF%3d2116027759%2fH%3dY29udGVudD0iR287UG9kY2FzdHM7V2Vic2l0ZV9TZXJ
+2aWNlcztXaWRnZXRzO1lhaG9vX1NlYXJjaF9NYXJrZXRpbmc7RmxpY2tyO0JyaWVmY2FzZTtGaW5
+hbmNlO0Jvb2ttYXJrO01vYmlsZTsiIGRpc2FibGVzaHVmZmxpbmc9IjEiIHNlcnZlSWQ9ImY3ODY
+5YWU2LTliMmUtMTFkZi1hNTAyLTU3MTFjZDg1OWQzYiIgc2l0ZUlkPSI0NDUyNTUxIiB0U3RtcD0
+iMTI4MDQyMTE4NjgwMDA4NyIg%2fQ%3d-1%2fS%3d1%2fJ%3d28228962&U=13c4f8ilp%2fN%3d
+9kwTFWKJiUk-%2fC%3d493064.14012770.13963757.13298430%2fD%3dMKP1%2fB%3d601530
+6%2fV%3d1> 
+________________________________
+
+
+Stay on top of your group activity without leaving the page you're on - Get
+the Yahoo! Toolbar now.
+<http://us.ard.yahoo.com/SIG=15oen7he4/M=493064.13983314.14041046.13298430/D
+=groups/S=1705006764:MKP1/Y=YAHOO/EXP=1280428386/L=f7869ae6-9b2e-11df-a502-5
+711cd859d3b/B=8UwTFWKJiUk-/J=1280421186850969/K=inRtlj4OdfY_3.v0f0tKzg/A=606
+0255/R=0/SIG=1194m4keh/*http://us.toolbar.yahoo.com/?.cpdl=grpj> 
+
+ 
+<http://us.bc.yahoo.com/b?P=f7869ae6-9b2e-11df-a502-5711cd859d3b&T=1d8ic3e6a
+%2fX%3d1280421186%2fE%3d1705006764%2fR%3dgroups%2fK%3d5%2fV%3d2.1%2fW%3dH%2f
+Y%3dYAHOO%2fF%3d791565398%2fH%3dY29udGVudD0iR287UG9kY2FzdHM7V2Vic2l0ZV9TZXJ2
+aWNlcztXaWRnZXRzO1lhaG9vX1NlYXJjaF9NYXJrZXRpbmc7RmxpY2tyO0JyaWVmY2FzZTtGaW5h
+bmNlO0Jvb2ttYXJrO01vYmlsZTsiIGRpc2FibGVzaHVmZmxpbmc9IjEiIHNlcnZlSWQ9ImY3ODY5
+YWU2LTliMmUtMTFkZi1hNTAyLTU3MTFjZDg1OWQzYiIgc2l0ZUlkPSI0NDUyNTUxIiB0U3RtcD0i
+MTI4MDQyMTE4NjgwMDA4NyIg%2fQ%3d-1%2fS%3d1%2fJ%3d28228962&U=13cvlu53m%2fN%3d8
+UwTFWKJiUk-%2fC%3d493064.13983314.14041046.13298430%2fD%3dMKP1%2fB%3d6060255
+%2fV%3d1> 
+Yahoo! Groups
+<http://groups.yahoo.com/;_ylc=X3oDMTJjaWVibjZ2BF9TAzk3NDc2NTkwBGdycElkAzMxM
+TU3OARncnBzcElkAzE3MDUwMDY3NjQEc2VjA2Z0cgRzbGsDZ2ZwBHN0aW1lAzEyODA0MjExODY->
+
+Switch to: Text-Only
+<mailto:VoiceCoder-traditional@yahoogroups.com?subject=Change Delivery
+Format: Traditional> , Daily Digest
+<mailto:VoiceCoder-digest@yahoogroups.com?subject=Email Delivery: Digest>  .
+Unsubscribe
+<mailto:VoiceCoder-unsubscribe@yahoogroups.com?subject=Unsubscribe>  . Terms
+of Use <http://docs.yahoo.com/info/terms/> 
+.
+ 
+<http://geo.yahoo.com/serv?s=97359714/grpId=311578/grpspId=1705006764/msgId=
+6373/stime=1280421186/nc1=6083913/nc2=4507179/nc3=3848642> 
+
+__,_._,___
+

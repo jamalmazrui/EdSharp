@@ -1,0 +1,48 @@
+Subject:
+Re: vanishing edsharp
+From:
+Jamal Mazrui <empower@smart.net>
+Date:
+Tue, 12 Jul 2011 08:51:12 -0400
+To:
+programmingblind@freelists.org
+CC:
+qubit <lauraeaves@yahoo.com>
+
+Tyler is right that if default compiler settings were used, EdSharp.exe would run as either a 32 or 64-bit executable, depending on the client platform and .NET Framework installed.  Unfortunately, however, I found that only a 32-bit executable would work well with all screen reader APIs on Win64.  In particular, I could not get the NVDA API to work from a 64-bit process.  I suspect that System Access would have the same problem because its API uses a standard DLL rather than a COM server like JAWS or Window-Eyes can do.
+
+So, for reliability reasons, EdSharp.exe targets Win32 specifically.  I think JAWS or Window-Eyes users can use EdSharp64.exe, however which targets Win64 instead.  I doubt that performance differences will be noticeable, but welcome any feedback from folks interested in comparing behavior of those executables (I do not have Win64 yet to test with, myself).
+
+Jamal
+
+On 7/11/2011 3:05 PM, qubit wrote:
+> Greetings all --
+> Some time this week my system started failing to load edsharp for text
+> files, like I had selected, but for expedience I just told it to use
+> notepad.  Today however I found out why edsharp is not running: it is
+> missing. There is the edsetup program and even ed64.exe, in program
+> files\edsharp, but no edsharp.exe.
+>
+> Either I have a system problem or I just accidently clobbered it without
+> realizing it.
+> Can anyone think how this could happen? I haven't touched the installation
+> folder for many months.
+>
+> Also, have the 32 vs 64 bit version problems been worked out? I have both 32
+> and 64 bit machines and would like to put edsharp on all of them.  I thought
+> I skimmed past a thread on where to get 64 bit compiled versions, but I
+> missed the final determination of where to download what.
+>
+> Thanx.
+> --le
+>
+> Where do I get what?
+>
+>
+> __________
+> View the list's information and change your settings at
+> http://www.freelists.org/list/programmingblind
+>
+__________
+View the list's information and change your settings at http://www.freelists.org/list/programmingblind
+

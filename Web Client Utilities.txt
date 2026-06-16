@@ -1,0 +1,41 @@
+
+Subject:
+Web Client Utilities
+From:
+"TJ McElroy gMail" <mcelroy.tj@gmail.com>
+Date:
+11/20/2012 7:41 PM
+To:
+<empower@smart.net>
+
+
+Hello Jamal,
+ 
+I want to thank you for creating the EdSharp program.
+The more I use it the more I find out all of it's functions the better it gets.
+ 
+
+Please point me in the right direction, that will provide me with instructions of how to write, Web Client Utilities.
+ 
+I have reviewed the script files that are included with EdSharp and while they are informative, they are currently over my head in respect to creating a Web Client Utility.
+ 
+My goal is to be able to create a Web Client Utility that will transform words to phone numbers.
+ 
+An example might be if a commercial says to call 800 999 talk
+I would be able to enter the work talk and get the number 8255.
+ 
+Thank you and have a safe and happy thanksgiving,
+ 
+TJ
+ 
+[:/:]
+ 
+   T.J. McElroy
+ 
+Email: tj.mcelroy@comcast.net
+phone: 317.867.0277
+ 
+   We can not control the wind,
+   but we can adjust our sails.
+ 
+[:\:]

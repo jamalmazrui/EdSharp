@@ -1,5 +1,5 @@
 # EdSharp Developer Guide
-May 30, 1917\
+July 21, 2017\
 
 ## Code Deficiencies
 The EdSharp author is a self-taught developer who did not learn professional coding practices that are commonly used in team programming environments today.  He wrote programs in ways that were most efficient for him.  Notably, this included using a large EdSharp.cs file for most of the code and not using white space indentation with code structures.  This code compiles to the current EdSharp.exe binary.

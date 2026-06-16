@@ -1,0 +1,82 @@
+
+Subject:
+[EdSharp] Improvements to EdSharp
+From:
+"Sean Murphy" <mhysnm1964@gmail.com>
+Date:
+6/5/2017 5:59 PM
+To:
+<edsharp@freelists.org>
+
+I would like to see the following:
+
+    HTML 5 and 4.01 templates. This could be expanded to any language.
+    Javascript editor/debugger as Firefox and Crhome do not have really accessible tools here. I suspect this is going to be a lot of work if you cannot leverage existing tools.
+    A dialog that can build HTMl structure like tables and nested lists.
+     Support of of ToDoText format. This could be a dialog that has the relevant fields and places it in a text file. TodoText is a semi-free form for Things to Do. The first field is the priority, then the description, Due, Project and Task. This is the basic. There is good info on the net on this. Added extra is for the sorting of the tasks by project, priority, and task. Want more info, let me know and I will get it for you.
+    Acccess to the Accessibility framework for Web pages. So we can easily navigate and query what information the browser is sending to the accessibility framework and screen reader. All the tools I have seen that work on the desktop do not work well with speech that are design specifically for the browsers.
+    Builtin spell checker.
+    Better menu structure. As some of the menus are to long and could be better structured.
+    A knowledge  base system. Where you have a treeview one side and the notes on the other. This would have to be a separate program that EdSharp launches. This allows the suer to keep relevant information in a organised form. Treeview is a program that does this. If it is a web based tool, that is fine by me.
+
+Query, is it possible to develop plugins for EdSharp in Javascript, Python, etc?
+
+ 
+
+ 
+
+From: edsharp-bounce@freelists.org [mailto:edsharp-bounce@freelists.org] On Behalf Of Don Barrett
+Sent: Monday, 5 June 2017 9:55 PM
+To: edsharp@freelists.org
+Subject: [EdSharp] Re: feature requests, find and replace
+
+ 
+
+I can’t seem to get the alt-shift-f1 to work.  Nothing happens and it is not in Key Describer.  Thanks.
+
+ 
+
+From: edsharp-bounce@freelists.org [mailto:edsharp-bounce@freelists.org] On Behalf Of Jamal Mazrui
+Sent: Friday, June 2, 2017 10:22 AM
+To: edsharp@freelists.org; Dean Martineau <topdot@gmail.com>
+Subject: [EdSharp] Re: feature requests, find and replace
+
+ 
+
+I would like to give development priority to the idea of making previous searches available in the find and replace dialog. 
+
+ 
+
+There is a file find command, Alt+Shift+F1 that is not well known and has hardly been used.  It prompts for a folder to search and then offers fields for a search string and file pattern.
+
+ 
+
+Jamal
+
+ 
+
+On 6/1/2017 6:49 PM, Dean Martineau wrote:
+
+    Hello.  You may well regret inviting feature requests, as I am a text editor junkie and may have more than you want.  Of course, you can ignore them.
+
+     
+
+    1.  I wish at least the simple find dialog, and ideally also other find and replace dialogues, were set up like JAWS Find, as combo-edit boxes where one can arrow to a previous find string.
+
+     
+
+    2.  More interesting, probably top priority for me, I wish the regular expression replace dialog contained a button, something like "add to job file."  Pressing this button would open a dialog with a blank edit field for the comment, an edit field containing the name of a 'transform files' job file, pre-filled with the last file used, and buttons for OK and cancel.  Upon pressing the OK button, the comment, followed by the find and replace strings would be magically appended to the transform rules file. 
+
+     
+
+    3.  Perhaps lowest priority, the ability to search a folder on the hard drive for a file by doing full-text search, perhaps including regular expressions.  I routinely look for some passage or other contained in some document or other in a folder full of documents, and would find this useful.  Now I use NoteTab, but EdSharp is more accessible.
+
+     
+
+    Thank you for reading and considering.
+
+     
+
+    Dean
+
+ 

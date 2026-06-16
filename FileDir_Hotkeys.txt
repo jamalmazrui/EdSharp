@@ -1,0 +1,362 @@
+Hot Key Summary
+
+
+
+Launch FileDir, Alt+Control+F, Launch FileDir from Windows desktop (default shortcut key)
+
+Open Item, Enter, Open subfolder in new window, view zip archive, or launch file 
+
+Go To Item, Shift+Enter, Go to subfolder in same window, view zip archive, or launch file 
+
+Properties, Alt+Enter, Invoke Windows properties dialog for current item
+
+Open Parent Folder, Backspace, Open parent folder in new window and jump to folder item that was previously open
+
+Go to Parent Folder, Comma or Shift+Backspace, Go to parent folder in same window ("come up level")
+
+Toggle Tagged, Space, Invert tagged state of current item
+
+Say Selected, Shift+Space or JAWSKey+Shift+DownArrow, Say tagged items or current one if no tags
+
+Append Tagged, Shift+A, Append textual content of current or tagged files to the clipboard
+
+Extract with Regular Expression, Control+Shift+E, Extract text from tagged files with regular expression and copy to the clipboard
+
+Tag All, Control+A, Tag all items
+
+Untag All, Control+Shift+A, Untag all items
+
+Alpha Order, Alt+A, Sort items in alphabetic/name order
+
+Reverse Alpha Order, Alt+Shift+A, Sort items in reverse alphabetic/name order
+
+Beginning Tagged, Shift+B or Control+Home, Go to beginning tagged item
+
+Recycle Bin, Control+B, Open Windows Recycle Bin to recover deleted items
+
+Batch Mail, Control+Shift+B, Send a message individually to multiple recipients
+
+Beginning File, Alt+B, Go to beginning file item, skipping over folder items
+
+Burn Tagged to CD, Alt+Shift+B, Add current or tagged items to CD
+
+Copy Tagged, Shift+C, Copy current or tagged items to another folder
+
+Copy, Control+C, Copy current or tagged items to clipboard (listing paths in both binary and text formats)
+
+Copy Append, Alt+C, Copy and append current or tagged items to clipboard (listing paths in both binary and text formats)
+
+Copy Name Tagged, Control+Shift+C, Copy name of current or tagged items to clipboard
+
+Date, Shift+D, Say date and time of current item
+
+Date Order, Alt+D, Sort items in date/time order
+
+Reverse Date Order, Alt+Shift+D, Sort items in reverse date/time order
+
+Delete Recycle Now, Control+D, Delete current file item and recycle without confirmation
+
+Delete Now, Control+Shift+D, Delete current file item permanently without confirmation
+
+End Tagged, Shift+E or Control+End, Go to end tagged item
+
+Environment Variables, Control+E, Change Windows environment variables for the current process, user, or system
+
+Evaluate, Control+Equals, Evaluate mathematical expression and copy result to clipboard
+
+Export Clipboard, Alt+Shift+E, Export clipboard text to file
+
+FTP Put, Shift+F, Upload current or tagged files to FTP directory
+
+Set Filter, Control+F, Set filter with wildcards to view a subset of items
+
+Clear Filter, Control+Shift+F, View all items
+
+File Find, Alt+Shift+F, Find file in current folder or subfolders based on match of textual content and name filter
+
+Get FTP, Shift+G, Download files from FTP directory
+
+Go to Folder, Control+G, Go to folder in same window
+
+Go to Special Folder, Control+Shift+G, Pick special folder (e.g., My Documents) to open in same window
+
+Go to Virtual Folder, Alt+Shift+G, Open a virtual folder definition in same window
+
+Go to Drive, Alt+G, Pick drive to open in same window
+
+Initial Change, Shift+I, Go to next item with different initial letter
+
+Invert Tagged, Control+I, Invert tagged and untagged state of items
+
+Iterate Processes, Alt+I, List running processes and activate or terminate
+
+Inquire Differences, Alt+Shift+I, Generate a report that compares files in two folders
+
+Hot Key Summary, Alt+Shift+H, Display list of FileDir keys, command names, and descriptions
+
+Jump, Control+J, Jump to item based on a string within its name
+
+Jump Again, Alt+J, Repeat Jump command with same string
+
+Keywords, Control+K, Jump to item based on a string within its content, optionally with multiple match conditions
+
+Keywords Again, Alt+K, Repeat Keywords command with same string
+
+List, Control+L, Say items in current folder
+
+List Tagged, Shift+L, Say tagged items in current folder
+
+List Files, Alt+L, Say file items (but not folder items) in current folder
+
+Play List, Control+Shift+L, Create .m3u play list containing tagged items
+
+Move Tagged, Shift+M, Move current or tagged items to another folder
+
+Mail Body, Control+M, Mail textual content of current file as the body of an email message
+
+Mail Tagged, Control+Shift+M, Mail current or tagged files as attachments to an email message
+
+Manual Options, Alt+Shift+M, Adjust FileDir configuration options in text editor
+
+Next Tagged, Shift+N or Control+DownArrow, Go to next tagged item
+
+New Folder, Control+N, Create new folder on disk
+
+New Item Copy, Control+Shift+N, Create copy of current file or folder item with similar name and numeric suffix
+
+Network Connections, Alt+Shift+N, Connect, disconnect, or restore mappings between physical storage and logical drives
+
+Output Tagged, Shift+O, Output textual content of current or tagged files to files with same names but .txt extensions
+
+Configuration Options, Alt+Shift+C, Configure FileDir options
+
+Open Folder, Control+O, Open folder in new window
+
+Open Special Folder, Control+Shift+O, Pick special folder (e.g., My Documents) to open in new window
+
+Open Virtual Folder, Alt+Shift+O, Open a virtual folder definition in new window
+
+Open Drive, Alt+O, Pick drive to open in new window
+
+Previous Tagged, Shift+P or Control+UpArrow, Go to previous tagged item
+
+Print Tagged, Control+P, Print current or tagged files
+
+Path List to Clipboard, Control+Shift+P, Copy to clipboard file paths below current folder item
+
+Path, Alt+P, Say full path of current item
+
+Path to Clipboard, Alt+Shift+P, Copy full path of current item to clipboard
+
+Short Path to Clipboard, Tilde, Copy short path of current item to clipboard
+
+Quick Shortcut, Shift+Q, Create .lnk file for current item in Quick folder
+
+Quick URL, Alt+Shift+Q, Create .url file for Internet resource in Quick folder
+
+Open Quick Folder, Control+Q, Open folder of quick links
+
+Go to Quick Folder, Accent, Go to folder of quick links
+
+Rename, Shift+R or F2, Rename current item
+
+Rename with Wildcards, Control+R, Rename all items in current folder with wildcards
+
+Rename with Regular Expression, Control+Shift+R, Rename current or tagged items with regular expressions
+
+Rename to Initial Line, Control+Shift+I, Rename current or tagged files to initial line of text within them
+
+Recent Folders, Alt+R, Pick recent folder to open
+
+Recycle Toggle, Alt+Shift+R, Toggle On/Off setting for whether deleted or replaced items are moved to the recycle bin
+
+Size, Shift+S, Say size of current item
+
+Size Order, Alt+S, Sort items in size order
+
+Reverse Size Order, Alt+Shift+S, Sort items in reverse size order
+
+Save Tags, Control+S, Save which items are tagged in current directory view
+
+Restore Tags, Control+Shift+S, Apply previously saved tags
+
+Type, Shift+T, Say type/extension of current item
+
+Type Extended, Control+Shift+T, Show all extended properties of current item
+
+Type Order, Alt+T, Sort items in type/extension order
+
+Reverse Type Order, Alt+Shift+T, Sort items in reverse type/extension order
+
+Send to Text Editor, Control+T, Send current file to text editor (default is EdSharp)
+
+Unzip Tagged, Shift+U, Unzip current or tagged files
+
+Unzip Tagged without Subfolders, Control+U, Unzip current or tagged files without subfolder paths
+
+Unzip to Same Name, Control+Shift+U, Unzip current or tagged files to a directory named like the archive
+
+Unzip Test, Alt+U, Check if current file item can be unzipped successfully
+
+Unzip Password, Alt+Shift+U, Set password to be used when creating, extracting, or viewing zip archives
+
+Paste, Control+V, Paste items from clipboard to current folder
+
+Volume Format, Control+Shift+V, Format a disk or storage card
+
+Paste Copy, Alt+V, Copy items listed on clipboard to current folder
+
+Paste Move, Alt+Shift+V, Move items listed on clipboard to current folder
+
+Windows Open, Shift+F4 or Alt+NumPad5, Say titles of open windows
+
+Send to Word Processor, Control+W, Send current file item to word processor (default is Microsoft Word)
+
+Windows Control Panel, Control+Shift+W, Launch Control Panel to configure Windows
+
+Extension Change, Shift+X, Go to next item with different extension
+
+Cut, Control+X, Cut current or tagged items to clipboard (listing paths in both binary and text formats)
+
+Extra Speech Toggle, Control+Shift+X, Toggle extra speech messages on or off, redirecting them to a log file
+
+Extra Speech Log, Alt+Shift+X, Open speech log file in configured text editor
+
+Yield, Control+Y, Say count and size of items in current folder
+
+Yield Tagged, Shift+Y, Say count and size of tagged items in current folder
+
+Yield Files, Alt+Y, Say count and size of file items (but not folder items) in current folder
+
+Yield on Drive, Control+Shift+Y, Say total size and bytes free on current drive
+
+Yield in Operating System, Alt+Shift+Y, Say Windows version, physical memory, and virtual memory
+
+Zip Tagged, Shift+Z, Add current or tagged files to zip archive
+
+Zip Tagged Then Delete, Control+Z, Add current or tagged files to zip archive, then delete originals
+
+Zip List, Control+Shift+Z, Create or update a zip archive based on a list of files or folders
+
+Status, Alt+Z, Say status line, containing date and time of current item, its size, the sort order, and filter specification (if any)
+
+Delete Tagged, Delete, Delete current or tagged items and recycle according to setting
+
+Delete Tagged without Recycle, Shift+Delete, Delete current or tagged items permanently
+
+Delete Recycle Tagged, Control+Delete, Delete and recycle current or tagged items
+
+Parent Folder, Backspace, Go to parent of current folder
+
+Come up Level, Comma or Backspace, Go to parent folder in same window and jump to folder item that was previously open
+
+Refresh Folder, Period or F5, Read current folder again from disk in same window
+
+Open Root Folder, Backslash, Open root folder of current drive in new window (e.g., the C:\ folder)
+
+Go to Root Folder, Shift+Backslash, Go to root folder of current drive in same window
+
+Tag, Semicolon or Shift+NumPad5, Tag current item
+
+Untag, Slash or Alt+Shift+NumPad5, Untag current item
+
+Tag and Next, Greater Than or Shift+DownArrow, Tag current item and Go to next one
+
+Untag and Next, Less Than or Alt+Shift+DownArrow, Untag current item and Go to next one
+
+Tag All Files, Alt+Period, Tag file items but not subfolders
+
+Tag Duplicate Files, Alt+Shift+Period, Tag files with the same content as a prior one in the list
+
+Tag with Regular Expression, Control+Shift+Period, Tag files that match a regular expression
+
+Untag All But Current, Alt+Comma, Untag all but current item
+
+Say Item Name, Apostrophe, Say name of current file or folder item
+
+Say Folder Name, Shift+Apostrophe, Say name of folder containing current item
+
+Say Folder, Control+Apostrophe, Say folder or archive being viewed
+
+Folder to Clipboard, Control+Shift+Apostrophe, Copy folder or archive being viewed to clipboard
+
+Say Clipboard, Alt+Apostrophe, Say clipboard text
+
+Clear Clipboard, Alt+Shift+Apostrophe, Clear clipboard text 
+
+Say Current Time, Alt+Semicolon, Say current time and date
+
+What, Question, Say textual content of current file item, or list contained items if current item is a folder or zip archive
+
+Command Prompt, Control+Slash or Control+Backslash, Open command window in current folder
+
+Explorer Directory, Alt+Slash or Alt+Backslash, Open Windows Explorer in current folder
+
+Stamp, Exclamation Point, Stamp date and time of current or tagged items
+
+Hide, RightParen, Set Hidden attribute of current or tagged items
+
+Show, LeftParen, Remove Hidden attribute of current or tagged items
+
+ReadOnly, RightBracket, Set ReadOnly attribute of current or tagged items
+
+ReadWrite, LeftBracket, Remove ReadOnly attribute of current or tagged items
+
+System, RightBrace, Set System attribute of current or tagged items
+
+General, LeftBrace, Remove System attribute of current or tagged items
+
+Calculate Units, Shift+3, Convert between different units of measure and copy result to clipboard
+
+Percent Through, Shift+5 or Alt+Delete, Say current position, item count, and percent through
+
+Filter Query, Shift+8, Say current sort order and filter specification
+
+Drive A ... I, Alt+1 ... Alt+9, Open new window on drive letter corresponding to digit
+
+Next Window, Control+Tab or Alt+RightArrow, Activate next open window
+
+Previous Window, Control+Shift+Tab or Alt+LeftArrow, Activate previous open window
+
+Documentation, F1, Display FileDir documentation
+
+Change History, Shift+F1, Display history of FileDir fixes and improvements
+
+About, Alt+F1, Display FileDir version number and release date
+
+Rename, F2 or Shift+R, Rename current item
+
+Current Windows, F4, Pick window to open from list of current ones
+
+Close Window, Control+F4, Close current window
+
+Close All But Current, Control+Shift+F4, Close all windows except the current one
+
+Exit FileDir, Alt+F4, Close the FileDir application
+
+Restart Windows, Alt+Shift+F4, Restart Windows after confirming
+
+Refresh Folder, F5 or Period, Read current folder again from disk in same window
+
+Context Menu, Shift+F10, Pick action to perform on current or tagged items based on file extension/type
+
+Send To Menu, Control+F10, Pick Send To shortcut and pass current or tagged items to it
+
+Alternate Menu, Alt+F10, Pick command to execute from complete, alphabetized list
+
+Elevate Version, F11, Download latest FileDir version and run installer (after confirming)
+
+Arrange Icons, Alt+F11, Arrange open windows
+
+Cascade, Control+F11, Cascade open windows
+
+Tile Horizontal, Alt+Shift+F11, Tile open windows horizontally
+
+Tile Vertical, Control+Shift+F11, Tile open windows vertically
+
+Start Timer, F12, Start, pause, or resume timer
+
+Stop Timer, Shift+F12, Stop running or paused timer
+
+Say Timer, Alt+F12, Say elapsed time since start of timer (not counting any paused periods)
+

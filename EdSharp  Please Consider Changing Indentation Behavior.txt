@@ -1,0 +1,32 @@
+Subject:
+EdSharp: Please Consider Changing Indentation Behavior
+From:
+"Homme, James" <james.homme@highmark.com>
+Date:
+Tue, 19 Jul 2011 08:16:23 -0400
+To:
+"Jamal Mazrui (empower@smart.net)" <empower@smart.net>, Jamal Mazrui Work <Jamal.Mazrui@fcc.gov>, "Jim Homme (jhomme1028@gmail.com)" <jhomme1028@gmail.com>
+
+Hi Jamal,
+
+I hope this is easy for you to do. Here's something I'd truly like EdSharp to do when you press Tab on the current line, or when you press Tab on a selected set of lines. The same for Shift Tab. I want it to check if the lines are between indent levels. Right now, for example, my indent levels are set to two spaces. This means that if I accidentally have a line that I indented to one space, and I press the Tab key, that line will be indented to three spaces. It unconditionally moves lines by indent level. Can it check that and try to move lines to the appropriate level? If I have a majority of lines correctly indented to level one, and I press tab on a selection of lines, and one of the lines is between level one and level two, I want it to correct that problem for me.
+
+ 
+
+Thanks.
+
+ 
+
+Jim
+
+ 
+
+Jim Homme,
+
+Usability Services,
+
+Phone: 412-544-1810.
+
+ 
+
+This e-mail and any attachments to it are confidential and are intended solely for use of the individual or entity to whom they are addressed. If you have received this e-mail in error, please notify the sender immediately and then delete it. If you are not the intended recipient, you must not keep, use, disclose, copy or distribute this e-mail without the author's prior permission. The views expressed in this e-mail message do not necessarily represent the views of Highmark Inc., its subsidiaries, or affiliates.

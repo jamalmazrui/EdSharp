@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>4-14. Validating Credit Card Numbers</title>
+</head>
+<body>
+<form name="form1">
+	<input type="textbox" name="txtInput" />
+	<script type="text/javascript">
+	function validate() {
+		if (! document.form1.txtInput.value.match(/^(\d{4}-){3}|(\d{4} ){3}\d{4}|\d{15,16}|\d{4} \d{2} \d{4} \d{5}|\d{4}-\d{2}-\d{4}-\d{5}$/)) {
+			alert("Please enter valid value!")	
+		} else {
+			alert("Success!")
+		}
+	}
+	</script>
+	<input type="button" name="btnSubmit" onclick="validate()" value="Go" />
+</form>
+</body>
+</html>

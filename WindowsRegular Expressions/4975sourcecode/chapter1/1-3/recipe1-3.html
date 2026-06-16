@@ -1,0 +1,20 @@
+<html>
+<head>
+<title></title>
+</head>
+<body>
+<form name="form1">
+	<input type="textbox" name="txtInput" />
+	<script type="text/javascript">
+	function validate() {
+		if (! document.form1.txtInput.value.match(/\s+(moo|oink)\s+/)) {
+			alert("Please enter valid value!")	
+		} else {
+			alert("Success!")
+		}
+	}
+	</script>
+	<input type="button" name="btnSubmit" onclick="validate()" value="Go" />
+</form>
+</body>
+</html>

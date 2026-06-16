@@ -1,0 +1,20 @@
+<html>
+<head>
+<title></title>
+</head>
+<body>
+<form name="form1">
+	<input type="textbox" name="txtInput" />
+	<script type="text/javascript">
+	function validate() {
+		if (! document.form1.txtInput.value.match(/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}|[0-9a-f]{32}/i)) {
+			alert("Please enter valid value!")	
+		} else {
+			alert("Success!")
+		}
+	}
+	</script>
+	<input type="button" name="btnSubmit" onclick="validate()" value="Go" />
+</form>
+</body>
+</html>

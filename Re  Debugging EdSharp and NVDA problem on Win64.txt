@@ -1,0 +1,420 @@
+Subject:
+Re: Debugging EdSharp and NVDA problem on Win64
+From:
+Jamal Mazrui <empower@smart.net>
+Date:
+Thu, 10 Feb 2011 08:17:31 -0500
+To:
+programmingblind@freelists.org
+CC:
+Alex Hall <mehgcap@gmail.com>
+
+OK, I have now posted new versions of EdSharp
+http://EmpowermentZone.com/edsetup.exe
+
+and FileDir (a file and directory manager)
+http://EmpowermentZone.com/dirsetup.exe
+
+The executables EdSharp.exe and FileDir.exe run as 32-bit processes, including on 64-bit Windows, which maximizes compatibility with existing screen readers (JAWS, NVDA, System Access, and Window-Eyes).  If a user would rather run a version in 64-bit mode on 64-bit Windows, the EdSharp64.exe or FileDir64.exe version may be used instead.  For example, edit the EdSharp or FileDir shortcut on the desktop so that it points to the executable with the 64 suffix.
+
+Jamal
+
+
+On 2/9/2011 6:03 PM, Alex Hall wrote:
+> EdSharp32.exe seems fully functional with jaws and nvda (I have only
+> those two). The 64-bit version still has errors, though. Note that
+> this is on win7, which has good support for 32-bit programs despite
+> this being a 64-bit system; I am not sure what would happen on 64-bit
+> Vista or XP.
+>
+> Sayline.exe is now working with both screen readers. It might have
+> just been a one-time fluke that I got that error earlier.
+>
+> On 2/9/11, Jamal Mazrui<empower@smart.net>  wrote:
+>> So does SayLine.exe work wit NVDA?
+>>
+>> Are you still having a problem when yu close EdSharp using
+>> EdSharp32.exe?  Otherwise, I wonder if I should make it the default
+>> executable since you say it is the only one that now works with both
+>> JAWS and NVDA.
+>>
+>> If you happen to have Window-Eyes or System Access, I'm curious about
+>> them, too.
+>>
+>> This is really helpful, Alex.  I appreciate your taking the time to test
+>> and report.
+>>
+>> Jamal
+>> On Wed, 9 Feb 2011, Alex Hall wrote:
+>>
+>>> Date: Wed, 9 Feb 2011 17:45:43 -0500
+>>> From: Alex Hall<mehgcap@gmail.com>
+>>> Reply-To: programmingblind@freelists.org
+>>> To: programmingblind@freelists.org
+>>> Subject: Re: Debugging EdSharp and NVDA problem on Win64
+>>>
+>>> Yes, it does work! This is with the dll files as they were originally,
+>>> not renamed. The 64-bit version, and the one that does not specify 32
+>>> or 64 bit, still both fail, but the 32-bit version works.
+>>> The sayline.exe failure was with jaws. Sorry, I should have mentioned
+>>> that.
+>>>
+>>> On 2/9/11, Jamal Mazrui<empower@smart.net>  wrote:
+>>>> Also curious whether SayLine.exe crashes with JAWS as well as NVDA.
+>>>> On Wed,
+>>>> 9 Feb 2011, Jamal Mazrui wrote:
+>>>>
+>>>>> Date: Wed, 9 Feb 2011 17:07:40 -0500 (EST)
+>>>>> From: Jamal Mazrui<empower@smart.net>
+>>>>> Reply-To: programmingblind@freelists.org
+>>>>> To: programmingblind@freelists.org
+>>>>> Subject: Re: Debugging EdSharp and NVDA problem on Win64
+>>>>>
+>>>>> I've just uploaded a new EdSharp distribution.  Does EdSharp32.exe work
+>>>>> with
+>>>>> both NVDA and JAWS now?  If there is an error message when exiting, can
+>>>>> you
+>>>>> capture that?
+>>>>>
+>>>>> Jamal
+>>>>> On Wed, 9 Feb 2011, Alex Hall wrote:
+>>>>>
+>>>>>> Date: Wed, 9 Feb 2011 16:52:57 -0500
+>>>>>> From: Alex Hall<mehgcap@gmail.com>
+>>>>>> Reply-To: programmingblind@freelists.org
+>>>>>> To: programmingblind@freelists.org
+>>>>>> Subject: Re: Debugging EdSharp and NVDA problem on Win64
+>>>>>>
+>>>>>> Edsharp only seemed to work with the 32 bit version. However, that
+>>>>>> version crashed when exiting, no matter what screen reader was in use.
+>>>>>> The 64 bit one worked with jaws, but not with nvda unless I renamed
+>>>>>> the dlls so that the 32-bit one had an underscore in its name and the
+>>>>>> 64-bit one had been renamed to match the 32-bit one's name. However,
+>>>>>> this only worked in that it did not crash; it still did not use nvda's
+>>>>>> speech, defaulting to sapi5 instead.
+>>>>>>
+>>>>>> On 2/9/11, Jamal Mazrui<empower@smart.net>  wrote:
+>>>>>>> Thanks, Alex!  So did EdSharp32.exe work the best with NVDA?  Did it
+>>>>>>> work normally until you tried to close EdSharp?  Does JAWS work with
+>>>>>>> all
+>>>>>>> three versions or just some of them?
+>>>>>>>
+>>>>>>> Jamal
+>>>>>>> On Wed, 9 Feb 2011, Alex Hall wrote:
+>>>>>>>
+>>>>>>>> Date: Wed, 9 Feb 2011 16:24:13 -0500
+>>>>>>>> From: Alex Hall<mehgcap@gmail.com>
+>>>>>>>> Reply-To: programmingblind@freelists.org
+>>>>>>>> To: programmingblind@freelists.org
+>>>>>>>> Subject: Re: Debugging EdSharp and NVDA problem on Win64
+>>>>>>>>
+>>>>>>>> About boxes:
+>>>>>>>> 32-bit:
+>>>>>>>> ---------------------------
+>>>>>>>> About
+>>>>>>>> ---------------------------
+>>>>>>>> EdSharp 3.3
+>>>>>>>>
+>>>>>>>> February 9, 2011
+>>>>>>>>
+>>>>>>>> Copyright 2007 - 2011 by Jamal Mazrui
+>>>>>>>>
+>>>>>>>> GNU Lesser General Public License (LGPL)
+>>>>>>>>
+>>>>>>>> The executable contains only Microsoft intermediate language (MSIL),
+>>>>>>>> and is therefore neutral with respect to 32-bit or 64-bit platforms.
+>>>>>>>>
+>>>>>>>> The executable can be run on a 32-bit platform, or in the 32-bit
+>>>>>>>> Windows on Windows (WOW) environment on a 64-bit platform.
+>>>>>>>>
+>>>>>>>> Targets a 32-bit Intel processor.
+>>>>>>>>
+>>>>>>>> Running in 32-bit mode.
+>>>>>>>> ---------------------------
+>>>>>>>> OK
+>>>>>>>> ---------------------------
+>>>>>>>> When I tried to close the program, I got an error, but the "copy to
+>>>>>>>> clipboard" button caused the program to become unresponsive, then it
+>>>>>>>> went away and I was back in the list of edSharp files with no error
+>>>>>>>> report on my clipboard. This was with jaws, so there should not have
+>>>>>>>> been a problem with nvda dll files (which are still renamed to force
+>>>>>>>> edsharp to use the 64-bit dll as the 32-bit).
+>>>>>>>>
+>>>>>>>> 64-bit:
+>>>>>>>> ---------------------------
+>>>>>>>> About
+>>>>>>>> ---------------------------
+>>>>>>>> EdSharp 3.3
+>>>>>>>>
+>>>>>>>> February 9, 2011
+>>>>>>>>
+>>>>>>>> Copyright 2007 - 2011 by Jamal Mazrui
+>>>>>>>>
+>>>>>>>> GNU Lesser General Public License (LGPL)
+>>>>>>>>
+>>>>>>>> The executable contains only Microsoft intermediate language (MSIL),
+>>>>>>>> and is therefore neutral with respect to 32-bit or 64-bit platforms.
+>>>>>>>>
+>>>>>>>> The executable requires a 64-bit platform.
+>>>>>>>>
+>>>>>>>> Targets a 64-bit AMD processor.
+>>>>>>>>
+>>>>>>>> Running in 64-bit mode.
+>>>>>>>> ---------------------------
+>>>>>>>> OK
+>>>>>>>> ---------------------------
+>>>>>>>> This exited normally.
+>>>>>>>>
+>>>>>>>> Default File (no bit version specified):
+>>>>>>>> ---------------------------
+>>>>>>>> About
+>>>>>>>> ---------------------------
+>>>>>>>> EdSharp 3.3
+>>>>>>>>
+>>>>>>>> February 9, 2011
+>>>>>>>>
+>>>>>>>> Copyright 2007 - 2011 by Jamal Mazrui
+>>>>>>>>
+>>>>>>>> GNU Lesser General Public License (LGPL)
+>>>>>>>>
+>>>>>>>> The executable contains only Microsoft intermediate language (MSIL),
+>>>>>>>> and is therefore neutral with respect to 32-bit or 64-bit platforms.
+>>>>>>>>
+>>>>>>>> Targets a 32-bit Intel processor.
+>>>>>>>>
+>>>>>>>> Running in 64-bit mode.
+>>>>>>>> ---------------------------
+>>>>>>>> OK
+>>>>>>>> ---------------------------
+>>>>>>>> This also exited normally.
+>>>>>>>>
+>>>>>>>> Ready for the weird part? I started up edsharp32.exe again, this time
+>>>>>>>> having put the nvda dlls back to how they are supposed to be, and
+>>>>>>>> everything worked perfectly with nvda running! I then repeated the
+>>>>>>>> process with jaws running and got the same error, and inability to
+>>>>>>>> capture said error, that I reported above. It seems that the 32-bit
+>>>>>>>> version works until you try to close it, then it locks up for a
+>>>>>>>> moment
+>>>>>>>> and quits.
+>>>>>>>>
+>>>>>>>> I then did this in a command prompt:
+>>>>>>>> cd "c:\program files (x86)\edsharp"
+>>>>>>>> sayline.exe hello
+>>>>>>>> I got an error:
+>>>>>>>> SayLine.exe - Application Error
+>>>>>>>> The application was unable to start correctly (0xc000007b). Click
+>>>>>>>> OK to close the application.
+>>>>>>>> OK
+>>>>>>>>
+>>>>>>>> On 2/9/11, Jamal Mazrui<empower@smart.net>  wrote:
+>>>>>>>>> Also, can you copy and paste the relevant About Box info for each
+>>>>>>>>> EdSharp
+>>>>>>>>> version?
+>>>>>>>>>    On Wed, 9 Feb 2011, Jamal Mazrui wrote:
+>>>>>>>>>
+>>>>>>>>>> Date: Wed, 9 Feb 2011 16:02:06 -0500 (EST)
+>>>>>>>>>> From: Jamal Mazrui<empower@smart.net>
+>>>>>>>>>> Reply-To: programmingblind@freelists.org
+>>>>>>>>>> To: programmingblind@freelists.org
+>>>>>>>>>> Subject: Re: Debugging EdSharp and NVDA problem on Win64
+>>>>>>>>>>
+>>>>>>>>>> Thanks.  Can you also report on EdSharp32.exe and SayLine.exe?
+>>>>>>>>>>
+>>>>>>>>>> Jamal
+>>>>>>>>>> On Wed, 9 Feb 2011, Alex Hall wrote:
+>>>>>>>>>>
+>>>>>>>>>>> Date: Wed, 9 Feb 2011 15:59:14 -0500
+>>>>>>>>>>> From: Alex Hall<mehgcap@gmail.com>
+>>>>>>>>>>> Reply-To: programmingblind@freelists.org
+>>>>>>>>>>> To: programmingblind@freelists.org
+>>>>>>>>>>> Subject: Re: Debugging EdSharp and NVDA problem on Win64
+>>>>>>>>>>>
+>>>>>>>>>>> I upgraded and ran whatever launches by default. As soon as I
+>>>>>>>>>>> tried
+>>>>>>>>>>> opening a file from Explorer, I got an error, the one with the
+>>>>>>>>>>> "mail
+>>>>>>>>>>> to developer", "copy to clipboard", and so on. As usual, doing
+>>>>>>>>>>> anything here caused a second error, and doing anything in that
+>>>>>>>>>>> second
+>>>>>>>>>>> error exited back to the Explorer window.
+>>>>>>>>>>>
+>>>>>>>>>>> I then manually launched the 64-bit program from the EdSharp
+>>>>>>>>>>> folder in
+>>>>>>>>>>> c:\program files (x86). Using nvda, I hit alt-a and got the same
+>>>>>>>>>>> "unexpected event" dialog I always get. I shut down nvda, opened
+>>>>>>>>>>> jaws,
+>>>>>>>>>>> and copied to clipboard. Here is what I got:
+>>>>>>>>>>>
+>>>>>>>>>>> An attempt was made to load a program with an incorrect format.
+>>>>>>>>>>> (Exception from HRESULT: 0x8007000B)
+>>>>>>>>>>>
+>>>>>>>>>>> Stack trace:
+>>>>>>>>>>>    at EdSharp.Win32.nvdaController_speakText(String sText)
+>>>>>>>>>>>    at EdSharp.Util.Say(Object oText, Boolean bGlobal)
+>>>>>>>>>>>    at EdSharp.MdiFrame.SetStatusAddress(Object sender, EventArgs
+>>>>>>>>>>> e)
+>>>>>>>>>>>    at EdSharp.MdiFrame.menuItem_Click(Object sender, EventArgs e)
+>>>>>>>>>>>    at System.Windows.Forms.ToolStripItem.RaiseEvent(Object key,
+>>>>>>>>>>> EventArgs
+>>>>>>>>>>> e)
+>>>>>>>>>>>    at System.Windows.Forms.ToolStripMenuItem.OnClick(EventArgs e)
+>>>>>>>>>>>    at System.Windows.Forms.ToolStripItem.HandleClick(EventArgs e)
+>>>>>>>>>>>    at EdSharp.MdiFrame.ProcessCmdKey_Helper(Message&  msg, Keys
+>>>>>>>>>>> keyData)
+>>>>>>>>>>>    at EdSharp.HomerRichTextBox.ProcessCmdKey(Message&  msg, Keys
+>>>>>>>>>>> keyData)
+>>>>>>>>>>>    at System.Windows.Forms.Control.PreProcessMessage(Message&
+>>>>>>>>>>> msg)
+>>>>>>>>>>>    at
+>>>>>>>>>>> System.Windows.Forms.Control.PreProcessControlMessageInternal(Control
+>>>>>>>>>>> target, Message&  msg)
+>>>>>>>>>>>    at
+>>>>>>>>>>> System.Windows.Forms.Application.ThreadContext.PreTranslateMessage(MSG&
+>>>>>>>>>>> msg)
+>>>>>>>>>>>
+>>>>>>>>>>> Finally, I renamed the 32-bit nvda controller dll with an
+>>>>>>>>>>> underscore
+>>>>>>>>>>> so edSharp would not find it, then renamed the 64-bit one to
+>>>>>>>>>>> match the
+>>>>>>>>>>> old name of the 32-bit one. This time, when I re-launched the
+>>>>>>>>>>> 64-bit
+>>>>>>>>>>> version of edsharp, I got no errors. However, edSharp defaulted
+>>>>>>>>>>> to
+>>>>>>>>>>> sapi5 instead of using nvda speech. Since all I have is Anna,
+>>>>>>>>>>> this is
+>>>>>>>>>>> not an optimal solution. At least things do not crash, though.
+>>>>>>>>>>>
+>>>>>>>>>>> On 2/9/11, Jamal Mazrui<empower@smart.net>  wrote:
+>>>>>>>>>>>> I would like to resolve the problem of using NVDA with EdSharp
+>>>>>>>>>>>> on
+>>>>>>>>>>>> 64-bit
+>>>>>>>>>>>> Windows.  Whatever the cause(s) of the present
+>>>>>>>>>>>> incompatibility, I hope
+>>>>>>>>>>>> we
+>>>>>>>>>>>> can collaborate to get to the bottom of it, and find a
+>>>>>>>>>>>> solution.
+>>>>>>>>>>>>
+>>>>>>>>>>>> I have just posted a new EdSharp distribution at the usual
+>>>>>>>>>>>> address,
+>>>>>>>>>>>> http://EmpowermentZone.com/edsetup.exe
+>>>>>>>>>>>>
+>>>>>>>>>>>> or press F11 to Elevate from an existing installation.
+>>>>>>>>>>>>
+>>>>>>>>>>>> The About Box (Help/About or Alt+F1) has been enhanced to show
+>>>>>>>>>>>> additional
+>>>>>>>>>>>> information at the bottom.  It will say whether the EdSharp
+>>>>>>>>>>>> executable
+>>>>>>>>>>>> requires 32-bit Windows, 64-bit Windows, or works on either.
+>>>>>>>>>>>> If
+>>>>>>>>>>>> targeted
+>>>>>>>>>>>> to a particular platform, that CPU will be stated.  The
+>>>>>>>>>>>> current mode
+>>>>>>>>>>>> of
+>>>>>>>>>>>> operation, 32 or 64-bit, will also be stated.  You can press
+>>>>>>>>>>>> Control+C
+>>>>>>>>>>>> to
+>>>>>>>>>>>> copy the contents of the message box to the clipboard.
+>>>>>>>>>>>>
+>>>>>>>>>>>> EdSharp.exe is compiled to work on either 32 or 64-bit
+>>>>>>>>>>>> Windows.  Two
+>>>>>>>>>>>> additional executables are currently included, EdSharp32.exe
+>>>>>>>>>>>> and
+>>>>>>>>>>>> EdSharp64.exe, which require the indicated platform.
+>>>>>>>>>>>>
+>>>>>>>>>>>> A simple way of testing NVDA compatibility is with the Address
+>>>>>>>>>>>> command,
+>>>>>>>>>>>> Alt+A.  If NVDA does not work with EdSharp.exe, please try
+>>>>>>>>>>>> manually
+>>>>>>>>>>>> launching EdSharp32.exe or EdSharp64.exe.
+>>>>>>>>>>>>
+>>>>>>>>>>>> If neither of those work, try copying
+>>>>>>>>>>>> nvdaControllerClient64.dl over
+>>>>>>>>>>>> nvdaControllerClient32.dll.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Also try one of the SayTools utilities that has been included,
+>>>>>>>>>>>> SayLine.exe, e.g., with the command-line syntax
+>>>>>>>>>>>>
+>>>>>>>>>>>> SayLine.exe Hello world
+>>>>>>>>>>>>
+>>>>>>>>>>>> Please report your results.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Jamal
+>>>>>>>>>>>>
+>>>>>>>>>>>> __________
+>>>>>>>>>>>> View the list's information and change your settings at
+>>>>>>>>>>>> http://www.freelists.org/list/programmingblind
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> -- 
+>>>>>>>>>>> Have a great day,
+>>>>>>>>>>> Alex (msg sent from GMail website)
+>>>>>>>>>>> mehgcap@gmail.com; http://www.facebook.com/mehgcap
+>>>>>>>>>>> __________
+>>>>>>>>>>> View the list's information and change your settings at
+>>>>>>>>>>> http://www.freelists.org/list/programmingblind
+>>>>>>>>>>>
+>>>>>>>>>> __________
+>>>>>>>>>> View the list's information and change your settings at
+>>>>>>>>>> http://www.freelists.org/list/programmingblind
+>>>>>>>>>>
+>>>>>>>>> __________
+>>>>>>>>> View the list's information and change your settings at
+>>>>>>>>> http://www.freelists.org/list/programmingblind
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> -- 
+>>>>>>>> Have a great day,
+>>>>>>>> Alex (msg sent from GMail website)
+>>>>>>>> mehgcap@gmail.com; http://www.facebook.com/mehgcap
+>>>>>>>> __________
+>>>>>>>> View the list's information and change your settings at
+>>>>>>>> http://www.freelists.org/list/programmingblind
+>>>>>>>>
+>>>>>>> __________
+>>>>>>> View the list's information and change your settings at
+>>>>>>> http://www.freelists.org/list/programmingblind
+>>>>>>>
+>>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> -- 
+>>>>>> Have a great day,
+>>>>>> Alex (msg sent from GMail website)
+>>>>>> mehgcap@gmail.com; http://www.facebook.com/mehgcap
+>>>>>> __________
+>>>>>> View the list's information and change your settings at
+>>>>>> http://www.freelists.org/list/programmingblind
+>>>>>>
+>>>>> __________
+>>>>> View the list's information and change your settings at
+>>>>> http://www.freelists.org/list/programmingblind
+>>>>>
+>>>> __________
+>>>> View the list's information and change your settings at
+>>>> http://www.freelists.org/list/programmingblind
+>>>>
+>>>>
+>>>
+>>>
+>>> -- 
+>>> Have a great day,
+>>> Alex (msg sent from GMail website)
+>>> mehgcap@gmail.com; http://www.facebook.com/mehgcap
+>>> __________
+>>> View the list's information and change your settings at
+>>> http://www.freelists.org/list/programmingblind
+>>>
+>> __________
+>> View the list's information and change your settings at
+>> http://www.freelists.org/list/programmingblind
+>>
+>>
+>
+>
+__________
+View the list's information and change your settings at http://www.freelists.org/list/programmingblind
+

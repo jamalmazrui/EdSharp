@@ -1,0 +1,2473 @@
+This is liblouisxml.info, produced by makeinfo version 4.8 from
+liblouisxml.texi.
+
+INFO-DIR-SECTION Misc
+START-INFO-DIR-ENTRY
+* Liblouisxml: (liblouisxml). An xml to Braille Translation Library.
+END-INFO-DIR-ENTRY
+
+   This manual is for liblouisxml (version 2.0.0, 20 August 2009), an
+xml to Braille Translation Library.
+
+   This file may contain code borrowed from the Linux screenreader
+BRLTTY, Copyright (C) 1999-2009 by the BRLTTY Team.
+
+Copyright (C) 2004-2009 ViewPlus Technologies, Inc.  `www.viewplus.com'
+and Copyright (C) 2006,2009 Abilitiessoft, Inc. `www.abilitiessoft.com'.
+
+     This file is free software; you can redistribute it and/or modify
+     it under the terms of the GNU Lesser (or library) General Public
+     License (LGPL) as published by the Free Software Foundation;
+     either version 3, or (at your option) any later version.
+
+     This file is distributed in the hope that it will be useful, but
+     WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser (or Library) General Public License LGPL for more details.
+
+     You should have received a copy of the GNU Lesser (or Library)
+     General Public License (LGPL) along with this program; see the
+     file COPYING.  If not, write to the Free Software Foundation, 51
+     Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+
+File: liblouisxml.info,  Node: Top,  Next: Introduction,  Prev: (dir),  Up: (dir)
+
+Liblouisxml User's and Programmer's Manual
+******************************************
+
+This manual is for liblouisxml (version 2.0.0, 20 August 2009), an xml
+to Braille Translation Library.
+
+   This file may contain code borrowed from the Linux screenreader
+BRLTTY, Copyright (C) 1999-2009 by the BRLTTY Team.
+
+Copyright (C) 2004-2009 ViewPlus Technologies, Inc.  `www.viewplus.com'
+and Copyright (C) 2006,2009 Abilitiessoft, Inc. `www.abilitiessoft.com'.
+
+     This file is free software; you can redistribute it and/or modify
+     it under the terms of the GNU Lesser (or library) General Public
+     License (LGPL) as published by the Free Software Foundation;
+     either version 3, or (at your option) any later version.
+
+     This file is distributed in the hope that it will be useful, but
+     WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser (or Library) General Public License LGPL for more details.
+
+     You should have received a copy of the GNU Lesser (or Library)
+     General Public License (LGPL) along with this program; see the
+     file COPYING.  If not, write to the Free Software Foundation, 51
+     Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+* Menu:
+
+* Introduction::
+* Transcribing with the xml2brl program::
+* Customization Configuring liblouisxml::
+* Connecting with the xml Document::
+* Special Features::
+* Implementing Braille Mathematics Codes::
+* Programming with liblouisxml::
+* Configuration Settings Index::
+* Semantic Action Index::
+* Function Index::
+* Program Index::
+
+ --- The Detailed Node Listing ---
+
+Transcribing with the xml2brl program
+
+* Transcribing Microsoft Word Files with msword2brl::
+
+Customization: Configuring liblouisxml
+
+* outputFormat::
+* translation::
+* xml::
+* style::
+
+Connecting with the xml Document - Semantic-Action Files
+
+* Semantic Actions Overview::
+* Semantic Actions in detail::
+
+Special Features
+
+* Table of contents::
+
+Programming with liblouisxml
+
+* License::
+* Overview::
+* Files and Paths::
+* lbx_version::
+* lbx_initialize::
+* lbx_translateString::
+* lbx_translateFile::
+* lbx_translateTextFile::
+* lbx_backTranslateFile::
+* lbx_free::
+
+
+File: liblouisxml.info,  Node: Introduction,  Next: Transcribing with the xml2brl program,  Prev: Top,  Up: Top
+
+1 Introduction
+**************
+
+liblouisxml is a software component which can be incorporated into
+software packages to provide the capability of translating any file in
+the computer lingua franca xml format into properly transcribed
+braille. This includes translation into grade two, if desired,
+mathematical codes, etc. It also includes formatting according to a
+built-in style sheet which can be modified by the user. The first
+program into which liblouisxml has been incorporated is `xml2brl'. This
+program will translate an xml or text file into an embosser-ready
+braille file. It is not necessary to know xml, because MSWord and other
+word processors can export files in this format. If the word processor
+has been used correctly `xml2brl' will produce an excellent braille
+file.
+
+   There is a Mac GUI application incorporating liblouisxml called
+`louis'. For a link to it go to `www.abilitiessoft.com/downloads'. A
+similar Windows application is in the works.
+
+   Users who want to generate Braille using `xml2brl' will be
+interested in *Note Transcribing with the xml2brl program::. Those who
+wish to change the output generated by liblouisxml should read *Note
+Customization Configuring liblouisxml::. If you encounter a type of xml
+file with which liblouisxml is not familiar you can learn how to tell
+it how to process that file by reading *Note Connecting with the xml
+Document::. If you wish to implement a new braille mathematics code
+read *Note Implementing Braille Mathematics Codes::. Finally, computer
+programmers who wish to use liblouisxml in their software can find the
+information they need in *Note Programming with liblouisxml::.
+
+   You will also find it advantageous to be acquainted with the
+companion library liblouis, which is a braille translator and
+back-translator (*note Overview: (liblouis)Top.).
+
+
+File: liblouisxml.info,  Node: Transcribing with the xml2brl program,  Next: Customization Configuring liblouisxml,  Prev: Introduction,  Up: Top
+
+2 Transcribing with the xml2brl program
+***************************************
+
+At the moment, actual transcription with liblouisxml is done with the
+command-line (or console) program `xml2brl'. The line to type is:
+
+     xml2brl [OPTIONS] [-f config-file] [infile] [outfile]
+
+   The brackets indicate that something is optional. You will see that
+nothing is required except the program name itself, `xml2brl'.  The
+various optional parts control how the program will behave, as follows:
+
+`-h'
+     This option causes `xml2brl' to print a help message describing
+     usage and exit.
+
+`-l'
+     This option will cause `xml2brl' and liblouisxml to print error
+     messages to `xml2brl.log' instead of stderr. The file will be in
+     the current directory. This option is particularly useful if
+     `xml2brl' is called by a GUI script or Web application.
+
+`-f configfile'
+     This specifies the configuration file which tells `xml2brl' how to
+     do the transcription. (It may be a list of file names separated by
+     commas.) This file specifies such things as the number of cells per
+     line, the number of lines per page, The translation tables to be
+     used, how paragraphs and headings are to be formatted, etc. If
+     this part of the command line is omitted, `xml2brl' assumes that
+     the configuration file is named `default.cfg'. If the configuration
+     file name contains a pathname `xml2brl' will consider this as a
+     path on which to look for files that it needs (*note Files and
+     Paths::). If no pathname is given the standard paths are searched
+     and finally the current directory.
+
+`-Csetting=value'
+     This option enables you to specify configuration settings on the
+     command line instead of changing the configuration file. You can
+     use as many `-C' options as you wish. Any settings can be specified
+     except those having to do with styles. The settings may be in any
+     order. They override any settings in `canonical.cfg' or in the
+     configuration file used by `xml2brl'.
+
+`-b'
+     back-translate. The input file must be a braille file, such as
+     `.brf'. The output file is a back-translation of this file. It may
+     be in either plain-text or xhtml (html), according to the setting
+     of `backFormat' in the `outputFormat' section of the configuration
+     file. Html files will contain page numbers and emphasis.  To get
+     good html, the liblouis table must have the entry `space \e 1b' so
+     that it will pass through escape characters. The `html.sem' file
+     must also contain the line `pagenum pagenum'. Text output files
+     simply have a blank line between paragraphs. Encoding of text
+     files is controlled by the `outputEncoding' setting. Html files
+     are always in UTF-8.
+
+`-r'
+     Reformat. The input file must be a braille file, such as `.brf'.
+     The output is a braille file formatted according to the
+     configuration file. It is advisable to set backFormat to html,
+     since this will preserve print page numbers and emphasis. This
+     program can be useful for changing the line length and page length
+     of a braille file, for example, from 40 to 32 cells. It is also an
+     excellent way to check the accuracy of liblouis tables. The
+     original page numbers at the tops and bottoms of pages are
+     discarded, and new ones are generated.
+
+`-p'
+     Poorly formatted input translation. Infile is any text file such
+     as may have been obtained by extracting the text in a pdf file.
+     The input file may also be an xml or html file which is so poorly
+     formatted that better braille can be obtained by ignoring the
+     formatting.  `xml2brl' tries to guess paragraph breaks. The output
+     is generally reasonably formatted, that is, with reasonable
+     paragraph breaks.
+
+`-t'
+     The document is an h(t)ml file, not xhtml. This option is useful
+     with files downloaded from the Web in source form. Without it, the
+     program will first try to parse the file as an xml document,
+     producing lots of error messages. It will then try the html
+     parser. With this option, it goes directly to the html parser. See
+     also the formatFor configuration (*note formatFor setting::) file
+     setting, which enables you to format the braille output for
+     viewing in a browser.
+
+`infile'
+     This is the name of the input file containing the material to be
+     transcribed. The file may be either an xml file or a text file. The
+     `-b', `-r' and `-p' options discussed above provide for other
+     types of files and processing. Typical xml files are those
+     provided by `www.bookshare.org' or those derived from a word
+     processor by saving in xml format. If a text file is used
+     paragraphs and headings should be separated by blank lines. In
+     such a file there is no way to distinguish between paragraphs and
+     headings, so they will all be formatted as paragraphs, as
+     specified by the configuration file. However, if you want a blank
+     line in the braille transcription use two consecutive blank lines
+     in the text file.
+
+`outfile'
+     This is the name of the output file. It will be transcribed as
+     specified by the configuration file and the `-C' configuration
+     settings.  The following paragraphs provide more information on
+     both the input and output files.
+
+
+   `xml2brl' is set up so that it can be used in a "pipe". To do this,
+omit both infile and outfile. Input is then taken from the standard
+input unit.
+
+   The first file name encountered (a word not preceded by a minus sign)
+is taken to be the input file and the second to be the output file. If
+you wish input to be taken from stdin and still want to specify an
+output file use two minus signs (`--') for the input file.
+
+   If only the program name is typed `xml2brl' assumes that the
+configuration file is `default.cfg', input is from the standard input
+unit, and output is to the standard output unit.
+
+* Menu:
+
+* Transcribing Microsoft Word Files with msword2brl::
+
+
+File: liblouisxml.info,  Node: Transcribing Microsoft Word Files with msword2brl,  Prev: Transcribing with the xml2brl program,  Up: Transcribing with the xml2brl program
+
+2.1 Transcribing Microsoft Word Files with msword2brl
+=====================================================
+
+     msword2brl infile outfile
+
+   Infile must be a Microsoft Word file. The script first calls the
+`antiword' program, so you must have this installed on your machine.
+`antiword' is called with `-x db', which causes the output to be in
+docbook format. This is piped to `xml2brl'. The output file from
+`xml2brl' contains much of the formatting, including emphasis, of the
+word file.
+
+
+File: liblouisxml.info,  Node: Customization Configuring liblouisxml,  Next: Connecting with the xml Document,  Prev: Transcribing with the xml2brl program,  Up: Top
+
+3 Customization: Configuring liblouisxml
+****************************************
+
+The operation of liblouisxml is controlled by two types of files:
+semantic-action files and configuration files. The former are discussed
+in the section Connecting with the xml Document - Semantic-action Files
+(*note Connecting with the xml Document - Semantic-Action Files:
+Connecting with the xml Document.). The latter are discussed in this
+section. A third type of file, braille translation tables, is discussed
+in the liblouis documentation (*note Overview: (liblouis)Top.).
+Another section of the present document which may be of interest is
+Implementing Braille Mathematical Codes (*note Implementing Braille
+Mathematics Codes::).
+
+   liblouisxml (with liblouis) can be used as the braille transcription
+component in any number of applications with different overall purposes
+and user interfaces. However, as of now the principal application is
+`xml2brl', which is a console application for Mac and Linux. (There is
+also a Mac GUI application called louis.) The information below
+therefore applies to `xml2brl' as much as to liblouisxml.
+
+   Before discussing configuration files in detail it is worth noting
+that the application program has access to the information in the
+configuration files by calling the liblouisxml function
+`lbx_initialize'. This function returns a pointer to a data structure
+containing the configuration information.
+
+   `xml2brl' uses the configuration file `default.cfg' unless a
+different one is specified via the `-f' command-line option. The
+configuration file name may include a full path. In this case,
+liblouisxml will consider this to be the user path (*note Files and
+Paths::). If just a file name (or list) is given, liblouisxml will
+consider the current directory as the user path.
+
+   The configuration "file" specified with the `-f' option need not be
+a single filename. It can be several file names separated by commas.
+Only the first filename may have a path component. This path is taken
+as the user path, as discussed in the previous paragraph.  This
+file-list feature is also found in liblouis. It enables you to combine
+configuration files on the command line. For example, a file list may
+consist of one file specifying the output format used in your
+establishment, a comma, and then the name of a stylesheet.
+
+   After the path, if any, has been evaluated, but before reading any of
+the files, liblouisxml reads in a file called `canonical.cfg'.  This
+file specifies values for all possible settings. It is needed to
+complete the initialization of the program. You may alter the values in
+the distribution `canonical.cfg', but you should not delete any
+settings. Do not specify `canonical.cfg' as your configuration file.
+This will lead to error messages and program termination. If a
+configuration file read in later contains a particular setting name,
+the value specified simply replaces the one specified in
+`canonical.cfg'.
+
+   As you will see by looking at `canonical.cfg', it contains four main
+sections, `outputFormat', `translation', `xml' and `styles'. In
+addition, a configuration file can contain an include entry. This
+causes the file named on that line to be read in at the point where the
+line occurs. The sections need not follow each other in any particular
+order, nor is the order of settings within each section important. In
+this document and in the `canonical.cfg' file, where section and
+setting names consist of more than one word, the first letter of each
+word following the initial one is capitalized. This is merely for
+readability. The case of the letters in these names is ignored by the
+program. Section and setting names may not contain spaces.
+
+   Here, then, is an explanation of each section and setting in the
+`canonical.cfg' file. When you look at this file you will see that the
+section names start at the left margin, while the settings are indented
+one tab stop. This is done for readability. it has no effect on the
+meaning of the lines. You will also see lines beginning with a number
+sign (`#'), which are comments. Blank lines can also be used anywhere
+in a configuration file. In general, a section name is a single word or
+combination of unspaced words. However, each style has a section of its
+own, so the word `style' is followed by the name of the style. Setting
+lines begin with the name of the setting, followed by at least one
+space or tab, followed by the value of the setting. A few settings have
+two values.
+
+* Menu:
+
+* outputFormat::
+* translation::
+* xml::
+* style::
+
+
+File: liblouisxml.info,  Node: outputFormat,  Next: translation,  Prev: Customization Configuring liblouisxml,  Up: Customization Configuring liblouisxml
+
+3.1 outputFormat
+================
+
+This section specifies the format of the output file (or string, if no
+file name is given).
+
+`cellsPerLine 40'
+     The number of cells in a braille line.
+
+`linesPerPage 25'
+     The number of lines on a braille page
+
+`interpoint no'
+     Whether or not the output will be used to produce interpoint
+     braille.  This affects the placement of page numbers and may
+     affect other things in the future. The only two values recognized
+     are `yes' and `no'.
+
+`lineEnd \r\n'
+     This specifies the control characters to be placed at the end of
+     each output line. These characters vary from one intended use of
+     the output to another. Most embossers require the carriage-return
+     and line-feed combination specified above. However, a braille
+     display may work best with just one or the other. Any valid
+     control characters can be specified.
+
+`pageEnd \f'
+     The control Character to be given at the end of a page. Here it is
+     a forms-feed character, but it can be something else if deeded.
+
+`fileEnd ^z'
+     The control character to be placed at the end of the file, here a
+     control-z.
+
+`printPages yes'
+     Whether or not to show print page numbers if they are given in the
+     xml input. The two valid values are `yes' and `no'.
+
+`braillePages yes'
+     Whether or not to format the output into pages. Here the value is
+     `yes', for use with an embosser. However the user of a braille
+     display may wish to specify `no', so as not to be bothered with
+     page numbers and forms feed characters. If no is specified the
+     lines will still be of the length given in `cellsPerLine', but the
+     value of `linesPerPage' will be ignored.
+
+`paragraphs yes'
+     Whether or not to format the output into paragraphs, using
+     appropriate styles. If `no' is specified, what would be a
+     paragraph is output simply as one long line. Applications that
+     wish to do their own formatting may specify `no'.
+
+`beginningPageNumber 1'
+     This is the number to be placed on the first Braille page if
+     `braillePages' is yes. This is useful when producing multiple
+     Braille volumes.
+
+`printPageNumberAt top'
+     If print page numbers are given in the xml input file they will be
+     placed at the top of each braille page in the right-hand corner. A
+     page separator line will also be produced on the braille page where
+     the print page break actually occurs. You may also specify
+     `bottom' for this setting.
+
+`braillePageNumberAt bottom'
+     The braille page number will be placed in the bottom right-hand
+     corner of each page. If interpoint yes has been specified only odd
+     pages will receive page numbers. If you specify `top' for this
+     setting then `bottom' must be specified for `printPageNumberAt'.
+
+`hyphenate no'
+     If `yes' is specified words will be hyphenated at the ends of
+     lines if a hyphenation table is available. In contracted English
+     Braille hyphenation is not generally used, but it can save
+     considerable space. The hyphenation table is specified as part of
+     the table list in the `literaryTextTable' setting of the
+     translation section.
+
+`outputEncoding ascii8'
+     This specifies that the output is to be in the form of 8-bit ASCII
+     characters. This is generally used if the output is intended
+     directly for a braille embosser or display. The other values of
+     encoding are `UTF8', `UTF16' and `UTF32'. These are useful if the
+     application will process the output further, such as for generating
+     displays of braille dots on a screen.
+
+`inputTextEncoding ascii8'
+     This setting is used to specify the encoding of an input text file.
+     The valid values are `UTF8' and `ascii8'.
+
+`formatFor textDevice'
+     This setting specifies the type of device the output is intended
+     for.  `textDevice' is any device that accepts plain text, including
+     embossers. You can also specify `browser'. In this case the output
+     will be formatted for viewing in a browser. If the input file
+     contains links, they will be preserved and can be used in the
+     normal way. The text will be translated into braille with the
+     correct line length. Math and computer material will be translated
+     appropriately.  These files work well in lynx and Internet
+     Explorer, not so well in elinks and Firefox (Before Jaws 10).
+
+`backFormat plain'
+     This setting specifies the format of back-translated files.
+     `Plain' specifies plain-text, while `html' specifies xhtml.  The
+     latter is always encoded in UTF-8. Plain-text files can be encoded
+     in ascii8, UTF-8 or UTF-16. Html is strongly recommended, since it
+     will preserve print page numbering and emphasis.
+
+`backLineLength 70'
+     This setting specifies the length of lines in back-translated
+     files, whether in plain-text or html. This is mainly for human
+     readability.  Lines may sometimes be somewhat longer.
+
+`interline no'
+     This setting specifies whether interlining is desired. If it is
+     set to `yes', the first line in the output will be a braille
+     translation, the next line will be its back-translation according
+     to the interlineBackTable. Back-translation is used instead of
+     simply presenting the print original because a braille line may
+     contain additional information, such as leading blanks, print or
+     braille page numbers, print page separator lines, etc.
+
+`lineFill ''
+     This setting defines the fill character that will be used before
+     the page numbers in the table of contents for example. The default
+     fill character is an apostrophe (dot 3).
+
+
+
+File: liblouisxml.info,  Node: translation,  Next: xml,  Prev: outputFormat,  Up: Customization Configuring liblouisxml
+
+3.2 translation
+===============
+
+This section specifies the liblouis translation tables to be used for
+various purposes.
+
+`literaryTextTable en-us-g2.ctb'
+     The table used for producing literary braille. This may be either
+     contracted or uncontracted.
+
+`uncontractedTable en-us-g1.ctb'
+     The table used for producing uncontracted or Grade One braille.
+     This setting appears to be superfluous and may be eliminated in
+     the future.
+
+`compbrailleTable en-us-compbrl.ctb'
+     The table used for producing large amounts of output in computer
+     braille, such as computer programs. The computer braille table is
+     usually combined with one of the two tables above.
+
+`mathtextTable en-us-mathtext.ctb'
+     This table specifies how the non-mathematical parts of math books
+     are to be translated. In many cases it will be the same as
+     literaryTextTable or uncontractedTable. For books translated with
+     the Nemeth Code it is different, because this code requires
+     modification of standard Grade Two.
+
+`MathexpTable nemeth.ctb'
+     This is the table used to translate mathematical expressions.
+
+`editTable nemeth_edit.ctb'
+     When the output includes both mathematics and text there may be
+     errors where one type of translation directly follows another. The
+     editTable removes these errors.
+
+`interlineBackTable en-us-interline.ctb'
+     This setting specifies the table to be used for back-translation
+     when interlining is turned on. It must be tailored for this
+     purpose, since an ordinary forward-translation table may contain
+     entries that do not handle the additional information in braille
+     lines correctly.
+
+
+
+File: liblouisxml.info,  Node: xml,  Next: style,  Prev: translation,  Up: Customization Configuring liblouisxml
+
+3.3 xml
+=======
+
+This section provides various information for the processing of xml
+files.
+
+`semanticFiles *,nemeth.sem'
+     This setting gives a list of semantic-action files. These files are
+     read in the sequence given in the list. Here the first member of
+     the list is an asterisk (`*'). This means that the corresponding
+     file is to be named by taking the root element of the document and
+     appending `.sem'. This asterisk member may occur anywhere in the
+     list.
+
+`xmlheader <?xml version='1.0' encoding='UTF8' standalone='yes'?>'
+     This line gives the xml header to be added to strings produced by
+     programs like `Mathtype' that lack one.
+
+`entity nbsp ^1'
+     This line defines an entity or substitution in an xml file. It is
+     one of those that has two values. The first is the thing to be
+     replaced, and the second is the replacement. As many entity lines
+     as necessary can be used. The information they contain is added to
+     the information provided by xmlHeader. In `canonical.cfg' this
+     line is commented out, because specifying it at this point would
+     prevent the user from specifying his own xmlheader.
+
+`internetAccess yes'
+     The computer has an internet connection and liblouisxml may obtain
+     information necessary for the processing of this file from the
+     Internet. If this setting is `no' liblouisxml will not try to use
+     the internet. The necessary information may, however, be provided
+     on the local machine in the form of a "dtd" file.
+
+`newEntries yes'
+     liblouisxml may create a new semantic-action file (beginning with
+     `new_') for a document with an unknown root element or a file
+     (beginning with `appended_') containing new entries for an
+     existing semantic-action file. Both kinds of files are placed on
+     the current directory. If this setting is `no' liblouisxml will not
+     create a file of new entries and if it encounters a document with
+     an unknown root element it will issue an error message. Setting
+     newEntries to `no' may be useful if users should not be bothered
+     with the minutiae of semantic-action files.
+
+
+
+File: liblouisxml.info,  Node: style,  Prev: xml,  Up: Customization Configuring liblouisxml
+
+3.4 style
+=========
+
+The following sections all deal with styles. Each style has its own
+section. Style section names are unlike other section names in that
+they consist of the word style, followed by a space, followed by a
+style name. More styles may be added as the software develops, and some
+may be dropped. New styles currently cannot be defined by the user,
+because the styles already defined appear to be adequate. This feature
+can be added if needed. There are, however, five utility styles,
+`style1' through `style5', which the user can employ in any way.
+
+3.4.1 style document
+--------------------
+
+This section specifies the style of the whole document. The settings
+given in it are applied to all other styles. If a section for another
+style is given, the settings in it replace those from the document
+style for that section. Because the settings in the document style
+apply to all other styles, if a document style section is given it must
+precede the sections for all other styles. Since `canonical.cfg'
+contains a document style definition, the user may not use this style.
+
+`linesBefore 0'
+     This setting gives the number of blank lines which should be left
+     before the text to which this style applies. It is set to a
+     non-zero value for some header styles.
+
+`linesAfter 0'
+     The number of blank lines which should be left after the text to
+     which this style applies.
+
+`leftMargin 0'
+     The number of cells by which the left margin of all lines in the
+     text should be indented. Used for hanging indents, among other
+     things.
+
+`firstLineIndent 0'
+     The number of cells by which the first line is to be indented
+     relative to leftMargin. firstLineIndent may be negative. If the
+     result is less than 0 it will be set to 0.
+
+`translate contracted'
+     This setting is currently inactive. It may be used in the future.
+     This setting tells how text in this style should be translated.
+     Possible values are `contracted', `uncontracted', `compbrl',
+     `mathtext' and `mathexpr'.
+
+`skipNumberLines no'
+     If this setting is `yes' the top and bottom lines on the page will
+     be skipped if they contain braille or print page numbers. This is
+     useful in some of the mathematical and graphical styles.
+
+`format leftJustified'
+     The format setting controls how the text in the style will be
+     formatted. Valid values are `leftJustified', `rightJustified',
+     `centered', `computerCoded', `alignColumnsLeft',
+     `alignColumnsRight', `listColumns', `listLines' and `contents'.
+     The first three are self-explanatory. `computerCoded' is used for
+     computer programs and similar material. The next three are used
+     for tabular material.  `alignColumnsLeft' causes the left ends of
+     columns to be aligned.  `alignColumnsRight' causes the right ends
+     of columns to be aligned. `listColumns' causes columns to be
+     placed one after the other, separated by whatever separation
+     character has been specified in the semantic-action file, followed
+     by a space. An escape character (hex 1b) must also be specified to
+     indicate the end of the column. Two escape characters must be
+     specified to indicate the end of a row.  Indentation of the lines
+     in a row is controlled by the leftMargin and firstLineIndent
+     settings. `listLines' is similar except that it lists lines, as in
+     poetry stanzas. The semantic-action file must specify two escape
+     characters to indicate the end of a line.  `contents' is used only
+     in styles specifically intended for tables of contents.
+
+`newPageBefore no'
+     If this setting is `yes', the text will begin on a new page. This
+     is useful for certain mathematical and graphical styles. Page
+     numbers are handled properly.
+
+`newPageAfter no'
+     If this setting is `yes' any remaining space on the page after the
+     material covered by this style is handled is left blank, except
+     for page numbers.
+
+`rightHandPage no'
+     if this setting is `yes' and interpoint is yes the material
+     covered by this style will start on a right-hand page. This may
+     cause a left-hand page to be left blank except for page numbers. If
+     interpoint is `no' this setting is equivalent to newPageBefore.
+
+
+3.4.2 style arith
+-----------------
+
+This style is used for arithmetic examples in elementary math books.
+On recognizing this style, the translator formats the material in a
+special way. This style has no settings different from those of the
+document style at the moment. Nevertheless, the line `style arith' must
+be included in `canonical.cfg' so that it will be set up properly.
+
+3.4.3 style attribution
+-----------------------
+
+This style is used for an attribution following a quotation.
+
+`format rightJustified'
+
+3.4.4 style biblio
+------------------
+
+This style is used for bibliographies. Settings will be added later.
+
+3.4.5 style blankLineBefore
+---------------------------
+
+This style is used automatically when a text file has three or more
+blank lines in succession.
+
+`linesBefore 1'
+
+`firstLineIndent 2'
+
+3.4.6 style caption
+-------------------
+
+This style is used for picture captions.
+
+`leftMargin 4'
+
+`firstLineIndent 2'
+     Note that the first line is actually indented six cells.
+
+
+3.4.7 style code
+----------------
+
+This style is used for computer programs.
+
+`skipNumberLines yes'
+
+`linesBefore 1'
+
+`linesAfter 1'
+
+`format computerCode'
+
+3.4.8 style contentsheader
+--------------------------
+
+This style is used to specify where the contents should be placed and
+the title that should be given to it.
+`linesBefore 1'
+
+`linesAfter 1'
+
+`format centered'
+
+3.4.9 style contents1
+---------------------
+
+This style and the other contents styles are used for the table of
+contents and correspond to the four heading levels.
+`firstLineIndent -2'
+
+`leftMargin 2'
+
+`format contents'
+
+3.4.10 style contents2
+----------------------
+
+`firstLineIndent -2'
+
+`leftMargin 4'
+
+`format contents'
+
+3.4.11 style contents3
+----------------------
+
+`firstLineIndent -2'
+
+`leftMargin 6'
+
+`format contents'
+
+3.4.12 style contents4
+----------------------
+
+`firstLineIndent -2'
+
+`leftMargin 8'
+
+`format contents'
+
+3.4.13 style dedication
+-----------------------
+
+This style is for the dedication of a book.
+
+`newPageBefore yes'
+
+`newPageAfter yes'
+
+`center yes'
+
+3.4.14 style directions
+-----------------------
+
+This is for giving directions for exercises.
+
+3.4.15 style dispmath
+---------------------
+
+This is for showing mathematics that is set off from the text.
+
+`leftMargin 2'
+
+3.4.16 style disptext
+---------------------
+
+This if for text that is set off from the rest of the text.
+
+`leftMargin 2'
+
+`firstLineIndent 2'
+
+3.4.17 style exercise1
+----------------------
+
+This is the first level in a set of exercises where there are sublevels.
+
+`leftMargin 2'
+
+`firstLineIndent -2'
+
+3.4.18 style exercise2
+----------------------
+
+This is for the second level of exercises, such as exercise a following
+exercise 1.
+
+`leftMargin 4'
+
+`firstLineIndent -2'
+
+3.4.19 style exercise3
+----------------------
+
+This is for the third level of exercises.
+
+`leftMargin 6'
+
+`firstLineIndent -2'
+
+3.4.20 style glossary
+---------------------
+
+This is for a glossary.
+
+`firstLineIndent 2'
+     Section: style graph
+
+     This style reserves space for a graph or other tactile material.
+
+`skipNumberLines yes'
+
+3.4.21 style graphLabel
+-----------------------
+
+This style reserves space for the label of a graph.
+
+3.4.22 style heading1
+---------------------
+
+This style is used for main headings, such as chapter titles.
+
+`linesBefore 1'
+
+`center yes'
+
+`linesAfter 1'
+
+3.4.23 style heading2
+---------------------
+
+The first level of subreadings after the main heading.
+
+`linesBefore 1'
+
+`firstLineIndent 4'
+
+3.4.24 style heading3
+---------------------
+
+The third level of headings.
+
+`firstLineIndent 4'
+
+3.4.25 style heading4
+---------------------
+
+The fourth and final level of headings.
+
+`firstLineIndent 4'
+
+3.4.26 style indexx
+-------------------
+
+This style is used for indexes. The extra `x' is not an error. It is
+there to prevent conflict with names elsewhere in the software.
+
+3.4.27 style list
+-----------------
+
+This is for the individual items in a list.
+
+`firstLineIndent -2'
+
+`leftMargin 2'
+
+3.4.28 style matrix
+-------------------
+
+This style causes its contents to be formatted in a way suitable for
+the representation of matrices.
+
+`format alignColumnsLeft'
+
+3.4.29 style music
+------------------
+
+This style is used for braille music.
+
+`skipNumberLines yes'
+
+3.4.30 style note
+-----------------
+
+This style is used for footnotes.
+
+3.4.31 style para
+-----------------
+
+Paragraph. This is ordinary body text.
+
+`firstLineIndent 2'
+
+3.4.32 style quotation
+----------------------
+
+This style is used for quotations that are set off from the rest of the
+text.
+
+`linesBefore 1'
+
+`linesAfter 1'
+
+3.4.33 style section
+--------------------
+
+This style is used for a section with a section number.
+
+`firstLineIndent 4'
+
+3.4.34 style spatial
+--------------------
+
+This style is used for mathematical material that is arranged
+spatially, such as large fractions.
+
+3.4.35 style stanza
+-------------------
+
+this style is used for stanzas in poetry.
+
+`linesBefore 1'
+
+`linesAfter 1'
+
+`format listLines'
+
+3.4.36 style style1
+-------------------
+
+This and the subsequent numbered styles can be used by the user for any
+purpose.
+
+3.4.37 style style2
+-------------------
+
+3.4.38 style style3
+-------------------
+
+3.4.39 style style4
+-------------------
+
+3.4.40 style style5
+-------------------
+
+3.4.41 style subsection
+-----------------------
+
+This style is used for subsections with a subsection number.
+
+`firstLineIndent 4'
+
+3.4.42 style table
+------------------
+
+This style is used for ordinary tables.
+
+3.4.43 style titlepage
+----------------------
+
+This style is used to begin a title page.
+
+`newPageAfter yes'
+
+3.4.44 style trnote
+-------------------
+
+This style is used for transcriber's notes which are set off from the
+text.
+
+3.4.45 style volume
+-------------------
+
+This style is used to indicate the beginning of a braille volume.
+
+
+File: liblouisxml.info,  Node: Connecting with the xml Document,  Next: Special Features,  Prev: Customization Configuring liblouisxml,  Up: Top
+
+4 Connecting with the xml Document - Semantic-Action Files
+**********************************************************
+
+* Menu:
+
+* Semantic Actions Overview::
+* Semantic Actions in detail::
+
+
+File: liblouisxml.info,  Node: Semantic Actions Overview,  Next: Semantic Actions in detail,  Prev: Connecting with the xml Document,  Up: Connecting with the xml Document
+
+4.1 Overview
+============
+
+When liblouisxml (or `xml2brl') processes an xml document, it needs to
+be told how to use the information in that document to produce a
+properly translated and formatted braille document. These instructions
+are provided by a semantic-action file, so called because it explains
+the meaning, or semantics, of the various specifications in the xml
+document. To understand how this works, it is necessary to have a basic
+knowledge of the organization of an xml document.
+
+   An xml document is organized like a book, but with much finer detail.
+First there is the title of the whole book. Then there are various
+sections, such as author, copyright, table of contents, dedication,
+acknowledgments, preface, various chapters, bibliography, index, and so
+on. Each chapter may be divided into sections, and these in turn can be
+divided into subsections, subsubsections, etc. In a book the parts have
+names or titles distinguished by capitalization, type fonts, spacing,
+and so forth. In an xml document the names of the parts are enclosed in
+angle brackets (`<>'). For example, if liblouisxml encounters `<html>'
+at the beginning of a document, it knows it is dealing with a document
+that conforms to the standards of the extensible markup language
+(xhtml) - at least we hope it does.  When you see a book, you know it's
+a book. The computer can know only by being told. Something enclosed in
+angle brackets is called an "element" (more properly, a "tag") in xml
+parlance. (There may be more between the angle brackets than just the
+name of the element. More of this later). The first "element" in a
+document thus tells liblouisxml what kind of document it is dealing
+with. This element is called the "root element" because the document is
+visualized as branching out from it like a tree. Some examples of root
+elements are `<html>', `<math>', `<book>', `<dtbook3>' and
+`<wordDocument>'. Whenever liblouisxml encounters a root element that
+it doesn't know about it creates a new file called a semantic-action
+file. The name of this file is formed by stripping the angle brackets
+from the root element and adding a period plus the letters `sem'. If
+you look in a directory containing semantic-action files you will see
+names like `html.sem', `dtbook3.sem', `math.sem', and so on.
+
+   Sometimes it is advantageous to preempt the creation of a
+semantic-action file for a new root element. For example, an article
+written according to the docbook specification may have the root
+element `<article>'. However, the specification itself has the root
+element `<book>'. In this case you can specify the `book.sem' file in
+the configuration file by writing, in the xml section,:
+
+     semanticFiles book.sem
+
+   You will note that this setting uses the plural of "file". This is
+because you can actually specify a list of file names separated by
+commas. You might want to do this to specify the semantic-action file
+for the particular braille mathematical code to be used. For example:
+
+     semanticFiles book.sem,ukmaths.sem
+
+   As you will see in the next section, different braille style
+conventions and different braille mathematical codes may require
+different semantic-action files
+
+   liblouisxml records the names of all elements found in the document
+in the semantic-action file. The document has a multitude of elements,
+which can be thought of as describing the headings of various parts of
+the document. One element is used to denote a chapter heading. Another
+is used to denote a paragraph, Still another to denote text in bold
+type, and so on. In other words, the elements take the place of the
+capitalization, changes in type font, spacing, etc. in a book.
+However, the computer still does not know what to do when it encounters
+an element. The semantic-action file tells it that.
+
+   Consider `html.sem'. A copy is included as part of this
+documentation with the name `example_html.sem'. It may differ from the
+file that liblouisxml is currently using. You will see that it begins
+with some lines about copyrights. Each line begins with a number sign
+(`#'). This indicates that it is a "comment", intended for the human
+reader and the computer should ignore it. Then there is a blank line.
+Finally, there are two other comments explaining that the file must be
+edited to get proper output. This is because a human being must tell
+the computer what to do with each element. The semantic files for
+common types of documents have already been edited, so you generally
+don't have to worry about this. But if you encounter a new type of
+document or wish to specify special handling for styles or mathematics
+you may have to edit the semantic-action file or send it to the
+maintainer for editing. In any case the rest of this section is
+essential for understanding how liblouisxml handles documents and for
+making changes if the way it does so is not correct.
+
+   After another blank line you will see a table consisting of two, and
+sometimes three, columns. The first column contains a word which tells
+the computer to do something. For example, the first entry in the table
+is: `include nemeth.sem'. This tells liblouisxml to include the
+information in the `nemeth.sem' file when it is deciphering an html
+(actually xhtml) document (it may be preferable to use the
+semanticFiles setting in the configuration file rather than an include).
+
+   The second row of the table is:
+
+     no hr
+
+   `hr' is an element with the angle brackets removed. It means nothing
+in itself. However, the first column contains the word `no'. This tells
+liblouisxml "no do", that is, do nothing.
+
+   After a few more lines with `no' in the first column, we see one
+that says:
+
+     softreturn br
+
+   This means that when the element `<br>' is encountered, liblouisxml
+is to do a soft return, that is, start a new line without starting a
+new paragraph.
+
+   The next line says:
+
+     heading1 h1
+
+   This tells liblouisxml that when it encounters the element `<h1>' it
+is to format the text which follows as a first-level braille heading,
+that is, the text will be centered and proceeded and followed by blank
+lines. (You can change this by changing the definition of the heading1
+style).
+
+   The next line says:
+
+     italicx em
+
+   This tells liblouisxml that when it encounters the element `<em>' it
+is to enclose the text which follows in braille italic indicators.  The
+`x' at the end of the semantic action name is there to prevent
+conflicts with names elsewhere in the software. Just where the italic
+indicators will be placed is controlled by the liblouis translation
+table in use.
+
+   The next line says:
+
+     skip style
+
+   This tells liblouis to simply skip ahead until it encounters the
+element `</style>'. Nothing in between will have any effect on the
+braille output. Note the slash (`/') before the `style'.  This means
+the end of whatever the `<style>' element was referring to. Actually,
+it was referring to specifications of how things should be printed. If
+liblouisxml had not been told to skip these specifications, the braille
+output would have contained a lot of gobledygook.
+
+   The next line says:
+
+     italicx strong
+
+   This tells liblouis to also use the italic braille indicators for the
+text between the `<strong>' and `</strong>' elements.
+
+   After a few more lines with `no' in the first column we come to the
+line:
+
+     document html
+
+   This tells liblouisxml that everything between `<html>' and
+`</html>' is an entire document. `<html>' was the root element of this
+document, so this is logical.
+
+   After another `no' line we come to:
+
+     para p
+
+   liblouisxml will consider everything between `<p>' and `</p>' to be
+a normal body text paragraph.
+
+   The next line is:
+
+     heading1 title
+
+   this causes the title of the document to also be treated as a braille
+level 1 heading.
+
+   Next we have the line:
+
+     list li
+
+   The xhtml `<li>' and `</li>' pair of elements is used to enclose an
+item in a list. liblouisxml will format this with its own list style.
+That is, the first line will begin at the left margin and subsequent
+lines will be indented two cells.
+
+   Next we have:
+
+     table table
+
+   You will note that the names of actions and elements are often
+identical. This is because they are both mnemonic. In any case, this
+line tells liblouisxml to format the table contained in the xhtml
+document according to the table formatting rules it has been given for
+braille output.
+
+   Next we have the line:
+
+     heading2 h2
+
+   This means that the text between `<h2>' and `</h2>' is to be
+formatted according to the Liblouisxml style heading2. A blank line
+will be left before the heading and the first line will be indented
+four spaces.
+
+   After a few more lines we come to:
+
+     no table,cellpadding
+
+   Note the comma in the second column. This divides the column into two
+subcolumns. The first is the table element name. The second is called
+an "attribute" in xml. It gives further instructions about the material
+enclosed between the starting and ending "tags" of the element
+(`<table>' and `</table>'. Full information requires three subcolumns.
+The third is called the value and gives the actual information. The
+attribute is merely the name of the information.
+
+   Much further down we find:
+
+     no table,border,0
+
+   Here the element is table, the attribute is border and the value is
+0.  If liblouisxml were to interpret this, it would mean that the table
+was to have a border of 0 width. It is not told to do so because tables
+in braille do not have borders.
+
+   Now let's look at the file which is included at the beginning of the
+`html.sem' file. This is `nemeth.sem'. As with `html.sem', a copy is
+included in the documentation directory with the name
+`example_nemeth.sem' , but it is not necessarily the one that
+liblouisxml is currently using. It illustrates several more things
+about how liblouisxml uses semantic-action files.
+
+   The first thing you will notice is that for quite a few lines the
+first and second columns are identical. This is because the MathML
+element and attribute names are part of a standard, and it was simplest
+to use the element names for the semantic actions as well.
+
+   The first line of real interest is:
+
+     math math
+
+   Every mathematical expression begins with the element `<math>'
+(which may have attributes and values), and ends with `</math>'.  This
+is therefore the root element of a mathematical expression.  However,
+mathematical expressions are usually part of a document, so it is not
+given the semantic action document. The math semantic action causes
+liblouisxml to carry out special interpretation actions. These will
+become clearer as we continue to look at the `nemeth.sem' file. You
+will note that this line has three columns. The meaning of the third
+column is discussed below.
+
+   After another uninteresting line we come to two that illustrate
+several more facts about semantic-action files:
+
+     mfrac mfrac ^?,/,^#
+     mfrac mfrac,linethickness,0 ^(,^;%,^)
+
+   Like the math entry above, the first line has three columns. While
+the first two columns must always be present, the third column is
+optional. Here, it is also divided into subcolumns by commas. The
+element `<mfrac>' indicates a fraction. A fraction has two parts, a
+numerator and a denominator. In xml, we call these parts children of
+`<mfrac>'. They may be represented in various ways, which need not
+concern us here. What is of real importance is that the third column
+tells liblouisxml to put the characters `~?' before the numerator, `/'
+between the numerator and denominator, and `~#' after the denominator.
+Later on, liblouis will translate these characters into the proper
+representation of a fraction in the Nemeth Code of Braille Mathematics.
+(For other mathematical codes, *note Implementing Braille Mathematics
+Codes::).
+
+   The second line is of even greater interest. The first column is
+again `mfrac', but this line is for binomial coefficient. The second
+column contains three subcolumns, an element name, an attribute name
+and an attribute value. The attribute linethickness specifies the
+thickness of the line separating the numerator and denominator. Here it
+is 0, so there is no line. This is how the binomial coefficient is
+represented in print. The third column tells how to represent it in
+braille. liblouisxml will supply `~(', upper number, `~%', lower
+number, `~)' to liblouis, which will then produce the proper braille
+representation for the binomial coefficient.
+
+   Returning to the line for the math element, we see that the third
+column begins with a backslash followed by an asterisk. The backslash
+is an escape character which gives a special meaning to the character
+which follows it. Here the asterisk means that what follows is to be
+placed at the very end of the mathematical expression, no matter how
+complex it is.
+
+   For further discussion of how the third column is used *note
+Implementing Braille Mathematics Codes::. The third column is not
+limited to mathematics. It can be used to add characters to anything
+enclosed by an xml tag.
+
+
+File: liblouisxml.info,  Node: Semantic Actions in detail,  Prev: Semantic Actions Overview,  Up: Connecting with the xml Document
+
+4.2 Semantic Actions in detail
+==============================
+
+Here is a complete list of the semantic actions which liblouisxml
+recognizes. Many of them are also the names of styles. These are listed
+first, preceded by an asterisk. For a discussion of these, *note
+Customization Configuring liblouisxml::.
+
+   Generally the format of a semantic action is:
+
+     semanticAction elementSpecifier optionalArguments
+
+   `elementSpecifier' is the second-column value, which may be an
+element name, an element-attribute pair or an element-attribute-value
+triplet, separated by commas. This specifies where a semantic action is
+to be applied. If it is solely an element then the action is applied if
+this element is encountered. If it is an element-attribute pair then
+the action is applied if the given element also has the specified
+attribute. In the last case with a element-attribute-value triplet the
+action is only applied if the element has the specified attribute and
+the value of this attribute is equal to the specified value.
+
+   In the following table the styles are merely listed (preceded by an
+asterisk), since they have been described in style subsections above.
+
+`* arith'
+
+`* attribution'
+
+`* biblio'
+
+`* blanklinebefore'
+
+`* caption'
+
+`* code'
+
+`* contents'
+
+`contents1'
+
+`contents2'
+
+`contenss3'
+
+`contents4'
+
+`contentsHeader'
+
+`* dedication'
+
+`* directions'
+
+`* dispmath'
+
+`* disptext'
+
+`document elementSpecifier'
+     Everything between `<elementSpecifier>' and `</elementSpecifier>'
+     is an entire document.
+
+`* exercise1'
+
+`* exercise2'
+
+`* exercise3'
+
+`* glossary'
+
+`* graph'
+
+`* graphlabel'
+
+`heading1 elementSpecifier'
+     Format the enclosed text as a first-level braille heading, that is,
+     the text will be centered and proceeded and followed by blank
+     lines.  (You can change this by changing the definition of the
+     heading1 style).
+
+`heading2 elementSpecifier'
+     Format the enclosed text as a second-level braille heading. (You
+     can change this by changing the definition of the heading2 style).
+
+`heading3 elementSpecifier'
+     Format the enclosed text as a third-level braille heading. (You can
+     change this by changing the definition of the heading3 style).
+
+`heading4 elementSpecifier'
+     Format the enclosed text as a fourth-level braille heading. (You
+     can change this by changing the definition of the heading4 style).
+
+`* indexx'
+
+`list elementSpecifier'
+     Format the content of `elementSpecifier' with list style. That is,
+     the first line will begin at the left margin and subsequent lines
+     will be indented two cells.
+
+`* matrix'
+
+`* music'
+
+`* note'
+
+`para elementSpecifier'
+     Everything between `<elementSpecifier>' and `</elementSpecifier>'
+     is to be formatted as a normal body text paragraph.
+
+`* quotation'
+
+`* section'
+
+`* spatial'
+
+`* stanza'
+
+`* style1'
+
+`* style2'
+
+`* style3'
+
+`* style4'
+
+`* style5'
+
+`* subsection'
+
+`table elementSpecifier'
+     Format the table contained in the element `<elementSpecifier>'
+     according to the table formatting rules it has been given for
+     braille output.
+
+`* titlepage'
+
+`* trnote'
+
+`* volume'
+
+`acknowledge'
+
+`author'
+
+`blankline'
+
+`bodymatter'
+
+`boldx'
+
+`booktitle'
+
+`boxline'
+
+`cdata'
+
+`center'
+
+`chemistry'
+
+`changetable'
+
+`compbrl'
+
+`configfile elementSpecifier filename'
+     The `configfile', `configstring' and `configtweak' semantic
+     actions enable the configuration of liblouisxml to be changed
+     according to the contents of the document being transcribed.
+     `configfile' and `configstring' take effect during the document
+     analysis phase performed by `examine_document.c'.  `configtweak'
+     is effective during the transcription phase, performed by
+     `transcribe_document.c' and the functions called in this module.
+
+     `elementSpecifier' is the usual second-column value, which may be
+     an element name, an element-attribute pair or an
+     element-attribute-value triplet, separated by commas. `filename'
+     must be on one of the paths set in the `paths.c' module. The file
+     may contain any configuration settings except those in the xml
+     section. These would be ineffective, since the document has already
+     been parsed.
+
+`configstring elementSpecifier setting1=value1;setting2=value2;...'
+     Note that the `setting=value' pairs are separated by semicolons.
+     Because the string may be longer than a screen line, you can use a
+     backslash `\' followed immediately by a line ending `\n', to
+     continue to another line. The string must not contain any blanks.
+     Any setting which can be specified in a file read with configfile
+     can be specified in `configstring'.
+
+`configtweak elementSpecifier'
+     `configtweak' is identical to `configstring' except that it is
+     called in the transcription phase. It should be used only for
+     things like changing translation tables. For example:
+
+          configtweak elementSpecifier literaryTextTable=fooTable;\
+          mathExprTable=barTable
+
+     `configtweak' is not a generalization of `changetable'. The latter
+     changes only the literarytexttable and applies to a subtree.
+     `configtweak' remains in effect until changed by another
+     `configtweak'.
+
+`contentsheader elementSpecifier'
+     Replace the given element with a table of contents (*note Table of
+     contents::). Typically the `elementSpecifier' would occur at the
+     end of the information which you want to be at the head of the
+     output, such as a title page, dedication, etc.
+
+`contracted'
+
+`copyright'
+
+`endnotes'
+
+`footer'
+
+`frontmatter'
+
+`generic'
+
+`graphic'
+
+`htmllink'
+
+`htmltarget'
+
+`italicx elementSpecifier'
+     Enclose the text which follows in braille italic indicators.  The
+     `x' at the end of the semantic action name is there to prevent
+     conflicts with names elsewhere in the software. Just where the
+     italic indicators will be placed is controlled by the liblouis
+     translation table in use.
+
+`jacket'
+
+`line'
+
+`maction'
+
+`maligngroup'
+
+`malignmark'
+
+`math elementSpecifier'
+     Every mathematical expression begins with the element
+     `<elementSpecifier>' (which may have attributes and values), and
+     ends with `</elementSpecifier>'. This is therefore the root
+     element of a mathematical expression. However, mathematical
+     expressions are usually part of a document, so it is not given the
+     semantic action document. The `math' semantic action causes
+     liblouisxml to carry out special interpretation actions.
+
+`menclose'
+
+`merror'
+
+`mfenced'
+
+`mfrac'
+
+`mglyph'
+
+`mi'
+
+`mlabeledtr'
+
+`mmultiscripts'
+
+`mn'
+
+`mo'
+
+`mover'
+
+`mpadded'
+
+`mphantom'
+
+`mprescripts'
+
+`mroot'
+
+`mrow'
+
+`ms'
+
+`mspace'
+
+`msqrt'
+
+`mstyle'
+
+`msub'
+
+`msubsup'
+
+`msup'
+
+`mtable'
+
+`mtd'
+
+`mtext'
+
+`mtr'
+
+`munder'
+
+`munderover'
+
+`newpage'
+
+`no'
+
+`none'
+
+`notranslate elementSpecifier'
+     Output the text between the start and end tags exactly as written.
+     It will, however, be formatted with appropriate line breaks, page
+     numbers etc. If you want to make sure that things appear on the
+     same line separate them with an unbreakable space, `&#160;' or
+     `&#xa0;'.
+
+`pagenum'
+
+`preface'
+
+`rearmatter'
+
+`reverse'
+
+`righthandpage'
+
+`runninghead'
+
+`semantics'
+
+`skip elementSpecifier'
+     Skip ahead until it encounters the element `</elementSpecifier>'.
+     Nothing in between will have any effect on the braille output.
+
+`softreturn elementSpecifier'
+     Do a soft return, that is, start a new line without starting a new
+     paragraph.
+
+`tblbody'
+
+`tblcol'
+
+`tblhead'
+
+`tblrow'
+
+`tnpage'
+
+`transcriber'
+
+`uncontracted'
+
+
+File: liblouisxml.info,  Node: Special Features,  Next: Implementing Braille Mathematics Codes,  Prev: Connecting with the xml Document,  Up: Top
+
+5 Special Features
+******************
+
+* Menu:
+
+* Table of contents::
+
+
+File: liblouisxml.info,  Node: Table of contents,  Prev: Special Features,  Up: Special Features
+
+5.1 Table of contents
+=====================
+
+A table of contents is produced for an xml file if the file contains a
+tag which has been defined with the `contentsheader' semantic action
+(*note contentsheader: contentsheader semantic.) and also tags for the
+`heading1', `heading2', `heading3' or `heading4' semantic actions
+(*note heading1: heading1 semantic.). The table of contents will
+contain print and braille page numbers if these features have been
+enabled. A sequence of fill characters will be inserted before the page
+numbers, so that the latter are at the right margin. The fill character
+can be specified in a configuration file with the `lineFill' setting
+(*note lineFill: lineFill setting.). The default fill character is an
+apostrophe (dot 3).
+
+   Five new styles have been defined for the table of contents. The
+first is the `contentsheader' style (*note contentsheader style::),
+which is used to specify how the contents should be placed and the
+title that should be given to it. The others correspond to the four
+heading levels and are `contents1', `contents2', `contents3' and
+`contents4'. These styles are chosen as appropriate while the table of
+contents is being made. Do not declare them in a semantic-action file.
+See the `canonical.cfg' file for the current default definitions of all
+these styles.
+
+   The table of contents will be placed where the xml tag is that you
+declared in the `contentsheader' semantic action (*note contentsheader:
+contentsheader semantic.). It begins on a new page.  After it is
+completed the braille page number is reset to
+`beginningBraillePageNumber' and another new page is started.  This
+means that the xml tag with the `contentsheader' semantic action should
+occur at the end of the information which you want to be at the head of
+the output, such as a title page, dedication, etc.
+
+   It is not necessary that an xml file contain a tag with the
+`contentsheader' semantic action. If the file contains headers you can
+obtain a table of contents by specifying `contents yes' in a
+configuration file or `-Ccontents=yes' on the command line of
+`xml2brl'. In this case, the table of contents will appear at the
+beginning of the output. Pages will be numbered beginning with 1. When
+the table of contents is complete, the material in the file will start
+on a new page and the page number will be the value given in
+`beginningBraillePageNumber'.
+
+   The `contents1', etc. styles all have the `format contents' setting.
+This is a variant of the `leftJustified' format. It has been necessary
+to change the way `firstLineIndent' is handled to accommodate
+multilevel lists. Up till now, if `firstLineIndent' was negative, the
+first line would start at the real left margin, regardless of the value
+of `leftMargin'. Now the value of `firstLineIndent' is simply added to
+`leftMargin'. This means that if it is negative it is really
+subtracted. For example, if `leftMargin' is 4 and `firstLineIndent' is
+-2 the first line will start in cell 2.
+
+
+File: liblouisxml.info,  Node: Implementing Braille Mathematics Codes,  Next: Programming with liblouisxml,  Prev: Special Features,  Up: Top
+
+6 Implementing Braille Mathematics Codes
+****************************************
+
+The Nemeth Code of Braille Mathematical and Science Notation has been
+implemented. Other braille mathematics codes can be implemented by
+following the same pattern. The Nemeth Code implementation is discussed
+as an example below.
+
+   Four tables are used to translate xml documents containing a mixture
+of text and mathematics into the Nemeth code. They can be found in the
+subdirectory `lbx_files' of the liblouisxml directory. First, the
+semantic-action file `nemeth.sem' is used to interpret the mathematical
+portions of the xml document (The text portions are interpreted by
+another semantic-action file which will not be discussed here). After
+the math and text have been interpreted, two liblouis tables,
+`nemeth.ctb' and `en-mathtext.ctb' are used to translate them. Each
+piece of mathematics or text is translated separately and the pieces
+are strung together with blanks between them. This results in
+inaccuracies where mathematics meets text. The fourth table, also a
+liblouis table, is used to remove these inaccuracies. It is called
+`edittable.ctb', and it does things like removing the multi-purpose
+indicator before a blank, inserting the punctuation indicator before a
+punctuation mark following a math expression, and removing extra spaces.
+
+   The general format and use of semantic-action files were discussed in
+the previous section, (*note Connecting with the xml Document -
+Semantic-Action Files: Connecting with the xml Document.). In this
+section we shall concentrate on the optional third column, which is
+used a lot in `nemeth.sem'. While the first two columns can be
+generated by liblouisxml but must be edited by a person, the third
+column must always be provided by a human.
+
+   As previously stated, the third column tells liblouisxml what
+characters to insert to inform liblouis how to translate the math
+expression. Look at the following line:
+
+     mfrac mfrac ^?,/,^#
+
+   You will see that the third column contains two commas. This means
+that it has three subcolumns. A fraction has a numerator and a
+denominator. These are called children of the `mfrac' element.  The
+first subcolumn specifies the characters that liblouisxml should place
+in front of the numerator. The second subcolumn gives the characters to
+be placed between the numerator and denominator.  Finally, the third
+subcolumn gives the characters to place after the denominator. You will
+see that the first subcolumn contains a caret followed by a question
+mark. The dot pattern for the question mark in computer braille is the
+same as for the Nemeth start-fraction indicator. The caret is used so
+that liblouis can tell this apart from a question mark, which also has
+the same dot pattern in computer braille. The second subcolumn contains
+a slash but no caret. This is because there is no danger of confusion
+where the slash is concerned.  The third subcolumn does contain a
+caret, and it also contains a number sign, which corresponds to the
+Nemeth end-fraction indicator.  When liblouisxml encounters the MathML
+representation of the fraction one-half it produces the following
+string of characters: `^?1/2^#'. liblouis then removes the carets to
+get `?1/2#'.
+
+   As another example, consider the entry in `nemeth.sem' for a
+subscript.
+
+     msub msub ,^;,^"
+
+   Here the first subcolumn is blank, because nothing is to be placed
+before the subscripted symbol. The second subcolumn contains a caret
+and a semicolon (in computer braille). This corresponds to the Nemeth
+subscript indicator. The third column contains a caret and a quotation
+mark, corresponding to the Nemeth baseline indicator. liblouisxml
+translates the MathML expression for x superscript i into `x^;i^'.
+liblouis subsequently produces `x;i'. There are other steps if the
+subscript is numeric. These are handled by pass2 opcodes in the
+liblouis translation table, `nemeth.ctb'.
+
+   You will notice that the entries in `nemeth.sem' have various
+numbers of subcolumns in the third column. In general, the characters
+given in the first subcolumn are placed before the first child of the
+element given in the second column. The characters in the second
+subcolumn are placed before the second child, and so on, until the
+characters given in the last subcolumn are placed after the last child.
+
+   Sometimes an element or tag can have an indeterminate number of
+children. This is true of `<math>' itself. Yet, it may be necessary to
+place some characters after the very last element. Let us look at the
+`<math>' entry.
+
+     math math \eb,\*\ee
+
+   First let us discuss escape sequences starting with a backslash.
+These are basically the same as in liblouis. The sequence `\e' is
+shorthand for the escape character, which would otherwise be
+represented by `\x001b'. The beginning of a math expression is denoted
+by an escape character followed by the letter b and the end by an
+escape character followed by the letter `e'. This enables the editing
+table to do such things as drop the baseline indicator at the end of a
+math expression and insert a number sign at the beginning, if needed.
+
+   Not found in liblouis is the sequence `\*'. This means to put what
+follows after the very last child of the math element, no matter how
+many there are.
+
+   As another example consider:
+
+     mtd mtd \*\ec
+
+   `mtd' is the MathML tag for a table column. There may be many
+children of this tag. The entry says to put an escape character (hex
+1b), plus the letter `c', after the very last of them.
+
+   As a final example consider:
+
+     mtr mtr ^.^\,^(,\*^.^\,^)\er
+
+   `mtr' is the MathML tag for a row in a table, in this case a matrix.
+Each row in a matrix must begin with the dot pattern `46-6-12356' and
+end with the dot pattern `46-6-12456'. As usual a caret is placed
+before the corresponding characters. Since dot 6 is a comma, it must be
+escaped. This is done by placing a backslash before the comma. There
+are two subcolumns. the first contains the characters to be placed at
+the beginning of each row. The second starts with `\*', signifying that
+the characters following it are to be placed at the end of everything
+in this row. A subcolumn starting with `\*' must be the last (or only)
+subcolumn.
+
+   Here this last subcolumn ends with an escape character and the letter
+<r>, signifying the end of a row.
+
+   So much for the semantic action file. Even though the characters in
+the third column were chosen to correspond with nemeth characters, they
+may not have to be changed for other math codes. liblouis can replace
+them with anything needed.
+
+   This brings us to a consideration of the two tables used by liblouis
+to translate mathematics texts. The first, `en-mathtext.ctb' is used to
+translate text appearing outside math expressions. It is necessary
+because the Nemeth code requires modifications of Grade 2 braille.
+Other math codes may not have this requirement.
+
+   The table actually used to translate mathematics is `nemeth.ctb'.
+It includes two other tables, `chardfs.cti' and `nemethdefs.cti'. The
+first gives ordinary character definitions and is included by all the
+other tables. Note however, that the unbreakable space, `\x00a0', is
+translated by dot 9. This is used before and after the equal sign and
+other symbols in `nemeth.ctb'. The second table contains character
+definitions for special math symbols, most of which are Unicode
+characters greater than `\x00ff'. The Greek letters are here. So are
+symbols like the integral sign.
+
+   Most of the entries in `nemeth.ctb' should be familiar from other
+tables. The unfamiliar ones follow the comments `# Semantic pairs' and
+`# pass2 corrections'. The first simply replace characters preceded by
+a caret with the character itself. The second make adjustments in the
+code generated directly from the `nemeth.sem' file. The pass2 opcode is
+discussed in the liblouis documentation (*note Overview:
+(liblouis)Top.). Here are some comments on a few of the entries in
+`nemeth.ctb'.
+
+     pass2 @1456-1456 @6-1456
+
+   Replaces double start-fraction indicators with the start complex
+fraction indicator.
+
+     pass2 @3456-3456 @6-3456
+
+   Replaces double end-fraction indicators with the end-complex-fraction
+indicator.
+
+     pass2 @56[$d1-5]@5 *
+
+   Removes the subscript and baseline indicators from numeric
+subscripts.
+
+     pass2 @5-9 @9
+
+   Removes the baseline or multipurpose indicator before an unbreakable
+space generated by the translation of an equal sign, etc.
+
+     pass2 @45-3-5 @3
+
+   Replaces a superscript apostrophe with a simple prime symbol.
+
+     pass2 @9[]$d @3456
+
+   Puts a number sign before a digit preceded by a blank.
+
+     pass2 @9-0 @9
+
+   Removes a space following an unbreakable space.
+
+   We now come to the fourth and last table used for math translation,
+the editing table, `edittable.ctb'. As explained at the beginning, this
+table is used to remove inaccuracies where math translation butts up
+against text translation. For example, the Nemeth code puts numbers in
+the lower part of the cell. However, punctuation marks are also in the
+lower part of the cell. So Nemeth puts a punctuation indicator, dots
+`456', in front of any lower-cell punctuation that immediately follows
+a mathematical expression. If this occurs inside Mathml it is handled
+by `nemeth.ctb'. However, a MathML expression is often followed by a
+punctuation mark which is the first part of text. liblouisxml puts a
+blank between math and text, but this can result in a mathematical
+expression followed by a blank and then, say, a period, dots `256'.
+`edittable.ctb' replaces the blank with the punctuation indicator.
+
+   When you look at `edittable.ctb' you will see that it begins with an
+include of `chardefs.cti'. Most of the entries are ordinary, but some
+are interesting. for example,
+
+     always "\s 0
+
+   replaces the baseline or multipurpose indicator followed by a space
+with just a space.
+
+
+File: liblouisxml.info,  Node: Programming with liblouisxml,  Next: Configuration Settings Index,  Prev: Implementing Braille Mathematics Codes,  Up: Top
+
+7 Programming with liblouisxml
+******************************
+
+* Menu:
+
+* License::
+* Overview::
+* Files and Paths::
+* lbx_version::
+* lbx_initialize::
+* lbx_translateString::
+* lbx_translateFile::
+* lbx_translateTextFile::
+* lbx_backTranslateFile::
+* lbx_free::
+
+
+File: liblouisxml.info,  Node: License,  Next: Overview,  Prev: Programming with liblouisxml,  Up: Programming with liblouisxml
+
+7.1 License
+===========
+
+Liblouisxml may contain code borrowed from the Linux screenreader
+BRLTTY, Copyright (C) 1999-2009  by the BRLTTY Team.
+
+Copyright (C) 2004-2009 ViewPlus Technologies, Inc.  `www.viewplus.com'.
+
+Copyright (C) 2006,2009 Abilitiessoft, Inc.  `www.abilitiessoft.com'.
+
+   Liblouisxml is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+   Liblouisxml is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+License along with Liblouisxml. If not, see
+`http://www.gnu.org/licenses/'.
+
+
+File: liblouisxml.info,  Node: Overview,  Next: Files and Paths,  Prev: License,  Up: Programming with liblouisxml
+
+7.2 Overview
+============
+
+liblouisxml is an "extensible renderer", designed to translate a wide
+variety of xml and text documents into braille, but with a special
+emphasis on technical material. The overall operation of liblouisxml is
+controlled by a configuration file. The way in which a particular type
+of xml document is to be rendered is specified by a semantic-action
+file for that document type. Braille translation is done by the liblouis
+braille translation and back-translation library (*note Overview:
+(liblouis)Top.).  Its operation, in turn is controlled by translation
+table files. All these files are plain text and can be created and
+edited in any text editor. Configuration settings can also be specified
+on the command line of the console-mode transcription program `xml2brl'.
+
+   The general operation of liblouisxml is as follows. It uses the
+libxml2 library to construct a parse tree of the xml document. After
+the parse tree is constructed, a function called `examine_document'
+looks it over and determines whether math translation tables, etc. are
+needed. `examine_document' also constructs a prototype semantic-action
+file, if one does not exist already. When it is finished, another
+function, called `transcribe_document', does the actual braille
+transcription. It calls `transcribe_math' to handle MathML subtrees,
+`transcribe_chemistry' for chemical formula subtrees,
+`transcribe_graphic' for SVG graphics, etc. Entities are translated to
+Unicode, if they are not already. Sequences of symbols indicate
+superscripts, return to the baseline, subscripts, start and end of
+fractions, etc. The Braille translator and back-translator library
+liblouis is used to do the braille translation.
+
+   The `transcribe_math' function works in conjunction with the latest
+version of liblouis and a special math translation table to transcribe
+most mathematical expressions into good Nemeth Code.  Other Braille
+mathematics codes can be handled by modifying the translation table and
+semantic-action file.
+
+   The functions which are not needed at the moment, such as
+`transcribe_chemistry', are only skeletons. However, I hope that
+`transcribe_graphics' can be expanded in the near future to use the
+graphics capability of the Tiger tactile graphics embossers.
+
+   The latest versions of liblouisxml and liblouis can be downloaded
+from `www.abilitiessoft.com'. Note that liblouisxml will only work with
+the latest version of liblouis.
+
+   liblouisxml can be compiled to use either 16-bit or 32-bit Unicode
+internally. This is inherited from liblouis, so liblouis must be
+compiled first and then liblouisxml. Wherever 16 bits are mentioned in
+this document, read 32 if you have compiled the library for 32 bits.
+
+
+File: liblouisxml.info,  Node: Files and Paths,  Next: lbx_version,  Prev: Overview,  Up: Programming with liblouisxml
+
+7.3 Files and Paths
+===================
+
+As stated in the previous section, liblouisxml uses three kinds of
+files, configuration files, semantic-action files, and liblouis
+translation tables. The first two are discussed later in this
+documentation. liblouis translation tables are discussed in the
+liblouis documentation (*note Overview: (liblouis)Top.) which is
+distributed with liblouis.  These files can be placed on various paths,
+which are determined at compile time. One of these paths should be to
+the `lbx_files' directory provided by liblouisxml, which contains the
+principal configuration file (`canonical.cfg') and the semantic-action
+files. Another should be to the tables directory in the liblouis
+distribution. Note that liblouisxml also generates some files, all of
+which are placed in the current directory. These files are new
+prototype semantic-action files, additions to old semantic-action
+files, temporary files, and log files. The first two can be used to
+extend the capability of liblouisxml to process xml documents. The
+latter two are useful for debugging.
+
+   Paths are set by changing a few lines of code in the `paths.c'
+module. If you are preparing liblouisxml for Windows a function which
+finds the name of the "Program Files" directory for your locale is
+called automatically. You can then modify the line containing the term
+`yourSubDir' as needed. Note that this line will produce a deliberate
+compiler error, so you can find it easily.
+
+   If you are preparing liblouisxml for a Unix-type system look for the
+line that says `Set Unix Paths'. The following lines establish paths to
+the  `lbx_files' directory and to the liblouis `tables' directory. If
+you are using the Gnu autotooled versions of liblouis and liblouisxml
+these paths are set up automatically.
+
+   The function `addPath' takes care of adding a path to liblouisxml
+properly. You can specify many more than two paths.
+
+
+File: liblouisxml.info,  Node: lbx_version,  Next: lbx_initialize,  Prev: Files and Paths,  Up: Programming with liblouisxml
+
+7.4 lbx_version
+===============
+
+     char *lbx_version (void)
+
+   This function returns a pointer to a character string containing the
+version of liblouisxml. Other information such as the release date and
+perhaps notable changes may be added later.
+
+
+File: liblouisxml.info,  Node: lbx_initialize,  Next: lbx_translateString,  Prev: lbx_version,  Up: Programming with liblouisxml
+
+7.5 lbx_initialize
+==================
+
+     void * lbx_initialize (
+          const char *configFilelist,
+          const char *logFileName,
+          const char *settingsString)
+
+   This function initializes the libxml2 library, processes
+`canonical.cfg' and configuration settings given in `settingsString'
+and the configuration files given in `configFilelist'. This is a list
+of configuration file names separated by commas. If the first character
+is a comma it is taken to be a string containing configuration settings
+and is processed like the `settingsString' string. Such a string must
+conform to the format of a configuration file. Newlines should be
+represented with ASCII 10. If `logfilename' is not `null', a log file is
+produced on the current directory. If it is `null' any messages are
+printed on stderr. The function returns a pointer to the `UserData'
+structure. This pointer is `void' and must be cast to `(UserData *)' in
+the calling program. To access the information in this structure you
+must include `louisxml.h'. This function is used by `xml2brl'.
+
+
+File: liblouisxml.info,  Node: lbx_translateString,  Next: lbx_translateFile,  Prev: lbx_initialize,  Up: Programming with liblouisxml
+
+7.6 lbx_translateString
+=======================
+
+     int lbx_translateString (
+         const char *configfilelist,
+         char * inbuf,
+         widechar *outbuf,
+         int *outlen,
+         unsigned int mode)
+
+   This function takes a well-formed xml expression in `inbuf' and
+translates it into a string of 16-bit (or 32-bit if this has been
+specified in liblouis) braille characters in `outbuf'. The xml
+expression must be immediately followed by a zero or null byte.
+Leading whitespace is ignored. If it does not then begin with the
+characters `<?xml' an xml header is added. If it does not begin with
+`<' it is assumed to be a text string and is translated accordingly.
+The header is specified by the `xmlHeader' line in the configuration
+file. If no such line is present, a default header specifying UTF-8
+encoding is used. The `mode' parameter specifies whether you want the
+library to be initialized. If it is 0 everything is reset, the
+`canonical.cfg' file is processed and the configuration file and/or
+string (see previous section) are processed.  If `mode' is 1
+liblouisxml simply prepares to handle a new document. For more on the
+`mode' parameter see the next section.
+
+   Which 16-bit character in `outbuf' represents which dot pattern is
+indicated in the liblouis translation tables. The `configfilelist'
+parameter points to a configuration file or string. Among other things,
+this file specifies translation tables. It is these tables which
+control just how the translation is made, whether in Grade 2, Grade 1,
+the Nemeth Code of Braille Mathematics or something else.
+
+   Note that the `*outlen' parameter is a pointer to an integer.  When
+the function is called, this integer contains the maximum output
+length. When it returns, it is set to the actual length used. The
+function returns 1 if no errors were encountered and a negative number
+if a complete translation could not be done.
+
+
+File: liblouisxml.info,  Node: lbx_translateFile,  Next: lbx_translateTextFile,  Prev: lbx_translateString,  Up: Programming with liblouisxml
+
+7.7 lbx_translateFile
+=====================
+
+     int lbx_translateFile (
+         char *configfilelist,
+         char *inputFileName,
+         char *outputFileName,
+         unsigned int mode)
+
+   This function accepts a well-formed xml document in `inputFilename'
+and produces a braille translation in `outputFilename'. As for
+`lbx_translateString', the `mode' parameter specifies whether the
+library is to be initialized with new configuration information or
+simply prepared to handle a new document. In addition, the `mode'
+parameter can specify that a document is in html, not xhtml.
+`liblouisxml.h' contains an enumeration type with the values `dontInit'
+and `htmlDoc'. These can be combined with an or (`|') operator. The
+input file is assumed to be encoded in UTF-8, unless otherwise
+specified in the xml header. The encoding of the output file may be
+UTF-8, UTF-16, UTF-32 or Ascii-8. This is specified by the
+`outputEncoding' line in the configuration file, `configfilelist'. The
+function returns 1 if the translation was successful.
+
+
+File: liblouisxml.info,  Node: lbx_translateTextFile,  Next: lbx_backTranslateFile,  Prev: lbx_translateFile,  Up: Programming with liblouisxml
+
+7.8 lbx_translateTextFile
+=========================
+
+     int lbx_translateTextFile (
+         char *configfilelist,
+         char *inputFileName,
+         char *outputFileName,
+         unsigned int mode)
+
+   This function accepts a text file in `inputFilename' and produces a
+braille translation in `outputFilename'. The input file is assumed to
+be encoded in Ascii8. However, utf-8 can be specified with the
+configuration setting `inputTextEncoding utf8'. Blank lines indicate
+the divisions between paragraphs. Two blank lines cause a blank line
+between paragraphs (or headers). The output file may be in UTF-8,
+UTF-16, or Ascii8, as specified by the `outputEncoding' line in the
+configuration file, `configfilelist'. As for `lbx_translateString', the
+`mode' parameter specifies whether complete initialization is to be
+done or simply initialization for a new document.
+
+
+File: liblouisxml.info,  Node: lbx_backTranslateFile,  Next: lbx_free,  Prev: lbx_translateTextFile,  Up: Programming with liblouisxml
+
+7.9 lbx_backTranslateFile
+=========================
+
+     int lbx_backTranslateFile (
+         char *configfilelist,
+         char *inputFileName,
+         char *outputFileName,
+         unsigned int mode)
+
+   This function accepts a braille file in `inputFilename' and produces
+a back-translation in `outputFilename'. The input file is assumed to be
+encoded in Ascii8. The output file is in either plain text or html,
+according to the setting of `backFormat' in the configuration file.
+Html files are encoded in UTF8. In plain-text, blank lines are inserted
+between paragraphs. The output file may be in UTF-8, UTF-16, or Ascii8,
+as specified by the `outputEncoding' line in the configuration file,
+`configfilelist'. The mode parameter specifies whether or not the
+library is to be initialized with new configuration information, as
+described in the section on `lbx_translateString' (*note
+lbx_translateString::).
+
+
+File: liblouisxml.info,  Node: lbx_free,  Prev: lbx_backTranslateFile,  Up: Programming with liblouisxml
+
+7.10 lbx_free
+=============
+
+     void lbx_free (void)
+
+   This function should be called at the end of the application to free
+all memory allocated by liblouisxml and liblouis. If you wish to change
+configuration files during your application, use a `mode' parameter of
+0 on the function call using the new configuration information. This
+will call the function automatically.
+
+
+File: liblouisxml.info,  Node: Configuration Settings Index,  Next: Semantic Action Index,  Prev: Programming with liblouisxml,  Up: Top
+
+Configuration Settings Index
+****************************
+
+ [index ]
+* Menu:
+
+* backFormat:                            outputFormat.        (line 104)
+* backLineLength:                        outputFormat.        (line 111)
+* beginningPageNumber:                   outputFormat.        (line  55)
+* braillePageNumberAt:                   outputFormat.        (line  67)
+* braillePages:                          outputFormat.        (line  41)
+* cellsPerLine:                          outputFormat.        (line   9)
+* center:                                style.               (line 206)
+* compbrailleTable:                      translation.         (line  18)
+* editTable:                             translation.         (line  33)
+* entity:                                xml.                 (line  21)
+* fileEnd:                               outputFormat.        (line  33)
+* firstLineIndent:                       style.               (line  40)
+* format:                                style.               (line  56)
+* formatFor:                             outputFormat.        (line  93)
+* hyphenate:                             outputFormat.        (line  73)
+* inputTextEncoding:                     outputFormat.        (line  89)
+* interline:                             outputFormat.        (line 116)
+* interlineBackTable:                    translation.         (line  38)
+* internetAccess:                        xml.                 (line  30)
+* interpoint:                            outputFormat.        (line  15)
+* leftMargin:                            style.               (line  35)
+* lineEnd:                               outputFormat.        (line  21)
+* lineFill:                              outputFormat.        (line 125)
+* linesAfter:                            style.               (line  31)
+* linesBefore:                           style.               (line  26)
+* linesPerPage:                          outputFormat.        (line  12)
+* literaryTextTable:                     translation.         (line   9)
+* MathexpTable:                          translation.         (line  30)
+* mathtextTable:                         translation.         (line  23)
+* newEntries:                            xml.                 (line  37)
+* newPageAfter:                          style.               (line  82)
+* newPageBefore:                         style.               (line  77)
+* outputEncoding:                        outputFormat.        (line  81)
+* pageEnd:                               outputFormat.        (line  29)
+* paragraphs:                            outputFormat.        (line  49)
+* printPageNumberAt:                     outputFormat.        (line  60)
+* printPages:                            outputFormat.        (line  37)
+* rightHandPage:                         style.               (line  87)
+* semanticFiles:                         xml.                 (line   9)
+* skipNumberLines:                       style.               (line  51)
+* translate:                             style.               (line  45)
+* uncontractedTable:                     translation.         (line  13)
+* xmlheader:                             xml.                 (line  17)
+
+
+File: liblouisxml.info,  Node: Semantic Action Index,  Next: Function Index,  Prev: Configuration Settings Index,  Up: Top
+
+Semantic Action Index
+*********************
+
+ [index ]
+* Menu:
+
+* configfile:                            Semantic Actions in detail.
+                                                              (line 165)
+* configstring:                          Semantic Actions in detail.
+                                                              (line 183)
+* configtweak:                           Semantic Actions in detail.
+                                                              (line 191)
+* contentsheader:                        Semantic Actions in detail.
+                                                              (line 204)
+* document:                              Semantic Actions in detail.
+                                                              (line  59)
+* heading1:                              Semantic Actions in detail.
+                                                              (line  75)
+* heading2:                              Semantic Actions in detail.
+                                                              (line  82)
+* heading3:                              Semantic Actions in detail.
+                                                              (line  86)
+* heading4:                              Semantic Actions in detail.
+                                                              (line  90)
+* italicx:                               Semantic Actions in detail.
+                                                              (line 227)
+* list:                                  Semantic Actions in detail.
+                                                              (line  95)
+* math:                                  Semantic Actions in detail.
+                                                              (line 244)
+* notranslate:                           Semantic Actions in detail.
+                                                              (line 317)
+* para:                                  Semantic Actions in detail.
+                                                              (line 106)
+* skip:                                  Semantic Actions in detail.
+                                                              (line 338)
+* softreturn:                            Semantic Actions in detail.
+                                                              (line 343)
+* table:                                 Semantic Actions in detail.
+                                                              (line 130)
+
+
+File: liblouisxml.info,  Node: Function Index,  Next: Program Index,  Prev: Semantic Action Index,  Up: Top
+
+Function Index
+**************
+
+ [index ]
+* Menu:
+
+* lbx_backTranslateFile:                 lbx_backTranslateFile. (line 6)
+* lbx_free:                              lbx_free.              (line 6)
+* lbx_initialize:                        lbx_initialize.        (line 6)
+* lbx_translateFile:                     lbx_translateFile.     (line 6)
+* lbx_translateString:                   lbx_translateString.   (line 6)
+* lbx_translateTextFile:                 lbx_translateTextFile. (line 6)
+* lbx_version:                           lbx_version.           (line 6)
+
+
+File: liblouisxml.info,  Node: Program Index,  Prev: Function Index,  Up: Top
+
+Program Index
+*************
+
+ [index ]
+* Menu:
+
+* msword2brl:                            Transcribing Microsoft Word Files with msword2brl.
+                                                                (line 6)
+* xml2brl:                               Transcribing with the xml2brl program.
+                                                                (line 6)
+
+
+
+Tag Table:
+Node: Top1404
+Node: Introduction3708
+Node: Transcribing with the xml2brl program5655
+Node: Transcribing Microsoft Word Files with msword2brl11824
+Node: Customization Configuring liblouisxml12491
+Node: outputFormat17220
+Ref: formatFor setting21131
+Ref: lineFill setting22831
+Node: translation23034
+Node: xml24830
+Node: style27096
+Ref: contentsheader style32608
+Node: Connecting with the xml Document37265
+Node: Semantic Actions Overview37603
+Node: Semantic Actions in detail50851
+Ref: document semantic52386
+Ref: heading1 semantic52600
+Ref: heading2 semantic52860
+Ref: heading3 semantic53031
+Ref: heading4 semantic53201
+Ref: list semantic53383
+Ref: para semantic53617
+Ref: table semantic53899
+Ref: configfile semantic54263
+Ref: configstring semantic55200
+Ref: configtweak semantic55660
+Ref: contentsheader semantic56209
+Ref: italicx semantic56617
+Ref: math semantic57009
+Ref: notranslate semantic57801
+Ref: skip semantic58220
+Ref: softreturn semantic58385
+Node: Special Features58587
+Node: Table of contents58807
+Node: Implementing Braille Mathematics Codes61895
+Node: Programming with liblouisxml71960
+Node: License72381
+Node: Overview73440
+Node: Files and Paths76283
+Node: lbx_version78321
+Node: lbx_initialize78701
+Node: lbx_translateString79906
+Node: lbx_translateFile81958
+Node: lbx_translateTextFile83148
+Node: lbx_backTranslateFile84169
+Node: lbx_free85223
+Node: Configuration Settings Index85710
+Node: Semantic Action Index89070
+Node: Function Index91677
+Node: Program Index92352
+
+End Tag Table

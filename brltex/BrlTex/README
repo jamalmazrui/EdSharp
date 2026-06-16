@@ -1,0 +1,29 @@
+Welcome to BrlTex, the LaTex to Braille translator which handles mathematics. 
+Original author: Michael Whapples, mwhapples@users.sourceforge.net
+Contributors: Alastair Irving
+
+This distribution contains the following files:
+License	A text file containing the licensing information for BrlTex, should be read by everyone.
+INSTALL	a text file containing installation and usage instructions.
+install.py an installation script, see INSTALL for usage details.
+README	this file.
+README.developer	contains information about more technical parts of BrlTex and should be read by anyone who wants 
+to do development of BrlTex.
+BrlTex.py	the BrlTex script to allow usage of BrlTex where you uninstalled it.
+Todo	file containing what needs to be done information.
+bauk	the folder containing the bauk part of BrlTex
+Each code directory contains:
+__init__.py	The renderer file.
+translate.py	the text to braille translation module
+
+Copyright (C) 2006 Michael Whapples, All Rights Reserved.
+Original Author: Michael Whapples, mwhapples@users.sourceforge.net
+Contributors: Alastair Irving
+Unless linsor has explicitly granted you any other licensing terms, the contents of this file is subject to the RPL 1.1, 
+available at the BrlTex website (http://brltex.sourceforge.net).
+All software distributed under the Licenses is provided strictly on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, AND the licensor
+HEREBY DISCLAIMS ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT.
+Licensor reserves the right to change the Venue stated in the license to the UK.
+

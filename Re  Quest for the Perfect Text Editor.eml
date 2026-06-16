@@ -1,0 +1,156 @@
+X-Account-Key: account4
+X-UIDL: 00019ad7475a9155
+X-Mozilla-Status: 0011
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <programmingblind-bounce@freelists.org>
+Received: from mxas1.sovenix.net (mxas1.sovenix.net [216.127.142.100])
+	by cygnus.smart.net (8.13.8/8.13.8) with ESMTP id oAQFx0Ux028575
+	for <empower@smart.net>; Fri, 26 Nov 2010 10:59:00 -0500
+X-Envelope-From: programmingblind-bounce@freelists.org
+X-Envelope-To: empower@smart.net
+Received: From freelists-180.iquest.net (206.53.239.180) by mxas1.sovenix.net (MAILFOUNDRY) id QkhwJvl3Ed+D2QAw for empower@smart.net; Fri, 26 Nov 2010 16:07:27 -0000 (GMT)
+Received: from localhost (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id DF027D53569;
+	Fri, 26 Nov 2010 10:58:55 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=freelists.org;
+	s=turing; t=1290787135; bh=PNmhGDZOAduuEe9Ltm+HfwYJ84j4t7h2qHryYic/
+	4E8=; h=Message-ID:From:To:References:Subject:Date:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Sender:Reply-To:List-help:
+	 List-unsubscribe:List-Id:List-subscribe:List-owner:List-post:
+	 List-archive; b=qjK9oBJ6IQPmkQsvrVcFPNIRvr9HTeU+CgQXaUGHdJMZ3NSpMb
+	af3aZ5NY8vPfipzEsEg8vSXOVuHMmey8v9gPdWqFWCOIOclkPzQfJjr39bRurlipwSu
+	jEcqllSekG9x2b7+/a/Xx/HBEQP7EOj/LiX6XP341Aq+T7bMcB1OxI=
+X-Virus-Scanned: Debian amavisd-new at localhost.localdomain
+Received: from turing.freelists.org ([127.0.0.1])
+	by localhost (turing.freelists.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id NlzBV6vHJBqP; Fri, 26 Nov 2010 10:58:55 -0500 (EST)
+Received: from turing.freelists.org (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id B8FF5D53389;
+	Fri, 26 Nov 2010 10:58:43 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=freelists.org;
+	s=turing; t=1290787135; bh=PNmhGDZOAduuEe9Ltm+HfwYJ84j4t7h2qHryYic/
+	4E8=; h=Message-ID:From:To:References:Subject:Date:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Sender:Reply-To:List-help:
+	 List-unsubscribe:List-Id:List-subscribe:List-owner:List-post:
+	 List-archive; b=qjK9oBJ6IQPmkQsvrVcFPNIRvr9HTeU+CgQXaUGHdJMZ3NSpMb
+	af3aZ5NY8vPfipzEsEg8vSXOVuHMmey8v9gPdWqFWCOIOclkPzQfJjr39bRurlipwSu
+	jEcqllSekG9x2b7+/a/Xx/HBEQP7EOj/LiX6XP341Aq+T7bMcB1OxI=
+Received: with ECARTIS (v1.0.0; list programmingblind); Fri, 26 Nov 2010 10:58:43 -0500 (EST)
+X-Original-To: programmingblind@freelists.org
+Delivered-To: programmingblind@freelists.org
+Received: from localhost (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id 7F0FBD53541
+	for <programmingblind@freelists.org>; Fri, 26 Nov 2010 10:58:43 -0500 (EST)
+Authentication-Results: turing.freelists.org; dkim=pass (1024-bit key) header.i=@yahoo.com
+X-Virus-Scanned: Debian amavisd-new at localhost.localdomain
+Received: from turing.freelists.org ([127.0.0.1])
+	by localhost (turing.freelists.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id kUejW2y7r3pv for <programmingblind@freelists.org>;
+	Fri, 26 Nov 2010 10:58:43 -0500 (EST)
+Received: from smtp108.prem.mail.ac4.yahoo.com (smtp108.prem.mail.ac4.yahoo.com [76.13.13.47])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with SMTP id EB9A4D53389
+	for <programmingblind@freelists.org>; Fri, 26 Nov 2010 10:58:41 -0500 (EST)
+Received: (qmail 15053 invoked from network); 26 Nov 2010 15:58:40 -0000
+DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws;
+  s=s1024; d=yahoo.com;
+  h=DKIM-Signature:Received:X-Yahoo-SMTP:X-YMail-OSG:X-Yahoo-Newman-Property:Message-ID:Reply-To:From:To:References:Subject:Date:MIME-Version:Content-Type:Content-Transfer-Encoding:X-Priority:X-MSMail-Priority:X-Mailer:X-MimeOLE;
+  b=Zb5CnxbuE6wPL1KI/jz26C00cYfK0XWwS7qnTgGorKqK5rV6tDhZ0/3LHejenmi89gwNZJC8P2V2AS3dPL/Cfu+NkuDl9NVddAIClFuOP7JzIwRogFfptvrlrEgsuSq4wUDC7Bq11+hGybvttwOyZcOlJSgwDuCOzgW08W3x+Qk=  ;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1290787120; bh=itPtpZkwINNefFHSSh0pqCdyd0E1OfyzdfQ+8autE3s=; h=Received:X-Yahoo-SMTP:X-YMail-OSG:X-Yahoo-Newman-Property:Message-ID:Reply-To:From:To:References:Subject:Date:MIME-Version:Content-Type:Content-Transfer-Encoding:X-Priority:X-MSMail-Priority:X-Mailer:X-MimeOLE; b=6A8teUqujLZE15LolYem3JkIvRyExeU0SOSxvV2i9o4ipZpcxx/9zEvcBYyr2DneZvbCvGTd3hTIIiArfPxxFAAX6wO5l7y2p3kK6nZ3jdYNcnRLHwR0AoVq8CZNFRPyrXnnhx55TP2zDTDrStGPfVRxQ1vfwc0Xi27BOQfWnL0=
+Received: from bassclef (lauraeaves@70.59.76.240 with login)
+        by smtp108.prem.mail.ac4.yahoo.com with SMTP; 26 Nov 2010 07:58:40 -0800 PST
+X-Yahoo-SMTP: _bifr6qswBDjysUcDrcl35TR2rpf08Q-
+X-YMail-OSG: .sBxv.0VM1kczh5NsqSlsFzm6Kkjr9WB_F.fdSQFcZktmb2
+ WHH7ZcicIrc5Z6yYZWVS6hUnmatZRJi8RVuQF2pgz4cL94MiDW8nvI639ofL
+ .yqIMPqt8Rjlv_PFv8vzZuq604aP0eWTCgxxPHRDIn_StaBIGxFSKz_Pp8.n
+ UUQdxYHLweoElJw8hM.xJXrw3k6CwUCpULbGFN9LTMyFQrpkOrIKEIj9RJ6T
+ uqpYtAyq36cnAJH7r78p3iSNebt2A0ibheD5SZn2WvgjVwFI6bZ.jk4avmVG
+ YD6Xu_kr7gzXtFG4By.c_ppYIvxNXrHxjBPbh2_DLJ79c70_UXus-
+X-Yahoo-Newman-Property: ymail-3
+Message-ID: <FFD0DD32319642B0809EFE167A9C72F5@bassclef>
+From: "qubit" <lauraeaves@yahoo.com>
+To: <programmingblind@freelists.org>
+References: <4CEF7774.4060702@gmail.com>
+Subject: Re: Quest for the Perfect Text Editor
+Date: Fri, 26 Nov 2010 09:58:37 -0600
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2900.5931
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.5994
+X-archive-position: 21682
+X-ecartis-version: Ecartis v1.0.0
+Sender: programmingblind-bounce@freelists.org
+Errors-to: programmingblind-bounce@freelists.org
+X-original-sender: lauraeaves@yahoo.com
+Precedence: normal
+Reply-To: programmingblind@freelists.org
+List-help: <mailto:ecartis@freelists.org?Subject=help>
+List-unsubscribe: <programmingblind-request@freelists.org?Subject=unsubscribe>
+List-software: Ecartis version 1.0.0
+List-Id: programmingblind <programmingblind.freelists.org>
+X-List-ID: programmingblind <programmingblind.freelists.org>
+List-subscribe: <programmingblind-request@freelists.org?Subject=subscribe>
+List-owner: <mailto:james.homme@highmark.com;jeff.bishop@gmail.com>
+List-post: <mailto:programmingblind@freelists.org>
+List-archive: <http://www.freelists.org/archives/programmingblind>
+X-list: programmingblind
+
+I like edsharp, which was written by Jamal and is accessible.  It caters to 
+programming tasks.
+I have also heard of notetab, textpad, ultraedit, boxer and perhaps more I 
+don't remember. These all are particularly suited to programming tasks.
+Checkout inthane's grabbag and jamal's empowermentzone.com site for more.
+Or the www.nonvisualdevelopment.org site.
+Inthane -- I can't find my link to your grabbag. Can you send the link?
+Thx.
+Happy editing.
+--le
+
+----- Original Message ----- 
+From: "Kerneels Roos" <kerneels@gmail.com>
+To: <programmingblind@freelists.org>
+Sent: Friday, November 26, 2010 3:01 AM
+Subject: Quest for the Perfect Text Editor
+
+
+Hi list,
+I'm looking for some great programmer's text editors that are
+compattible with NVDA and/or JAWS. Since the latest NVDA seems to have
+some significant improvements over previous versions, I was wondering
+which text editors might now also become compattible with NVDA. It would
+actualy be a good idea to setup a few pages with tables comparing how
+well each editor works with all the diferent screen readers. Such a
+comparison database would be a great idea for a one stop refernce for
+many kinds of applications, but I thought the most important one for a
+programmer is definately a good text editor.
+
+Would other members on this list be interested in and/or willing to
+assist in compiling such a database?
+
+I think it could save a lot of time and effort for all of us if there
+could be a one stop database with profiles of useful applications,
+categorised by the job they perform and how well they perform that job.
+To start off, it could be limited to apps useful to programmers and text
+editors in particular.
+
+Regards.
+
+-- 
+Kerneels Roos
+Cell: +27 (0)82 309 1998
+Skype: cornelis.roos
+
+
+
+__________
+View the list's information and change your settings at
+http://www.freelists.org/list/programmingblind
+
+__________
+View the list's information and change your settings at 
+http://www.freelists.org/list/programmingblind
+

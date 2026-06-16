@@ -1,0 +1,26 @@
+﻿<Window 
+    x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Apress.VisualCSharpRecipes.Chapter17"
+    Title="Recipe17_02" 
+    Height="350" 
+    Width="350">
+    <UniformGrid>
+        <Button Content="Click me!" Click="UIElement_Click" Margin="10" />
+
+        <Border MouseLeftButtonDown="UIElement_Click" 
+            BorderThickness="1" BorderBrush="Black" Background="Transparent"
+            Margin="10" local:MainWindow.Rotation="3.14" />
+
+        <ListView PreviewMouseLeftButtonDown="UIElement_Click" 
+            Margin="10" local:MainWindow.Rotation="1.57">
+            <ListViewItem Content="Item 1" />
+            <ListViewItem Content="Item 1" />
+            <ListViewItem Content="Item 1" />
+            <ListViewItem Content="Item 1" />
+        </ListView>
+
+        <local:UserControl1 Margin="10" local:MainWindow.Rotation="1.0" />
+    </UniformGrid>
+</Window>

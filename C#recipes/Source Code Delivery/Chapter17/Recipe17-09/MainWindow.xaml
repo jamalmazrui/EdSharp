@@ -1,0 +1,13 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title=" Recipe17_09" Height="300" Width="300">
+    <Canvas Background="LightGray" Margin="1cm">
+        <Button Content="Button _1" Canvas.Top="-1cm" Canvas.Left="1cm" />
+        <Button Content="Button _2" Canvas.Bottom="1cm" Canvas.Left="1cm"
+                Canvas.ZIndex="1"/>
+        <Button Content="Button _3" Canvas.Top="1cm" Canvas.Right="1cm" />
+        <Button Content="Button _4" Canvas.Bottom="1.2cm" Canvas.Left="1.5cm" />
+        <Button Content="Button _5" Canvas.Bottom="1cm" Canvas.Right="-1cm" />
+    </Canvas>
+</Window>

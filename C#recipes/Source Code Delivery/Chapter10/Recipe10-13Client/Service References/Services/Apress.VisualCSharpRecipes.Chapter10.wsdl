@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="Apress.VisualCSharpRecipes.Chapter10" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="Apress.VisualCSharpRecipes.Chapter10" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="Apress.VisualCSharpRecipes.Chapter10/Imports">
+      <xsd:import namespace="Apress.VisualCSharpRecipes.Chapter10" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/Apress.VisualCSharpRecipes.Chapter10" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IEmployeeService_CreateEmployee_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateEmployee" />
+  </wsdl:message>
+  <wsdl:message name="IEmployeeService_CreateEmployee_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateEmployeeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEmployeeService_DeleteEmployee_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteEmployee" />
+  </wsdl:message>
+  <wsdl:message name="IEmployeeService_DeleteEmployee_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteEmployeeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEmployeeService_GetEmployeeById_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetEmployeeById" />
+  </wsdl:message>
+  <wsdl:message name="IEmployeeService_GetEmployeeById_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetEmployeeByIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEmployeeService_GetEmployeeByName_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetEmployeeByName" />
+  </wsdl:message>
+  <wsdl:message name="IEmployeeService_GetEmployeeByName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetEmployeeByNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEmployeeService_UpdateEmployee_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateEmployee" />
+  </wsdl:message>
+  <wsdl:message name="IEmployeeService_UpdateEmployee_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateEmployeeResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IEmployeeService">
+    <wsdl:operation name="CreateEmployee">
+      <wsdl:input wsaw:Action="Apress.VisualCSharpRecipes.Chapter10/IEmployeeService/CreateEmployee" message="tns:IEmployeeService_CreateEmployee_InputMessage" />
+      <wsdl:output wsaw:Action="Apress.VisualCSharpRecipes.Chapter10/IEmployeeService/CreateEmployeeResponse" message="tns:IEmployeeService_CreateEmployee_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteEmployee">
+      <wsdl:input wsaw:Action="Apress.VisualCSharpRecipes.Chapter10/IEmployeeService/DeleteEmployee" message="tns:IEmployeeService_DeleteEmployee_InputMessage" />
+      <wsdl:output wsaw:Action="Apress.VisualCSharpRecipes.Chapter10/IEmployeeService/DeleteEmployeeResponse" message="tns:IEmployeeService_DeleteEmployee_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetEmployeeById">
+      <wsdl:input wsaw:Action="Apress.VisualCSharpRecipes.Chapter10/IEmployeeService/GetEmployeeById" message="tns:IEmployeeService_GetEmployeeById_InputMessage" />
+      <wsdl:output wsaw:Action="Apress.VisualCSharpRecipes.Chapter10/IEmployeeService/GetEmployeeByIdResponse" message="tns:IEmployeeService_GetEmployeeById_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetEmployeeByName">
+      <wsdl:input wsaw:Action="Apress.VisualCSharpRecipes.Chapter10/IEmployeeService/GetEmployeeByName" message="tns:IEmployeeService_GetEmployeeByName_InputMessage" />
+      <wsdl:output wsaw:Action="Apress.VisualCSharpRecipes.Chapter10/IEmployeeService/GetEmployeeByNameResponse" message="tns:IEmployeeService_GetEmployeeByName_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateEmployee">
+      <wsdl:input wsaw:Action="Apress.VisualCSharpRecipes.Chapter10/IEmployeeService/UpdateEmployee" message="tns:IEmployeeService_UpdateEmployee_InputMessage" />
+      <wsdl:output wsaw:Action="Apress.VisualCSharpRecipes.Chapter10/IEmployeeService/UpdateEmployeeResponse" message="tns:IEmployeeService_UpdateEmployee_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

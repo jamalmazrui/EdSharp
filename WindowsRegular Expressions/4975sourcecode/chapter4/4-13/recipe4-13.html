@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>4-13. Validating U.S. Social Security Numbers</title>
+</head>
+<body>
+<form name="form1">
+	<input type="textbox" name="txtInput" />
+	<script type="text/javascript">
+	function validate() {
+		if (! document.form1.txtInput.value.match(/^(00[1-9]|0[1-9]\d|[1-5]\d{2}|6[0-5]\d|66[0-5]|66[7-9]|6[7-8]\d|690|7[0-2]\d|73[0-3]|750|76[4-9]|77[0-2])-(?!00)\d{2}-(?!0000)\d{4}$/)) {
+			alert("Please enter valid value!")	
+		} else {
+			alert("Success!")
+		}
+	}
+	</script>
+	<input type="button" name="btnSubmit" onclick="validate()" value="Go" />
+</form>
+</body>
+</html>

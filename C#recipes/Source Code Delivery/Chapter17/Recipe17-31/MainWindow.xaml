@@ -1,0 +1,56 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Recipe17_31" Height="300" Width="300">
+    <Window.Resources>
+        <Storyboard x:Key="ResizeEllipseStoryboard">
+            <ParallelTimeline>
+                <DoubleAnimationUsingKeyFrames
+                  Storyboard.TargetName="ellipse"
+                  Storyboard.TargetProperty="Height">
+                  <LinearDoubleKeyFrame Value="150" KeyTime="0:0:1" />
+                  <LinearDoubleKeyFrame Value="230" KeyTime="0:0:2" />
+                  <LinearDoubleKeyFrame Value="150" KeyTime="0:0:2.5" />
+                  <LinearDoubleKeyFrame Value="230" KeyTime="0:0:5" />
+                  <LinearDoubleKeyFrame Value="40" KeyTime="0:0:9" />
+                </DoubleAnimationUsingKeyFrames>
+                <DoubleAnimationUsingKeyFrames
+                  Storyboard.TargetName="ellipse"
+                  Storyboard.TargetProperty="Width">
+                  <DiscreteDoubleKeyFrame Value="150" KeyTime="0:0:1" />
+                  <DiscreteDoubleKeyFrame Value="230" KeyTime="0:0:2" />
+                  <DiscreteDoubleKeyFrame Value="150" KeyTime="0:0:2.5" />
+                  <DiscreteDoubleKeyFrame Value="230" KeyTime="0:0:5" />
+                  <DiscreteDoubleKeyFrame Value="40" KeyTime="0:0:9" />
+                </DoubleAnimationUsingKeyFrames>
+            </ParallelTimeline>
+        </Storyboard>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+
+        <Ellipse Height="40" Width="40" x:Name="ellipse"
+            HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Ellipse.Fill>
+                <RadialGradientBrush GradientOrigin="0.75,0.25">
+                    <GradientStop Color="Yellow" Offset="0.0" />
+                    <GradientStop Color="Orange" Offset="0.5" />
+                    <GradientStop Color="Red" Offset="1.0" />
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <Button Content="Start..." Margin="10" Grid.Row="1">
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.Click">
+                    <BeginStoryboard
+                        Storyboard="{DynamicResource ResizeEllipseStoryboard}" />
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+    </Grid>
+</Window>

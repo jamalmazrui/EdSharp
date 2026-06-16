@@ -1,0 +1,72 @@
+Subject:
+[program-l] Re: JAWS and Notepad2
+From:
+Øyvind Lode <oyvind.lode@lyse.net>
+Date:
+Fri, 14 May 2010 23:36:56 +0200
+To:
+<program-l@freelists.org>
+
+I can recommend EdSharp.
+I use EdSharp for all my text editor purposes including C# development.
+EdSharp is fully accessible.
+In fact it's written by a blind programmer.
+
+http://www.empowermentzone.com/edsetup.exe
+
+
+-----Original Message-----
+From: program-l-bounce@freelists.org [mailto:program-l-bounce@freelists.org] On Behalf Of John O'Regan
+Sent: 14. mai 2010 23:28
+To: programmingblind@freelists.org; program-l@freelists.org
+Subject: [program-l] JAWS and Notepad2
+
+Hello All,
+
+  I was searching for ages for the perfect little text editor.  And I
+thought I'd found it in Florian Balmer's excellent (and freeware!)
+Notepad2:
+
+  http://www.flos-freeware.ch/notepad2.html
+
+Just one slight problem... I can't get JAWS to read out selected text.
+ Apparently, the culprit is Scintilla: a source code editing
+component.
+
+  Rumour has it that there's a way round this restriction by way of a
+JAWS script.  Problem is, I know nothing of the Scintilla API or JAWS
+scripting.
+
+  Can anyone on this forum help me out?  Any help or useful
+suggestions would be greatly appreciated,
+
+yours sincerely,
+John O'Regan.
+
+
+PS: Hope it's okay to cross-post.  Shouldn't these two lists be merged
+anyway?  But I'm the fresh meat.  What do I know?
+** To leave the list, click on the immediately-following link:-
+** [mailto:program-l-request@freelists.org?subject=unsubscribe]
+** If this link doesn't work then send a message to:
+** program-l-request@freelists.org
+** and in the Subject line type
+** unsubscribe
+** For other list commands such as vacation mode, click on the
+** immediately-following link:-
+** [mailto:program-l-request@freelists.org?subject=faq]
+** or send a message, to
+** program-l-request@freelists.org with the Subject:- faq
+
+** To leave the list, click on the immediately-following link:-
+** [mailto:program-l-request@freelists.org?subject=unsubscribe]
+** If this link doesn't work then send a message to:
+** program-l-request@freelists.org
+** and in the Subject line type
+** unsubscribe
+** For other list commands such as vacation mode, click on the
+** immediately-following link:-
+** [mailto:program-l-request@freelists.org?subject=faq]
+** or send a message, to
+** program-l-request@freelists.org with the Subject:- faq
+

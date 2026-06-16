@@ -1,0 +1,1083 @@
+
+
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang='en-US'>
+<head id="Head1"><link href="https://i1.social.s-msft.com/Forums/RequestReduceContent/14f3bc0e8eff26f2a61fb8a74bf9de68-a2b51498279590031500eec84db4e0ee-RequestReducedStyle.css" rel="Stylesheet" type="text/css" /><link type="text/css" rel="stylesheet" xmlns="http://www.w3.org/1999/xhtml" />
+<link href="https://i1.social.s-msft.com/Forums/RequestReduceContent/6e3c38e537abedfc655360261051931c-ff86c7e8f5c62fbf62a70b7dbe6e724f-RequestReducedStyle.css" rel="Stylesheet" type="text/css" /><link type="text/css" rel="stylesheet" xmlns="http://www.w3.org/1999/xhtml" />
+
+
+    
+        <link rel="shortcut icon" href="https://i1.social.s-msft.com/Forums/GlobalResources/images/Msdn/favicon.ico" type="image/x-icon" /> 
+    <link href="https://i1.social.s-msft.com/Forums/RequestReduceContent/3f00c102ef97d96bd79b761c905900dd-9a97942e4b8238050b28e2cc6e7d1eaf-RequestReducedStyle.css" rel="Stylesheet" type="text/css" /><meta name="CommunityInfo" content=" B=Msdn;A=Forums;L=en-US;" /><meta name="ms.puidhash" content="" />
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.11.0.min.js" type="text/javascript" language="javascript"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.migrate/jquery-migrate-1.2.1.min.js" type="text/javascript" language="javascript"></script>
+    <script src="https://i1.social.s-msft.com/Forums/RequestReduceContent/198faff60a83dd768cacdf60118b0b19-6584225de39c1527dd5dd7bce11792ab-RequestReducedScript.js" type="text/javascript" ></script>    
+    <title>
+    How do I use AutoComplete feature for a ComboBox and a TextBox?
+</title>
+	
+        <!--[if IE 6]>
+    <link type="text/css" rel="Stylesheet" href="https://i1.social.s-msft.com/Forums/resources/styles/IE6Core.css?cver=0%0d%0a" />
+    <![endif]-->
+        
+   <script type="text/javascript">
+       var appInsights = window.appInsights || function (config) {
+           function r(config) { t[config] = function () { var i = arguments; t.queue.push(function () { t[config].apply(t, i) }) } } var t = { config: config }, u = document, e = window, o = "script", s = u.createElement(o), i, f; for (s.src = config.url || "//az416426.vo.msecnd.net/scripts/a/ai.0.js", u.getElementsByTagName(o)[0].parentNode.appendChild(s), t.cookie = u.cookie, t.queue = [], i = ["Event", "Exception", "Metric", "PageView", "Trace"]; i.length;) r("track" + i.pop()); return r("setAuthenticatedUserContext"), r("clearAuthenticatedUserContext"), config.disableExceptionTracking || (i = "onerror", r("_" + i), f = e[i], e[i] = function (config, r, u, e, o) { var s = f && f(config, r, u, e, o); return s !== !0 && t["_" + i](config, r, u, e, o), s }), t
+       }({
+           instrumentationKey: "17dc2809-9e17-4b32-a9a0-cdae1d466ff5"
+       });
+
+       window.appInsights = appInsights;
+       appInsights.trackPageView();
+   </script>
+    
+    <script type="text/javascript">
+        //<![CDATA[
+        var fms_site_culture = 'en-US'; var fms_site_lcid = '1033';
+        //]]>
+    </script>
+    
+    
+    <script src="https://i1.social.s-msft.com/Forums/RequestReduceContent/3c5c66dae383e989c2436e51e0b95498-df4d2dc89d69a0cd231342274ee34c28-RequestReducedScript.js" type="text/javascript" ></script>    <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/jquery-ui.js"></script>
+    <script>
+        if (top.location.href != self.location.href)
+            top.location.href = self.location.href;
+    </script>
+    <script src="https://i1.social.s-msft.com/Forums/RequestReduceContent/fbeddfde7c678cd5341121e0ee23c711-764641120452f582c83dce86b5200c2e-RequestReducedScript.js" type="text/javascript" ></script>    
+    
+<script type="text/javascript">
+    $(document).ready(function () {
+        prettyPrint();
+    });
+</script>
+    <link rel="alternate" type="application/rss+xml" title="How do I use AutoComplete feature for a ComboBox and a TextBox?" href="https://social.msdn.microsoft.com/Forums/en-US/Vsexpressvb/thread/cf62ab00-1513-472a-b3ac-3e77fe36028c?outputAs=rss" />
+
+        <meta name="Search.MSForums.Iroot" content="" />
+        <meta name="Search.MSForums.CategoryID" content="b2e60450-b249-45f6-a707-3d9c7a44992b" />
+        <meta name="Search.MSForums.CategoryName" content="archivev" />
+    
+            <link rel="canonical" href="https://social.msdn.microsoft.com/Forums/en-US/cf62ab00-1513-472a-b3ac-3e77fe36028c/how-do-i-use-autocomplete-feature-for-a-combobox-and-a-textbox?forum=Vsexpressvb" />
+    
+
+<!--
+Third party scripts and code linked to or referenced from this website are licensed to you by the parties that own such code, not by Microsoft.  See ASP.NET Ajax CDN Terms of Use â€“ http://www.asp.net/ajaxlibrary/CDN.ashx.
+-->
+    <script type="text/javascript" >
+        function addAsyncScript(src) {
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.async = true;
+            script.src = src;
+            return script;
+        };
+    </script>
+    
+        <script type="text/javascript" language="javascript">
+            jQuery(window).load(function () {
+                window.appInsights = {
+                    queue: [],
+                    start: function (n) {
+                        function r(n, t) {
+                            n[t] = function () {
+                                var i = arguments;
+                                n.queue.push(function () { n[t].apply(n, i); });
+                            };
+                        }
+                        var t, i;
+                        this.applicationInsightsId = n;
+                        this.accountId = null;
+                        this.appUserId = null;
+                        r(this, "logEvent");
+                        r(this, "logPageView");
+                    }
+                };
+                window.appInsights.start("e070756f-50f9-4b2d-88ac-4bc11e195f9b");
+                window.appInsights.logPageView();
+            });
+        </script>
+    </head>
+<body class="FF en-us Forums " dir= "ltr">
+    <div data-chameleon-template="megablade" ></div>
+    
+
+<div data-chameleon-template="epxheader"></div>
+<div data-chameleon-template="header">
+
+    
+    
+    
+        
+    <input type="hidden" id="isHeaderBleeding" value="true" xmlns="http://www.w3.org/1999/xhtml" />
+    <div id="ux-header" dir="ltr" class="ltr msdn" ms.pgarea="header" xmlns="http://www.w3.org/1999/xhtml">
+        
+
+      <header>
+        <span id="singleCol"></span>
+        <span id="doubleCol"></span>
+        <span id="isMobile"></span>
+        <div>
+          <div class="row topRow" role="banner">
+            <div class="top">
+              <div class="left">
+                <a class="msdnLogoImg" href="https://msdn.microsoft.com/en-us" title="MSDN home" ms.cmpgrp="mslogo">
+                  <div class="clip70x15">
+                    <img alt="Microsoft Logo" id="msft-logo" class="msft-logo" src="https://i-msdn.sec.s-msft.com/Areas/Centers/Themes/StandardDevCenter/Content/HeaderFooterSprite.png?v=636311636042314570" />
+                  </div>
+                </a>
+                <div class="GrayPipeDiv clip1x18">
+                  <img alt="Gray Pipe" class="GrayPipe" src="https://i-msdn.sec.s-msft.com/Areas/Centers/Themes/StandardDevCenter/Content/HeaderFooterSprite.png?v=636311636042314570" />
+                </div>
+                  <a class="DevCenterFullNameNonMegaBlade" href="https://msdn.microsoft.com/en-us">Developer Network</a>
+                <a class="DevCenterFullName" href="https://msdn.microsoft.com/en-us">Developer Network</a>
+                <a class="DevCenterShortName" href="https://msdn.microsoft.com/en-us">Developer</a>
+              </div>
+              <div class="right" ms.cmpgrp="aux nav">
+                <div id="signIn" aria-label="Profile button">
+<a class="SignedOutProfileElement createProfileLink" href="" title=""></a>      <span class=":ProfileElement:  profileName"></span>
+
+  <div class="profileImage"></div>
+
+
+<a class="SignedOutProfileElement createViewProfileLink" href="" title=":CreateViewProfileText:">:CreateViewProfileText:</a>
+<a class="scarabLink" href="/Forums/Account/Login?ReturnUrl=https%3a%2f%2fsocial.msdn.microsoft.com%2fForums%2fen-US%2fcf62ab00-1513-472a-b3ac-3e77fe36028c%2fhow-do-i-use-autocomplete-feature-for-a-combobox-and-a-textbox%3fforum%3dVsexpressvb">Sign in</a></div>
+
+
+
+
+                <div class="auxNav">
+                  <div>
+                    <div data-fragmentName="Subscriptions" id="Fragment_Subscriptions" xmlns="http://www.w3.org/1999/xhtml">
+  <a href="https://my.visualstudio.com/?wt.mc_id=o~msft~msdn~nav~subscriber&amp;campaign=o~msft~msdn~nav~subscriber" id="Subscriptions_2153_1" xmlns="http://www.w3.org/1999/xhtml">
+    <p xmlns="">Subscriber portal</p>
+  </a>
+</div>
+                    <div data-fragmentName="GetTools" id="Fragment_GetTools" xmlns="http://www.w3.org/1999/xhtml">
+  <a href="https://www.visualstudio.com/free-developer-offers/" id="GetTools_2153_3" xmlns="http://www.w3.org/1999/xhtml">Get tools</a>
+</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="row middleRow">
+            <div class="expandTop">
+              <div class="left"></div>
+              <div class="right"></div>
+            </div>
+          </div>
+        </div>
+        <div id="buttomRowWrapper" class="bg_default">
+          <div class="row buttomRow bg_default">
+            <div class="bottom">
+              <div class="left" role="navigation" aria-label="header toc" ms.cmpgrp="main nav">
+                <a id="grip" class="menu-icon" href="javascript:void(0)" role="button" aria-label="navigation menu"></a>
+                
+                <div id="drawer">
+                  <div class="toc">
+                    
+        <nav>
+            <ul class="navL1">
+                        <li class="inactive toggle">
+                                <a href="javascript:void(0)" role="button" aria-expanded="false">Downloads</a>
+                                <ul class="navL2">
+                                        <li class="inactive">
+
+                                                <a href="https://www.visualstudio.com/downloads/download-visual-studio-vs" role="link" title="Visual Studio">Visual Studio</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://msdn.microsoft.com/microsoft-sdks-msdn" role="link" title="SDKs">SDKs</a>
+                                        </li>
+                                        <li class="inactive toggle">
+
+                                                <a href="javascript:void(0)" title="Trial software" role="button" aria-expanded="false">Trial software</a>
+                                                <ul class="navL3">
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/evalcenter" title="Free downloads" role="link">Free downloads</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/officeevaluationresources" title="Office resources" role="link">Office resources</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/sharepoint2013resources" title="SharePoint Server 2013 resources" role="link">SharePoint Server 2013 resources</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/sqlserver2014expressresources" title="SQL Server 2014 Express resources" role="link">SQL Server 2014 Express resources</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/windowsserver2012r2resources" title="Windows Server 2012 resources" role="link">Windows Server 2012 resources</a>
+                                                        </li>
+                                                </ul>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li class="inactive toggle">
+                                <a href="javascript:void(0)" role="button" aria-expanded="false">Programs</a>
+                                <ul class="navL2">
+                                        <li class="inactive toggle">
+
+                                                <a href="javascript:void(0)" title="Subscriptions" role="button" aria-expanded="false">Subscriptions</a>
+                                                <ul class="navL3">
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/msdn-subscriptions-overview" title="Overview" role="link">Overview</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/msdn-subscriptions-administration" title="Administrators" role="link">Administrators</a>
+                                                        </li>
+                                                </ul>
+                                        </li>
+                                        <li class="inactive toggle">
+
+                                                <a href="javascript:void(0)" title="Students" role="button" aria-expanded="false">Students</a>
+                                                <ul class="navL3">
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/imagine/imagine-home" title="Microsoft Imagine" role="link">Microsoft Imagine</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/microsoftstudentpartners" title="Microsoft Student Partners" role="link">Microsoft Student Partners</a>
+                                                        </li>
+                                                </ul>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://msdn.microsoft.com/applicationbuilder" role="link" title="ISV">ISV</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://www.microsoft.com/bizspark" role="link" title="Startups">Startups</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://events.microsoft.com/" role="link" title="Events">Events</a>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li class="inactive current toggle">
+                                <a href="javascript:void(0)" role="button" aria-expanded="false">Community</a>
+                                <ul class="navL2">
+                                        <li class="inactive">
+
+                                                <a href="https://msdn.microsoft.com/magazine/dd767791" role="link" title="Magazine">Magazine</a>
+                                        </li>
+                                        <li class="inactive current">
+
+                                                <a href="https://social.msdn.microsoft.com/forums/" role="link" title="Forums">Forums</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://blogs.msdn.microsoft.com/" role="link" title="Blogs">Blogs</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://channel9.msdn.com/" role="link" title="Channel 9">Channel 9</a>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li class="inactive toggle">
+                                <a href="javascript:void(0)" role="button" aria-expanded="false">Documentation</a>
+                                <ul class="navL2">
+                                        <li class="inactive">
+
+                                                <a href="https://msdn.microsoft.com/library" role="link" title="APIs and reference">APIs and reference</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://msdn.microsoft.com/developer-centers-msdn" role="link" title="Dev centers">Dev centers</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://code.msdn.microsoft.com/" role="link" title="Samples">Samples</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://msdn.microsoft.com/retiredcontent" role="link" title="Retired content">Retired content</a>
+                                        </li>
+                                </ul>
+                        </li>
+            </ul>
+        </nav>
+
+                  </div>
+                </div>
+              </div>
+              <div class="right" ms.title="search" role="search">
+                <div data-fragmentName="SearchBox" id="Fragment_SearchBox" xmlns="http://www.w3.org/1999/xhtml">
+  <div class="SearchBox">
+    <form id="HeaderSearchForm" name="HeaderSearchForm" method="get">
+      <button id="FakeHeaderSearchButton" value="Search" type="submit" class="header-search-button" role="button" aria-label="search finder">
+        <div id="search-finder-div" class="clip16x20">
+          <img alt="search finder" id="search-finder" class="search-finder" src="https://i-msdn.sec.s-msft.com/Areas/Centers/Themes/StandardDevCenter/Content/HeaderFooterSprite.png?v=636311636042314570" />
+        </div>
+      </button>
+      <button id="HeaderSearchButton" style="display:none"></button>
+      <div id="searchSplitter"></div>
+      <div id="searchCloseIconDiv" class="clip16x20" tabindex="0">
+        <img alt="search clear" id="searchCloseIcon" class="search-clear-x" src="https://i-msdn.sec.s-msft.com/Areas/Centers/Themes/StandardDevCenter/Content/HeaderFooterSprite.png?v=636311636042314570" />
+      </div>
+      <div id="searchTextContainer" style="width: 0;">
+        <input id="HeaderSearchTextBox" name="query" type="text" aria-label="search edit textbox" maxlength="200" onfocus="Epx.Controls.SearchBox.watermarkFocus(event, this.title)" onblur="Epx.Controls.SearchBox.watermarkBlur(event, this.title)" />
+      </div>
+    </form>
+    
+    
+  </div>
+</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </header>
+
+    </div>
+
+    
+    
+    
+    <div id="jumpInfo" style="display: none" xmlns="http://www.w3.org/1999/xhtml">We’re sorry. The content you requested has been removed. You’ll be auto redirected in 1 second.</div>
+<script type="text/javascript" xmlns="http://www.w3.org/1999/xhtml">
+/*<![CDATA[*/
+/**/
+(window.MTPS || (window.MTPS = {})).cdnDomains || (window.MTPS.cdnDomains = { 
+	"image": "https://i-msdn.sec.s-msft.com", 
+	"js": "https://i2-msdn.sec.s-msft.com", 
+	"css": "https://i-msdn.sec.s-msft.com", 
+	"ttf": "https://i-msdn.sec.s-msft.com"
+});
+/**/
+/*]]>*/
+</script><script type="text/javascript" src="https://i2-msdn.sec.s-msft.com/Areas/Epx/Themes/Base/Content/SearchBox.js" xmlns="http://www.w3.org/1999/xhtml"></script><script type="text/javascript" src="https://i1.services.social.microsoft.com/search/Widgets/SearchBox.jss?boxid=HeaderSearchTextBox&amp;btnid=HeaderSearchButton&amp;minimumTermLength=2&amp;pgArea=header&amp;brand=Msdn&amp;loc=en-US&amp;focusOnInit=false&amp;emptyWatermark=true&amp;searchButtonTooltip=Search MSDN" xmlns="http://www.w3.org/1999/xhtml"></script><script type="text/javascript" src="https://i2-msdn.sec.s-msft.com/Combined.js?resources=0:Layout,1:Header,0:JumpRedirect;/Areas/Epx/Themes/Base/Content:0,/Areas/Centers/Themes/StandardDevCenter/Content:1&amp;amp;hashKey=2623E5AC3826A75D6F494145126D7BB1&amp;amp;v=4CA0DA26F5FDC16AF13F571654DA6A74" xmlns="http://www.w3.org/1999/xhtml"></script></div>
+    <div id="BodyBackground" class="ltr">
+        <div id="JelloSizer">    
+            <div id="JelloExpander">
+                <div id="JelloWrapper">
+                    <div class="Clear"> </div>
+                    
+                   
+                    
+                    
+                    <div class="Clear"> </div>
+                          
+                    <div class="topleftcorner"></div>           
+                    <div class="toprightcorner"></div>                                
+                    <div class="alley"> <!-- Left Side -->
+                        <div class="wrapper"> <!-- Right Side -->
+                            <div class="inner">  
+                            
+                                                 
+                                <div class="Clear"></div>   
+
+
+                                
+                                
+                                
+                                
+                                <div id="MainContent" class="Msdn">
+                                    
+    
+
+    <div id="contentWrapper" class="contentWrapperFull">
+        <div id="content" class="contentFull">
+            <div id="forumsMessage"></div>
+            
+    <input type="hidden" name="IsTrusted" id="trustedU" value="False" />
+<input type="hidden" name="IsTrustedCheckEnabled" id="isTrustedCheckEnabled" value="True" />
+<input type="hidden" name="isSpamCheckEnabled" id="isSpamCheckEnabled" value="True" />
+    <form id="__AjaxAntiForgeryForm" action="#" method="post"><input name="__RequestVerificationToken" type="hidden" value="D9klGTpHEgl47yh6tz0mxAH44SyemLBCNWUxD4KJJfHXlSKH4A8wX-ENmHy3ElKNKaAIp_e2NK6havbdoRoSSlG3EtwDpFZ3wqEvQYsRNy01" /></form>
+    
+     <div id="msdn-technet-en-thread">
+          <div id="topbar">
+    <div id="quickActions">
+        <div class="section">
+    <div id="askaquestion">
+        <a data-askurlbase="https://social.msdn.microsoft.com/Forums/en-US/newthread" class="btn askQuestionLink" title="Ask a question" href="/Forums/en-US/newthread?category=archivev&amp;forum=Vsexpressvb" name="ask" rel="nofollow">
+            Ask a question
+        </a>
+    </div>
+
+        </div>
+        <div class="section">
+<div id="quickLinks" class="dropdown" tabindex="0" aria-controls="quickAccessPopup" aria-label="Quick access" role="listbox" aria-expanded="false">
+    <div id="quickLinksText">
+        <span>Quick access</span>
+    </div>
+    <div id="quickLinksArrow" class="arrowcontainer">
+        <a class="arrowdown expanded"></a>
+    </div>
+    <ul class="popup" id="quickAccessPopup">
+                <li id="Home" role="option"><a href="https://social.msdn.microsoft.com/Forums/en-US/home">Forums home</a></li>
+                <li id="AllUsers" role="option"><a href="https://social.msdn.microsoft.com/Forums/en-US/browseusers">Browse forums users</a></li>
+                <li id="Faq" role="option"><a href="http://social.technet.microsoft.com/wiki/contents/articles/7359.forums-help-faq.aspx">FAQ</a></li>
+    </ul>
+    <div class="clear"></div>
+</div>
+        </div>
+    </div>
+    <div id="searchActionsContainer">
+        <div id="searchActions">
+            <div id="topBarImportantInfoContainer">
+<div id="relatedThreadsLinkContainer">
+    <a id="relatedThreadsLink" href="https://social.msdn.microsoft.com/Forums/en-US/home?searchTerm=How%20do%20I%20use%20AutoComplete%20feature%20for%20a%20ComboBox%20and%20a%20TextBox%3F" value="related threads link">Search related threads</a>
+</div>
+
+            </div>
+                        
+            <div id="threadsearchbarContainer">
+<form action="/Forums/en-US/home?sort=relevancedesc&amp;brandIgnore=True" data-clientrefresh="true" data-refreshcontent="Search" id="homesearchform" method="get"><div class="searchbar">
+    <table class="searchboxinnercontainer">
+        <tr>
+            <td id="searchBoxTd">
+                <input id="searchbox" tabindex="0" type="text" name="searchTerm" value="" />
+            </td>
+            <td class="imageWidth">
+                <input id="searchimage" type="submit" value="" />
+            </td>
+        </tr>
+    </table>
+</div>   </form>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+    <script>
+        $(function() {
+            Forums.Homepage.wireTopBar('Search forum questions');
+        });
+    </script>
+
+    
+
+<div id="forumDetailsTemplate">
+        <h3 class="header">
+            <a href="javascript:void(0);" rel="nofollow"><img class="icon rss" src="https://i1.social.s-msft.com/Forums/../globalresources/Images/trans.gif?cver=0%0d%0a"></a>
+        </h3>
+        <div>
+            <ul class="manageForumSection">
+                <li><a href="javascript:void(0);" rel="nofollow" class="manageForumLink"></a></li>
+                <li><a href="javascript:void(0);" rel="nofollow" class="manageRolesLink"></a></li>
+                <li><a href="javascript:void(0);" rel="nofollow" class="addAnnouncementLink"></a></li>
+                <li><a class="addRemoveForum" title="Remove From My Forums"  href="javascript:void(0);" rel="nofollow">Remove From My Forums</a></li>
+            </ul>
+            <div class="clear"></div>
+        </div>
+    <div class="content"></div>
+    <div class="announcements"><span></span></div>
+</div>
+        <div id="threadPageSidebarContainer" class="sideBarContainer">
+            <div id="sidebar">
+    <section>
+        <h3>Answered by:</h3>
+        <div id="userCard" class="section">
+            <div class="unified-baseball-card"
+                 data-profile-usercard-customlink='{"href":"https://social.msdn.microsoft.com/Forums/en-US/user/threads?user=Xiaoyun%20Li%20%E2%80%93%20MSFT", "text":"Xiaoyun Li – MSFT&#39;s threads"}'
+                 data-profile-userid="73968f36-c5dc-4af3-981b-5b156dd5d857">
+            </div>
+        </div>
+    </section>
+        <section>
+            <div id="relatedThreads" data-url="/Forums/en-US/search/RelatedThreadsByThread?searchTerm=How%20do%20I%20use%20AutoComplete%20feature%20for%20a%20ComboBox%20and%20a%20TextBox%3F&amp;threadId=cf62ab00-1513-472a-b3ac-3e77fe36028c&amp;allLanguages=False"></div>
+        </section>
+</div>
+        </div>
+        <div id="threadPageContentContainer">
+            <a id="toggleSidebar" href="javascript:void(0)" role="button" aria-label="Expand or Collapse" class="toggleOpen" data-state="1"></a>
+            <section>
+                <div id="threadPageContainer" class="section" >
+                    
+
+
+             
+
+
+<h1>
+    <div class="threadIcon icon  locked" title="Locked">
+        <img class="threadIcon icon  locked" src="https://i1.social.s-msft.com/Forums/../globalresources/Images/trans.gif?cver=0%0d%0a" alt=" locked" />
+    </div>
+    <span name="subject">How do I use AutoComplete feature for a ComboBox and a TextBox?</span>
+                         
+        <a id="rssFeed" href="https://social.msdn.microsoft.com/Forums/en-US/Vsexpressvb/thread/cf62ab00-1513-472a-b3ac-3e77fe36028c?outputAs=rss" rel="nofollow" aria-label="RRS feed"><img src="https://i1.social.s-msft.com/Forums/../globalresources/Images/trans.gif?cver=0%0d%0a" class="icon rss" /></a>
+</h1>   
+    
+    <div class="breadcrumb">
+
+
+        
+                <div itemscope itemtype="http://data-vocabulary.org/Breadcrumb" class="EyebrowElement">
+                    <a id="categoryBreadcrumb" href="https://social.msdn.microsoft.com/Forums/en-US/home?category=archivev" itemprop="url">
+                        <span itemprop="title">Archived Forums V</span>
+                    </a>
+                </div>
+            <span class="separator">&nbsp;&gt;&nbsp;</span>
+                <div itemscope itemtype="http://data-vocabulary.org/Breadcrumb" class="EyebrowElement forumBreadcrumb" data-forumdetailsurl="/Forums/api/category/getsingleforumdetails?forum=Vsexpressvb">
+                    <a id="forumBreadcrumb_Vsexpressvb" href="https://social.msdn.microsoft.com/Forums/en-US/home?forum=Vsexpressvb" itemprop="url">
+                        <span itemprop="title">Visual Basic Express Edition</span>
+
+                    </a>
+                    <div class="forumDetailsTip"></div>
+                </div>
+        <div class="clear"></div>
+    </div>
+
+
+
+    
+    <ul id="rootMessage" class="message root">
+
+        <h3>Question</h3>
+                <li id="cf62ab00-1513-472a-b3ac-3e77fe36028c" class="message  root">
+        <div class="messageContentContainer">
+        
+        
+            <div class="messageSidebar">
+
+                <div class="iconWrapper">
+                    <div class="status messageIcon  question root">
+                        <img class="icon  question root" src="https://i1.social.s-msft.com/Forums/../globalresources/Images/trans.gif?cver=0%0d%0a" alt="Question" />
+                    </div>
+                </div>
+                <div class="votingouterbox">            <div class="voting">
+                <a class="voteuphreflink" name="voteup" title="Vote as helpful" href="/Forums/Account/Login?ReturnUrl=https%3a%2f%2fsocial.msdn.microsoft.com%3a443%2fForums%2fen-US%2fcf62ab00-1513-472a-b3ac-3e77fe36028c%2fhow-do-i-use-autocomplete-feature-for-a-combobox-and-a-textbox%3fforum%3dVsexpressvb%26prof%3drequired">
+                    <img class="icon voteup" alt="Sign in to vote" title="Sign in to vote" src="https://i1.social.s-msft.com/Forums/../globalresources/Images/trans.gif?cver=0%0d%0a" />
+                    <div class="votenumber" style="display: block;">0</div>
+                </a>
+
+            </div>
+            <div class="votinglabel">
+                <span class="votinglabel type">
+                            <a title="Sign in to vote" href="/Forums/Account/Login?ReturnUrl=https%3a%2f%2fsocial.msdn.microsoft.com%3a443%2fForums%2fen-US%2fcf62ab00-1513-472a-b3ac-3e77fe36028c%2fhow-do-i-use-autocomplete-feature-for-a-combobox-and-a-textbox%3fforum%3dVsexpressvb%26prof%3drequired">Sign in to vote</a>
+                </span>
+            </div>
+</div>
+            </div>
+        
+            <div class="messageContent">
+                <div class="container">
+                    <div class="body"><p class=MsoListParagraph style="margin:0cm 0cm 0pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small">How do I use AutoComplete feature for a ComboBox and a TextBox?<br/></span></span></p><hr class="sig">Please remember to mark the replies as answers if they help and unmark them if they provide no help. <br/> 
+<a href="http://cfx.codeplex.com/">Welcome to the All-In-One Code Framework!</a> If you have any feedback, please tell us.</div>
+                        <input type="hidden" id="cf62ab00-1513-472a-b3ac-3e77fe36028c_attachments" value="" />
+
+                </div>
+                
+                <div class="messageFooter">
+                     <div class="actions">
+                        <div class="date">Thursday, April 09, 2009 9:30 AM</div>
+                        <div class="menu message">
+                            
+                            
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                    <div class="userInfo">
+                        <div class="unified-baseball-card-mini" data-profile-userid="73968f36-c5dc-4af3-981b-5b156dd5d857" data-profile-usercard-customlink='{"href":"https://social.msdn.microsoft.com/Forums/en-US/user/threads?user=Xiaoyun%20Li%20%E2%80%93%20MSFT", "text":"Xiaoyun Li – MSFT&#39;s threads"}'>
+                            <div class="profile-mini-content">
+                            </div>
+                        </div>
+
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </li> 
+    <div class="clear"></div>
+
+    </ul>
+
+
+        <div id="answers" class="answers">
+            <h3>
+                Answers
+            </h3>
+            <ul id="answersList" class="message">
+        <li id="ac49245f-4d82-4456-b5f8-aa66a75f52c4" class="message  answer">
+        <div class="messageContentContainer">
+        
+        
+            <div class="messageSidebar">
+
+                <div class="iconWrapper">
+                    <div class="status messageIcon  question answered">
+                        <img class="icon  question answered" src="https://i1.social.s-msft.com/Forums/../globalresources/Images/trans.gif?cver=0%0d%0a" alt="Question" />
+                    </div>
+                </div>
+                <div class="votingouterbox">            <div class="voting">
+                <a class="voteuphreflink" name="voteup" title="Vote as helpful" href="/Forums/Account/Login?ReturnUrl=https%3a%2f%2fsocial.msdn.microsoft.com%3a443%2fForums%2fen-US%2fcf62ab00-1513-472a-b3ac-3e77fe36028c%2fhow-do-i-use-autocomplete-feature-for-a-combobox-and-a-textbox%3fforum%3dVsexpressvb%26prof%3drequired">
+                    <img class="icon voteup" alt="Sign in to vote" title="Sign in to vote" src="https://i1.social.s-msft.com/Forums/../globalresources/Images/trans.gif?cver=0%0d%0a" />
+                    <div class="votenumber" style="display: block;">0</div>
+                </a>
+
+            </div>
+            <div class="votinglabel">
+                <span class="votinglabel type">
+                            <a title="Sign in to vote" href="/Forums/Account/Login?ReturnUrl=https%3a%2f%2fsocial.msdn.microsoft.com%3a443%2fForums%2fen-US%2fcf62ab00-1513-472a-b3ac-3e77fe36028c%2fhow-do-i-use-autocomplete-feature-for-a-combobox-and-a-textbox%3fforum%3dVsexpressvb%26prof%3drequired">Sign in to vote</a>
+                </span>
+            </div>
+</div>
+            </div>
+        
+            <div class="messageContent">
+                <div class="container">
+                    <div class="body"><p class=MsoListParagraphCxSpFirst style="margin:0cm 0cm 0pt;line-height:normal"> <span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small">The AutoComplete feature generally works like this:</span></span></p>
+<p class=MsoListParagraphCxSpMiddle style="margin:0cm 0cm 0pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small">When the user begins to type a string, the system suggests variations on the completed string. The user then accepts the suggestion or continues typing until they find an acceptable suggestion or until they have entered the whole thing manually.</span></span><span style="font-family:'Verdana','sans-serif'" lang=EN-US></span></p>
+<p></p>
+<p class=MsoListParagraphCxSpMiddle style="margin:0cm 0cm 0pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small">In Windows Forms, the TextBox or ComboBox control has the following related properties to the AutoComplete feature:</span></span><span style="font-family:'Verdana','sans-serif'" lang=EN-US></span></p>
+<p class=MsoListParagraphCxSpMiddle style="margin:0cm 0cm 0pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small">AutoCompleteMode</span></span></p>
+<p class=MsoListParagraphCxSpMiddle style="margin:0cm 0cm 0pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small">AutoCompleteSource</span></span></p>
+<p class=MsoListParagraphCxSpMiddle style="margin:0cm 0cm 0pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small">AutoCompleteCustomSource</span></span></p>
+<p></p>
+<p class=MsoListParagraphCxSpLast style="margin:0cm 0cm 0pt 35.45pt;text-indent:-18pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style=""><span style="font-size:small">1)</span><span style="font:7pt 'Times New Roman'">   </span></span></span><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small">TextBox AutoComplete feature code sample:</span></span><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small"> <br/></span></span></p>
+<div style="margin:0cm 0cm 0pt 35.45pt">
+<pre lang=x-vbnet>Public Class Form1
+    Private Sub Form1_Load(ByVal sender As System.Object, _
+                   ByVal e As System.EventArgs) _
+                   Handles MyBase.Load
+        TextBox1.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        TextBox1.AutoCompleteSource = AutoCompleteSource.CustomSource
+        'Add some options
+        TextBox1.AutoCompleteCustomSource.Add(&quot;111&quot;)
+        TextBox1.AutoCompleteCustomSource.Add(&quot;222&quot;)
+    End Sub
+
+    'Add TextBox1.Text to AutoCompleteCustomSource collection when leaving TextBox1.
+    Private Sub TextBox1_Leave(ByVal sender As System.Object, _
+                     ByVal e As System.EventArgs) _
+                     Handles TextBox1.Leave
+        TextBox1.AutoCompleteCustomSource.Add(TextBox1.Text)
+    End Sub
+End Class
+</pre>
+</div>
+<br/>
+<p class=MsoListParagraphCxSpFirst style="margin:0cm 0cm 0pt 35.45pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small">Related threads:</span></span></p>
+<p class=MsoListParagraphCxSpLast style="margin:0cm 0cm 0pt 35.45pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><a href="http://social.msdn.microsoft.com/Forums/en-US/vbgeneral/thread/95d26862-66eb-4e8e-9244-02f368ab6c36/"><span style=""><span style="font-size:small;color:#0000ff">http://social.msdn.microsoft.com/Forums/en-US/vbgeneral/thread/95d26862-66eb-4e8e-9244-02f368ab6c36/</span></span></a></span><span style="font-family:'Verdana','sans-serif'" lang=EN-US></span></p>
+<p><br/></p>
+<p class=MsoListParagraphCxSpLast style="margin:0cm 0cm 0pt 35.45pt;text-indent:-18pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style=""><span style=""><span style="font-size:small">2)</span><span style="font:7pt 'Times New Roman'">   </span></span></span><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small">ComboBox AutoComplete feature code sample: <br/></span></span></p>
+<div style="margin:0cm 0cm 0pt 35.45pt">
+<pre lang=x-vbnet>Public Class Form1
+    Private Sub Form1_Load(ByVal sender As System.Object, _
+                   ByVal e As System.EventArgs) Handles MyBase.Load
+        ComboBox1.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        ComboBox1.AutoCompleteSource = AutoCompleteSource.CustomSource
+        'Add some options
+        ComboBox1.AutoCompleteCustomSource.Add(&quot;111&quot;)
+        ComboBox1.AutoCompleteCustomSource.Add(&quot;222&quot;)
+    End Sub
+    'Add ComboBox1.Text to AutoCompleteCustomSource collection when leaving ComboBox
+    Private Sub ComboBox1_Leave(ByVal sender As System.Object, _
+                     ByVal e As System.EventArgs) _
+                     Handles ComboBox1.Leave
+        ComboBox1.AutoCompleteCustomSource.Add(ComboBox1.Text)
+    End Sub
+End Class
+</pre>
+</div>
+<br/>
+<p class=MsoListParagraphCxSpFirst style="margin:0cm 0cm 0pt 35.45pt;line-height:normal"><span style="font-size:10pt;font-family:'Verdana','sans-serif'" lang=EN-US> </span></p>
+<p class=MsoListParagraphCxSpMiddle style="margin:0cm 0cm 0pt 35.45pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small">Related threads:</span></span></p>
+<p class=MsoListParagraphCxSpMiddle style="margin:0cm 0cm 0pt 35.45pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><a href="http://social.msdn.microsoft.com/Forums/en/vbgeneral/thread/8e68f20a-c047-4b6f-9100-d55d03c781be/"><span style=""><span style="font-size:small;color:#0000ff">http://social.msdn.microsoft.com/Forums/en/vbgeneral/thread/8e68f20a-c047-4b6f-9100-d55d03c781be/</span></span></a></span><span style="font-family:'Verdana','sans-serif'" lang=EN-US></span></p>
+<p class=MsoListParagraphCxSpLast style="margin:0cm 0cm 0pt 35.45pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><span style="font-size:small">Auto Completion Text in Windows Forms 2.0 </span></span></p>
+<p class=MsoNormal style="margin:0cm 0cm 0pt 35.45pt;line-height:normal"><span style="font-family:'Verdana','sans-serif'" lang=EN-US><a href="http://www.c-sharpcorner.com/UploadFile/mahesh/AutoCompletion02012006113508AM/AutoCompletion.aspx"><span style=""><span style="font-size:small;color:#0000ff">http://www.c-sharpcorner.com/UploadFile/mahesh/AutoCompletion02012006113508AM/AutoCompletion.aspx</span></span></a></span><span style="font-family:'Verdana','sans-serif'" lang=EN-US></span></p>
+<p class=MsoNormal style="margin:0cm 0cm 10pt;line-height:normal"><span style="font-size:10pt;font-family:'Verdana','sans-serif'" lang=EN-US> </span></p>
+<br/>
+<p class=MsoNormal style="margin:0cm 0cm 10pt"><span style="font-size:small"><strong><span style="color:red;font-family:'Verdana','sans-serif'" lang=EN-US>For more FAQ about Visual Basic Express, please see </span></strong><strong><span style="font-weight:normal;color:red;font-family:'Verdana','sans-serif'" lang=EN-US><a href="http://social.msdn.microsoft.com/Forums/en-US/Vsexpressvb/thread/ab6675a0-44c2-4d92-a4f7-2b6332e4092c"><strong style="">Visual Basic Express FAQ</strong></a></span></strong><strong><span style="color:red;font-family:'Verdana','sans-serif'" lang=EN-US> </span></strong></span></p>
+<p class=MsoNormal style="margin:0cm 0cm 0pt"><span style="font-size:8pt;color:black;line-height:115%;font-family:'Verdana','sans-serif'" lang=EN-US> </span></p>
+<br/><br/>
+<hr class=sig>
+Please remember to mark the replies as answers if they help and unmark them if they provide no help. <br/><a href="http://cfx.codeplex.com/">Welcome to the All-In-One Code Framework!</a> If you have any feedback, please tell us.</div>
+                        <input type="hidden" id="ac49245f-4d82-4456-b5f8-aa66a75f52c4_attachments" value="" />
+
+                </div>
+                        <div>
+            <ul class="history">
+                    <li>
+                        <span class="type">Marked as answer by</span>
+                            <a class="author" href="https://social.msdn.microsoft.com:443/profile/xiaoyun%20li%20%E2%80%93%20msft?type=forum&amp;referrer=http://social.msdn.microsoft.com/Forums/en-US/cf62ab00-1513-472a-b3ac-3e77fe36028c/how-do-i-use-autocomplete-feature-for-a-combobox-and-a-textbox?forum=Vsexpressvb" rel="nofollow" title="About Xiaoyun Li – MSFT"><span>Xiaoyun Li – MSFT</span><abbr class="affil"></abbr></a>
+                        <span class="date">Thursday, April 09, 2009 9:42 AM</span>
+                    </li>
+            </ul>
+        </div>
+
+                <div class="messageFooter">
+                     <div class="actions">
+                        <div class="date">Thursday, April 09, 2009 9:32 AM</div>
+                        <div class="menu message">
+                            
+                            
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                    <div class="userInfo">
+                        <div class="unified-baseball-card-mini" data-profile-userid="73968f36-c5dc-4af3-981b-5b156dd5d857" data-profile-usercard-customlink='{"href":"https://social.msdn.microsoft.com/Forums/en-US/user/threads?user=Xiaoyun%20Li%20%E2%80%93%20MSFT", "text":"Xiaoyun Li – MSFT&#39;s threads"}'>
+                            <div class="profile-mini-content">
+                            </div>
+                        </div>
+
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </li> 
+    <div class="clear"></div>
+                        
+            </ul>
+        </div>
+
+
+
+                </div>
+            </section>
+        </div>
+    </div>
+
+            <div class="clear"></div>
+        </div>
+    </div>  
+    <div id="nrSurvey">
+        
+<script type="text/javascript">
+    if (!$.Microsoft) $.Microsoft = {};
+    if (!$.Microsoft.Mtps) $.Microsoft.Mtps = {};
+    if (!$.Microsoft.Mtps.NetReflectorInit)
+        $.Microsoft.Mtps.NetReflectorInit = {
+            surveyUrl: 'https://microsoft.qualtrics.com/jfe/form/SV_0jmDXzeFoIxQQcJ?Q_Language=EN',
+            throttleRate: "5.00",
+            privacyStatementText: "Privacy statement",
+            trackerWindowText: "<p>Please do not close this window.</p><p>Thank you! The survey will appear here when you've completed your visit, so <b>please do not close this window</b>.</p>",
+            logoUrl: '',
+            closeButtonUrl: '',
+            topBarUrl: 'https://www.microsoft.com/library/svy/sto/top-stripe.gif',
+            bottomBarUrl: 'https://www.microsoft.com/library/svy/sto/bottom-stripe.gif',
+            blankPage: 'https://social.msdn.microsoft.com/forums/blank.htm',
+            showSurveyToComscoreUser: 'no'
+        };
+</script>
+<link href="https://i1.social.s-msft.com/Forums/resources/NetReflector/NetReflector.css?cver=0%0d%0a"
+    rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+
+    setTimeout("Forums.loadScript('https://i1.social.s-msft.com/Forums/resources/NetReflector/NetReflector.js?cver=0%0d%0a')", 1000);
+</script>
+<div id="divNRMain" style="position: fixed; display: none; background-color: White;
+    z-index: 1001;">
+    <table width="360" cellpadding="3" cellspacing="0" border="0" bgcolor="#FFFFFF">
+        <tr>
+            <td style="padding: 3px;">
+                <table width="100%" cellpadding="1" cellspacing="0" border="0" bgcolor="#999999">
+                    <tr>
+                        <td style="padding: 1px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF">
+                                <tr valign="top">
+                                    <td>
+                                        <img src="" /><img id="imgNRClose" border="0" src="" /><br />
+                                        <img src="https://www.microsoft.com/library/svy/sto/top-stripe.gif" />
+                                        <table width="100%" cellpadding="5" cellspacing="0">
+                                            <tr>
+                                                <td style="padding: 2px">
+                                                    <div>
+                                                        <p>Microsoft is conducting an online survey to understand your opinion of the Msdn Web site. If you choose to participate, the online survey will be presented to you when you leave the Msdn Web site.</p><p>Would you like to participate?</p>
+                                                    </div>
+                                                    <div align="center">
+                                                        <input id="btnNRYes" type="button" value="  Yes  " />&nbsp;&nbsp;
+                                                        <input id="btnNRNo" type="button" value=" No " />
+                                                    </div>
+                                                    <div>
+                                                        <a href="http://privacy.microsoft.com/en-us/default.mspx" target="_blank">
+                                                            Privacy statement</a></div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <img src="https://www.microsoft.com/library/svy/sto/bottom-stripe.gif" />
+                                        <input type="hidden" id="hdnSurveyUrl" value="https://microsoft.qualtrics.com/jfe/form/SV_0jmDXzeFoIxQQcJ?Q_Language=EN" />
+                                        <input type="hidden" id="hdnLogoUrl" value="" />
+                                        <input type="hidden" id="hdnTopStripUrl" value="https://www.microsoft.com/library/svy/sto/top-stripe.gif" />
+                                        <input type="hidden" id="hdnBtmStripUrl" value="https://www.microsoft.com/library/svy/sto/bottom-stripe.gif" />
+                                        <input type="hidden" id="hdnTrackerText" value="<p>Please do not close this window.</p><p>Thank you! The survey will appear here when you've completed your visit, so <b>please do not close this window</b>.</p>" />
+                                        <input type="hidden" id="hdnPrivacyText" value="Privacy statement" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+
+    </div>  
+    
+                                    <div class="Clear"></div>
+                                </div>
+    
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="Clearbottom"></div>          
+                    <div class="bottomleftcorner"></div>            
+                    <div class="bottomrightcorner"></div> 
+                    
+                     
+                    
+
+                           
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+<div data-chameleon-template="epxfooter" ></div>
+<div data-chameleon-template="footer" >
+
+    
+    
+    
+        
+    <div id="ux-footer" class="" style="" dir="ltr" ms.pgarea="footer" xmlns="http://www.w3.org/1999/xhtml">
+            
+            <div id="footerSock" class="">
+                <div id="footerSockInner">
+
+
+                    <div class="footerSockCenter">
+                        <div class="userVoice">
+    <div class="title">
+        Help us improve MSDN.
+    </div>
+        <div class="description">
+            Visit our UserVoice Page to submit and vote on ideas!
+        </div>
+    <div class="buttons">
+        <a class="button" id="userVoiceButton" href="https://aka.ms/msdnfeedback" target="_blank">Make a suggestion</a>
+    </div>
+</div>  
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            
+
+        <footer class="top" role="navigation" aria-label="footer">
+            <div data-fragmentName="LeftLinks" id="Fragment_LeftLinks" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="linkList">
+    <h4 class="linkListTitle">Dev centers</h4>
+    <ul class="links">
+      <li>
+        <a href="https://developer.microsoft.com/en-us/windows" id="LeftLinks_2148_1" class="windowsBlue" xmlns="http://www.w3.org/1999/xhtml">Windows</a>
+      </li>
+      <li>
+        <a href="https://dev.office.com/" id="LeftLinks_2148_3" class="office" xmlns="http://www.w3.org/1999/xhtml">Office</a>
+      </li>
+      <li>
+        <a href="https://www.visualstudio.com/" id="LeftLinks_2148_4" class="visualStudio" xmlns="http://www.w3.org/1999/xhtml">Visual Studio</a>
+      </li>
+      <li>
+        <a href="https://docs.microsoft.com/en-us/azure/" target="_blank" id="LeftLinks_2148_12" xmlns="http://www.w3.org/1999/xhtml">Microsoft Azure</a>
+      </li>
+      <li>
+        <a href="https://msdn.microsoft.com/developer-centers-msdn" id="LeftLinks_2148_5" xmlns="http://www.w3.org/1999/xhtml">More...</a>
+      </li>
+    </ul>
+  </div>
+</div>
+            <div id="rightLinks">
+                <div data-fragmentName="CenterLinks1" id="Fragment_CenterLinks1" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="linkList">
+    <h4 class="linkListTitle">Learning resources</h4>
+    <ul class="links">
+      <li>
+        <a href="https://mva.microsoft.com/" id="CenterLinks1_2151_4" xmlns="http://www.w3.org/1999/xhtml">Microsoft Virtual Academy</a>
+      </li>
+      <li>
+        <a href="https://channel9.msdn.com/" id="CenterLinks1_2151_5" xmlns="http://www.w3.org/1999/xhtml">Channel 9</a>
+      </li>
+      <li>
+        <a href="https://msdn.microsoft.com/magazine/" id="CenterLinks1_2151_7" xmlns="http://www.w3.org/1999/xhtml">MSDN Magazine</a>
+      </li>
+    </ul>
+  </div>
+</div>
+                <div data-fragmentName="CenterLinks2" id="Fragment_CenterLinks2" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="linkList">
+    <h4 class="linkListTitle">Community</h4>
+    <ul class="links">
+      <li>
+        <a href="https://social.msdn.microsoft.com/forums/en-us/home" id="CenterLinks2_2151_8" xmlns="http://www.w3.org/1999/xhtml">Forums</a>
+      </li>
+      <li>
+        <a href="https://blogs.msdn.microsoft.com/developer-tools/" id="CenterLinks2_2151_9" xmlns="http://www.w3.org/1999/xhtml">Blogs</a>
+      </li>
+      <li>
+        <a href="https://www.codeplex.com/" id="CenterLinks2_2151_10" xmlns="http://www.w3.org/1999/xhtml">Codeplex</a>
+      </li>
+    </ul>
+  </div>
+</div>
+                <div data-fragmentName="CenterLinks3" id="Fragment_CenterLinks3" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="linkList">
+    <h4 class="linkListTitle">Support</h4>
+    <ul class="links">
+      <li>
+        <a href="https://msdn.microsoft.com/hh361695" id="CenterLinks3_2151_11" xmlns="http://www.w3.org/1999/xhtml">Self support</a>
+      </li>
+    </ul>
+  </div>
+</div>
+                <div data-fragmentName="CenterLinks4" id="Fragment_CenterLinks4" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="linkList">
+    <h4 class="linkListTitle">Programs</h4>
+    <ul class="links">
+      <li>
+        <a href="https://bizspark.microsoft.com/Startups/Index" id="CenterLinks4_2151_13" xmlns="http://www.w3.org/1999/xhtml">BizSpark (for startups)</a>
+      </li>
+      <li>
+        <a href="https://imagine.microsoft.com/en-us" id="CenterLinks4_2151_22" xmlns="http://www.w3.org/1999/xhtml">Microsoft Imagine (for students)</a>
+      </li>
+    </ul>
+  </div>
+</div>
+            </div>
+        </footer>
+
+        <footer class="bottom" role="contentinfo">
+            <span class="localeContainer">
+                
+    <form class="selectLocale" id="selectLocaleForm" action="https://msdn.microsoft.com/en-US/selectlocale-dmc">
+        <input type="hidden" name="fromPage" value="http%3a%2f%2fsocial.msdn.microsoft.com%2fForums%2fen-US%2fcf62ab00-1513-472a-b3ac-3e77fe36028c%2fhow-do-i-use-autocomplete-feature-for-a-combobox-and-a-textbox%3fforum%3dVsexpressvb" />
+        <a href="#" onclick="$('#selectLocaleForm').submit();return false;" title="Change your language">United States (English)</a>
+    </form>
+
+
+            </span>
+
+            <div data-fragmentName="BottomLinks" id="Fragment_BottomLinks" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="linkList">
+    <ul class="links horizontal">
+      <li>
+        <a href="https://msdn.microsoft.com/en-us/flashnewsletter" id="BottomLinks_2148_7" xmlns="http://www.w3.org/1999/xhtml">Newsletter</a>
+      </li>
+      <li>
+        <a href="https://msdn.microsoft.com/en-us/dn529288" id="BottomLinks_2148_8" xmlns="http://www.w3.org/1999/xhtml">Privacy &amp; cookies</a>
+      </li>
+      <li>
+        <a href="https://msdn.microsoft.com/en-us/cc300389" id="BottomLinks_2148_9" xmlns="http://www.w3.org/1999/xhtml">Terms of use</a>
+      </li>
+      <li>
+        <a href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/" id="BottomLinks_2148_10" xmlns="http://www.w3.org/1999/xhtml">Trademarks</a>
+      </li>
+    </ul>
+  </div>
+</div>
+            <span class="logoLegal">
+                <span class="logoSpan clip67x13" role="img" tabindex="0" aria-label="microsoft logo">
+                    <img alt="logo" class="logo" src="https://i-msdn.sec.s-msft.com/Areas/Centers/Themes/StandardDevCenter/Content/HeaderFooterSprite.png?v=636311636042314570" />
+                </span>
+                <span class="copyright">© 2017 Microsoft</span>
+            </span>
+        </footer>
+    </div>
+    
+<script type="text/javascript" xmlns="http://www.w3.org/1999/xhtml">
+/*<![CDATA[*/
+/**/
+(window.MTPS || (window.MTPS = {})).cdnDomains || (window.MTPS.cdnDomains = { 
+	"image": "https://i-msdn.sec.s-msft.com", 
+	"js": "https://i2-msdn.sec.s-msft.com", 
+	"css": "https://i-msdn.sec.s-msft.com", 
+	"ttf": "https://i-msdn.sec.s-msft.com"
+});
+/**/
+/*]]>*/
+</script><script type="text/javascript" src="https://i2-msdn.sec.s-msft.com/Combined.js?resources=0:NewFooterSock,1:Footer;/Areas/Epx/Themes/Base/Content:0,/Areas/Centers/Themes/StandardDevCenter/Content:1&amp;amp;hashKey=655C74AD9F16AC5A9493601EB1E1D770&amp;amp;v=D2CC3069F9910E3D2CC1049F0AB8C9F1" xmlns="http://www.w3.org/1999/xhtml"></script></div>    
+    
+    
+    
+
+    <script src="https://i1.social.s-msft.com/Forums/resources/scripts/core.js?cver=0%0d%0a" type="text/javascript" language="javascript"></script>
+    <script type="text/javascript" src="https://i1.social.s-msft.com/Forums/resources/scripts/jquery-impromptu.3.1.min.js?cver=0%0d%0a"></script>
+   
+    
+<script type="text/javascript" language="javascript">
+var railItems = ["/Forums/en-US/rightrailannouncement/Msdn/b2e60450-b249-45f6-a707-3d9c7a44992b"];
+
+</script>
+
+    <script type="text/javascript" language="javascript">
+            var pageData = {"validUser":false,"autoSubscribe":false};
+    </script>
+     <script type="text/javascript" language="javascript">
+         var userEmailConfigured = false;
+     </script>  
+    <script src="https://i1.social.s-msft.com/Forums/resources/scripts/messages.js?cver=0%0d%0a"  type="text/javascript" language="javascript"></script>
+    <script src="https://i1.social.s-msft.com/Forums/RequestReduceContent/0a2f6dbf06b9f0a53d16b1e5d0f929ac-dff89e51e56a79ed646ef2b26dec6b95-RequestReducedScript.js" type="text/javascript" ></script>    <script>
+        $(document).ready(function () {
+            Forums.ThreadPage.wirePageElements('Search forum questions');
+        });
+    </script>
+
+    
+    <noscript>
+        <img alt="" border="0" id="DCSIMG" width="1" height="1" src="http://m.webtrends.com/dcsour5e80000008ybade4ttg_1i1l/njs.gif?dcsuri=/nojavascript&amp;WT.js=No">
+    </noscript>
+     <script type="text/javascript">
+         function addAsyncScript(src) {
+             var script = document.createElement('script');
+             script.type = 'text/javascript';
+             script.async = true;
+             script.src = src;
+             return script;
+         };
+         jQuery(window).load(
+             function () {
+                 document.getElementsByTagName('body')[0].appendChild(addAsyncScript("https://i1.social.s-msft.com/Forums/resources/scripts/webtrends.js?cver=0%0d%0a"));
+            });
+        </script>
+
+    
+     <script type="text/javascript">
+         jQuery(window).load(
+             function () {
+                 document.getElementsByTagName('body')[0].appendChild(addAsyncScript("https://widgets.membership.s-msft.com/v1/loader.js?brand=Msdn&lang=en-US"));
+                 // Move ComScore script broker.js after DOM load and logic refer to ForumsMasterHelper.NsatSurveyScriptTag
+                 // Enable requirements: 1. brand in MSDN/Technet 2. locale is en-us 3. NsatSurveyEnabled flag turn on in web.config 
+                 
+                 document.getElementsByTagName('body')[0].appendChild(addAsyncScript("https://www.microsoft.com/library/svy/sto/broker.js"));
+               
+             });
+     </script>
+     
+    
+    <script src="https://i1.social.s-msft.com/Forums/RequestReduceContent/81d2b4286e0d3e86fbf7f2e3a2468529-c769c4ecaf33d04f3dea6af4337b9847-RequestReducedScript.js" type="text/javascript" ></script>        
+    <script type="text/javascript">
+        jQuery(window).load(
+            function () {
+                document.getElementsByTagName('body')[0].appendChild(addAsyncScript("https://i1.social.s-msft.com/Forums/GlobalResources/scripts/omni_rsid_social.js?cver=0%0d%0a"));
+                document.getElementsByTagName('body')[0].appendChild(addAsyncScript("https://i1.social.s-msft.com/Forums/GlobalResources/scripts/WEDCS.js?cver=0%0d%0a"));
+            });
+        </script>
+        <noscript><a href="https://www.omniture.com" title="Web Analytics">
+        <img src="https://msstonojssocial.112.2O7.net/b/ss/msstonojssocial/1/H.20.2--NS/0" height="1" width="1" alt="" />
+        </a></noscript>
+    
+	<script type="text/javascript" >
+        $(document).ready(function (){
+			$("img.DropDownArrow").attr("src","https://i1.social.s-msft.com/Forums/GlobalResources/images/Msdn/DropDownArrow_Gray.png");
+		});
+    </script>
+</body>
+</html>

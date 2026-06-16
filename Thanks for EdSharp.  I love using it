@@ -1,0 +1,65 @@
+X-Account-Key: account4
+X-UIDL: 00015059475a9155
+X-Mozilla-Status: 1003
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <TShults@PacBell.net>
+Received: from mxas1.sovenix.net (mxas1.sovenix.net [216.127.142.100])
+	by cygnus.smart.net (8.13.8/8.13.8) with ESMTP id o44G7TJM029234
+	for <empower@smart.net>; Tue, 4 May 2010 12:07:30 -0400
+X-Envelope-From: TShults@PacBell.net
+X-Envelope-To: empower@smart.net
+Received: From mxas1.sovenix.net (216.127.142.100) by mxas1.sovenix.net (MAILFOUNDRY) id iIavzlePEd+wFAAw for empower@smart.net; Tue, 4 May 2010 15:13:02 -0000 (GMT)
+X-Envelope-From: TShults@PacBell.net
+X-Envelope-To: empower@smart.net
+Received: From mxas1.sovenix.net (216.127.142.100) by mxas1.sovenix.net (MAILFOUNDRY) id FvEtfFeOEd+yTgAw for empower@smart.net; Tue, 4 May 2010 15:02:42 -0000 (GMT)
+X-Envelope-From: TShults@PacBell.net
+X-Envelope-To: empower@smart.net
+Received: From smtp125.sbc.mail.sp1.yahoo.com (69.147.65.184) by mxas1.sovenix.net (MAILFOUNDRY) id wYrNOleMEd+tSgAw for empower@smart.net; Tue, 4 May 2010 14:53:10 -0000 (GMT)
+Received: (qmail 19793 invoked from network); 4 May 2010 14:46:46 -0000
+DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws;
+  s=s1024; d=PacBell.net;
+  h=Received:X-Yahoo-SMTP:X-YMail-OSG:X-Yahoo-Newman-Property:Message-ID:From:To:Subject:Date:MIME-Version:Content-Type:Content-Transfer-Encoding:X-Priority:X-MSMail-Priority:X-Mailer:X-MIMEOLE;
+  b=6AuPWe21LxbnCBuHJ3BAsQwFollJGUPkUdhWss+v3buApzarP6TUoplI3xIFaWNtfAC6eD1mAU/P5MhA7Kdku2j+8/kquIFDXsgyggOAz76rRCo6CumxUegHpkyoGcEUYc6ludDLY3fiE+8kF9FVPmws17PPhKOoAYfWanEOMGY=  ;
+Received: from adsl-75-36-177-224.dsl.pltn13.sbcglobal.net (TShults@75.36.177.224 with login)
+        by smtp125.sbc.mail.sp1.yahoo.com with SMTP; 04 May 2010 07:46:46 -0700 PDT
+X-Yahoo-SMTP: L0qa28GswBAWk4aQMkF_XRVZwxcHGv4sbfgw32ZA3lA-
+X-YMail-OSG: M0FEnc4VM1lD6rY8LpKi3Sii_KZg0Ll9uii6P7km8wp6jVd293xUp1qo_zxc_PHXP.2quVKnIsc40VXD9CIkZ9vAyBB2KHQ2bPmUcY_w5ZNQJTsQvyIjHuA.A91S762DrYiaf6bQOs5M17vkiNNdtM3dMqwrJjxv6YAh6Lkt1HdoOm1UzRLHJlXPhEcmTGcWVW5WoDKwWJayjFxatgLyea1CR9oWrYzCQ58A0PGlNuEfdi49UjBQXgDxtp2s4CAN
+X-Yahoo-Newman-Property: ymail-3
+Message-ID: <8ABCCC1D6919484FBBEE453F19D9DA37@thomasea0d3198>
+From: "Tom Shults" <TShults@PacBell.net>
+To: "Jamal Mazrui" <empower@smart.net>
+Subject: Thanks for EdSharp.  I love using it.
+Date: Tue, 4 May 2010 07:46:39 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2900.5843
+X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2900.5579
+
+Jamal,
+
+Thank you for writing the EdSharp program.  I have been using it for about 
+two months, and I cannot tell you how much I like it.  Since I am a software 
+engineer, I use it much of the day.  It is such a great editor!
+
+I have been an embedded software engineer for about 25 years.  I got used to 
+using the VI editor many years ago.  That is the old Unix editor, though it 
+is now available on most any platform.  Most of my programming is done under 
+Windows these days, so I had been using GVIM for Windows, and sometimes 
+still VI for DOS.  This year I decided to move to a more normal editor, so I 
+looked into EdSharp.  It really is great!  I still use VI when I need to 
+exploit its regular expression capabilities, since I am so familiar with how 
+that works.  but now, most of my coding is done with EdSharp.  I still know 
+only the EdSharp basics.  I have more to learn.
+
+I did not see that you have asked for any fee or contribution for EdSharp. 
+If there is, I would be happy to get you a check.  If instead, EdSharp is a 
+labor of love, then at least I am very glad you love doing it!
+
+Many thanks,
+Tom Shults
+

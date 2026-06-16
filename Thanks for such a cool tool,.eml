@@ -1,0 +1,300 @@
+Return-path: <Will.Thoms@MorganStanley.com>
+Envelope-to: jamal@EmpowermentZone.com
+Delivery-date: Thu, 30 Jul 2015 04:26:58 -0600
+Received: from [82.192.90.130] (port=42882 helo=mx1.antispamcloud.com)
+	by host422.hostmonster.com with esmtps (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+	(Exim 4.84)
+	(envelope-from <Will.Thoms@MorganStanley.com>)
+	id 1ZKl3C-0000is-4S
+	for jamal@EmpowermentZone.com; Thu, 30 Jul 2015 04:26:58 -0600
+Received: from hqmtaint02.ms.com ([205.228.53.69])
+	by mx1.antispamcloud.com with esmtps (TLSv1:DHE-RSA-AES256-SHA:256)
+	(Exim 4.85)
+	(envelope-from <Will.Thoms@MorganStanley.com>)
+	id 1ZKl30-0000oc-QE
+	for jamal@EmpowermentZone.com; Thu, 30 Jul 2015 12:26:54 +0200
+Received: from hqmtaint02 (localhost.ms.com [127.0.0.1])
+	by hqmtaint02.ms.com (output Postfix) with ESMTP id 4535765C927
+	for <jamal@EmpowermentZone.com>; Thu, 30 Jul 2015 06:26:40 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=morganstanley.com;
+	s=p20150724; t=1438252000; x=1439461600;
+	bh=ueC7RoNkvdQ2Hdgw4lULhPAqeNVxzlxlYwB/f9+VUHI=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version;
+	b=h3ZU0bnKIekcYlHVd7aiJa71mYi4ctO8uZM75xSh8poJ6ihBQUmk9FRGIgfrTGdMd
+	 PrTzvcDPhmDZwJKbbqEsye5KwhocONgJJ38SBy4HSsJIbPRMGvRjoGzBTyGyrBdVkZ
+	 n8F/cfmmwNLNZTh/wcAdAf35aqdOSsChUqGUdEC0=
+Received: from rrsmmta03.ms.com (rrsmmta03.ms.com [10.204.137.7])
+	by hqmtaint02.ms.com (internal Postfix) with ESMTP id 2F76765C73E
+	for <jamal@EmpowermentZone.com>; Thu, 30 Jul 2015 06:26:40 -0400 (EDT)
+Received: from RRWEX2003N2.msad.ms.com (rrwex2003n2.ms.com [10.196.135.17])
+	by rrsmmta03.ms.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with ESMTP id t6UAQe0N025635
+	for <jamal@EmpowermentZone.com>; Thu, 30 Jul 2015 10:26:40 GMT
+Received: from HZWEX2011N3.msad.ms.com (10.195.133.51) by
+ RRWEX2003N2.msad.ms.com (10.196.135.17) with Microsoft SMTP Server (TLS) id
+ 14.3.235.1; Thu, 30 Jul 2015 06:26:39 -0400
+Received: from OYWEX0207N4.msad.ms.com (10.208.118.91) by
+ HZWEX2011N3.msad.ms.com (10.195.133.51) with Microsoft SMTP Server (TLS) id
+ 14.3.235.1; Thu, 30 Jul 2015 06:26:39 -0400
+Received: from OYWEX0201N3.msad.ms.com ([169.254.2.227]) by
+ OYWEX0207N4.msad.ms.com ([10.208.118.91]) with mapi id 14.03.0235.001; Thu,
+ 30 Jul 2015 11:26:38 +0100
+From: "Thoms, Will" <Will.Thoms@MorganStanley.com>
+To: "jamal@EmpowermentZone.com" <jamal@EmpowermentZone.com>
+Subject: Thanks for such a cool tool, 
+Thread-Topic: Thanks for such a cool tool, 
+Thread-Index: AdDKsjbLcH/s6oipTDWEgqsqv7atZA==
+Date: Thu, 30 Jul 2015 10:26:37 +0000
+Message-ID: <7FA7628216A2DC4C80A093DE9F028C722A1C9927@OYWEX0201N3.msad.ms.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mspolicyagent: version=1.0
+x-originating-ip: [10.173.255.32]
+Content-Type: multipart/alternative;
+	boundary="_000_7FA7628216A2DC4C80A093DE9F028C722A1C9927OYWEX0201N3msad_"
+MIME-Version: 1.0
+X-EXCLAIMER-MD-CONFIG: be3bdf5c-71de-49fb-a1b7-ad6a6a1df5e2
+X-EXCLAIMER-MD-CONFIG: f2a46809-d95e-4647-8996-91897c738879
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiPhishing: not scanned, disabled by settings
+X-KLMS-AntiVirus: Kaspersky Security 8.0 for Linux Mail Server, version 8.0.1.705, bases: 2015/07/30 05:03:00 #5969230; khse: 2014-03-12 13:55:01
+X-KLMS-AntiVirus-Status: Clean, skipped
+Received-SPF: pass (mx1.antispamcloud.com: domain of MorganStanley.com designates 205.228.53.69 as permitted sender) client-ip=205.228.53.69; envelope-from=Will.Thoms@MorganStanley.com; helo=hqmtaint02.ms.com;
+X-SPF-Result: mx1.antispamcloud.com: domain of MorganStanley.com designates 205.228.53.69 as permitted sender
+X-Filter-ID: s0sct1PQhAABKnZB5plbIUNA8K0iiep/KTiOJAvEPdcMRj9xV8BmFk7e6fDqjVAXfK9DtAO3mcsD
+ VMQm4EV9Difc4e52eEUtfiIjM33sezsNYYdvoYdUWWQDyVj8KhqSEqARV4m2Ai58aTvwf8xKfSLD
+ TK94xvcweQ8yuj9yEW7pMk5W8Hd+HvnajYreCo0VfqHPah1LgPZfDdFXB3UMBpEuAB0LBN0bdd5O
+ ZcOvoBZUNb393AltUwbY1ZJBEziswKyK2Dw/vvEzTlPn4Vcf9hRGoQi5ouYve0bYe0kGc9j6psXo
+ j7sBFejyBMeP0qW35YE5enyccp7RH4WQio3uGSeToVwWxoeMLiPh5fZg0qGl0xu4O7FIzJ5QfRG7
+ RRlH/pK1+KimONC06saQh7h0hB8jS2DItVnUomcB0eB9VWn0sa81P+CPAygpKe9+86Jq5odCSYVe
+ ghlg3SAiBp4BtZFVgpT1b21uZVckGp0ccOaXxJ+d3o37kjh7C1q3Ejj7CeoV4APYhaSHENJI3+L3
+ yC7rER2a9JGY1nVdRxbeMlQBIkUL/j1Y48GvmeURQjjEARAv1uH2g8XU/4nUb7ipleAutUBcofpO
+ 7Dr6TcbPtAw=
+X-Report-Abuse-To: spam@mx99.antispamcloud.com
+X-Filter-Fingerprint: IFrWXGses7OKB5S5G8/dJf0q4InAqB4eHoSGt53KDIU02u4zfeieLYdJ2REiQYYPDWXhYstotDTb
+ tNtop9YSC7DSGtgdP82etcQItKI0zq0ILXkEJCzAUYnSrjiopMzan8mw0AJfTLlouJr9B81ih84y
+ zc14eeHQP3FDx+aafEvAngiJn8dJcHuhN5h3c2ADlLL2q8JY6jbGBX0lLN2wCgiBTkHTq2c9d2y7
+ URuHSx6WGCKOus9nABr0Pk/4CplP
+Authentication-Results: antispamcloud.com; spf=pass smtp.mailfrom=Will.Thoms@MorganStanley.com
+Authentication-Results: antispamcloud.com; dkim=pass header.i=MorganStanley.com
+Authentication-Results: antispamcloud.com; dkim=pass header.i=morganstanley.com
+X-Spampanel-Class: unsure
+X-Spampanel-Evidence: Combined (0.15)
+X-Recommended-Action: accept
+X-Identified-User: {0000:host422.hostmonster.com:local:local} {sentby:Delivered locally}
+
+--_000_7FA7628216A2DC4C80A093DE9F028C722A1C9927OYWEX0201N3msad_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Jamal,
+Just wanted to ping through a note to say thanks for building EdSharp, I us=
+e it in my job and it's a fantastic accessible editor. I have a question fo=
+r you, do you know why after running a spellcheck through a 30  page docume=
+nt I lose the last 18 pages? I have Microsoft Word 2010 installed and the s=
+pellcheck works well except for this one rather important issue. Before the=
+ spellcheck there is 30 pages of text, after there is only 12. Even if I st=
+art the spellcheck up and immediately cancel it the same deleting text beha=
+viour happens.
+
+Any help most appreciated and thanks again for a really useful tool.
+
+Thanks
+Will
+
+
+Will Thoms, Vice President
+Morgan Stanley | Enterprise Infrastructure
+25 Cabot Square | Canary Wharf | Floor 04
+London, E14 4QA
+Phone: +44 20 7425-4346
+Will.Thoms@MorganStanley.com<mailto:Will.Thoms@MorganStanley.com>
+
+
+Be carbon conscious. Please consider our environment before printing this e=
+mail.
+
+
+
+________________________________
+
+NOTICE: Morgan Stanley is not acting as a municipal advisor and the opinion=
+s or views contained herein are not intended to be, and do not constitute, =
+advice within the meaning of Section 975 of the Dodd-Frank Wall Street Refo=
+rm and Consumer Protection Act. If you have received this communication in =
+error, please destroy all electronic and paper copies; do not disclose, use=
+ or act upon the information; and notify the sender immediately. Mistransmi=
+ssion is not intended to waive confidentiality or privilege. Morgan Stanley=
+ reserves the right, to the extent permitted under applicable law, to monit=
+or electronic communications. This message is subject to terms available at=
+ the following link: http://www.morganstanley.com/disclaimers If you cannot=
+ access these links, please notify us by reply message and we will send the=
+ contents to you. By messaging with Morgan Stanley you consent to the foreg=
+oing.
+
+--_000_7FA7628216A2DC4C80A093DE9F028C722A1C9927OYWEX0201N3msad_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<HTML xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<HEAD><!-- Template generated by Exclaimer Template Editor on 06:26:39 Thur=
+sday, 30 July 2015 -->
+<STYLE type=3Dtext/css>P.070acb60-80e6-4445-947a-c5f25b8d526c {
+	MARGIN: 0cm 0cm 0pt
+}
+LI.070acb60-80e6-4445-947a-c5f25b8d526c {
+	MARGIN: 0cm 0cm 0pt
+}
+DIV.070acb60-80e6-4445-947a-c5f25b8d526c {
+	MARGIN: 0cm 0cm 0pt
+}
+TABLE.070acb60-80e6-4445-947a-c5f25b8d526cTable {
+	MARGIN: 0cm 0cm 0pt
+}
+DIV.Section1 {
+	page: Section1
+}
+</STYLE>
+
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+ />
+<meta name=3D"Generator" content=3D"Microsoft Word 14 (filtered medium)" />
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-language:EN-US;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Arial","sans-serif";
+	color:black;
+	font-weight:normal;
+	font-style:normal;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-language:EN-US;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</HEAD>
+
+<BODY lang=3D"EN-GB" link=3D"blue" vlink=3D"purple">
+<P>
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span style=3Dfont-size:9.0pt;font-family:&quot;Aria=
+l&quot;,&quot;sans-serif&quot;;color:black>Hi Jamal,<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3Dfont-size:9.0pt;font-family:&quot;Aria=
+l&quot;,&quot;sans-serif&quot;;color:black>Just wanted to ping through a no=
+te to say thanks for building EdSharp, I use it in my job and it&#8217;s a =
+fantastic accessible editor. I have a question for you, do you
+ know why after running a spellcheck through a 30 &nbsp;page document I los=
+e the last 18 pages? I have Microsoft Word 2010 installed and the spellchec=
+k works well except for this one rather important issue. Before the spellch=
+eck there is 30 pages of text, after
+ there is only 12. Even if I start the spellcheck up and immediately cancel=
+ it the same deleting text behaviour happens.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3Dfont-size:9.0pt;font-family:&quot;Aria=
+l&quot;,&quot;sans-serif&quot;;color:black><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3Dfont-size:9.0pt;font-family:&quot;Aria=
+l&quot;,&quot;sans-serif&quot;;color:black>Any help most appreciated and th=
+anks again for a really useful tool.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3Dfont-size:9.0pt;font-family:&quot;Aria=
+l&quot;,&quot;sans-serif&quot;;color:black><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3Dfont-size:9.0pt;font-family:&quot;Aria=
+l&quot;,&quot;sans-serif&quot;;color:black>Thanks
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3Dfont-size:9.0pt;font-family:&quot;Aria=
+l&quot;,&quot;sans-serif&quot;;color:black>Will
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3Dfont-size:9.0pt;font-family:&quot;Aria=
+l&quot;,&quot;sans-serif&quot;;color:black><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3Dfont-size:9.0pt;font-family:&quot;Aria=
+l&quot;,&quot;sans-serif&quot;;color:black><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3Dfont-size:10.0pt;font-family:&quot;Ari=
+al&quot;,&quot;sans-serif&quot;;color:black;mso-fareast-language:EN-GB>Will=
+ Thoms, Vice President&nbsp;&nbsp;&nbsp;<br />
+</span><b><span style=3Dfont-size:7.5pt;font-family:&quot;Arial&quot;,&quot=
+;sans-serif&quot;;color:black;mso-fareast-language:EN-GB>Morgan Stanley | E=
+nterprise Infrastructure&nbsp;&nbsp;&nbsp;<br />
+</span></b><span style=3Dfont-size:7.5pt;font-family:&quot;Arial&quot;,&quo=
+t;sans-serif&quot;;color:black;mso-fareast-language:EN-GB>25 Cabot Square |=
+ Canary Wharf | Floor 04&nbsp;&nbsp;&nbsp;<br />
+London, E14 4QA&nbsp;&nbsp;&nbsp;<br />
+Phone: &#43;44 20 7425-4346&nbsp;&nbsp;&nbsp;<br />
+<a href=3D"mailto:Will.Thoms@MorganStanley.com"><span style=3Dcolor:blue>Wi=
+ll.Thoms@MorganStanley.com</span></a>&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;<br />
+</span><span style=3Dfont-size:7.5pt;font-family:&quot;Arial&quot;,&quot;sa=
+ns-serif&quot;;color:seagreen;mso-fareast-language:EN-GB>Be carbon consciou=
+s. Please consider our environment before printing this email.
+</span><span style=3Dfont-size:7.5pt;font-family:&quot;Arial&quot;,&quot;sa=
+ns-serif&quot;;color:black;mso-fareast-language:EN-GB>&nbsp;&nbsp;&nbsp;<br=
+ />
+&nbsp;&nbsp;&nbsp;</span><o:p></o:p></p>
+</div>
+<BR /><BR />
+<HR id=3DHR1 />
+<BR /><SPAN style=3D"FONT-FAMILY: Arial; COLOR: #808080; FONT-SIZE: 7.5pt">=
+NOTICE:=20
+Morgan Stanley is not acting as a municipal advisor and the opinions or vie=
+ws=20
+contained herein are not intended to be, and do not constitute, advice with=
+in=20
+the meaning of Section 975 of the Dodd-Frank Wall Street Reform and Consume=
+r=20
+Protection Act. If you have received this communication in error, please de=
+stroy=20
+all electronic and paper copies; do not disclose, use or act upon the=20
+information; and notify the sender immediately. Mistransmission is not inte=
+nded=20
+to waive confidentiality or privilege. Morgan Stanley reserves the right, t=
+o the=20
+extent permitted under applicable law, to monitor electronic communications=
+.=20
+This message is subject to terms available at the following link: <A style=
+=3D"FONT-FAMILY: Arial; COLOR: #808080; FONT-SIZE: 7.5pt" href=3D"http://ww=
+w.morganstanley.com/disclaimers">http://www.morganstanley.com/disclaimers</=
+A>=20
+If you cannot access these links, please notify us by reply message and we =
+will=20
+send the contents to you. By messaging with Morgan Stanley you consent to t=
+he=20
+foregoing.</SPAN><BR />
+<P></P>
+<P></P>
+<P></P></P></BODY>
+</HTML>
+
+
+--_000_7FA7628216A2DC4C80A093DE9F028C722A1C9927OYWEX0201N3msad_--

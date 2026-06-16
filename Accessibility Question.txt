@@ -1,0 +1,50 @@
+Subject:
+Re: Accessibility Question
+From:
+Genevieve Smith <writerpookie@gmail.com>
+Date:
+Mon, 31 May 2010 17:43:14 -0400
+To:
+Jamal Mazrui <empower@smart.net>
+
+Hi Jamal,
+
+Thank you so much for Ed Sharp. I looked at it briefly and it looks
+accessible. I really appreciate the help and advice you gave. Nice
+site, by the way--the one with all the resources anyone could possibly
+need who's blind. How did you set it up? Did you use an editor or just
+straight HTML? Well, thanks again. I'm off to check out Ed Sharp.
+Genevieve
+
+On 5/30/10, Jamal Mazrui <empower@smart.net> wrote:
+> > I'm biased about this, but let me suggest a text and code editor I
+> > develop called EdSharp, available at
+> >
+> > http://Empowermentzone.com/edsetup.exe
+> >
+> > It supports many programming languages, though not with "IntelliSense,"
+> > which has its benefits, but often gets in the way as much as it helps in
+> > the mainstream IDEs.
+> >
+> > Let me also suggest the FAQ I did on nonvisual development, available at
+> >
+> > http://EmpowermentZone.com/NonvisualDevelopmentFAQ.htm
+> >
+> > Jamal
+> >
+> >
+> > On 5/30/2010 5:33 PM, Genevieve Smith wrote:
+>> >> Hello, I love your site. I came across it after searching for
+>> >> accessible Integrated Development Environment. You see, I'm trying to
+>> >> program and I cannot seem to find an accessible IDE. I've tried both
+>> >> Eclipse and Visual Basic 2010 C++ from Microsoft. No luck on either of
+>> >> these. Every time I try to write in code, I cannot seem to do it. It's
+>> >> like nothing is happening. Nothing is written or seems to be because I
+>> >> cannot read it back. Do you happen to have any suggestions as to what
+>> >> I'm doing wrong or maybe a better program? Any input would be greatly
+>> >> appreciated.
+>> >> Thanks a lot, and keep up the good site!
+>> >> Genevieve
+>> >>
+> >
+

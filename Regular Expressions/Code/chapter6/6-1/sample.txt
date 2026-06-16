@@ -1,0 +1,18 @@
+#include <stdio>;
+
+/* My neat function here */
+int main ( arg* argv )
+{
+	int i = 0; /* this is a comment */
+	// Comment here
+	char* moo = "/* no comment */";
+	char* moo2 = "hello world"; /* double */
+	char* moo2 = "hello" + " world"; /* double */
+
+	/* TODO:  Need to work on this */
+
+	printf "TODO";
+	
+	/* Second print here */ printf "TODO";
+	print "/* comment in quotes*/\n";
+}

@@ -1,0 +1,10 @@
+yes
+Sorta
+No
+Y
+Maybe
+T
+True
+Dunno
+False
+Nope

@@ -1,0 +1,36 @@
+Traceback (most recent call last):
+  File "InPy.py", line 4437, in <module>
+    if iCount > 1:
+  File "C:\Program Files\FileDir\WebClient\WebClient_ZoomInfoContactSearch.py", line 20, in <module>
+    oRoot = xml.etree.ElementTree.parse(fResponse).getroot()
+AttributeError: 'module' object has no attribute 'ElementTree'
+Traceback (most recent call last):
+  File "InPy.py", line 4437, in <module>
+    if iCount > 1:
+  File "C:\Program Files\FileDir\WebClient\WebClient_ZoomInfoContactSearch.py", line 20, in <module>
+    oRoot = xml.etree.ElementTree.parse(fResponse).getroot()
+AttributeError: 'module' object has no attribute 'ElementTree'
+Traceback (most recent call last):
+  File "InPy.py", line 4437, in <module>
+    execfile(sCodeFile)
+IOError: [Errno 2] No such file or directory: 'C:\\Users\\Jamal Mazrui\\Desktop\\WebClient_MembersOfCongress.py'
+Traceback (most recent call last):
+  File "InPy.py", line 4437, in <module>
+    execfile(sCodeFile)
+IOError: [Errno 2] No such file or directory: 'C:\\Users\\Jamal Mazrui\\Desktop\\WebClient_MembersOfCongress.py'
+Traceback (most recent call last):
+  File "InPy.py", line 4437, in <module>
+    sys.excepthook = errorOutput
+  File "C:\EdSharp\WebClient\WebClient_1MileStories.py", line 8, in <module>
+    iLat, iLng = GoogleAddressToLatLng(sLocalAddress)
+  File "InPy.py", line 4166, in GoogleAddressToLatLng
+    for dPlace in aPlaces: 
+  File "googlemaps.pyo", line 244, in geocode
+  File "googlemaps.pyo", line 62, in fetch_json
+  File "urllib2.pyo", line 124, in urlopen
+  File "urllib2.pyo", line 387, in open
+  File "urllib2.pyo", line 498, in http_response
+  File "urllib2.pyo", line 425, in error
+  File "urllib2.pyo", line 360, in _call_chain
+  File "urllib2.pyo", line 506, in http_error_default
+urllib2.HTTPError: HTTP Error 404: Not Found

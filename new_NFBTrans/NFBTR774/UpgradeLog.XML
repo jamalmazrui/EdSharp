@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="nfbtrans">
+</Property><Property Name="Solution File" Value="C:\EdSharp\new_NFBTrans\NFBTR774\nfbtrans.sln">
+</Property><Property Name="User Options File" Value="C:\EdSharp\new_NFBTrans\NFBTR774\nfbtrans.suo">
+</Property><Property Name="Date" Value="Monday, July 04, 2011">
+</Property><Property Name="Time" Value="11:17 AM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="nfbtrans.sln" Description="File successfully backed up as C:\EdSharp\new_NFBTrans\NFBTR774\nfbtrans.sln.old">
+</Event><Event ErrorLevel="0" Project="" Source="nfbtrans.suo" Description="File successfully backed up as C:\EdSharp\new_NFBTrans\NFBTR774\nfbtrans.suo.old">
+</Event><Event ErrorLevel="0" Project="nfbtrans" Source="nfbtrans.vcproj" Description="Converting project file 'c:\edsharp\new_NFBTrans\NFBTR774\nfbtrans.vcproj'.">
+</Event><Event ErrorLevel="1" Project="nfbtrans" Source="nfbtrans.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="nfbtrans" Source="nfbtrans.vcproj" Description="Done converting to new project file 'c:\edsharp\new_NFBTrans\NFBTR774\nfbtrans.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="nfbtrans" Source="nfbtrans.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="nfbtrans.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="nfbtrans.sln" Description="Converted">
+</Event></UpgradeLog>

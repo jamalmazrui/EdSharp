@@ -1,0 +1,43 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Recipes17_24" Height="350" Width="300">
+    <Window.Resources>
+        <GeometryGroup x:Key="Clown">
+            <!--Head and hat-->
+            <PathGeometry>
+                <PathFigure IsClosed="True" StartPoint="40,0">
+                    <LineSegment Point="70,100" />
+                    <ArcSegment Point="70,110" IsLargeArc="True"
+                                    Size="10,10" SweepDirection="Clockwise"/>
+                    <ArcSegment Point="10,110" Size="30,30"
+                                    SweepDirection="Clockwise"/>
+                    <ArcSegment Point="10,100" IsLargeArc="True"
+                                    Size="10,10" SweepDirection="Clockwise"/>
+                </PathFigure>
+            </PathGeometry>
+
+            <!--Hat buttons-->
+            <EllipseGeometry Center="40,40" RadiusX="2" RadiusY="2"/>
+            <EllipseGeometry Center="40,50" RadiusX="2" RadiusY="2"/>
+            <EllipseGeometry Center="40,60" RadiusX="2" RadiusY="2"/>
+            <!--Eyes-->
+            <EllipseGeometry Center="30,100" RadiusX="3" RadiusY="2"/>
+            <EllipseGeometry Center="50,100" RadiusX="3" RadiusY="2"/>
+            <!--Nose-->
+            <EllipseGeometry Center="40,110" RadiusX="3" RadiusY="3"/>
+            <!--Mouth-->
+            <RectangleGeometry Rect="30,120 20,10"/>
+        </GeometryGroup>
+    </Window.Resources>
+    <UniformGrid Columns="2" Rows="2">
+        <Path HorizontalAlignment="Center" Data="{StaticResource Clown}"
+              Stroke="Black" StrokeThickness="1" Margin="5" Fill="BurlyWood"/>
+        <Path HorizontalAlignment="Center" Data="{StaticResource Clown}"
+              Stroke="Blue" StrokeThickness="5" Margin="5" />
+        <Path HorizontalAlignment="Center" Data="{StaticResource Clown}"
+              Stroke="Red" StrokeThickness="3"  StrokeDashArray="1 1"/>
+        <Path HorizontalAlignment="Center" Data="{StaticResource Clown}"
+              Stroke="Green" StrokeThickness="4" StrokeDashArray="2 1"/>
+    </UniformGrid>
+</Window>

@@ -1,0 +1,32 @@
+# EdSharp .gitignore
+# Files produced by BuildEdSharp.cmd, or fetched by it, or built by Inno Setup,
+# are reproducible and are not committed. A clone plus BuildEdSharp.cmd (and
+# Inno Setup, for the installer) regenerates everything below.
+
+# Compiled output
+EdSharp.exe
+EdSharp.dll
+*.pdb
+BuildEdSharp.log
+
+# Installer output (built from EdSharp_Setup.iss with Inno Setup)
+EdSharp_Setup.exe
+
+# Encoding-detection library fetched by FetchUde.ps1
+Ude.dll
+
+# Third-party Convert tools fetched by FetchConvertTools.ps1
+/Convert/astyle/
+/Convert/Pandoc/
+/Convert/Tidy/
+/Convert/liblouis/
+/Convert/Xpdf/
+/Convert/Tools.lock
+
+# Pandoc configuration backup written by ModernizePandocConfig.ps1
+*.pandoc-bak
+
+# Scratch files
+temp.txt
+temp.htm
+*.tmp

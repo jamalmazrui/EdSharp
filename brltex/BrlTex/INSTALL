@@ -1,0 +1,25 @@
+BrlTex Installation instructions
+
+There are two ways to install BrlTex now, either with the install script or manual install. NOTE: Other packages, such 
+as python and plasTeX, are written by other authors and may have different licenses.
+
+Installation script
+For this you will need python from www.python.org, and a copy of BrlTex from 
+SVN.
+
+To install, go to the BrlTex directory, and run install.py. This will download all other components and install them, 
+if it is successful it will inform you that you can then run BrlTex.py. After this update it just by running 'svn 
+update', you will not need to run install.py again. If it was unsuccessful, either you will need to try and 
+work out what went wrong or follow the manual install instructions.
+
+Manual install instructions
+You will need python from www.python.org, plasTeX from http://plastex.sourceforge.net and nfbtrans from www.nfbnet.org/files/nfbtrans/NFBTR770.ZIP, as well as a 
+copy of BrlTex from SVN.
+
+Follow the install instructions for python. Now decompress plasTeX, and modify the file Entities.py in 
+plasTeX/Base/LaTeX/. You need to comment out the last line of Entities.py, by putting a # at the beginning of the line. 
+Now install plasTeX as usual. If you are running Windows put nfbtrans.exe in the BrlTex directory, otherwise follow the 
+compile instructions for nfbtrans and move the executable from that into the BrlTex directory. Now you should be able to 
+run BrlTex.py.
+
+

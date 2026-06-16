@@ -1,0 +1,3 @@
+/etc/hosts
+/var/log/apache.log
+/home/ngood/mydocs/docs

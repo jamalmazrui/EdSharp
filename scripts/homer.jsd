@@ -1,0 +1,1923 @@
+:Function AppActivate
+:Synopsis Activate a window by its title or a substring within it
+:Returns Int
+:Param String/sTitle
+
+:Function AppActivateHandle
+:Synopsis Activate a window by its handle using ForceWin.exe
+:Returns Int
+:Param Handle/sTitle
+
+:Function AppDestroy
+:Synopsis Try to force an application to close
+:Returns Int
+:Param Handle/h
+
+:Function AppGetTitle
+:Synopsis Replacement for GetAppTitle(), which truncates long titles that extend beyond the visible window
+:Returns String
+:Param Handle/h
+
+:Function AppQuit
+:Synopsis Ask an application to exit
+:Returns Int
+:Param Handle/h
+
+:Function AppSetActive
+:Synopsis Activate or inactivate an application window
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iState
+
+:Function BooDialogMultiCheck
+:Synopsis Check items in a list using IronCOM.dll
+:Returns String
+:Param1 String/sTitle
+:Param2 string/sItems
+:Param3 string/sSelected
+:Param4 Int/iSort
+
+:Function BooDialogChoose
+:Synopsis Choose from a set of buttons using IronCOM.dll
+:Returns String
+:Param1 String/sTitle
+:Param2 string/sButtons
+:Param3 Int/iDefault
+
+:Function BooDialogMultiInput
+:Synopsis Get input from multiple edit boxes using IronCOM.dll
+:Returns String
+:Param1 String/sTitle
+:Param2 string/sFields
+:Param3 String/sValues
+
+:Function BooEval
+:Synopsis Evaluate code in Boo
+:Returns String
+:Param1 String/sCode
+:Param2 String/s1
+:Param3 String/s2
+:Param4 String/s3
+:Param5 String/s4
+
+:Function BooEvalFile
+:Synopsis Evaluate code in Boo file
+:Returns String
+:Param1 String/sFile
+:Param2 String/s1
+:Param3 String/s2
+:Param4 String/s3
+:Param5 String/s4
+
+:Function BooInit
+:Synopsis Try to initiate global Boo object if it does not exist, and then test whether it exists
+:Returns Int
+
+:Function BooPathGetShort
+:Synopsis Get short path (8.3 style) of a file or folder using IronCOM.dll
+:Returns String
+:Param String/sPath
+
+:Function BooShellGetSoundDevices
+:Synopsis Get list of sound devices using IronCOM.dll
+:Returns String
+
+:Function BooShellUrlToFile
+:Synopsis Download file using IronCOM.dll
+:Returns Int
+:Param1 String/sUrl
+:Param2 String/sFile
+
+:Function ButtonClick
+:Synopsis Activate a button
+:Returns Int
+:Param Handle/h
+
+:Function ButtonGet3State
+:Synopsis Test for 3 State check box style
+:Returns Int
+:Param Handle/h
+
+:Function ButtonGetCheck
+:Synopsis Test for check box style
+:Returns Int
+:Param Handle/h
+
+:Function ButtonGetChecked
+:Synopsis Test whether a checkbox or radio button is checked
+:Returns Int
+:Param Handle/h
+
+:Function ButtonGetDefault
+:Synopsis Test for default button style
+:Returns Int
+:Param Handle/h
+
+:Function ButtonGetGroup
+:Synopsis Test for group box style
+:Returns Int
+:Param Handle/h
+
+:Function ButtonGetPush
+:Synopsis Test for push button style
+:Returns Int
+:Param Handle/h
+
+:Function ButtonGetRadio
+:Synopsis Test for radio button style
+:Returns Int
+:Param Handle/h
+
+:Function ButtonInvokeID
+:Synopsis Activate a button by its ID
+:Returns Int
+:Param1 Handle/hDlg
+:Param2 Int/iID
+
+:Function ButtonSetChecked
+:Synopsis Set checked state of a checkbox or radio button
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iState
+
+:Function ControlClear
+:Synopsis Tell a control to clear/delete
+:Returns Int
+:Param Handle/h
+
+:Function ControlCopy
+:Synopsis Tell a control to copy to the clipboard
+:Returns Int
+:Param Handle/h
+
+:Function ControlCut
+:Synopsis Tell a control to cut to the clipboard
+:Returns Int
+:Param Handle/h
+
+:Function ControlGetTextLength
+:Synopsis Get the length of text in a control
+:Returns Int
+:Param Handle/h
+
+:Function ControlIsEdit
+:Synopsis Test whether a control is the standard Edit class
+:Returns Int
+:Param Handle/h
+
+:Function ControlIsIEDoc
+:Synopsis Test whether control class is Internet Explorer document
+:Returns Int
+
+:Function ControlIsIEServer
+:Synopsis Test whether control class is Internet Explorer Server
+:Returns Int
+:Param Handle/h
+
+:Function ControlIsMDIFrame
+:Synopsis Test whether control class is MDI frame (no child window open)
+:Returns Int
+:Param Handle/h
+
+:Function ControlIsRichEdit
+:Synopsis Test whether control class is RichEdit
+:Returns Int
+:Param Handle/h
+
+:Function ControlIsRichEditDoc
+:Synopsis Test whether control class is RichEdit document
+:Returns Int
+
+:Function ControlNext
+:Synopsis Go to the next control in the tab order
+:Returns Int
+:Param Handle/h
+
+:Function ControlPaste
+:Synopsis Tell a control to paste from the clipboard
+:Returns Int
+:Param Handle/h
+
+:Function ControlPrevious
+:Synopsis Go to the previous control in the tab order
+:Returns Int
+:Param Handle/h
+
+:Function ControlPrint
+:Synopsis Tell a control to print
+:Returns Int
+:Param Handle/h
+
+:Function ControlUndo
+:Synopsis Tell a control to undo the last editing operation
+:Returns Int
+:Param Handle/h
+
+:Function ConvertExcelToText
+:Synopsis Convert .xls to .txt file using Microsoft Excel
+:Returns Int
+:Param1 String/sSource
+:Param2 String/sTarget
+
+:Function ConvertFileToText
+:Synopsis Convert another format to text using a technique based on its extension
+:Returns Int
+:Param1 String/sSource
+:Param2 String/sTarget
+
+:Function ConvertHTMLToString
+:Synopsis Get text of an HTML file
+:Returns String
+:Param String/sFile
+
+:Function ConvertHTMLToText
+:Synopsis Convert .htm or .html to .txt file using Microsoft Internet Explorer
+:Returns Int
+:Param1 String/sSource
+:Param2 String/sTarget
+
+:Function ConvertJssToJsd
+:Synopsis Refresh .jsd from .jss file
+:Returns String
+:Param String/sJss
+
+:Function ConvertPowerPointToText
+:Synopsis Convert .ppt to .txt file using PowerPoint
+:Returns Int
+:Param1 String/sSource
+:Param2 String/sTarget
+
+:Function ConvertWordToText
+:Synopsis Convert .doc or .rtf to .txt file using Microsoft Word
+:Returns Int
+:Param1 String/sSource
+:Param2 String/sTarget
+
+:Function DialogBrowseForFolder
+:Synopsis Choose folder from a standard Windows dialog, or simple input box below Windows 2000
+:Returns String
+:Param String/sDir
+
+:Function DialogBrowseForFolderHelper
+:Synopsis AppActivateTitle("Browse for Folder")
+
+:Function DialogConfirm
+:Synopsis Get choice from a standard Yes, No, or Cancel dialog
+:Returns String
+:Param1 String/sTitle
+:Param2 String/sMessage
+:Param3 String/sDefault
+
+:Function DialogHelpMenu
+:Synopsis Version of HelpMenuEx with common defaults
+
+:Function DialogHelpMenuEx
+:Synopsis Dynamically create list of scripts to invoke based on section of a .jkm file
+:Param1 String/sTitle
+:Param2 String/sSection
+:Param3 Int/iSort
+
+:Function DialogInput
+:Synopsis Get input from a single edit box
+:Returns String
+:Param1 String/sTitle
+:Param2 String/sField
+:Param3 String/sValue
+
+:Function DialogPick
+:Synopsis Get choice from a standard list box
+:Returns String
+:Param1 String/sTitle
+:Param2 String/sValues
+:Param3 Int/iSort
+
+:Function DialogOpenFile
+:Synopsis Choose file from a standard Windows dialog, or simple input box below Windows XP
+:Returns String
+:Param String/sDir
+
+:Function DialogOpenFileHelper
+:Synopsis AppActivateTitle("Open")
+
+:Function DialogSaveFile
+:Synopsis Choose file from a standard Windows dialog, or simple input box below Windows XP
+:Returns String
+:Param String/sFile
+
+:Function DialogSaveFileHelper
+:Synopsis AppActivateTitle("Save")
+
+:Function EditGetIndex
+:Synopsis Get cursor position as index from beginning of text
+:Returns Int
+:Param Handle/h
+
+:Function EditGetIndexColumn
+:Synopsis Get column of cursor position
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iIndex
+
+:Function EditGetIndexLine
+:Synopsis Get line of cursor position
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iIndex
+
+:Function EditGetLineCount
+:Synopsis Get number of lines of text
+:Returns Int
+:Param Handle/h
+
+:Function EditGetLineEnd
+:Synopsis Get index of position following a line
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iLine
+
+:Function EditGetLineLength
+:Synopsis Get length of a line
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iLine
+
+:Function EditGetLineLengthFromIndex
+:Synopsis Get length of line containing index
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iIndex
+
+:Function EditGetLineStart
+:Synopsis Get index at start of line
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iLine
+
+:Function EditGetLineText
+:Synopsis Get text of a line
+:Returns String
+:Param1 Handle/h
+:Param2 Int/iLine
+
+:Function EditGetModified
+:Synopsis Test whether text in control has been saved to disk
+:Returns Int
+:Param Handle/h
+
+:Function EditGetMultiline
+:Synopsis Test for Multiline style
+:Returns Int
+:Param Handle/h
+
+:Function EditGetRange
+:Synopsis Get text between lower and upper positions, excluding end point
+:Returns String
+:Param1 Handle/h
+:Param2 Int/iStart
+:Param3 Int/iEnd
+
+:Function EditGetReadOnly
+:Synopsis Test for ReadOnly style
+:Returns Int
+:Param Handle/h
+
+:Function EditGetSelectedText
+:Synopsis Get selected text
+:Returns String
+:Param Handle/h
+
+:Function EditGetSelectionEnd
+:Synopsis Get index at end of selection
+:Returns Int
+:Param Handle/h
+
+:Function EditGetSelectionStart
+:Synopsis Get index at start of selection
+:Returns Int
+:Param Handle/h
+
+:Function EditGetSize
+:Synopsis Get size of text
+:Returns Int
+:Param Handle/h
+
+:Function EditGetText
+:Synopsis Get all text
+:Returns String
+:Param Handle/h
+
+:Function EditGoBottom
+:Synopsis Go to bottom position
+:Returns Int
+:Param Handle/h
+
+:Function EditGoTop
+:Synopsis Go to top position
+:Returns Int
+:Param Handle/h
+
+:Function EditReplaceRange
+:Synopsis Replace text between lower and upper positions, excluding end point
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iStart
+:Param3 Int/iEnd
+:Param4 String/sReplace
+
+:Function EditScrollCaret
+:Synopsis Adjust view of text to ensure that caret is visible
+:Returns Int
+:Param Handle/h
+
+:Function EditSelectAll
+:Synopsis Select all text
+:Returns Int
+:Param Handle/h
+
+:Function EditSelectChunk
+:Synopsis Select chunk of text at cursor, or extend selection to next chunk
+:Returns Int
+:Param Handle/h
+
+:Function EditSetIndex
+:Synopsis Set cursor position
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iIndex
+
+:Function EditSetModified
+:Synopsis Set modified status of text
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iState
+
+:Function EditSetSelection
+:Synopsis Select text within range
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iStart
+:Param3 Int/iEnd
+
+:Function EditSetText
+:Synopsis Set all text
+:Returns Int
+:Param1 Handle/h
+:Param2 String/sText
+
+:Function EditUnselectAll
+:Synopsis Unselect all text
+:Returns Int
+:Param Handle/h
+
+:Function FileCopy
+:Synopsis Copy source to destination file, replacing if it exists
+:Returns Int
+:Param1 String/sSource
+:Param2 String/sTarget
+
+:Function FileDelete
+:Synopsis Delete a file if it exists, and test whether it is subsequently absent
+:Description either because it was successfully deleted or because it was not present in the first place
+:Returns Int
+:Param String/sFile
+
+:Function FileGetSize
+:Synopsis Get size of a file
+:Returns Int
+:Param String/sFile
+
+:Function FileMove
+:Synopsis Move source to destination file, replacing if it exists
+:Returns Int
+:Param1 String/sSource
+:Param2 String/sTarget
+
+:Function FileToString
+:Synopsis Get content of text (not binary) file
+:Returns String
+:Param String/sFile
+
+:Function FolderCopy
+:Synopsis Copy source to destination Folder, replacing if it exists
+:Returns Int
+:Param1 String/sSource
+:Param2 String/sTarget
+
+:Function FolderCreate
+:Synopsis Create folder
+:Returns Int
+:Param String/sFolder
+
+:Function FolderDelete
+:Synopsis Delete a Folder if it exists, and test whether it is subsequently absent
+:Description either because it was successfully deleted or because it was not present in the first place
+:Returns Int
+:Param String/sFolder
+
+:Function FolderExists
+:Synopsis Test whether folder exists
+:Returns Int
+:Param String/sPath
+
+:Function FolderGetSize
+:Synopsis Get size of folder, summing the sizes of files and subfolders it contains
+:Returns Int
+:Param String/sFolder
+
+:Function FolderIsRoot
+:Synopsis Test whether folder is root of a drive
+:Returns Int
+:Param String/sFolder
+
+:Function FolderMove
+:Synopsis Move source to destination Folder, replacing if it exists
+:Returns Int
+:Param1 String/sSource
+:Param2 String/sTarget
+
+:Function IBox
+:Param Int/i
+
+:Function IEEval
+:Synopsis Get evaluation of a JavaScript expression using IE
+:Returns String
+:Param String/sText
+
+:Function IniDeleteFile
+:Synopsis Delete a .ini file, including cached version in memory
+:Returns Int
+:Param String/sIni
+
+:Function IniFlushFile
+:Synopsis Flush cached version in memory to disk
+:Returns Int
+:Param String/sIni
+
+:Function IniFormDialogMultiInput
+:Synopsis Get input from multiple edit boxes using IniForm.exe
+:Returns String
+:Param1 String/sTitle
+:Param2 string/sFields
+:Param3 String/sValues
+
+:Function IniFormDialogHelper
+:Synopsis TypeKey("Home")
+
+:Function IniFormDialogInfo
+:Synopsis Display information in a multiline edit box using IniForm.exe
+:Param1 String/sTitle
+:Param2 String/sText
+
+:Function IniFormDialogInput
+:Returns String
+:Param1 String/sTitle
+:Param2 string/sField
+:Param3 String/sValue
+
+:Function IniFormDialogPick
+:Synopsis Get choice from a single selection list box using IniForm.exe
+:Returns String
+:Param1 String/sTitle
+:Param2 String/sValues
+:Param3 Int/iSort
+
+:Function IniFormDialogMemo
+:Synopsis Get input from a multiline edit box using IniForm.exe
+:Returns String
+:Param1 String/sTitle
+:Param2 String/sText
+
+:Function IniFormDialogMultiPick
+:Synopsis Get choices from a multiple selection list box using IniForm.exe
+:Returns String
+:Param1 String/sTitle
+:Param2 String/sValues
+:Param3 Int/iSort
+
+:Function IniFormIniEditSection
+:Synopsis Edit values in a section of a .ini file using IniForm.exe
+:Returns Int
+:Param1 String/sSection
+:Param2 String/sIni
+
+:Function IniReadSetting
+:Synopsis Get an application setting
+:Returns String
+:Param1 String/sKey
+:Param2 String/sDefaultValue
+
+:Function IniWriteQuote
+:Synopsis Write a .ini value enclosed in quotes
+:Returns Int
+:Param1 String/sSection
+:Param2 String/sKey
+:Param3 String/sValue
+:Param4 String/sIni
+
+:Function IniWriteSetting
+:Synopsis Write an application setting
+:Returns Int
+:Param1 String/sKey
+:Param2 String/sValue
+
+:Function IntEqual
+:Synopsis Test whether two integers are equal
+:Returns Int
+:Param1 Int/i1
+:Param2 Int/i2
+
+:Function IntIf
+:Synopsis Return one of two integers, depending on condition
+:Returns Int
+:Param1 Int/iCondition
+:Param2 Int/iTrue
+:Param3 Int/iFalse
+
+:Function iSay
+:Synopsis Say an integer regardless of speech on/off status (used in debugging)
+:Param Int/i
+
+:Function JSDialogMultiInput
+:Synopsis Get input from multiple edit boxes using IronCOM.dll
+:Returns String
+:Param1 String/sTitle
+:Param2 string/sFields
+:Param3 String/sValues
+
+:Function JSEval
+:Synopsis Evaluate code in JScript .NET
+:Returns String
+:Param1 String/sCode
+:Param2 String/s1
+:Param3 String/s2
+:Param4 String/s3
+:Param5 String/s4
+
+:Function JSEvalFile
+:Synopsis Evaluate code in JScript .NET file
+:Returns String
+:Param1 String/sFile
+:Param2 String/s1
+:Param3 String/s2
+:Param4 String/s3
+:Param5 String/s4
+
+:Function JSInit
+:Synopsis Try to initiate global JS object if it does not exist, and then test whether it exists
+:Returns Int
+
+:Function KeyboardSend
+:Synopsis Send keystrokes
+:Returns Int
+:Param String/sKeys
+
+:Function KeyboardType
+:Synopsis Type a string of characters
+:Param String/sText
+
+:Function KeyboardTypeAndWait
+:Synopsis Type a list of keys and wait for a control class to receive focus
+:Returns Int
+:Param1 String/sKeyList
+:Param2 String/sControl
+:Param3 Int/iMax
+
+:Function KeyboardTypeList
+:Synopsis Type keys from a delimited list
+:Param1 String/sKeyList
+:Param2 String/sDelimiter
+
+:Function LbcDialogMultiInput
+:Synopsis Get input from multiple edit boxes using LbC.dll
+:Returns String
+:Param1 String/sTitle
+:Param2 string/sFields
+:Param3 String/sValues
+
+:Function LbcDialogHelper
+:Description SpeechOff()
+
+:Function LbcDialogInput
+:Returns String
+:Param1 String/sTitle
+:Param2 string/sField
+:Param3 String/sValue
+
+:Function LbcDialogPick
+:Synopsis Get choices from a single selection list box using lbc.dll
+:Returns String
+:Param1 String/sTitle
+:Param2 String/sValues
+:Param3 Int/iSort
+
+:Function LbcDialogMultiPick
+:Synopsis Get choices from a multiple selection list box using lbc.dll
+:Returns String
+:Param1 String/sTitle
+:Param2 String/sValues
+:Param3 Int/iSort
+
+:Function LbcInit
+:Returns Int
+
+:Function ListGetExtended
+:Synopsis Test for extended selection style
+:Returns Int
+:Param Handle/h
+
+:Function ListGetMulti
+:Synopsis Test for multiple selection style
+:Returns Int
+:Param Handle/h
+
+:Function ListGetSort
+:Synopsis Test for Sort style
+:Returns Int
+:Param Handle/h
+
+:Function MathDecIntToHexString
+:Synopsis Convert decimal integer to hex string
+:Returns String
+:Param Int/iDec
+
+:Function MathHexStringToDecInt
+:Synopsis Convert hex string to decimal integer
+:Returns Int
+:Param String/sHex
+
+:Function MathHighWord
+:Synopsis Get high word of an integer
+:Returns Int
+:Param Int/iDec
+
+:Function MathIntToPower
+:Synopsis Get result of a number raised to a power
+:Returns Int
+:Param1 Int/i
+:Param2 Int/iPower
+
+:Function MathLowWord
+:Synopsis Get low word of an integer
+:Returns Int
+:Param Int/iDec
+
+:Function MenuInvokeID
+:Synopsis Invoke a standard menu item by its ID
+:Returns Int
+:Param1 Handle/hAppWindow
+:Param2 Int/iID
+
+:Function MSAAGetChildCount
+:Synopsis Get the number of MSAA children in the client area of a window
+:Returns Int
+:Param Handle/h
+
+:Function MSAAGetDefaultAction
+:Synopsis Get the MSAA default action
+:Returns String
+:Param Handle/h
+
+:Function MSAAGetDescription
+:Synopsis Get the MSAA description
+:Returns String
+:Param Handle/h
+
+:Function MSAAGetFocus
+:Synopsis Get the MSAA Focus of a subitem
+:Returns Int
+:Param Handle/h
+
+:Function MSAAGetHelp
+:Synopsis Get MSAA help text
+:Returns String
+:Param Handle/h
+
+:Function MSAAGetInfo
+:Synopsis Get string of various MSAA information
+:Returns String
+:Param Handle/h
+
+:Function MSAAGetKeyboardShortcut
+:Synopsis Get MSAA keyboard shortcut
+:Returns String
+:Param Handle/h
+
+:Function MSAAGetName
+:Synopsis Get MSAA name
+:Returns String
+:Param Handle/h
+
+:Function MSAAGetRole
+:Synopsis Get MSAA numeric role
+:Returns Int
+:Param Handle/h
+
+:Function MSAAGetRoleString
+:Synopsis Get text of MSAA numeric role
+:Returns String
+:Param Handle/h
+
+:Function MSAAGetState
+:Synopsis Get MSAA numeric state
+:Returns Int
+:Param Handle/h
+
+:Function MSAAGetStateString
+:Synopsis Get MSAA state text
+:Returns String
+:Param Handle/h
+
+:Function MSAAGetStateText
+:Synopsis Get composite text of MSAA states
+:Returns String
+:Param Int/iBits
+
+:Function MSAAGetValue
+:Synopsis Get MSAA value
+:Returns String
+:Param Handle/h
+
+:Function MSAASetSelection
+:Synopsis Select subitems using MSAA
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iState
+
+:Function ObjectCreate
+:Synopsis Create a COM object from a ProgID string, trying an alternate method if the default one fails
+:Returns Object
+:Param String/sObject
+
+:Function PathCombine
+:Synopsis Combine a folder and path, ensuring a single backslash seperater
+:Returns String
+:Param1 String/sFolder
+:Param2 String/sPath
+
+:Function PathCreateTempFolder
+:Synopsis Create temporary folder
+:Returns String
+
+:Function PathGetBase
+:Synopsis Get base/root name
+:Returns String
+:Param String/sFile
+
+:Function PathGetCurrentDirectory
+:Synopsis Get current directory of JAWS application
+:Returns String
+
+:Function PathGetDir
+:Synopsis Get a list of paths, specifying folder, wild card pattern, and sort order
+:Returns String
+:Param1 String/sDir
+:Param2 String/sWildcards
+:Param3 String/sFlags
+
+:Function PathGetExtension
+:Synopsis Get extention
+:Returns String
+:Param String/sFile
+
+:Function PathGetFolder
+:Synopsis Get the folder containing a path
+:Returns String
+:Param String/sPath
+
+:Function PathGetHomer
+:Synopsis Get path of Homer subfolder
+:Returns String
+
+:Function PathGetInternetCacheFolder
+:Synopsis Get Windows folder for temporary Internet files
+:Returns String
+
+:Function PathGetLong
+:Synopsis Get long file name of file or folder
+:Returns String
+:Param String/sPath
+
+:Function PathGetName
+:Synopsis Get the file or folder name at the end of a path
+:Returns String
+:Param String/sPath
+
+:Function PathGetShort
+:Synopsis Get short path (8.3 style) of a file or folder
+:Returns String
+:Param String/sPath
+
+:Function PathGetSpecialFolder
+:Synopsis Get a special folder of Windows
+:Returns String
+:Param String/s
+
+:Function PathGetTempFile
+:Synopsis Get a temporary file name
+:Returns String
+
+:Function PathGetTempFolder
+:Synopsis Get Windows folder for temporary files
+:Returns String
+
+:Function PathGetTempName
+:Synopsis Get Name for temporary file or folder
+:Returns String
+
+:Function PathGetType
+:Synopsis Get type as a folder or as a file type based on extension
+:Returns String
+:Param String/sPath
+
+:Function PathGetValidName
+:Synopsis Get a Valid file name for a proposed name and parent folder, optionally unique with a suffix like _02
+:Returns String
+:Param1 String/sDir
+:Param2 String/sBase
+:Param3 String/sExt
+:Param4 Int/iUnique
+
+:Function PathSetCurrentDirectory
+:Synopsis Set current directory of JAWS application
+:Param String/sDir
+
+:Function PerlComboGetContents
+:Synopsis Get contents of item with focus in a combo box using PerlEval.dll
+:Returns String
+:Param Handle/h
+
+:Function PerlComboGetText
+:Synopsis Get text of item with focus in a combo box using PerlEval.dll
+:Returns String
+:Param Handle/h
+
+:Function PerlDateCalc
+:Synopsis Calculate English date phrase
+:Returns String
+:Param1 String/sYear
+:Param2 String/sMonth
+:Param3 String/sWeek
+:Param4 String/sDay
+
+:Function PerlDialogAppendFile
+:Returns String
+:Param String/sFile
+
+:Function PerlDialogBrowseForFolder
+:Returns String
+:Param String/sDir
+
+:Function PerlDialogMultiInput
+:Synopsis Get input from multiple edit boxes using PerlEval.dll
+:Returns String
+:Param1 String/sTitle
+:Param2 string/sFields
+:Param3 String/sValues
+
+:Function PerlDialogInfo
+:Synopsis Display information in a multiline edit box using PerlEval.dll
+:Param1 String/sTitle
+:Param2 string/sText
+
+:Function PerlDialogInput
+:Returns String
+:Param1 String/sTitle
+:Param2 string/sField
+:Param3 String/sValue
+
+:Function PerlDialogPick
+:Synopsis Get choices from a single selection list box using PerlEval.dll
+:Returns String
+:Param1 String/sTitle
+:Param2 String/sValues
+:Param3 Int/iSort
+
+:Function PerlDialogMemo
+:Synopsis Get input from a multiline edit box using PerlEval.dll
+:Returns String
+:Param1 String/sTitle
+:Param2 string/sText
+
+:Function PerlDialogMultiPick
+:Synopsis Get choices from a multiple selection Multi box using PerlEval.dll
+:Returns String
+:Param1 String/sTitle
+:Param2 String/sValues
+:Param3 Int/iSort
+
+:Function PerlDialogOpenFile
+:Returns String
+:Param String/sDir
+
+:Function PerlDialogSaveFile
+:Returns String
+:Param String/sFile
+
+:Function PerlEditGetText
+:Synopsis Get all text using PerlEval.dll
+:Returns String
+:Param Handle/h
+
+:Function PerlEditSetText
+:Synopsis Set all text using PerlEval.dll
+:Returns Int
+:Param1 Handle/h
+:Param2 String/sText
+
+:Function PerlEval
+:Synopsis Evaluate with PerlEval object, passing four string parameters and returning a string result
+:Returns String
+:Param1 String/sCode
+:Param2 String/s1
+:Param3 String/s2
+:Param4 String/s3
+:Param5 String/s4
+
+:Function PerlGetWMIProperty
+:Synopsis Get property of the first instance of WMI object
+:Returns String
+:Param1 String/sObject
+:Param2 String/sProperty
+
+:Function PerlInit
+:Synopsis Try to initiate global Perl object if it does not exist, and then test whether it exists
+:Returns Int
+
+:Function PerlListGetContents
+:Synopsis Get contents of item with focus in a list box using PerlEval.dll
+:Returns String
+:Param Handle/h
+
+:Function PerlListGetText
+:Synopsis Get text of item with focus in a list box using PerlEval.dll
+:Returns String
+:Param Handle/h
+
+:Function PerlRunExampleCode
+:Synopsis Evaluate a string and show the code using PerlEval object
+:Param1 String/sTask
+:Param2 String/sCode
+:Param3 String/s1
+:Param4 String/s2
+:Param5 String/s3
+:Param6 String/s4
+
+:Function PerlRunExampleFile
+:Synopsis Evaluate a file and show the code using PerlEval object
+:Param1 String/sTask
+:Param2 String/sFile
+:Param3 String/s1
+:Param4 String/s2
+:Param5 String/s3
+:Param6 String/s4
+
+:Function PerlShellUrlToFile
+:Synopsis Download file using PerlEval.dll
+:Returns Int
+:Param1 String/sUrl
+:Param2 String/sFile
+
+:Function PerlWindowFind
+:Synopsis Find first window starting from h and matching a RegExp Title, RegExp Class, and/or ID
+:Returns Handle
+:Param1 Handle/h
+:Param2 String/sTitle
+:Param3 String/sClass
+:Param4 Int/iID
+
+:Function PerlWindowGetActive
+:Synopsis Get active window using PerlEval.dll
+:Returns Handle
+
+:Function PerlWindowGetDeskTop
+:Synopsis Get desktop window using PerlEval.dll
+:Returns Handle
+
+:Function PerlWindowGetForeground
+:Synopsis Get foreground window using PerlEval.dll
+:Returns Handle
+
+:Function PerlWindowSetActive
+:Synopsis Set active window using PerlEval.dll
+:Returns Int
+:Param Handle/h
+
+:Function PerlWindowSetForeground
+:Synopsis Set foreground window using PerlEval.dll
+:Returns Int
+:Param Handle/h
+
+:Function PerlWindowSetState
+:Synopsis Set a window state using PerlEval.dll
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iState
+
+:Function PyEval
+:Synopsis Evaluate code in Python
+:Returns Variant
+:Param1 String/sCode
+:Param2 Variant/v1
+:Param2 Variant/v2
+:Param2 Variant/v3
+:Param2 Variant/v4
+
+:Function PyEvalFile
+:Synopsis Evaluate code in Python file
+:Returns Variant
+:Param1 String/sFile
+:Param2 Variant/v1
+:Param2 Variant/v2
+:Param2 Variant/v3
+:Param2 Variant/v4
+
+:Function RegExpContainsCase
+:Synopsis Case sensitive Version of RegExpContainsEx with common defaults
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+
+:Function RegExpContainsEquiv
+:Synopsis Case equivalent Version of RegExpContainsEx with common defaults
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+
+:Function RegExpContainsEx
+:Synopsis Get starting index and text of the first match of a regular expression
+:Description where sText is the string to search,  sMatch is the regular expression to match,  iCaseSensitive indicates whether capitalization matters,
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 Int/iCaseSensitive
+:Param4 String/sDelimiter
+
+:Function RegExpContainsLastCase
+:Synopsis Case sensitive version of RegExpContainsLastEx with common defaults
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+
+:Function RegExpContainsLastEquiv
+:Synopsis Case equivalent version of RegExpContainsLastEx with common defaults
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+
+:Function RegExpContainsLastEx
+:Synopsis Get starting index and text of the last match of a regular expression
+:Description where sText is the string to search,  sMatch is the regular expression to match,  iCaseSensitive indicates whether capitalization matters,
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 Int/iCaseSensitive
+:Param4 String/sDelimiter
+
+:Function RegExpCountCase
+:Synopsis Case sensitive version of RegExpCountEx
+:Returns Int
+:Param1 String/sText
+:Param2 String/sMatch
+
+:Function RegExpCountEquiv
+:Synopsis Case equivalent version of RegExpCountEx
+:Returns Int
+:Param1 String/sText
+:Param2 String/sMatch
+
+:Function RegExpCountEx
+:Synopsis Count matches of a regular expression
+:Description where sText is the string to search,  sMatch is the regular expression to match,  iCaseSensitive indicates whether capitalization matters,
+:Returns Int
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 Int/iCaseSensitive
+
+:Function RegExpExtractCase
+:Synopsis Case sensitive version of RegExpExtractEx with common defaults
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+
+:Function RegExpExtractEquiv
+:Synopsis Case equivalent version of RegExpExtractEx with common defaults
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+
+:Function RegExpExtractEx
+:Synopsis Get matches of a regular expression
+:Description where sText is the string to search,  sMatch is the regular expression to match,  iCaseSensitive indicates whether capitalization matters,  sDelimiter seperates matches
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 Int/iCaseSensitive
+:Param4 String/sDelimiter
+
+:Function RegExpReplaceCase
+:Synopsis Case sensitive version of RegExpReplaceEx
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 String/sReplace
+
+:Function RegExpReplaceEquiv
+:Synopsis Case equivalent version of RegExpReplaceEx
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 String/sReplace
+
+:Function RegExpReplaceEx
+:Synopsis Replace text matching a regular expression
+:Description where sText is the string to search,  sMatch is the regular expression to match,  sReplace is the replacement text,  iCaseSensitive indicates whether capitalization matters,  iGlobal indicates whether to replace the first or all matches
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 String/sReplace
+:Param4 Int/iCaseSensitive
+:Param5 Int/iGlobal
+
+:Function RegistryRead
+:Synopsis Get a string from the registry
+:Returns String
+:Param String/sKey
+
+:Function RegistryWrite
+:Synopsis Write a string to the registry
+:Returns Int
+:Param1 String/sKey
+:Param2 String/sValue
+
+:Function SayFileByLine
+:Synopsis Say a text file a line at a time, with repeat spelling support, silenced by any key
+:Param1 String/sFile
+:Param2 Int/iRepeat
+
+:Function SayIfVerbose
+:Synopsis Say a string unless verbosity is advanced
+:Param String/s
+
+:Function SayRepeat
+:Synopsis Say a string, or spell if repeated, or phonetic if triple key presses
+:Param1 String/sText
+:Param2 Int/iRepeat
+
+:Function SayStringByLine
+:Param1 String/sText
+:Param2 Int/iRepeat
+
+:Function SayStringIf
+:Synopsis Say one of two strings, depending on condition
+:Param1 Int/iCondition
+:Param2 String/sTrue
+:Param3 String/sFalse
+
+:Function SayStringIfObject
+:Synopsis Say one of two strings, depending on whether an object exists
+:Param1 Object/o
+:Param2 String/s1
+:Param3 String/s2
+
+:Function SayTempFile
+
+:Function SayToolsInit
+:Synopsis Try to initiate global SayTools object if it does not exist, and then test whether it exists
+:Returns Int
+
+:Function SayVirtual
+:Synopsis Display text in the virtual viewer
+:Returns Int
+:Param String/sText
+
+:Function SBox
+:Param String/s
+
+:Function ShellCreateShortcut
+:Synopsis Create a .lnk or .url file
+:Returns Int
+:Param1 String/sFile
+:Param2 String/sTargetPath
+:Param3 String/sWorkingDirectory
+:Param4 Int/iWindowStyle
+:Param5 String/sHotkey
+
+:Function ShellExec
+:Synopsis Run a console mode command and return its standard output
+:Returns String
+:Param String/sCommand
+
+:Function ShellGetDrives
+:Synopsis Get an alphabetic sequence of available drive letters
+:Returns String
+
+:Function ShellGetEnvironmentVariable
+:Synopsis Get the value of an environment variable
+:Returns String
+:Param String/sVariable
+
+:Function ShellGetShortcutTargetPath
+:Synopsis Get the target path of a shortcut file
+:Returns String
+:Param String/sFile
+
+:Function ShellGetWindowsName
+:Synopsis Get name of Windows installed
+:Returns String
+
+:Function ShellGetWindowsNTName
+:Synopsis Get name of the Windows NT version installed
+:Returns String
+
+:Function ShellRun
+:Synopsis Launch a program or file, indicating its window style and whether to wait before returning
+:Description window styles:  0 Hides the window and activates another window.  1 Activates and displays a window. If the window is minimized or maximized, the  system restores it to its original size and position. This flag should be used  when specifying an application for the first time.  2 Activates the window and displays it minimized.  3 Activates the window and displays it maximized.  4 Displays a window in its most recent size and position. The active window  remains active.  5 Activates the window and displays it in its current size and position.  6 Minimizes the specified window and activates the next top-level window in the Z  order.  7 Displays the window as a minimized window. The active window remains active.  8 Displays the window in its current state. The active window remains active.  9 Activates and displays the window. If it is minimized or maximized, the system  restores it to its original size and position. An application should specify  this flag when restoring a minimized window.  10 Sets the show state based on the state of the program that started the  application.
+:Returns Int
+:Param1 String/sFile
+:Param2 Int/iStyle
+:Param3 Int/iWait
+
+:Function ShellRunCommandLine
+:Synopsis Open a command prompt in the directory specified
+:Returns Int
+:Param String/sDir
+
+:Function ShellRunExplorer
+:Synopsis Open Windows Explorer in the directory specified
+:Returns Int
+:Param String/sDir
+
+:Function ShellSetHomerDir
+:Returns Int
+
+:Function ShellUrlToFile
+:Synopsis Download file from Internet to disk
+:Returns Int
+:Param1 String/sURL
+:Param2 String/sFile
+
+:Function SpellANSI
+:Synopsis Spell string using ANSI codes
+:Param String/sText
+
+:Function SpellPhonetic
+:Synopsis Spell string using phonetic alphabet
+:Param String/sText
+
+:Function SSay
+:Synopsis Say a string regardless of speech on/off status (used in debugging)
+:Param String/s
+
+:Function StatusBarGetText
+:Synopsis Get status line text of main application window
+:Returns String
+
+:Function StringAddSegment
+:Synopsis Add segment to a string, omitting delimiter if the first one
+:Returns String
+:Param1 String/sText
+:Param2 String/sDelimiter
+:Param3 String/sSegment
+
+:Function StringAppendToClipboard
+:Synopsis Append string to clipboard, omitting delimiter if the first one
+:Returns Int
+:Param1 String/sText
+:Param2 String/sDivider
+
+:Function StringAppendToFile
+:Synopsis Append string to File, omitting divider if the first one
+:Returns Int
+:Param1 String/sText
+:Param2 String/sFile
+:Param3 String/sDivider
+
+:Function StringConcat
+:Synopsis Concatonate two strings, working around JAWS bug with strings that look like numbers
+:Returns String
+:Param1 String/s1
+:Param2 String/s2
+
+:Function StringContainsEquiv
+:Synopsis Case-insensitive version of StringContains
+:Returns Int
+:Param1 String/sText
+:Param2 String/sMatch
+
+:Function StringContainsLast
+:Synopsis Get starting index of last match of substring
+:Returns Int
+:Param1 String/sText
+:Param2 String/sMatch
+
+:Function StringContainsLastEquiv
+:Synopsis Case equivalent version of StringContains Last
+:Returns Int
+:Param1 String/sText
+:Param2 String/sMatch
+
+:Function StringCountSegment
+:Synopsis Version of StringSegmentCount that works on JAWS 5.1 and above
+:Returns Int
+:Param1 String/sText
+:Param2 String/sDelimiter
+
+:Function StringDeleteSegment
+:Synopsis Delete segment from a string
+:Returns String
+:Param1 String/sText
+:Param2 String/sDelimiter
+:Param3 Int/iIndex
+
+:Function StringEqual
+:Synopsis Test whether first and second strings are the same, case sensitive
+:Returns Int
+:Param1 String/s1
+:Param2 String/s2
+
+:Function StringEquiv
+:Synopsis Case equivalent version of StringEqual
+:Returns Int
+:Param1 String/s1
+:Param2 String/s2
+
+:Function StringGetBounds
+:Synopsis Get text between lower and upper positions, inclusive
+:Returns String
+:Param1 String/sText
+:Param2 Int/iStart
+:Param3 Int/iEnd
+
+:Function StringGetRange
+:Synopsis Get text between lower and upper positions, excluding end point
+:Returns String
+:Param1 String/sText
+:Param2 Int/iStart
+:Param3 Int/iEnd
+
+:Function StringGetValueCharacter
+:Synopsis Get a character from its ASCII value
+:Returns String
+:Param Int/i
+
+:Function StringIf
+:Synopsis Return one of two strings, depending on condition
+:Returns String
+:Param1 Int/iCondition
+:Param2 String/sTrue
+:Param3 String/sFalse
+
+:Function StringIndexSegmentCase
+:Synopsis Case sensitive version of StringIndexSegmentEx
+:Returns Int
+:Param1 String/sText
+:Param2 String/sDelimiter
+:Param3 String/sSegment
+
+:Function StringIndexSegmentEquiv
+:Synopsis Case equivalent version of StringIndexSegmentEx
+:Returns Int
+:Param1 String/sText
+:Param2 String/sDelimiter
+:Param3 String/sSegment
+
+:Function StringIndexSegmentEx
+:Synopsis Get the index of a string segment
+:Returns Int
+:Param1 String/sText
+:Param2 String/sDelimiter
+:Param3 String/sSegment
+:Param4 Int/iCaseSensitive
+
+:Function StringLeadCase
+:Synopsis Case sensitive version of StringLeadEx
+:Returns Int
+:Param1 String/s1
+:Param2 String/s2
+
+:Function StringLeadEquiv
+:Synopsis Case equivalent version of StringLeadEx
+:Description Return s1 ==s2
+:Returns Int
+:Param1 String/s1
+:Param2 String/s2
+
+:Function StringLeadEx
+:Synopsis Test whether second string matches leading part of first string
+:Returns Int
+:Param1 String/s1
+:Param2 String/s2
+:Param3 Int/iCaseSensitive
+
+:Function StringPadLeft
+:Synopsis Pad a string with characters to the left
+:Returns String
+:Param1 String/sText
+:Param2 String/sPadCharacter
+:Param3 Int/iLength
+
+:Function StringPadRight
+:Synopsis Pad a string with characters to the right
+:Returns String
+:Param1 String/sText
+:Param2 String/sPadCharacter
+:Param3 Int/iLength
+
+:Function StringPlural
+:Synopsis Return singular or plural form of a string, depending on whether count equals one
+:Returns String
+:Param1 String/sItem
+:Param2 Int/iCount
+
+:Function StringProper
+:Synopsis Capitalize the first letter and lower case the rest
+:Returns String
+:Param String/sText
+
+:Function StringProperWords
+:Synopsis Capitalize the first letter of each word and lower case the rest
+:Returns String
+:Param String/sText
+
+:Function StringQuote
+:Synopsis Ensure that a string is enclosed by a single set of quotes
+:Returns String
+:Param String/sText
+
+:Function StringReplaceAllCase
+:Synopsis Case sensitive version of StringReplaceAllEx
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 String/sReplace
+
+:Function StringReplaceAllEquiv
+:Synopsis Case equivalent version of StringReplaceAllEx
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 String/sReplace
+
+:Function StringReplaceAllEx
+:Synopsis Repeat a search and replace until no matches remain
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 String/sReplace
+:Param4 Int/iCaseSensitive
+
+:Function StringReplaceBounds
+:Synopsis Replace text between lower and upper positions, inclusive
+:Returns String
+:Param1 String/sText
+:Param2 Int/iStart
+:Param3 Int/iEnd
+:Param4 String/sReplace
+
+:Function StringReplaceCase
+:Synopsis Case sensitive version of StringReplaceEx
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 String/sReplace
+
+:Function StringReplaceEquiv
+:Synopsis Case equivalent version of StringReplaceEx
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 String/sReplace
+
+:Function StringReplaceEx
+:Synopsis Replace matching text
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatch
+:Param3 String/sReplace
+:Param4 Int/iCaseSensitive
+
+:Function StringReplaceRange
+:Synopsis Replace text between lower and upper positions, excluding end point
+:Returns String
+:Param1 String/sText
+:Param2 Int/iStart
+:Param3 Int/iEnd
+:Param4 String/sReplace
+
+:Function StringReplaceSegment
+:Synopsis Replace a string segment
+:Returns String
+:Param1 String/sText
+:Param2 String/sDelimiter
+:Param3 Int/iIndex
+:Param4 String/sReplace
+
+:Function StringReplaceTokens
+:Synopsis Replace white space tokens with the actual characters they represent
+:Returns String
+:Param String/sText
+
+:Function StringSegmentFilter
+:Synopsis Get matches of an SQL filter expression
+:Returns String
+:Param1 String/sItems
+:Param2 String/sDelimiter
+:Param3 String/sMatch
+
+:Function StringSegmentSort
+:Synopsis Sort string segments alphabetically
+:Returns String
+:Param1 String/sItems
+:Param2 String/sDelimiter
+
+:Function StringSegmentSortEx
+:Synopsis Sort string segments alphabetically or the reverse
+:Returns String
+:Param1 String/sItems
+:Param2 String/sDelimiter
+:Param3 Int/iReverse
+
+:Function StringSegmentStartCase
+:Synopsis Case sensitive version of StringSegmentStartEx
+:Returns Int
+:Param1 String/sText
+:Param2 String/sDelimiter
+:Param3 String/sSegment
+
+:Function StringSegmentStartEquiv
+:Synopsis Case equivalent version of StringSegmentStartEx
+:Returns Int
+:Param1 String/sText
+:Param2 String/sDelimiter
+:Param3 String/sSegment
+
+:Function StringSegmentStartEx
+:Synopsis Get starting index of a string segment
+:Returns Int
+:Param1 String/sText
+:Param2 String/sDelimiter
+:Param3 String/sSegment
+:Param4 Int/iCaseSensitive
+
+:Function StringSetTokens
+:Synopsis Replace white space characters with symbolic tokens
+:Returns String
+:Param String/sText
+
+:Function StringSortJkm
+:Synopsis Sort key assignments alphabetically by script names
+:Returns String
+:Param String/sJkm
+
+:Function StringSortJss
+:Synopsis Sort routines alphabetically, placing functions before scripts
+:Returns String
+:Param String/sJss
+
+:Function StringSwapListCase
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatchList
+:Param3 String/sReplaceList
+
+:Function StringSwapListEquiv
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatchList
+:Param3 String/sReplaceList
+
+:Function StringSwapListEx
+:Returns String
+:Param1 String/sText
+:Param2 String/sMatchList
+:Param3 String/sReplaceList
+:Param4 String/sDelimiter
+:Param5 Int/iCaseSensitive
+
+:Function StringToFile
+:Synopsis Saves string to text file, replacing if it exists
+:Returns Int
+:Param1 String/sText
+:Param2 String/sFile
+
+:Function StringTrailCase
+:Synopsis Case sensitive version of StringTrailEx
+:Returns Int
+:Param1 String/s1
+:Param2 String/s2
+
+:Function StringTrailEquiv
+:Synopsis Case equivalent version of StringTrailEx
+:Returns Int
+:Param1 String/s1
+:Param2 String/s2
+
+:Function StringTrailEx
+:Synopsis Test whether second string matches Trailing part of first string
+:Returns Int
+:Param1 String/s1
+:Param2 String/s2
+:Param3 Int/iCaseSensitive
+
+:Function StringTrim
+:Synopsis Remove leading and trailing blanks from a string
+:Returns String
+:Param String/s
+
+:Function StringUnquote
+:Synopsis Remove leading and trailing quotes from a string
+:Returns String
+:Param String/sText
+
+:Function TabPageGet
+:Synopsis Get index of the active tab page
+:Returns Int
+:Param Handle/h
+
+:Function TabPageSet
+:Synopsis Activate a tab page by its index
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iPage
+
+:Function UIElevateVersion
+:Synopsis Download and run an installer from a URL
+:Param String/sURL
+
+:Function UIGoToEditorCol
+:Synopsis Go to a column in an editor
+:Returns Int
+:Param Int/iCol
+
+:Function UIGoToEditorLine
+:Synopsis Go to a line in an editor
+:Returns Int
+:Param Int/iLine
+
+:Function UIGoToEditorPosition
+:Synopsis Go to an editor line and column position
+:Returns Int
+:Param1 Int/iLine
+:Param2 Int/iCol
+
+:Function UIHandleHomerWindows
+:Synopsis Suppress speech when returning from a dialog
+:Returns int
+:Param handle/hWnd
+
+:Function UISelectToPosition
+:Synopsis Select text from a saved position to the current one
+:Returns Int
+:Param1 Int/iLine
+:Param2 Int/iCol
+
+:Function UIWaitForControl
+:Synopsis Wait until focus moves to one or more possible controls, based on lists of classes and IDs
+:Description Return success/failure after the maximum milliseconds specified
+:Returns Int
+:Param1 String/sClasslist
+:Param2 String/sIDlist
+:Param3 Int/iTime
+
+:Function UIWaitForTitleAndActivate
+:Synopsis Wait for a title to appear and activate it
+:Returns Int
+:Param1 String/sTitle
+:Param2 Int/iTime
+
+:Function VariantToHandle
+:Synopsis Cast a variant to a handle
+:Returns Handle
+:Param Variant/v
+
+:Function VariantToInt
+:Synopsis Cast a variant to an integer
+:Returns Int
+:Param Variant/v
+
+:Function VariantToObject
+:Synopsis Cast a variant to an object
+:Returns Object
+:Param Variant/v
+
+:Function VariantToString
+:Synopsis Cast a variant to a string
+:Returns String
+:Param Variant/v
+
+:Function VBSEval
+:Synopsis Evaluate code in VBScript
+:Returns Variant
+:Param1 String/sCode
+:Param2 Variant/v1
+:Param2 Variant/v2
+:Param2 Variant/v3
+:Param2 Variant/v4
+
+:Function VBSEvalFile
+:Synopsis Evaluate code in VBScript file
+:Returns Variant
+:Param1 String/sFile
+:Param2 Variant/v1
+:Param2 Variant/v2
+:Param2 Variant/v3
+:Param2 Variant/v4
+
+:Function VoiceSaveSetting
+:Synopsis Save an Eloquence voice setting
+:Param1 String/sSetting
+:Param2 Int/iLevel
+
+:Function VoiceSetScreenEcho
+:Synopsis Set screen echo and return previous level
+:Returns Int
+:Param Int/iLevel
+
+:Function VoiceSetSpeech
+:Synopsis Set speech on or off and return previous state
+:Returns Int
+:Param Int/iState
+
+:Function VoiceSetVerbosity
+:Synopsis Set verbosity and return previous level
+:Returns Int
+:Param Int/iLevel
+
+:Function WebGetUrlToFile
+:Synopsis Download file from Internet to disk using WebGet.exe
+:Returns Int
+:Param1 String/sUrl
+:Param2 String/sFile
+
+:Function WindowActivate
+:Synopsis Activate a window
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iState
+
+:Function WindowClose
+:Synopsis Close a window
+:Returns Int
+:Param Handle/h
+
+:Function WindowHide
+:Synopsis Hide a window
+:Returns Int
+:Param Handle/h
+
+:Function WindowMaximize
+:Synopsis Maximize a window
+:Returns Int
+:Param Handle/h
+
+:Function WindowMinimize
+:Synopsis Minimize a window
+:Returns Int
+:Param Handle/h
+
+:Function WindowNext
+:Synopsis Cycle to next MDI window
+:Returns Int
+:Param Handle/h
+
+:Function WindowPrevious
+:Synopsis Cycle to previous MDI window
+:Returns Int
+:Param Handle/h
+
+:Function WindowRestore
+:Synopsis Restore default size of window
+:Returns Int
+:Param Handle/h
+
+:Function WindowSetState
+:Synopsis Set state of a window
+:Returns Int
+:Param1 Handle/h
+:Param2 Int/iState
+
+:Function WindowShow
+:Synopsis Show a window
+:Returns Int
+:Param Handle/h
+
+:Script UIDeleteDown
+:Synopsis Delete to bottom of file and say line
+
+:Script UIDeleteLeft
+:Synopsis Delete to beginning of line and say line
+
+:Script UIDeleteLine
+:Synopsis Delete line and say new one
+
+:Script UIDeleteRight
+:Synopsis Delete to end of line and say line
+
+:Script UIDeleteUp
+:Synopsis Delete to top of file and say line
+
+:Script UISayAndTypeCurrentScriptKey
+:Synopsis Say and type the key that invoked the current script
+
+:Script UITypeCurrentScriptKey
+

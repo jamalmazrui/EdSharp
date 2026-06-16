@@ -1,0 +1,10 @@
+# EdSharp .gitattributes
+# EdSharp is a Windows project: keep text files in CRLF form on checkout and
+# mark binary assets so git never tries to normalize them.
+* text=auto eol=crlf
+
+*.ico binary
+*.dll binary
+*.exe binary
+*.png binary
+*.nvda-addon binary
