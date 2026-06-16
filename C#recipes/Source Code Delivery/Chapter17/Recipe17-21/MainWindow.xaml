@@ -1,0 +1,31 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Recipes17_21" Height="300" Width="300">
+    <DockPanel LastChildFill="True" >
+        <ListBox DockPanel.Dock="Left" Name="lstLabels">
+            <ListBox.Resources>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="FontSize" Value="14" />
+                    <Setter Property="Margin" Value="2" />
+                    <EventSetter Event="PreviewMouseLeftButtonDown"
+                       Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
+                    <EventSetter Event="PreviewMouseMove"
+                                 Handler="ListBoxItem_PreviewMouseMove"/>
+                </Style>
+            </ListBox.Resources>
+            <ListBoxItem IsSelected="True">Allen</ListBoxItem>
+            <ListBoxItem>Andy</ListBoxItem>
+            <ListBoxItem>Antoan</ListBoxItem>
+            <ListBoxItem>Bruce</ListBoxItem>
+            <ListBoxItem>Ian</ListBoxItem>
+            <ListBoxItem>Matthew</ListBoxItem>
+            <ListBoxItem>Sam</ListBoxItem>
+            <ListBoxItem>Simon</ListBoxItem>
+        </ListBox>
+        <Canvas AllowDrop="True" Background="Transparent"
+                DragEnter="cvsSurface_DragEnter" Drop="cvsSurface_Drop"
+                Name="cvsSurface" >
+        </Canvas>
+    </DockPanel>
+</Window>

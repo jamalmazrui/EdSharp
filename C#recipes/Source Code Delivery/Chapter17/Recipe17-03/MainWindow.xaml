@@ -1,0 +1,11 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Recipe17_03" Height="100" Width="300">
+    <Grid Background="{StaticResource BackgroundBrush}">
+        <Viewbox>
+            <TextBlock Text="Some Text" Margin="5" 
+            Foreground="{StaticResource FontBrush}" />
+        </Viewbox>
+    </Grid>
+</Window>

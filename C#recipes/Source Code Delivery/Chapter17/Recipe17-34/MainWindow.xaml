@@ -1,0 +1,24 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Recipes17_34" Height="190" Width="200">
+    <StackPanel HorizontalAlignment="Center">
+        <UniformGrid Columns="2">
+            <UniformGrid.Resources>
+                <Style TargetType="{x:Type CheckBox}">
+                    <Setter Property="IsHitTestVisible" Value="False" />
+                    <Setter Property="Margin" Value="5" />
+                </Style>
+            </UniformGrid.Resources>
+            <CheckBox Content="LeftShift" Name="chkLShift"/>
+            <CheckBox Content="RightShift" Name="chkRShift"/>
+            <CheckBox Content="LeftControl" Name="chkLControl"/>
+            <CheckBox Content="RightControl" Name="chkRControl"/>
+            <CheckBox Content="LeftAlt" Name="chkLAlt"/>
+            <CheckBox Content="RightAlt" Name="chkRAlt"/>
+            <CheckBox Content="CapsLock" Name="chkCaps"/>
+            <CheckBox Content="NumLock" Name="chkNum"/>
+        </UniformGrid>
+        <Button Content="Check Keyboard" Margin="10" Click="Button_Click"/>
+    </StackPanel>
+</Window>

@@ -1,0 +1,17 @@
+<html>
+<head>
+<title></title>
+</head>
+<body>
+<form name="form1">
+	<input type="text" name="txtInput" />
+	<div id="lblResult"></div>
+	<script language="javascript">
+		function replace() {
+			document.getElementById('lblResult').innerHTML = document.form1.txtInput.value.replace(/([^;])$/, "\1;");
+		}
+	</script>
+	<input type="button" name="btnSubmit" onclick="replace()" value="Go" />
+</form>
+</body>
+</html>

@@ -1,0 +1,47 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Apress.VisualCSharpRecipes.Chapter17;assembly="
+   Title="Recipe17_14" Height="200" Width="300">
+    <StackPanel>
+      <StackPanel.Resources>
+        <Style x:Key="fileInputStyle">
+          <Setter Property="Control.Height" Value="50" />
+          <Setter Property="Control.FontSize" Value="20px" />
+          <Setter Property="Control.BorderBrush" Value="Blue" />
+          <Setter Property="Control.BorderThickness" Value="2" />
+          <Style.Triggers>
+            <Trigger Property="Control.IsMouseOver" Value="True">
+              <Setter Property="Control.BorderThickness" Value="3" />
+              <Setter Property="Control.BorderBrush" Value="RoyalBlue" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+        <ControlTemplate x:Key="fileInputTemplate"
+              TargetType="{x:Type local:FileInputControl}">
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <DockPanel>
+              <Button x:Name="PART_Browse" DockPanel.Dock="Left" 
+                      Background="Lightgreen">
+                <TextBlock FontSize="20px" Padding="3px" FontFamily="Arial" Text="Open..."/>
+              </Button>
+              <TextBlock x:Name="PART_Text" VerticalAlignment="Center"
+                  Margin="5, 0, 0, 0" FontSize="16px" FontWeight="Bold"
+                  Text="{Binding Path=FileName,
+                                RelativeSource= 
+                                {RelativeSource TemplatedParent}}" />
+            </DockPanel>
+          </Border>
+        </ControlTemplate>
+      </StackPanel.Resources>
+      <!-- Use the default appearance -->
+      <local:FileInputControl Margin="8" />
+      <!-- Applying a style to the control -->
+      <local:FileInputControl Margin="8" Style="{StaticResource fileInputStyle}" />
+      <!-- Applying a template to the control -->
+      <local:FileInputControl Margin="8" Template="{StaticResource fileInputTemplate}" />
+    </StackPanel>
+</Window>
+

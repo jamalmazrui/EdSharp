@@ -1,0 +1,247 @@
+Return-Path: <program-l-bounce@freelists.org>
+Received: from mxas1.sovenix.net (mxas1.sovenix.net [216.127.142.100])
+	by cygnus.smart.net (8.13.8/8.13.8) with ESMTP id q421v8Jw009146
+	for <empower@smart.net>; Tue, 1 May 2012 21:57:08 -0400
+X-Envelope-From: program-l-bounce@freelists.org
+X-Envelope-To: empower@smart.net
+Received: From freelists-180.iquest.net (206.53.239.180) by mxas1.sovenix.net (MAILFOUNDRY) id AR1ynJP8EeGw6AAw for empower@smart.net; Wed, 2 May 2012 02:10:38 -0000 (GMT)
+Received: from localhost (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id 9FFABEC7E13;
+	Tue,  1 May 2012 21:56:58 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=freelists.org;
+	s=turing; t=1335923818; bh=lEOvaSM5R5s0MFM67AqRgS8F93XTy83bkOjRgj1B
+	xz0=; h=Message-ID:From:To:References:Subject:Date:MIME-Version:
+	 Content-Type:Sender:Reply-To:List-help:List-unsubscribe:List-Id:
+	 List-subscribe:List-owner:List-post:List-archive; b=vMi/248RGYkFfO
+	KeeTbuKZ8uO36oLoRqN8BNkzU1VQwoZ2QlJIPEe4p0zf3u/XyEV7fFxuHyFaVV7FbRv
+	qeBo1HkmRnR6bwMTJZWohPwtfcW8ydnC6pxQsalwUN8tP/G5zdO0xtbyAMoSAX3Qsk7
+	f7lk4ROhDScaz9WcZb1cpYQ=
+X-Virus-Scanned: Debian amavisd-new at localhost.localdomain
+Received: from turing.freelists.org ([127.0.0.1])
+	by localhost (turing.freelists.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id FVGXpzZIj2WE; Tue,  1 May 2012 21:56:58 -0400 (EDT)
+Received: from turing.freelists.org (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id 5C31AEC6452;
+	Tue,  1 May 2012 21:56:44 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=freelists.org;
+	s=turing; t=1335923817; bh=lEOvaSM5R5s0MFM67AqRgS8F93XTy83bkOjRgj1B
+	xz0=; h=Message-ID:From:To:References:Subject:Date:MIME-Version:
+	 Content-Type:Sender:Reply-To:List-help:List-unsubscribe:List-Id:
+	 List-subscribe:List-owner:List-post:List-archive; b=nUsdFLQ5Ojlb0f
+	h6DNviHzurbN+KVU2iqkDhXCooElrajgLSaUoN8w5K7AxzuDiTscQkcLpMrSIItkSac
+	XdsQNOMbgdWVW1sNeuRVh2RJtgzKyhvBnDkGjUVL4LRKm5D2dujXBI78CVgJFh1TjvO
+	8nmG2uYmfAf+5nqlwBaEjiA=
+Received: with ECARTIS (v1.0.0; list program-l); Tue, 01 May 2012 21:56:44 -0400 (EDT)
+X-Original-To: program-l@freelists.org
+Delivered-To: program-l@freelists.org
+Received: from localhost (localhost [127.0.0.1])	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id 10612EC6534	for <program-l@freelists.org>; Tue,  1 May 2012 21:56:44 -0400 (EDT)
+X-Virus-Scanned: Debian amavisd-new at localhost.localdomain
+Received: from turing.freelists.org ([127.0.0.1])	by localhost (turing.freelists.org [127.0.0.1]) (amavisd-new, port 10024)	with ESMTP id ieidk5ozUhMW for <program-l@freelists.org>;	Tue,  1 May 2012 21:56:43 -0400 (EDT)
+Received: from mailout06.yourhostingaccount.com (mailout06.yourhostingaccount.com [65.254.253.51])	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id AD8CFEC6452	for <program-l@freelists.org>; Tue,  1 May 2012 21:56:42 -0400 (EDT)
+Received: from mailscan02.yourhostingaccount.com ([10.1.15.2] helo=mailscan02.yourhostingaccount.com)	by mailout06.yourhostingaccount.com with esmtp (Exim)	id 1SPOo5-0005Rl-En	for program-l@freelists.org; Tue, 01 May 2012 21:56:41 -0400
+Received: from impout01.yourhostingaccount.com ([10.1.55.1] helo=impout01.yourhostingaccount.com)	by mailscan02.yourhostingaccount.com with esmtp (Exim)	id 1SPOo5-00039w-36	for program-l@freelists.org; Tue, 01 May 2012 21:56:41 -0400
+Received: from authsmtp01.yourhostingaccount.com ([10.1.18.1])	by impout01.yourhostingaccount.com with NO UCE	id 4pwg1j00B01P85W01pwgnt; Tue, 01 May 2012 21:56:40 -0400
+X-Authority-Analysis: v=2.0 cv=aoEw+FlV c=1 sm=1 a=RmKXvqXEsLcQvhGEAbkDgw==:17 a=VPceeafENTgA:10 a=ruvDDuG1870A:10 a=voXULeGbuBEA:10 a=yA_H-HOKAAAA:8 a=hXrdPX9HAAAA:8 a=D_VmOLqjAAAA:8 a=ZeO_fvjcAwuclC0zHgYA:9 a=I9HLQGeLed4YJ1urA0AA:7 a=wPNLvfGTeEIA:10 a=PMPFklYXXigA:10 a=btyeseNR-KIA:10 a=SSmOFEACAAAA:8 a=yMhMjlubAAAA:8 a=pGLkceISAAAA:8 a=RGtplce_hhmLW7EA-J8A:9 a=ea34jpfZ3zcI3P4H6R4A:7 a=gKO2Hq4RSVkA:10 a=_W_S_7VecoQA:10 a=9zIQMpah49UA:10 a=MSl-tDqOz04A:10 a=ilymawf/5WNU8sTmGLp1gQ==:117
+X-EN-OrigOutIP: 10.1.18.1
+X-EN-IMPSID: 4pwg1j00B01P85W01pwgnt
+Received: from adsl-71-141-233-37.dsl.snfc21.pacbell.net ([71.141.233.37] helo=WAMPAS)	by authsmtp01.yourhostingaccount.com with esmtpa (Exim)	id 1SPOo2-00057d-Ub	for program-l@freelists.org; Tue, 01 May 2012 21:56:40 -0400
+Message-ID: <08E6C3313BDC4C71A723B97E86D5178C@WAMPAS>
+From: "Bryan Garaventa" <bgaraventa11@gutterstar.net>
+To: <program-l@freelists.org>
+References: <000401cd257e$0fc18460$2f448d20$@gmail.com>
+Subject: [program-l] Re: Web development in linux
+Date: Tue, 1 May 2012 18:56:32 -0700
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="----=_NextPart_000_0034_01CD27CC.1FECD9C0"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2900.5931
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.6157
+X-EN-UserInfo: cf700f852bc4394160e9260c268e2167:3df54b5a5597fbdde6407bf1229c65e9
+X-EN-AuthUser: gutterstar_1@gutterstar.net
+X-EN-OrigIP: 71.141.233.37
+X-EN-OrigHost: adsl-71-141-233-37.dsl.snfc21.pacbell.net
+X-archive-position: 19572
+X-ecartis-version: Ecartis v1.0.0
+Sender: program-l-bounce@freelists.org
+Errors-to: program-l-bounce@freelists.org
+X-original-sender: bgaraventa11@gutterstar.net
+Precedence: normal
+Reply-To: program-l@freelists.org
+List-help: <mailto:ecartis@freelists.org?Subject=help>
+List-unsubscribe: <program-l-request@freelists.org?Subject=unsubscribe>
+List-software: Ecartis version 1.0.0
+List-Id: program-l <program-l.freelists.org>
+X-List-ID: program-l <program-l.freelists.org>
+List-subscribe: <program-l-request@freelists.org?Subject=subscribe>
+List-owner: <mailto:george@techno-vision.co.uk>
+List-post: <mailto:program-l@freelists.org>
+List-archive: <http://www.freelists.org/archives/program-l>
+X-list: program-l
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0034_01CD27CC.1FECD9C0
+Content-Type: text/plain; 
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+If you have access to JAWS, you can use the JAWS script called BX from
+http://dlee.org
+and Jamal's text editor for programmers called EdSharp.
+I'm totally blind, and using a combination of these, and the system =
+calculator for calculating percentages, is how I built WhatSock.com and =
+all of the user interface component downloads.=20
+I'd be happy to show you the trick of it if you like, just let me know.
+
+=20
+  ----- Original Message -----=20
+  From: Andy B.=20
+  To: program-l@freelists.org=20
+  Sent: Saturday, April 28, 2012 1:32 PM
+  Subject: [program-l] Web development in linux
+
+
+  I use orca in Ubuntu 12.04. I need to find a reliable way to do web =
+development. This means that I need to make sure that styles and css =
+code turn out the way it needs to. Since orca is displaying pages in the =
+way a sighted person would use it, it makes it difficult to do anything =
+with. Does anyone have any ideas? Is firebug going to be the way I need =
+to go on this?
+
+  =20
+
+------=_NextPart_000_0034_01CD27CC.1FECD9C0
+Content-Type: text/html; 
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML xmlns=3D"http://www.w3.org/TR/REC-html40" xmlns:v =3D=20
+"urn:schemas-microsoft-com:vml" xmlns:o =3D=20
+"urn:schemas-microsoft-com:office:office" xmlns:w =3D=20
+"urn:schemas-microsoft-com:office:word" xmlns:m =3D=20
+"http://schemas.microsoft.com/office/2004/12/omml"><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META name=3DGENERATOR content=3D"MSHTML 8.00.6001.19222">
+<STYLE>@font-face {
+	font-family: Cambria Math;
+}
+@font-face {
+	font-family: Calibri;
+}
+@page WordSection1 {size: 8.5in 11.0in; margin: 1.0in 1.0in 1.0in 1.0in; =
+}
+P.MsoNormal {
+	MARGIN: 0in 0in 0pt; FONT-FAMILY: "Calibri","sans-serif"; FONT-SIZE: =
+11pt
+}
+LI.MsoNormal {
+	MARGIN: 0in 0in 0pt; FONT-FAMILY: "Calibri","sans-serif"; FONT-SIZE: =
+11pt
+}
+DIV.MsoNormal {
+	MARGIN: 0in 0in 0pt; FONT-FAMILY: "Calibri","sans-serif"; FONT-SIZE: =
+11pt
+}
+A:link {
+	COLOR: blue; TEXT-DECORATION: underline; mso-style-priority: 99
+}
+SPAN.MsoHyperlink {
+	COLOR: blue; TEXT-DECORATION: underline; mso-style-priority: 99
+}
+A:visited {
+	COLOR: purple; TEXT-DECORATION: underline; mso-style-priority: 99
+}
+SPAN.MsoHyperlinkFollowed {
+	COLOR: purple; TEXT-DECORATION: underline; mso-style-priority: 99
+}
+SPAN.EmailStyle17 {
+	FONT-FAMILY: "Calibri","sans-serif"; COLOR: windowtext; mso-style-type: =
+personal-compose
+}
+.MsoChpDefault {
+	FONT-FAMILY: "Calibri","sans-serif"; mso-style-type: export-only
+}
+DIV.WordSection1 {
+	page: WordSection1
+}
+</STYLE>
+<!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]--></HEAD>
+<BODY lang=3DEN-US link=3Dblue bgColor=3D#ffffff vLink=3Dpurple>
+<DIV><FONT size=3D2 face=3DArial>Hi,</FONT></DIV>
+<DIV><FONT size=3D2 face=3DArial>If you have access to JAWS, you can use =
+the JAWS=20
+script called BX from</FONT></DIV>
+<DIV><FONT size=3D2 face=3DArial><A=20
+href=3D"http://dlee.org">http://dlee.org</A></FONT></DIV>
+<DIV><FONT size=3D2 face=3DArial>and Jamal's text editor for programmers =
+called=20
+EdSharp.</FONT></DIV>
+<DIV><FONT size=3D2 face=3DArial>I'm totally blind, and using a =
+combination of=20
+these, and the system calculator for calculating percentages, is how I =
+built=20
+WhatSock.com and all of the user interface component downloads. =
+</FONT></DIV>
+<DIV><FONT size=3D2 face=3DArial>I'd be happy to show you the trick of =
+it if you=20
+like, just let me know.</FONT></DIV>
+<DIV><FONT size=3D2 face=3DArial></FONT>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<BLOCKQUOTE=20
+style=3D"BORDER-LEFT: #000000 2px solid; PADDING-LEFT: 5px; =
+PADDING-RIGHT: 0px; MARGIN-LEFT: 5px; MARGIN-RIGHT: 0px"=20
+dir=3Dltr>
+  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
+  <DIV=20
+  style=3D"FONT: 10pt arial; BACKGROUND: #e4e4e4; font-color: =
+black"><B>From:</B>=20
+  <A title=3Dsonfire11@gmail.com =
+href=3D"mailto:sonfire11@gmail.com">Andy B.</A>=20
+  </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A =
+title=3Dprogram-l@freelists.org=20
+  href=3D"mailto:program-l@freelists.org">program-l@freelists.org</A> =
+</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Saturday, April 28, 2012 =
+1:32=20
+  PM</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> [program-l] Web =
+development in=20
+  linux</DIV>
+  <DIV><BR></DIV>
+  <DIV class=3DWordSection1>
+  <P class=3DMsoNormal>I use orca in Ubuntu 12.04. I need to find a =
+reliable way=20
+  to do web development. This means that I need to make sure that styles =
+and css=20
+  code turn out the way it needs to. Since orca is displaying pages in =
+the way a=20
+  sighted person would use it, it makes it difficult to do anything =
+with. Does=20
+  anyone have any ideas? Is firebug going to be the way I need to go on=20
+  this?<o:p></o:p></P>
+  <P =
+class=3DMsoNormal><o:p>&nbsp;</o:p></P></DIV></BLOCKQUOTE></BODY></HTML>
+
+------=_NextPart_000_0034_01CD27CC.1FECD9C0--
+
+** To leave the list, click on the immediately-following link:-
+** [mailto:program-l-request@freelists.org?subject=unsubscribe]
+** If this link doesn't work then send a message to:
+** program-l-request@freelists.org
+** and in the Subject line type
+** unsubscribe
+** For other list commands such as vacation mode, click on the
+** immediately-following link:-
+** [mailto:program-l-request@freelists.org?subject=faq]
+** or send a message, to
+** program-l-request@freelists.org with the Subject:- faq

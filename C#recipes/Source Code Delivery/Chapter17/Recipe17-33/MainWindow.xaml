@@ -1,0 +1,93 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Recipe17_33" Height="450" Width="300">
+    <StackPanel x:Name="Panel">
+        <StackPanel.Resources>
+            <!-- Style all buttons the same. -->
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="Height" Value="25" />
+                <Setter Property="MinWidth" Value="50" />
+            </Style>
+        </StackPanel.Resources>
+        <StackPanel.Triggers>
+            <!-- Triggers for handling playback of media file. -->
+            <EventTrigger RoutedEvent="Button.Click" SourceName="btnPlay">
+                <EventTrigger.Actions>
+                    <BeginStoryboard Name="ClockStoryboard">
+                        <Storyboard x:Name="Storyboard"  SlipBehavior="Slip"
+                                    CurrentTimeInvalidated="Storyboard_Changed">
+                            <MediaTimeline BeginTime="0" Source="clock.avi"
+                                 Storyboard.TargetName="meMediaElement"
+                                 RepeatBehavior="Forever" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger.Actions>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Button.Click" SourceName="btnPause">
+                <EventTrigger.Actions>
+                    <PauseStoryboard BeginStoryboardName="ClockStoryboard" />
+                </EventTrigger.Actions>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Button.Click" SourceName="btnResume">
+                <EventTrigger.Actions>
+                    <ResumeStoryboard BeginStoryboardName="ClockStoryboard" />
+                </EventTrigger.Actions>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Button.Click" SourceName="btnStop">
+                <EventTrigger.Actions>
+                    <StopStoryboard BeginStoryboardName="ClockStoryboard" />
+                </EventTrigger.Actions>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Slider.PreviewMouseLeftButtonDown"
+                              SourceName="sldPosition" >
+                <PauseStoryboard BeginStoryboardName="ClockStoryboard" />
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Slider.PreviewMouseLeftButtonUp"
+                              SourceName="sldPosition" >
+                <ResumeStoryboard BeginStoryboardName="ClockStoryboard" />
+            </EventTrigger>
+        </StackPanel.Triggers>
+
+        <!-- Media element to play the sound, music, or video file. -->
+        <MediaElement Name="meMediaElement" HorizontalAlignment="Center"
+                      Margin="5" MinHeight="300" Stretch="Fill"
+                      MediaOpened="MediaOpened" />
+
+        <!-- Button controls for play, pause, resume, and stop. -->
+        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+            <Button Content="_Play" Name="btnPlay" />
+            <Button Content="P_ause" Name="btnPause" />
+            <Button Content="_Resume" Name="btnResume" />
+            <Button Content="_Stop" Name="btnStop" />
+        </StackPanel>
+
+        <!-- Slider shows the position within the media. -->
+        <Slider HorizontalAlignment="Center" Margin="5"
+                Name="sldPosition" Width="250"
+                ValueChanged="sldPosition_ValueChanged">
+        </Slider>
+
+        <!-- Sliders to control volume and balance. -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="0" Grid.Row="0" Text="Volume:"
+                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <Slider Grid.Column="1" Grid.Row="0" Minimum="0" Maximum="1"
+                    TickFrequency="0.1" TickPlacement="TopLeft"
+ Value="{Binding ElementName=meMediaElement, Path=Volume, Mode=TwoWay}" />
+            <TextBlock Grid.Column="0" Grid.Row="1" Text="Balance:"
+                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <Slider Grid.Column="1" Grid.Row="1" Minimum="-1" Maximum="1"
+                    TickFrequency="0.2" TickPlacement="TopLeft"
+ Value="{Binding ElementName=meMediaElement, Path=Balance, Mode=TwoWay}" />
+        </Grid>
+    </StackPanel>
+</Window>

@@ -1,0 +1,70 @@
+From:	Don Barrett [donter@verizon.net]
+Sent:	Wednesday, December 02, 2009 9:37 PM
+To:	'Jamal Mazrui'; 'Jamal Mazrui'; 'Barrett, Don'
+Subject:	RE: EdSharp and FileDir
+
+Sure.
+C:\Program Files\Freedom Scientific\JAWS\11.0
+
+-----Original Message-----
+From: Jamal Mazrui [mailto:jamal@empowermentzone.com]
+Sent: Wednesday, December 02, 2009 8:05 PM
+To: 'Don Barrett'; 'Jamal Mazrui'; 'Barrett, Don'
+Subject: RE: EdSharp and FileDir
+
+Thanks for beta testing this.  JSX needs another way of getting JAWS versions 
+on 64-bit Windows.  I thought the technique I was trying would work, and it 
+did on XP, but apparently I'm not there yet.  Can you tell me the exact path 
+to your JAWS 11 program folder?
+
+
+-----Original Message-----
+From: Don Barrett [mailto:donter@verizon.net]
+Sent: Wednesday, December 02, 2009 8:00 PM
+To: 'Jamal Mazrui'; 'Jamal Mazrui'; 'Barrett, Don'
+Subject: RE: EdSharp and FileDir
+
+Couldn't install Jaws scripts as zero versions were listed in the list box.
+In other words, neither Jaws 10 or 11 was listed.
+
+-----Original Message-----
+From: Jamal Mazrui [mailto:Jamal.Mazrui@fcc.gov]
+Sent: Wednesday, December 02, 2009 4:17 PM
+To: Barrett, Don; Don Barrett
+Subject: RE: EdSharp and FileDir
+
+When you get to the JSX installer dialog, ensure that the right JAWS version 
+is selected (defaults to highest version), and then press Enter to accept 
+defaults.  You should hear "compiling" and then "done."
+
+ 
+
+
+-----Original Message-----
+From: Barrett, Don [mailto:Don.Barrett@ed.gov]
+Sent: Wednesday, December 02, 2009 4:06 PM
+To: Jamal Mazrui; Don Barrett
+Subject: RE: EdSharp and FileDir
+
+How will I know if the did install properly?  Thanks man.
+
+Don Barrett
+Section 508 Coordinator
+U.S. Dept. of Education
+400 Maryland Avenue, SW
+LBJ, 1W116
+Washington, DC 20202
+(202) 453-7320 
+
+-----Original Message-----
+From: Jamal Mazrui [mailto:Jamal.Mazrui@fcc.gov]
+Sent: Wednesday, December 02, 2009 3:38 PM
+To: Don Barrett; Barrett, Don
+Subject: EdSharp and FileDir
+
+Posted updates today with some bug fixes.  Also tried to make JAWS Script 
+Exchange 64-bit compatible.  Can you try checking the option at the end of 
+installation, and report whether the scripts install now?
+
+
+

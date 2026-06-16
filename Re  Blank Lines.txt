@@ -1,0 +1,45 @@
+Subject:
+RE: Blank Lines
+From:
+"Joe Orozco" <jsorozco@gmail.com>
+Date:
+Sun, 3 Jul 2011 17:17:52 -0400
+To:
+"'Jamal Mazrui'" <jamal@empowermentzone.com>
+
+Thank you sir!
+ 
+
+Joe
+
+ 
+
+"Hard work spotlights the character of people: some turn up their sleeves, some turn up their noses, and some don't turn up at all."--Sam Ewing
+ 
+
+From: Jamal Mazrui [mailto:jamal@empowermentzone.com]
+Sent: Sunday, July 03, 2011 12:36 PM
+To: jsorozco@gmail.com
+Subject: Re: Blank Lines
+
+Yes, in EdSharp, C-like syntax is supported for control characters in strings, e.g., \n for new line, \t for tab, and \f for form feed.  So you can replace single line breaks with doubles by putting \n in the search string and \n\n in the replace string of the Control+R command.  Note that only affects hard line breaks, not lines that word wrap.
+
+Jamal
+
+
+On 7/2/2011 10:14 PM, Joe Orozco wrote:
+> Hi Jamal,
+>
+> A couple weeks ago you e-mailed me about how I can change single blank lines
+> to a double blank line.  In other words, I want a blank line break between
+> two paragraphs, and I vaguely recall your saying to do something with
+> backlash n, but I cannot for the life of me find that e-mail.  Can you
+> please resend or tell me one more time how to do this in EdSharp?  Thanks so
+> much in advance.
+>
+> Joe
+>
+> "Hard work spotlights the character of people: some turn up their sleeves,
+> some turn up their noses, and some don't turn up at all."--Sam Ewing
+>
+>

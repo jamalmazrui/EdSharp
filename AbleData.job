@@ -1,0 +1,6 @@
+replace header
+\A(.|\n)*?\nAbout AbleData\s*
+
+replace footer
+\nHas the information on this page helped you find what you need(.|\n)*\Z
+

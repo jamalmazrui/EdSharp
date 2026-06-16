@@ -1,0 +1,2 @@
+http://this.is.url/myurl?key=value&foo=bar
+http://www.example.com/p?hello=world

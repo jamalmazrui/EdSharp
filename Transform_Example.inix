@@ -1,0 +1,17 @@
+; Example Transform Files job (Regexer .inix format).
+; Open a document containing one file path per line, press Alt+Equals,
+; choose this job, then pick Test, Run, or Verbose.
+
+[Trim trailing whitespace]
+Options=multiline
+Find=[ \t]+$
+Replace=
+
+[Collapse blank runs to one blank line]
+Find=\n{3,}
+Replace=\n\n
+
+[Collect every Markdown heading to the clipboard]
+Options=multiline
+Find=^#{1,6} .+$
+Extract=true

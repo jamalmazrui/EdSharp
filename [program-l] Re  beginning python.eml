@@ -1,0 +1,125 @@
+Return-Path: <program-l-bounce@freelists.org>
+Received: from mxas1.sovenix.net (mxas1.sovenix.net [216.127.142.100])
+	by cygnus.smart.net (8.13.8/8.13.8) with ESMTP id pBOHjSEV018691
+	for <empower@smart.net>; Sat, 24 Dec 2011 12:45:28 -0500
+X-Envelope-From: program-l-bounce@freelists.org
+X-Envelope-To: empower@smart.net
+Received: From freelists-180.iquest.net (206.53.239.180) by mxas1.sovenix.net (MAILFOUNDRY) id yrrGmi5YEeGuyQAw for empower@smart.net; Sat, 24 Dec 2011 17:57:50 -0000 (GMT)
+Received: from localhost (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id 2A548E718E9;
+	Sat, 24 Dec 2011 12:45:24 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=freelists.org;
+	s=turing; t=1324748724; bh=CmYTECU3E2n2oHn/di6lQS28WFQES82ihMD7TP22
+	MBA=; h=Message-ID:From:To:References:In-Reply-To:Subject:Date:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:Sender:
+	 Reply-To:List-help:List-unsubscribe:List-Id:List-subscribe:
+	 List-owner:List-post:List-archive; b=qDVaFZvKfXTPr7I+lB3HNbI3DGrqA
+	NtdFy3YYiJKVcix8QjgqA6M3ziVAWw1QIH8fOaOX4nw+zoEzGumsydhN47Jge/Z7pnB
+	nBxWf9PqmNwuiDzU3Wu4CaE564IyY0KbO0AoLphpbZpl6I4UUsb0Xr2esUCehwiBOnK
+	9mkV2uKE=
+X-Virus-Scanned: Debian amavisd-new at localhost.localdomain
+Received: from turing.freelists.org ([127.0.0.1])
+	by localhost (turing.freelists.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id uFcq5acyJfXB; Sat, 24 Dec 2011 12:45:23 -0500 (EST)
+Received: from turing.freelists.org (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id 2B708E70016;
+	Sat, 24 Dec 2011 12:45:10 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=freelists.org;
+	s=turing; t=1324748723; bh=CmYTECU3E2n2oHn/di6lQS28WFQES82ihMD7TP22
+	MBA=; h=Message-ID:From:To:References:In-Reply-To:Subject:Date:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:Sender:
+	 Reply-To:List-help:List-unsubscribe:List-Id:List-subscribe:
+	 List-owner:List-post:List-archive; b=TFEz/hATS9gMRAwgoDxEaqixnoj8Z
+	/+Gzx+h1es+pM41zcwfHZ+5gGZ1uhGcFYbdYUKVVjoFmyChs0LBYo0ncJEwDBeCafHX
+	3HUxL+xlQt82wsn6UfKfnIJ4LFvHSuCR/I6i8BRgzfqmNFCNP/BDUyQvaeRqHpfn8Hr
+	eC4wbpZ0=
+Received: with ECARTIS (v1.0.0; list program-l); Sat, 24 Dec 2011 12:45:10 -0500 (EST)
+X-Original-To: program-l@freelists.org
+Delivered-To: program-l@freelists.org
+Received: from localhost (localhost [127.0.0.1])	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id EDACDE718EC	for <program-l@freelists.org>; Sat, 24 Dec 2011 12:45:09 -0500 (EST)
+X-Virus-Scanned: Debian amavisd-new at localhost.localdomain
+Received: from turing.freelists.org ([127.0.0.1])	by localhost (turing.freelists.org [127.0.0.1]) (amavisd-new, port 10024)	with ESMTP id bGxmhJu1tWPa for <program-l@freelists.org>;	Sat, 24 Dec 2011 12:45:09 -0500 (EST)
+Received: from smtp.xdsl.co.za (smtp.xdsl.co.za [41.221.224.50])	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id 93C63E70016	for <program-l@freelists.org>; Sat, 24 Dec 2011 12:45:08 -0500 (EST)
+Received: from [41.180.7.6] (helo=jakes)	by smtp.xdsl.co.za with smtp (Exim 4.72)	(envelope-from <jacobk@mailzone.co.za>)	id 1ReVeb-0003MI-1k	for program-l@freelists.org; Sat, 24 Dec 2011 19:45:05 +0200
+Message-ID: <63C4F130DBD84E7680EF2D29151D4AEC@jakes>
+From: "Jacob Kruger" <jacobk@mailzone.co.za>
+To: <program-l@freelists.org>
+References: <4EF5356F.9040407@smart.net> <3C57098B66ED40278EFC679651791525@MesutMesut>
+In-Reply-To: <3C57098B66ED40278EFC679651791525@MesutMesut>
+Subject: [program-l] Re: beginning python
+Date: Sat, 24 Dec 2011 19:44:31 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed;	charset="iso-8859-1";	reply-type=response
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Windows Mail 6.0.6002.18197
+X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7600.16385
+X-archive-position: 17507
+X-ecartis-version: Ecartis v1.0.0
+Sender: program-l-bounce@freelists.org
+Errors-to: program-l-bounce@freelists.org
+X-original-sender: jacobk@mailzone.co.za
+Precedence: normal
+Reply-To: program-l@freelists.org
+List-help: <mailto:ecartis@freelists.org?Subject=help>
+List-unsubscribe: <program-l-request@freelists.org?Subject=unsubscribe>
+List-software: Ecartis version 1.0.0
+List-Id: program-l <program-l.freelists.org>
+X-List-ID: program-l <program-l.freelists.org>
+List-subscribe: <program-l-request@freelists.org?Subject=subscribe>
+List-owner: <mailto:george@techno-vision.co.uk>
+List-post: <mailto:program-l@freelists.org>
+List-archive: <http://www.freelists.org/archives/program-l>
+X-list: program-l
+
+I prefer using Jamal's edSharp for editing python code:
+http://www.empowermentzone.com/edsetup.exe
+
+IN there, use ctrl + shift + F5 to choose python as your preferred compiler 
+from list, and use alt + shift + I to toggle indentation mentioning on or 
+off, and alt + I to tell you a specific line's indentation level.
+
+Stay well
+
+Jacob Kruger
+Blind Biker
+Skype: BlindZA
+'...fate had broken his body, but not his spirit...'
+
+----- Original Message ----- 
+From: "Mesut" <mesut.kokalan@gmail.com>
+To: <program-l@freelists.org>
+Sent: Saturday, December 24, 2011 1:03 PM
+Subject: [program-l] beginning python
+
+
+> Hi all, I've newly stepped into python. I've a good .net background. So it 
+> is not hard to me. Nevertheless, I'm encountering with tricks. Such as 
+> jaws scripts and how to begin. Now I'm reading OReilly's "ORelly learning 
+> python second addition" chm book. This book was writtened in 2003. Is this 
+> obsolete? I'm waiting for your suggestion about how to begin and how to 
+> use jaws and text editors.
+> ** To leave the list, click on the immediately-following link:-
+> ** [mailto:program-l-request@freelists.org?subject=unsubscribe]
+> ** If this link doesn't work then send a message to:
+> ** program-l-request@freelists.org
+> ** and in the Subject line type
+> ** unsubscribe
+> ** For other list commands such as vacation mode, click on the
+> ** immediately-following link:-
+> ** [mailto:program-l-request@freelists.org?subject=faq]
+> ** or send a message, to
+> ** program-l-request@freelists.org with the Subject:- faq 
+
+** To leave the list, click on the immediately-following link:-
+** [mailto:program-l-request@freelists.org?subject=unsubscribe]
+** If this link doesn't work then send a message to:
+** program-l-request@freelists.org
+** and in the Subject line type
+** unsubscribe
+** For other list commands such as vacation mode, click on the
+** immediately-following link:-
+** [mailto:program-l-request@freelists.org?subject=faq]
+** or send a message, to
+** program-l-request@freelists.org with the Subject:- faq

@@ -1,0 +1,3587 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/QAPage">
+
+<head>
+
+<title>c# - Reading/writing an INI file - Stack Overflow</title>
+    <link rel="shortcut icon" href="https://cdn.sstatic.net/Sites/stackoverflow/img/favicon.ico?v=4f32ecc8f43d">
+    <link rel="apple-touch-icon image_src" href="https://cdn.sstatic.net/Sites/stackoverflow/img/apple-touch-icon.png?v=c78bd457575a">
+    <link rel="search" type="application/opensearchdescription+xml" title="Stack Overflow" href="/opensearch.xml">
+    <meta property="og:type" content="website"/>
+    <meta name="twitter:card" content="summary"/>
+        <meta name="twitter:domain" content="stackoverflow.com"/>
+
+    <meta property="og:image" itemprop="image primaryImageOfPage" content="https://cdn.sstatic.net/Sites/stackoverflow/img/apple-touch-icon@2.png?v=73d79a89bded" />
+    <meta name="twitter:title" property="og:title" itemprop="title name" content="Reading/writing an INI file" />
+    <meta name="twitter:description" property="og:description" itemprop="description" content="Is there any class in the .NET framework that can read/write standard .ini files:
+
+[Section]
+&amp;lt;keyname&amp;gt;=&amp;lt;value&amp;gt;
+...
+Delphi has the TIniFile component and I want to know if there is anyt..." />
+    <meta property="og:url" content="https://stackoverflow.com/questions/217902/reading-writing-an-ini-file"/>
+    <link rel="canonical" href="https://stackoverflow.com/questions/217902/reading-writing-an-ini-file" />
+
+    
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.sstatic.net/Js/stub.en.js?v=d9b102a2ec62"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.sstatic.net/Sites/stackoverflow/all.css?v=f442963959d4">
+
+            <link rel="alternate" type="application/atom+xml" title="Feed for question &#39;Reading/writing an INI file&#39;" href="/feeds/question/217902">
+            <meta name="twitter:app:country" content="US" />
+            <meta name="twitter:app:name:iphone" content="Stack Exchange iOS" />
+            <meta name="twitter:app:id:iphone" content="871299723" />
+            <meta name="twitter:app:url:iphone" content="se-zaphod://stackoverflow.com/questions/217902/reading-writing-an-ini-file" />
+            <meta name="twitter:app:name:ipad" content="Stack Exchange iOS" />
+            <meta name="twitter:app:id:ipad" content="871299723" />
+            <meta name="twitter:app:url:ipad" content="se-zaphod://stackoverflow.com/questions/217902/reading-writing-an-ini-file" />
+            <meta name="twitter:app:name:googleplay" content="Stack Exchange Android">
+            <meta name="twitter:app:url:googleplay" content="http://stackoverflow.com/questions/217902/reading-writing-an-ini-file">
+            <meta name="twitter:app:id:googleplay" content="com.stackexchange.marvin">
+        <script>
+        
+            StackExchange.ready(function () {
+                                    
+                    StackExchange.using("snippets", function () {
+                        StackExchange.snippets.initSnippetRenderer();
+                    });
+                    
+
+                StackExchange.using("postValidation", function () {
+                    StackExchange.postValidation.initOnBlurAndSubmit($('#post-form'), 2, 'answer');
+                });
+
+                
+                StackExchange.question.init({showAnswerHelp:true,totalCommentCount:3,shownCommentCount:3,highlightColor:'#F4A83D',backgroundColor:'#FFF',questionId:217902});
+
+                styleCode();
+
+                    StackExchange.realtime.subscribeToQuestion('1', '217902');
+                                                                    StackExchange.using("gps", function () { StackExchange.gps.trackOutboundClicks('#content', '.post-text', true); });
+
+            });
+        </script>
+
+
+    <script>
+        StackExchange.init({"locale":"en","stackAuthUrl":"https://stackauth.com","networkMetaHostname":"meta.stackexchange.com","serverTime":1496455204,"routeName":"Questions/Show","site":{"name":"Stack Overflow","description":"Q&A for professional and enthusiast programmers","isNoticesTabEnabled":true,"recaptchaPublicKey":"6LdchgIAAAAAAJwGpIzRQSOFaO0pU6s44Xt8aTwc","recaptchaAudioLang":"en","enableNewTagCreationWarning":true,"insertSpaceAfterNameTabCompletion":false,"id":1,"enableInsertDocLinkDialog":true,"childUrl":"https://meta.stackoverflow.com","enableSocialMediaInSharePopup":true,"protocol":"https"},"user":{"fkey":"9aa0f249519a4ffe1bcd51ba7cdc307e","rep":0,"isAnonymous":true,"isAnonymousNetworkWide":true,"canSeeNewHeaderDesign":true,"ab":{"devstory_timeline_exp":{"v":"new_add_item_interaction","g":2}}},"events":{"postType":{"question":1},"postEditionSection":{"title":1,"body":2,"tags":3}},"story":{"minCompleteBodyLength":75,"likedTagsMaxLength":300,"dislikedTagsMaxLength":300}}, {"site":{"allowImageUploads":true,"enableUserHovercards":true,"styleCode":true,"enableNewLinkInsertDialog":true,"enableImgurHttps":true,"forceHttpsImages":true},"comments":{},"userProfile":{"openGraphAPIKey":"58740831ad23540e00c58987"},"tags":{},"accounts":{"currentPasswordRequiredForChangingStackIdPassword":true},"flags":{"allowRetractingFlags":true},"snippets":{"snippetsEnabled":true,"renderDomain":"stacksnippets.net"},"markdown":{"asteriskIntraWordEmphasis":true},"monitoring":{"clientTimingsAbsoluteTimeout":30000,"clientTimingsDebounceTimeout":1000}});
+        StackExchange.using.setCacheBreakers({"js/prettify-full.en.js":"a8a4fcc33523","js/moderator.en.js":"35df440efecd","js/full-anon.en.js":"c37953353625","js/full.en.js":"d65423e46f46","js/wmd.en.js":"8da9dcaf15eb","js/third-party/jquery.autocomplete.min.js":"d3b8fa7fdf74","js/third-party/jquery.autocomplete.min.en.js":"","js/mobile.en.js":"834f9e606700","js/help.en.js":"54b998574be9","js/tageditor.en.js":"bb7973808da6","js/tageditornew.en.js":"ba7d33e782d2","js/inline-tag-editing.en.js":"3e63a01fd39b","js/revisions.en.js":"47de10a8358f","js/review.en.js":"ed63468e0303","js/tagsuggestions.en.js":"b278f9a0b23b","js/post-validation.en.js":"eaadf036ed64","js/explore-qlist.en.js":"e71f14781288","js/events.en.js":"27dcda435cdf","js/keyboard-shortcuts.en.js":"b6fe8cb93a3c","js/external-editor.en.js":"e574ed908cf3","js/adops.en.js":"9a6a7812a212","js/external-editor.en.js":"e574ed908cf3","js/snippet-javascript.en.js":"a2935e2a1a88","js/snippet-javascript-codemirror.en.js":"39cda0af12dc"});
+        StackExchange.using("gps", function() {
+             StackExchange.gps.init(true);
+        });
+    </script>
+    
+        <script>
+            StackExchange.ready(function () {
+                $('#nav-tour').click(function () {
+                    StackExchange.using("gps", function() {
+                        StackExchange.gps.track("aboutpage.click", { aboutclick_location: "headermain" }, true);
+                    });
+                });
+            });
+        </script>
+    <noscript id="noscript-css"><style type="text/css">body,.so-header{margin-top:1.9em}</style></noscript>
+</head>
+<body class="question-page new-topbar">
+            <script>(function () { var old = $.fn.contents; $.fn.contents = function () { try { return old.apply(this, arguments); } catch (e) { return $([]); } } })()</script>
+        <iframe id="adzerk-user-match" width="0" height="0" frameborder="0" scrolling="no" onload="window.AUMIframeDone=true"
+                src="https://ssum-sec.casalemedia.com/usermatch?s=183712&amp;cb=https%3A%2F%2Fengine.adzerk.net%2Fudb%2F22%2Fsync%2Fi.gif%3FpartnerId%3D1%26userId%3D"
+                style="display: none;" marginheight="0" marginwidth="0"></iframe>
+
+    <div id="notify-container"></div>
+    <div id="custom-header"></div>
+
+
+<header class="so-header js-so-header _fixed">
+    <div class="-container">
+        <div class="-main">            
+            <a href="https://stackoverflow.com" class="-logo js-gps-track "
+               data-gps-track="top_nav.click({is_current:false, location:2, destination:8})">
+
+                <span class="-img">Stack Overflow</span>
+            </a>
+
+            <nav class="navigation" role="navigation" aria-label="site navigation">
+                <ol class="-list">
+                        <li class="-item _current">
+        <a id="nav-questions" href="/questions" class="-link js-gps-track" 
+            data-gps-track="top_nav.click({is_current:true, location:2, destination:1})">Questions</a>
+    </li>
+
+    <li class="-item">
+        <a id="nav-jobs" href="/jobs?med=site-ui&amp;ref=jobs-tab" class="-link js-gps-track" 
+            data-gps-track="top_nav.click({is_current:false, location:2, destination:6})">Jobs</a>
+    </li>
+                        <li class="-item">
+        <a id="nav-docs" href="/documentation" class="-link js-gps-track" 
+            data-gps-track="top_nav.click({is_current:false, location:2, destination:7})">Documentation <small class='beta-badge'>beta</small></a>
+    </li>
+                        <li class="-item">
+        <a id="nav-tags" href="/tags" class="-link js-gps-track" 
+            data-gps-track="top_nav.click({is_current:false, location:2, destination:2})">Tags</a>
+    </li>
+
+                        <li class="-item">
+        <a id="nav-users" href="/users" class="-link js-gps-track" 
+            data-gps-track="top_nav.click({is_current:false, location:2, destination:3})">Users</a>
+    </li>
+
+                </ol>
+            </nav>
+
+                <form id="search" action="/search" method="get" class="searchbar" autocomplete="off" role="search">
+                    <svg role="icon" class="svg-icon iconSearch" width="18" height="18" viewBox="0 0 18 18"><path d="M12.864 11.321L18 16.5 16.5 18l-5.178-5.136v-.357a7 7 0 1 1 1.186-1.186h.356zM7 12A5 5 0 1 0 7 2a5 5 0 0 0 0 10z"/></svg>
+                    <input name="q" type="text" placeholder="Search..." value="" tabindex="1" autocomplete="off" maxlength="240" class="f-input js-search-field" />
+                    <button type="submit" class="btn js-search-submit">
+                        <svg role="icon" class="svg-icon iconSearch" width="18" height="18" viewBox="0 0 18 18"><path d="M12.864 11.321L18 16.5 16.5 18l-5.178-5.136v-.357a7 7 0 1 1 1.186-1.186h.356zM7 12A5 5 0 1 0 7 2a5 5 0 0 0 0 10z"/></svg>
+                    </button>
+                </form>
+
+        </div>
+        
+
+
+    
+
+<div class="-actions">
+    <nav class="secondary-nav">
+        <div class="-dialog-container js-topbar-dialog-corral">
+
+
+    <div class="topbar-dialog siteSwitcher-dialog dno">
+        <div class="header">
+            <h3><a href="https://stackoverflow.com">current community</a>
+            </h3>
+        </div>
+        <div class="modal-content current-site-container">
+            <ul class="current-site">
+                    <li>
+                            <div class="related-links">
+            <a href="https://stackoverflow.com/help" class="js-gps-track"     data-gps-track="site_switcher.click({ item_type:14 })"
+>help</a>
+                    <a href="https://chat.stackoverflow.com" class="js-gps-track"     data-gps-track="site_switcher.click({ item_type:6 })"
+>chat</a>
+            </div>
+
+    <a href="https://stackoverflow.com"
+       class="current-site-link site-link js-gps-track"
+       data-id="1"
+       data-gps-track="site_switcher.click({ item_type:3 })">
+        <div class="site-icon favicon favicon-stackoverflow" title="Stack Overflow"></div>
+        Stack Overflow
+    </a>
+
+                    </li>
+                    <li class="related-site">
+                            <div class="L-shaped-icon-container">
+        <span class="L-shaped-icon"></span>
+    </div>
+
+                        
+    <a href="https://meta.stackoverflow.com"
+       class="site-link js-gps-track"
+       data-id="552"
+       data-gps-track="site.switch({ target_site:552, item_type:3 }),site_switcher.click({ item_type:4 })">
+        <div class="site-icon favicon favicon-stackoverflowmeta" title="Meta Stack Overflow"></div>
+        Meta Stack Overflow
+    </a>
+
+                    </li>
+            </ul>
+        </div>
+
+        <div class="header" id="your-communities-header">
+            <h3>
+your communities            </h3>
+
+        </div>
+        <div class="modal-content" id="your-communities-section">
+
+                <div class="call-to-login">
+<a href="https://stackoverflow.com/users/signup?ssrc=site_switcher&amp;returnurl=%2fusers%2fstory%2fcurrent&amp;amp;utm_source=stackoverflow.com&amp;amp;utm_medium=dev-story&amp;amp;utm_campaign=signup-redirect" class="login-link js-gps-track"     data-gps-track="site_switcher.click({ item_type:10 })"
+>Sign up</a> or <a href="https://stackoverflow.com/users/login?ssrc=site_switcher&amp;returnurl=https%3a%2f%2fstackoverflow.com%2fquestions%2f217902%2freading-writing-an-ini-file" class="login-link js-gps-track"     data-gps-track="site_switcher.click({ item_type:11 })"
+>log in</a> to customize your list.
+                </div>
+        </div>
+
+        <div class="header">
+            <h3><a href="https://stackexchange.com/sites">more stack exchange communities</a>
+            </h3>
+            <a href="https://stackoverflow.blog" class="fr">company blog</a>
+        </div>
+        <div class="modal-content">
+                <div class="child-content"></div>
+        </div>        
+    </div>
+                <div class="topbar-dialog help-dialog js-help-dialog dno">
+        <div class="modal-content">
+            <ul>
+                                    <li>
+                        <a href="/tour" class="js-gps-track" data-gps-track="help_popup.click({ item_type:1 })">
+                            Tour
+                            <span class="item-summary">
+                                Start here for a quick overview of the site
+                            </span>
+                        </a>
+                    </li>
+                <li>
+                    <a href="/help" class="js-gps-track" data-gps-track="help_popup.click({ item_type:4 })">
+                        Help Center
+                        <span class="item-summary">
+                            Detailed answers to any questions you might have
+                        </span>
+                    </a>
+                </li>
+                        <li>
+                            <a href="https://meta.stackoverflow.com" class="js-gps-track" data-gps-track="help_popup.click({ item_type:2 })">
+                                Meta
+                                <span class="item-summary">
+                                    Discuss the workings and policies of this site
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://stackoverflow.com/company/about" class="js-gps-track" data-gps-track="help_popup.click({ item_type:6 })">
+                                About Us
+                                <span class="item-summary">
+                                    Learn more about Stack Overflow the company
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.stackoverflowbusiness.com/?ref=topbar_help" class="js-gps-track" data-gps-track="help_popup.click({ item_type:7 })">
+                                Business
+                                <span class="item-summary">
+                                    Learn more about hiring developers or posting ads with us
+                                </span>
+                            </a>
+                        </li>
+            </ul>
+        </div>
+    </div>
+
+        </div>
+        <ol class="-list">
+
+
+    <li class="-item"><a href="#" class="-link js-help-button" title="Help Center and other resources">
+        <svg role="icon" class="svg-icon iconHelp" width="18" height="18" viewBox="0 0 18 18"><path d="M9 1a8 8 0 1 0 0 16.001A8 8 0 0 0 9 1zm.812 12.126c-.02.716-.55 1.157-1.238 1.137-.659-.02-1.177-.49-1.157-1.209.02-.715.566-1.17 1.225-1.15.691.021 1.194.507 1.17 1.222zm1.956-5.114c-.168.237-.546.542-1.02.912l-.527.361c-.257.197-.417.43-.502.695-.044.141-.076.507-.084.752-.004.048-.032.156-.181.156H7.883c-.165 0-.185-.096-.18-.144.023-.667.12-1.218.397-1.66.374-.594 1.426-1.221 1.426-1.221.161-.12.286-.25.382-.39.177-.24.321-.51.321-.8 0-.333-.08-.65-.293-.915-.249-.31-.518-.458-1.036-.458-.51 0-.808.257-1.021.594-.213.338-.177.735-.177 1.097H5.746c0-1.366.357-2.238 1.112-2.752.51-.35 1.162-.502 1.921-.502.996 0 1.788.184 2.487.715.647.49.988 1.181.988 2.113 0 .575-.2 1.057-.486 1.447z"/></svg>
+    </a></li>
+                <li class="-item">
+        <a href="https://stackexchange.com" class="-link js-site-switcher-button js-gps-track" data-gps-track="site_switcher.show" title="A list of all 167 Stack Exchange sites">
+            <svg role="icon" class="svg-icon iconStackExchange" width="18" height="18" viewBox="0 0 18 18"><path d="M1 13a2 2 0 0 0 2 2h8v3l3-3h1a2 2 0 0 0 2-2v-2H1v2zM15 1H3a2 2 0 0 0-2 2v2h16V3a2 2 0 0 0-2-2zM1 6h16v4H1V6z"/></svg>
+        </a>
+    </li>
+
+
+        </ol>
+    </nav>
+        <div class="-ctas">
+                <a href="https://stackoverflow.com/users/login?ssrc=head&returnurl=https%3a%2f%2fstackoverflow.com%2fquestions%2f217902%2freading-writing-an-ini-file" class="login-link btn-clear" rel="nofollow">Log In</a>
+                    <a href="https://stackoverflow.com/users/signup?ssrc=head&returnurl=%2fusers%2fstory%2fcurrent&amp;utm_source=stackoverflow.com&amp;utm_medium=dev-story&amp;utm_campaign=signup-redirect" class="login-link btn" rel="nofollow">Sign Up</a>
+
+        </div>
+</div>
+    </div>
+</header>
+
+    <script>
+        StackExchange.ready(function () { StackExchange.topbar.init(); });
+            StackExchange.scrollPadding.setPaddingTop(60, 10);     </script>
+
+    <div class="container">
+        
+
+
+        <div id="content" class="snippet-hidden">
+
+
+
+            
+
+<div itemscope itemtype="http://schema.org/Question">
+    <link itemprop="image" href="https://cdn.sstatic.net/Sites/stackoverflow/img/apple-touch-icon.png?v=c78bd457575a">
+
+
+<div id="herobox" class="alternate">
+    <div class="test"></div>
+        <div id="close">
+            <a title="click to minimize"><span>x</span> Dismiss</a>
+        </div>
+    <div class="content">
+        <b>Join the Stack Overflow Community</b>
+        <div class="separator"></div>
+        <div class="blurb">
+            Stack Overflow is a community of 7.2 million programmers, just like you, helping each other.
+                <br/>
+Join them; it only takes a minute:                <br/>
+        </div>
+        <a href="/users/signup?ssrc=hero&amp;returnurl=%2fusers%2fstory%2fcurrent&amp;amp;utm_source=stackoverflow.com&amp;amp;utm_medium=dev-story&amp;amp;utm_campaign=signup-redirect" id="tell-me-more" class="button">Sign up</a>
+    </div>
+</div>
+<script>
+    StackExchange.ready(function () {
+
+        var location = 0;
+        if ($("body").hasClass("questions-page")) {
+            location = 1;;
+        } else if ($("body").hasClass("question-page")) {
+            location = 1;;
+        } else if ($("body").hasClass("faq-page")) {
+            location = 5;;
+        } else if ($("body").hasClass("home-page")) {
+            location = 3;;
+        }
+        
+        $('#tell-me-more').click(function () {
+            StackExchange.using("gps", function () {
+                StackExchange.gps.track("hero.action", { hero_action_type: 'cta', location: location }, true);
+            });
+        });
+        
+        $('#herobox #close').click(function () {
+            StackExchange.using("gps", function () {
+                StackExchange.gps.track("hero.action", { hero_action_type: "minimize", location: location }, true);
+            });
+            
+            $.cookie("hero", "mini", { path: "/", expires: 365 });
+            $.ajax({
+                url: "/hero-mini",
+                success: function (data) {
+                    $("#herobox").fadeOut("fast", function () {
+                        $("#herobox").replaceWith(data);
+                        $("#herobox-mini").fadeIn("fast");
+                    });
+                }
+            });
+            return false;
+        });
+    });
+
+</script>			<div id="question-header">
+                <h1 itemprop="name"><a href="/questions/217902/reading-writing-an-ini-file" class="question-hyperlink">Reading/writing an INI file</a></h1>
+
+            
+<div class="aside-cta" role="navigation" aria-label="ask new question">
+    <a href="/questions/ask" class="btn-outlined">Ask Question</a>
+</div>
+		</div>
+			<div id="mainbar" role="main" aria-label="question and answers">
+
+			
+
+<div class="question" data-questionid="217902"  id="question">
+
+    <div class="everyonelovesstackoverflow" id="clc-tlb"></div>    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="217902">
+        <a class="vote-up-off" title="This question shows research effort; it is useful and clear">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">188</span>
+        <a class="vote-down-off" title="This question does not show any research effort; it is unclear or not useful">down vote</a>
+
+        <a class="star-off" href="#">favorite</a>
+        <div class="favoritecount"><b>65</b></div>
+
+
+</div>
+
+            </td>
+            
+<td class="postcell">
+<div>
+    <div class="post-text" itemprop="text">
+
+<p>Is there any class in the .NET framework that can read/write standard .ini files:</p>
+
+<pre><code>[Section]
+&lt;keyname&gt;=&lt;value&gt;
+...
+</code></pre>
+
+<p>Delphi has the <code>TIniFile</code> component and I want to know if there is anything similar for C#? </p>
+    </div>
+    <div class="post-taglist">
+        <a href="/questions/tagged/c%23" class="post-tag" title="show questions tagged &#39;c#&#39;" rel="tag">c#</a> <a href="/questions/tagged/.net" class="post-tag" title="show questions tagged &#39;.net&#39;" rel="tag">.net</a> <a href="/questions/tagged/ini" class="post-tag" title="show questions tagged &#39;ini&#39;" rel="tag">ini</a> 
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/q/217902" title="short permalink to this question" class="short-link" id="link-post-217902">share</a><span class="lsep">|</span><a href="/posts/217902/edit" class="suggest-edit-post" title="">improve this question</a></div>        
+    </td>
+    <td align="right" class="post-signature">
+<div class="user-info user-hover">
+    <div class="user-action-time">
+        <a href="/posts/217902/revisions" title="show all edits to this post">edited <span title="2015-05-12 20:41:42Z" class="relativetime">May 12 '15 at 20:41</span></a>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/64046/jasonmarcher"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/a86a311e34d94a802e8bf88e2807ede3?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/64046/jasonmarcher">JasonMArcher</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">7,038</span><span title="9 gold badges"><span class="badge1"></span><span class="badgecount">9</span></span><span title="42 silver badges"><span class="badge2"></span><span class="badgecount">42</span></span><span title="45 bronze badges"><span class="badge3"></span><span class="badgecount">45</span></span>
+        </div>
+    </div>
+</div>    </td>
+    <td class="post-signature owner">
+        <div class="user-info ">
+    <div class="user-action-time">
+        asked <span title="2008-10-20 09:37:22Z" class="relativetime">Oct 20 '08 at 9:37</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/25732/zendar"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/c54a0ea1c0496adae3e388a4c5c152f2?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/25732/zendar">zendar</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">8,680</span><span title="11 gold badges"><span class="badge1"></span><span class="badgecount">11</span></span><span title="46 silver badges"><span class="badge2"></span><span class="badgecount">46</span></span><span title="69 bronze badges"><span class="badge3"></span><span class="badgecount">69</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</div>
+</td>
+        </tr>
+                    
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-217902" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-1333490" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">RemObjects has a Delphi Prism library called ShineOn that ships a similar INI file class. But you need to have Delphi Prism to compile it for .NET from source as there is not yet a compiled assembly available. <a href="http://code.remobjects.com/p/shineon/" rel="nofollow noreferrer">code.remobjects.com/p/shineon</a></span>
+                    &ndash;&nbsp;<a href="/users/11182/lex-li"
+                       title="33,033 reputation"
+                       class="comment-user">Lex Li</a>
+                <span class="comment-date" dir="ltr"><span title="2009-09-27 01:13:05Z" class="relativetime-clean">Sep 27 '09 at 1:13</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-45285942" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Got the same problem and made my own library for parsing ini files: <a href="https://github.com/rickyah/ini-parser/" rel="nofollow noreferrer">github.com/rickyah/ini-parser</a> Hope it helps</span>
+                    &ndash;&nbsp;<a href="/users/10136/ricardo-amores"
+                       title="3,348 reputation"
+                       class="comment-user">Ricardo Amores</a>
+                <span class="comment-date" dir="ltr"><span title="2015-02-12 15:54:50Z" class="relativetime-clean">Feb 12 '15 at 15:54</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-48265939" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="cool">3</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Just like Ricky I decided to make my own solution to this. Its available on: <a href="https://github.com/MarioZ/MadMilkman.Ini" rel="nofollow noreferrer">github.com/MarioZ/MadMilkman.Ini</a></span>
+                    &ndash;&nbsp;<a href="/users/2699178/mario-z"
+                       title="815 reputation"
+                       class="comment-user">Mario Z</a>
+                <span class="comment-date" dir="ltr"><span title="2015-05-06 12:11:40Z" class="relativetime-clean">May 6 '15 at 12:11</span></span>
+                        <span class="edited-yes" title="this comment was edited 3 times"></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-217902" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid answering questions in comments."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href=# onclick=""></a>
+        </div>         
+    </td>
+</tr>        </table>
+</div>
+
+			<div id="answers">
+
+				<a name="tab-top"></a>
+				<div id="answers-header">
+					<div class="subheader answers-subheader">
+						<h2>
+								13 Answers
+                                <span style="display:none;" itemprop="answerCount">13</span>
+						</h2>
+						<div>
+							<div id="tabs">
+        <a href="/questions/217902/reading-writing-an-ini-file?answertab=active#tab-top" data-nav-xhref="" title="Answers with the latest activity first" data-value="active" data-shortcut="A">
+            active</a>
+        <a href="/questions/217902/reading-writing-an-ini-file?answertab=oldest#tab-top" data-nav-xhref="" title="Answers in the order they were provided" data-value="oldest" data-shortcut="O">
+            oldest</a>
+        <a class="youarehere" href="/questions/217902/reading-writing-an-ini-file?answertab=votes#tab-top" data-nav-xhref="" title="Answers with the highest score first" data-value="votes" data-shortcut="V">
+            votes</a>
+</div>
+						</div>
+					</div>    
+				</div>    
+
+
+
+
+  
+<a name="217910"></a>
+<div id="answer-217910" class="answer accepted-answer" data-answerid="217910"  itemscope itemtype="http://schema.org/Answer" itemprop="acceptedAnswer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="217910">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">132</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+        <span class="vote-accepted-on load-accepted-answer-date" title="loading when this answer was accepted...">accepted</span>
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>The creators of the .NET framework want you to use XML-based config files, rather than INI files. So no, there is no built-in mechanism for reading them.</p>
+
+<p>There are third party solutions available, though.</p>
+
+<ul>
+<li>INI handlers can be obtained as <a href="https://www.nuget.org/packages?q=ini" rel="noreferrer">NuGet packages</a>, such as <a href="https://www.nuget.org/packages/ini-parser/" rel="noreferrer">INI Parser</a>.</li>
+<li>You can write your own INI handler, which is the old-school, laborious way. It gives you more control over the implementation, which you can use for bad or good. See e.g. <a href="http://www.codeproject.com/KB/cs/cs_ini.aspx" rel="noreferrer">an INI file handling class using C#, P/Invoke and Win32</a>.</li>
+</ul>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/217910" title="short permalink to this answer" class="short-link" id="link-post-217910">share</a><span class="lsep">|</span><a href="/posts/217910/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+    <td align="right" class="post-signature">
+<div class="user-info user-hover">
+    <div class="user-action-time">
+        <a href="/posts/217910/revisions" title="show all edits to this post">edited <span title="2016-11-03 09:16:26Z" class="relativetime">Nov 3 '16 at 9:16</span></a>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/2157640/palec"><div class="gravatar-wrapper-32"><img src="https://i.stack.imgur.com/aoymS.png?s=32&amp;g=1" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/2157640/palec">Palec</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">5,682</span><span title="4 gold badges"><span class="badge1"></span><span class="badgecount">4</span></span><span title="27 silver badges"><span class="badge2"></span><span class="badgecount">27</span></span><span title="50 bronze badges"><span class="badge3"></span><span class="badgecount">50</span></span>
+        </div>
+    </div>
+</div>    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2008-10-20 09:42:20Z" class="relativetime">Oct 20 '08 at 9:42</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/7122/david-arno"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/31fdbe39c7657652fb5f34cdef2c78c9?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/7122/david-arno">David Arno</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score 25,617" dir="ltr">25.6k</span><span title="14 gold badges"><span class="badge1"></span><span class="badgecount">14</span></span><span title="50 silver badges"><span class="badge2"></span><span class="badgecount">50</span></span><span title="98 bronze badges"><span class="badge3"></span><span class="badgecount">98</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-217910" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-23124319" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="supernova">49</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">for manual editing INI files are much better in many ways</span>
+                    &ndash;&nbsp;<a href="/users/80858/ivan-g"
+                       title="2,942 reputation"
+                       class="comment-user">Ivan G.</a>
+                <span class="comment-date" dir="ltr"><span title="2013-04-23 19:21:27Z" class="relativetime-clean">Apr 23 '13 at 19:21</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-46527904" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="warm">10</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Although it&#39;s true that XML config files are the way to go, this still isn&#39;t an answer to the question, or is VLQ for link-only.</span>
+                    &ndash;&nbsp;<a href="/users/1563422/danny-beckett"
+                       title="11,409 reputation"
+                       class="comment-user">Danny Beckett</a>
+                <span class="comment-date" dir="ltr"><span title="2015-03-19 19:30:04Z" class="relativetime-clean">Mar 19 '15 at 19:30</span></span>
+                        <span class="edited-yes" title="this comment was edited 1 time"></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-72760091" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">@aloneguid I would argue that the large set of available features actually contributed to .NET config files ending up being strange behemoths with a lot of magic in them. They have become &quot;code in the config file,&quot; and this leads to a lot of complexity, strange behaviors, and makes configuration management more difficult. (I&#39;m looking at you, database &quot;providers&quot; and connection strings.) So INI files are also generally better for non-manual editing, as well.</span>
+                    &ndash;&nbsp;<a href="/users/1394393/jpmc26"
+                       title="10,716 reputation"
+                       class="comment-user">jpmc26</a>
+                <span class="comment-date" dir="ltr"><span title="2017-03-16 02:51:55Z" class="relativetime-clean">Mar 16 at 2:51</span></span>
+                        <span class="edited-yes" title="this comment was edited 2 times"></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-217910" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href=# onclick=""></a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+<div class="everyonelovesstackoverflow" id="clc-mlb"></div>
+  
+<a name="14906422"></a>
+<div id="answer-14906422" class="answer" data-answerid="14906422"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="14906422">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">118</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<h2>Preface</h2>
+
+<p>Firstly, read this MSDN blog post on <a href="https://blogs.msdn.microsoft.com/oldnewthing/20071126-00/?p=24383/">the limitations of INI files</a>. If it suits your needs, read on.</p>
+
+<p>This is a concise implementation I wrote, utilising the original Windows P/Invoke, so it is supported by all versions of Windows with .NET installed, (i.e. Windows 98 - Windows 10). I hereby release it into the public domain - you're free to use it commercially without attribution.</p>
+
+<h2>The tiny class</h2>
+
+<p>Add a new class called <code>IniFile.cs</code> to your project:</p>
+
+<pre><code>using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+
+// Change this to match your program's normal namespace
+namespace MyProg
+{
+    class IniFile   // revision 11
+    {
+        string Path;
+        string EXE = Assembly.GetExecutingAssembly().GetName().Name;
+
+        [DllImport("kernel32", CharSet = CharSet.Unicode)]
+        static extern long WritePrivateProfileString(string Section, string Key, string Value, string FilePath);
+
+        [DllImport("kernel32", CharSet = CharSet.Unicode)]
+        static extern int GetPrivateProfileString(string Section, string Key, string Default, StringBuilder RetVal, int Size, string FilePath);
+
+        public IniFile(string IniPath = null)
+        {
+            Path = new FileInfo(IniPath ?? EXE + ".ini").FullName.ToString();
+        }
+
+        public string Read(string Key, string Section = null)
+        {
+            var RetVal = new StringBuilder(255);
+            GetPrivateProfileString(Section ?? EXE, Key, "", RetVal, 255, Path);
+            return RetVal.ToString();
+        }
+
+        public void Write(string Key, string Value, string Section = null)
+        {
+            WritePrivateProfileString(Section ?? EXE, Key, Value, Path);
+        }
+
+        public void DeleteKey(string Key, string Section = null)
+        {
+            Write(Key, null, Section ?? EXE);
+        }
+
+        public void DeleteSection(string Section = null)
+        {
+            Write(null, null, Section ?? EXE);
+        }
+
+        public bool KeyExists(string Key, string Section = null)
+        {
+            return Read(Key, Section).Length &gt; 0;
+        }
+    }
+}
+</code></pre>
+
+<h2>How to use it</h2>
+
+<p>Open the INI file in one of the 3 following ways:</p>
+
+<pre><code>// Creates or loads an INI file in the same directory as your executable
+// named EXE.ini (where EXE is the name of your executable)
+var MyIni = new IniFile();
+
+// Or specify a specific name in the current dir
+var MyIni = new IniFile("Settings.ini");
+
+// Or specify a specific name in a specific dir
+var MyIni = new IniFile(@"C:\Settings.ini");
+</code></pre>
+
+<p>You can write some values like so:</p>
+
+<pre><code>MyIni.Write("DefaultVolume", "100");
+MyIni.Write("HomePage", "http://www.google.com");
+</code></pre>
+
+<p>To create a file like this:</p>
+
+<pre class="lang-none prettyprint-override"><code>[MyProg]
+DefaultVolume=100
+HomePage=http://www.google.com
+</code></pre>
+
+<p>To read the values out of the INI file:</p>
+
+<pre><code>var DefaultVolume = IniFile.Read("DefaultVolume");
+var HomePage = IniFile.Read("HomePage");
+</code></pre>
+
+<p>Optionally, you can set <code>[Section]</code>'s:</p>
+
+<pre><code>MyIni.Write("DefaultVolume", "100", "Audio");
+MyIni.Write("HomePage", "http://www.google.com", "Web");
+</code></pre>
+
+<p>To create a file like this:</p>
+
+<pre class="lang-none prettyprint-override"><code>[Audio]
+DefaultVolume=100
+
+[Web]
+HomePage=http://www.google.com
+</code></pre>
+
+<p>You can also check for the existence of a key like so:</p>
+
+<pre><code>if(!MyIni.KeyExists("DefaultVolume", "Audio"))
+{
+    MyIni.Write("DefaultVolume", "100", "Audio");
+}
+</code></pre>
+
+<p>You can delete a key like so:</p>
+
+<pre><code>MyIni.DeleteKey("DefaultVolume", "Audio");
+</code></pre>
+
+<p>You can also delete a whole section (including all keys) like so:</p>
+
+<pre><code>MyIni.DeleteSection("Web");
+</code></pre>
+
+<p>Please feel free to comment with any improvements!</p>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/14906422" title="short permalink to this answer" class="short-link" id="link-post-14906422">share</a><span class="lsep">|</span><a href="/posts/14906422/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+    <td align="right" class="post-signature">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="/posts/14906422/revisions" title="show all edits to this post">edited <span title="2016-06-27 16:45:29Z" class="relativetime">Jun 27 '16 at 16:45</span></a>
+    </div>
+    <div class="user-gravatar32">
+        
+    </div>
+    <div class="user-details">
+        
+        <div class="-flair">
+            
+        </div>
+    </div>
+</div>    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2013-02-16 02:52:39Z" class="relativetime">Feb 16 '13 at 2:52</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/1563422/danny-beckett"><div class="gravatar-wrapper-32"><img src="https://i.stack.imgur.com/SU0xt.jpg?s=32&amp;g=1" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/1563422/danny-beckett">Danny Beckett</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score 11,409" dir="ltr">11.4k</span><span title="16 gold badges"><span class="badge1"></span><span class="badgecount">16</span></span><span title="59 silver badges"><span class="badge2"></span><span class="badgecount">59</span></span><span title="106 bronze badges"><span class="badge3"></span><span class="badgecount">106</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-14906422" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="2"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-57486465" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="cool">1</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">I&#39;m little late, but it&#39;s missing <code>GetSections()</code> method.</span>
+                    &ndash;&nbsp;<a href="/users/1420356/stil"
+                       title="1,987 reputation"
+                       class="comment-user">stil</a>
+                <span class="comment-date" dir="ltr"><span title="2016-01-19 10:25:29Z" class="relativetime-clean">Jan 19 '16 at 10:25</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-61112094" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Maybe a more traditional default would be per-application (not per-assembly) .ini files like <code>Path.GetFullPath(IniPath ?? Path.ChangeExtension(Application.ExecutablePath, &quot;.ini&quot;))</code>.</span>
+                    &ndash;&nbsp;<a href="/users/1353187/eugene-ryabtsev"
+                       title="1,533 reputation"
+                       class="comment-user">Eugene Ryabtsev</a>
+                <span class="comment-date" dir="ltr"><span title="2016-04-21 10:44:38Z" class="relativetime-clean">Apr 21 '16 at 10:44</span></span>
+                        <span class="edited-yes" title="this comment was edited 1 time"></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-63874883" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Really great ! Put it on github ?</span>
+                    &ndash;&nbsp;<a href="/users/3548191/emrys-myrooin"
+                       title="1,105 reputation"
+                       class="comment-user">Emrys Myrooin</a>
+                <span class="comment-date" dir="ltr"><span title="2016-07-06 14:26:05Z" class="relativetime-clean">Jul 6 '16 at 14:26</span></span>
+                        <span class="edited-yes" title="this comment was edited 1 time"></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-67415766" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">What&#39;s the advantage of using P/Invoke other than backwards compatability?</span>
+                    &ndash;&nbsp;<a href="/users/3791372/user3791372"
+                       title="1,675 reputation"
+                       class="comment-user">user3791372</a>
+                <span class="comment-date" dir="ltr"><span title="2016-10-16 14:13:17Z" class="relativetime-clean">Oct 16 '16 at 14:13</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-71076983" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="cool">3</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Old now, and as much as I respect Raymond Chen, many of the limitations in that article were limitations of the specific INI library in Windows, and not the INI format itself. Others, like granular permissions, could be easily sidestepped via multiple files. An <b>official</b>, modernized INI library would be most-welcomed, even today.</span>
+                    &ndash;&nbsp;<a href="/users/3043/joel-coehoorn"
+                       title="264,507 reputation"
+                       class="comment-user">Joel Coehoorn</a>
+                <span class="comment-date" dir="ltr"><span title="2017-01-31 01:44:54Z" class="relativetime-clean">Jan 31 at 1:44</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-14906422" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link  dno"
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   ></a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link " title="expand to show all comments on this post" href=# onclick="">show <b>2</b> more comments</a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+
+  
+<a name="217913"></a>
+<div id="answer-217913" class="answer" data-answerid="217913"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="217913">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">62</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>This article on CodeProject "<a href="http://www.codeproject.com/KB/cs/cs_ini.aspx" rel="noreferrer">An INI file handling class using C#</a>" should help.</p>
+
+<p>The author created a C# class "Ini" which exposes two functions from KERNEL32.dll. These functions are:  <code>WritePrivateProfileString</code> and <code>GetPrivateProfileString</code>. You will need two namespaces: <code>System.Runtime.InteropServices</code> and <code>System.Text</code>.</p>
+
+<p><strong>Steps to use the Ini class</strong></p>
+
+<p>In your project namespace definition add </p>
+
+<pre><code>using INI;
+</code></pre>
+
+<p>Create a INIFile like this</p>
+
+<pre><code>INIFile ini = new INIFile("C:\\test.ini");
+</code></pre>
+
+<p>Use <code>IniWriteValue</code> to write a new value to a specific key in a section or use <code>IniReadValue</code> to read a value FROM a key in a specific Section.</p>
+
+<p><em>Note: if you're beginning from scratch, you could read this <strong>MSDN article</strong>: <a href="http://msdn.microsoft.com/en-us/library/ms184658(VS.80).aspx" rel="noreferrer">How to: Add Application Configuration Files to C# Projects</a>. It's a better way for configuring your application.</em></p>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/217913" title="short permalink to this answer" class="short-link" id="link-post-217913">share</a><span class="lsep">|</span><a href="/posts/217913/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+    <td align="right" class="post-signature">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="/posts/217913/revisions" title="show all edits to this post">edited <span title="2008-10-20 09:49:37Z" class="relativetime">Oct 20 '08 at 9:49</span></a>
+    </div>
+    <div class="user-gravatar32">
+        
+    </div>
+    <div class="user-details">
+        
+        <div class="-flair">
+            
+        </div>
+    </div>
+</div>    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2008-10-20 09:42:55Z" class="relativetime">Oct 20 '08 at 9:42</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/6461/splattne"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/7847006dbf49f1722b07c8da396f1275?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/6461/splattne">splattne</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score 73,713" dir="ltr">73.7k</span><span title="42 gold badges"><span class="badge1"></span><span class="badgecount">42</span></span><span title="184 silver badges"><span class="badge2"></span><span class="badgecount">184</span></span><span title="237 bronze badges"><span class="badge3"></span><span class="badgecount">237</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-217913" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="1"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-2407055" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">I want to read complete INI file. How to do the same instead of reading section,key</span>
+                    &ndash;&nbsp;<a href="/users/239991/venkat"
+                       title="1,924 reputation"
+                       class="comment-user">venkat</a>
+                <span class="comment-date" dir="ltr"><span title="2010-03-11 10:36:36Z" class="relativetime-clean">Mar 11 '10 at 10:36</span></span>
+                        <span class="edited-yes" title="this comment was edited 1 time"></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-14284117" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">this worked for me, and then stopped working from another point. No idea still what went different under the hood</span>
+                    &ndash;&nbsp;<a href="/users/661933/nawfal"
+                       title="32,927 reputation"
+                       class="comment-user">nawfal</a>
+                <span class="comment-date" dir="ltr"><span title="2012-06-08 08:55:28Z" class="relativetime-clean">Jun 8 '12 at 8:55</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-37640867" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Watch out using this deprecated Win32 API functions. More info: <a href="http://stackoverflow.com/questions/11451641/writeprivateprofilestring-is-not-adding-proprty-to-the-end" title="writeprivateprofilestring is not adding proprty to the end">stackoverflow.com/questions/11451641/&hellip;</a></span>
+                    &ndash;&nbsp;<a href="/users/767664/pedro77"
+                       title="2,201 reputation"
+                       class="comment-user">Pedro77</a>
+                <span class="comment-date" dir="ltr"><span title="2014-06-21 22:28:54Z" class="relativetime-clean">Jun 21 '14 at 22:28</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-40093686" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">I used this approach for awhile, but security enhancements starting in Win7 have pretty much killed this for me.  You can still use this approach, but you will have store the .ini in ProgramData and have your app read / write there.</span>
+                    &ndash;&nbsp;<a href="/users/194725/jess"
+                       title="2,124 reputation"
+                       class="comment-user">Jess</a>
+                <span class="comment-date" dir="ltr"><span title="2014-09-04 04:48:56Z" class="relativetime-clean">Sep 4 '14 at 4:48</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-62851518" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="cool">1</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">@venkat Then just read it like you&#39;d read a text file.</span>
+                    &ndash;&nbsp;<a href="/users/2415524/mbomb007"
+                       title="1,822 reputation"
+                       class="comment-user">mbomb007</a>
+                <span class="comment-date" dir="ltr"><span title="2016-06-07 18:55:56Z" class="relativetime-clean">Jun 7 '16 at 18:55</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-217913" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link  dno"
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   ></a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link " title="expand to show all comments on this post" href=# onclick="">show <b>1</b> more comment</a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+
+  
+<a name="5037497"></a>
+<div id="answer-5037497" class="answer" data-answerid="5037497"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="5037497">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">35</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>I found this simple implementation:</p>
+
+<p><a href="http://bytes.com/topic/net/insights/797169-reading-parsing-ini-file-c" rel="noreferrer">http://bytes.com/topic/net/insights/797169-reading-parsing-ini-file-c</a></p>
+
+<p>Works well for what I need.</p>
+
+<p>Here is how you use it:</p>
+
+<pre><code>public class TestParser
+{
+    public static void Main()
+    {
+        IniParser parser = new IniParser(@"C:\test.ini");
+
+        String newMessage;
+
+        newMessage = parser.GetSetting("appsettings", "msgpart1");
+        newMessage += parser.GetSetting("appsettings", "msgpart2");
+        newMessage += parser.GetSetting("punctuation", "ex");
+
+        //Returns "Hello World!"
+        Console.WriteLine(newMessage);
+        Console.ReadLine();
+    }
+}
+</code></pre>
+
+<p>Here is the code:</p>
+
+<pre><code>using System;
+using System.IO;
+using System.Collections;
+
+public class IniParser
+{
+    private Hashtable keyPairs = new Hashtable();
+    private String iniFilePath;
+
+    private struct SectionPair
+    {
+        public String Section;
+        public String Key;
+    }
+
+    /// &lt;summary&gt;
+    /// Opens the INI file at the given path and enumerates the values in the IniParser.
+    /// &lt;/summary&gt;
+    /// &lt;param name="iniPath"&gt;Full path to INI file.&lt;/param&gt;
+    public IniParser(String iniPath)
+    {
+        TextReader iniFile = null;
+        String strLine = null;
+        String currentRoot = null;
+        String[] keyPair = null;
+
+        iniFilePath = iniPath;
+
+        if (File.Exists(iniPath))
+        {
+            try
+            {
+                iniFile = new StreamReader(iniPath);
+
+                strLine = iniFile.ReadLine();
+
+                while (strLine != null)
+                {
+                    strLine = strLine.Trim().ToUpper();
+
+                    if (strLine != "")
+                    {
+                        if (strLine.StartsWith("[") &amp;&amp; strLine.EndsWith("]"))
+                        {
+                            currentRoot = strLine.Substring(1, strLine.Length - 2);
+                        }
+                        else
+                        {
+                            keyPair = strLine.Split(new char[] { '=' }, 2);
+
+                            SectionPair sectionPair;
+                            String value = null;
+
+                            if (currentRoot == null)
+                                currentRoot = "ROOT";
+
+                            sectionPair.Section = currentRoot;
+                            sectionPair.Key = keyPair[0];
+
+                            if (keyPair.Length &gt; 1)
+                                value = keyPair[1];
+
+                            keyPairs.Add(sectionPair, value);
+                        }
+                    }
+
+                    strLine = iniFile.ReadLine();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (iniFile != null)
+                    iniFile.Close();
+            }
+        }
+        else
+            throw new FileNotFoundException("Unable to locate " + iniPath);
+
+    }
+
+    /// &lt;summary&gt;
+    /// Returns the value for the given section, key pair.
+    /// &lt;/summary&gt;
+    /// &lt;param name="sectionName"&gt;Section name.&lt;/param&gt;
+    /// &lt;param name="settingName"&gt;Key name.&lt;/param&gt;
+    public String GetSetting(String sectionName, String settingName)
+    {
+        SectionPair sectionPair;
+        sectionPair.Section = sectionName.ToUpper();
+        sectionPair.Key = settingName.ToUpper();
+
+        return (String)keyPairs[sectionPair];
+    }
+
+    /// &lt;summary&gt;
+    /// Enumerates all lines for given section.
+    /// &lt;/summary&gt;
+    /// &lt;param name="sectionName"&gt;Section to enum.&lt;/param&gt;
+    public String[] EnumSection(String sectionName)
+    {
+        ArrayList tmpArray = new ArrayList();
+
+        foreach (SectionPair pair in keyPairs.Keys)
+        {
+            if (pair.Section == sectionName.ToUpper())
+                tmpArray.Add(pair.Key);
+        }
+
+        return (String[])tmpArray.ToArray(typeof(String));
+    }
+
+    /// &lt;summary&gt;
+    /// Adds or replaces a setting to the table to be saved.
+    /// &lt;/summary&gt;
+    /// &lt;param name="sectionName"&gt;Section to add under.&lt;/param&gt;
+    /// &lt;param name="settingName"&gt;Key name to add.&lt;/param&gt;
+    /// &lt;param name="settingValue"&gt;Value of key.&lt;/param&gt;
+    public void AddSetting(String sectionName, String settingName, String settingValue)
+    {
+        SectionPair sectionPair;
+        sectionPair.Section = sectionName.ToUpper();
+        sectionPair.Key = settingName.ToUpper();
+
+        if (keyPairs.ContainsKey(sectionPair))
+            keyPairs.Remove(sectionPair);
+
+        keyPairs.Add(sectionPair, settingValue);
+    }
+
+    /// &lt;summary&gt;
+    /// Adds or replaces a setting to the table to be saved with a null value.
+    /// &lt;/summary&gt;
+    /// &lt;param name="sectionName"&gt;Section to add under.&lt;/param&gt;
+    /// &lt;param name="settingName"&gt;Key name to add.&lt;/param&gt;
+    public void AddSetting(String sectionName, String settingName)
+    {
+        AddSetting(sectionName, settingName, null);
+    }
+
+    /// &lt;summary&gt;
+    /// Remove a setting.
+    /// &lt;/summary&gt;
+    /// &lt;param name="sectionName"&gt;Section to add under.&lt;/param&gt;
+    /// &lt;param name="settingName"&gt;Key name to add.&lt;/param&gt;
+    public void DeleteSetting(String sectionName, String settingName)
+    {
+        SectionPair sectionPair;
+        sectionPair.Section = sectionName.ToUpper();
+        sectionPair.Key = settingName.ToUpper();
+
+        if (keyPairs.ContainsKey(sectionPair))
+            keyPairs.Remove(sectionPair);
+    }
+
+    /// &lt;summary&gt;
+    /// Save settings to new file.
+    /// &lt;/summary&gt;
+    /// &lt;param name="newFilePath"&gt;New file path.&lt;/param&gt;
+    public void SaveSettings(String newFilePath)
+    {
+        ArrayList sections = new ArrayList();
+        String tmpValue = "";
+        String strToSave = "";
+
+        foreach (SectionPair sectionPair in keyPairs.Keys)
+        {
+            if (!sections.Contains(sectionPair.Section))
+                sections.Add(sectionPair.Section);
+        }
+
+        foreach (String section in sections)
+        {
+            strToSave += ("[" + section + "]\r\n");
+
+            foreach (SectionPair sectionPair in keyPairs.Keys)
+            {
+                if (sectionPair.Section == section)
+                {
+                    tmpValue = (String)keyPairs[sectionPair];
+
+                    if (tmpValue != null)
+                        tmpValue = "=" + tmpValue;
+
+                    strToSave += (sectionPair.Key + tmpValue + "\r\n");
+                }
+            }
+
+            strToSave += "\r\n";
+        }
+
+        try
+        {
+            TextWriter tw = new StreamWriter(newFilePath);
+            tw.Write(strToSave);
+            tw.Close();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+    /// &lt;summary&gt;
+    /// Save settings back to ini file.
+    /// &lt;/summary&gt;
+    public void SaveSettings()
+    {
+        SaveSettings(iniFilePath);
+    }
+}
+</code></pre>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/5037497" title="short permalink to this answer" class="short-link" id="link-post-5037497">share</a><span class="lsep">|</span><a href="/posts/5037497/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+    <td align="right" class="post-signature">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="/posts/5037497/revisions" title="show all edits to this post">edited <span title="2012-07-06 13:45:01Z" class="relativetime">Jul 6 '12 at 13:45</span></a>
+    </div>
+    <div class="user-gravatar32">
+        
+    </div>
+    <div class="user-details">
+        
+        <div class="-flair">
+            
+        </div>
+    </div>
+</div>    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2011-02-18 04:08:21Z" class="relativetime">Feb 18 '11 at 4:08</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/197000/joerage"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/3849ea83917319840d1c767f688e482d?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/197000/joerage">joerage</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">3,634</span><span title="4 gold badges"><span class="badge1"></span><span class="badgecount">4</span></span><span title="29 silver badges"><span class="badge2"></span><span class="badgecount">29</span></span><span title="45 bronze badges"><span class="badge3"></span><span class="badgecount">45</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-5037497" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-27755602" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="supernova">33</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">+1 to offset above downvote. What do you really complain about? He said he FOUND it. Do you downvote him for not finding one with generic accessors and stringbuilder usage?</span>
+                    &ndash;&nbsp;<a href="/users/80577/tormod"
+                       title="2,810 reputation"
+                       class="comment-user">Tormod</a>
+                <span class="comment-date" dir="ltr"><span title="2013-09-15 21:41:54Z" class="relativetime-clean">Sep 15 '13 at 21:41</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-33131906" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">@Tormod: Wish I could downvote the comment. It&#39;s a technical forum when we vote on solutions, not the (obviously positive) intent. If a solution posted by Knuth himself had flaws it would - and should - be pointed out. It doesn&#39;t matter if the solution was found or written by the poster.</span>
+                    &ndash;&nbsp;<a href="/users/29430/ya23"
+                       title="9,683 reputation"
+                       class="comment-user">ya23</a>
+                <span class="comment-date" dir="ltr"><span title="2014-02-19 13:21:09Z" class="relativetime-clean">Feb 19 '14 at 13:21</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-33228066" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="warm">5</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">I think you stretch the definition of &quot;flaw&quot;. If the solution does not emphasize your sensitivities, then simply do not upvote. I just left a note saying that I already negated his downvote so that the other 7 guys who upvoted my comment wouldn&#39;t do this themselves.</span>
+                    &ndash;&nbsp;<a href="/users/80577/tormod"
+                       title="2,810 reputation"
+                       class="comment-user">Tormod</a>
+                <span class="comment-date" dir="ltr"><span title="2014-02-21 13:29:50Z" class="relativetime-clean">Feb 21 '14 at 13:29</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-5037497" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href=# onclick=""></a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+
+  
+<a name="16972767"></a>
+<div id="answer-16972767" class="answer" data-answerid="16972767"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="16972767">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">12</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>The code in joerage's answer is inspiring.</p>
+
+<p>Unfortunately, it changes the character casing of the keys and does not handle comments. So I wrote something that should be robust enough to read (only) very dirty INI files and allows to retrieve keys as they are.</p>
+
+<p>It uses some LINQ, a nested case insensitive string dictionary to store sections, keys and values, and read the file in one go.</p>
+
+<pre><code>using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+class IniReader
+{
+    Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt; ini = new Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt;(StringComparer.InvariantCultureIgnoreCase);
+
+    public IniReader(string file)
+    {
+        var txt = File.ReadAllText(file);
+
+        Dictionary&lt;string, string&gt; currentSection = new Dictionary&lt;string, string&gt;(StringComparer.InvariantCultureIgnoreCase);
+
+        ini[""] = currentSection;
+
+        foreach(var line in txt.Split(new[]{"\n"}, StringSplitOptions.RemoveEmptyEntries)
+                               .Where(t =&gt; !string.IsNullOrWhiteSpace(t))
+                               .Select(t =&gt; t.Trim()))
+        {
+            if (line.StartsWith(";"))
+                continue;
+
+            if (line.StartsWith("[") &amp;&amp; line.EndsWith("]"))
+            {
+                currentSection = new Dictionary&lt;string, string&gt;(StringComparer.InvariantCultureIgnoreCase);
+                ini[line.Substring(1, line.LastIndexOf("]") - 1)] = currentSection;
+                continue;
+            }
+
+            var idx = line.IndexOf("=");
+            if (idx == -1)
+                currentSection[line] = "";
+            else
+                currentSection[line.Substring(0, idx)] = line.Substring(idx + 1);
+        }
+    }
+
+    public string GetValue(string key)
+    {
+        return GetValue(key, "", "");
+    }
+
+    public string GetValue(string key, string section)
+    {
+        return GetValue(key, section, "");
+    }
+
+    public string GetValue(string key, string section, string @default)
+    {
+        if (!ini.ContainsKey(section))
+            return @default;
+
+        if (!ini[section].ContainsKey(key))
+            return @default;
+
+        return ini[section][key];
+    }
+
+    public string[] GetKeys(string section)
+    {
+        if (!ini.ContainsKey(section))
+            return new string[0];
+
+        return ini[section].Keys.ToArray();
+    }
+
+    public string[] GetSections()
+    {
+        return ini.Keys.Where(t =&gt; t != "").ToArray();
+    }
+}
+</code></pre>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/16972767" title="short permalink to this answer" class="short-link" id="link-post-16972767">share</a><span class="lsep">|</span><a href="/posts/16972767/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2013-06-06 21:47:44Z" class="relativetime">Jun 6 '13 at 21:47</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/24472/larry"><div class="gravatar-wrapper-32"><img src="https://i.stack.imgur.com/JnG6u.png?s=32&amp;g=1" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/24472/larry">Larry</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score 11,110" dir="ltr">11.1k</span><span title="7 gold badges"><span class="badge1"></span><span class="badgecount">7</span></span><span title="46 silver badges"><span class="badge2"></span><span class="badgecount">46</span></span><span title="78 bronze badges"><span class="badge3"></span><span class="badgecount">78</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-16972767" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-56468495" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="cool">2</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">and thank you for not putting that <code>catch (Exception ex)             {                 throw ex;             }</code> in there</span>
+                    &ndash;&nbsp;<a href="/users/125981/mark-schultheiss"
+                       title="19,813 reputation"
+                       class="comment-user">Mark Schultheiss</a>
+                <span class="comment-date" dir="ltr"><span title="2015-12-18 20:03:57Z" class="relativetime-clean">Dec 18 '15 at 20:03</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-16972767" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href=# onclick=""></a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+
+  
+<a name="23203317"></a>
+<div id="answer-23203317" class="answer" data-answerid="23203317"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="23203317">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">8</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>I want to introduce an IniParser library I've created completely in c#, so it contains no dependencies in any OS, which makes it Mono compatible. Open Source with MIT license -so it can be used in any code.</p>
+
+<p>You can <a href="https://github.com/rickyah/ini-parser">check out the source in GitHub</a>, and it is <a href="http://www.nuget.org/packages/ini-parser">also available as a NuGet package</a></p>
+
+<p>It's <a href="https://github.com/rickyah/ini-parser/wiki/Configuring-parser-behavior">heavily configurable</a>, and <a href="https://github.com/rickyah/ini-parser/wiki/First-Steps">really simple to use</a>.</p>
+
+<p>Sorry for the shameless plug but I hope it can be of help of anyone revisiting this answer.</p>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/23203317" title="short permalink to this answer" class="short-link" id="link-post-23203317">share</a><span class="lsep">|</span><a href="/posts/23203317/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2014-04-21 18:22:10Z" class="relativetime">Apr 21 '14 at 18:22</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/10136/ricardo-amores"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/0fdad2a07b50c9a60a48c7deb777d30b?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/10136/ricardo-amores">Ricardo Amores</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">3,348</span><span title="20 silver badges"><span class="badge2"></span><span class="badgecount">20</span></span><span title="44 bronze badges"><span class="badge3"></span><span class="badgecount">44</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-23203317" class="comments  dno">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+                        <tr><td></td><td></td></tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-23203317" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href=# onclick=""></a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+
+  
+<a name="17786953"></a>
+<div id="answer-17786953" class="answer" data-answerid="17786953"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="17786953">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">6</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>You could use <a href="https://sharpconfig.codeplex.com/">SharpConfig</a> to read .cfg and/or .ini files. It's an easy to use config library for .NET.</p>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/17786953" title="short permalink to this answer" class="short-link" id="link-post-17786953">share</a><span class="lsep">|</span><a href="/posts/17786953/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+    <td align="right" class="post-signature">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="/posts/17786953/revisions" title="show all edits to this post">edited <span title="2014-01-24 11:31:19Z" class="relativetime">Jan 24 '14 at 11:31</span></a>
+    </div>
+    <div class="user-gravatar32">
+        
+    </div>
+    <div class="user-details">
+        
+        <div class="-flair">
+            
+        </div>
+    </div>
+</div>    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2013-07-22 11:55:28Z" class="relativetime">Jul 22 '13 at 11:55</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/2547060/hokares"><div class="gravatar-wrapper-32"><img src="https://i.stack.imgur.com/xSdDX.png?s=32&amp;g=1" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/2547060/hokares">Hokares</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">61</span><span title="1 silver badge"><span class="badge2"></span><span class="badgecount">1</span></span><span title="3 bronze badges"><span class="badge3"></span><span class="badgecount">3</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-17786953" class="comments  dno">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+                        <tr><td></td><td></td></tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-17786953" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href=# onclick=""></a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+
+  
+<a name="9971646"></a>
+<div id="answer-9971646" class="answer" data-answerid="9971646"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="9971646">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">3</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>Usually, when you create applications using C# and the .NET framework, you will not use INI files. It is more common to store settings in an XML-based configuration file or in the registry. 
+However, if your software shares settings with a legacy application it may be easier to use its configuration file, rather than duplicating the information elsewhere.</p>
+
+<p>The .NET framework does not support the use of INI files directly. However, you can use Windows API functions with Platform Invocation Services (P/Invoke) to write to and read from the files. In this link we create a class that represents INI files and uses Windows API functions to manipulate them. 
+Please go through the following link.</p>
+
+<p><a href="http://www.blackwasp.co.uk/IniFile.aspx" rel="nofollow">Reading and Writing INI Files</a></p>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/9971646" title="short permalink to this answer" class="short-link" id="link-post-9971646">share</a><span class="lsep">|</span><a href="/posts/9971646/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2012-04-02 06:14:17Z" class="relativetime">Apr 2 '12 at 6:14</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/1302974/unknown"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/816158fe5831081d2052e99f76704da2?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/1302974/unknown">Unknown</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">501</span><span title="6 silver badges"><span class="badge2"></span><span class="badgecount">6</span></span><span title="12 bronze badges"><span class="badge3"></span><span class="badgecount">12</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-9971646" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-48113923" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="cool">1</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Stay out of the Registry! Application configuration data should not be saved in the Registry.</span>
+                    &ndash;&nbsp;<a href="/users/1655625/deegee"
+                       title="858 reputation"
+                       class="comment-user">deegee</a>
+                <span class="comment-date" dir="ltr"><span title="2015-05-02 01:00:34Z" class="relativetime-clean">May 2 '15 at 1:00</span></span>
+                        <span class="edited-yes" title="this comment was edited 1 time"></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-9971646" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href=# onclick=""></a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+
+  
+<a name="2152710"></a>
+<div id="answer-2152710" class="answer" data-answerid="2152710"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="2152710">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">2</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>There is an Ini Parser available in <a href="http://commonlibrarynet.codeplex.com" rel="nofollow noreferrer">CommonLibrary.NET</a></p>
+
+<p>This has various very convenient overloads for getting sections/values and is very light weight.</p>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/2152710" title="short permalink to this answer" class="short-link" id="link-post-2152710">share</a><span class="lsep">|</span><a href="/posts/2152710/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2010-01-28 06:27:58Z" class="relativetime">Jan 28 '10 at 6:27</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/260680/james"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/e0f28265a8a28048343753258a9c0d98?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/260680/james">james</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">236</span><span title="3 silver badges"><span class="badge2"></span><span class="badgecount">3</span></span><span title="3 bronze badges"><span class="badge3"></span><span class="badgecount">3</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-2152710" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-2704339" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="cool">1</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">In case it&#39;s not obvious from looking at the top level of the library (it wasn&#39;t obvious to me!), the IniDcoument class et al are in ComLib.IO.</span>
+                    &ndash;&nbsp;<a href="/users/9279/tim-keating"
+                       title="3,805 reputation"
+                       class="comment-user">Tim Keating</a>
+                <span class="comment-date" dir="ltr"><span title="2010-04-21 15:50:41Z" class="relativetime-clean">Apr 21 '10 at 15:50</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-30358370" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="cool">1</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">For anyone looking at this route, CommonLibrary.NET does not seem to follow .INI conventions.  It uses a colon &quot;:&quot; as the delimiter instead of equals sign, and it does not handle comments (beginning a line with a semi-colon or pound sign will cause parsing to fail).</span>
+                    &ndash;&nbsp;<a href="/users/244069/jimueller"
+                       title="324 reputation"
+                       class="comment-user">jimueller</a>
+                <span class="comment-date" dir="ltr"><span title="2013-12-02 22:26:49Z" class="relativetime-clean">Dec 2 '13 at 22:26</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-2152710" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href=# onclick=""></a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+
+  
+<a name="37772571"></a>
+<div id="answer-37772571" class="answer" data-answerid="37772571"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="37772571">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">2</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>If you want just a simple reader without sections and any other dlls here is simple solution:</p>
+
+<pre><code>using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Tool
+{
+    public class Config
+    {
+        Dictionary &lt;string, string&gt; values;
+        public Config (string path)
+        {
+            values = File.ReadLines(path)
+            .Where(line =&gt; (!String.IsNullOrWhiteSpace(line) &amp;&amp; !line.StartsWith("#")))
+            .Select(line =&gt; line.Split(new char[] { '=' }, 2, 0))
+            .ToDictionary(parts =&gt; parts[0].Trim(), parts =&gt; parts.Length&gt;1?parts[1].Trim():null);
+        }
+        public string Value (string name, string value=null)
+        {
+            if (values!=null &amp;&amp; values.ContainsKey(name))
+            {
+                return values[name];
+            }
+            return value;
+        }
+    }
+}
+</code></pre>
+
+<p>Usage sample:</p>
+
+<pre><code>    file = new Tool.Config (Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\config.ini");
+    command = file.Value ("command");
+    action = file.Value ("action");
+    string value;
+    //second parameter is default value if no key found with this name
+    value = file.Value("debug","true");
+    this.debug = (value.ToLower()=="true" || value== "1");
+    value = file.Value("plain", "false");
+    this.plain = (value.ToLower() == "true" || value == "1");
+</code></pre>
+
+<p>Config file content meanwhile (as you see supports # symbol for line comment):</p>
+
+<pre><code>#command to run
+command = php
+
+#default script
+action = index.php
+
+#debug mode
+#debug = true
+
+#plain text mode
+#plain = false
+
+#icon = favico.ico
+</code></pre>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/37772571" title="short permalink to this answer" class="short-link" id="link-post-37772571">share</a><span class="lsep">|</span><a href="/posts/37772571/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+    <td align="right" class="post-signature">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="/posts/37772571/revisions" title="show all edits to this post">edited <span title="2016-06-12 09:31:09Z" class="relativetime">Jun 12 '16 at 9:31</span></a>
+    </div>
+    <div class="user-gravatar32">
+        
+    </div>
+    <div class="user-details">
+        
+        <div class="-flair">
+            
+        </div>
+    </div>
+</div>    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2016-06-12 09:16:44Z" class="relativetime">Jun 12 '16 at 9:16</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/1503846/biohazard"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/14c288deecbd5f41aabfc780f6aaa265?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/1503846/biohazard">BIOHAZARD</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">949</span><span title="9 silver badges"><span class="badge2"></span><span class="badgecount">9</span></span><span title="18 bronze badges"><span class="badge3"></span><span class="badgecount">18</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-37772571" class="comments  dno">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+                        <tr><td></td><td></td></tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-37772571" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href=# onclick=""></a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+
+  
+<a name="40051727"></a>
+<div id="answer-40051727" class="answer" data-answerid="40051727"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="40051727">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">1</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>Here is my own version, using regular expressions. This code assumes that each section name is unique - if however this is not true - it makes sense to replace Dictionary with List. This function supports .ini file commenting, starting from ';' character. Section starts normally [section], and key value pairs also comes normally "key = value". Same assumption as for sections - key name is unique.</p>
+
+<pre><code>/// &lt;summary&gt;
+/// Loads .ini file into dictionary.
+/// &lt;/summary&gt;
+public static Dictionary&lt;String, Dictionary&lt;String, String&gt;&gt; loadIni(String file)
+{
+    Dictionary&lt;String, Dictionary&lt;String, String&gt;&gt; d = new Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt;();
+
+    String ini = File.ReadAllText(file);
+
+    // Remove comments, preserve linefeeds, if end-user needs to count line number.
+    ini = Regex.Replace(ini, @"^\s*;.*$", "", RegexOptions.Multiline);
+
+    // Pick up all lines from first section to another section
+    foreach (Match m in Regex.Matches(ini, "(^|[\r\n])\\[([^\r\n]*)\\][\r\n]+(.*?)(\\[([^\r\n]*)\\][\r\n]+|$)", RegexOptions.Singleline))
+    {
+        String sectionName = m.Groups[2].Value;
+        Dictionary&lt;String, String&gt; lines = new Dictionary&lt;String, String&gt;();
+
+        // Pick up "key = value" kind of syntax.
+        foreach (Match l in Regex.Matches(ini, @"^\s*(.*?)\s*=\s*(.*?)\s*$", RegexOptions.Multiline))
+        {
+            String key = l.Groups[1].Value;
+            String value = l.Groups[2].Value;
+
+            // Open up quotation if any.
+            value = Regex.Replace(value, "^\"(.*)\"$", "$1");
+
+            if (!lines.ContainsKey(key))
+                lines[key] = value;
+        }
+
+        if (!d.ContainsKey(sectionName))
+            d[sectionName] = lines;
+    }
+
+    return d;
+}
+</code></pre>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/40051727" title="short permalink to this answer" class="short-link" id="link-post-40051727">share</a><span class="lsep">|</span><a href="/posts/40051727/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2016-10-14 20:45:11Z" class="relativetime">Oct 14 '16 at 20:45</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/2338477/tarmopikaro"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/6ac00e047724e6fbed304a083bc8234f?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/2338477/tarmopikaro">TarmoPikaro</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">986</span><span title="8 silver badges"><span class="badge2"></span><span class="badgecount">8</span></span><span title="23 bronze badges"><span class="badge3"></span><span class="badgecount">23</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-40051727" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-68982910" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">That function doesn&#39;t work, for me: It forgets one section in two. I tried with and without empty lines before [Section] .</span>
+                    &ndash;&nbsp;<a href="/users/1808778/iksess"
+                       title="264 reputation"
+                       class="comment-user">iksess</a>
+                <span class="comment-date" dir="ltr"><span title="2016-11-30 09:20:34Z" class="relativetime-clean">Nov 30 '16 at 9:20</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-69008732" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">can you copy example of your .ini which does not work ?</span>
+                    &ndash;&nbsp;<a href="/users/2338477/tarmopikaro"
+                       title="986 reputation"
+                       class="comment-user">TarmoPikaro</a>
+                <span class="comment-date" dir="ltr"><span title="2016-11-30 20:25:24Z" class="relativetime-clean">Nov 30 '16 at 20:25</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-40051727" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href=# onclick=""></a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+
+  
+<a name="42097645"></a>
+<div id="answer-42097645" class="answer" data-answerid="42097645"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="42097645">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">1</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>Try this method:</p>
+
+<pre><code>public static Dictionary&lt;string, string&gt; ParseIniDataWithSections(string[] iniData)
+{
+    var dict = new Dictionary&lt;string, string&gt;();
+    var rows = iniData.Where(t =&gt; 
+        !String.IsNullOrEmpty(t.Trim()) &amp;&amp; !t.StartsWith(";") &amp;&amp; (t.Contains('[') || t.Contains('=')));
+    if (rows == null || rows.Count() == 0) return dict;
+    string section = "";
+    foreach (string row in rows)
+    {
+        string rw = row.TrimStart();
+        if (rw.StartsWith("["))
+            section = rw.TrimStart('[').TrimEnd(']');
+        else
+        {
+            int index = rw.IndexOf('=');
+            dict[section + "-" + rw.Substring(0, index).Trim()] = rw.Substring(index+1).Trim().Trim('"');
+        }
+    }
+    return dict;
+}
+</code></pre>
+
+<p>It creates the dictionary where the key is "-". You can load it like this:</p>
+
+<pre><code>var dict = ParseIniDataWithSections(File.ReadAllLines(fileName));
+</code></pre>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/42097645" title="short permalink to this answer" class="short-link" id="link-post-42097645">share</a><span class="lsep">|</span><a href="/posts/42097645/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2017-02-07 18:51:21Z" class="relativetime">Feb 7 at 18:51</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/1212428/petr-voborn%c3%adk"><div class="gravatar-wrapper-32"><img src="https://i.stack.imgur.com/Rhvjj.jpg?s=32&amp;g=1" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/1212428/petr-voborn%c3%adk">Petr Voborn&#237;k</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">671</span><span title="1 gold badge"><span class="badge1"></span><span class="badgecount">1</span></span><span title="8 silver badges"><span class="badge2"></span><span class="badgecount">8</span></span><span title="6 bronze badges"><span class="badge3"></span><span class="badgecount">6</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-42097645" class="comments  dno">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+                        <tr><td></td><td></td></tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-42097645" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href=# onclick=""></a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+
+  
+<a name="34757048"></a>
+<div id="answer-34757048" class="answer downvoted-answer" data-answerid="34757048"  itemscope itemtype="http://schema.org/Answer">
+    <table>
+        <tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input type="hidden" name="_id_" value="34757048">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">-4</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>You should read and write data from xml files since you can save a whole object to xml and also you can populate a object from a saved xml. It is better an easy to manipulate objects.</p>
+
+<p>Here is how to do it:
+Write Object Data to an XML File: <a href="https://msdn.microsoft.com/en-us/library/ms172873.aspx" rel="nofollow">https://msdn.microsoft.com/en-us/library/ms172873.aspx</a>
+Read Object Data from an XML File: <a href="https://msdn.microsoft.com/en-us/library/ms172872.aspx" rel="nofollow">https://msdn.microsoft.com/en-us/library/ms172872.aspx</a></p>
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/34757048" title="short permalink to this answer" class="short-link" id="link-post-34757048">share</a><span class="lsep">|</span><a href="/posts/34757048/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2016-01-13 01:43:28Z" class="relativetime">Jan 13 '16 at 1:43</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="/users/2667893/daniel"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/15809909430ae26a7186430e08dc4f09?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="/users/2667893/daniel">Daniel</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">108</span><span title="2 silver badges"><span class="badge2"></span><span class="badgecount">2</span></span><span title="15 bronze badges"><span class="badge3"></span><span class="badgecount">15</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-34757048" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0"
+                       data-canpost="false"
+                       data-cansee="true"
+                       data-comments-unavailable="false"
+                       data-addlink-disabled="true">
+
+
+
+    <tr id="comment-57260240" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="cool">1</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Links to external resources are encouraged, but please add context around the link so your fellow users will have some idea what it is and why it’s there. Always quote the most relevant part of an important link, in case the target site is unreachable or goes permanently offline.</span>
+                    &ndash;&nbsp;<a href="/users/3664960/davejal"
+                       title="3,183 reputation"
+                       class="comment-user">davejal</a>
+                <span class="comment-date" dir="ltr"><span title="2016-01-13 02:04:18Z" class="relativetime-clean">Jan 13 '16 at 2:04</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-57284428" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">I believe that the links titles are very clear about its references/context. If you think that&#180;s not enough feel free to edit it.</span>
+                    &ndash;&nbsp;<a href="/users/2667893/daniel"
+                       title="108 reputation"
+                       class="comment-user">Daniel</a>
+                <span class="comment-date" dir="ltr"><span title="2016-01-13 14:55:50Z" class="relativetime-clean">Jan 13 '16 at 14:55</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-61668105" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of &#39;useful comment&#39; votes received"
+                                      class="cool">1</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Does not address the actual question.</span>
+                    &ndash;&nbsp;<a href="/users/435159/erik-knowles"
+                       title="869 reputation"
+                       class="comment-user">Erik Knowles</a>
+                <span class="comment-date" dir="ltr"><span title="2016-05-05 21:29:27Z" class="relativetime-clean">May 5 '16 at 21:29</span></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-34757048" data-rep=50 data-anon=true>
+
+                <a class="js-add-link comments-link disabled-link "
+                   title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”."
+                   >add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href=# onclick=""></a>
+        </div>         
+    </td>
+</tr>    </table>
+</div>
+				    <div class="question-status">
+        <h2>                    <b>protected</b> by <a href="/users/19679/brad-larson">Brad Larson</a><span class="mod-flair" title="moderator">&#9830;</span> <span dir="ltr"><span title="2014-04-14 14:36:29Z" class="relativetime">Apr 14 '14 at 14:36</span></span>
+</h2>
+        <p>
+Thank you for your interest in this question. 
+Because it has attracted low-quality or spam answers that had to be removed, posting an answer now requires 10 <a href="/help/whats-reputation">reputation</a> on this site (the <a href="/help/privileges/new-user">association bonus does not count</a>).
+<br /><br />
+Would you like to answer one of these <a href="/unanswered?fromProtectedNotice=true">unanswered questions</a> instead?
+</p>
+    </div>
+
+
+
+
+
+						<h2 class="bottom-notice" data-loc="1">
+Not the answer you&#39;re looking for?							Browse other questions tagged <a href="/questions/tagged/c%23" class="post-tag" title="show questions tagged &#39;c#&#39;" rel="tag">c#</a> <a href="/questions/tagged/.net" class="post-tag" title="show questions tagged &#39;.net&#39;" rel="tag">.net</a> <a href="/questions/tagged/ini" class="post-tag" title="show questions tagged &#39;ini&#39;" rel="tag">ini</a>  or <a href="/questions/ask">ask your own question</a>.						</h2>
+			</div>
+		</div>
+				<div id="sidebar" class="show-votes" role="complementary" aria-label="sidebar">
+						    <div class="module question-stats">
+			        <table id="qinfo">
+			            <tr>
+			                <td>
+			                    <p class="label-key">asked</p>
+			                </td>
+			                <td style="padding-left: 10px">
+			                    <p class="label-key" title="2008-10-20 09:37:22Z"><b>8 years, 7 months ago</b></p>
+			                </td>
+			            </tr>
+			            <tr>
+			                <td>
+			                    <p class="label-key">viewed</p>
+			                </td>
+
+			                <td style="padding-left: 10px">
+			                    <p class="label-key">
+			                        <b>317673 times</b>
+			                    </p>
+			                </td>
+			            </tr>
+			                <tr>
+			                    <td>
+			                        <p class="label-key">active</p>
+			                    </td>
+			                    <td style="padding-left: 10px">
+			                        <p class="label-key"><b><a href="?lastactivity" class="lastactivity-link" title="2017-02-07 18:51:21Z">3 months ago</a></b></p>
+			                    </td>
+			                </tr>
+			        </table>
+			    </div>
+						
+			<div class="everyonelovesstackoverflow" id="hireme"></div>
+        <script>
+window.clc_request = 'AvGVnkAkqtQIAAAAAC5TAwACAAAAAgAAAABAAAAAfGMjfC5uZXR8aW5pfHgtY3Jvc3Mtc2l0ZS1zb2Z0d2FyZWVuZ2luZWVyaW5nLnN0YWNrZXhjaGFuZ2UuY29tfAD7eOUkFbzmk9_B';;(function(n){var u={log:window.console.log.bind(window.console,"[clc]"),error:window.console.error.bind(window.console,"[clc]")},f,e,t,r,i;try{if(typeof[].indexOf!="function")return;if(window.attachEvent&&!window.addEventListener)return;if(f=n.allowed,!f)return;if(e=new RegExp(n.allowed),!e.test(location.hostname)){u.error("Invalid host: "+location.hostname);return}if(t=window,t.clc=t.clc||{},t.clc.init=t.clc.init||[],t.clc.init.push(function(n){return n.load()}),t.clc.options){for(r in t.clc.options)n[r]=t.clc.options[r];t.clc.options=n}else t.clc.options=n;i=document.createElement("script");i.async=!0;i.src=n.lib;document.body.appendChild(i)}catch(o){u.error("[clc] Error in loader:",o)}}).call(null, {"lib":"https://cdn.sstatic.net/clc/clc.min.js?v=436861d2e2c5","u":"https://clc.stackoverflow.com/markup.js","azw":true,"kt":2000,"tto":true,"d":{"sb":["hireme","clc-sb"],"tlb":["careers1","clc-tlb"],"mlb":["careers3","clc-mlb"]},"h":"clc.stackoverflow.com","autoload":true,"allowed":"^(((talent\\.)?stackoverflow)|(blog\\.codinghorror)|(serverfault|askubuntu)|([^\\.]+\\.stackexchange))\\.com$"});        </script>
+			
+
+            <div class="module sidebar-linked">
+	<h4 id="h-linked">Linked</h4>
+	<div class="linked" data-tracker="lq=1">
+
+<div class="spacer">
+	<a href="/q/8435807" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes  default">1</div>
+	</a>
+	<a href="/questions/8435807/c-sharp-equivalent-of-delphis-ini-reading-methods?noredirect=1" class="question-hyperlink">C# equivalent of Delphi&#39;s .INI-reading methods</a>
+</div>
+<div class="spacer">
+	<a href="/q/17161897" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes answered-accepted default">0</div>
+	</a>
+	<a href="/questions/17161897/c-sharp-how-to-write-to-a-ini-file?noredirect=1" class="question-hyperlink">c# How to write to a ini file</a>
+</div>
+<div class="spacer">
+	<a href="/q/17655089" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes  default">-2</div>
+	</a>
+	<a href="/questions/17655089/read-a-particular-value-from-ini-file-to-text-box?noredirect=1" class="question-hyperlink">Read a particular value from INI file to Text box</a>
+</div>
+<div class="spacer">
+	<a href="/q/13758538" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes  default">0</div>
+	</a>
+	<a href="/questions/13758538/how-to-use-a-wrapper-class-to-parse-values-in-ini-file-windows-phone-7?noredirect=1" class="question-hyperlink">How to use a wrapper class to parse values in ini file (windows phone 7)</a>
+</div>
+<div class="spacer">
+	<a href="/q/13589217" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes  default">-1</div>
+	</a>
+	<a href="/questions/13589217/looping-through-data-from-textfile?noredirect=1" class="question-hyperlink">Looping through data from textfile</a>
+</div>
+<div class="spacer">
+	<a href="/q/17907190" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes  default">-1</div>
+	</a>
+	<a href="/questions/17907190/using-configuration-in-c-sharp-code?noredirect=1" class="question-hyperlink">Using Configuration in C# code</a>
+</div>
+<div class="spacer">
+	<a href="/q/39722115" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes  default">0</div>
+	</a>
+	<a href="/questions/39722115/extracting-certain-data-from-an-ini-file?noredirect=1" class="question-hyperlink">Extracting certain data from an INI file</a>
+</div>
+<div class="spacer">
+	<a href="/q/23700336" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes  default">0</div>
+	</a>
+	<a href="/questions/23700336/c-sharp-change-parts-of-a-ini-file?noredirect=1" class="question-hyperlink">c# change parts of a .ini file</a>
+</div>
+<div class="spacer">
+	<a href="/q/39303708" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes  default">0</div>
+	</a>
+	<a href="/questions/39303708/c-sharp-reading-from-file?noredirect=1" class="question-hyperlink">C# Reading from file</a>
+</div>
+<div class="spacer">
+	<a href="/q/6607" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes answered-accepted default">39</div>
+	</a>
+	<a href="/questions/6607/registry-vs-ini-file-for-storing-user-configurable-application-settings?noredirect=1" class="question-hyperlink">Registry vs. INI file for storing user configurable application settings</a>
+</div>					<div class="spacer more">
+				<a href="/questions/linked/217902">see more linked questions…</a>
+			</div>
+	</div>
+</div>
+
+				<div class="module sidebar-related">
+					<h4 id="h-related">Related</h4>
+                    <div class="related js-gps-related-questions" data-tracker="rq=1">
+                        <div class="spacer"><a href="/q/660138" title="Vote score (upvotes - downvotes)"><div class="answer-votes answered-accepted default">8</div></a><a href="/questions/660138/recommended-way-to-read-and-write-ini-files-in-vba" class="question-hyperlink">Recommended way to read and write .ini files in VBA</a></div><div class="spacer"><a href="/q/5695145" title="Vote score (upvotes - downvotes)"><div class="answer-votes answered-accepted default">21</div></a><a href="/questions/5695145/how-to-read-and-write-to-an-ini-file-with-php" class="question-hyperlink">How to read and write to an ini file with PHP</a></div><div class="spacer"><a href="/q/11238898" title="Vote score (upvotes - downvotes)"><div class="answer-votes answered-accepted default">4</div></a><a href="/questions/11238898/reading-from-an-ini-file" class="question-hyperlink">Reading from an INI file</a></div><div class="spacer"><a href="/q/14737977" title="Vote score (upvotes - downvotes)"><div class="answer-votes answered-accepted default">1</div></a><a href="/questions/14737977/which-is-fast-to-read-xml-ini-or-txt" class="question-hyperlink">Which is fast to read, .xml, .ini or .txt?</a></div><div class="spacer"><a href="/q/16755029" title="Vote score (upvotes - downvotes)"><div class="answer-votes answered-accepted default">4</div></a><a href="/questions/16755029/read-write-ini-file" class="question-hyperlink">Read/Write &ldquo;INI&rdquo; file</a></div><div class="spacer"><a href="/q/21363081" title="Vote score (upvotes - downvotes)"><div class="answer-votes answered-accepted default">2</div></a><a href="/questions/21363081/reading-local-acount-ini-file" class="question-hyperlink">reading local acount ini file</a></div><div class="spacer"><a href="/q/24958627" title="Vote score (upvotes - downvotes)"><div class="answer-votes answered-accepted default">1</div></a><a href="/questions/24958627/how-to-read-and-write-to-a-ini-file-in-python" class="question-hyperlink">How To Read and Write to a INI file in Python</a></div><div class="spacer"><a href="/q/31149246" title="Vote score (upvotes - downvotes)"><div class="answer-votes default">1</div></a><a href="/questions/31149246/reading-and-writing-an-ini-file" class="question-hyperlink">Reading and writing an INI file</a></div><div class="spacer"><a href="/q/36469188" title="Vote score (upvotes - downvotes)"><div class="answer-votes default">-5</div></a><a href="/questions/36469188/c-sharp-connection-string-write-read-ini" class="question-hyperlink">C# Connection String Write-Read .ini</a></div><div class="spacer"><a href="/q/40039616" title="Vote score (upvotes - downvotes)"><div class="answer-votes default">0</div></a><a href="/questions/40039616/read-key-value-from-ini-file-without-section-header" class="question-hyperlink">read key value from .ini file without section header</a></div>
+                    </div>
+				</div>
+            
+
+<div id="hot-network-questions" class="module tex2jax_ignore">
+    <h4>
+        <a href="https://stackexchange.com/questions?tab=hot"
+           class="js-gps-track" 
+           data-gps-track="posts_hot_network.click({ item_type:1, location:11 })">
+            Hot Network Questions
+        </a>
+    </h4>
+    <ul>
+            <li >
+                <div class="favicon favicon-ell" title="English Language Learners Stack Exchange"></div><a href="https://ell.stackexchange.com/questions/131329/what-does-it-mean-pelted-with-eggs" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:481 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What does it mean &quot;pelted with eggs&quot;?
+                </a>
+
+            </li>
+            <li >
+                <div class="favicon favicon-history" title="History Stack Exchange"></div><a href="https://history.stackexchange.com/questions/38382/how-do-historians-know-the-details-of-a-seemingly-private-event" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:324 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How do historians know the details of a seemingly private event?
+                </a>
+
+            </li>
+            <li >
+                <div class="favicon favicon-security" title="Information Security Stack Exchange"></div><a href="https://security.stackexchange.com/questions/160991/security-concerns-issuing-wildcard-certificates-to-individual-employees" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:162 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Security concerns issuing wildcard certificates to individual employees
+                </a>
+
+            </li>
+            <li >
+                <div class="favicon favicon-codegolf" title="Programming Puzzles &amp; Code Golf Stack Exchange"></div><a href="https://codegolf.stackexchange.com/questions/123797/display-the-hacker-logo" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Display the Hacker Logo
+                </a>
+
+            </li>
+            <li >
+                <div class="favicon favicon-money" title="Personal Finance &amp; Money Stack Exchange"></div><a href="https://money.stackexchange.com/questions/80325/opportunity-to-buy-illinois-bonds-that-can-never-default" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:93 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Opportunity to buy Illinois bonds that can never default?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-serverfault" title="Server Fault"></div><a href="https://serverfault.com/questions/853693/how-can-i-verify-windows-dns-forwarders-are-working" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:2 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How can I verify Windows DNS forwarders are working?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-tex" title="TeX - LaTeX Stack Exchange"></div><a href="https://tex.stackexchange.com/questions/372884/matrix-with-text-besides-it-behavior-weird-after-equal-symbol" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:85 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Matrix with text besides it behavior weird after equal symbol
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-rpg" title="Role-playing Games Stack Exchange"></div><a href="https://rpg.stackexchange.com/questions/100831/why-is-planar-ally-binding-regarded-as-so-powerful" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:122 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Why is planar ally/binding regarded as so powerful?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-physics" title="Physics Stack Exchange"></div><a href="https://physics.stackexchange.com/questions/336709/when-separating-an-oreo-cookie-why-does-the-cream-stick-to-just-one-side-only" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:151 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    When separating an Oreo cookie, why does the cream stick to just one side only?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-scifi" title="Science Fiction &amp; Fantasy Stack Exchange"></div><a href="https://scifi.stackexchange.com/questions/160863/where-is-themyscira-located" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:186 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Where is Themyscira located?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-scifi" title="Science Fiction &amp; Fantasy Stack Exchange"></div><a href="https://scifi.stackexchange.com/questions/160758/why-was-the-trade-federations-blockade-on-naboo-legal" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:186 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Why was the trade federation&#39;s blockade on Naboo legal?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-security" title="Information Security Stack Exchange"></div><a href="https://security.stackexchange.com/questions/161071/how-did-tech-supportcenter-phishers-trick-google" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:162 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How did &quot;tech-supportcenter&quot; phishers trick Google?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-electronics" title="Electrical Engineering Stack Exchange"></div><a href="https://electronics.stackexchange.com/questions/308791/how-is-the-remote-control-working" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:135 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How is the remote control working
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-codegolf" title="Programming Puzzles &amp; Code Golf Stack Exchange"></div><a href="https://codegolf.stackexchange.com/questions/124223/decrypt-xor-encryption" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Decrypt xor-encryption
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-superuser" title="Super User"></div><a href="https://superuser.com/questions/1214933/why-does-the-same-data-take-more-space-in-a-text-file-than-in-an-excel-file" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:3 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Why does the same data take more space in a text file than in an Excel file?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-academia" title="Academia Stack Exchange"></div><a href="https://academia.stackexchange.com/questions/90357/dealing-with-professors-death-on-my-thesis" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:415 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Dealing with professor&#39;s death on my thesis
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-literature" title="Literature Stack Exchange"></div><a href="https://literature.stackexchange.com/questions/2629/why-is-the-hitchhikers-guide-to-the-galaxy-referred-to-as-h2g2" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:668 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Why is The Hitchhiker&#39;s Guide to the Galaxy referred to as H2G2?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-math" title="Mathematics Stack Exchange"></div><a href="https://math.stackexchange.com/questions/2307402/using-taylor-expansion-to-evaluate-limits" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:69 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Using Taylor Expansion to evaluate limits
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-math" title="Mathematics Stack Exchange"></div><a href="https://math.stackexchange.com/questions/2307126/calculating-a-20-discount-by-multiplying-by-0-8333" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:69 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Calculating a 20% discount by multiplying by 0.8333?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-worldbuilding" title="Worldbuilding Stack Exchange"></div><a href="https://worldbuilding.stackexchange.com/questions/82436/would-humankind-remain-the-dominant-species-in-a-world-with-twice-as-big-animals" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:579 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Would humankind remain the dominant species in a world with twice as big animals?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-worldbuilding" title="Worldbuilding Stack Exchange"></div><a href="https://worldbuilding.stackexchange.com/questions/82513/genetic-structure-of-a-trait-with-six-discrete-phenotypes" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:579 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Genetic structure of a trait with six discrete phenotypes
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-biology" title="Biology Stack Exchange"></div><a href="https://biology.stackexchange.com/questions/60349/does-carbon-dioxide-from-carbonated-drinks-enter-the-bloodstream" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:375 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Does carbon dioxide from carbonated drinks enter the bloodstream?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-unix" title="Unix &amp; Linux Stack Exchange"></div><a href="https://unix.stackexchange.com/questions/368318/does-bashs-star-wildcard-always-produce-an-ascending-sorted-list" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:106 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Does bash&#39;s star * wildcard always produce an (ascending) sorted list?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-academia" title="Academia Stack Exchange"></div><a href="https://academia.stackexchange.com/questions/90304/how-to-hold-back-from-interfering-with-students-inefficient-but-not-wrong-work" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:415 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How to hold back from interfering with students&#39; inefficient-but-not-wrong work?
+                </a>
+
+            </li>
+    </ul>
+
+        <a href="#" 
+           class="show-more js-show-more js-gps-track" 
+           data-gps-track="posts_hot_network.click({ item_type:3, location:11 })">
+            more hot questions
+        </a>
+</div>
+		</div>
+	
+<div id="feed-link">
+    <div id="feed-link-text">
+        <a href="/feeds/question/217902" title="feed of this question and its answers">
+            <span class="feed-icon"></span>question feed
+        </a>
+    </div>
+</div>	<script>
+StackExchange.ready(function(){$.get('/posts/217902/ivc/9450');});
+</script>
+<noscript>
+    <div><img src="/posts/217902/ivc/9450" class="dno" alt="" width="0" height="0"></div>
+</noscript><div style="display:none" id="prettify-lang">lang-cs</div></div>
+
+
+        </div>
+    </div>
+    <div id="footer" class="categories" role="contentinfo">
+        <div class="footerwrap">            
+            <div id="footer-menu">
+                <div class="top-footer-links">
+
+                    <a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:1 })" href="https://stackoverflow.com/company/about">about us</a>
+                        <a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:2 })" href="/tour">tour</a>
+                    <a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:3 })" href="/help">help</a>
+                    <a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:4 })" href="https://stackoverflow.blog?blb=1">blog</a>
+                        <a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:5 })" href="https://chat.stackoverflow.com">chat</a>
+                    <a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:6 })" href="https://data.stackexchange.com">data</a>
+                    <a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:7 })" href="https://stackexchange.com/legal">legal</a>
+                    <a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:8 })" href="https://stackexchange.com/legal/privacy-policy">privacy policy</a>
+                    <a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:9 })" href="https://stackoverflow.com/company/work-here">work here</a>
+                    <a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:10 })" href="https://www.stackoverflowbusiness.com/advertise">advertising info</a>
+                        <a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:11 })" href="https://stackoverflow.com/jobs/directory/developer-jobs">developer jobs directory</a>
+
+                    <a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:12 })" onclick='StackExchange.switchMobile("on")'>mobile</a>
+                    <b><a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:13 })" href="/contact">contact us</a></b>
+                        <b><a class="js-gps-track" data-gps-track="footer.click({ location: 2, link:14 })" href="https://meta.stackoverflow.com">feedback</a></b>
+                    
+                </div>
+                <div id="footer-sites">
+                    <table>
+    <tr>
+            <th colspan=3>
+                Technology
+            </th>
+            <th >
+                Life / Arts
+            </th>
+            <th >
+                Culture / Recreation
+            </th>
+            <th >
+                Science
+            </th>
+            <th >
+                Other
+            </th>
+    </tr>
+    <tr>
+            <td>
+                <ol>
+                        <li><a href="//stackoverflow.com" title="professional and enthusiast programmers">Stack Overflow</a></li>
+                        <li><a href="//serverfault.com" title="system and network administrators">Server Fault</a></li>
+                        <li><a href="//superuser.com" title="computer enthusiasts and power users">Super User</a></li>
+                        <li><a href="//webapps.stackexchange.com" title="power users of web applications">Web Applications</a></li>
+                        <li><a href="//askubuntu.com" title="Ubuntu users and developers">Ask Ubuntu</a></li>
+                        <li><a href="//webmasters.stackexchange.com" title="pro webmasters">Webmasters</a></li>
+                        <li><a href="//gamedev.stackexchange.com" title="professional and independent game developers">Game Development</a></li>
+                        <li><a href="//tex.stackexchange.com" title="users of TeX, LaTeX, ConTeXt, and related typesetting systems">TeX - LaTeX</a></li>
+                        <li><a href="//softwareengineering.stackexchange.com" title="professionals, academics, and students working within the systems development life cycle">Software Engineering</a></li>
+                        <li><a href="//unix.stackexchange.com" title="users of Linux, FreeBSD and other Un*x-like operating systems">Unix &amp; Linux</a></li>
+                        <li><a href="//apple.stackexchange.com" title="power users of Apple hardware and software">Ask Different (Apple)</a></li>
+                        <li><a href="//wordpress.stackexchange.com" title="WordPress developers and administrators">WordPress Development</a></li>
+                            </ol></td><td><ol>
+                        <li><a href="//gis.stackexchange.com" title="cartographers, geographers and GIS professionals">Geographic Information Systems</a></li>
+                        <li><a href="//electronics.stackexchange.com" title="electronics and electrical engineering professionals, students, and enthusiasts">Electrical Engineering</a></li>
+                        <li><a href="//android.stackexchange.com" title="enthusiasts and power users of the Android operating system">Android Enthusiasts</a></li>
+                        <li><a href="//security.stackexchange.com" title="information security professionals">Information Security</a></li>
+                        <li><a href="//dba.stackexchange.com" title="database professionals who wish to improve their database skills and learn from others in the community">Database Administrators</a></li>
+                        <li><a href="//drupal.stackexchange.com" title="Drupal developers and administrators">Drupal Answers</a></li>
+                        <li><a href="//sharepoint.stackexchange.com" title="SharePoint enthusiasts">SharePoint</a></li>
+                        <li><a href="//ux.stackexchange.com" title="user experience researchers and experts">User Experience</a></li>
+                        <li><a href="//mathematica.stackexchange.com" title="users of Wolfram Mathematica">Mathematica</a></li>
+                        <li><a href="//salesforce.stackexchange.com" title="Salesforce administrators, implementation experts, developers and anybody in-between">Salesforce</a></li>
+                        <li><a href="//expressionengine.stackexchange.com" title="administrators, end users, developers and designers for ExpressionEngine&#174; CMS">ExpressionEngine&#174; Answers</a></li>
+                        <li><a href="//crypto.stackexchange.com" title="software developers, mathematicians and others interested in cryptography">Cryptography</a></li>
+                            </ol></td><td><ol>
+                        <li><a href="//codereview.stackexchange.com" title="peer programmer code reviews">Code Review</a></li>
+                        <li><a href="//magento.stackexchange.com" title="users of the Magento e-Commerce platform">Magento</a></li>
+                        <li><a href="//dsp.stackexchange.com" title="practitioners of the art and science of signal, image and video processing">Signal Processing</a></li>
+                        <li><a href="//raspberrypi.stackexchange.com" title="users and developers of hardware and software for Raspberry Pi">Raspberry Pi</a></li>
+                        <li><a href="//codegolf.stackexchange.com" title="programming puzzle enthusiasts and code golfers">Programming Puzzles &amp; Code Golf</a></li>
+                    
+                        <li>
+                            <a href="https://stackexchange.com/sites#technology" class="more">
+                                more (7)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="//photo.stackexchange.com" title="professional, enthusiast and amateur photographers">Photography</a></li>
+                        <li><a href="//scifi.stackexchange.com" title="science fiction and fantasy enthusiasts">Science Fiction &amp; Fantasy</a></li>
+                        <li><a href="//graphicdesign.stackexchange.com" title="Graphic Design professionals, students, and enthusiasts">Graphic Design</a></li>
+                        <li><a href="//movies.stackexchange.com" title="movie and tv enthusiasts">Movies &amp; TV</a></li>
+                        <li><a href="//music.stackexchange.com" title="musicians, students, and enthusiasts">Music: Practice &amp; Theory</a></li>
+                        <li><a href="//cooking.stackexchange.com" title="professional and amateur chefs">Seasoned Advice (cooking)</a></li>
+                        <li><a href="//diy.stackexchange.com" title="contractors and serious DIYers">Home Improvement</a></li>
+                        <li><a href="//money.stackexchange.com" title="people who want to be financially literate">Personal Finance &amp; Money</a></li>
+                        <li><a href="//academia.stackexchange.com" title="academics and those enrolled in higher education">Academia</a></li>
+                    
+                        <li>
+                            <a href="https://stackexchange.com/sites#lifearts" class="more">
+                                more (8)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="//english.stackexchange.com" title="linguists, etymologists, and serious English language enthusiasts">English Language &amp; Usage</a></li>
+                        <li><a href="//skeptics.stackexchange.com" title="scientific skepticism">Skeptics</a></li>
+                        <li><a href="//judaism.stackexchange.com" title="those who base their lives on Jewish law and tradition and anyone interested in learning more">Mi Yodeya (Judaism)</a></li>
+                        <li><a href="//travel.stackexchange.com" title="road warriors and seasoned travelers">Travel</a></li>
+                        <li><a href="//christianity.stackexchange.com" title="committed Christians, experts in Christianity and those interested in learning more">Christianity</a></li>
+                        <li><a href="//ell.stackexchange.com" title="speakers of other languages learning English">English Language Learners</a></li>
+                        <li><a href="//japanese.stackexchange.com" title="students, teachers, and linguists wanting to discuss the finer points of the Japanese language">Japanese Language</a></li>
+                        <li><a href="//gaming.stackexchange.com" title="passionate videogamers on all platforms">Arqade (gaming)</a></li>
+                        <li><a href="//bicycles.stackexchange.com" title="people who build and repair bicycles, people who train cycling, or commute on bicycles">Bicycles</a></li>
+                        <li><a href="//rpg.stackexchange.com" title="gamemasters and players of tabletop, paper-and-pencil role-playing games">Role-playing Games</a></li>
+                        <li><a href="//anime.stackexchange.com" title="anime and manga fans">Anime &amp; Manga</a></li>
+                        <li><a href="//mechanics.stackexchange.com" title="mechanics and DIY enthusiast owners of cars, trucks, and motorcycles">Motor Vehicle Maintenance &amp; Repair</a></li>
+                    
+                        <li>
+                            <a href="https://stackexchange.com/sites#culturerecreation" class="more">
+                                more (17)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="//mathoverflow.net" title="professional mathematicians">MathOverflow</a></li>
+                        <li><a href="//math.stackexchange.com" title="people studying math at any level and professionals in related fields">Mathematics</a></li>
+                        <li><a href="//stats.stackexchange.com" title="people interested in statistics, machine learning, data analysis, data mining, and data visualization">Cross Validated (stats)</a></li>
+                        <li><a href="//cstheory.stackexchange.com" title="theoretical computer scientists and researchers in related fields">Theoretical Computer Science</a></li>
+                        <li><a href="//physics.stackexchange.com" title="active researchers, academics and students of physics">Physics</a></li>
+                        <li><a href="//chemistry.stackexchange.com" title="scientists, academics, teachers and students">Chemistry</a></li>
+                        <li><a href="//biology.stackexchange.com" title="biology researchers, academics, and students">Biology</a></li>
+                        <li><a href="//cs.stackexchange.com" title="students, researchers and practitioners of computer science">Computer Science</a></li>
+                        <li><a href="//philosophy.stackexchange.com" title="those interested in the study of the fundamental nature of knowledge, reality, and existence">Philosophy</a></li>
+                    
+                        <li>
+                            <a href="https://stackexchange.com/sites#science" class="more">
+                                more (3)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="//meta.stackexchange.com" title="meta-discussion of the Stack Exchange family of Q&amp;A websites">Meta Stack Exchange</a></li>
+                        <li><a href="//stackapps.com" title="apps, scripts, and development with the Stack Exchange API">Stack Apps</a></li>
+                        <li><a href="//area51.stackexchange.com" title="proposing new sites in the Stack Exchange network">Area 51</a></li>
+                        <li><a href="https://www.stackoverflowbusiness.com/talent">Stack Overflow Talent</a></li>
+                    
+                </ol>
+            </td>
+    </tr>
+</table>
+                </div>
+            </div>
+            <div id="copyright">
+                site design / logo &#169; 2017 Stack Exchange Inc; user contributions licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/" rel="license">cc by-sa 3.0</a> 
+                with <a href="https://stackoverflow.blog/2009/06/25/attribution-required/" rel="license">attribution required</a>
+            </div>
+            <div id="svnrev">
+                rev 2017.6.2.26139
+            </div>
+                </div>
+    </div>
+    <noscript>
+        <div id="noscript-warning">Stack Overflow works best with JavaScript enabled
+            <img src="https://pixel.quantserve.com/pixel/p-c1rF4kxgLUzNc.gif" alt="" class="dno">
+        </div>
+    </noscript>
+        <script> setTimeout(function() { $("#adzerk-user-match").remove(); }, 2000);</script>
+
+    <script>
+            (function(i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function() { (i[r].q = i[r].q || []).push(arguments) }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m);
+            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+                ga('create', 'UA-5620270-1');
+                ga('create', 'UA-5620270-59', {name: 'pageData', sampleRate: 5 });
+                ga('set', 'dimension2', '|c#|.net|ini|');
+                ga('pageData.set', 'dimension2', '|c#|.net|ini|');
+                ga('send', 'pageview');
+                ga('pageData.send', 'pageview');
+        var _qevents = _qevents || [],
+            _comscore = _comscore || [];
+        (function () {
+            var ssl='https:'==document.location.protocol,
+                s=document.getElementsByTagName('script')[0],
+                qc=document.createElement('script');
+                qc.async = true;
+                qc.src = (ssl ? 'https://secure' : 'http://edge') + '.quantserve.com/quant.js';
+                s.parentNode.insertBefore(qc, s);
+                _qevents.push({ qacct: "p-c1rF4kxgLUzNc" });
+                            var sc=document.createElement('script');
+                sc.async=true;
+                sc.src=(ssl?'https://sb':'http://b') + '.scorecardresearch.com/beacon.js';
+                s.parentNode.insertBefore(sc, s);
+                _comscore.push({ c1: "2", c2: "17440561" });
+        })();
+
+    </script>
+        
+    
+            <script type="text/javascript">
+                
+                (function(appendChild) {
+                    Node.prototype.appendChild = function() {
+                        var parent = this;
+                        var newNode = arguments[0];
+                        if (parent.nodeName === 'HEAD'
+                            && newNode
+                            && newNode.nodeName === 'SCRIPT'
+                            && newNode.src) {
+                            
+                            window.setTimeout(function() {
+                                var result = newNode.src.match(/^https:\/\/maps\.googleapis\.com\/maps\/api\/place\/js\/(\w+)Service\./i) || [];
+                                var service = result[1];
+                                if (service) {
+                                    if (service === 'Autocompletion') service =  2;
+                                    else if (service === 'Place') service = 1;
+                                    else service = 0;
+                                    StackExchange.using('gps', function() {
+                                        StackExchange.gps.track('google_maps_places_api.call', { service: service });
+                                    });
+                                }
+                            }, 0);
+                        }
+                        return appendChild.apply(this, arguments);
+                    };
+                })(Node.prototype.appendChild);
+            </script>
+    </body>
+</html>

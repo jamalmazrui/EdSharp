@@ -1,0 +1,8 @@
+ bat
+bird
+fat
+slim
+cat
+dog
+mat
+pat

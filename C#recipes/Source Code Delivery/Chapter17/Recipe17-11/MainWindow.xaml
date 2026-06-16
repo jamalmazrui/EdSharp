@@ -1,0 +1,53 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Recipe17_11" Height="350" Width="400">
+    <Grid ShowGridLines="True">
+        <Grid.RowDefinitions>
+            <RowDefinition MinHeight="140" />
+            <RowDefinition MinHeight="170" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <TextBox Grid.Row="0" Grid.Column="0" Height="23"
+                 HorizontalAlignment="Center" Text="An upside down TextBox."
+                 Width="140">
+            <TextBox.LayoutTransform>
+                <RotateTransform Angle="180"/>
+            </TextBox.LayoutTransform>
+        </TextBox>
+        <Button Content="A rotated Button" Grid.Row="0" Grid.Column="1"
+                Height="23" Width="100">
+            <Button.LayoutTransform>
+                <RotateTransform Angle="-120"/>
+            </Button.LayoutTransform>
+        </Button>
+        <StackPanel Grid.Row="1" Grid.Column="0" >
+            <TextBlock HorizontalAlignment="Center" Margin="5">
+                Layout Tranform
+            </TextBlock>
+            <Button Margin="5" Width="100">Top Button</Button>
+            <Button Content="Middle Button" Margin="5" Width="100">
+                <Button.LayoutTransform>
+                    <RotateTransform Angle="30" />
+                </Button.LayoutTransform>
+            </Button>
+            <Button Margin="5" Width="100">Bottom Button</Button>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" >
+            <TextBlock HorizontalAlignment="Center" Margin="5">
+                Render Tranform
+            </TextBlock>
+            <Button Margin="5" Width="100">Top Button</Button>
+            <Button Content="Middle Button" Margin="5"
+                    RenderTransformOrigin="0.5, 0.5" Width="100">
+                <Button.RenderTransform>
+                    <RotateTransform Angle="30" />
+                </Button.RenderTransform>
+            </Button>
+            <Button Margin="5" Width="100">Bottom Button</Button>
+        </StackPanel>
+    </Grid>
+</Window>

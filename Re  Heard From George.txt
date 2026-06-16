@@ -1,0 +1,45 @@
+Subject:
+Re: Heard From George
+From:
+Jamal Mazrui <jamal@empowermentzone.com>
+Date:
+Wed, 20 Jul 2011 21:18:26 -0400
+To:
+Tom Dimeo <am@pa321.net>
+CC:
+Jamal.Mazrui@fcc.gov, Steve Jacobson <steve.jacobson@visi.com>
+
+        Awesome, Tom -- thanks!  I am gratified to become acquainted with you and George.  I will post another pre-release version of WinBT 2.0 and its documentation and let you know when the link is available.  If you and George find that you would prefer any other wording in the introductory section, please let me know.  I am also copying Steve Jacobson, with whom I have been working for a while in this project to facilitate updates  to NFBTrans and related technologies.
+
+Steve,
+I ultimately reached Tom via web searches.  He explained that the author was not John Mattioli, but George McCoy, a blind developer from Alabama.  In the message below, George agrees to public acknowledgement of his contribution.  They have also shared the PowerBASIC source code to WinTrans, which I intend to include in the updated distribution, in case other developers might submit improvements to the code.
+
+I think this is a wonderful story of open source collaboration for the common good of blind people!
+
+Jamal
+
+On 7/20/2011 3:50 PM, Tom Dimeo wrote:
+> Hi Jamal,
+>
+> I heard from George and his message is below.
+>
+> Tom.
+>
+>
+> Begin Quote.
+> From: "George McCoy" <slr1bpz@otelco.net>
+> Subject: Re: Wintrans Inquiry
+>
+> Hello Tom,
+>
+> It's good to hear from you again.  I'm glad you are doing
+> well.  I worked with Jamal many years ago.  Go ahead and give
+> him my address and I'll do my best to help.  I'm fighting to
+> keep my job so time is limited right now but I'll do what I
+> can when I can.
+>
+> George
+> End Quote.
+>
+>
+

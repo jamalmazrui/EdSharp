@@ -1,0 +1,20 @@
+Brandon, myself, and other blind developers have launched an effort to strengthen EdSharp via collaborative development at
+http://GitHub.com/EmpowermentZone/EdSharp
+
+If you can add an issue for consideration via the GitHub issue system there, that would be best, but a message on this list is also welcome.  An issue may be either a bug report or feature suggestion.  When reporting a bug, please try to include the following information:
+
+* A one-line summary of the problem.
+
+* Your system configuration including Windows, screen reader, and EdSharp version (e.g., learned via the About Box command, Alt+F1).
+
+* Straightforward steps to reproduce the problem (sometimes, a problem does not recur consistently so just do your best here).
+
+* The expected result of those steps (what you think EdSharp should do in that circumstance).
+
+* The actual result that occurred instead, including an error message if any.
+
+If reporting a bug via an email message, I suggest a convention of putting "Bug: " at the beginning of the subject followed by the one-line summary.  For a new feature, put "Feature: " followed by its summary.  If we receive such messages on the list and someone knows how to enter them in the issue queue, that would be helpful.
+
+Brandon, are there other tips that you would like to share about a process for this project?
+
+Jamal

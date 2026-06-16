@@ -1,0 +1,59 @@
+Application Configuration FilesHomeLibraryLearnDownloadsSupportCommunitySign 
+      in |United States - English |Preferences
+
+
+
+MSDN Library
+.NET Development
+.NET Framework 1.1
+.NET Framework
+Configuring Applications
+Configuration Files
+Application Configuration Files.NET Framework Developer's Guide
+Application Configuration Files
+Application configuration files contain settings specific to an application. 
+This file contains configuration settings that the common language runtime reads 
+(such as assembly binding policy, remoting objects, and so on), and settings 
+that the application can read.
+The name and location of the application configuration file depend on the 
+application's host, which can be one of the following: 
+  Executable–hosted application. 
+  The configuration file for an application hosted by the executable host is in 
+  the same directory as the application. The name of the configuration file is 
+  the name of the application with a .config extension. For example, an 
+  application called myApp.exe can be associated with a configuration file 
+  called myApp.exe.config. 
+  ASP.NET-hosted application. 
+  ASP.NET configuration files are called Web.config. Configuration files in 
+  ASP.NET applications inherit the settings of configuration files in the URL 
+  path. For example, given the URL www.microsoft.com/aaa/bbb, where 
+  www.microsoft.com/aaa is the Web application, the configuration file 
+  associated with the application is located at www.microsoft.com/aaa. ASP.NET 
+  pages that are in the subdirectory /bbb use both the settings that are in the 
+  configuration file at the application level and the settings in the 
+  configuration file that is in /bbb. 
+  For more information about ASP.NET configuration files, see ASP.NET 
+  Configuration
+  Internet Explorer-hosted application. 
+  If an application hosted in Internet Explorer has a configuration file, the 
+  location of this file is specified in a <link> tag with the following syntax: 
+  <link rel="ConfigurationFileName" href="location">
+  In this tag, location is a URL to the configuration file. This sets the 
+  application base. The configuration file must be located on the same Web site 
+  as the application. 
+See Also
+Configuration Files | Configuration File Schema | Deploying a Common Language 
+Runtime Application Using Internet Explorer | ASP.NET Settings Schema
+© 2010 Microsoft Corporation. All rights reserved.  Terms of Use | Trademarks | 
+Privacy Statement | FeedbackFeedback on the Lightweight viewx
+Lightweight builds on ScriptFree (loband) by adding features users have 
+requested: a search box and default code language selection 
+Did the page load quickly? 
+Yes No
+Do you like the page design? 
+Yes No
+How useful is this topic? 
+
+
+Tell us more 
+

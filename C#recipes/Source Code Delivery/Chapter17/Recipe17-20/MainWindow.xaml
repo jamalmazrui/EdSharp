@@ -1,0 +1,25 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Apress.VisualCSharpRecipes.Chapter17;assembly="
+    Title="Recipes17_20" Height="248" Width="200">
+
+    <Window.Resources>
+        <local:Countries x:Key="countries"/>
+        <Style x:Key="AlternateStyle">
+            <Setter Property="ListBoxItem.Background" Value="LightGray"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="4">
+        <ListBox
+            DisplayMemberPath="Name"
+            ItemsSource="{Binding Source={StaticResource countries}}" >
+
+            <ListBox.ItemContainerStyleSelector>
+                <local:AlternatingRowStyleSelector
+                    AlternateStyle="{StaticResource AlternateStyle}" />
+            </ListBox.ItemContainerStyleSelector>
+        </ListBox>
+    </Grid>
+</Window>

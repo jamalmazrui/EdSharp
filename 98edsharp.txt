@@ -1,0 +1,29 @@
+
+Subject:
+edsharp ???
+From:
+"John W. Carty" <JCarty@TarrantCounty.com>
+Date:
+1/27/2014 11:56 AM
+To:
+"'jamal@EmpowermentZone.com'" <jamal@EmpowermentZone.com>
+
+Sir,
+ 
+Just installed and began looking at edsharp. So far, I have to say well done.
+ 
+However, I'm about to begin some training in c & c++.
+ 
+I may have over looked it but I'm not seeing the ability to setup a c or c++ compiler with edsharp.
+ 
+can you confirm this?
+ 
+If this is possible please let me know how to setup this configuration.
+ 
+thank you,
+ 
+John Carty
+ 
+ 
+ 
+ 

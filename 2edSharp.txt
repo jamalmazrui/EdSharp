@@ -1,0 +1,18 @@
+
+Subject:
+edSharp
+From:
+"Rich Caloggero" <rjc@MIT.EDU>
+Date:
+1/29/2013 1:45 PM
+To:
+<jamal@EmpowermentZone.com>
+
+Found a small bug:
+ 
+after pressing alt to get to menubar, you can navigate right with rightArrow and left with leftArrow, however if you have a menu open and press right while on a menu item which is not a submenu, you navigate and open the menu to the left along the menubar; and vice versa when you press rightArrow on an item without a submenu.
+ 
+Other than this, the app works very well! Thanx for writing this program. I’ve found many editors which sort of do things correctly, but this is the most useful and feature rich I’ve found, especially for programming.
+ 
+-- Rich
+ 

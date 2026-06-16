@@ -1,0 +1,132 @@
+:function AutoStartEvent
+:Synopsis SwitchToConfiguration("default")
+
+:function HandleCustomWindows
+:Returns int No Return Description
+:Synopsis copytoclipboard(getclipboardtext() + "\n" + GetWindowClass(h))
+:Param handle/h No Description
+
+:function SaveVoiceSetting
+:Param string/sSetting No Description
+:Param int/iLevel No Description
+
+:function SayFileByLine
+:Returns int No Return Description
+:Param string/sFile No Description
+
+:function SayTempFile
+:Returns int No Return Description
+:Synopsis SayString("saying temp file")
+
+:function UIIsEditorWindow
+:Returns int No Return Description
+
+:script BottomOfFile
+
+:script CloseDocumentWindow
+
+:script CopySelectedTextToClipboard
+
+:script CutToClipboard
+
+:script DeleteWord
+:Synopsis Delete word and say new one
+
+:script DeleteWordBack
+:Synopsis Delete word back and say new one
+
+:script JAWSEnd
+
+:script JAWSHome
+
+:script JAWSPageDown
+
+:script JAWSPageUp
+
+:script MouseDown
+
+:script MouseUp
+
+:script PasteFromClipboard
+
+:script SayActiveCursor
+
+:function SayLine
+:Synopsis An overidden version of the default, which processes maths before it is spoken.
+
+:script SaySelectedText
+
+:script ScriptFileName
+
+:script SpeedFaster
+:Synopsis Control+Accent = make voice faster
+
+:script SpeedSlower
+:Synopsis Control+Shift+Accent = make voice slower
+
+:script TogglePunctuation
+:Synopsis Insert+Accent = Toggle between all and no punctuation
+
+:script TopOfFile
+
+:script TypeCurrentScriptKey
+
+:script Undo
+
+:script VolumeLouder
+:Synopsis Alt+Accent = make voice louder
+
+:script VolumeSofter
+:Synopsis Alt+Shift+Accent = make voice softer
+
+:script ControlDownArrow
+
+:script ControlUpArrow
+
+:script InputMatrix
+:Synopsis Highlight a matrix and then run this script to have it created as an object.
+
+:function SayLine
+:Synopsis An overidden version of the default, which processes maths before it is spoken.
+
+:script ToggleMaths
+:Synopsis Toggles the speaking of mathematical expressions as either straight latex or a more verbal rendering.
+
+:function BrailleBuildLine
+:Returns int No Return Description
+
+:script MatrixRight
+:Synopsis Moves the matrix cursor to the right and speaks the new cell.
+
+:script MatrixLeft
+:Synopsis Moves the matrix cursor to the left and speaks the new cell.
+
+:script MatrixDown
+:Synopsis Moves the matrix cursor down and speaks the cell.
+
+:script MatrixUp
+:Synopsis Moves the matrix cursor up and speaks the cell.
+
+:script SayRow
+:Synopsis Speaks the required row of the matrix.
+
+:script SayColumn
+:Synopsis Says the required column of the matrix
+
+:script preprocessorAdd
+:Synopsis Adds a custom command to the preprocessor.
+
+:script PreprocessorCsv
+:Synopsis Loads a csv file into the preprocessor.
+
+:script SayCurrentColumn
+
+:script SilentKey
+
+:script PreviousParagraph
+
+:script NextParagraph
+
+:script PreprocessorA
+:Synopsis Adds a custom command  to the preprocessor
+

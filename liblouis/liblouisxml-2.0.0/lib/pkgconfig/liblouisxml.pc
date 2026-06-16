@@ -1,0 +1,12 @@
+prefix=d:/louis
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+lbxdir=${prefix}/etc/liblouisxml/lbx_files
+
+Name: liblouisxml
+Description: a braille XML transcriber
+Version: 2.0.0
+Requires: liblouis
+Libs: -L${libdir} -llouisxml
+Cflags: -I${includedir}/liblouisxml

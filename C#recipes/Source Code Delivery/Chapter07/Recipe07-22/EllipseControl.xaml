@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Apress.VisualCSharpRecipes.Chapter07.EllipseControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Height="300" Width="300">
+    <Grid x:Name="Grid1">
+        <Grid.Resources>
+            <RadialGradientBrush x:Key="RedBrush" RadiusX=".8" RadiusY="1" 
+                                 Center="0.5,0.5" GradientOrigin="0.05,0.5">
+                <GradientStop Color="#ffffff" Offset="0.1" />
+                <GradientStop Color="#ff0000" Offset="0.5" />
+                <GradientStop Color="#880000" Offset="0.8" />
+            </RadialGradientBrush>
+            <RadialGradientBrush x:Key="BlueBrush" RadiusX=".8" RadiusY="1" 
+                                 Center="0.5,0.5" GradientOrigin="0.05,0.5">
+                <GradientStop Color="#ffffff" Offset="0.1" />
+                <GradientStop Color="#0000ff" Offset="0.5" />
+                <GradientStop Color="#000088" Offset="0.8" />
+            </RadialGradientBrush>
+        </Grid.Resources>
+        <Ellipse Margin="5" Name="Ellipse1" ToolTip="A WPF Ellipse."
+                 Fill="{StaticResource RedBrush}">
+        </Ellipse>
+    </Grid>
+</UserControl>

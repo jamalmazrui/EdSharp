@@ -1,0 +1,47 @@
+text form caret
+
+// %ClassName=%
+
+// %ProgramDescription=%
+
+ 
+
+public class %ClassName=% {
+
+  /**
+
+    *
+
+  */
+
+ 
+
+  public static void main( String [] args ) {
+
+    ^^
+
+  } // End main method
+
+} // End class %ClassName=%
+
+ 
+
+Thanks.
+
+ 
+
+Jim
+
+ 
+
+Jim Homme,
+
+Usability Services,
+
+Phone: 412-544-1810. Skype: jim.homme
+
+Internal recipients,  Read my accessibility blog. Discuss accessibility here. Accessibility Wiki: Breaking news and accessibility advice
+
+ 
+
+This e-mail and any attachments to it are confidential and are intended solely for use of the individual or entity to whom they are addressed. If you have received this e-mail in error, please notify the sender immediately and then delete it. If you are not the intended recipient, you must not keep, use, disclose, copy or distribute this e-mail without the author's prior permission. The views expressed in this e-mail message do not necessarily represent the views of Highmark Inc., its subsidiaries, or affiliates.

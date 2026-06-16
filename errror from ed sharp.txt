@@ -1,0 +1,5 @@
+EdSharp
+EdSharp has encountered a problem and needs to close.  We are sorry for 
+the inconvenience.
+If you were in the middle of something, the information you were working on might be lost.
+Debug Close

@@ -1,0 +1,56 @@
+#Copyright (C) 2006 Michael Whapples, All Rights Reserved.
+#Original Author: Michael Whapples, mwhapples@users.sourceforge.net
+#Unless linsor has explicitly granted you any other licensing terms, the contents of this file is subject to the RPL 
+#1.1, 
+#available at the BrlTex website (http://brltex.sourceforge.net).
+#All software distributed under the Licenses is provided strictly on an "AS IS" basis,
+#WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, AND the licensor
+#HEREBY DISCLAIMS ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY WARRANTIES
+#OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT.
+#Licensor reserves the right to change the Venue stated in the license to the UK.
+
+'''This is an attempt at a simple translator'''
+#This is part of Brltex,
+
+import string
+#make some translation tables
+numtbl = ('j', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i')
+numprefix = '#'
+decpoint = '1'
+numsep = '\''
+lettersign = ';'
+capitalprefix = ','
+multicapprefix = ',,'
+#Note that these punctuation symbols have to be done in a suitable form for python regular expressions
+#This means that most will need a backslash or strange things may happen
+punctbl = {'\.': '4', '\,': '1', '\!': '6', '\?': '8'}
+#We will use a lot of the re functions
+import re
+def grade1(intext, docmode='text'):
+	#intext is the text to be translated
+	#docmode is a string containing the mode used
+	#default to be text for ever
+	#currently only supporting text
+	#to support math in the future
+	#may support others as well if implemented
+	s = intext
+	#Find where a lettersign is needed
+	s = re.sub(r'(?P<num>[0-9]+) {0}([a-j]+)', r'\g<num>%s\2' % lettersign, s)
+	#Capitals will come after punctuation
+	#find where to use a number sign
+	s = re.sub(r'([0-9]*\.?\,?[0-9]+)', r'%s\1' % numprefix, s)
+	#replace the digits
+	for x in range(0,10):
+		s = s.replace(str(x), numtbl[x])
+	#See to the decimal point and num seperators
+	s = re.sub(r'(?P<highnum>%s[%s]+[,%s]*) {0}\.([%s]+)' % (numprefix, ''.join(numtbl), 
+''.join(numtbl), ''.join(numtbl)), r'\g<highnum>%s\2' % decpoint, s)
+	s = re.sub(r'(?P<highnum>%s[%s]+) {0}\,([%s]+)' % (numprefix, ''.join(numtbl), ''.join(numtbl)), 
+r'\g<highnum>%s\2' % numsep, s)
+	#this does punctuation
+	for (punckey, puncval) in punctbl.items():
+		#this does punctuation at the end or in words
+		s = re.sub(r'(?P<prefixword>[^a-zA-Z%s%s%s][a-zA-Z]+[%s]*) {0}%s' % (numprefix, decpoint, numsep, 
+string.punctuation, punckey), 
+'\g<prefixword>%s' % puncval, s)
+	return s

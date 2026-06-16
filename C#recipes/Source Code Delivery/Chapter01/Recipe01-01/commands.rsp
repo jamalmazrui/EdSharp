@@ -1,0 +1,1 @@
+/target:exe /main:Apress.VisualCSharpRecipes.Chapter01.HelloWorld /out:HelloWorld.exe HelloWorld.cs ConsoleUtils.cs

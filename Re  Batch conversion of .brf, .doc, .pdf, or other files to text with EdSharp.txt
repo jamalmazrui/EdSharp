@@ -1,0 +1,104 @@
+Subject:
+Re: Batch conversion of .brf, .doc, .pdf, or other files to text with EdSharp
+From:
+Jamal Mazrui <empower@smart.net>
+Date:
+Mon, 04 Jul 2011 09:43:28 -0400
+To:
+programmingblind@freelists.org
+CC:
+qubit <lauraeaves@yahoo.com>
+
+Let me clarify that the text conversions (via utilities EdSharp runs in the background) are not necessarily the best one can do compared to other conversion techniques.  They are generally intended for quickly producing readable text, rather than text formatting that attempts to correspond as much as possible to the formatting in the original source file.  For example, Save As in Intenet Explorer or Firefox might produce a bette formatted text file.
+
+Jamal
+
+On 7/4/2011 9:38 AM, Jamal Mazrui wrote:
+> Hi Laura,
+> Yes, .htm and .html files are also supported for text conversion. You
+> could either use the technique I described below, or the Open Other
+> Format command, Control+Shift+O. In the latter case, which is for a
+> single import rather than batch conversion, EdSharp prompts for the
+> target file type if others are available besides .txt.
+>
+> Do make sure you have the latest EdSharp (F11 to Elevate), since I
+> recently corrected a bug in the Text Convert command, Control+T.
+>
+> Jamal
+>
+>
+> On 7/3/2011 8:08 PM, qubit wrote:
+>> Hi Jamal --
+>> This one caught my attention.
+>> Are you saying that edSharp could take an html file and convert it to
+>> .txt?
+>> I have a book in html format that for some reason I am unable to read
+>> as it
+>> takes up to 10 minutes to load and once it is loaded, none of the links
+>> work.
+>> I tried removing the images folder it was using to render the pages,
+>> but it
+>> wouldn't load in IE because the images were not found.
+>> Oh well, I suppose you would say I should run IE, wait 10 minutes and
+>> then
+>> type save-as. I'm just musing.
+>> I think I'll take a break. *sigh*
+>> --le
+>>
+>>
+>> ----- Original Message -----
+>> From: "Jamal Mazrui"<empower@smart.net>
+>> To: "programmingblind"<programmingblind@freelists.org>
+>> Sent: Sunday, July 03, 2011 9:08 AM
+>> Subject: Batch conversion of .brf, .doc, .pdf, or other files to text
+>> with
+>> EdSharp
+>>
+>>
+>> Given the recent topic of converting .brf or .brl files to plain text,
+>> let me remind EdSharp users of the ability to convert multiple files in
+>> a single, batch operation, using the Text Convert command, Control+T.
+>> It examines each line of text for a file path. If no parent directory
+>> is specified, the file is assumed to be located in the directory of the
+>> previous file found. Thus, only the first file needs to include a full
+>> path.
+>>
+>> You can either manually enter file paths, or generate a list of files
+>> with the Path List command, Control+Shift+P. It first prompts for a
+>> directory. After scanning the directory, it asks for what extensions to
+>> include among the ones that were found. You can just press Enter to
+>> accept all extensions, or edit the space separated list of extensions in
+>> the input box, e.g., leaving
+>>
+>> doc pdf
+>>
+>> in order to convert all .doc and .pdf files (a leading period before an
+>> extension is optional in that input box).
+>>
+>> After you have a list of files, the Control+T command presents a similar
+>> dialog based on the extensions it finds in the current document. Press
+>> Enter to accept the extensions you specify for conversion, and initiate
+>> the batch process. Each file will be converted to a text file with the
+>> same path except for the .txt extension.
+>>
+>> This is a convenient way of converting, say, a batch of .brf files
+>> downloaded from Bookshare or NLS. You can then read them in EdSharp or
+>> any viewing program for text files.
+>>
+>> Jamal
+>>
+>> __________
+>> View the list's information and change your settings at
+>> http://www.freelists.org/list/programmingblind
+>>
+>> __________
+>> View the list's information and change your settings at
+>> http://www.freelists.org/list/programmingblind
+>>
+> __________
+> View the list's information and change your settings at
+> http://www.freelists.org/list/programmingblind
+>
+__________
+View the list's information and change your settings at http://www.freelists.org/list/programmingblind
+

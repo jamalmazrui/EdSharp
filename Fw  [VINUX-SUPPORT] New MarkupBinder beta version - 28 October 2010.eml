@@ -1,0 +1,141 @@
+X-Account-Key: account4
+X-UIDL: 00019de3475a9155
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <donald.marang@gmail.com>
+Received: from mxas1.sovenix.net (mxas1.sovenix.net [216.127.142.100])
+	by cygnus.smart.net (8.13.8/8.13.8) with ESMTP id oB5K6AjU005805
+	for <empower@smart.net>; Sun, 5 Dec 2010 15:06:10 -0500
+X-Envelope-From: donald.marang@gmail.com
+X-Envelope-To: empower@smart.net
+Received: From mail-qw0-f49.google.com (209.85.216.49) by mxas1.sovenix.net (MAILFOUNDRY) id VHrwAgCsEeCvIwAw for empower@smart.net; Sun, 5 Dec 2010 20:14:57 -0000 (GMT)
+Received: by qwb8 with SMTP id 8so704958qwb.22
+        for <empower@smart.net>; Sun, 05 Dec 2010 12:06:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:from:to:subject
+         :date:mime-version:content-type:content-transfer-encoding:x-priority
+         :x-msmail-priority:importance:x-mailer:x-mimeole;
+        bh=XT8Y7rJusKgSzOteEYb/vLjMoA8mgcU2arhjg74O1xI=;
+        b=v4qo6hze57XO4cc4e3Vr7U8yOEUZHvu8+yQD4RJdrEITCDEEyilds4iyougVXycsyC
+         9HegeyE1Qtb0KmeHJbHCpqXTfxYR6rvw+/jXE+vMJeGU89hwpquXWIZ1NHu2WODGhuHd
+         bhaIOLVJvIujd9COuS1KK88GzX5mLhwpkCKaM=
+DomainKey-Signature: a=rsa-sha1; c=nofws;
+        d=gmail.com; s=gamma;
+        h=message-id:from:to:subject:date:mime-version:content-type
+         :content-transfer-encoding:x-priority:x-msmail-priority:importance
+         :x-mailer:x-mimeole;
+        b=bZF4SY/ohHCPPL/+98TOxl3DNYEF9yb6mUCB3jerkOwoz+mnyVI6WKdXo1EQea4IgE
+         v4+rvZR5zSAEhb/xJQKwlFBbPcuLm+rnSxNuB8UK/v7RG1tOxCtisScjS0+jfgB8VKsq
+         Bghtr+TzJkFwbrRmpUDKbS0R3jrcBFkg5FNqo=
+Received: by 10.224.45.143 with SMTP id e15mr3863741qaf.32.1291579581591;
+        Sun, 05 Dec 2010 12:06:21 -0800 (PST)
+Received: from Quinn (pool-151-197-46-151.phil.east.verizon.net [151.197.46.151])
+        by mx.google.com with ESMTPS id m7sm2966376qck.13.2010.12.05.12.06.20
+        (version=SSLv3 cipher=RC4-MD5);
+        Sun, 05 Dec 2010 12:06:20 -0800 (PST)
+Message-ID: <2DE952CDEA394250B0EE5E072B2474EF@Quinn>
+From: "Don Marang" <donald.marang@gmail.com>
+To: "Jamal Mazrui" <empower@smart.net>
+Subject: Fw: [VINUX-SUPPORT] New MarkupBinder beta version - 28 October 2010
+Date: Sun, 5 Dec 2010 15:06:12 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	format=flowed;
+	charset="iso-8859-1";
+	reply-type=response
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+Importance: Normal
+X-Mailer: Microsoft Windows Live Mail 14.0.8117.416
+X-MimeOLE: Produced By Microsoft MimeOLE V14.0.8117.416
+
+Hi Jamal,
+
+Thanks for including pandoc into the Ed Sharp editor!  I have been using Ed 
+Sharp to edit Vinux documentation.  I then would switch to a terminal window 
+in Vinux using VMware and run pandoc.  The directory where the files I am 
+workinhg on are in a shared directory to make this easier.  I also count on 
+bash history to repeatedly convert as I am making changes.  Ed Sharp will 
+now make it even easier to create documentation with a single keystroke.
+
+The announcement I am forwareding is a Windows user who has been tinkering 
+with Vinux for Jaba cross development.   He has developed markup-vinder over 
+the years to create user's manuals with markdown.  His utility creates a 
+manual out of a directory tree of markdown text files.  It is now a Vinux 
+package so that it is easily installed and updated.  It also installs 
+pandoc, because it is listed as one of it's dependancies in the package.  I 
+love that about Ubuntu!  I pass this on in case you are interested in 
+expanding pandoc conversions to an entire directory to create complete 
+manuals.
+
+Don Marang
+
+There is just so much stuff in the world that, to me, is devoid of any real 
+substance, value, and content that I just try to make sure that I am working 
+on things that matter.
+Dean Kamen
+
+
+--------------------------------------------------
+From: "Isaac Porat" <isaac@porat.me.uk>
+Sent: Monday, November 08, 2010 2:42 PM
+To: <vinux-support@googlegroups.com>
+Subject: [VINUX-SUPPORT] New MarkupBinder beta version - 28 October 2010
+
+> Hello all
+>
+> A new beta version of MarkupBinder is now available.  This version 
+> features better support for writing single documents as an alternative to 
+> a word processor, as follows:
+>
+> - Improved edit / review - with a single keystroke [Ctrl + 1] in gedit, 
+> the document you edit in gedit is converted and displayed in Firefox.
+>
+> - The Build Document Page command converts your document to a stand-alone 
+> HTML file, including an internal style sheet optimized for document 
+> display, together with other required parameters.  As in the previous 
+> version, the document can be converted to other formats for use in word 
+> processors, for example, if you wish.
+>
+> - MarkupBinder uses the Markdown lightweight writing format and from this 
+> version, you can reformat your Markdown document back to Pandoc Markdown 
+> with the command md2mdp for a  polished and attractive appearance.
+>
+> MarkupBinder, as in previous versions, can create structured multi-file 
+> documents that can be used as manuals, tutorial etc, for viewing locally 
+> and on the internet.
+>
+> Thanks to Bill Cox for packaging MarkupBinder for Vinux and configuring it 
+> for gedit.
+>
+> MarkupBinder is also available for Windows and installation from this 
+> version is greatly simplified.
+>
+> The manual now contains an 'Installation' and a 'Getting started' section. 
+> It is available locally by pressing [Ctrl + 7] in gedit or at:
+> www.a-technic.net/MarkupBinder/docs/Manual
+>
+> To install (or update) in Vinux type:
+> sudo apt-get update
+> sudo apt-get install markup-binder
+>
+> Regards,
+> Isaac
+>
+> -- 
+> You received this message because you are subscribed to the Google Groups 
+> "The Vinux Support Forum" group.
+> To post to this group, send email to vinux-support@googlegroups.com.
+> To unsubscribe from this group, send email to 
+> vinux-support+unsubscribe@googlegroups.com.
+> For more options, visit this group at 
+> http://groups.google.com/group/vinux-support?hl=en.
+>
+> Vinux Home Page:  http://vinux.org.uk/
+> Vinux Wiki 
+> Documentation:http://wiki.vinuxvirtual.org.uk/index.php?title=Main_Page
+> 
+

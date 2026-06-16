@@ -1,0 +1,365 @@
+
+Subject:
+Re: Collaborative EdSharp development via GitHub
+From:
+Brandon Keith Biggs <brandonkeithbiggs@gmail.com>
+Date:
+5/28/2017 8:00 AM
+To:
+Jamal Mazrui <jamal@empowermentzone.com>
+CC:
+Joseph Lee <joseph.lee22590@gmail.com>, Jim Homme <jhomme@benderconsult.com>, Derek Riemer <derek.riemer@colorado.edu>, Mike Forzano <michaeldforzano@gmail.com>
+
+Hello Jamal,
+We discussed getting the Github working, getting code seperated out, figuring out how to configure screen readers to work best with EdSharp and the advantages Notepad++ has over EdSharp.
+Here are the commands to connect to the github repository:
+First cd into a dir where you can create a new folder.
+git clone https://github.com/EmpowermentZone/EdSharp.git EdSharp
+*note that the EdSharp at the end of the above command will be the name of the new folder. By default it will be EdSharp, so you don't even need to put it, but if you wanted to change the name of the dir where the repository will be downloaded to, you can do so.
+Now make all the changes you want in the new folder. Once you are done, type:
+git add *
+git commit -m "Put a comment for what you did"
+If this is the code to the new version type:
+git tag -a v3.4 -m "Message about this release"
+*note change the version to be whatever. The current version is 3.3.
+To push your new changes to github type:
+git push
+That's all!
+
+I attached a git cheetsheet that I use.
+Thanks,
+
+
+Brandon Keith Biggs
+
+On Sat, May 27, 2017 at 3:54 PM, Jamal Mazrui <jamal@empowermentzone.com> wrote:
+
+    Adding Mike Forzano in case he's also inclined (no pressure though, Mike).
+
+
+    I know this may shock you younger guys <smile>, but I have hardly used Skype, so to assure a reliable call without operator error by me, I would like to use a conference bridge that my brother has made available for us:
+
+
+    Call 1-800-882-3610
+    Then enter 4982903 followed by #
+
+
+    For scheduling, would a Sunday morning call work for folks, one that is early Pacific Time, say, from 7 - 8 AM PT tomorrow, May 28?
+
+
+    We might then do a bit of research or coding before a follow up call the next day, where we would report on something we had looked into based on our first discussion.  The second call could be at the same time on Monday, May 29 from 7 - 8 AM PT.
+
+
+    In addition, we could continue email discussion either via a recipient list like this or, alternatively, on the EdSharp listserv which has hardly any traffic.
+
+
+    If those times do not work, please give some other times that do.  I was just thinking that a morning call could leave the rest of the day free for any scheduled activities this long weekend.
+
+
+    Jamal
+
+
+    P.S.  I am researching Notepad++ today to help gain ideas for EdSharp improvements.
+
+
+    On 5/27/2017 2:19 PM, Joseph Lee wrote:
+>
+>     Hi,
+>
+>     My Skype ID is ucr2012, or failing that, use joseph_lee22590@yahoo.com to search for me.
+>
+>     Cheers,
+>
+>     Joseph
+>
+>      
+>
+>     From: Brandon Keith Biggs [mailto:brandonkeithbiggs@gmail.com]
+>     Sent: Saturday, May 27, 2017 2:15 PM
+>     To: Jamal Mazrui <jamal@empowermentzone.com>
+>     Cc: Jim Homme <jhomme@benderconsult.com>; Joseph Lee <joseph.lee22590@gmail.com>; Derek Riemer <derek.riemer@colorado.edu>
+>     Subject: Re: Collaborative EdSharp development via GitHub
+>
+>      
+>
+>     Hello,
+>
+>     Sorry, I just got to my emails and I haven’t read everything yet. But if we want to do a call later today, that would be pretty easy. Just add me on skype, brandonkeithbiggs@gmail.com and we can set up a time. How about 4 PM PST?
+>
+>      
+>
+>     Here are the things I have created:
+>
+>     A Github org for Empowerment Zone:
+>
+>     https://github.com/EmpowermentZone
+>
+>      
+>
+>     and as a project of the above org there is the EdSharp repository:
+>
+>     https://github.com/EmpowermentZone/EdSharp
+>
+>      
+>
+>     This is different than Jamal’s repository at:
+>
+>     http://github.com/JamalMazrui/EdSharp
+>
+>     although Jamal has complete access to the two pages I created above.
+>
+>      
+>
+>     The things that need to be discussed are:
+>
+>      
+>
+>     1.       Where is the official repository going to be and how is it going to be branded?
+>
+>     2.       Who are going to be the core developers?
+>
+>     3.       Does Jamal have a better thing we can put in the repository than the single massive C# file that we currently have:
+>
+>     https://github.com/EmpowermentZone/EdSharp/blob/master/EdSharp.cs
+>
+>     (don’t click on it, it will probably crash your browser).
+>
+>     There is no way I am even going to attempt reading a 367 KB file that doesn’t have much documentation.
+>
+>     4.       What is going into the roadmap and who is going to do what?
+>
+>      
+>
+>     Thanks,
+>
+>      
+>
+>
+>     Brandon Keith Biggs
+>
+>      
+>
+>     On Sat, May 27, 2017 at 11:10 AM, Jamal Mazrui <jamal@empowermentzone.com> wrote:
+>
+>         I've read so many C# books that it's hard to recall individual ones.  However, the following is one of the best and available from Bookshare:
+>
+>
+>         CLR via C#, Fourth Edition
+>         by Jeffrey Richter2012
+>
+>
+>         On 5/27/2017 10:04 AM, Jim Homme wrote:
+>
+>             Hi,
+>             Jamal, can you suggest reading material? I'd like to learn more C# than I already know, and more .Net than I already know.
+>
+>             On May 27, 2017, at 1:01 PM, Jamal Mazrui <jamal@empowermentzone.com> wrote:
+>
+>             FYI, anyone who has experience coding in Java can learnn C# fairly quickly.  The languages are very similar -- it is mainly a matter of learning differences in library and class names.
+>
+>
+>                 On 5/27/2017 9:43 AM, Jamal Mazrui wrote:
+>                 Thanks, Joseph.  I'm fine with a survey.  I've never done an FB chat before so would need tips.  Does it support voice chat as opposed to text chat?  I think another possibility is a phone conference via FreeConferenceCall.com.
+>
+>
+>                 I have a GitHub repo at
+>
+>                 http://github.com/JamalMazrui/EdSharp
+>
+>
+>                 However, it is just the installer file at this time so it needs to be properly structured.  I have kept meaning to do that after cleaning up the code base a bit, but now I do not want my time and knowledge to be an unnecessary dependency to future development.
+>
+>
+>                 As you may know, Brandon set up an EdSharp user listserv, EdSharp.FreeLists.org, where a list of current issues was gathered a few months ago.  That could be a start in addition to the survey you mention.
+>
+>
+>                 Jamal
+>
+>                     On 5/27/2017 9:25 AM, Joseph Lee wrote:
+>                     Hi Jamal,
+>                     I think Facebook chats would work for this one (as you know, I and Derek have FB accounts).
+>                     I propose that, in addition to a conference call, we conduct a survey of current, new, and potential NVDA and EdSharp users regarding what's working, what's not, and what should be added. If Derek agrees, I'll forward your survey to NVDA developers (members of the nvda-devel list) and ask them to submit a response to you.
+>                     Do you have a repo on GitHub and willing to accept pull requests? I can read some C-sharp but not write it at the moment, and so does Derek. I know Jim is familiar with some Python, and don't know what languages Brandon speaks.
+>                     Cheers,
+>                     Joseph
+>
+>                     -----Original Message-----
+>                     From: Jamal Mazrui [mailto:jamal@empowermentzone.com]
+>                     Sent: Saturday, May 27, 2017 9:18 AM
+>                     To: Derek Riemer <derek.riemer@colorado.edu>; Brandon Keith Biggs <brandonkeithbiggs@gmail.com>; Jim Homme <jhomme@benderconsult.com>; Joseph Lee <joseph.lee22590@gmail.com>
+>                     Subject: Collaborative EdSharp development via GitHub
+>
+>                     On this Memorial Day weekend, I want to finally set things in motion for improving the EdSharp editor via collaborative, open source development.  I am contacting you all in case you have the interest and time to help this effort.
+>
+>
+>                     I think EdSharp has the potential to be the most productive programming editor for screen reader users due to features such as the following:
+>                     direct speech messages, comprehensive keyboard shortcuts, versatile code snippets, and commands to aid management of indentation in Python.  I now want strong compatibility with NVDA to be a high priority so that blind programmers around the world can benefit from an EdSharp/NVDA combination.
+>
+>
+>                     I am thinking that an initial step for kicking off future development would be for a voice conference call to happen where I try to explain the C# code base and answer any questions.  We would then develop a prioritized roadmap and allocate initial tasks among us.  I hope to benefit from expertise of others in optimally using GitHub, improving the structure of the code base without regressions in functionality, and enhancing learning materials, including new tutorials for both users and developers (preferably with audio or video in addition to text).
+>
+>
+>                     If any of you can join the effort, please let me know.  If someone can help set up a free conference call ASAP, that would be appreciated.
+>
+>
+>                     Jamal
+>
+>                     Cell (703) 380-3145
+>
+>          
+>
+>      
+
+
+
+git cheetsheet.txt
+
+git cheetsheet
+
+before everything:
+git init
+
+add files to watch
+git add filename.txt
+remove files to watch:
+git rm --cached  filename.txt
+Without the --cashed will delete the file
+rename files that are already added:
+git mv old_name new_name
+
+commit everything
+git commit -a -m "First commit"
+git commit --amend -m "message" #will change the last commit so it does not show up in the log
+
+see what needs to change
+git status
+
+see a list of branches
+git branch
+if you wish to add a branch, add a name after branch like: git branch testing
+if you wish to add a branch from another branch or tag do: git branch name tagName
+to delete a branch add -d name like: git branch -d testing
+
+change branches
+git checkout branchName
+
+merge branches
+git merge branchName
+While doing this you may see conflix. To see all of these use
+git diff
+to merge one file do:
+while on the branch that needs the update type
+git checkout --patch UpdatedBranchName Filename
+to add a new file, do in the branch that needs updated:
+git checkout UpdatedBranchName Filename
+
+cloning something from somewhere else
+git clone url NewDirName
+
+to get all the changes from another repository to your current branch do:
+git pull url OtherRepositoryBranch
+To get everything from the external repo on their own seperate branches do:
+git fetch url OtherRepositoryBranch
+This will add all the branches as: url/branchName
+
+to add everything from your current branch to an external repository do:
+git push url localbranchName:urlBranchName #you only need 1 name if they are the same
+To push tags do:
+git push url tagName
+Or to push all tags do:
+git push url --tags
+
+add and view repositories
+To see the short name of the current remote do:
+git remote
+to see the url do:
+git remote -v
+To see info on a remote repository do:
+git remote show url
+
+define short-hand repository
+git remote add name url
+This means that anything with url can be used with name instead
+to rename do:
+git remote rename OldName NewName
+This renames both onboard and in the remote repo.
+remove a repo
+git rm name
+removes from both as well
+
+to check the current remote url do:
+git config --get remote.origin.url
+
+check the list of the stored copies of pulled and fetch
+git branch -r
+
+see and mark version numbers
+git tag
+-l #shows all the tags
+-l 'v0.*' #will show all the versions in the 0 family.
+-a versionNumber -m "message" #creates a new tag. the tag can be like v0.1.1. if you take out the -a -m and message, it won't have an anotation, but don't do that.
+If you wish to add a tag on a past commit do:
+git tag -a version PartOfOrAllOfHash
+
+to see info and the message of a tag do:
+git show versionNumber
+or
+git cat-file tag versionNumber
+
+to revert to a tag do:
+git checkout -b newBranchName TagNumber
+While in that tag you can do commits and to keep those commits do: git checkout -b new_branch_name
+To push tags do:
+git push url tagName
+Or to push all tags do:
+git push url --tags
+
+see configurations
+git config -l
+
+to make aliases do:
+git config --global alias.aliasCommand FullCommand
+git config --global alias.aliasCommand 'Really long command'
+git config --global alias.AliasCommand "!command not part of git"
+to change aliases go to .gitconfig which is under brandon/.gitconfig.
+to add multipal commands with an alias go to the file and type something like:
+[alias] test = !git commit -a -m "random" && git status
+
+shows the log
+git log
+after log you can put:
+-p #for seeing the messages I wrote along with the documents that were changed (it will show the text that was changed)
+-2 #place it after -p or whatnot to see only the last 2 messages
+--stat #--stat just shows my messages and not the files like -p
+-p localBranch..url/UrlBranchName
+version1..version2 #the log between version1 and version2
+--pretty=oneline #use --pretty= before a command, oneline puts everything on one line.
+--pretty=format:"%cn, %cr : %s : %h" #shows name, date, message and summery of hash.
+#see:
+#http://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
+#for more
+
+Creating a file that ignores other files:
+create a file named: .gitignore
+see the .gitignore file for examples
+
+websites:
+http://git-scm.com/docs/gittutorial
+and
+http://git-scm.com/docs/user-manual.html
+And for the newbie manual go to:
+http://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository
+
+
+for my credentials I am using:
+http://gitcredentialstore.codeplex.com/
+
+to exit vim, the text editor do:
+:q
+to save and exit do:
+escape
+:wq
+
+
+Attachments:
+git cheetsheet.txt	4.5 KB

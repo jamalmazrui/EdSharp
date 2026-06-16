@@ -1,0 +1,20 @@
+Subject:
+EdSharp 3.2 is great
+From:
+"Ishe Chinyoka" <chinyoka.consultant@gmail.com>
+Date:
+Fri, 21 May 2010 15:46:42 +0200
+To:
+<jamal@EmpowermentZone.com>
+
+Hi Jamal
+ 
+After a long time not using EdSharp due to its DotNet Framework requirement, I downloaded today version 3.2 of this program and found new features -- great is that of the Web Client Utilities.
+From now on, Edsharp will not only be my text editor, but even an RSS reader and Wikipedia reference.
+The reason why I now use it is that last week I bought a new laptop which has got tons of RAM and fast processor -- a Fujitsu model. So I felt that I am missing out without Edsharp: my desktop PC is slow and clumsy for new programs.
+ 
+By the way, which RSS reader, other than the one built into MS Office Outlook is accessible and which you use yourself. I am also trying out a number of other readers and podcast receivers, but some may work 60% of the time and fail, so just curious what other fellows are using out there with JAWS or NVDA.
+ 
+Thanks once again.
+ 
+Ishe 

@@ -1,0 +1,3 @@
+
+http://www.example.com/index.php?myparm=wordyall
+

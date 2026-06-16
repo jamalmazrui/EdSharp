@@ -1,0 +1,24 @@
+<html>
+<head>
+<title></title>
+</head>
+<body>
+<form name="form1">
+	<input type="text" name="txtInput" />
+	<div id="lblResult"></div>
+	<script language="javascript">
+		function replace() {
+			var hostRegex = "([a-z\\d][-a-z\\d]*[a-z\\d]\.)*[a-z][-a-z\\d]*[a-z]";
+			var portRegex = "(:\\d{1,})?";
+			var pathRegex = "(\/[^?<>#\"\\s]+)?";
+			var queryRegex = "(\\?[^<>#\"\\s]+)?";
+			var fullRegex = "((ht|f)tps?:\/\/" + hostRegex + portRegex + pathRegex + queryRegex + ")";
+			alert(fullRegex);
+			var re = new RegExp(fullRegex);
+			document.getElementById('lblResult').innerHTML = document.form1.txtInput.value.replace(re, "<a href=\"$1\">$1</a>");
+		}
+	</script>
+	<input type="button" name="btnSubmit" onclick="replace()" value="Go" />
+</form>
+</body>
+</html>

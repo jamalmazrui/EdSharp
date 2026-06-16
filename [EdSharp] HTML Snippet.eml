@@ -1,0 +1,275 @@
+Return-path: <edsharp-bounce@freelists.org>
+Envelope-to: jamal@empowermentzone.com
+Delivery-date: Thu, 07 Jan 2016 21:28:12 -0700
+Received: from [85.25.237.90] (port=57344 helo=mx31.antispamcloud.com)
+	by host422.hostmonster.com with esmtps (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+	(Exim 4.84)
+	(envelope-from <edsharp-bounce@freelists.org>)
+	id 1aHOep-0003oA-Ht
+	for jamal@empowermentzone.com; Thu, 07 Jan 2016 21:28:12 -0700
+Received: from freelists-180.iquest.net ([206.53.239.180] helo=turing.freelists.org)
+	by mx31.antispamcloud.com with esmtp (Exim 4.85)
+	(envelope-from <edsharp-bounce@freelists.org>)
+	id 1aHOeZ-0002ST-OG
+	for jamal@empowermentzone.com; Fri, 08 Jan 2016 05:28:04 +0100
+Received: from localhost (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id E0AC631F12;
+	Thu,  7 Jan 2016 23:27:53 -0500 (EST)
+X-Virus-Scanned: Debian amavisd-new at turing.freelists.org
+Received: from turing.freelists.org ([127.0.0.1])
+	by localhost (turing.freelists.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Vjlf5IQoMZDk; Thu,  7 Jan 2016 23:27:53 -0500 (EST)
+Received: from turing.freelists.org (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id BBA2831E9F;
+	Thu,  7 Jan 2016 23:27:52 -0500 (EST)
+Received: with ECARTIS (v1.0.0; list edsharp); Thu, 07 Jan 2016 23:27:52 -0500 (EST)
+X-Original-To: edsharp@freelists.org
+Delivered-To: edsharp@freelists.org
+Received: from localhost (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id 75CB531F05
+	for <edsharp@freelists.org>; Thu,  7 Jan 2016 23:27:52 -0500 (EST)
+X-Virus-Scanned: Debian amavisd-new at turing.freelists.org
+Received: from turing.freelists.org ([127.0.0.1])
+	by localhost (turing.freelists.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id hZDqFoRpoUQf for <edsharp@freelists.org>;
+	Thu,  7 Jan 2016 23:27:52 -0500 (EST)
+Received: from mail-pf0-f173.google.com (mail-pf0-f173.google.com [209.85.192.173])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id 3271A31E9F
+	for <edsharp@freelists.org>; Thu,  7 Jan 2016 23:27:52 -0500 (EST)
+Received: by mail-pf0-f173.google.com with SMTP id q63so3863371pfb.1
+        for <edsharp@freelists.org>; Thu, 07 Jan 2016 20:27:52 -0800 (PST)
+X-Received: by 10.98.66.77 with SMTP id p74mr1536517pfa.43.1452227271783;
+        Thu, 07 Jan 2016 20:27:51 -0800 (PST)
+Received: from LITTLECAT ([115.76.129.77])
+        by smtp.gmail.com with ESMTPSA id x18sm1007796pfa.65.2016.01.07.20.27.48
+        for <edsharp@freelists.org>
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Thu, 07 Jan 2016 20:27:50 -0800 (PST)
+Message-ID: <1FD7FBD5992B4B6395EB52CB08077F28@LITTLECAT>
+From: "Dang Manh Cuong" <dangmanhcuong@gmail.com>
+To: "EdSharp" <edsharp@freelists.org>
+Subject: [EdSharp] HTML Snippet
+Date: Fri, 8 Jan 2016 11:27:48 +0700
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0003_01D14A07.9A88D420"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Windows Mail 6.0.6002.18197
+X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.17609
+X-archive-position: 132
+X-ecartis-version: Ecartis v1.0.0
+Sender: edsharp-bounce@freelists.org
+Errors-to: edsharp-bounce@freelists.org
+X-original-sender: dangmanhcuong@gmail.com
+Precedence: normal
+Reply-To: edsharp@freelists.org
+List-help: <mailto:ecartis@freelists.org?Subject=help>
+List-unsubscribe: <edsharp-request@freelists.org?Subject=unsubscribe>
+List-software: Ecartis version 1.0.0
+List-Id: edsharp <edsharp.freelists.org>
+X-List-ID: edsharp <edsharp.freelists.org>
+List-subscribe: <edsharp-request@freelists.org?Subject=subscribe>
+List-owner: <mailto:brandonkeithbiggs@gmail.com>
+List-post: <mailto:edsharp@freelists.org>
+List-archive: <http://www.freelists.org/archives/edsharp>
+X-list: edsharp
+Authentication-Results: mx31.antispamcloud.com; dmarc=none header.from=gmail.com
+X-Filter-ID: s0sct1PQhAABKnZB5plbIXEkeUQlCD+g2JN5VTYX1WiLrm9g3yAvTHxS5DKUN8CKn+02O6MDBZnU
+ OvBlWUL3KCfc4e52eEUtfiIjM33sezt7aw3XKYu1HacLOUCaeHZaEqARV4m2Ai58aTvwf8xKfUwA
+ wVo9dqkZDBoDReJKPK+NQlEJ3aXcH+G7M145byFtHFTZLQE37iMwkdn5n3XcYBDfz/jicR5gtPLW
+ XRm8c+R2PQF83OFJse5z2Ju4xqjiQW0ahxL4TMM2yI19d68BkyG7X+t1TW39Ja77LGPpOwBzFJNV
+ L/cUs4NRLShvPk4VbiWYfHYMBgL6Mbb+0QsOXcd6bhN2NrILW4MtAfVuwFAhEWyJzIkwSFAW0Pw8
+ uiKefM4F5j1auaZZJUsmiAR2K4IpjUHsNplZHlROMyi1vq79glmWp5FFGEiPeRPivu14MdgvK9Pp
+ /dD4Ga1S2fsC22UVrBsPGnNiJ83AD/4JscD+uErju2LKw9tDKuKo6EB243igPnBgbA2dNFIh4FO1
+ jjAApghdQVR2zp34yRIS46Jt9u+c6vZ+b/wcCLG4LOzUpl8rF453rlG/1n4zSXbJj4fqFyHAGZHG
+ Zq28vIm4PuAxL7hrJSk60SF3F6RYOYr2
+X-Report-Abuse-To: spam@mx99.antispamcloud.com
+X-Filter-Fingerprint: IFrWXGses7OKB5S5G8/dJbZtAblLTBzSTlYgknnLNnJA3cTUQ1R++keuE7RDJ8Kg3RbMLUalw1oC
+ mj99/u+PoqoVy8a3lsStJtAvpObFX0W9pwnCLfzqMQ4SqlQant4mUpndEJ0YoaLytXXo8BMTaX2p
+ Mk7LBarWD9Fj4R3eIu6C5spubTEXAEkuBKN3yOZvUxf7JO+oAUByCkP7cAJnEooJtGZFyF6tI/I5
+ CWVQH2sjWUvnt4XQmbZjx+Gtm4/p
+X-Spampanel-Class: ham
+X-Spampanel-Evidence: SB/antispamcloud_com (0.0341182981206)
+X-Recommended-Action: accept
+X-Identified-User: {0000:host422.hostmonster.com:local:local} {sentby:Delivered locally}
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0003_01D14A07.9A88D420
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0004_01D14A07.9A88D420"
+
+
+------=_NextPart_001_0004_01D14A07.9A88D420
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+To all listers
+I'd like to share my snippet file to work with HTML code using EdSharp. =
+Below is the list of files:
+Heading: add a heading tag at current position with heading level and =
+heading text
+Hyperlink: add a link at current position with link address and link =
+text
+HyperlinkNew Tab: add a link at current position with link address and =
+link text. The link opens in new tab
+IMG: add an image at current position
+Mailto Link: add a mailto link at current position
+Title: add an HTML Title at current position
+These files just for my need, but I think it useful,so I share. I don't =
+know how to add short guide to these file,so please give featback if you =
+have questions, as well as tellme any error or request.
+Cuong
+-------------------
+Dang Manh Cuong
+The Assistive technology specialist
+Sao Mai Vocational and assistive center for the blind=20
+391 Lac Long Quan, ward 5, Dst 11, HCMC, Vietnam
+Tel: +84862573309
+E-mail: vanphong@trungtamsaomai.org; congnghe@trungtamsaomai.org=20
+Facebook: https://www.facebook.com/SaoMaiCenter=20
+Website: http://www.trungtamsaomai.org; http://www.saomaicenter.org
+
+Mobile / Zalo: +84 902-572-300
+E-mail: dangmanhcuong@gmail.com; cuong@trungtamsaomai.org=20
+Yahoo! ID: manhcuong0312
+Skype name: dangmanhcuong
+facebook: http://facebook.com/dangmanhcuong
+Twitter: @ManhCuongTech=20
+ Projec-Website: http://dangmanhcuong.googlecode.com
+------=_NextPart_001_0004_01D14A07.9A88D420
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META name=3DGENERATOR content=3D"MSHTML 11.00.9600.18125">
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT size=3D2 face=3DArial>To all listers<BR>I'd like to share my =
+snippet file=20
+to work with HTML code using EdSharp. Below is the list of =
+files:<BR>Heading:=20
+add a heading tag at current position with heading level and heading=20
+text<BR>Hyperlink: add a link at current position with link address and =
+link=20
+text<BR>HyperlinkNew Tab: add a link at current position with link =
+address and=20
+link text. The link opens in new tab<BR>IMG: add an image at current=20
+position<BR>Mailto Link: add a mailto link at current position<BR>Title: =
+add an=20
+HTML Title at current position<BR>These files just for my need, but I =
+think it=20
+useful,so I share. I don't know how to add short guide to these file,so =
+please=20
+give featback if you have questions, as well as tellme any error or=20
+request.<BR>Cuong</FONT></DIV>
+<DIV><FONT size=3D2 face=3DArial>-------------------<BR>Dang Manh =
+Cuong<BR>The=20
+Assistive technology specialist<BR>Sao Mai Vocational and assistive =
+center for=20
+the blind <BR>391 Lac Long Quan, ward 5, Dst 11, HCMC, Vietnam<BR>Tel:=20
++84862573309<BR>E-mail: <A=20
+href=3D"mailto:vanphong@trungtamsaomai.org">vanphong@trungtamsaomai.org</=
+A>; <A=20
+href=3D"mailto:congnghe@trungtamsaomai.org">congnghe@trungtamsaomai.org</=
+A>=20
+<BR>Facebook: <A=20
+href=3D"https://www.facebook.com/SaoMaiCenter">https://www.facebook.com/S=
+aoMaiCenter</A>=20
+<BR>Website: <A=20
+href=3D"http://www.trungtamsaomai.org">http://www.trungtamsaomai.org</A>;=
+ <A=20
+href=3D"http://www.saomaicenter.org">http://www.saomaicenter.org</A></FON=
+T></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2 face=3DArial>Mobile / Zalo: +84 =
+902-572-300<BR>E-mail: <A=20
+href=3D"mailto:dangmanhcuong@gmail.com">dangmanhcuong@gmail.com</A>; <A=20
+href=3D"mailto:cuong@trungtamsaomai.org">cuong@trungtamsaomai.org</A> =
+<BR>Yahoo!=20
+ID: manhcuong0312<BR>Skype name: dangmanhcuong<BR>facebook: <A=20
+href=3D"http://facebook.com/dangmanhcuong">http://facebook.com/dangmanhcu=
+ong</A><BR>Twitter:=20
+@ManhCuongTech <BR>&nbsp;Projec-Website: <A=20
+href=3D"http://dangmanhcuong.googlecode.com">http://dangmanhcuong.googlec=
+ode.com</A></FONT></DIV></BODY></HTML>
+
+------=_NextPart_001_0004_01D14A07.9A88D420--
+
+------=_NextPart_000_0003_01D14A07.9A88D420
+Content-Type: text/plain;
+	name="Heading.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="Heading.txt"
+
+text form
+<h%Level=%>%HeadingText=%</h%Level=%>
+------=_NextPart_000_0003_01D14A07.9A88D420
+Content-Type: text/plain;
+	name="Hyperlink.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="Hyperlink.txt"
+
+text form
+<a href="%Link=%">%LinkText=% </a>
+------=_NextPart_000_0003_01D14A07.9A88D420
+Content-Type: text/plain;
+	name="HyperlinkNew Tab.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="HyperlinkNew Tab.txt"
+
+text form
+<a href="%Link=%" target="_blank">%LinkText=% </a>
+------=_NextPart_000_0003_01D14A07.9A88D420
+Content-Type: text/plain;
+	name="IMG.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="IMG.txt"
+
+text form
+<img src="%ImageFile=%"alt="%AltText=%"</>
+------=_NextPart_000_0003_01D14A07.9A88D420
+Content-Type: text/plain;
+	name="Mailto Link.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="Mailto Link.txt"
+
+text form
+<a href=mailto:"%Link=%">%LinkText=% </a>
+------=_NextPart_000_0003_01D14A07.9A88D420
+Content-Type: text/plain;
+	name="Title.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="Title.txt"
+
+text form
+<title>%text=%</title>
+------=_NextPart_000_0003_01D14A07.9A88D420--
+
+To unsubscribe send an email to:
+edsharp-request@freelists.org
+with the subject:
+unsubscribe
+Visit the homepage of the list at:
+http://www.freelists.org/webpage/edsharp
+change your settings at:
+http://www.freelists.org/list/edsharp
+Download EdSharp at:
+http://www.EmpowermentZone.com/edsetup.exe
+view the archives at:
+http://www.freelists.org/archive/edsharp
+Contact the list admins by sending an email to:
+edsharp-moderators@freelists.org

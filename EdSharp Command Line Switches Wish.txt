@@ -1,0 +1,42 @@
+Subject:
+EdSharp Command Line Switches Wish
+From:
+"Homme, James" <james.homme@highmark.com>
+Date:
+Wed, 14 Jul 2010 11:39:53 -0400
+To:
+"Jamal Mazrui" <empower@smart.net>
+
+Hi Jamal,
+
+Would you please consider putting in the following two switches? s: for section and l: for line? You would run EdSharp like this. EdSharp s:My section, or EdSharp l:323 to make it jump to line 323. And if you put the name of a file in the current document followed by a space, followed by a section name and press the key to open the file, it will jump to the section. I got the idea from NoteTab. In Notetab, though, you put the file name: line number in brackets and I think you have to put a space between the brackets and the string. What do you think about the idea of putting some sort of delimiter in there.
+
+ 
+
+I'm also contemplating the idea of making something that would know how to read through a structured text file and break each section into a smaller HTML file with next and previous links and a separate table of contents file. I don't know how useful that would be though. And I'm also thinking of a sort of extended markdown where you would put instructions on lines that begin with equal signs. I can write up a plan and you can shoot holes in it. My thinking was to create a separate program as a VB.net project I'm interested in doing for myself that would use the scheme to turn files into HTML. I was debating if I should use the common wiki formatting or create my own scheme. Anyway, it would be a program that I would be interested in, and it would break the learning curve down a bit. I could learn some VB.net before I tackle learning to use HomerApp.
+
+ 
+
+Thanks.
+
+ 
+
+Jim
+
+ 
+
+Jim
+
+ 
+
+Jim Homme,
+
+Usability Services,
+
+Phone: 412-544-1810. Skype: jim.homme
+
+Internal recipients,  Read my accessibility blog. Discuss accessibility here. Accessibility Wiki: Breaking news and accessibility advice
+
+ 
+
+This e-mail and any attachments to it are confidential and are intended solely for use of the individual or entity to whom they are addressed. If you have received this e-mail in error, please notify the sender immediately and then delete it. If you are not the intended recipient, you must not keep, use, disclose, copy or distribute this e-mail without the author's prior permission. The views expressed in this e-mail message do not necessarily represent the views of Highmark Inc., its subsidiaries, or affiliates.

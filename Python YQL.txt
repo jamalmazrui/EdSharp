@@ -1,0 +1,1171 @@
+﻿Contents
+
+Python YQL — Python YQL v0.4 documentation
+Index — Python YQL v0.4 documentation
+Python Module Index — Python YQL v0.4 documentation
+Installation — Python YQL v0.4 documentation
+404 Not Found
+404 Not Found
+Yahoo! Query Language - YDN
+Muffin Research Labs by Stuart Colville
+Usage — Python YQL v0.4 documentation
+Contributing to Python YQL — Python YQL v0.4 documentation
+Code Documentation — Python YQL v0.4 documentation
+License — Python YQL v0.4 documentation
+Authors — Python YQL v0.4 documentation
+Search — Python YQL v0.4 documentation
+.. Python YQL documentation master file, created by sphinx-quickstart on Mon Nov 16 08:38:41 2009. You can adapt this file completely to your liking, but it should at least contain the root `toctree` directive. ========== Python YQL ========== Python YQL is a client library for making queries with `Yahoo Query Language `_. The Yahoo! Query Language is an expressive SQL-like language that lets you query, filter, and join data across Web services. With YQL, apps run faster with fewer lines of code and a smaller network footprint. -- `YDN `_ Python YQL is written and maintained by `Stuart Colville `_, along with contributions from the community. QuickStart ---------- .. sourcecode:: sh sudo easy_install yql The following example shows a simple query using the public endpoint. .. sourcecode:: python >>> import yql >>> y = yql.Public() >>> query = 'select * from flickr.photos.search where text="panda" limit 3'; >>> result = y.execute(query) >>> result.rows [{u'isfamily': u'0', u'title': u'Panda can has fruit', u'farm': u'3', u'ispublic': u'1', u'server': u'2605', u'isfriend': u'0', u'secret': u'62ccb5d94e', u'owner': u'99045337@N00', u'id': u'4135649462'}, {u'isfamily': u'0', u'title': u'Hey Panda', u'farm': u'3', u'ispublic': u'1', u'server': u'2799', u'isfriend': u'0', u'secret': u'1632cb8ab8', u'owner': u'99045337@N00', u'id': u'4134889385'}, {u'isfamily': u'0', u'title': u'Panda Lin Hui', u'farm': u'3', u'ispublic': u'1', u'server': u'2737', u'isfriend': u'0', u'secret': u'099b30a0a4', u'owner': u'37843112@N07', u'id': u'4135631774'}] >>> for row in result.rows: ... print row.get('title') ... Panda can has fruit Hey Panda Panda Lin Hui Contents -------- .. toctree:: :maxdepth: 3 installation usage contribution code license authors Indices and tables ================== * :ref:`genindex` * :ref:`modindex` * :ref:`search`
+Overview — Sphinx v1.0.1 documentation
+
+----------
+
+Python YQL — Python YQL v0.4 documentation
+
+Navigation
+index 
+modules | 
+next | 
+Python YQL v0.4 documentation » 
+Python YQLÂ¶
+Python YQL is a client library for making queries with Yahoo Query Language.
+The Yahoo! Query Language is an expressive SQL-like language that lets you query, filter, and join data across Web services. With YQL, apps run faster with fewer lines of code and a smaller network footprint.
+—YDN
+Python YQL is written and maintained by Stuart Colville, along with contributions from the community.
+QuickStartÂ¶
+sudo easy_install yql
+The following example shows a simple query using the public endpoint.
+>>> import yql
+>>> y = yql.Public()
+>>> query = 'select * from flickr.photos.search where text="panda" limit 3';
+>>> result = y.execute(query)
+>>> result.rows
+[{u'isfamily': u'0', u'title': u'Panda can has fruit', u'farm': u'3', u'ispublic': u'1', u'server': u'2605', u'isfriend': u'0', u'secret': u'62ccb5d94e', u'owner': u'99045337@N00', u'id': u'4135649462'}, {u'isfamily': u'0', u'title': u'Hey Panda', u'farm': u'3', u'ispublic': u'1', u'server': u'2799', u'isfriend': u'0', u'secret': u'1632cb8ab8', u'owner': u'99045337@N00', u'id': u'4134889385'}, {u'isfamily': u'0', u'title': u'Panda Lin Hui', u'farm': u'3', u'ispublic': u'1', u'server': u'2737', u'isfriend': u'0', u'secret': u'099b30a0a4', u'owner': u'37843112@N07', u'id': u'4135631774'}]
+>>> for row in result.rows:
+...     print row.get('title')
+...
+Panda can has fruit
+Hey Panda
+Panda Lin Hui
+ContentsÂ¶
+Installation
+Installing from Pypi 
+Getting the source 
+Usage
+Accessing the data returned from a query 
+Public API Calls 
+Private API Calls
+Two-legged Auth 
+Three-legged Auth 
+Using Storage Classes 
+Other YQL Features
+Using data tables with environment files 
+Using Placeholders in Queries 
+Using INSERT, UPDATE and DELETE 
+Contributing to Python YQL
+Source-code 
+Contributing Code 
+Filing Bugs 
+Code Documentation 
+License 
+Authors 
+Indices and tablesÂ¶
+Index 
+Module Index 
+Search Page 
+ 
+Table Of Contents
+Python YQL
+QuickStart 
+Contents
+Indices and tables 
+Next topic
+Installation
+This Page
+Show Source 
+Quick search
+    
+Enter search terms or a module, class or function name. 
+Navigation
+index 
+modules | 
+next | 
+Python YQL v0.4 documentation » 
+© Copyright 2009, Stuart Colville. Last updated on Jul 24, 2010. Created using Sphinx 1.0.
+
+----------
+
+Index — Python YQL v0.4 documentation
+
+Navigation
+index 
+modules | 
+Python YQL v0.4 documentation » 
+Index
+B | C | D | E | F | G | L | P | Q | R | S | T | U | Y 
+B
+BaseTokenStore (class in yql.storage) 
+
+C
+check_token() (yql.ThreeLegged method) count (yql.YQLObj attribute) 
+
+D
+diagnostics (yql.YQLObj attribute) 
+
+E
+execute() (yql.Public method) 
+
+F
+FileTokenStore (class in yql.storage) 
+
+G
+get() (yql.storage.FileTokenStore method) 
+get_access_token() (yql.ThreeLegged method) 
+get_base_params() (yql.TwoLegged static method) 
+get_filepath() (yql.storage.FileTokenStore method) get_placeholder_keys() (yql.Public static method) 
+get_query_params() (yql.Public method) 
+get_token_and_auth_url() (yql.ThreeLegged method) 
+get_uri() (yql.Public method) 
+(yql.ThreeLegged method) 
+(yql.TwoLegged method) 
+
+L
+lang (yql.YQLObj attribute) 
+
+P
+pformat_raw() (yql.YQLObj method) 
+pprint_raw() (yql.YQLObj method) Public (class in yql) 
+
+Q
+query (yql.YQLObj attribute) query_params (yql.YQLObj attribute) 
+
+R
+raw (yql.YQLObj attribute) 
+refresh_token() (yql.ThreeLegged method) results (yql.YQLObj attribute) 
+rows (yql.YQLObj attribute) 
+
+S
+set() (yql.storage.FileTokenStore method) 
+
+T
+ThreeLegged (class in yql) 
+TokenStoreError TwoLegged (class in yql) 
+
+U
+uri (yql.YQLObj attribute) 
+
+Y
+yql.storage (module) YQLObj (class in yql) 
+
+ 
+Quick search
+    
+Enter search terms or a module, class or function name. 
+Navigation
+index 
+modules | 
+Python YQL v0.4 documentation » 
+© Copyright 2009, Stuart Colville. Last updated on Jul 24, 2010. Created using Sphinx 1.0.
+
+----------
+
+Python Module Index — Python YQL v0.4 documentation
+
+Navigation
+index 
+modules | 
+Python YQL v0.4 documentation » 
+Python Module Index
+y 
+ 
+y
+yql
+    yql.storage
+
+ 
+Quick search
+    
+Enter search terms or a module, class or function name. 
+Navigation
+index 
+modules | 
+Python YQL v0.4 documentation » 
+© Copyright 2009, Stuart Colville. Last updated on Jul 24, 2010. Created using Sphinx 1.0.
+
+----------
+
+Installation — Python YQL v0.4 documentation
+
+Navigation
+index 
+modules | 
+next | 
+previous | 
+Python YQL v0.4 documentation » 
+InstallationÂ¶
+Python-yql is available from the cheeseship (PyPi) and on launchpad
+Installing from PypiÂ¶
+With setuptools all you need to do is run the following command:
+sudo easy_install yql
+You can also get a tarball from PyPi with:
+wget http://pypi.python.org/packages/source/y/yql/yql-0.2.tar.gz
+tar -xzf yql-0.2.tar.gz
+cd yql-0.2
+python setup.py install
+Getting the sourceÂ¶
+bzr branch lp:python-yql
+ 
+Table Of Contents
+Installation
+Installing from Pypi 
+Getting the source 
+Previous topic
+Python YQL
+Next topic
+Usage
+This Page
+Show Source 
+Quick search
+    
+Enter search terms or a module, class or function name. 
+Navigation
+index 
+modules | 
+next | 
+previous | 
+Python YQL v0.4 documentation » 
+© Copyright 2009, Stuart Colville. Last updated on Jul 24, 2010. Created using Sphinx 1.0.
+
+----------
+
+404 Not Found
+
+Not Found
+The requested URL /blank# was not found on this server.
+
+----------
+
+404 Not Found
+
+Not Found
+The requested URL /blank was not found on this server.
+
+----------
+
+Yahoo! Query Language - YDN
+
+Yahoo! 
+My Yahoo! 
+Mail 
+Welcome, guest Sign In
+ 
+    
+My Projects 
+Services & Tools 
+Popular APIs
+Application Platform (YAP) 
+Yahoo! Query Language (YQL) 
+Profiles and Address Book 
+Updates activity stream 
+SearchMonkey® 
+Flickr® 
+» View all APIs 
+Popular Tools
+Yahoo! User Interface Library (YUI) 
+Yahoo! Design Pattern Library 
+Flash and Flex Library (ASTRA) 
+YSlow 
+Hadoop 
+Pipes 
+» View all tools 
+Resources 
+Blog 
+YDN Theater 
+Hack U 
+Yahoo! on Github 
+Support 
+FAQs 
+Forums 
+Contact Us 
+YDN YQL 
+Yahoo! Query Language
+ 
+What is YQL?
+The Yahoo! Query Language is an expressive SQL-like language that lets you query, filter, and join data across Web services. With YQL, apps run faster with fewer lines of code and a smaller network footprint.
+Yahoo! and other websites across the Internet make much of their structured data available to developers, primarily through Web services. To access and query these services, developers traditionally endure the pain of locating the right URLs and documentation to access and query each Web service.
+With YQL, developers can access and shape data across the Internet through one simple language, eliminating the need to learn how to call different APIs.
+How Do I Get Started?
+Check out the YQL Console. 
+Read how to access YQL from your application. 
+Get your API Keys to sign your requests if you need them. 
+Check out the YQL frequently asked questions (FAQ) for answers to common issues. 
+Using the API or Web Service
+YQL Overview
+YQL exposes an SQL-like SELECT syntax that is both familiar to developers and expressive enough for getting the right data. Through the SHOW and DESC commands, we enable developers to discover the available data sources and structure without opening another Web browser.
+YQL Open Data Tables
+Open Data Tables enable developers to add tables for any data on the Web to our stable of API-specific tables. Using Open Data Tables, anyone can make their data YQL-accessible. If you would like to create an Open Data Table, visit the community page at http://datatables.org.
+Examples:
+Zillow 
+Yelp 
+Pidgets Geo IP 
+
+
+YQL Execute
+Building upon Open Data Tables, the Execute element gives developers full control of how the data is fetched into YQL and how it's presented back to the user. With Execute, developers can build tables that manipulate, change, and sign the URLs to access almost any protected content. This lets YQL access and combine data across a variety of different authenticated services such as Netflix or Twitter. Developers can call multiple services and data sources within Execute to join and mash up data however they desire, letting Yahoo! do the work rather than their applications. Data can be tweaked and manipulated into an optimal format for applications to consume.
+Execute elements run server-side JavaScript with E4X (native XML) support. This gives developers a fully functional language that Web developers know, and lets them do almost anything they want with the data. We've added a few new global objects to the language to enable developers to: include JavaScript libraries and code from any URL; fetch data from any URL/Web page; run other YQL commands; and perform data filtering and conversion.
+Examples:
+CSS selectors for HTML - a CSS selector table for getting data from HTML pages
+use "http://yqlblog.net/samples/data.html.cssselect.xml";
+select * from data.html.cssselect; 
+Try CSS selectors.
+Unified web+image search - perform a BOSS search that also returns an image from the BOSS image search for the same site and query term in a single result set
+use 'http://yqlblog.net/samples/search.imageweb.xml' as searchimageweb;
+select * from searchimageweb where query='pizza' 
+Try Unified web+image search.
+YQL Insert/ Update/ Delete
+You can use YQL to write and modify data on Web services and applications using SQL keywords: INSERT, UPDATE, and DELETE. These verbs let you manipulate data mapped onto an Open Data Table and enables developers to use Open Data Tables to do the following:
+insert new Twitter status messages, not just list them 
+add new comments to a blog, as well as read them 
+store data in a remote database 
+INSERT INTO Internet 
+Open Data Table (ODT) developers can add support for these verbs into their tables by creating new binding types in their ODT definitions. They can then perform the insert/update/delete on the remote web service by creating an execute element that runs their JavaScript to create the right content payload and send it to the remote service. We've extended the capabilities in our server-side JavaScript, so y.rest() can now POST, PUT and DELETE.
+Try creating a new tweet from the YQL console by following this link:
+use 'http://www.yqlblog.net/samples/twitter.status.xml'; insert into twitter.status (status,username,password) values ("Playing with INSERT, UPDATE and DELETE in YQL", "twitterusername","twitterpassword")
+Using YQL for Commercial and Non-Commercial Applications
+Our goal is to make it easy for you to use YQL in the widest possible range of applications. Please read the notice and usage limits described below for more information. If you have additional questions, please read the YQL Terms of Service and/or contact us at the email address below.
+Notice
+YQL can be used for commercial purposes 
+If we're going to shut down YQL, we will give you at least 6 months notice with an announcement on this web page and in our forum 
+YQL has a performance uptime target of over 99.5% 
+
+
+Usage Limits
+Per application limit (identified by your Access Key): 100,000 calls per day 
+Per IP limits: /v1/public/*: 1,000 calls per hour; /v1/yql/*: 10,000 calls per hour 
+
+
+Additional Notes
+All rates are subject to change 
+You may also be subject to the underlying rate limits of other Yahoo! and 3rd party web services 
+YQL relies on the correct operation of the web services and content providers it accesses 
+
+
+Please send email to yql-questions [at] yahoo-inc.com with requests for additional information.
+Information for content and API providers
+If you are a content or API provider and would like to learn how to opt out, or work better with YQL, please check our provider page.
+Support and Community
+Questions and suggestions on YQL are discussed on the YQL Developer Community forum. If you have questions or need technical support, please use this forum.
+Ready to get started?
+Your use of YQL is subject to the YQL Terms of Service
+Try the console Read Documentation Download PDF Documentation 
+Documentation and Related Links
+- YQL Guide 
+- Using YQL Statements 
+- YQL: The Two Minute Tutorial 
+- Using YQL for Developers (PDF) 
+- Creating Open Data Tables for YQL (PDF) 
+- Screencast: Introducing YQL 
+- Screencast: YQL Execute 
+- Making YQL Calls with PHP 
+- YQL Code Examples 
+- Glossary 
+Recent Blog Articles  
+view all 
+Changelog for build 8743
+Thu, 22 Jul 2010 
+Changelog for build 8367
+Thu, 17 Jun 2010 
+Changelog for build 6122
+Tue, 13 Apr 2010 
+Changelog for build 5275
+Fri, 19 Mar 2010 
+Avoiding rate limits and getting banned in YQL and Pipes: Caching is your friend
+Fri, 12 Mar 2010 
+YQL Forum Discussions  
+view all 
+Does YQL support forced gzip results?
+Fri, 13 Aug 2010 
+My new Hack
+Thu, 12 Aug 2010 
+yql community tables are down.
+Thu, 12 Aug 2010 
+token issue with twitter in yahoo example
+Wed, 11 Aug 2010 
+CSV output format
+Sun, 08 Aug 2010 
+YDN Libraries & Best Practices 
+ASTRA 
+ASTRA, the ActionScript Toolkit for Rich Applications, is a collection of Flash and Flex components, code libraries, toolkits and utilties developed by Yahoo! for ActionScript developers.
+Design Pattern Library 
+Interaction solutions that describe an optimal solution to a common problem within a specific context.
+Exceptional Performance 
+Best practices for improving web performance, including research and build tools that center around the rules for high performance web sites.
+Yahoo! User Interface Library (YUI) 
+A set of utilities and controls, written in JavaScript, for building richly interactive web applications using techniques such as DOM scripting, DHTML and AJAX.
+Yahoo! APIs & Web Services 
+Answers 
+Address Book 
+APT 
+Authentication 
+BOSS 
+BrowserPlus™ 
+Contacts 
+delicious® 
+Fantasy Sports 
+Finance 
+Fire Eagle® 
+Flickr® 
+GeoPlanet™ 
+Hadoop 
+HotJobs® 
+Local 
+Mail 
+Mail Applications 
+Maps 
+Media Player 
+Mobile 
+Music 
+MyBlogLog 
+My Yahoo!® 
+OAuth 
+OpenID 
+Placemaker™ 
+Pipes 
+RSS Feeds 
+Search 
+SearchMonkey® 
+Shopping 
+Social 
+Traffic 
+Upcoming 
+Utilities 
+Weather 
+Widgets 
+YAP 
+YOS 
+YQL 
+YWA 
+Language Centers 
+ Flash 
+ Java 
+ JavaScript 
+ .NET 
+ PHP 
+ Python 
+ Ruby 
+ Silverlight 
+Copyright © 2010 Yahoo! Inc. All rights reserved. Copyright | Privacy Policy | Terms of Use 
+Help us continue to improve the Yahoo! Developer Network: Send Your Suggestions
+
+----------
+
+Muffin Research Labs by Stuart Colville
+
+Skip to Primary content 
+Skip to Secondary content 
+Muffinresearch Labs by Stuart Colville
+Home 
+Archives 
+About 
+Photos 
+Contact 
+Search Site:    
+Development Workflow | Comments (0)
+Posted in Code, Work on 28th July 2010, 2:10 am by Stuart
+
+Photo CC licensed by oedipusphinx
+I’ve been working for canonical for about four and a half months now. One of the things that I’ve been really impressed with is the workflow for development and the process for how new features end up in trunk.
+The workflow is as follows:
+Feature Development
+Our primary development focus is trunk as this is what’s deployed on a weekly basis. So the first step is to pull the local copy of trunk to ensure it’s up to date. Next, the developer makes a branch of trunk for the feature/bugfix.
+cd trunk
+bzr pull
+cd ../
+bzr branch trunk branches/my-awesome-featureThe feature is developed with TDD (tests first, followed by code to make the tests pass). Once the feature or bugfix is finished the branch is pushed up to launchpad under the project. 
+# hack hack hack
+# Ensure tests pass
+bzr push lp:~<USER>/<PROJECT>/<BRANCHNAME>A nice feature of bzr that I’d not used prior to working at canonical is the way you can automatically set push targets for branches based on the directory that contains them. So for example we have a config in ~/.bazaar/locations.conf that looks something like this (obviously substituting the variables in angled brackets for your username and project etc):
+[/path/to/branches/]
+push_location = bzr+ssh://<USERNAME>@bazaar.launchpad.net/~<USERNAME>/<PROJECT>
+push_location:policy = appendpathSo if I have a new branch at /path/to/branches/foo-bar-baz
+This will automatically set the push location to:
+bzr+ssh://<USERNAME>@bazaar.launchpad.net/~<USERNAME>/<PROJECT>/foo-bar-bazMeaning all I have to do is use bzr push to send my branch into launchpad.
+Note: At any time you can check the push location with bzr info
+Code Review
+The next stage is for the developer to make a “merge proposal” via the launchpad interface. This puts the merge request in a “to be reviewed queue” which provided a merge proposal page with a diff of the changes from trunk (the target branch is customisable). The rule is that every branch has to be approved by a minimum of two devs. Reviewers can make recommendations or assert that something needs to be fixed and the developer can then push subsequent changes to the same branch and those changes are made visible.
+The focus of reviews are on coding style, standards e.g. adherence to PEP 8, and reviewers will run the test suite and run pylint to check for any glaring violations. Merging with trunk is also carried out to check that no conflicts occur.
+Landing branches
+Once the code has been successfully reviewed code is submitted via PQM (Patch Queue Manager) which then runs the test suite and only merges the code with trunk if the tests pass. We’re still using PQM but most projects have already begun the process to move to tarmac which is tightly integrated to launchpad.
+I like the rigorous review process. By having code reviews a mandatory part of the process it becomes just part of a routine, everyone is used to it and so are happy to receive and give criticism. Reviews are definitely seen as a route to better code rather than making people feel small which is exactly how it should be. 
+The process might sound quite lengthy but because of the ease of branching in bzr (like any other DVCS) the process is very quick and easy and branches are continually landed in trunk every day. It’s actively encouraged that branches are kept around 500 lines of diff where possible, to make it easier for code to get reviewed. Branches aren’t worked on for weeks on end, they are developed, reviewed and merged within what’s usually at most a couple of days.
+Future changes
+One of the things we’re currently looking at is using hudson to automate the running of the test-suite for merge-proposals. This would mean that hudson could run the tests as soon as a merge proposal is made and provide an “approval” or “needs fixing” status based on the results of running the test suite. The net effect would be that we’d then require 3 approvals rather than 2.
+Summary
+Obviously our workflow revolves around the use of launchpad, but there’s plenty of ways to adopt a similar workflow without requiring the use of launchpad. For example on personal projects I’ve adopted pretty much the same process except branches are pushed to remote server instead of launchpad and rietveld has been used for reviews in place of the merge proposal feature. Rietveld is fairly vcs-agnostic however, if you’re using git as your vcs then something like gerrit might be worth looking at. (gerrit was originally a fork of rietveld but has more recently been completely re-written using java instead of python). Also review-board is another code review tool that works for all popular VCSs – review-board is django-based and is therefore relatively easy to set-up.
+In summary:
+Use a DVCS (e.g: git, mecurial, bzr) so branching is easy. I remember at Yahoo when CVS was the VCS everyone had to use, branching was explicitly avoided as much as possible because merging was seen as such a pain. Worst case, if you’re stuck with something like svn be comfortable with merging so branching is not a hurdle. 
+Branch as often as necessary. 
+Review everything and make it a part of the code routine. 
+Merge as early as possible. 
+Keep Trunk pristine. 
+Post Tools
+Permalink 
+Comments 
+Feed 
+Digg it! 
+Tag it! 
+Cosmos 
+Debugging Elusive Puppet Errors | Comments (0)
+Posted in Code, Linux/Unix on 8th June 2010, 6:14 pm by Stuart
+On working on some puppet manifests I hit this error message:
+$ sudo puppetd -t
+err: Could not retrieve catalog from remote server: undefined method `closed?' for nil:NilClass
+warning: Not using cache on failed catalog
+err: Could not retrieve catalog; skipping runCertainly not the most enlightening error message. After checking over the syntax of my mainfests it still wasn’t obvious what was wrong.
+First port of call to diagnose the problem is to try enabling debugging on the client:
+On the client:
+# Run the client with debugging enabled.
+$ sudo puppetd -t --debugIf that yields nothing useful try the following:
+On the puppetmaster run:
+# If it's running stop the puppetmasterd service
+# change this to suit your distro - the following is debian specific
+$ sudo /etc/init.d/puppetmaster stop 
+
+# start the puppetmasterd in debug mode without daemonizing it.
+$ sudo puppetmasterd --no-daemonize --debugBack on the client re-run the puppetd:
+$ sudo puppetd -tBy looking at the debug output on the puppetmaster I was able to see my problem which was that a generate command didn’t have permission to write a necessary file. Once I’d fixed it everything worked as expected. 
+Once finished ctrl-c the foreground puppetmasterd and restart the service if you’d stopped it to run it in debug mode:
+$ sudo /etc/init.d/puppetmaster startPost Tools
+Permalink 
+Comments 
+Feed 
+Digg it! 
+Tag it! 
+Cosmos 
+Ubuntu: java.net.SocketException in ec2-api-tools | Comments (0)
+Posted in Code, Linux/Unix on 4th June 2010, 12:11 pm by Stuart
+Having installed ec2-api-tools under my lucid dev environment I was trying to shut ec2 instances down with ec2stop [instance_id] and I was getting the following exception:
+$ ec2stop i-XXXXXXXX
+Unexpected error:
+java.net.SocketException: Invalid argument or cannot assign requested address
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:310)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:176)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:163)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:384)
+        ----- snip ------I found to enable ec2-api-tools commands to work it’s necessary to switch over to using the sun jre. 
+Note: In lucid open-jdk is the default java and sun-java6-jre is now found in the partner repos. 
+You can do this if you have the sun-java6-jre package with the following:
+sudo update-alternatives --config javaAnd select the correct version interactively.
+Should you need to add the Lucid partner repo you can use the following:
+sudo add-apt-repository "deb http://archive.canonical.com/ lucid partner"Post Tools
+Permalink 
+Comments 
+Feed 
+Digg it! 
+Tag it! 
+Cosmos 
+Using Loggerhead with mod_wsgi|(0)
+Here’s a post I wrote over on the Project Fondue Blog about our use of Loggerhead with mod_wsgi under Apache. Loggerhead is the rather nice branch viewer for bazaar branches as used on Launchpad.net.
+If you’re not already subscribed to the Project Fondue blog feed then I can recommend it, as there should be some interesting posts coming out of there in the coming months (yes I’m unashamedly biased!).
+Ubuntu: Turn off changing workspace with mouse wheel|(1)
+I found the changing with the workspace with the mouse wheel really annoying. To disable it go to System => Preferences => CompizConfig (available if the compizconfig-settings-manager package is installed) and uncheck “Viewport Switcher” which is under the “Desktop” heading.
+Archive Categories
+Apple 
+Browsers 
+Code 
+Coffee 
+CSS 
+Design 
+Events 
+Film 
+Geek 
+General 
+Hosting 
+humour 
+Life 
+Linux/Unix 
+Muffin Research Labs 
+Music 
+News 
+performance 
+Project Fondue 
+Python 
+security 
+Slides 
+Snippets 
+social 
+Software 
+Tech 
+Web 2.0 
+Web Standards 
+Work 
+WSG 
+Last 12 months
+July 2010 
+June 2010 
+May 2010 
+March 2010 
+February 2010 
+December 2009 
+November 2009 
+October 2009 
+September 2009 
+August 2009 
+July 2009 
+June 2009 
+Lab Syndication
+Full Fat RSS 
+Skimmed RSS 
+Snippets RSS 
+Technorati
+Blogs that link here 
+View my profile 
+Events and Notices
+ 
+Hot Muffins
+Inventory Control Software 
+Barcode Stock Control Software 
+LG Rumor Touch Accessories 
+Download repair manuals from tradebit 
+Merchant Circle 
+Make Your Own Free Website 
+Samsung Strive Accessories 
+Friends
+Andy Hume – Usable Type 
+Chris Heilmann 
+Drew McLellan 
+Ed Eliot 
+John McKerrell 
+Richard Keen 
+Robert Nyman 
+Shane Shepherd 
+Snook.ca 
+Tim Huegdon 
+Tom Croucher 
+Worthy Reads
+// Hicksdesign 
+Clagnut 
+Ian Lloyd 
+Veerle’s Blog 
+Recommended Sites
+CSS Beauty 
+Favicon Generator 
+Permissions Calculator 
+Project Fondue 
+Website Performance 
+Photos on Flickr
+© Copyright 2004-10 Stuart Colville, all rights reserved. May contain traces of Muffin. Powered by WordPress. Hosting by Slicehost.com This page was baked in 0.556s.
+
+----------
+
+Usage — Python YQL v0.4 documentation
+
+Navigation
+index 
+modules | 
+next | 
+previous | 
+Python YQL v0.4 documentation » 
+UsageÂ¶
+There are three different ways to use YQL. The public endpoint can be used to query public tables. Oauth is used to provide access to the private endpoint which uses both two-legged and three-legged oauth.
+First let’s take a look at how we can access the data returned from a query. After that we’ll look at differences between the Public and Private endpoints.
+Accessing the data returned from a queryÂ¶
+Here’s a basic query
+>>> import yql
+>>> y = yql.Public()
+>>> res = y.execute("use 'http://yqlblog.net/samples/search.imageweb.xml' as searchimageweb; select title from searchimageweb where query='pizza' limit 3")
+When the query is successful a YQL object is returned. (New in 0.3)
+The YQL object provides a simple interface for getting at the data. To illustrate let’s look at an example:
+>>> print res
+<yql.YQLObj object at 0xb77adc2c>
+>>> res.rows
+[{u'title': u'<b>Pizza</b> Hut'}, {u'title': u"Domino's <b>Pizza</b> -
+Official Site"}, {u'title': u"Papa John's"}]
+>>> res.rows[0]
+{u'title': u'<b>Pizza</b> Hut'}
+>>> res.rows[1]
+{u'title': u"Domino's <b>Pizza</b> - Official Site"}
+>>> res.query
+u"use 'http://yqlblog.net/samples/search.imageweb.xml' as searchimageweb; select title from searchimageweb where query='pizza' limit 3"
+>>> res.uri
+u'http://query.yahooapis.com/v1/yql?q=use+%27http%3A%2F%2Fyqlblog.net%2Fsamples%2Fsearch.imageweb.xml%27+as+searchimageweb%3B+select+title+from+searchimageweb+where+query%3D%27pizza%27+limit+3'
+>>> res.count
+3
+For the most part it will make sense to use the YQLObj.rows property to access your data as this returns a list of the results. This makes looping over the results as easy as:
+>>> result = y.execute('select * from flickr.photos.search where text="panda" limit 3')
+>>> result.rows
+[{u'isfamily': u'0', u'title': u'Panda can has fruit', u'farm': u'3', u'ispublic': u'1', u'server': u'2605', u'isfriend': u'0', u'secret': u'62ccb5d94e', u'owner': u'99045337@N00', u'id': u'4135649462'}, {u'isfamily': u'0', u'title': u'Hey Panda', u'farm': u'3', u'ispublic': u'1', u'server': u'2799', u'isfriend': u'0', u'secret': u'1632cb8ab8', u'owner': u'99045337@N00', u'id': u'4134889385'}, {u'isfamily': u'0', u'title': u'Panda Lin Hui', u'farm': u'3', u'ispublic': u'1', u'server': u'2737', u'isfriend': u'0', u'secret': u'099b30a0a4', u'owner': u'37843112@N07', u'id': u'4135631774'}]
+>>> for row in result.rows:
+...     print row.get('title')
+...
+Panda can has fruit
+Hey Panda
+Panda Lin Hui
+>>>
+If at any point you want to access the raw data you can use the YQLObj.raw property to access the full dataset as converted from JSON.
+Public API CallsÂ¶
+The following example shows a simple query using the public endpoint.
+>>> import yql
+>>> y = yql.Public()
+>>> query = 'select * from flickr.photos.search where text="panda" limit 3';
+>>> result = y.execute(query)
+>>> print result
+<yql.YQLObj object at 0xb77adc2c>
+Private API CallsÂ¶
+Calls can be made to the private YQL API endpoint and use Oauth for authentication. To use authenticated API calls you will need to have signed up for an API key. When you do so be sure to say that you want to be able to make both public and private API calls.
+Oauth supports two and three-legged Oauth. Two-legged is used to sign requests and this route can be taken for YQL queries that doen’t require access to private data. Using two-legged auth is recommended for general purpose usage of YQL. Three-legged auth is more involved in that it requires the end-user to authorise access to their data. Three-legged auth is used to access contacts and other aspects of Yahoo’s Open Social APIs.
+Two-legged AuthÂ¶
+Here’s an example of using Two-legged authentication in Python YQL.
+import yql
+
+y = yql.TwoLegged(API_KEY, SHARED_SECRET)
+y.execute("select * from flickr.photos.search where text='panda' limit 3")
+Three-legged AuthÂ¶
+Three-legged auth requires the user to authenticate with a browser. The idea of this implementation is to try and make using YQL with Three-legged Oauth as painless as possible.
+Here’s an example:
+import yql
+
+y3 = yql.ThreeLegged(API_KEY, SECRET)
+query = 'select * from social.connections where owner_guid=me'
+
+request_token, auth_url = y3.get_token_and_auth_url()
+
+# -- USER AUTHENTICATES HERE --
+
+access_token = y3.get_access_token(request_token, verifier)
+y3.execute(query, token=access_token)
+In the example above the first call made uses the method get_token_and_auth_url(). This returns a tuple containing the request token and an authentication url. It’s up to the implentation to then send or prompt the user to visit that authenication url in order to login to Yahoo.
+If a callback was specified in the get_token_and_auth_url() method then your user will be sent to that url when they login. The url will automatically be sent the “verifier” string to use in the “get_access_token” method.
+If no callback was specified or was explicitly marked as ‘oob’ (the default value) then the user will be shown a verfier code which they will have to provide to your application.
+The next call, get_access_token() requires the request token and verifier to be sent in order to provide the token that can be used to make authenicated requests.
+Once you have got the access_token it should be used to execute the query.
+The Token can be re-used for subsequent requests but after an hour it will expire and will need to be refreshed.
+The refresh_token() method can be used to request a new token using the expired token.
+Using Storage ClassesÂ¶
+yql.storage provides a basic way to store Tokens on the filesystem to make it easier to re-use access_tokens in YQL queries.
+Here’s an example:
+import yql
+from yql.storage import FileTokenStore
+
+y3 = yql.ThreeLegged(API_KEY, SECRET)
+
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'cache'))
+token_store = FileTokenStore(path, secret='gfdlgkfruwopiruowsd')
+
+query = 'select * from social.connections where owner_guid=me'
+stored_token = token_store.get('foo')
+
+if not stored_token:
+    # Do the dance
+    request_token, auth_url = y3.get_token_and_auth_url()
+    print "Visit url %s and get a verifier string" % auth_url
+    verifier = raw_input("Enter the code: ")
+    token = y3.get_access_token(request_token, verifier)
+    token_store.set('foo', token)
+else:
+    # Check access_token is within 1hour-old and if not refresh it
+    # and stash it
+    token = y3.check_token(stored_token)
+    if token != stored_token:
+        token_store.set('foo', token)
+
+print y3.execute(query, token=token)
+This example shows a way to do the initial dance including authentication. The access token provided is then stashed away in a file for re-use on subsequent calls. When re-used the check_token() method is used to check if the token needs refreshing. If it’s over an hour old the token is refreshed and returned.
+The Storage classes are designed to be extended as necessary so that the user can implement a different backend for storing tokens for re-use. An example would be to use memcache for storage. To create a new storage class all that’s needed is to subclass yql.storage.BaseTokenStorage.
+Note
+It’s worth bearing in mind that yql.storage.FileTokenStorage at this point in time, is not intended for heavy duty production use and it’s recommended to create a subclass tailored to your own needs.
+Other YQL FeaturesÂ¶
+Here’s some details on other YQL features that are supported by Python-yql.
+Using data tables with environment filesÂ¶
+YQL has feature that enables an externally hosted environment file to be used to import open tables for use with your app.
+See the YQL documentation here: YQL opentables environment <http://developer.yahoo.com/yql/guide/yql-opentables-import.html#yql-opentables-import-environment>_
+To use this feature create and host your environment file and then use it like so:
+>>> import yql
+>>> y = yql.Public()
+>>> env = "http://datatables.org/alltables.env"
+>>> query = "SHOW tables;"
+>>> y.execute(query, env=env)
+Using Placeholders in QueriesÂ¶
+This example uses the optional query placeholders which are strings prefixed with @ which are substitutued by dictionary items whose keys match the placeholder.
+Note
+Python YQL validates placeholders to check that the correct number of substitutions are passed into the execute function.
+>>> import yql
+>>> y = yql.Public()
+>>> query = 'select * from flickr.photos.search where text=@text limit 3';
+>>> y.execute(query, {"text": "panda"})
+Using INSERT, UPDATE and DELETEÂ¶
+As of version (0.4) python-yql supports INSERT, UPDATE and DELETE queries.
+Here’s an example of an INSERT using the bit.ly table:
+query = """USE 'http://yqlblog.net/samples/bitly.shorten.xml';
+           insert into bitly.shorten(login, apiKey, longUrl)
+           values('%s','%s','http://yahoo.com')""" % (
+                                    BITLY_USER, BITLY_API_KEY)
+y = yql.Public()
+res = y.execute(query)
+ 
+Table Of Contents
+Usage
+Accessing the data returned from a query 
+Public API Calls 
+Private API Calls
+Two-legged Auth 
+Three-legged Auth 
+Using Storage Classes 
+Other YQL Features
+Using data tables with environment files 
+Using Placeholders in Queries 
+Using INSERT, UPDATE and DELETE 
+Previous topic
+Installation
+Next topic
+Contributing to Python YQL
+This Page
+Show Source 
+Quick search
+    
+Enter search terms or a module, class or function name. 
+Navigation
+index 
+modules | 
+next | 
+previous | 
+Python YQL v0.4 documentation » 
+© Copyright 2009, Stuart Colville. Last updated on Jul 24, 2010. Created using Sphinx 1.0.
+
+----------
+
+Contributing to Python YQL — Python YQL v0.4 documentation
+
+Navigation
+index 
+modules | 
+next | 
+previous | 
+Python YQL v0.4 documentation » 
+Contributing to Python YQLÂ¶
+If you would like to help out on this project the best place to start is to install the python-yql library and kick the proverbial tyres. Bug-fixes/Features/Patches always welcome. If you have fixed a bug or created a new feature please add branches to the launchpad project.
+Source-codeÂ¶
+Branches are available at launchpad
+You can branch the code with bzr
+bzr branch lp:python-yql
+Contributing CodeÂ¶
+If you have a fix for a bug or have developed a new feature consider pushing the branch to launchpad and proposing a merge.
+To do this you can follow the following workflow:
+mkdir branches
+bzr branch lp:python-yql branches/<BRANCH_NAME>
+cd branches/<BRANCH_NAME>
+# Hack on your feature (remember to create tests) :)
+bzr push lp:~<LP_USER>/python-yql/<BRANCH_NAME>
+In launchpad visit the url for the branch you’ve pushed and click “Propose for Merging”. Describe what your branch does and what features it adds or what bug it fixes.
+Note that branches with tests to cover their changes are far more likely to get accepted and merged.
+Filing BugsÂ¶
+Bugs can be filed over on bugs.launchpad.net
+When filing a bug be sure to carry out the following:
+Describe the problem and include any tracebacks or error messages. 
+Provide the query you are using. 
+Feature/Patch Contributors should add their name to the authors file. 
+ 
+Table Of Contents
+Contributing to Python YQL
+Source-code 
+Contributing Code 
+Filing Bugs 
+Previous topic
+Usage
+Next topic
+Code Documentation
+This Page
+Show Source 
+Quick search
+    
+Enter search terms or a module, class or function name. 
+Navigation
+index 
+modules | 
+next | 
+previous | 
+Python YQL v0.4 documentation » 
+© Copyright 2009, Stuart Colville. Last updated on Jul 24, 2010. Created using Sphinx 1.0.
+
+----------
+
+Code Documentation — Python YQL v0.4 documentation
+
+Navigation
+index 
+modules | 
+next | 
+previous | 
+Python YQL v0.4 documentation » 
+Code DocumentationÂ¶
+class yql.Public(api_key=None, shared_secret=None, httplib2_inst=None)Â¶ 
+Class for making public YQL queries
+execute(query, params=None, **kwargs)Â¶ 
+Execute YQL query
+static get_placeholder_keys(query)Â¶ 
+Gets the @var placeholders
+http://developer.yahoo.com/yql/guide/var_substitution.html
+get_query_params(query, params, **kwargs)Â¶ 
+Get the query params and validate placeholders
+get_uri(query, params=None, **kwargs)Â¶ 
+Get the the request url
+class yql.TwoLegged(api_key, shared_secret, httplib2_inst=None)Â¶ 
+Two legged Auth is simple request which is signed prior to sending
+static get_base_params()Â¶ 
+Set-up the basic parameters needed for a request
+get_uri(query, params=None, **kwargs)Â¶ 
+Get the the request url
+class yql.ThreeLegged(api_key, shared_secret, httplib2_inst=None)Â¶ 
+Three-legged Auth is used when it involves private data such as a user’s contacts.
+Three-legged auth is most likely to be used in a web-site or web-accessible application. Three-legged auth requires the user to authenticate the request through the Yahoo login.
+Three-legged auth requires the implementation to:
+Request a token 
+Get a authentication url 
+User uses the auth url to login which will redirect to a callback or shows a verfier string on screen 
+Verifier is read at the callback url or manually provided to get the access token 
+resources is access 
+For an implementation this will require calling the following methods in order the first time the user needs to authenticate
+get_token_and_auth_url() (returns a token and the auth url) 
+get verifier through callback or from screen 
+get_access_token() (returns the access token) 
+execute() - makes the request to the protected resource. 
+Once the access token has been provided subsequent requests can re-use it.
+Access tokens expire after 1 hour, however they can be refreshed with the refresh_token() method
+check_token(token)Â¶ 
+Check to see if a token has expired
+get_access_token(token, verifier)Â¶ 
+Get the access token
+The verifier (required) should have been provided to the user following login to at the url returned by the get_token_and_auth_url() method.
+If not you will need need to extract the auth_verifier parameter from your callback url on the site where you are implementing 3-legged auth in order to pass it to this function.
+The access token can be stored and re-used for subsequent calls.
+The stored token will also need to be refreshed periodically with refresh_token()
+get_token_and_auth_url(callback_url=None)Â¶ 
+First step is to get the token and then send the request that provides the auth URL
+Returns a tuple of token and the authorisation URL.
+get_uri(query, params=None, **kwargs)Â¶ 
+Get the the request url
+refresh_token(token)Â¶ 
+Access Tokens only last for one hour from the point of being issued.
+When a token has expired it needs to be refreshed this method takes an expired token and refreshes it.
+token parameter can be either a token object or a token string.
+class yql.YQLObj(result_dict)Â¶ 
+A YQLObject is the object created as the result of a YQL query
+countÂ¶ 
+The results count
+diagnosticsÂ¶ 
+The query diagnostics
+langÂ¶ 
+The language
+pformat_raw(indent=4)Â¶ 
+Pretty format the raw data
+pprint_raw(indent=4)Â¶ 
+Pretty print the raw data
+queryÂ¶ 
+The YQL query
+query_paramsÂ¶ 
+The query parameters of the uri used to call the YQL API
+rawÂ¶ 
+The raw data response
+resultsÂ¶ 
+The query results dict
+rowsÂ¶ 
+Get the list of rows
+Results is a dict with one key but that key changes depending on the results This provides a way of getting at the rows list in an arbitrary way
+uriÂ¶ 
+The uri used to query the YQL API
+class yql.storage.BaseTokenStoreÂ¶ 
+Base class for storage
+class yql.storage.FileTokenStore(dir_path, secret=None)Â¶ 
+A simple filesystem based token store
+Note: this is more intended as an example rather than something for heavy duty production usage.
+get(name)Â¶ 
+Get a token from the filesystem
+get_filepath(name)Â¶ 
+Build filepath
+set(name, token)Â¶ 
+Write a token to file
+exception yql.storage.TokenStoreErrorÂ¶ 
+Generic token storage
+ 
+Previous topic
+Contributing to Python YQL
+Next topic
+License
+This Page
+Show Source 
+Quick search
+    
+Enter search terms or a module, class or function name. 
+Navigation
+index 
+modules | 
+next | 
+previous | 
+Python YQL v0.4 documentation » 
+© Copyright 2009, Stuart Colville. Last updated on Jul 24, 2010. Created using Sphinx 1.0.
+
+----------
+
+License — Python YQL v0.4 documentation
+
+Navigation
+index 
+modules | 
+next | 
+previous | 
+Python YQL v0.4 documentation » 
+LicenseÂ¶
+Copyright (c) 2009, Stuart Colville, Muffin Research Labs
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of "Muffin Research Labs" nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY "Muffin Research Labs" ''AS IS'' AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL "Muffin Research Labs" BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+Previous topic
+Code Documentation
+Next topic
+Authors
+This Page
+Show Source 
+Quick search
+    
+Enter search terms or a module, class or function name. 
+Navigation
+index 
+modules | 
+next | 
+previous | 
+Python YQL v0.4 documentation » 
+© Copyright 2009, Stuart Colville. Last updated on Jul 24, 2010. Created using Sphinx 1.0.
+
+----------
+
+Authors — Python YQL v0.4 documentation
+
+Navigation
+index 
+modules | 
+previous | 
+Python YQL v0.4 documentation » 
+AuthorsÂ¶
+Stuart Colville <pypi@muffinresearch.co.uk> 
+Cyril Doussin 
+Diogo Baeder 
+YOUR NAME HERE 
+ 
+Previous topic
+License
+This Page
+Show Source 
+Quick search
+    
+Enter search terms or a module, class or function name. 
+Navigation
+index 
+modules | 
+previous | 
+Python YQL v0.4 documentation » 
+© Copyright 2009, Stuart Colville. Last updated on Jul 24, 2010. Created using Sphinx 1.0.
+
+----------
+
+Search — Python YQL v0.4 documentation
+
+Navigation
+index 
+modules | 
+Python YQL v0.4 documentation » 
+Search
+Please activate JavaScript to enable the search functionality. 
+From here you can search these documents. Enter your search words into the box below and click "search". Note that the search function will automatically search for all of the words. Pages containing fewer words won't appear in the result list. 
+  
+ 
+Navigation
+index 
+modules | 
+Python YQL v0.4 documentation » 
+© Copyright 2009, Stuart Colville. Last updated on Jul 24, 2010. Created using Sphinx 1.0.
+
+----------
+
+.. Python YQL documentation master file, created by sphinx-quickstart on Mon Nov 16 08:38:41 2009. You can adapt this file completely to your liking, but it should at least contain the root `toctree` directive. ========== Python YQL ========== Python YQL is a client library for making queries with `Yahoo Query Language `_. The Yahoo! Query Language is an expressive SQL-like language that lets you query, filter, and join data across Web services. With YQL, apps run faster with fewer lines of code and a smaller network footprint. -- `YDN `_ Python YQL is written and maintained by `Stuart Colville `_, along with contributions from the community. QuickStart ---------- .. sourcecode:: sh sudo easy_install yql The following example shows a simple query using the public endpoint. .. sourcecode:: python >>> import yql >>> y = yql.Public() >>> query = 'select * from flickr.photos.search where text="panda" limit 3'; >>> result = y.execute(query) >>> result.rows [{u'isfamily': u'0', u'title': u'Panda can has fruit', u'farm': u'3', u'ispublic': u'1', u'server': u'2605', u'isfriend': u'0', u'secret': u'62ccb5d94e', u'owner': u'99045337@N00', u'id': u'4135649462'}, {u'isfamily': u'0', u'title': u'Hey Panda', u'farm': u'3', u'ispublic': u'1', u'server': u'2799', u'isfriend': u'0', u'secret': u'1632cb8ab8', u'owner': u'99045337@N00', u'id': u'4134889385'}, {u'isfamily': u'0', u'title': u'Panda Lin Hui', u'farm': u'3', u'ispublic': u'1', u'server': u'2737', u'isfriend': u'0', u'secret': u'099b30a0a4', u'owner': u'37843112@N07', u'id': u'4135631774'}] >>> for row in result.rows: ... print row.get('title') ... Panda can has fruit Hey Panda Panda Lin Hui Contents -------- .. toctree:: :maxdepth: 3 installation usage contribution code license authors Indices and tables ================== * :ref:`genindex` * :ref:`modindex` * :ref:`search`
+
+----------
+
+Overview — Sphinx v1.0.1 documentation
+
+Navigation
+index 
+modules | 
+Sphinx home |  
+Documentation » 
+Download
+Current version: 1.0.1
+Get Sphinx from the Python Package Index, or install it with:
+easy_install -U SphinxLatest development version docs are also available.
+Questions? Suggestions?
+Join the Google group:
+  
+or come to the #pocoo channel on FreeNode.
+You can also open an issue at the tracker.
+Quick search
+    
+Enter search terms or a module, class or function name. 
+Welcome
+What users say:
+“Cheers for a great tool that actually makes programmers want to write documentation!”
+Sphinx is a tool that makes it easy to create intelligent and beautiful documentation, written by Georg Brandl and licensed under the BSD license.
+It was originally created for the new Python documentation, and it has excellent facilities for the documentation of Python projects, but C/C++ is already supported as well, and it is planned to add special support for other languages as well. Of course, this site is also created from reStructuredText sources using Sphinx! 
+Sphinx is under constant development. The following features are present, work fine and can be seen “in action” in the Python docs: 
+Output formats: HTML (including Windows HTML Help), LaTeX (for printable PDF versions), manual pages, plain text 
+Extensive cross-references: semantic markup and automatic links for functions, classes, citations, glossary terms and similar pieces of information 
+Hierarchical structure: easy definition of a document tree, with automatic links to siblings, parents and children 
+Automatic indices: general index as well as a module index 
+Code handling: automatic highlighting using the Pygments highlighter 
+Extensions: automatic testing of code snippets, inclusion of docstrings from Python modules (API docs), and more 
+Sphinx uses reStructuredText as its markup language, and many of its strengths come from the power and straightforwardness of reStructuredText and its parsing and translating suite, the Docutils. 
+Documentation
+First steps with Sphinx
+overview of basic tasks
+Contents
+for a complete overviewSearch page
+search the documentation
+General Index
+all functions, classes, terms
+
+You can also download PDF versions of the Sphinx documentation: a version generated from the LaTeX Sphinx produces, and a version generated by rst2pdf. 
+Examples
+Links to documentation generated with Sphinx can be found on the Projects using Sphinx page. 
+For examples of how Sphinx source files look, use the “Show source” links on all pages of the documentation apart from this welcome page. 
+You may also be interested in the very nice tutorial on how to create a customized documentation using Sphinx written by the matplotlib developers.
+There is a Japanese translation of this documentation, thanks to Yoshiki Shibukawa.
+Get Sphinx
+Sphinx is available as an easy-installable package on the Python Package Index. 
+The code can be found in a Mercurial repository, at http://bitbucket.org/birkenfeld/sphinx/.
+Navigation
+index 
+modules | 
+Sphinx home |  
+Documentation » 
+© Copyright 2007-2010, Georg Brandl. Created using Sphinx 1.0.1+/87fb01d80a41.
+
+----------
+End of Document

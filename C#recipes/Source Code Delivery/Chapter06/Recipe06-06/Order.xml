@@ -1,0 +1,17 @@
+﻿<?xml version="1.0"?>
+<Order id="2004-01-30.195496">
+  <Client id="ROS-930252034">
+    <Name>Remarkable Office Supplies</Name>
+  </Client>
+
+  <Items>
+    <Item id="1001">
+      <Name>Electronic Protractor</Name>
+      <Price>42.99</Price>
+    </Item>
+    <Item id="1002">
+      <Name>Invisible Ink</Name>
+      <Price>200.25</Price>
+    </Item>
+  </Items>
+</Order>

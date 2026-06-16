@@ -1,0 +1,29 @@
+Subject:
+RE: Looking At Python Programming
+From:
+"Ken Perry" <whistler@blinksoft.com>
+Date:
+Sat, 4 Jun 2011 18:44:35 -0400
+To:
+<programmingblind@freelists.org>
+
+ 
+
+You will learn to not make mistakes like this over time but as a starter you might want to use the ed sharp command to change your python from normal to braces then look at the output.  It will help you find the problem by failing to put braces where you think they should be. 
+
+ 
+
+Ken
+
+From: programmingblind-bounce@freelists.org [mailto:programmingblind-bounce@freelists.org] On Behalf Of Harmony Neil
+Sent: Saturday, June 04, 2011 4:38 PM
+To: programmingblind@freelists.org
+Subject: Looking At Python Programming
+
+ 
+
+I can’t remember if attachments are permitted on this list or not, so I apologize in advance. I’ve been looking at functions and stuff in the python tutorials and although I copied them character for character, as far as I know, I get an error saying that there is an unexpected indentation. Would anyone be able to let me know if you find any problems with the indentation?
+
+Thanks,
+
+Harmony. 

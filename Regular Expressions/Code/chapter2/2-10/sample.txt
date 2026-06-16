@@ -1,0 +1,3 @@
+My email address is user@mydomain.com.
+
+You can click on this address user@mydomain.com to send me an email.

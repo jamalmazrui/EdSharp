@@ -1,0 +1,204 @@
+X-Account-Key: account4
+X-UIDL: 00019e07475a9155
+X-Mozilla-Status: 0011
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <programmingblind-bounce@freelists.org>
+Received: from mxas1.sovenix.net (mxas1.sovenix.net [216.127.142.100])
+	by cygnus.smart.net (8.13.8/8.13.8) with ESMTP id oB6CU53o032057
+	for <empower@smart.net>; Mon, 6 Dec 2010 07:30:05 -0500
+X-Envelope-From: programmingblind-bounce@freelists.org
+X-Envelope-To: empower@smart.net
+Received: From freelists-180.iquest.net (206.53.239.180) by mxas1.sovenix.net (MAILFOUNDRY) id z+y7JAE1EeCdCwAw for empower@smart.net; Mon, 6 Dec 2010 12:39:07 -0000 (GMT)
+Received: from localhost (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id CA294D55E3C;
+	Mon,  6 Dec 2010 07:30:28 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=freelists.org;
+	s=turing; t=1291638628; bh=tUFiLpCnHawCn8pu9CBwERn2xvGbgu+C794l22Ov
+	YlM=; h=From:To:Date:Subject:Message-ID:References:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding:MIME-Version:Sender:
+	 Reply-To:List-help:List-unsubscribe:List-Id:List-subscribe:
+	 List-owner:List-post:List-archive; b=WfuD5XptSMw6prcaeLa6K0wyd52Jg
+	E2hk3B+riIf/1Bx91/0V+OKcEbqApvg5sUBYR7gi2SyYBjuRfj64WwayPM5oEbBxzPZ
+	dTKk19oTbePWYhvlYBBpmt8dBVb3gddxZe6/3i5W4zEu97fg24pf/7XaJVSu8tsrmmC
+	lHCPCXaA=
+X-Virus-Scanned: Debian amavisd-new at localhost.localdomain
+Received: from turing.freelists.org ([127.0.0.1])
+	by localhost (turing.freelists.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id j3ZFX4YDfIkQ; Mon,  6 Dec 2010 07:30:28 -0500 (EST)
+Received: from turing.freelists.org (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id 3EE7DD552B6;
+	Mon,  6 Dec 2010 07:30:16 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=freelists.org;
+	s=turing; t=1291638627; bh=tUFiLpCnHawCn8pu9CBwERn2xvGbgu+C794l22Ov
+	YlM=; h=From:To:Date:Subject:Message-ID:References:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding:MIME-Version:Sender:
+	 Reply-To:List-help:List-unsubscribe:List-Id:List-subscribe:
+	 List-owner:List-post:List-archive; b=t6Vd+42Cd4WE3FagoJ+JbD3p4TTyH
+	B3IJBB3kIkgRweB+tf5w1MVYmGGhzBXJgQJcn1n1Iee17SURpbGJnxHPKTZHG6HMI9I
+	PFJekIKEmoJr9CHxeICVBz02SguFtRiG2spw+D7uOJcsg/+wYQONvCanDZh4C63bTU6
+	2R+Sr2Gs=
+Received: with ECARTIS (v1.0.0; list programmingblind); Mon, 06 Dec 2010 07:30:16 -0500 (EST)
+X-Original-To: programmingblind@freelists.org
+Delivered-To: programmingblind@freelists.org
+Received: from localhost (localhost [127.0.0.1])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id E9662D558F8
+	for <programmingblind@freelists.org>; Mon,  6 Dec 2010 07:30:15 -0500 (EST)
+X-Virus-Scanned: Debian amavisd-new at localhost.localdomain
+Received: from turing.freelists.org ([127.0.0.1])
+	by localhost (turing.freelists.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id POqZ2MbloYl7 for <programmingblind@freelists.org>;
+	Mon,  6 Dec 2010 07:30:15 -0500 (EST)
+Received: from mailgate2.highmark.com (mailgate2.highmark.com [167.164.7.53])
+	by turing.freelists.org (Avenir Technologies Mail Multiplex) with ESMTP id 9DA24D552B6
+	for <programmingblind@freelists.org>; Mon,  6 Dec 2010 07:30:14 -0500 (EST)
+X-IronPort-AV: E=Sophos;i="4.53,341,1272859200"; 
+   d="scan'208";a="10856754"
+Received: from exht3.highmark.com ([157.154.49.49])
+  by mailgate2.highmark.com with ESMTP; 06 Dec 2010 07:30:13 -0500
+Received: from EXMB1.highmark.com ([169.254.1.82]) by EXHT3.highmark.com
+ ([157.154.49.49]) with mapi; Mon, 6 Dec 2010 07:30:12 -0500
+From: "Homme, James" <james.homme@highmark.com>
+To: "programmingblind@freelists.org" <programmingblind@freelists.org>
+Date: Mon, 6 Dec 2010 07:30:11 -0500
+Subject: RE: Wiki for collaborative hacking
+Thread-Topic: Wiki for collaborative hacking
+Thread-Index: AcuS3dK/ps3BtxlzSz6tpfLJRkaC5wCY3c7A
+Message-ID: <86F022B554AF0447A870CEE306C14DC6026ED1800E@EXMB1.highmark.com>
+References: <4CF78485.20500@smart.net>
+ <013701cb929a$de8bbdb0$9ba33910$@gmail.com> <4CF8D549.2080702@smart.net>
+In-Reply-To: <4CF8D549.2080702@smart.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+acceptlanguage: en-US
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+X-archive-position: 21882
+X-ecartis-version: Ecartis v1.0.0
+Sender: programmingblind-bounce@freelists.org
+Errors-to: programmingblind-bounce@freelists.org
+X-original-sender: james.homme@highmark.com
+Precedence: normal
+Reply-To: programmingblind@freelists.org
+List-help: <mailto:ecartis@freelists.org?Subject=help>
+List-unsubscribe: <programmingblind-request@freelists.org?Subject=unsubscribe>
+List-software: Ecartis version 1.0.0
+List-Id: programmingblind <programmingblind.freelists.org>
+X-List-ID: programmingblind <programmingblind.freelists.org>
+List-subscribe: <programmingblind-request@freelists.org?Subject=subscribe>
+List-owner: <mailto:james.homme@highmark.com;jeff.bishop@gmail.com>
+List-post: <mailto:programmingblind@freelists.org>
+List-archive: <http://www.freelists.org/archives/programmingblind>
+X-list: programmingblind
+Content-Transfer-Encoding: 8bit
+X-MIME-Autoconverted: from quoted-printable to 8bit by cygnus.smart.net id oB6CU53o032057
+
+Hi,
+Instead of bitching, I will be helping.
+
+Jim
+
+Jim Homme,
+Usability Services,
+Phone: 412-544-1810. Skype: jim.homme
+Internal recipients,  Read my accessibility blog. Discuss accessibility here. Accessibility Wiki: Breaking news and accessibility advice
+
+
+-----Original Message-----
+From: programmingblind-bounce@freelists.org [mailto:programmingblind-bounce@freelists.org] On Behalf Of Jamal Mazrui
+Sent: Friday, December 03, 2010 6:32 AM
+To: programmingblind@freelists.org
+Cc: Katherine Moss
+Subject: Re: Wiki for collaborative hacking
+
+That wiki was not available from my web host.  I agree that there are
+probably easier wikis to use than MediaWiki.  On the other hand, it has
+power, reliability, popularity, and documentation on its side.  Anyone
+who learns how to use it is in a good position to use many wikis out
+there, e.g., contributing to WikiPedia -- one of the top sites on the net.
+
+Jamal
+
+
+On 12/2/2010 10:33 PM, Katherine Moss wrote:
+> Jamal, you should use ScrewTurn Wiki!  I'm sure that's much easier.
+>
+> -----Original Message-----
+> From: programmingblind-bounce@freelists.org
+> [mailto:programmingblind-bounce@freelists.org] On Behalf Of Jamal Mazrui
+> Sent: Thursday, December 02, 2010 6:36 AM
+> To: programmingblind
+> Subject: Wiki for collaborative hacking
+>
+>       As another step to support collaborative hacking for improving
+> EdSharp and other open source projects, I have created a wiki at
+> http://wiki.EmpowermentZone.com
+>
+> It uses a standard configuration of the MediaWiki software, popularized by
+> Wikipedia, http://wikipedia.org
+>
+> Currently, the best way of learning to use the wiki is by learning how to
+> use the MediaWiki application.  A collection of text tutorials on web
+> content management systems, defined broadly, is available at
+> http://EmpowermentZone.com/cms_doc.zip
+>
+> This includes tutorials on MediaWiki, Drupal, PHPMyAdmin, PHPBB, WordPress,
+> and other new media applications.
+>
+> At this point, I have not figured out how to change the default name of "My
+> Wiki" to something more customized!  If anyone else can give me a tip on
+> that, or can volunteer to help others become wiki contributors, please let
+> me know.
+>
+> Other documentation collections that have recently been updated include the
+> following:
+>
+> MySQL
+> http://EmpowermentZone.com/mysqldoc.zip
+>
+> PHP
+> http://EmpowermentZone.com/php_doc.zip
+>
+> and PostgreSQL
+> http://EmpowermentZone.com/pgsqldoc.zip
+>
+> To go directly to the wiki page called HackingEdSharp, the URL is
+> http://wiki.empowermentzone.com/index.php?title=Hacking_EdSharp
+>
+> Feel free to create wiki pages or categories on other topics on which you
+> would like to teach or problem-solve together.  This is experimental, but
+> since we have talked about sharing by means of a wiki before, I thought I'd
+> put it out there for people to try.!
+>
+> Jamal
+>
+>
+> P.S.  I realize that a source code control system would have additional
+> benefits.  My web host (HostMonster.com) does not have a simple script for
+> installing such an application (a simple script enabled me to create this
+> wiki).  I hope others feel free to create more online resources in a similar
+> spirit of using new media applications to support new or better interactions
+> among us.
+>
+> __________
+> View the list's information and change your settings at
+> http://www.freelists.org/list/programmingblind
+>
+>
+> __________
+> View the list's information and change your settings at
+> http://www.freelists.org/list/programmingblind
+>
+__________
+View the list's information and change your settings at
+http://www.freelists.org/list/programmingblind
+
+
+This e-mail and any attachments to it are confidential and are intended solely for use of the individual or entity to whom they are addressed.  If you have received this e-mail in error, please notify the sender immediately and then delete it.  If you are not the intended recipient, you must not keep, use, disclose, copy or distribute this e-mail without the author's prior permission.  The views expressed in this e-mail message do not necessarily represent the views of Highmark Inc., its subsidiaries, or affiliates.
+__________
+View the list's information and change your settings at 
+http://www.freelists.org/list/programmingblind
+
+

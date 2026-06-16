@@ -1,0 +1,42 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Recipe17_27" Height="300" Width="300">
+    <Canvas Margin="5">
+        <!--Define a static ImageBrush resource-->
+        <Canvas.Resources>
+            <ImageBrush x:Key="IB1" ImageSource="WeeMee.jpg" />
+        </Canvas.Resources>
+
+        <!--Fill ellipse using static ImageBrush resource-->
+        <Ellipse Height="160" Width="160"
+                 Canvas.Top="0" Canvas.Left="110"
+                 Stroke="Black" StrokeThickness="1"
+                 Fill="{StaticResource IB1}" />
+        <!--Fill rectangle with UniformToFill ImageBrush-->
+        <Rectangle Height="180" Width="50"
+                   Canvas.Top="5" Canvas.Left="5"
+                   Stroke="Black" StrokeThickness="1" >
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="WeeMee.jpg" Stretch="UniformToFill"/>
+            </Rectangle.Fill>
+        </Rectangle>
+        <!--Fill Polygon with Left aligned Uniform ImageBrush-->
+        <Polygon Canvas.Top="110" Canvas.Left="45"
+                 Points="40,0 150,100 10,100"
+                 Stroke="Black" StrokeThickness="1">
+
+            <Polygon.Fill>
+                <ImageBrush ImageSource="WeeMee.jpg" Stretch="Uniform"
+                            AlignmentX="Left" />
+            </Polygon.Fill>
+        </Polygon>
+        <!--Draw a line using a part of the source image-->
+        <Line X1="20" X2="280" Y1="240" Y2="240" StrokeThickness="30">
+            <Line.Stroke>
+                <ImageBrush ImageSource="WeeMee.jpg"
+                            Viewbox="30,46,42,15" ViewboxUnits="Absolute" />
+            </Line.Stroke>
+        </Line>
+    </Canvas>
+</Window>

@@ -1,0 +1,230 @@
+here is a listing of the hot keys and there responses in Text Pal 3.0, to assist you in knowing what Text Pal is capable of doing, so you may decide if you wish to try this incredible all accessible text editing and Programming application.  
+
+	The latest TextPal version is always available at
+http://www.EmpowermentZone.com/palsetup.exe
+or you can also find a link to it from:
+http://grabbag.alacorncomputer.com
+
+if you have a version of Text Pal already, and wish to upgrade to the newest version, the Elevate Version command on the Help menu, F11, downloads and runs that
+installer.
+
+Regards,
+Jamal
+
+• List of TextPal Keys
+Alphebetized by Command Name
+
+About Alt+F1 Display TextPal version number and release date
+Alternate Menu Alt+F10 Present all TextPal menu options in a single,
+alphabetized list
+ASCII Only Alt+Shift+a Eliminate characters with ASCII values above 127
+from all or selected text
+Burn to CD Alt+Shift+b Burn list of files to CD
+Change History Shift+F1 Display history of TextPal fixes, modifications,
+and enhancements in a new window
+Clear Bookmark Ctrl+Shift+k Clear bookmark at cursor
+Clear Favorite Ctrl+Shift+l Clear current file from the list of favorites
+Close Window Ctrl+F4 Close current editing window
+Complete Selection Shift+F8 Select text from starting point to cursor
+Copy All Ctrl+F8 Copy all text to clipboard
+Copy Append Alt+c Append selected text to clipboard, or append current
+line if no selection
+Copy Snippet Alt+Shift+c Copy selected text to create a snippet file on
+disk
+Copy Ctrl+c Copy selected text to clipboard, or copy current line if no
+selection
+Current Files F4 Activate an editing window from a list of those currently
+open
+Cut Append Alt+x Cut and append selected text to clipboard, or cut and
+append current line if no selection
+Cut Ctrl+x Cut selected text to clipboard, or cut current line if no
+selection
+Delete All Ctrl+Shift+F8 Delete all text in current editing window
+Delete Down Alt+/ Delete from cursor to bottom of file
+Delete Left Ctrl+Shift+/ Delete from cursor to start of line
+Delete Line Ctrl+d Delete current line
+Delete Paragraph Ctrl+Shift+d Delete current paragraph
+Delete Right Ctrl+/ Delete from cursor to end of line
+Delete Up Alt+Shift+/ Delete from cursor to top of file
+Delete File Alt+Shift+d Delete current file from disk
+Documentation F1 Open TextPal documentation in the default web browser
+Download Folder Alt+F11 Open the download folder in Windows Explorer
+Elevate Version F11 Download latest TextPal version and run installer
+(after confirming)
+End Character Alt+End Go to last non-blank character of current line
+Evaluate Line Ctrl+e Evaluate mathematical expression on current line and
+put output on next line
+Exit Alt+F4 Exit TextPal
+Export Format Alt+Shift+e Export text to file in Macintosh or Unix format
+Extra Speech Log Alt+Shift+x Open speech.log file in new window
+Extra Speech Toggle Ctrl+Shift+x Toggle extra speech messages on or off,
+redirecting to speech.log file
+Extract with RegExp Ctrl+Shift+e Extract text matching a regular
+expression, putting matches in a new window
+File Find Alt+Shift+f Open file from list of files containing a search
+string
+Forward Again F3 Search forward for next match
+Forward Find Ctrl+f Search forward for string in all or selected text
+Forward Find Word Ctrl+F3 Search forward for word at cursor or selected
+text
+Go to Again Alt+g Repeat Go to Percent command
+Go to Bookmark Alt+k Go to next bookmark in current file
+Go to Contents Shift+F6 Go from section in body to topic in table of
+contents
+Go to Percent Ctrl+g Go to percentage point in file, or change in percent
+from current position
+Go to Section F6 Go to section in body from topic in table of contents
+Grab URLs Alt+Shift+g Extract URLs from the HTML at a web address
+Hard Line Breaks Ctrl+Shift+h Replace word wrapped line endings with line
+break characters
+Home Character Alt+Home Go to first non-blank character of current line
+Hot Key Summary Alt+Shift+h Display this list of command names, hot keys,
+and descriptions in a new window
+HTML Format Ctrl+h Convert current file to HTML in a new window
+Indent Alert Toggle Alt+Shift+i Toggle on or off announcement of
+indentation changes with up or down arrow
+Indent New Line Shift+Return Start new line with same indentation as
+current one
+Indent Ctrl+i Indent current line or selected text by one level
+Insert Time Ctrl+; Insert current date and time according to format
+setting
+Invert Case Alt+Shift+u Convert current character or selected text from
+lower to upper case, and vice versa
+Jump Again Alt+j Repeat Jump to Line command
+Jump to Error Alt+Shift+j Jump to line and column position of error
+contained in last compiler output
+Jump to Line Ctrl+j Jump to line, or by change in number of lines
+Keep Unique Lines Alt+Shift+k Discard repetitive lines in all or selected
+text
+List Different Lines Alt+Shift+l Compare two lists and put non-overlapping
+lines in a new window
+List Favorites Alt+l Open a file from the list of favorites
+Lower Case Ctrl+Shift+u Convert current character or selected text from
+upper to lower case
+Mail Ctrl+m Mail current file as body of an email message
+Manual Settings Alt+Shift+m Open TextPal.ini settings file in a new window
+for editing manually
+Massage Operation Ctrl+Shift+m Run a set of search and replace tasks
+against one or more files
+Match Left Brace Ctrl+Shift+b Search backward for matching left brace
+character
+Match Right Brace Ctrl+b Search forward for matching right brace character
+New from Clipboard Ctrl+Shift+n Open a new editing window containing
+clipboard text
+New Ctrl+n Open a new editing window
+Next Block Alt+PgDn Go to the next block of code, defined by reduced
+indentation
+Next Paragraph Alt+Down Go to next paragraph
+Next Paragraph F9 Go to next paragraph
+Next Section Ctrl+PgDn Go to next section heading
+Next Sentence Alt+Right Go to next sentence
+Next Window Ctrl+Tab Cycle to next editing window
+Number Lines Alt+Shift+n Number all or selected lines of text
+Open Ctrl+o Open a file from disk
+Open Again Alt+o Refresh the current file from disk
+Open without Convert Ctrl+Shift+o Open file from disk without trying to
+convert a non .txt extension
+Order Lines Alt+Shift+o Sort all or selected lines of text
+Outdent Ctrl+Shift+i Reduce indentation of current or selected lines by
+one level
+Paste File Ctrl+Shift+v Insert file from disk into current file
+Paste Snippet Alt+Shift+v Insert content of a snippet file from a list of
+those available
+Paste Ctrl+v Paste text from clipboard
+Path List Ctrl+Shift+p Put a list of files from the current directory in a
+new window
+Path to Clipboard Alt+Shift+p Copy full path of current file to the
+clipboard
+Previous Block Alt+PgUp Go to previous block of code, defined by reduced
+indentation
+Previous Paragraph Alt+Up Go to previous paragraph
+Previous Paragraph Shift+F9 Go to previous paragraph
+Previous Section Ctrl+PgUp Go to previous section heading
+Previous Sentence Alt+Left Go to previous sentence
+Previous Window Ctrl+Shift+Tab Cycle to previous editing window
+Print Ctrl+p Print current file
+Proper Case Alt+u Capitalize current character or first letter in each
+word of selected text
+Query Common Lines Alt+Shift+q Compare two lists and put overlapping lines
+in a new window
+Quote Ctrl+q Prefix all or selected text with characters for email quoting
+or program commenting
+Recent Files Alt+r Open a file from the list of those recently used
+Redo Ctrl+Shift+z Reverse an undo editing action
+Rename Alt+Shift+r Rename current file on disk
+Repeat Line Ctrl+y Copy current line below it
+Replace Ctrl+r Search and replace string in all or selected text
+Replace with RegExp Ctrl+Shift+r Search and replace regular expression in
+all or selected text
+Reverse Again Shift+F3 Search backward for previous match
+Reverse Find Ctrl+Shift+f Search backward for string
+Reverse Find Word Ctrl+Shift+F3 Search backward for word at cursor or
+selected text
+Reverse Lines Alt+Shift+z Reverse order of all or selected lines of text
+Run at Cursor Shift+F5 Execute a web URL or email address at cursor or in
+selected text
+Run with Prompt Ctrl+Shift+F5 Run external tool with prompt for
+parameters, and display its standard output
+Run with Tool Ctrl+F5 Run external tool, and display its standard output
+Run F5 Execute current file, based on its extension
+Sample Massage Operation Ctrl+Shift+F1 Display sample set of search and
+replace tasks in a new window
+Sample Structured Text Ctrl+F1 Display sample table of contents and
+corresponding sections in a new window
+Save As Ctrl+Shift+s Name and save current file to disk
+Save Copy Alt+Shift+s Name and save copy of current file to disk
+Save Ctrl+s Save current file to disk
+Say Address Alt+a Say line, column, and percent position of cursor
+Say Braces Alt+b Say number of braces on either side of cursor
+Say Chunk Shift+BackSpace Say contiguous sequence of non-blank characters
+at cursor
+Say Clipboard Alt+' Say clipboard text
+Say Indentation Alt+i Say indentation level of current line
+Say Paragraph Alt+F9 Say current paragraph
+Say Path Alt+p Say full path of current file
+Say Selected Shift+Space Say selected text
+Say Status Alt+z Say whether current file has been modified since last
+save to disk
+Say Text Ahead Alt+Enter Say text ahead of cursor
+Say Text All Alt+F8 Say all text
+Say Text Prior Alt+Shift+Enter Say text prior to cursor
+Say Time Alt+; Say current date and time according to format setting
+Say Topic Alt+t Say heading of current section
+Say Widest Line Alt+Shift+y Say number of characters in widest line of all
+or selected text
+Say Yield Alt+y Say number of bytes, words, and lines in current file
+Section Break Ctrl+Return Insert sequence of characters as divider between
+sections
+Select All Ctrl+a Select all text
+Select Chunk Ctrl+Space Select contiguous sequence of non-blank characters
+at cursor
+Set Bookmark Ctrl+k Set bookmark at cursor position
+Set Favorite Ctrl+l Add current file to the list of favorites
+Settings Alt+s Invoke dialog to change TextPal configuration settings
+Spellcheck F7 Spell check current file
+Start Selection F8 Mark starting point of text to be selected
+Swap Character F2 Swap current character with previous one
+Swap Line Control+F2 Swap current line with previous one
+Swap Section Alt+F2 Swap current section with previous one
+Swap Segment Shift+F2 Swap current line segment (text from cursor to end
+of line) with previous one
+Text Combine Ctrl+Shift+t Convert list of files to text and combine them
+sequentially in a new editing window
+Text Contents Alt+Shift+t Insert a table of contents that lists section
+headings
+Text Convert Ctrl+t Convert list of files to text with same name except
+for .txt extension
+Thesaurus Shift+F7 Replace word at cursor from a list of synonyms
+Topic Again Alt+F6 Repeat search for section heading
+Topic Search Ctrl+F6 Search section headings for a string
+Undo Ctrl+z Undo the last editing action
+Unquote Ctrl+Shift+q Remove from all or selected text the leading
+characters for email quoting or program commenting
+Unselect All Ctrl+Shift+a Clear text selection
+Upper Case Ctrl+u Convert current character or selected text to upper case
+View Snippet Folder Alt+v Open the snippet folder in Windows Explorer
+Web Download Alt+Shift+w Download a list of URLs to files in the download
+subfolder
+Word Wrap Lines Ctrl+Shift+w Remove hard line breaks from all or selected
+text
+Word Wrap Toggle Ctrl+w Toggle word wrap on or off

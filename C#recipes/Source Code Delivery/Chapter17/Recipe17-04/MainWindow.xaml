@@ -1,0 +1,28 @@
+﻿<Window 
+    x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Apress.VisualCSharpRecipes.Chapter17"
+    Title="Recipe17_04" Width="200" Height="200">
+    <Window.Resources>
+        <local:DebugConverter x:Key="DebugConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*" />
+            <RowDefinition Height="0.5*"/>
+        </Grid.RowDefinitions>
+
+        <CheckBox x:Name="chkShouldItBeOpen" Margin="10"
+            IsChecked="False" Content="Open Expander" />
+
+        <Expander IsExpanded="{Binding
+            ElementName=chkShouldItBeOpen, Path=IsChecked,
+            Converter={StaticResource DebugConverter}}"
+            Grid.Row="1" Background="Black" Foreground="White"
+            Margin="10" VerticalAlignment="Center"
+            HorizontalAlignment="Center" Header="I'm an Expander!">
+                <TextBlock Text="Expander Open" Foreground="White"/>
+        </Expander>
+    </Grid>
+</Window>

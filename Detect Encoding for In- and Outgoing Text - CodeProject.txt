@@ -1,0 +1,1119 @@
+Detect Encoding for In- and Outgoing Text - CodeProject 7,249,383 members and 
+growing! (20,747 online)JamalMazrui My Settings
+My Contact info
+My Bookmarks
+My Watched Items
+My Articles
+My MessagesSign out 
+  Home Articles Chapters and Sections 
+    Search 
+    Latest Articles 
+    Latest Tips/Tricks 
+    Top Articles 
+    Beginner Articles 
+    Technical Blogs 
+    Post an Article 
+    Post Tip & Trick 
+    Post your Blog 
+    Posting/Update Guidelines 
+    Article Competition 
+  Questions & Answers Ask a Question about this article 
+    Quick Answers 
+    Ask a Question 
+    View Unanswered Questions 
+    View All Questions 
+    C# questions 
+    ASP.NET questions 
+    C++ questions 
+    VB.NET questions 
+    C#3.0 questions 
+    Programming Discussions 
+    All Message Boards... 
+    Application Lifecycle> Design and Architecture 
+      Running a Business 
+      Sales / Marketing 
+      Collaboration / Beta Testing 
+      Work & Training Issues 
+    C / C++ / MFC> ATL / WTL / STL 
+      Managed C++/CLI 
+    C# 
+    Database 
+    IT & Infrastructure> Hardware & Devices 
+      System Admin 
+    Java 
+    .NET Framework 
+    Mobile 
+    Sharepoint 
+    Silverlight / WPF 
+    Visual Basic 
+    Web Development> ASP.NET 
+      CSS 
+      Javascript 
+      PHP 
+    Site Bugs / Suggestions 
+    Other Languages> General Programming - Hindi 
+      General Programming - Chinese 
+  Learning Zones The SQL ZoneThe Commerce ZoneThe Mobile ZoneThe Cloud 
+    ZoneWhitePapers / Webcasts 
+  Jobs Latest 
+    Search 
+    Post a Job 
+    FAQ and Pricing 
+  Features Who's Who 
+    CodeProject MVPs 
+    Company Listings 
+    Component & Service Catalog 
+    Competitions 
+    News 
+    Newsletter archive 
+    Press Releases 
+    Surveys 
+    CodeProject Stuff 
+    CodeProject VS Addin Help! What is 'The Code Project'? 
+    General FAQ 
+    Post a Question 
+    Bugs and Suggestions 
+    Site Directory 
+    About Us 
+  Lounge Soapbox 
+  Articles / Quick Answers Messages Jobs Product Catalog  
+
+      4.77 / 5, 37 votes 
+
+
+      1
+      2
+      3
+      4
+      5
+ 
+Print Article
+  Digg 
+ Del.icio.us 
+ Google 
+ Windows Live 
+ Technorati 
+ Blink 
+ Facebook 
+ Furl 
+ Simpy 
+ Reddit 
+ Newsvine 
+ Stumbleupon 
+ Mr. Wong 
+ Send as Email  
+Add to your CodeProject bookmarks
+ 
+Discuss this article
+56  
+Report this article as inappropriate
+      ArticleBrowse CodeStatsRevisions (3)
+      First Posted17 Jan 2007
+      Views84,551
+      Bookmarked135 times
+      LicencePublic Domain
+      .NET2.0, Win2K, WinXP, Win2003, Vista, C#, Visual-Studio, Dev ... 
+» General Programming » Algorithms & Recipes » General
+Detect Encoding for In- and Outgoing Text
+By Carsten Zeumer | 27 Oct 2009 
+Detect the encoding of a text without BOM (Byte Order Mask) and choose the best 
+Encoding for persistence or network transport of text
+Is your email address OK? You are signed up for our newsletters but your email 
+address is either unconfirmed, or has not been reconfirmed in a long time. 
+Please click here to have a confirmation email sent so we can confirm your email 
+address and start sending you newsletters again. Alternatively, you can update 
+your subscriptions.
+ 
+ 
+  Download source files - 51.16 KB 
+  Download demo project - 38.16 KB 
+
+Introduction
+In some cases, you need to know what the best codepage (encoding) is to either 
+transfer text over the internet or store it in a text file. One could argue that 
+Unicode always does the trick but I needed the most efficient (byte saving) way 
+to transfer data.
+Detecting a code page from text is a very tricky task. But luckily, Microsoft 
+provides the MLang API, in which the IMultiLang3 interface is used for outbound 
+encoding detection. 
+Similarly, the IMultiLang2 interface has a function to detect the encoding of an 
+incoming byte array. This is very handy for codepage detection of text stored in 
+files or for text that needs to be sent over the internet. 
+The EncodingTools class offers some easy-to-use functions to determine the best 
+encoding for different scenarios.
+Background
+The Problem
+I started this along with another component that constructs MIME conformant 
+emails. The body of the email is passed as String. The user had to provide the 
+charset to use for the Transfer-Encoding by hand. This is fine as long as you 
+know the target character set or always assume Unicode. But it is definitely not 
+a good solution if you have an end-user GUI application (most users do not even 
+know what an "encoding" is).
+I wondered if it is possible to detect the best encoding from the given text.
+The Dirty Hack Attempt
+My first attempt was a simple brute-force attack:
+  Built a list of suitable encodings (only iso-codepages and unicode) 
+  Iterate over all considered encodings 
+  Encode the text using this encoding 
+  Encode it back to Unicode 
+  Compare the results for errors 
+  If no errors remember the encoding that produced the fewest bytes 
+This is not only ugly, it does not even work properly. All single byte encodings 
+are binary equal in their encoding result. The codepage is only used to map 
+single bytes to the correct character for display. 
+So this method can only distinguish between ASCII (7bit), single byte (8bit) and 
+the different Unicode flavors (UTF-7, UTF8, Unicode, etc.). 
+Finding Something Better
+Then I remembered the IMultiLang2.DetectInputCodepage method that was introduced 
+along with Internet Explorer 5.0. This method detects the encoding used in a 
+text (used by Internet Explorer to do automatic codepage detection if the header 
+is missing from a page). Even this was not suitable for my problem, and I 
+wondered if there had been development since version 5.0. A wrapper function to 
+the DetectInputCodepage is provided in the EncodingTools class. 
+Internet Explorer 5.5 introduced a new interface exported from the MLang DLL: 
+IMultiLang3. This is what MSDN says about this interface: 
+This interface extends IMultiLanguage2 by adding outbound text detection 
+functionality to it. 
+Wow! This sounded more than promising! The interface has only two methods: 
+  DetectOutboundCodePage (for strings) 
+  DetectOutboundCodePageInIStream (for streams) 
+I chose to use the first one.
+Using MLang
+The MLang.dll is in the Windows\system32 directory. Along some exported 
+functions, it provides some COM classes but does not contain a typelibrary. So 
+the easy way (Add Reference in Visual Studio) did not work.
+The MLang.idl is part of the Platform SDK and can be found in the include 
+directory. 
+To create an assembly from the IDL file, use the following commands from the 
+Visual Studio Command Prompt:
+ Collapse | Copy Code
+c:\temp\>midl MLang.idl
+C:\temp>midl MLang.idl > null
+Microsoft (R) 32b/64b MIDL Compiler Version 6.00.0366
+Copyright (c) Microsoft Corporation 1991-2002. All rights reserved.
+MLang.idl
+unknwn.idl
+wtypes.idl
+basetsd.h
+guiddef.h
+oaidl.idl
+objidl.idl
+oaidl.acf
+
+C:\temp>tlbimp mlang.tlb /silentThe result of those two commands is a brand new 
+Assembly named MultiLanguage.dll.
+Using Lutz Roeder's and Reflector I had a look at the signature:
+ Collapse | Copy Code
+MethodImpl(MethodImplOptions.InternalCall, 
+    MethodCodeType=MethodCodeType.Runtime)]
+void DetectOutboundCodePage([In] uint dwFlags, 
+    [In, MarshalAs(UnmanagedType.LPWStr)] string lpWideCharStr, 
+    [In] uint cchWideChar, 
+    [In] ref uint puiPreferredCodePages, 
+    [In] uint nPreferredCodePages, 
+    [In] ref uint puiDetectedCodePages, 
+    [In, Out] ref uint pnDetectedCodePages, 
+    [In] ref ushort lpSpecialChar);I was not so happy with the ref uint for the 
+puiPreferredCodePages and puiDetectedCodePages parameters. Also, a typed enum 
+for the dwFlags was missing. 
+So I first exported the generated assembly to C# source code and then changed it 
+a little: 
+ Collapse | Copy Code
+[Flags]
+public enum MLCPF
+{
+    // Not currently supported.
+    MLDETECTF_MAILNEWS = 0x0001,
+
+    // Not currently supported.
+    MLDETECTF_BROWSER = 0x0002,
+    
+    // Detection result must be valid for conversion and text rendering.
+    MLDETECTF_VALID = 0x0004,
+    
+    // Detection result must be valid for conversion.
+    MLDETECTF_VALID_NLS = 0x0008,
+
+    // Preserve preferred code page order. 
+    // This is meaningful only if you have set the puiPreferredCodePages 
+    // parameter
+    // in IMultiLanguage3::DetectOutboundCodePage 
+    // or IMultiLanguage3::DetectOutboundCodePageInIStream.
+    MLDETECTF_PRESERVE_ORDER = 0x0010,
+
+    // Only return one of the preferred code pages as the detection result. 
+    // This is meaningful only if you have set the puiPreferredCodePages 
+    // parameter 
+    // in IMultiLanguage3::DetectOutboundCodePage 
+    // or IMultiLanguage3::DetectOutboundCodePageInIStream.
+    MLDETECTF_PREFERRED_ONLY = 0x0020,
+
+    // Filter out graphical symbols and punctuation.
+    MLDETECTF_FILTER_SPECIALCHAR = 0x0040,
+    
+    // Return only Unicode codepages if the euro character is detected. 
+    MLDETECTF_EURO_UTF8 = 0x0080
+}             
+        
+[MethodImpl(MethodImplOptions.InternalCall, 
+    MethodCodeType=MethodCodeType.Runtime)]
+void DetectOutboundCodePage([In] MLCPF dwFlags, 
+[In, MarshalAs(UnmanagedType.LPWStr)] string lpWideCharStr, 
+[In] uint cchWideChar,
+[In] IntPtr puiPreferredCodePages, 
+[In] uint nPreferredCodePages, 
+[In] IntPtr puiDetectedCodePages, 
+[In, Out] ref uint pnDetectedCodePages, 
+[In] ref ushort lpSpecialChar);Then I added the source files to my project (no 
+more MultiLanguage.dll assembly required).
+Using IMultiLanguage3::DetectOutboundCodePage
+Getting an instance of COM class implementing IMultiLanguage3 is 
+straightforward:
+ Collapse | Copy Code
+// get the IMultiLanguage3 interface
+MultiLanguage.IMultiLanguage3 multilang3 = new 
+    MultiLanguage.CMultiLanguageClass();
+if (multilang3 == null)
+    throw new System.Runtime.InteropServices.COMException(
+        "Failed to get IMultilang3");The next thing is to fill the parameters. 
+The first parameter, dwFlags, is a combination of the tagMLCPF flags. I chose 
+always to set the MLDETECTF_VALID_NLS because the result will be used for 
+conversion. 
+The MLDETECTF_PRESERVE_ORDER and MLDETECTF_PREFERRED_ONLY are used depending on 
+the parameters passed to my detection method. 
+The next two parameters (lpWideCharStr and cchWideChar) are simply the sting 
+passed for detection and its length. 
+With the next two parameters (puiPreferredCodePages and nPreferredCodePages), 
+the detection can be limited to a subset of all codepages. This is very useful 
+if you only want to return a certain subset of codepages. 
+The last three parameters contain the result of detection after the method has 
+completed successfully.
+So the actual call looks like this: 
+ Collapse | Copy Code
+uint[] preferedEncodings; // array of uint passed as parameter to the 
+                          // function
+int[] resultCodePages = new int[preferedEncodings.Length]; // result array
+
+// ... call the function
+multilang2.DetectInputCodepage(options,0, ref input[0], ref srcLen, 
+    ref detectedEncdings[0], ref scores);
+
+// evaluate the result
+if (scores > 0)
+{
+    for (int i = 0; i < scores; i++)
+    {
+        // add the result
+        result.Add(Encoding.GetEncoding((int)detectedEncdings[i].nCodePage));
+    }
+}Finally the COM object should be freed.
+ Collapse | Copy Code
+Marshal.FinalReleaseComObject(multilang3);Using 
+IMultiLanguage2::DetectInputCodepage
+After being able to choose the best encoding to send text over the internet, or 
+save it to a stream, the next task was to detect the best encoding for incoming 
+text if the sender (or storer) did not choose the best encoding.
+The DetectInputCodepage has (at least) two practical uses. By default, Windows 
+stores text files in the current default (UI) Encoding. For example, on my 
+system this is "Windows-1252". A user from Russia will write text using 
+"Windows-1251". Both codepages are singlebyte and do not have any preamble. So a 
+text file will not contain any information about the used codepage. 
+So if you open a text file containing text created with codepage that is 
+different than the current UI code page, a StreamReader will read the text as if 
+it was stored in the UI's current codepage. (The encoding detection of the 
+StreamReader is mostly a preamble check. So it will fail for almost any 
+non-Unicode files (or those Unicode files without BOM.) 
+Most characters outside of the common ASCII charset will be displayed 
+incorrectly.
+This is where the DetectInputCodepage comes in handy. Its accuracy is not 100% 
+but it is definitely better than the one from the StreamReader.
+In the demo application, you can double click on an encoding to test which 
+method has the better result (see "Testing the DetectInputCodepage performance" 
+below).
+The other practical use is to detect the encoding of emails from badly 
+implemented mime mailers. Some wired mailers send emails in 8-bit encoding 
+without specifying any characterset in the header. In this case, 
+DetectInputCodepage can help a lot.
+As for the DetectOutboundCodePage method, I change the method signature a little 
+and add the MLDETECTCP enumeration. The resulting code looks like this: 
+ Collapse | Copy Code
+public enum MLDETECTCP {
+    // Default setting will be used. 
+    MLDETECTCP_NONE = 0,
+
+    // Input stream consists of 7-bit data. 
+    MLDETECTCP_7BIT = 1,
+
+    // Input stream consists of 8-bit data. 
+    MLDETECTCP_8BIT = 2,
+
+    // Input stream consists of double-byte data. 
+    MLDETECTCP_DBCS = 4,
+
+    // Input stream is an HTML page. 
+    MLDETECTCP_HTML = 8,
+
+    //Not currently supported. 
+    MLDETECTCP_NUMBER = 16
+}
+
+[MethodImpl(MethodImplOptions.InternalCall, 
+    MethodCodeType=MethodCodeType.Runtime)]
+void DetectInputCodepage([In] MLDETECTCP flags, [In] uint dwPrefWinCodePage,
+    [In] ref byte pSrcStr, [In, Out] ref int pcSrcSize, 
+    [In, Out] ref DetectEncodingInfo lpEncoding, 
+    [In, Out] ref int pnScores);
+ The usage of the function is almost identical to the DetectOutboundCodePage 
+described earlier. 
+ Collapse | Copy Code
+int maxEncodings; // parameter specifying how many encodings to return
+
+int srcLen = input.Length; 			// length of the input
+int scores = detectedEncdings.Length; 	// the number of detected scores
+
+// setup options (none)
+MultiLanguage.MLDETECTCP options = MultiLanguage.MLDETECTCP.MLDETECTCP_NONE; 
+
+// finally... call to DetectInputCodepage 
+multilang2.DetectInputCodepage(options,0, ref input[0], ref srcLen,
+    ref detectedEncdings[0], ref scores);
+
+// get result
+if (scores > 0)
+{
+    for (int i = 0; i < scores; i++)
+    {
+        // add the result
+        result.Add(Encoding.GetEncoding((int)detectedEncdings[i].nCodePage));
+    }
+}My first tests were not that promising. I always had a COMExcpetion with E_FAIL 
+thrown when I tried to detect a codepage.
+The DetectInputCodepage will fail on texts that are too short, or that do not 
+have BOM (Byte Order Mask / Encoding Preamble) prefixed data. There are two 
+kinds of failures. If the input data is very short (less than 60 bytes), there 
+is a good chance that the wrong codepage will be detected. Below 200 bytes, 
+there is a good chance that DetectInputCodepage will return E_FAIL, because it 
+could not decide which codepage to use. For the latter problem, I implemented a 
+nasty workaround. I simply multiplied the input data up to 256 bytes. This seems 
+to return reasonable results even for short strings.
+ Collapse | Copy Code
+// expand the string to be at least 256 bytes
+if (input.Length < 256)
+{
+    byte[] newInput = new byte[256];
+    int steps = 256 / input.Length;
+    for (int i = 0; i < steps; i++)
+        Array.Copy(input, 0, newInput, input.Length * i, input.Length);
+
+    int rest = 256 % input.Length;
+    if (rest > 0)
+        Array.Copy(input, 0, newInput, steps * input.Length, rest);
+    input = newInput;
+}Wrapping It All Up
+I decided to create a static class to provide access to the 
+DetectOutboundCodePage and DetectInputCodepage methods. It has some public 
+methods that offer different levels of abstraction.
+Here are the six high-level methods that should cover most of the usage 
+scenarios:
+  GetMostEfficientEncoding 
+  GetMostEfficientEncodingForStream 
+  DetectInputCodepage 
+  ReadTextFile 
+  OpenTextFile 
+  OpenTextStrem 
+It also has three public static arrays of predefined codepage sets:
+  PreferedEncodings 
+  PreferedEncodingsForStream 
+  AllEncodings 
+These arrays contain the codepages in the order that return the best result, but 
+not in the natural sort order.
+Testing the DetectInputCodepage Performance
+The screenshot below shows a comparison of the StreamReader encoding detection 
+and the EncodingTools detection. The sample texts come from Unciode.org.
+
+All the samples were detected correctly.
+Using the EncodingTools Class
+The following code snippets show how to use the EncodingTools class.
+Outgoing Encoding
+Detect best encoding for a Stream
+ Collapse | Copy Code
+// save the given text using the optimal encoding
+private void SaveToStream(string text, string path)
+{
+    // this is all... detect the encoding
+    Encoding enc = EncodingTools.GetMostEfficientEncodingForStream(text);
+    // then safe
+    using (StreamWriter sw = new StreamWriter(path, false, enc))
+        sw.Write(text);
+}Detect best encoding for an email body
+ Collapse | Copy Code
+// save the given text using the optimal encoding
+private void SaveToAsEmail(string text, string path)
+{
+    // this is all... detect the encoding
+    Encoding enc = EncodingTools.GetMostEfficientEncoding(text);
+    // then safe
+    using (StreamWriter sw = new StreamWriter(path, false, Encoding.ASCII))
+    {
+        sw.WriteLine("Subject: test");
+        sw.WriteLine("Transfer-Encoding: 7bit");
+        sw.WriteLine(
+            "Content-Type: text/plain;\r\n\tcharset=\"{0}\"", 
+            enc.BodyName);
+        sw.WriteLine("Content-Transfer-Encoding: base64"); // should be QP
+        sw.WriteLine();
+        sw.Write(Convert.ToBase64String(enc.GetBytes(text),
+            Base64FormattingOptions.InsertLineBreaks));
+    }
+}Incoming Encoding
+Open a Text File
+ Collapse | Copy Code
+private void OpenTextFileTest()
+{
+    // read the complete file into a string
+    string content = EncodingTools.ReadTextFile(@"C:\test\txt");
+
+    // create a StreamReader with the guessed best encoding
+    using (StreamReader sr = EncodingTools.OpenTextFile(@"C:\test\txt"))
+    {
+        string fileContent = sr.ReadToEnd();
+    }
+}Reading from a Stream
+ Collapse | Copy Code
+private void ReadStreamTest()
+{
+    // create a streamReader from a stream
+    using (MemoryStream ms = new MemoryStream(
+        Encoding.GetEncoding("windows-1252").GetBytes("Some umlauts: öäüß")))
+    {
+        using (StreamReader sr = EncodingTools.OpenTextStream(ms))
+        {
+            string fileContent = sr.ReadToEnd();
+        }
+    }
+}References
+  MLang documentation on MSDN 
+History
+  17/01/2007: Initial release 
+  22/01/2007: Fixed code to compile without warnings 
+  27/10/2009: Updated source and demo project 
+License
+This article, along with any associated source code and files, is licensed under 
+A Public Domain dedication
+About the Author
+      Carsten Zeumer
+
+
+
+
+      Software Developer (Senior)
+
+       Germany
+
+      Member 
+      Carsten started programming Basic and Assembler back in the 80’s when he 
+      got his first C64. After switching to a x86 based system he started 
+      programming in Pascal and C. He started Windows programming with the 
+      arrival of Windows 3.0. After working for various internet companies 
+      developing a linguistic text analysis and classification software for 
+      25hours communications he is now working as a contractor.
+
+      Carsten lives in Hamburg, Germany with his wife and four children.
+
+
+
+Article Top Rate this article for us!   Poor 
+            Excellent  
+
+Add a reason or comment to your vote: x
+ 
+
+Comments and Discussions
+             FAQ   
+            Noise Tolerance Very HighHighMediumLowVery Low  Layout 
+              NormalExpand Posts onlyExpand Posts & RepliesThread ViewNo 
+              JavascriptNo JS + Preview  Per page 102550    
+
+            New MessageMsgs 1 to 25 of 56 (Total in Forum: 56) 
+            (Refresh)FirstPrevNext
+
+
+                  Put the source code to codeplex. San Chen2:33 28 May '10  
+
+                              I've put the source code to the 
+                              mlangnet.codeplex.com and leave your name as the 
+                              copyright owner. This will make the code more 
+                              convenient to view & download, hope you wouldn't 
+                              mind.
+
+                              Reply·Email·View Thread·PermaLink·Bookmark1.00/5 
+                              (1 vote) Rate this message:  1 2 3 4 5  
+
+
+
+
+                  Detection on Win7 fails [modified] MarkQuestion10:08 18 May 
+                  '10  
+
+                              Hi,
+
+                              the detection of the encoding fails on Win7. Often 
+                              only utf-8 or utf-16 is returned, but not the 
+                              correct encoding (e.g. shift-jis).
+                              The same project on Win-XP works fine. I'm usign 
+                              the "OpenTextFile" function.
+
+                              Any idea?
+
+                              thanks!
+                              modified on Tuesday, May 18, 2010 10:53 AM
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  No detection of UTF-8 with Byte Order Markings? jimiscott4:21 
+                  12 May '10  
+
+                              We have an issue where a file with an UTF-8 BOM, 
+                              is detected with a Windows-1251 encoding vs. 
+UTF-8.
+
+                              If we use the DetectInputCodepages function, we 
+                              get both encodings, but I would have expected the 
+                              UTF-8 to take precedence over Windows-1251 in this 
+                              instance.
+
+                              Otherwise, this looks great!
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Encoding chezduck5:05 28 Apr '10  
+
+                              Thanks Carsten Zeumer, this program really helped 
+                              me out with finding the right encoding page  
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  StackOverflowException Uwe Keim1:13 12 Mar '10  
+
+                              Currently I am investigating a 
+                              StackOverflowException that occurs in file 
+                              "EncodingTools.cs", line 436 in the function
+
+public static Encoding[] DetectInputCodepages(byte[] input, int maxEncodings)
+                              when calling 
+
+// finally... call to DetectInputCodepagemultilang2.DetectInputCodepage(options,0,    ref input[0], ref srcLen, ref detectedEncdings[0], ref scores);
+                              I have a German Windows 7 Ultimate, 64-bit.
+
+                              Can someone help me on resolving this? I currently 
+                              seem to be unable to step into the 
+                              DetectInputCodepage method.
+
+                              Thanks
+                              Uwe• My personal 24/7 webcam • Zeta Test - 
+                              Intuitive, competitive Test Management environment 
+                              for Test Plans and Test Cases. Download now! • 
+                              Zeta Producer Desktop CMS - Intuitive, very easy 
+                              to use. Download now!
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Re: StackOverflowException Carsten Zeumer4:21 12 Mar '10  
+
+                              hi uwe,
+
+                              this is a little wired. The 
+                              multilang2.DetectInputCodepage function is 
+                              provided by Microsoft (actually it is part of the 
+                              Internet Explorer distribution (which uses this 
+                              function to detect the encoding of a web page if 
+                              none is specified)).
+
+                              Some questions (hints) to get a little closer to 
+                              the bug:
+                              - Does this error occur for any input given? 
+                              - Have you tried to compile for x86 (32bit)
+                              - Can you enable native code debugging, disable 
+                              "Just my Code" and download the debug symbols? The 
+                              stack should point to some native method when the 
+                              error occurs.
+                              - can you check the same input on a different 
+                              system (not 64bit, not windows 7 or not IE 8?)
+
+                              hope that helps?/carsten
+
+                              24 hours is not enough
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Re: StackOverflowException Uwe Keim4:36 12 Mar '10  
+
+                              Danke, Carsten  
+
+                              I'll try to investigate and post my updates here.• 
+                              My personal 24/7 webcam • Zeta Test - Intuitive, 
+                              competitive Test Management environment for Test 
+                              Plans and Test Cases. Download now! • Zeta 
+                              Producer Desktop CMS - Intuitive, very easy to 
+                              use. Download now!
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Re: StackOverflowException Uwe Keim4:43 12 Mar '10  
+
+                              Just tried. Compiling to x86 works; no more stack 
+                              overflow exception. Arrgh!
+
+                              This is my code snippet to test your function:
+
+private static byte[] readFileBinary(string filePath){	using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))	using (var r = new BinaryReader(fs))	{		return r.ReadBytes((int)fs.Length);	}}private void button2_Click(object sender, EventArgs e){	var f = @"myfilename.ext";	var content = readFileBinary(f);	EncodingTools.DetectInputCodepages(content, 20);}
+                              The file I work with ("myfilename.ext") is the 
+                              resource file contained in this ZIP [^].
+
+                              I will try the next steps, just as you suggested.• 
+                              My personal 24/7 webcam • Zeta Test - Intuitive, 
+                              competitive Test Management environment for Test 
+                              Plans and Test Cases. Download now! • Zeta 
+                              Producer Desktop CMS - Intuitive, very easy to 
+                              use. Download now!
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Re: StackOverflowException Uwe Keim4:51 12 Mar '10  
+
+                              Just tried native debugging.
+
+                              Actually the native debugging will be no help 
+                              here, since the excption is being raised in the 
+                              debugger at a too late stage, when the thread 
+                              already ended and the call stack is empty.
+
+                              Here is a picture of my IDE [^].
+
+                              The exception is:
+
+
+                                System.StackOverflowException wurde nicht 
+                                behandelt.
+                                Message: Eine nicht behandelte Ausnahme des Typs 
+                                "System.StackOverflowException" ist in 
+                                Unbekanntes Modul. aufgetreten.
+
+                              When I got StackOverflowExceptions in the past (in 
+                              managed code), I always ended up with the debugger 
+                              pausing at the erroneous location and the call 
+                              stack being correctly filled.
+
+                              Seems that for native exception this is a bit more 
+                              difficult/impossible to catch?• My personal 24/7 
+                              webcam • Zeta Test - Intuitive, competitive Test 
+                              Management environment for Test Plans and Test 
+                              Cases. Download now! • Zeta Producer Desktop CMS - 
+                              Intuitive, very easy to use. Download now!
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Re: StackOverflowException Carsten Zeumer7:05 12 Mar '10  
+
+                              it's an 64bit issue (not the same as here Re Oops 
+                              Intermittent SystemAccessViolationException....). 
+                              I can reprocude (and fix it) on my system.
+
+                              if you change the target from "Any CPU" to "x86" 
+                              it should work (very nast workaround, but as long 
+                              as you do not need any 64bit specific features it 
+                              should be feasable).
+
+                              I probably should try to generate the wrapper 
+                              classes on my 64bit system anc check if it works 
+                              properly then... but as always: so much to do - so 
+                              little time ;(/cadi
+
+                              24 hours is not enough
+
+                              Reply·Email·View Thread·PermaLink·Bookmark5.00/5 
+                              (1 vote) Rate this message:  1 2 3 4 5  
+
+
+
+
+                  Re: StackOverflowException Uwe Keim7:09 12 Mar '10  
+
+                              Thank you!
+
+                              If you say you can fix it, can you tell me roughly 
+                              the steps, so I can try to fix it by myself?
+
+                              Thanks
+                              Uwe• My personal 24/7 webcam • Zeta Test - 
+                              Intuitive, competitive Test Management environment 
+                              for Test Plans and Test Cases. Download now! • 
+                              Zeta Producer Desktop CMS - Intuitive, very easy 
+                              to use. Download now!
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Re: StackOverflowException Carsten Zeumer7:21 12 Mar '10  
+
+                              simply set the target from "Any CPU" (was ist denn 
+                              das auf deutsch?) to "x86". (tool bar next to 
+                              target "Debug/Release" or Menu 
+                              "Build"->"Configuration Manager").
+                              You must set the version of the library and the 
+                              main executable assembly to x86 (other assemblies 
+                              that do not use EncodingTools can stay what ever 
+                              they are)
+
+                              hope this helps/cadi
+
+                              24 hours is not enough
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  License? Magnus_Beije3:38 7 Oct '09  
+
+                              Hi,
+
+                              It seems like your not refering to any license for 
+                              your code.
+                              Is this correct?
+
+                              Br
+                              /Magnus
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Re: License? Carsten Zeumer4:52 8 Oct '09  
+
+                              Hi Magnus,
+
+                              back when I joined CP there were no licence 
+                              options. Everything was supposed to be "free".
+
+                              I applied the most open licence I was able to 
+                              find. 
+
+                              In essence: use my code in any way you like but do 
+                              it on you own risk! If improve it, it would be 
+                              nice if you share it. 
+
+                              /cadi
+
+                              24 hours is not enough
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Can't detect Japanese encoding badtoto22:45 19 Aug '09  
+
+                              i prepared 3 files with shift-jis, euc-jp and 
+                              utf-8.
+
+                              it just work at utf-8
+
+                              give me 
+                              shift-jis to western european language
+                              and
+                              euc-jp to turkey language
+
+                              any suggestion ?
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Re: Can't detect Japanese encoding Carsten Zeumer5:02 8 Oct 
+                  '09  
+
+                              Hi badtoto,
+
+                              first of all: what do you try to determin? the 
+                              incoming encoding or the best outgoing?
+
+                              Suggestions for Incoming:
+                              - use longer texts
+                              - limit the number of detectable encodings
+                              - if you can not limit the detectable encodings 
+                              change the order to the most probable for your 
+                              scenario
+
+                              Suggestions for Outgoing:
+                              - utf-8 is always correct 
+                              - use GetMostEfficientEncoding(string input, int[] 
+                              preferedEncodings) and omit "utf-8" in the list of 
+                              prefered encodings 
+
+                              /cadi
+
+                              24 hours is not enough
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  can you provide the source code in C? gsan_bot9:41 23 May '09  
+
+
+                              can you provide the source code in C? Need it 
+                              urgently. Thanks
+
+                              Reply·View Thread·PermaLink·Bookmark1.00/5 (3 
+                              votes) Rate this message:  1 2 3 4 5  
+
+
+
+
+                  Re: can you provide the source code in C? Carsten Zeumer6:28 
+                  24 May '09  
+
+                              hi gsan_bot,
+
+                              sorry, but I have currently no intention to port 
+                              the code to C. I have not done that much C lately 
+                              and do not plan to do it in the near future... 
+
+                              But if you know how to handle COM in C it should 
+                              be easy to implement the detection in plain C. The 
+                              real work is done by Microsofts COM-Classes 
+                              anyway. 
+
+                              /cadi
+
+                              24 hours is not enough
+
+                              Reply·View Thread·PermaLink·BookmarkRate this 
+                              message:  1 2 3 4 5  
+
+
+
+
+                  Re: can you provide the source code in C? frugalmail1:32 25 
+                  Oct '09  
+
+                              Ridiculous.... 
+
+                              Hire somebody to do it, or at least extend him an 
+                              offer.
+
+                              Thanks for writing the article, and doing it in 
+                              whatever language you wanted to.
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Oops! Intermittent System.AccessViolationException in x64 
+                  environment. Darrell198313:09 3 Apr '09  
+
+                              First of all, great stuff. This has been most 
+                              useful in the project I have been working on.
+
+                              During testing, we noticed that while we were 
+                              detecting the codepage of a byte[], using 
+                              DetectInputCodePage of IMultilanguage2, we 
+                              received System.AccessViolationException. 
+
+                              This is consistent on two 64bit machines we have 
+                              tried running it on. One was Vista (x64) and the 
+                              other was Windows 2008 Server (x64).
+
+                              Any ideas? I'm suspecting COM :P
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Re: Oops! Intermittent System.AccessViolationException in x64 
+                  environment. beeknuckle14:51 14 May '09  
+
+                              I'm seeing these same AccessViolationExceptions on 
+                              our x64 AppServer when trying to use this library. 
+                              The functionality is great on our dev machines, 
+                              but I just can't figure out what's going on in 
+                              x64. Has anyone found a workaround for this yet?
+
+                              Reply·View Thread·PermaLink·BookmarkRate this 
+                              message:  1 2 3 4 5  
+
+
+
+
+                  Re: Oops! Intermittent System.AccessViolationException in x64 
+                  environment. Carsten Zeumer3:30 15 May '09  
+
+                              Hi,
+
+                              have you tried to compile the code x68 support 
+                              only? (Dafault is "Any CPU")
+                              If the error is on 64bit only this would be one 
+                              workaround in the first place (in the second i 
+                              would have to fix it...)
+
+                              /carsten 
+
+                              /cadi
+
+                              24 hours is not enough
+
+                              Reply·View Thread·PermaLink·BookmarkRate this 
+                              message:  1 2 3 4 5  
+
+
+
+
+                  Re: Oops! Intermittent System.AccessViolationException in x64 
+                  environment. beeknuckle12:54 16 May '09  
+
+                              I just tried this, and it doesn't seem to be 
+                              helping the problem. I really thought it would.
+
+                              I'm going to dig some more into this. Please let 
+                              me know if you figure anything out on your end! 
+                              Thanks for the excellent project.
+
+                              Reply·View Thread·PermaLink·BookmarkRate this 
+                              message:  1 2 3 4 5  
+
+
+
+
+                  Re: Oops! Intermittent System.AccessViolationException in x64 
+                  environment. jannewe9:06 5 Aug '09  
+
+                              Any success in solving this? We have the same 
+                              problem, but no solution yet.
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+                  Re: Oops! Intermittent System.AccessViolationException in x64 
+                  environment. beeknuckle9:34 5 Aug '09  
+
+                              No, unfortunately I couldn't get this project to 
+                              work in a 64 bit environment. It's too bad too, 
+                              since this option seemed to get the most accurate 
+                              encoding detection. What I ended up doing instead 
+                              was using slightly modified code from this page:
+
+                              http://blogs.msdn.com/feroze_daud/archive/2004/03/30/104440.aspx
+
+                              It works well for me, since all I want to do is 
+                              detect the proper encoding from a webresponse. 
+                              Does it look like that will help you?
+
+                              Reply·Email·View Thread·PermaLink·BookmarkRate 
+                              this message:  1 2 3 4 5  
+
+
+
+
+
+            Last Visit: 0:00 1 Jan '00     Last Update: 4:56 14 Aug '10 123 Next 
+            »
+
+
+ General     News     Question     Answer     Joke     Rant     Admin    
+Use Ctrl+Left/Right to switch messages, Ctrl+Up/Down to switch threads, 
+Ctrl+PgUp/PgDown to switch pages.
+      PermaLink | Privacy | Terms of Use 
+      Last Updated: 27 Oct 2009
+
+      Copyright 2007 by Carsten Zeumer
+      Everything else Copyright © CodeProject, 1999-2010 
+      Web22 | Advertise on the Code Project 
+Sponsored Links
+Resco MobileForms Toolkit
+The richest, most complete and award winning...
+www.resco.net 
+Easy Projects .NET
+Easy Projects .NET is the easiest all-in-one...
+www.easyprojects.net 
+BinaryVirtualizingWrapPanel .NET
+BinaryVirtualizingWrapPanel .NET is a UI...
+www.binarymission.co.uk 
+
+Need a new Job?
+.Net/Java Application Architect at Wellpoint 
+More jobs here. 
+See Also...
+Creating Custom Controls
+An introduction to creating custom controls...
+
+HTML 4.01 Programmer's Reference - Chapter 1: Introduction
+Using the <object> tag to embed functionality...
+
+XSLT Programmer's Reference 2nd Edition
+This chapter is about the purpose of XSLT and...
+
+Summer 2004 NYC CPian Get Together
+An article on a NYC get together
+
+Multi-tier Enterprise Application Architecture
+Multi-tier Enterprise Application Architecture
+
+Announcements
+      Write an Android Tutorial, Win a Droid X!
+      Have an app on Windows Azure? Win a laptop!
+      Monthly Competition
+
+The Daily Insider
+A 40-year-old computer demo that still amazes
+Daily News: Signup now.  

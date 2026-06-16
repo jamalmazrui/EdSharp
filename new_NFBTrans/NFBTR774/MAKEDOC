@@ -1,0 +1,19 @@
+#!/bin/csh -f
+echo This program uses nfbtrans.fmt to create nfbtrans.txt formatted
+echo with a line length of 80 columns and 56 lines per page.
+echo 'Press <RETURN> to continue...'
+set choice = $<
+test -f nfbtrans.fmt
+if ($status) then
+echo nfbtrans.fmt not found.
+exit 1
+endif
+
+# Create nfbprint.fmt identical to nfbtrans.fmt except for the line of
+# formatting commands at the beginning.
+
+echo '~0 ~-pw=80 ~-ls=99 ~-pl=56 ~-if=12 ~-fc=. ~o5 ~p- ~-ip=0 ~-oc=1' >temp.$$$
+cat temp.$$$ nfbtrans.fmt > nfbprint.fmt
+rm temp.$$$
+nfbtrans ob=oc=15 nfbprint.fmt >nfbtrans.txt
+rm nfbprint.fmt

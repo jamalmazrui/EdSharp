@@ -1,0 +1,89 @@
+; EdSharp.inix -- OPTIONAL layered configuration (a superset of EdSharp.ini).
+;
+; This template ships in the program folder for reference. EdSharp looks for an
+; active EdSharp.inix next to your user EdSharp.ini (in EdSharp's data folder).
+; If that file exists, any [Section] Key entry here OVERRIDES the same entry in
+; EdSharp.ini; anything not listed falls back to EdSharp.ini unchanged. With no
+; active EdSharp.inix, or with every line commented as below, EdSharp behaves
+; exactly as it always has.
+;
+; Over classic .ini, the .inix format adds:
+;   - verbatim multi-line values,
+;   - an implicit [Global] section for keys above the first [Section] header,
+;   - order-preserving round-trip (keys keep their order when rewritten).
+;
+; Lines beginning with a semicolon are comments. To activate an override,
+; copy this file next to your EdSharp.ini, then uncomment and edit entries:
+;
+; [Data]
+; Compiler=Python
+; 
+; --- Default text encoding (Options section) ---------------------------
+; YieldEncoding controls the encoding EdSharp reads and writes for text
+; documents. Leave it blank (the default) and EdSharp auto-detects on open
+; -- a byte-order mark wins, otherwise the content is examined -- and writes
+; UTF-8 with BOM (utf8b) when the encoding is otherwise undetermined or for a
+; new file. The detected encoding is remembered per document, so Save keeps a
+; file in the encoding it came in with. Set a value to force one encoding for
+; both open and save. Recognized values:
+;   utf8b   UTF-8 with BOM (the default behavior when blank)
+;   utf8n   UTF-8 without BOM (also selects Unix line breaks)
+;   utf16   UTF-16 little-endian (also: utf16le, unicode)
+;   utf16be UTF-16 big-endian
+;   ansi    the system ANSI code page
+;   <number or name>  any code page number or .NET encoding name, e.g. 1252
+;
+; [Options]
+; YieldEncoding=
+; 
+; --- Compiler settings (Compilers section and per-compiler sections) ----
+; The Compile command (Control+F5) runs the current compiler/interpreter, jumps
+; to the first reported error, and speaks the (optionally abbreviated) output.
+; With NO compiler configured, EdSharp now compiles a C# (.cs) file out of the
+; box using the latest available .NET Framework C# compiler (Roslyn csc.exe if
+; installed, otherwise the framework csc that always ships with .NET), and jumps
+; to the first error -- so the built-in default needs no setup.
+; 
+; A compiler is normally one tilde-delimited value in the [Compilers] section:
+;   <name>=CompileCommand~JumpPosition~AbbreviateOutput~NavigatePart~QuotePrefix~ExtensionDefault~GoToEnvironment
+; where JumpPosition is a regex whose first number is the error line and second
+; (if any) is the column. That packing is brittle if a field itself contains a
+; tilde. More solidly, define a section named "Compiler <name>" with one key per
+; setting; its keys override the packed fields when you pick that compiler. The
+; .inix format keeps each value verbatim, so regexes need no escaping:
+; 
+; [Compiler C#]
+; CompileCommand="csc.exe" /nologo "%SourceLong%" 2>&1
+; JumpPosition=\(\d+,\d+\)
+; AbbreviateOutput=\r
+; NavigatePart=^( |\t)*((public)|(private)|(internal)|(protected)|(static)|(void)|(class)|(struct))[^;]*?\{ *$
+; QuotePrefix=//
+; ExtensionDefault=cs
+; 
+; --- Document-to-text converters via 2htm (Import / Export sections) ------
+; The bundled 2htm utility (Convert\2htm\2htm.exe, by Jamal Mazrui) extracts
+; readable plain text from many formats -- .docx .doc .rtf .odt .pdf .xlsx
+; .xls .pptx .ppt .csv .html .htm .md .json .txt -- in one tool.  The new
+; default EdSharp.ini already routes the document-to-text conversions through
+; it (via Convert\any2txt.cmd, which runs 2htm with -p for plain text).  This
+; retires GetText.exe, which hung on modern Windows, and the Office COM text
+; converters (WdVert/XlVert/PpVert) and htm2txt.exe for text extraction.
+; 
+; If your data-folder EdSharp.ini still has the OLD converter lines (an
+; existing install keeps its own copy), copy this EdSharp.inix next to that
+; EdSharp.ini and UNCOMMENT the lines below to switch over immediately --
+; non-destructively, since EdSharp reads .inix entries in preference to .ini.
+; (xls2csv / xlsx2csv are left on XlVert because 2htm cannot output CSV.)
+; 
+; [Import]
+; doc2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+; html2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+; ppt2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+; pptx2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+; xls2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+; xlsx2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+; hlp2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+; wpd2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+; 
+; [Export]
+; html2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"

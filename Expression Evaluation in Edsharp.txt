@@ -1,0 +1,45 @@
+Subject:
+Expression Evaluation in Edsharp
+From:
+Ben Humphreys <brh@opticinspiration.org>
+Date:
+10/27/2011 11:45 PM
+To:
+Jamal Mazrui <empower@smart.net>
+
+Hi Jamal,
+
+Quick question for you.
+
+I was reading on Edsharp docs today and discovered Ctrl = would evaluate the math expression of the current line and dump the result into the next line.
+Very cool indeed.
+
+However,  expression evaluator is pretty limited.  If you do:
+
+2*4-6
+
+you get the expected output
+2
+
+However, if you do something more complex like:
+
+sin ( P3.14 ) / 4 ) * cos( 2*3.14 )^2
+
+then poor expression evaluator can't handle it.
+
+However, if we pass such expressions to a more powerful "calculator" such as Perl or cmaple, we do better.
+
+Question: Iis the Expression Evaluator user-definable like a compiler might be?
+
+Very grateful for your help on this on.
+
+Ben
+
+
+C:>
+C:>cmaple
+
+
+
+
+

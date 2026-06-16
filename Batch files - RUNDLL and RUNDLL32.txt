@@ -1,0 +1,523 @@
+Batch files - RUNDLL and RUNDLL32HomeObjectiveNewsFAQSite PolicyCreditsThe 
+Making Of...ContactBatch FilesGetting StartedBatch TechniquesDebuggingData & 
+VariablesDevicesFilesFoldersInternetInventoryMiscellaneousNetworkPrintingProcesses 
+& ServicesProgram FlowRegistrySamples CollectionsSchedulersSecurityTime & 
+DateUNIX PortsUser InteractionBatch HowTosCommandsCommand Line SwitchesShutdown 
+CommandsShort Command Line TipsAdmin One-LinersExamplesSamples 
+CollectionsToolsLinksBooksChallengesKiXtartGetting 
+StartedExamplesLinksToolsBooksPerlGetting 
+StartedExamplesLinksToolsBooksPowerShellGetting 
+StartedExamplesLinksToolsBooksRegular ExpressionsGetting 
+StartedExpressionsExamplesLinksToolsBooksRexxGetting StartedExamplesOS/2 LAN 
+ServerLinksToolsBooksVBScript & WSHGetting StartedVBScript 
+TechniquesDebuggingData & 
+VariablesDatabasesEnginesFilesFoldersInternetInventoryMultimediaNetworkObject 
+BrowsersOLE AutomationPrintingProcesses & ServicesRegistryRegular 
+ExpressionsShortcutsTime & DateUser InteractionExamplesHTA & WSC 
+ExamplesLinksToolsBooksChallengesWMIGetting 
+StartedExamplesLinksBooksToolsADSIGetting StartedExamplesLinksBooksToolsSilent 
+InstallsGeneralWindows InstallerSpecific softwareSoftware requirementsHardware 
+requirementsBooksBatch FilesWindowsResource KitsKiXtartPerlPowerShellRegular 
+ExpressionsRexxWSH & VBScriptWMIADSIHTML, JavaScript & CSSOff-TopicScripting 
+ToolsBatch UtilitiesResource KitsCompilersEditorsCode GeneratorsRegular 
+ExpressionsAutomation ToolsVBScript Add-OnsCode SearchPrinting ToolsInventory 
+ToolsShell ExtensionsFile viewersBackupSecurityThe Making 
+Of...MiscellaneousFailed MailTweaksWeb StuffConversionsRandom pageMy Photo 
+GalleriesWhat's NewSearch Print This Page 
+ 
+RUNDLL and RUNDLL32
+RUNDLL and RUNDLL32 are two utilities supplied with Windows 95 and later.
+They can call DLL functions from the command line, allowing us to create 
+extremely powerfull batch files.
+Some examples:
+  Start Control Panel applets (2) 
+  Open Install new modem wizard 
+  Start "Add New Hardware" wizard 
+  Open the "Unplug or Eject Hardware" wizard (Windows 95) 
+  Open Device manager 
+  Install a screensaver 
+  Lock the screen (Windows 2000) 
+  Redraw the screen (Windows 95) 
+  Rearrange the windows on the screen (Windows 95) 
+  Change screen resolution (Windows 9x with PowerToys' QuickRes installed) 
+  Disable mouse and/or keyboard (Windows 9*/ME) 
+  Halt system 
+  Start "Add New Printer" wizard 
+  Open "Connect to Printer" dialog 
+  Open the Printers folder 
+  Print a test page (Windows 95 and later) 
+  Manage printer settings (Windows 2000) 
+  Add a TCP/IP printer port 
+  Clear Internet Explorer branding (the annoying company name in IE's title bar) 
+
+  Open the dialog box for editing the Favorites in Internet Explorer 
+  Delete Internet Explorer 7's browsing history, cookies and temporary files 
+  Start GUI mode disk format 
+  Start GUI mode diskcopy 
+  "Map Network Drive" dialog (Windows 95) 
+  Manage shares 
+  Create a new share 
+  Open the Network ID wizard 
+  Open the Add network place wizard 
+  Logoff Windows (1) 
+  Reboot (1) 
+  Shutdown (1) 
+  Activate suspend mode (1) (Windows 2000 and later) 
+  Show "System setting changed, do you want to reboot now?" dialog (Windows 9*) 
+  Display NT's "About" dialog 
+  Open a file with Windows' "Open as" dialog 
+  Open a .ZIP file in Explorer (Windows XP) 
+  Swap your mouse to left handed use 
+  Start "DialUp Connection" wizard (Windows 95) 
+  Start DialUp Network 
+  Open the Fonts folder 
+  Open an Active Directory Search dialog (Windows 2000 and later) 
+  Activate registry changes in HKEY_CURRENT_USER without logging off (Windows 
+  2000 and later) 
+  Remove Messenger (Windows XP) 
+  Repair IE 6 (Windows XP) 
+  Switch between windows (Windows 7) 
+  Turn Aero on or off (Windows 7) 
+
+  More to Explore 
+ 
+  Start Control Panel applets (2)
+  General syntax:
+  RUNDLL32 SHELL32.DLL,Control_RunDLL filename.CPL,@n,t
+  where:
+    filename.CPL 
+    is the name of one of Control Panel's *.CPL files, 
+    n 
+    is the zero based number of the applet within the *.CPL file, and 
+    t 
+    is the number of the tab for multi paged applets 
+  Examples:
+    Date/time applet, Time Zone tab: 
+    RUNDLL32 SHELL32.DLL,Control_RunDLL TIMEDATE.CPL,@0,1 
+    Desktop applet, Screensaver tab: 
+    RUNDLL32 SHELL32.DLL,Control_RunDLL DESK.CPL,@0,1 
+    Network applet, Protocols tab: 
+    RUNDLL32 SHELL32.DLL,Control_RunDLL NCPA.CPL,@0,2 
+    Network applet, Adapters tab: 
+    RUNDLL32 SHELL32.DLL,Control_RunDLL NCPA.CPL,@0,3 
+    System applet, Environment tab: 
+    RUNDLL32 SHELL32.DLL,Control_RunDLL SYSDM.CPL,@0,2 
+  An alternative approach is using CONTROL.EXE.
+  However, if you want to make your batch file wait for the Control Panel applet 
+  to be closed, you'll have to use the RUNDLL32 command with START /WAIT
+  General syntax:
+  CONTROL.EXE filename.CPL,@n,t
+  where:
+    filename.CPL 
+    is the name of one of Control Panel's *.CPL files, 
+    n 
+    is the zero based number of the applet within the *.CPL file, and 
+    t 
+    is the number of the tab for multi paged applets 
+  Examples:
+    Date/time applet, Time Zone tab: 
+    CONTROL.EXE TIMEDATE.CPL,@0,1 
+    Desktop applet, Screensaver tab: 
+    CONTROL.EXE DESK.CPL,@0,1 
+    or alternatively, in Windows 2000 & XP: 
+    CONTROL.EXE DESK.CPL ,@ScreenSaver 
+    Note the space between the *.CPL file name and the comma.
+    This seems to work for DESK.CPL only.
+    Use the description on the tab, remove any spaces.
+
+    Credits: Neil J. Rubenking, in one of his articles in PC Magazine.
+    Tip: Leslie Katz 
+   
+  Back to the top of this page . . .
+  Open Install new modem wizard
+  RUNDLL32 modemui.dll,InvokeControlPanel
+  Credits: Jeffrey W. Horning (posted on JSI FAQ)
+   
+  Back to the top of this page . . .
+  Start "Add New Hardware" Wizard
+  (Windows 95)
+  RUNDLL SYSDM.CPL,InstallDevice_Rundll
+  Credits: Faris Mlaeb
+   
+  Back to the top of this page . . .
+  Open the "Unplug or Eject Hardware" wizard
+  (Windows 2000 or later, or Windows 98 SE with hotplug.dll installed):
+  RUNDLL32 SHELL32.DLL,Control_RunDLL hotplug.dll
+  Credits: Chris S./Dx21.com
+   
+  Back to the top of this page . . .
+  Open Device manager
+  RUNDLL32 devmgr.dll DeviceManager_Execute
+  Credits: Jeffrey W. Horning (posted on JSI FAQ)
+   
+  Back to the top of this page . . .
+  Install a screensaver
+  (copy the *.SCR file to the Windows directory first) (2):
+  RUNDLL32 DESK.CPL,InstallScreenSaver C:\WINNT\SYSTEM32\Default.scr
+  (To invoke the screensaver use:
+  C:\WINNT\SYSTEM32\Default.scr /S
+  Tip by "UnhappyEggWhisk" on forums.somethingawful.com)
+  The directory shown is for Windows NT 4/2000, modify for Windows 9x/XP
+   
+  Back to the top of this page . . .
+  Lock the screen
+  (Windows 2000)
+  RUNDLL32 USER32.DLL,LockWorkStation
+  Credits: Steven Clements (posted on alt.msdos.batch.nt)
+   
+  Back to the top of this page . . .
+  Redraw the screen
+  (Windows 95)
+  RUNDLL USER,repaintscreen
+  Credits: Faris Mlaeb
+   
+  Back to the top of this page . . .
+  Rearrange the windows on the screen
+  (Windows 95)
+    Cascade: 
+    RUNDLL32 USER,cascadechildwindows 
+    Tile: 
+    RUNDLL32 USER,tilechildwindows 
+  Credits: Faris Mlaeb
+   
+  Back to the top of this page . . .
+  Change screen resolution
+  (Windows 9x with PowerToys' QuickRes installed):
+  RUNDLL DESKCP16.DLL,QUICKRES_RUNDLLENTRY hresxvresxbpp
+  Where hres is the horizontal resolution in pixels, vres is the vertical 
+  resolution in pixels, and bpp is the number of bits per pixel.
+  The following example will set the screen resolution to 800 x 600 at 256 
+  colors (28 colors = 8 bits per pixel)
+  RUNDLL DESKCP16.DLL,QUICKRES_RUNDLLENTRY 800x600x8
+  Credits: William Allen (posted on alt.msdos.batch)
+   
+  Back to the top of this page . . .
+  Disable mouse and/or keyboard
+  (Windows 9*/ME)
+  RUNDLL KEYBOARD,DISABLE
+  RUNDLL MOUSE,DISABLE
+  There is an ENABLE function too, but I haven't found the right syntax yet. 
+  Without any further parameters it only halts the system without warning 
+  (Windows 95). You will probably need the other RUNDLL commands to do a "clean" 
+  reboot.
+  Credits: Koro das Master
+   
+  Back to the top of this page . . .
+  Halt system
+  RUNDLL MOUSE,ENABLE
+  Credits: Faris Mlaeb
+   
+  Back to the top of this page . . .
+  Start "Add New Printer" wizard
+  RUNDLL32 SHELL32.DLL,SHHelpShortcuts_RunDLL AddPrinter
+   
+  Back to the top of this page . . .
+  Open "Connect to Printer" dialog
+  RUNDLL32 WINSPOOL.DRV,ConnectToPrinterDlg
+  This commands opens the "Connect to Printer" dialog, as you might have 
+  guessed. I don't see any useful application yet, but maybe you do.
+   
+  Back to the top of this page . . .
+  Open the Printers folder
+  RUNDLL32 SHELL32.DLL,Control_RunDLL MAIN.CPL @2
+  or for Windows 2000:
+  RUNDLL32 SHELL32.DLL,SHHelpShortcuts_RunDLL PrintersFolder
+  Credits: Pascal Rebsamen
+        Note:To create a shortcut in the Start Menu to open the Printers folder, 
+        create a directory using one of the following commands.
+
+
+          Windows 9x (without roaming profiles): 
+          MD "%windir%\Start 
+          Menu\Programs\Printers.{2227A280-3AEA-1069-A2DE-08002B30309D}" 
+          Windows NT 4/2000: 
+          MD "%USERPROFILE%\Start 
+          Menu\Programs\Printers.{2227A280-3AEA-1069-A2DE-08002B30309D}" 
+
+   
+  Back to the top of this page . . .
+  Print a test page
+  (Windows 95 and later; unfortunately this command does not always work):
+  RUNDLL32.EXE SHELL32.DLL,SHHelpShortcuts_RunDLL PrintTestPage
+  Or for Windows 9x (source: Daniel U. Thibault):
+  RUNDLL32.EXE MSPrint2.DLL,RUNDLL_PrintTestPage
+   
+  Back to the top of this page . . .
+  Manage printer settings
+  (Windows 2000)
+  RUNDLL32 PRINTUI.DLL,PrintUIEntry /?
+  This will display an extensive list of available functions and many examples.
+  View this same list in HTML.
+   
+  Back to the top of this page . . .
+  Add a TCP/IP printer port
+  RUNDLL32 tcpmonui.dll,LocalAddPortUI
+  Credits: Jeffrey W. Horning (posted on JSI FAQ)
+   
+  Back to the top of this page . . .
+  Clear Internet Explorer branding
+  (the annoying company name in IE's title bar)
+  RUNDLL32.EXE iedkcs32.dll,Clear
+  Credits: "pradeep" (posted on Go4Expert Forum)
+   
+  Back to the top of this page . . .
+  Open the dialog box for editing the Favorites in Internet Explorer
+  RUNDLL32.EXE shdocvw.dll,DoOrganizeFavDlg
+  Credits: "pradeep" (posted on Go4Expert Forum)
+   
+  Back to the top of this page . . .
+  Delete Internet Explorer 7's browsing history, cookies and temporary files
+  RUNDLL32.EXE inetcpl.cpl,ClearMyTracksByProcess n
+  Where n can have the following values:
+        1delete browsing history (list of visited sites)
+        2delete all cookies
+        8delete temporary files (cache)
+        16delete all saved forms data
+        32delete all saved passwords
+        255delete all of the above
+        4351delete all of the above and all settings stored by add-ons
+
+  The use of powers of 2 suggests that one can combine (add) these values, e.g. 
+  40 to delete temporary files (8) and passwords (32) simultaneously, but I 
+  didn't test this assumption yet.
+  Credits: Herby on neowin.net
+   
+  Back to the top of this page . . .
+  Start GUI mode disk format
+  RUNDLL32 SHELL32.DLL,SHFormatDrive
+  Back to the top of this page . . .
+  Start GUI mode diskcopy
+  RUNDLL32 DISKCOPY.DLL,DiskCopyRunDll
+  Credits: Media Chance
+   
+  Back to the top of this page . . .
+  "Map Network Drive" dialog
+  (Windows 95)
+  RUNDLL32 USER,wnetconnectdialog
+  and for Windows XP:
+  RUNDLL32 SHELL32.DLL,SHHelpShortcuts_RunDLL Connect
+  Credits: Faris Mlaeb (Windows 95) and Ian Freeman (Windows XP)
+   
+  Back to the top of this page . . .
+  Manage shares
+  RUNDLL32 ntlanui.dll,ShareManage - Shares
+  Credits: Jeffrey W. Horning (posted on JSI FAQ)
+   
+  Back to the top of this page . . .
+  Create a new share
+  RUNDLL32 ntlanui.dll,ShareCreate
+  Credits: Jeffrey W. Horning (posted on JSI FAQ)
+   
+  Back to the top of this page . . .
+  Open the Network ID wizard
+  RUNDLL32 netplwiz.dll,NetAccWizRunDll
+  Credits: Jeffrey W. Horning (posted on JSI FAQ)
+   
+  Back to the top of this page . . .
+  Open the Add network place wizard
+  RUNDLL32 netplwiz.dll,AddNetPlaceRunDll
+  Credits: Jeffrey W. Horning (posted on JSI FAQ)
+   
+  Back to the top of this page . . .
+  Logoff Windows (1)
+    Logoff Windows 98: 
+    RUNDLL SHELL32.DLL,SHExitWindowsEx 
+    Logoff Windows 98 and run Explorer after relogon: 
+    RUNDLL SHELL32.DLL,SHExitWindowsEx 4 
+    Logoff Windows NT 4: 
+    RUNDLL32 USER32.DLL,ExitWindowsEx
+    RUNDLL32 USER32.DLL,ExitWindowsEx 
+    This is not a mistake, the command usualy must be called twice before 
+    anything happens. 
+   
+  Back to the top of this page . . .
+  Reboot (1)
+    Windows 95 (not reliable, sometimes only shutdown): 
+    RUNDLL USER.EXE,ExitWindowsExec 
+    Windows 98: 
+    RUNDLL SHELL32.DLL,SHExitWindowsEx 2 
+    Windows NT 4: 
+    @ECHO OFF
+    PUSHD "%temp%"
+    ECHO [Version] > {out}.inf
+    ECHO signature=$chicago$ >> {out}.inf
+    ECHO [defaultinstall] >> {out}.inf
+    RUNDLL32 SETUPAPI,InstallHinfSection DefaultInstall 1 {out}.inf
+    DEL {out}.inf
+    POPD 
+    (original batch file by Walter Zackery, adapted for readability) 
+   
+  Back to the top of this page . . .
+  Shutdown (1)
+    Windows 95: 
+    RUNDLL USER.EXE,ExitWindows 
+    Windows 98: 
+    RUNDLL SHELL32.DLL,SHExitWindowsEx 1 
+    or: 
+    RUNDLL32 KRNL386.EXE,exitkernel 
+    (will also power down ATX boards) 
+   
+  Back to the top of this page . . .
+  Activate suspend mode (1)
+  (Windows 2000/XP)
+  RUNDLL32 PowrProf.dll, SetSuspendState
+  Credits: TechRepublic's Windows XP Newsletter & Graham Smith.
+   
+  Back to the top of this page . . .
+  Show "System setting changed, do you want to reboot now?" dialog (1):
+  (Windows 9*)
+  RUNDLL SHELL.DLL,RestartDialog
+   
+  Back to the top of this page . . .
+  Display NT's "About" dialog
+  Showing version, servicepack, registered owner and amount of physical memory:
+  RUNDLL32 SHELL32.DLL,ShellAboutW
+   
+  Back to the top of this page . . .
+  Open a file with Windows' "Open as" dialog
+  RUNDLL32 SHELL32.DLL,OpenAs_RunDLL filename
+   
+  Back to the top of this page . . .
+  Open a .ZIP file in Explorer
+  (Windows XP)
+  RUNDLL32.EXE ZIPFLDR.DLL,RouteTheCall zipfile.ZIP
+  Unfortunately, there seems to be no (native) command to copy files into the 
+  .ZIP file
+   
+  Back to the top of this page . . .
+  Swap your mouse to left handed use
+  (tip from "Speedy Gonzales")
+    Windows 95: 
+    RUNDLL USER.EXE,SwapMouseButton 
+    Windows NT: 
+    RUNDLL32 USER32.DLL,SwapMouseButton 
+  I know of no command yet to undo this, but the following will get you close:
+  CONTROL MAIN.CPL
+  or:
+  RUNDLL32 SHELL32.DLL,Control_RunDLL MAIN.CPL,@0,1
+   
+  Back to the top of this page . . .
+  Start "DialUp Connection" Wizard
+  (Windows 95)
+  RUNDLL RNAUI.DLL,RnaWizard
+  Credits: Faris Mlaeb
+   
+  Back to the top of this page . . .
+  Start DialUp Network
+  START RUNDLL32 RNAUI.DLL,RnaDial exact name of dialer entry
+  TRACERT -h 1 -w 1
+  The RUNDLL command starts DUN, the TRACERT command is supposed to actually 
+  start the dialing process, assuming automatic dialing is enabled.
+  Since I do not have access to any PC with DUN installed, I could not test the 
+  TRACERT command's effect.
+  Credits for these commands: Michael J. Gregg and Tom Lavedas
+  Use the RASPHONE command in Windows NT, which can also hang up the connection
+  Credits: Simon Sheppard.
+   
+  Back to the top of this page . . .
+  Open the Fonts folder
+  RUNDLL32 SHELL32.DLL,SHHelpShortcuts_RunDLL FontsFolder
+  Credits: Media Chance
+   
+  Back to the top of this page . . .
+  Open an Active Directory Search window:
+  RUNDLL32 dsquery,OpenQueryWindow
+  This allows you to search Active Directory for users or computers, though only 
+  a limited part of the properties is accessible.
+  Credits: TechRepublic's Windows XP e-Newsletter for August 5, 2004
+   
+  Back to the top of this page . . .
+  Activate registry changes
+  in HKEY_CURRENT_USER without logging off (Windows 2000 and later):
+  RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters ,1 ,True
+  Credits: Pete Smith.
+   
+  Back to the top of this page . . .
+  Remove Messenger
+  (Windows XP)
+  RUNDLL32 advpack.dll,LaunchINFSection %windir%\INF\msmsgs.inf,BLC.Remove
+  Credits: Pascal Rebsamen (posted on WinBoard)
+   
+  Back to the top of this page . . .
+  Repair IE 6
+  (Windows XP)
+  RUNDLL32 setupapi,InstallHinfSection DefaultInstall 132 %windir%infie.inf
+  Credits: Pascal Rebsamen (posted on WinBoard)
+   
+  Back to the top of this page . . .
+  Switch between windows
+  (Windows 7)
+  RUNDLL32 DwmApi #105
+  Credits: Scott Dunn, WindowsSecrets
+   
+  Back to the top of this page . . .
+  Turn Aero on or off
+  (Windows 7)
+  Turn ON Aero:
+  RUNDLL32 DwmApi #102
+  Turn OFF Aero:
+  RUNDLL32 DwmApi #104
+  Credits: Vishal Gupta
+   
+  Back to the top of this page . . .
+ 
+      Notes:(1)See my Shutdown page for more information and examples on reboot 
+      and shutdown command lines.
+       (2)By associating *.CPL files with the command
+      RUNDLL32 SHELL32.DLL,Control_RunDLL %1,@0
+      and *.SCR files with
+      RUNDLL32 DESK.CPL,InstallScreenSaver %1
+      you can open and/or install them by doubleclicking on their icons.
+
+ 
+Back to the top of this page . . .
+ 
+Examples
+Install a screensaver
+The following batch file installs a screensaver if one is specified, and opens 
+the Control Panel applet at the right tab to enable adjustment of its settings 
+(tested in NT only):
+@ECHO OFF
+IF "%1"=="" GOTO Interactive
+IF NOT EXIST %SystemRoot%.\System32\%~nx1 GOTO Interactive
+
+RUNDLL32 DESK.CPL,InstallScreenSaver %~f1
+GOTO End
+
+:Interactive
+RUNDLL32 SHELL32.DLL,Control_RunDLL DESK.CPL,@0,1
+
+:End
+
+
+ 
+ 
+      I am interested to hear about other possible uses for RUNDLL32.
+      Please send me your tips or comments by e-mail: info@robvanderwoude.com
+
+ 
+Back to the top of this page . . .
+ 
+More to explore
+ 
+An extensive list of RUNDLL commands with good search capabilities can be found 
+at Dx21's RunDLL32 section.
+Another good source is Using Rundll32.exe in Windows Vista and Windows 7 by 
+Victor Laurie.
+For programmers, there is more information on Microsoft's Windows 95 Rundll and 
+Rundll32 Interface page.
+Peter A. Bromberg's Short RunDll32 Primer for Developers.
+At The Visual Basic Developers Resource Centre a list of Control Panel Functions 
+for Windows 9x/NT through RUNDLL can be found (a tip from my former collegue 
+Adriaan Westra; thanks).
+An extensive list of Control Panel related and other RUNDLL commands can be 
+found at Media Chance's RUNDLL FAQ page.
+Jeffrey W. Horning provided a list of Undocuments paths to Windows 2000 tools 
+(thanks for Viju Chellamuthu, who mailed me the link).
+Search Microsoft.com for more info on INF files.
+ 
+Back to the top of this page . . .
+
+
+       unique visitors since July 2007page last uploaded: 15 December 2010, 
+21:38

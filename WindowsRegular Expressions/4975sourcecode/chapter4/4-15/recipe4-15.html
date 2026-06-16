@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>4-15. Validating Dates in MM/DD/YYYY</title>
+</head>
+<body>
+<form name="form1">
+    <input type="textbox" name="txtInput" />
+    <script type="text/javascript">
+    function validate() {
+        if (! document.form1.txtInput.value.match(/^(0?2/(0?[1-9]|[12][0-9])|(0?[469]|11)/(0?[1-9]|[12][0-9]|30)|(0?[13578]|1[02])/(0?[1-9]|[12][0-9]|3[01]))/\d{4}$/)) {
+            alert("Please enter valid value!")    
+        } else {
+            alert("Success!")
+        }
+    }
+    </script>
+    <input type="button" name="btnSubmit" onclick="validate()" value="Go" />
+</form>
+</body>
+</html>

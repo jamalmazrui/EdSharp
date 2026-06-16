@@ -1,0 +1,69 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter17.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Recipe17_28" Height="300" Width="380">
+    <StackPanel Orientation="Horizontal">
+        <StackPanel Margin="10">
+            <StackPanel.Resources>
+                <!--Style for the tile swabs-->
+                <Style TargetType="{x:Type Image}">
+                    <Setter Property="Margin" Value="5"/>
+                    <Setter Property="MaxHeight" Value="50"/>
+                </Style>
+            </StackPanel.Resources>
+            <!--Display the basic tiles used in the example-->
+            <TextBlock Text="Tiles:" />
+            <Image Source="bubble_dropper.jpg" />
+            <Image Source="mini_mountains.jpg" />
+            <Image Source="fly_larvae.jpg" />
+            <Image Source="fishy_rainbow.jpg" />
+        </StackPanel>
+        <Canvas Margin="5">
+            <Canvas.Resources>
+                <!--Define static ImageBrush resource with TileMode FlipXY-->
+                <ImageBrush x:Key="IB1" ImageSource="bubble_dropper.jpg"
+                            Stretch="UniformToFill" TileMode="FlipXY"
+                            Viewport="0,0,0.2,0.2" />
+                <!--Define static ImageBrush resource with TileMode FlipX-->
+                <ImageBrush x:Key="IB2" ImageSource="mini_mountains.jpg"
+                            Stretch="UniformToFill" TileMode="FlipX"
+                            Viewport="0,0,0.5,0.2" />
+            </Canvas.Resources>
+
+            <!--Fill Rectangles with static ImageBrush resources-->
+            <Rectangle Canvas.Top="5" Canvas.Left="5"
+                       Height="180" Width="80"
+                       Fill="{StaticResource IB1}" />
+            <Rectangle Canvas.Top="10" Canvas.Left="50"
+                       Height="70" Width="230"
+                       Fill="{StaticResource IB2}" />
+            <!--Fill Ellipse with custom ImageBrush - TileMode Tile-->
+            <Ellipse Canvas.Top="130" Canvas.Left="30"
+                     Height="100" Width="230">
+
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="fishy_rainbow.jpg"
+                                Stretch="Fill" TileMode="Tile"
+                                Viewport="0,0,0.25,0.5" />
+                </Ellipse.Fill>
+            </Ellipse>
+            <!--Fill with custom ImageBrush - TileMode Tile-->
+            <Ellipse Canvas.Top="30" Canvas.Left="110"
+                     Height="150" Width="150">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="fly_larvae.jpg" Opacity=".7"
+                                Stretch="Uniform" TileMode="Tile"
+                                Viewport="0,0,0.5,.5" />
+                </Ellipse.Fill>
+            </Ellipse>
+            <!--Draw Stroke with tiled ImageBrush - TileMode Tile-->
+            <Line X1="20" X2="280" Y1="240" Y2="240" StrokeThickness="30">
+                <Line.Stroke>
+                    <ImageBrush ImageSource="ApressLogo.gif"
+                                Stretch="UniformToFill" TileMode="Tile"
+                                Viewport="0,0,0.25,1" />
+                </Line.Stroke>
+            </Line>
+        </Canvas>
+    </StackPanel>
+</Window>

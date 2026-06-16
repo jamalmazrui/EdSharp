@@ -1,0 +1,18 @@
+Subject:
+EdSharp error: Could not load file or assembly 'Microsoft.JScript, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies. The module was expected to contain an assembly manifest.
+From:
+"Ljubica" <ljuba.kovac@zg.t-com.hr>
+Date:
+Tue, 24 Aug 2010 23:14:06 +0200
+To:
+"Jamal Mazrui" <jamal@EmpowermentZone.com>
+
+ 
+Could not load file or assembly 'Microsoft.JScript, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies. The module was expected to contain an assembly manifest.
+
+Stack trace:
+   at EdSharp.Util.Literalize(String sText, Boolean bCheckPrefix)
+   at EdSharp.MdiFrame..ctor()
+   at EdSharp.App.<.ctor>b__2(Object sender, StartupEventArgs e)
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.OnStartup(StartupEventArgs eventArgs)
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.DoApplicationModel()

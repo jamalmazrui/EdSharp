@@ -1,0 +1,12 @@
+\Choose from the following:
+1 - Translate an ascii file
+2 - Emboss a file that has already been translated
+3 - Back translate a file
+which one?
+ 1 - Translate and store in a file
+ 2 - translate and emboss immediately
+ choice?
+ Enter the starting page:
+ Enter ending page number?
+\Enter name of source file <RETURN> to exit:
+\Enter destination file?

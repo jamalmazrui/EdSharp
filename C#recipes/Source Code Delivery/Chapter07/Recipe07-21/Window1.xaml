@@ -1,0 +1,10 @@
+﻿<Window x:Class="Apress.VisualCSharpRecipes.Chapter07.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Recipe07_21" Height="200" Width="300">
+    <StackPanel Margin="20">
+        <TextBlock FontSize="20" Text="A WPF Window" TextAlignment="Center"/>
+        <Button Click="btnClose_Click" Content="Close" Margin="50" 
+                MaxWidth="50" Name="btnClose" />
+    </StackPanel>
+</Window>

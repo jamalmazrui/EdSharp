@@ -1,0 +1,37 @@
+
+Subject:
+edsharp
+From:
+"John W. Carty" <JCarty@TarrantCounty.com>
+Date:
+10/22/2013 10:12 AM
+To:
+"'jamal@EmpowermentZone.com'" <jamal@EmpowermentZone.com>
+
+Greetings,
+ 
+I’m a blind jaws user and I’ve worked many years as a cobol/cics programmer in a 3270 environment.
+ 
+My shop has been moving toward re-writing our legacy systems into .net applications using C#.
+ 
+After struggling terribly with visual studio I’ve given up and downloaded and installed the latest version of edsharp.
+ 
+As an editor this works great. I now can focus on actually learning the coding rather then just fighting the environment.
+ 
+The one and only thing I learned from within the VS environment was the solution explorer and how it creates and handles all the path/environment for my project.
+ 
+Forgive me if this terminology isn’t correct.
+ 
+Is there a way I can achieve this function via the command line and/or from within edsharp?
+ 
+I’d appreciate any and all help you may provide for me to learn C# programming so please direct me to any and all good tutorials for a blind programmer.
+ 
+Thank you.
+ 
+You’ve done a huge service to the blind community trying to make our way thru the IT industry.
+ 
+John Carty
+ 
+ 
+ 
+ 

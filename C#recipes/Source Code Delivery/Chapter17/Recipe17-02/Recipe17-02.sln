@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recipe17-02", "Recipe17-02.csproj", "{1CD8E954-BBB7-408D-A243-6B6AF5395194}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1CD8E954-BBB7-408D-A243-6B6AF5395194}.Debug|x86.ActiveCfg = Debug|x86
+		{1CD8E954-BBB7-408D-A243-6B6AF5395194}.Debug|x86.Build.0 = Debug|x86
+		{1CD8E954-BBB7-408D-A243-6B6AF5395194}.Release|x86.ActiveCfg = Release|x86
+		{1CD8E954-BBB7-408D-A243-6B6AF5395194}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
