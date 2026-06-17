@@ -1,4 +1,4 @@
-; EdSharp_Setup.iss -- Inno Setup script for the x64 EdSharp baseline.
+; EdSharp_Setup.iss -- Inno Setup script for the AnyCPU EdSharp baseline (x64 and ARM64).
 ;
 ; Compile with ISCC.exe (Inno Setup 5.6+ or 6.x). Run BuildEdSharp.cmd
 ; first so EdSharp.exe, EdSharp.dll, and nvdaControllerClient.dll exist.
@@ -7,7 +7,8 @@
 ; This is a slimmed, 64-bit replacement for the old edsharp_setup.iss.
 ; The legacy Java / JRE detection block and the obsolete 32-bit support
 ; assemblies (JsSupport, VbSupport, saapi32, nvdaControllerClient32) have
-; been removed. Native code generation via ngen is kept (64-bit).
+; been removed. Native code generation via ngen is kept; on ARM64 it targets
+; the ARM64 framework, and HasNgen skips it gracefully if ngen is absent.
 
 [Setup]
 AppName=EdSharp
@@ -21,8 +22,12 @@ AppPublisherURL=https://github.com/JamalMazrui/EdSharp
 AppCopyright=Copyright 2006-2026 by Jamal Mazrui
 DefaultDirName={autopf}\EdSharp
 DefaultGroupName=EdSharp
-ArchitecturesAllowed=x64
-ArchitecturesInstallIn64BitMode=x64
+; x64compatible matches both x64 and ARM64 (Inno Setup 6.3+), so the AnyCPU
+; EdSharp.exe installs and runs natively on both.  MinVersion 10.0 matches the
+; .NET Framework 4.8 / Windows 10+ requirement.
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
+MinVersion=10.0
 Compression=lzma2/max
 SolidCompression=yes
 OutputBaseFilename=EdSharp_Setup
@@ -145,7 +150,8 @@ Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\EdSharp
 [Code]
 function NgenExe(sParam: string): string;
 begin
-  // 64-bit ngen ships with the .NET Framework runtime.
+  // ngen ships with the 64-bit .NET Framework runtime; on an ARM64 system the
+  // Framework64 path is the ARM64 framework.  HasNgen guards a missing file.
   result := ExpandConstant('{win}\Microsoft.NET\Framework64\v4.0.30319\ngen.exe');
 end;
 

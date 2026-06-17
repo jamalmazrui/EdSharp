@@ -1,3 +1,170 @@
+# EdSharp 5.0 baseline starter -- build notes (revision 47)
+
+Revision 47: document the Transform Files job format, and fix a bug found while
+documenting it (this is very likely the "Alt+= tended not to work" beta report).
+
+Bug: in TransFormFiles(), a task wrote the file only when
+"bHasReplace && iCount > 0", where bHasReplace required a non-empty Replace
+value.  So a deletion task (Find with an empty Replace -- e.g. the common "trim
+trailing whitespace") changed the text in memory but was never saved.  A job
+appeared to work only when it also contained a non-empty-replacement task that
+happened to match, making the feature behave unpredictably.  Reworked the apply
+branch: extract tasks now use Regex.Matches (collect to clipboard, never touch
+the file or later tasks' input), and replace/delete tasks use Regex.Replace and
+mark the file changed on any match (iCount > 0), so deletions persist.  Removed
+the now-unused bHasReplace.  Brace balance unchanged (+11).
+
+Docs: the EdSharp.md Transform Files section already described the new
+Regexer-style .inix job format in prose, but the embedded sample still showed
+the old positional .job format.  Tightened the key descriptions (an empty
+Replace deletes matches; Extract collects to the clipboard without changing the
+file; Divider defaults to form feed + newline) and replaced the stale sample
+with a real .inix sample (deletion, replacement, extraction) that matches the
+shipped Transform_Example.inix.  Regenerated EdSharp.htm.
+
+Format summary (for reference): a job is an .inix file (.ini or .inix
+extension), one [Section] per task; the section name is a description shown in
+Test/Verbose output.  Keys: Find (regex, required), Replace (replacement text;
+\n \t etc. and $1/$# honored; empty deletes), Extract (true to collect matches
+to the clipboard instead of editing), Divider (separator between collected
+matches), Options (comma-separated .NET RegexOptions names).  Values may span
+multiple lines.  The current document supplies the source file list, one path
+per line.  Modes: Test (count only), Run (apply), Verbose (apply with per-task
+detail).
+
+---
+
+# EdSharp 5.0 baseline starter -- build notes (revision 46)
+
+Revision 46: make the installer (EdSharp_Setup.exe) run on ARM, completing the
+ARM support begun in rev 43 (AnyCPU EdSharp.exe).
+
+EdSharp_Setup.iss had ArchitecturesAllowed=x64, which makes Inno Setup refuse to
+run on a Windows-on-ARM machine ("can only be run on x64"). Changed both
+ArchitecturesAllowed and ArchitecturesInstallIn64BitMode from x64 to
+x64compatible, which (Inno Setup 6.3+) matches x64 AND ARM64, so the installer
+runs and installs in 64-bit mode on both, and the AnyCPU EdSharp.exe then runs
+natively. This matches the already-modernized DbDo_setup.iss, so the installed
+Inno Setup is new enough for the identifier. Added MinVersion=10.0 (matches the
+.NET Framework 4.8 / Windows 10+ requirement and DbDo).
+
+The ngen [Run] steps are unchanged and remain safe on ARM64: NgenExe resolves to
+{win}\Microsoft.NET\Framework64\v4.0.30319\ngen.exe, which on an ARM64 system
+is the ARM64 framework's ngen, and the HasNgen (FileExists) Check skips it
+gracefully if it is absent, so installation never fails on that account. Updated
+the script comments accordingly (header, ngen notes).
+
+No other architecture-gated logic exists in the script (the only Check is the
+file-existence HasNgen). EdSharp.cs is unchanged this revision.
+
+---
+
+# EdSharp 5.0 baseline starter -- build notes (revision 45)
+
+Revision 45: open raw by default; auto-convert only binary/document formats.
+
+Per request, no text format is auto-converted when a file is opened from outside
+the editor (Explorer, "Open with", command line, Recent Files). Previously
+GetViewLevel() returned a fallback of 1 (convert) for any extension not listed
+in the ViewLevels option, so a text format that happened to have an Import
+converter and was not listed (for example .rst) would back-translate/convert on
+those paths. .json/.csv/.inix already opened raw only because they have no
+converter -- a fragile guarantee that a future converter could break.
+
+GetViewLevel() now decides in this order: (1) an explicit ViewLevels entry wins
+(user can force any extension, e.g. "docx:0" or "rst:1"); (2) a built-in set of
+binary/document formats converts -- doc docx xls xlsx ppt pptx pdf epub epub3
+hlp wpd rtf; (3) everything else opens raw (fallback changed from 1 to 0). This
+guarantees text/markup/data/source/unknown formats open raw now and as new
+converters are added, while binary formats whose raw bytes are unreadable still
+convert. The binary set lives in code (const sBinaryFormats), so existing
+installs get correct binary conversion even though their saved ViewLevels
+predates this change -- their old entries simply act as overrides and stay
+consistent (htm:0 = raw, pdf:1 = convert, etc.); the only behavior change they
+see is that a text-with-converter format like .rst now opens raw, which is the
+intent. No existing-install action is required.
+
+Control+O still always opens raw; Control+Shift+O still always converts. The
+default ViewLevels in EdSharp.ini is now empty (the policy lives in code; the
+option is purely for per-extension overrides). Docs (ViewLevels section) and the
+EdSharp.inix override note were rewritten to the new model; regenerated
+EdSharp.htm.
+
+This supersedes the rev 44 braille-specific default (brl:0 brf:0), which is now
+subsumed by the general "text opens raw" rule.
+
+---
+
+# EdSharp 5.0 baseline starter -- build notes (revision 44)
+
+Revision 44: consistency fix for braille open behavior.
+
+The ordinary Open command (Control+O) never converts -- it opens raw (only .rtf
+prompts). The Explorer / "Open with" / command-line / Recent Files paths instead
+use GetViewLevel(), which converts when an extension's ViewLevels entry is >= 1
+(or is unlisted, since the fallback default is 1) AND an [Import] converter
+exists. .brl/.brf were unlisted, so they back-translated on those paths only --
+an asymmetry with Control+O. Added "brl:0 brf:0" to the default ViewLevels in
+EdSharp.ini so braille opens raw on every path by default, matching Control+O.
+Open Other Format (Control+Shift+O) still back-translates on demand; set
+"brl:1 brf:1" to restore auto-back-translation on open. Docs and the EdSharp.inix
+override note were updated (the override now serves existing installs, whose
+data-folder ViewLevels predates this default).
+
+Design note (not implemented): making EVERY format open raw on those paths
+(removing auto-conversion) would regress binary/container formats -- PDF, .docx,
+.doc, .xls/.xlsx, .ppt/.pptx, .odt, .epub -- which would open as raw binary
+(unreadable, and especially noisy for a screen reader) instead of auto-extracted
+text. Those formats are valuable to auto-convert; text-like formats (htm, html,
+md, xml, tex, source code, and now braille) are the ones that should open raw.
+The per-extension ViewLevels mechanism already expresses exactly this split, so
+the targeted brl/brf entries are the right fix rather than a global change.
+
+---
+
+# EdSharp 5.0 baseline starter -- build notes (revision 43)
+
+Revision 43 addresses beta feedback (Dean Martineau via BITS).
+
+1. ARM compatibility. BuildEdSharp.cmd now compiles EdSharp.exe AnyCPU instead
+   of x64. AnyCPU runs as native 64-bit on x64 AND as native ARM64 on Windows on
+   ARM (an x64 build does not run natively there, and on Win10-on-ARM not at
+   all). The only architecture-specific dependency is the native
+   nvdaControllerClient.dll (x64); Say.cs already guards that P/Invoke
+   (DllNotFoundException + catch-all), so on ARM64 it degrades gracefully to the
+   other speech paths instead of crashing. No manifest change was needed (it
+   carries no processorArchitecture).
+
+2. Append From Clipboard (Alt+7) crash on Windows 11. EdSharp watches the
+   clipboard as a viewer and read it with a bare Clipboard.GetText() inside
+   WndProc; on Windows 11 the clipboard is frequently locked (cloud clipboard /
+   history) and GetText throws ExternalException, which is fatal in a window
+   procedure. Added Util.GetClipboardText() and Util.SetClipboardText() that
+   retry on contention (10 x 40 ms) and return ""/clear instead of throwing, and
+   routed all active clipboard reads (7) and writes (9) through them. This fixes
+   the reported crash and hardens every copy/paste/append path.
+
+3. Opening .brl / .brf raw. EdSharp already supports this through the ViewLevels
+   option (GetViewLevel): a level of 0 opens a type without conversion. The
+   default ViewLevels did not list brl/brf, so they fell through to the default
+   level 1 and back-translated. Rather than change the default (some braille
+   users want back-translation on open), the user guide now documents adding
+   "brl:0 brf:0" to ViewLevels, and EdSharp.inix carries a ready commented
+   override for existing installs. Open Other Format (Control+Shift+O) still
+   forces back-translation on demand.
+
+Not changed (need more information / out of scope as confident fixes):
+- Alt+= is the Transform Files command; "tended not to work" is too vague to fix
+  without a reproducible case. Logged for follow-up.
+- A macro recorder is a new feature, out of scope for a feedback-fix pass.
+- Defaulting braille files to raw vs back-translated is a product decision left
+  to the author; a future toggle/UI could make it one keystroke.
+
+Docs: requirements and rebuild notes now state AnyCPU / x64 + ARM64; regenerated
+EdSharp.htm.
+
+---
+
 # EdSharp 5.0 baseline starter -- build notes (revision 42)
 
 Revision 42: installer + documentation housekeeping.
