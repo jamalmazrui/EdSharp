@@ -39,6 +39,11 @@ SetupLogging=yes
 [Files]
 ; Built artifacts (present after BuildEdSharp.cmd).
 Source: "EdSharp.exe";        DestDir: "{app}"; Flags: ignoreversion
+; Runtime configuration for EdSharp.exe -- carries the startup tuning (disables
+; Authenticode publisher-evidence/CRL checks, enables concurrent GC).  It must
+; sit next to EdSharp.exe, and ignoreversion ensures it is always refreshed so
+; it stays in sync with the executable.
+Source: "EdSharp.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp.dll";        DestDir: "{app}"; Flags: ignoreversion
 Source: "nvdaControllerClient.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 ; Source and build inputs (shipped so users can recompile, EdSharp-style).
@@ -51,7 +56,6 @@ Source: "Web.cs";             DestDir: "{app}"; Flags: ignoreversion skipifsourc
 Source: "EdSharp.ico";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "EdSharp.js";         DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp.manifest";   DestDir: "{app}"; Flags: ignoreversion
-Source: "EdSharp.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BuildEdSharp.cmd";   DestDir: "{app}"; Flags: ignoreversion
 Source: "FetchConvertTools.ps1";   DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "FetchUde.ps1";            DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist

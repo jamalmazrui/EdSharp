@@ -1,3 +1,61 @@
+# EdSharp 5.0 baseline starter -- build notes (revision 42)
+
+Revision 42: installer + documentation housekeeping.
+
+- EdSharp_Setup.iss: EdSharp.exe.config was already shipped (ignoreversion);
+  regrouped it directly beneath EdSharp.exe with a comment, since it carries the
+  startup tuning and must stay in sync with the executable. ignoreversion means
+  every install/update refreshes it.
+- EdSharp.md: updated the title block from "Version 4.0 / May 29, 2017 /
+  Copyright 2007 - 2017" to "Version 5.0 beta / June 2026 / Copyright
+  2007 - 2026", and the requirements sentence from ".NET Framework 4.0 or above
+  ... Windows 7 or later" to ".NET Framework 4.8, built into Windows 10 and 11"
+  plus a note that 5.0 is a 64-bit application. Regenerated EdSharp.htm.
+  (Tutorial.md/Announce.md already carried no stale version text; the PowerBASIC
+  10.0 reference is a third-party tool version and is left as-is.)
+
+---
+
+# EdSharp 5.0 baseline starter -- build notes (revision 41)
+
+Revision 41 clarifies and tunes EdSharp's startup performance.
+
+Background: EdSharp.exe is a managed .NET Framework 4.8 assembly (MSIL), JIT-
+compiled by the CLR at launch -- not a native (machine-code) binary. ngen (the
+Native Image Generator) pre-compiles it to a cached native image so the JIT cost
+is skipped at startup.
+
+What changed:
+- Removed the vestigial BUILD-TIME ngen step from BuildEdSharp.cmd. It ran in the
+  build folder, usually without admin, so it printed "Access is denied" and did
+  nothing for the installed program (native images are tied to the installed
+  location). This was the confusing part.
+- Native pre-JIT is, and remains, handled by the INSTALLER: EdSharp_Setup.iss
+  already runs "ngen install" against {app}\EdSharp.exe during setup (elevated,
+  silent, with /AppBase), and "ngen uninstall" on removal. So a copy installed
+  via EdSharp_Setup.exe is backed by a native image and starts faster than a
+  copy run straight from the build folder.
+- EdSharp.exe.config now disables generatePublisherEvidence. Without this the CLR
+  can stall for seconds at startup verifying Authenticode publisher evidence
+  against certificate-revocation lists, especially offline or behind a slow
+  proxy. gcConcurrent=true is stated explicitly (it is the workstation default)
+  to keep the UI responsive. Both are read at runtime -- no recompile needed.
+
+How to confirm the native image (elevated command prompt):
+    ngen display EdSharp
+A line listing EdSharp with a "Native image ..." entry means it is installed.
+
+Optional further gains (not done here):
+- Multicore background JIT: a few lines in startup
+  (System.Runtime.ProfileOptimization.SetProfileRoot/StartProfile, pointed at the
+  data folder) speed warm starts when no native image is present. Largely
+  redundant once the installer's ngen image exists; needs a recompile.
+- True native/single-file AOT would require migrating from .NET Framework 4.8 to
+  .NET 8 with ReadyToRun or NativeAOT -- a large, separate effort, and WinForms
+  NativeAOT support is limited.
+
+---
+
 # EdSharp 5.0 baseline starter -- build notes (revision 40)
 
 Revision 40 fixes JAWS intercepting Ctrl+Up / Ctrl+Down in the editor instead of

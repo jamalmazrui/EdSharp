@@ -106,16 +106,12 @@ if exist EdSharp.ico set "icon=/win32icon:EdSharp.ico"
 "!csc!" /nologo /target:winexe /platform:x64 /optimize+ !udeDef! %icon% /win32manifest:EdSharp.manifest /reference:"Tektosyne.dll" /reference:"Microsoft.VisualBasic.dll" /reference:"Microsoft.CSharp.dll" /reference:"!uiaProv!" /reference:"!uiaTypes!" !udeRef! /out:EdSharp.exe EdSharp.cs Lbc.cs Say.cs Inix.cs KeyMap.cs Web.cs >> "!log!" 2>&1
 if errorlevel 1 goto failed
 
-rem ---- optional: pre-JIT with ngen for faster startup (needs admin) ----
-rem This step is OPTIONAL. ngen needs an elevated (administrator) prompt; from a
-rem normal prompt it prints "Access is denied / Administrator permissions are
-rem needed" and is skipped. That does NOT affect the build -- EdSharp.exe is
-rem already compiled and runs fine without a pre-generated native image.
-set "ngen=%SystemRoot%\Microsoft.NET\Framework64\v4.0.30319\ngen.exe"
-if exist "!ngen!" (
-  echo Optional ngen pre-JIT ^(needs an admin prompt; any failure on the next line is harmless^): >> "!log!"
-  "!ngen!" install "%CD%\EdSharp.exe" /nologo >> "!log!" 2>&1
-  if errorlevel 1 (echo   ngen skipped - not an admin prompt; this does NOT affect the build. >> "!log!") else (echo   Native image generated. >> "!log!")
+rem ---- native pre-JIT (ngen) is handled by the INSTALLER, not here ----
+rem EdSharp.exe is a managed .NET assembly; the CLR JIT-compiles it at launch.
+rem EdSharp_Setup.iss runs "ngen install" against the INSTALLED copy in Program
+rem Files (elevated, where it actually takes effect) to give a precompiled native
+rem image for faster startup.  Running ngen here, in the build folder and usually
+rem without admin, did nothing useful for the installed program, so it was removed.
 )
 
 rem ---- best-effort: fetch any MISSING third-party Convert tools ----

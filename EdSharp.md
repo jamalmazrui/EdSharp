@@ -1,9 +1,9 @@
 # EdSharp User Guide
 
 EdSharp\
-Version 4.0\
-May 29, 2017\
-Copyright 2007 - 2017 by Jamal Mazrui\
+Version 5.0 beta\
+June 2026\
+Copyright 2007 - 2026 by Jamal Mazrui\
 GNU Lesser General Public License (LGPL)\
 
 ## Contents
@@ -27,7 +27,7 @@ GNU Lesser General Public License (LGPL)\
 ## Description
 EdSharp is a full featured text editor that is friendly, powerful, and open source.  It uses a standard Windows interface for an application that supports multiple document windows.  Though intended for sighted users as well, it seeks to enhance productivity for users of the JAWS, NVDA, Window-Eyes, or System Access screen readers by automatically verbalizing relevant information.  These speech messages supplement default speech heuristics, providing confirmation or results of commands without the need for manually interrogating the screen.  If a screen reader is not detected in memory, EdSharp uses the default SAPI voice, if available, which may be configured via the Speech applet in Control Panel.
 
-Written in the C# (pronounced C Sharp) language, EdSharp implements the "Homer editor interface," which originally evolved with an editor called TextPal.  The same interface was also implemented in the package of JAWS scripts and tools called HomerKit.  EdSharp requires the .NET Framework 4.0 or above to run:  a free download from Microsoft that is also installed with Windows 7 or later.
+Written in the C# (pronounced C Sharp) language, EdSharp implements the "Homer editor interface," which originally evolved with an editor called TextPal.  The same interface was also implemented in the package of JAWS scripts and tools called HomerKit.  EdSharp 5.0 is a 64-bit application and requires the .NET Framework 4.8, which is built into Windows 10 and 11 and is available as a free download from Microsoft for older systems.
 
 Almost every EdSharp command may be done through a mnemonic keystroke, as well as a menu or mouse operation.  These commands begin with the standard keys available in Notepad or most Windows-based editors.  EdSharp then adds many beneficial features.  Optional scripts for some screen readers provide further fine tuning of the speech interface for those users.
 
