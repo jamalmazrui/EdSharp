@@ -27,7 +27,7 @@ GNU Lesser General Public License (LGPL)\
 ## Description
 EdSharp is a full featured text editor that is friendly, powerful, and open source.  It uses a standard Windows interface for an application that supports multiple document windows.  Though intended for sighted users as well, it seeks to enhance productivity for users of the JAWS, NVDA, Window-Eyes, or System Access screen readers by automatically verbalizing relevant information.  These speech messages supplement default speech heuristics, providing confirmation or results of commands without the need for manually interrogating the screen.  If a screen reader is not detected in memory, EdSharp uses the default SAPI voice, if available, which may be configured via the Speech applet in Control Panel.
 
-Written in the C# (pronounced C Sharp) language, EdSharp implements the "Homer editor interface," which originally evolved with an editor called TextPal.  The same interface was also implemented in the package of JAWS scripts and tools called HomerKit.  EdSharp 5.0 is a 64-bit application and requires the .NET Framework 4.8, which is built into Windows 10 and 11 and is available as a free download from Microsoft for older systems.
+Written in the C# (pronounced C Sharp) language, EdSharp implements the "Homer editor interface," which originally evolved with an editor called TextPal.  The same interface was also implemented in the package of JAWS scripts and tools called HomerKit.  EdSharp 5.0 is built AnyCPU on the .NET Framework 4.8, so it runs as a native 64-bit application on both Intel/AMD (x64) and ARM (ARM64) editions of Windows.  The .NET Framework 4.8 is built into Windows 10 and 11 and is a free download from Microsoft for older systems.
 
 Almost every EdSharp command may be done through a mnemonic keystroke, as well as a menu or mouse operation.  These commands begin with the standard keys available in Notepad or most Windows-based editors.  EdSharp then adds many beneficial features.  Optional scripts for some screen readers provide further fine tuning of the speech interface for those users.
 
@@ -382,25 +382,31 @@ Math.Pow(interest, years) * deposit
 
 The result, about $163, was placed on the line below the previously selected text, and the cursor was placed at the start of that line.
 
-The Transform Files command, Alt+Equals, applies a saved job of search and replace tasks to one or more files -- typically to massage data or formatting in predictable ways.  The current document holds the list of files to process, one path per line, and EdSharp prompts for the job file.  A job is an .inix file (it may carry a .ini or .inix extension) with one bracketed section per task.  Each section has a Find key (the regular expression), a Replace key (the replacement, where \n, \t, and similar escapes are honored and $# inserts the running match count), an optional Options key (a comma-separated list of .NET regular expression options such as multiline, ignorecase, or singleline), an optional Extract key (set to true to also collect each match to the clipboard), and an optional Divider key (the separator placed between collected matches).  Because the .inix format supports multi-line values, a Find or Replace expression may span several lines.  This is the same job format processed by the companion Regexer tool.  When you run a job, EdSharp offers Test (count matches only), Run (apply the changes), and Verbose (apply with per-task detail) modes.
+The Transform Files command, Alt+Equals, applies a saved job of search and replace tasks to one or more files -- typically to massage data or formatting in predictable ways.  The current document holds the list of files to process, one path per line, and EdSharp prompts for the job file.  A job is an .inix file (it may carry a .ini or .inix extension) with one bracketed section per task.  Each section has a Find key (the regular expression to match) and then either replaces or extracts.  A Replace key gives the replacement text, in which \n, \t, and similar escapes are honored, the usual .NET group references such as $1 work, and $# inserts the running match count; an empty Replace deletes the matched text.  Alternatively, an Extract key set to true collects each match to the clipboard without changing the file, separated by the optional Divider key (a form feed and newline by default).  An optional Options key takes a comma-separated list of .NET regular expression option names such as multiline, ignorecase, or singleline.  Because the .inix format supports multi-line values, a Find or Replace expression may span several lines.  This is the same job format processed by the companion Regexer tool.  When you run a job, EdSharp offers Test (count matches only), Run (apply the changes), and Verbose (apply with per-task detail) modes.
 
 Before invoking this command, the current editing window should contain the list of files to process, one per line.  Such a list could be typed manually or generated via the Path List command (Control+Shift+P).  If a file does not include a leading path, the prior one is assumed.  
 
 An intervening dialog lets you test what changes would occur without actually performing them.  In either case, you can subsequently use the Review Output command, Alt+Shift+F5, to examine the change log.
 
-Here is the content of a sample transform job  that defines two tasks:\
+Here is a sample job with three tasks -- a deletion, a replacement, and an extraction:\
 
 ```
-[Begin Content of TrimLine.job]
-Remove leading space or tab characters from each line
-(\A|\n)( |\t)+
-$1
+[Trim trailing whitespace from each line]
+Options=multiline
+Find=[ \t]+$
+Replace=
 
-Remove trailing space or tab characters from each line
-( |\t)+(\r|\Z)
-$2
-[End Content of TrimLine.job]
+[Collapse runs of blank lines to a single blank line]
+Find=\n{3,}
+Replace=\n\n
+
+[Collect every Markdown heading to the clipboard]
+Options=multiline
+Find=^#{1,6} .+$
+Extract=true
 ```
+
+The first task has an empty Replace, so it deletes each match; the second supplies replacement text; the third collects matches to the clipboard instead of changing the file.  A copy of this job ships as Transform_Example.inix in the EdSharp program folder.
 
 Press Alt+Shift+Semicolon to insert the current time and date at the cursor position.  The configurable format defaults to text like the following:\
 `5:43 AM Sunday, May 13, 2007`
@@ -456,7 +462,7 @@ You can configure whether EdSharp's application window is maximized at startup, 
 
 The HardPageAddress option determines whether the Address command, Alt+A, gives a page number instead of document percentage (default is No).  A form feed character specifies a hard page break.  It is part of the sequence inserted by the Section Break command, Control+Enter, which is configurable via the SectionBreak option of the configuration dialog.  Use the Control+PageDown and Control+PageUp commands to navigate by page.  Pressing Alt+A a second time in a row gives the alternate type of address information, so you can still get a page number without changing the HardPageAddress setting.
 
-The ViewLevels option is a list of file extensions and associated numbers that specify how EdSharp should handle conversions when files are opened through Windows Explorer or by the Recent Files command.  For example, this setting includes "md:0 pdf:1" by default.  If you associate the .pdf extension with EdSharp (e.g., via the shortcut in the EdSharp program group of the Start Menu), then EdSharp will automatically convert a PDF to text when opened.  On the other hand, the 0 value associated with the .md extension means that no conversion will automatically be attempted on such a file type (Markdown format).
+The ViewLevels option controls whether EdSharp converts a file when it is opened from outside the editor -- through Windows Explorer, the "Open with" menu, the command line, or the Recent Files command.  (The ordinary Open command, Control+O, always opens a file raw, and Open Other Format, Control+Shift+O, always converts; ViewLevels affects only the outside-the-editor paths.)  By default EdSharp opens files raw, with one exception: binary and document formats whose raw bytes are not readable -- Word (.doc, .docx), Excel (.xls, .xlsx), PowerPoint (.ppt, .pptx), PDF (.pdf), EPUB (.epub, .epub3), WordPerfect (.wpd), WinHelp (.hlp), and rich text (.rtf) -- are converted to text (or, for .rtf, shown as rich text).  Every text, markup, data, source-code, or otherwise unrecognized format opens raw, so no text format is ever auto-converted.  Braille files (.brl, .brf) are treated as text and therefore open raw, showing the braille content as it is stored rather than back-translating it.  Use ViewLevels to override any extension: a value of 0 opens that type raw and 1 converts it.  For example, "docx:0" would open Word files raw, "rst:1" would auto-convert reStructuredText, and "brl:1 brf:1" would back-translate braille on open.  The option is a single space-separated list, as in ViewLevels="docx:0 rst:1".
 
 The UseIndentModeDefault setting determines the state of indent mode when a new document window is opened.  This mode may be toggled on a per-window basis with Alt+Shift+I.  The configuration setting determines whether it is initially on or off when a file is opened (default is No).
 
@@ -765,7 +771,7 @@ Insert All Users Path=Control+Shift+I, Insert JAWS All Users path in Open or Sav
 ### Development Notes
 For the technically curious, I developed EdSharp with the [C# programming language](<https://learn.microsoft.com/en-us/dotnet/csharp/>).
 
-EdSharp 5.0 is a 64-bit application targeting the .NET Framework 4.8.  To rebuild it from source, open a command prompt in the program folder and run `BuildEdSharp.cmd`.  That script locates the C# compiler (preferring the newest Roslyn `csc.exe`, otherwise the framework `csc.exe` that ships with .NET), compiles `EdSharp.exe` and `EdSharp.dll`, and -- on a best-effort basis -- fetches the few files it needs:  the `Ude.dll` encoding-detection library and current portable builds of the Convert tools (Pandoc, HTML Tidy, liblouis, Xpdf, and Artistic Style).  A clean clone therefore needs nothing but `BuildEdSharp.cmd`; everything generated or downloaded is reproduced on demand.
+EdSharp 5.0 targets the .NET Framework 4.8 and is compiled AnyCPU, so the same build runs as native 64-bit on x64 and ARM64 Windows.  To rebuild it from source, open a command prompt in the program folder and run `BuildEdSharp.cmd`.  That script locates the C# compiler (preferring the newest Roslyn `csc.exe`, otherwise the framework `csc.exe` that ships with .NET), compiles `EdSharp.exe` and `EdSharp.dll`, and -- on a best-effort basis -- fetches the few files it needs:  the `Ude.dll` encoding-detection library and current portable builds of the Convert tools (Pandoc, HTML Tidy, liblouis, Xpdf, and Artistic Style).  A clean clone therefore needs nothing but `BuildEdSharp.cmd`; everything generated or downloaded is reproduced on demand.
 
 To build the Windows installer, `EdSharp_Setup.exe`, install [Inno Setup](<https://jrsoftware.org/isinfo.php>) and compile `EdSharp_Setup.iss` with it (after a successful `BuildEdSharp.cmd`, so the compiled files exist).
 

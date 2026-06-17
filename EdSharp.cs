@@ -170,7 +170,7 @@ Util.MailMessage(sAddress, sSubject, sMessage);
 }
 break;
 case "Copy to Clipboard" :
-Clipboard.SetText(sMessage);
+Util.SetClipboardText(sMessage);
 break;
 case "Exit EdSharp" :
 // Application.Exit();
@@ -632,7 +632,7 @@ if (this.AppendFromClipboard == -1) {
 this.AppendFromClipboard = 1;
 }
 else if (this.AppendFromClipboard == 1) {
-string sClipboard = Clipboard.GetText();
+string sClipboard = Util.GetClipboardText();
 //if (sClipboard == this.LastClipboardText && ((Environment.TickCount - this.LastTickCount) < 100)) sClipboard = "";
 if (sClipboard == this.LastClipboardText) sClipboard = "";
 if (sClipboard.Length > 0) {
@@ -1579,7 +1579,6 @@ foreach (InixCodec.Section section in lsTasks) {
 string sFind = section.get("Find");
 if (sFind == null || sFind.Length == 0) continue;
 string sReplace = section.get("Replace");
-bool bHasReplace = (sReplace != null && sReplace.Length > 0);
 sReplace = Regex.Unescape(sReplace == null ? "" : sReplace);
 RegexOptions options = Util.RegexOptionsFromString(section.get("Options"));
 bool bExtract = Util.ToBool(section.get("Extract"));
@@ -1599,16 +1598,22 @@ int iCount = 0;
 if (!bApply) {
 iCount = rex.Matches(sSourceBody).Count;
 }
+else if (bExtract) {
+// Extract tasks collect matches to the clipboard and never modify the file.
+foreach (Match m in rex.Matches(sSourceBody)) {
+iCount++;
+sExtractText += (sExtractText.Length > 0 ? sDivider : "") + m.ToString();
+}
+if (iCount > 0) { iExtractTotal += iCount; sClipboardDivider = sDivider; }
+}
 else {
-string sDiv = sDivider;
-bool bEx = bExtract;
+// Replace / delete tasks rewrite the file. An empty Replace deletes matches;
+// either way, any match means the content changed and the file must be saved.
 sSourceBody = rex.Replace(sSourceBody, delegate(Match m) {
 iCount++;
-if (bEx) sExtractText += (sExtractText.Length > 0 ? sDiv : "") + m.ToString();
 return m.Result(sReplace).Replace("$#", iCount.ToString());
 });
-if (bHasReplace && iCount > 0) bChanged = true;
-if (bExtract) { iExtractTotal += iCount; sClipboardDivider = sDivider; }
+if (iCount > 0) bChanged = true;
 }
 if (bVerbose || !bApply) AddMessage(Util.Pluralize(iCount, "match", "matches"));
 }
@@ -1622,9 +1627,9 @@ Util.String2File(sSourceBody, sSourceFile, ref en);
 if (sExtractText.Length > 0) {
 sExtractText = sExtractText.Replace("\n", "\r\n");
 try {
-string sClip = Clipboard.GetText();
+string sClip = Util.GetClipboardText();
 if (sClip.Length > 0) sClip += sClipboardDivider.Replace("\n", "\r\n");
-Clipboard.SetText(sClip + sExtractText);
+Util.SetClipboardText(sClip + sExtractText);
 AddMessage(Util.Pluralize(iExtractTotal, "match", "matches") + " to clipboard");
 }
 catch {}
@@ -1670,23 +1675,29 @@ return sDir;
 } // GetDirChoice method
 
 public int GetViewLevel(string sFile) {
-string sExt = Path.GetExtension(sFile).TrimStart('.');
-int iReturn = 1;
+// Decide whether a file is converted when it is opened from outside the editor
+// (Windows Explorer, "Open with", the command line, or Recent Files).  A return
+// of 0 opens the file raw; 1 converts it through the Import table.  The ordinary
+// Open command, Control+O, always opens raw regardless of this value.
+// Precedence: an explicit ViewLevels entry wins, so the user can force any
+// extension either way (e.g. "docx:0" to see a Word file raw, or "rst:1" to
+// convert reStructuredText); otherwise binary / document formats convert,
+// because their raw bytes are unreadable (and especially noisy for a screen
+// reader); otherwise every text, markup, data, source, or unknown format opens
+// raw.  This guarantees no text format is auto-converted -- now or as new
+// converters are added -- unless it is explicitly listed.
+const string sBinaryFormats = "doc docx xls xlsx ppt pptx pdf epub epub3 hlp wpd rtf";
+string sExt = Path.GetExtension(sFile).TrimStart('.').ToLower();
 string sViewLevels = App.ReadOption("ViewLevels", "");
-string[] aViewLevels = sViewLevels.Split(' ');
-foreach (string sViewLevel in aViewLevels) {
+foreach (string sViewLevel in sViewLevels.Split(' ')) {
 string[] aViewLevel = sViewLevel.Split(':');
 if (aViewLevel.Length < 2) continue;
-if (sExt == aViewLevel[0].Trim().ToLower()) {
-try {
-iReturn = Int32.Parse(aViewLevel[1]);
+if (sExt != aViewLevel[0].Trim().ToLower()) continue;
+try { return Int32.Parse(aViewLevel[1]); }
+catch (Exception ex) { Dialog.Show("Error", ex.Message); }
 }
-catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
-}
-}
-}
-return iReturn;
+foreach (string sBinaryFormat in sBinaryFormats.Split(' ')) if (sExt == sBinaryFormat) return 1;
+return 0;
 } // GetViewLevel method
 
 public string[] GetKeySummary(ToolStripMenuItem item) {
@@ -1752,7 +1763,7 @@ child = new MdiChild(App.Frame);
 if (menuItem == menuFileNewFromClipboard) {
 new MdiChild(App.Frame);
 child = App.Frame.Child;
-Child.RTB.Text = Clipboard.GetText();
+Child.RTB.Text = Util.GetClipboardText();
 child.RTB.Modified = true;
 }
 
@@ -2140,11 +2151,11 @@ sText = rtb.SelectedText;
 rtb.StoreSelection();
 }
 sText = Util.Convert2WinLineBreak(sText);
-Clipboard.SetText(sText);
+Util.SetClipboardText(sText);
 }
 
 if (menuItem == menuEditCopyAppend) {
-sText = Clipboard.GetText();
+sText = Util.GetClipboardText();
 sText = Util.Convert2UnixLineBreak(sText);
 if (sText.Length > 0 && !sText.EndsWith(LB)) sText += LB;
 if (rtb.SelectionLength == 0) {
@@ -2157,7 +2168,7 @@ sText += rtb.SelectedText;
 rtb.StoreSelection();
 }
 sText = Util.Convert2WinLineBreak(sText);
-Clipboard.SetText(sText);
+Util.SetClipboardText(sText);
 }
 
 if (menuItem == menuEditCopyRichText) {
@@ -2176,12 +2187,12 @@ sText = rtb.SelectedText;
 }
 rtb.Cut();
 sText = Util.Convert2WinLineBreak(sText);
-Clipboard.SetText(sText);
+Util.SetClipboardText(sText);
 Util.Say(rtb.RowText);
 }
 
 if (menuItem == menuEditCutAppend) {
-sText = Clipboard.GetText();
+sText = Util.GetClipboardText();
 sText = Util.Convert2UnixLineBreak(sText);
 if (sText.Length > 0 && !sText.EndsWith(LB)) sText += LB;
 if (rtb.SelectionLength == 0) {
@@ -2195,13 +2206,13 @@ sText += rtb.SelectedText;
 }
 rtb.Cut();
 sText = Util.Convert2WinLineBreak(sText);
-Clipboard.SetText(sText);
+Util.SetClipboardText(sText);
 Util.Say(rtb.RowText);
 }
 
 if (menuItem == menuEditPaste) {
 rtb.Paste();
-sText = Clipboard.GetText();
+sText = Util.GetClipboardText();
 sText = Util.Convert2UnixLineBreak(sText);
 aResults = Util.RegExpExtractCase(sText, @"\s+\Z");
 if (aResults.Length > 0) {
@@ -2263,7 +2274,7 @@ rtb.Reselect();
 if (menuItem == menuEditCopyAll) {
 sText = rtb.Text;
 sText = Util.Convert2WinLineBreak(sText);
-Clipboard.SetText(sText);
+Util.SetClipboardText(sText);
 }
 
 if (menuItem == menuEditSelectChunk) {
@@ -4685,7 +4696,7 @@ WindowsOpen();
 }
 
 if (menuItem == menuQueryClipboard) {
-sText = Clipboard.GetText();
+sText = Util.GetClipboardText();
 if (sText.Length == 0) sText = "No text!";
 if (this.KeyRepeat % 2 == 0) AddMessage(sText);
 else {
@@ -4955,7 +4966,7 @@ SetRecent(child.File);
 
 if (menuItem == menuMiscPathToClipboard) {
 sText = child.File;
-Clipboard.SetText(sText);
+Util.SetClipboardText(sText);
 AddMessage(sText);
 }
 
@@ -7130,7 +7141,7 @@ sOutputFile = Path.Combine(App.DataDir, sBase + ".txt");
 sCodeFile = sFile;
 sCommand = sExe + " " + Util.Quote(sCodeFile) + " " + Util.Quote(sInputFile) + " " + Util.Quote(sOutputFile);
 if (File.Exists(sOutputFile)) File.Delete(sOutputFile);
-Clipboard.SetText(sCommand);
+Util.SetClipboardText(sCommand);
 Util.RunWait(sCommand);
 if (File.Exists(sOutputFile))  Process.Start(sOutputFile);
 } // WebClientUtilities method
@@ -10148,6 +10159,43 @@ else { int iCmp = string.CompareOrdinal(sPartA, sPartB); if (iCmp != 0) return i
 }
 return 0;
 } // CompareVersions method
+
+public static string GetClipboardText() {
+// Read text from the clipboard defensively.  The clipboard is a shared resource
+// that another process can briefly lock; on Windows 11 (cloud clipboard and
+// clipboard history) GetText throws an ExternalException intermittently when
+// that happens.  Retry a few times, then give up quietly with "" rather than
+// letting the exception crash EdSharp (the Append From Clipboard viewer reads
+// the clipboard from inside WndProc, where an unhandled throw is fatal).
+int iTry;
+for (iTry = 0; iTry < 10; iTry++) {
+try {
+if (Clipboard.ContainsText()) return Clipboard.GetText();
+return "";
+}
+catch (Exception) {
+System.Threading.Thread.Sleep(40);
+}
+}
+return "";
+} // GetClipboardText method
+
+public static void SetClipboardText(string sText) {
+// Write text to the clipboard defensively, with the same retry-on-contention
+// logic as GetClipboardText.  An empty or null string clears the clipboard
+// instead of throwing (Clipboard.SetText rejects the empty string).
+int iTry;
+for (iTry = 0; iTry < 10; iTry++) {
+try {
+if (sText == null || sText.Length == 0) Clipboard.Clear();
+else Clipboard.SetText(sText);
+return;
+}
+catch (Exception) {
+System.Threading.Thread.Sleep(40);
+}
+}
+} // SetClipboardText method
 
 public static string FindCscPath() {
 // Locate a C# compiler: prefer the newest Roslyn csc (from VS Build Tools, for

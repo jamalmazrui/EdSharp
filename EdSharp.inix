@@ -87,3 +87,17 @@
 ; 
 ; [Export]
 ; html2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+; 
+; --- Conversion on open (ViewLevels) ----------------------------------------
+; When a file is opened from outside the editor (Explorer, "Open with", the
+; command line, or Recent Files) EdSharp opens it raw, except binary/document
+; formats (Word, Excel, PowerPoint, PDF, EPUB, WordPerfect, WinHelp, RTF),
+; which are converted.  No text format (.md, .json, .htm, .inix, .csv, .rst,
+; .brl, .brf, source code, etc.) is auto-converted.  Control+O always opens
+; raw; Control+Shift+O always converts.
+; ViewLevels overrides this per extension: 0 = open raw, 1 = convert.  It is a
+; single space-separated list.  Uncomment and edit to taste, for example to
+; back-translate braille on open or to open Word files raw:
+; 
+; [Options]
+; ViewLevels="brl:1 brf:1 docx:0"
