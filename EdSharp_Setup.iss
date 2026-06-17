@@ -88,13 +88,31 @@ Source: "Convert\*";  DestDir: "{app}\Convert";  Excludes: "*.sln,*.vcproj,*.vcx
 Name: "{userappdata}\EdSharp";
 Name: "{userappdata}\EdSharp\Temp";
 
+[InstallDelete]
+; Clear out any pre-existing EdSharp desktop shortcut before the [Icons] section
+; recreates the single hot-key shortcut below.  This matters because EdSharp --
+; unlike DbDo, which is a brand-new app -- has a legacy installer that placed an
+; Alt+Ctrl+E shortcut on the USER's desktop pointing at the old exe, and an
+; earlier 5.0 install placed a hot-key-less shortcut on the COMMON desktop.
+; Removing both leaves the {autodesktop} shortcut below as the sole owner of
+; Alt+Ctrl+E.  (InstallDelete runs before [Icons], so the recreate still wins.)
+Type: files; Name: "{userdesktop}\EdSharp.lnk"
+Type: files; Name: "{commondesktop}\EdSharp.lnk"
+
 [Icons]
 Name: "{group}\Launch EdSharp";   Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}"
 Name: "{group}\EdSharp Manual";   Filename: "{app}\EdSharp.htm"
 Name: "{group}\EdSharp Tutorial"; Filename: "{app}\Tutorial.htm"
 Name: "{group}\EdSharp 5.0 beta Announcement"; Filename: "{app}\Announce.htm"
 Name: "{group}\Uninstall EdSharp"; Filename: "{uninstallexe}"
-Name: "{autodesktop}\EdSharp";    Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}"
+; Single hot-key shortcut, following the DbDo model: the one shortcut that owns
+; Alt+Ctrl+E is created with {autodesktop} (the user desktop for a per-user
+; install, the common desktop for an all-users install) and HotKey.  No Start
+; Menu item carries a hot key, so Alt+Ctrl+E has exactly one owner.  EdSharp is
+; single-instance: OnStartupNextInstance brings the running copy to the
+; foreground, so a plain relaunch activates rather than starting a second copy
+; (no -activate parameter is needed, unlike DbDo's dual GUI/CLI shortcut).
+Name: "{autodesktop}\EdSharp"; Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\EdSharp.ico"; HotKey: Alt+Ctrl+E; Comment: "Launch or activate EdSharp 5.0 (Alt+Control+E)"
 
 [Run]
 ; Install EdSharps JAWS scripts (Finish-page option, like DbDo). Delegates to

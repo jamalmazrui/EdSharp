@@ -1,3 +1,81 @@
+# EdSharp 5.0 baseline starter -- build notes (revision 40)
+
+Revision 40 fixes JAWS intercepting Ctrl+Up / Ctrl+Down in the editor instead of
+letting EdSharp's native paragraph navigation run (reported by a user whose
+prior/next paragraph worked everywhere except EdSharp).
+
+Diagnosis: EdSharp already maps Ctrl+Up = Prior Paragraph and Ctrl+Down = Next
+Paragraph natively (menu accelerators). The keymap edsharp.jkm bound those keys
+to the ControlUpArrow / ControlDownArrow scripts, which pass the key through to
+EdSharp only when UIIsEditorWindow() is true. But UIIsEditorWindow() tests the
+focus window class with an exact match (sClass == "WindowsForms10.RichEdit"),
+which does not match the actual WinForms RichEdit class
+(WindowsForms10.RICHEDIT50W.app.0.<hash>). So the test failed in the editor and
+the scripts fell to their Else branch -- PerformScript ControlDownArrow() --
+which, per the JAWS context search, runs the Default.jss ControlDownArrow and
+applies JAWS's own (inferior) Ctrl+arrow behavior, exactly the symptom.
+
+Fix (edsharp.jkm only): bind Control+UpArrow and Control+DownArrow directly to
+the built-in TypeCurrentScriptKey, so JAWS unconditionally passes those keys to
+EdSharp whenever EdSharp is focused and never falls through to the Default.jss
+override. This is the approach the keymap's own commented-out
+;Control+...Arrow=TypeCurrentScriptKey lines originally used, and matches the
+active Alt+UpArrow/Alt+DownArrow=TypeCurrentScriptKey pattern. The redundant
+commented lines were removed.
+
+Why keymap-only: the .jkm keymap is read live by JAWS, so this needs no
+recompilation. Changing EdSharp.JSS (e.g. to repair UIIsEditorWindow) would
+require recompiling EdSharp.jsb in JAWS on Windows; the compiled .jsb is what
+runs, so a source-only edit would have no effect. The ControlUpArrow /
+ControlDownArrow scripts remain defined in EdSharp.JSS but are now unreferenced
+by the keymap -- harmless, and left untouched so the shipped .jss and .jsb stay
+in sync. (UIIsEditorWindow's class check is worth repairing in a future pass
+that recompiles the scripts, since other editor scripts depend on it too.)
+
+Delivery: the corrected edsharp.jkm reaches users through EdSharp's JAWS-settings
+install (the Finish-page option / --install-jaws-settings), which copies the
+Scripts files into each JAWS version's settings folder; reload JAWS scripts (or
+restart JAWS) afterward.
+
+---
+
+# EdSharp 5.0 baseline starter -- build notes (revision 39)
+
+Revision 39 fixes Alt+Ctrl+E launching the OLD EdSharp after a 5.0 install, and
+aligns the desktop hot-key shortcut with the DbDo installer model.
+
+Cause: the old installer assigned Alt+Ctrl+E to a shortcut on the USER's
+desktop ({userdesktop}\EdSharp.lnk) pointing at the old exe.  The first 5.0
+installer created its desktop shortcut on the COMMON desktop ({autodesktop}
+-> common desktop under an admin install) with no hot key, so the old
+user-desktop shortcut kept owning Alt+Ctrl+E and the old exe.
+
+Fix (EdSharp_Setup.iss), following DbDo_setup.iss:
+- The single hot-key shortcut is created with {autodesktop} + HotKey:
+  Alt+Ctrl+E, exactly as DbDo creates its Alt+Control+D desktop shortcut.
+  {autodesktop} adapts to the install scope (user vs all-users); no Start Menu
+  item carries a hot key, so Alt+Ctrl+E has exactly one owner.
+- EdSharp differs from DbDo in one respect: it has a legacy installer that left
+  a conflicting Alt+Ctrl+E shortcut behind.  So [InstallDelete] removes any
+  pre-existing EdSharp.lnk from BOTH {userdesktop} and {commondesktop} before
+  [Icons] recreates the single shortcut, guaranteeing the new one is the sole
+  owner regardless of where the old shortcut sat.
+- No -activate parameter is needed.  DbDo passes -activate because its shortcut
+  must choose GUI-activate over CLI mode; EdSharp is GUI-only and its
+  WindowsFormsApplicationBase OnStartupNextInstance already foregrounds the
+  running instance, so a plain relaunch activates rather than duplicating.
+
+After recompiling EdSharp_Setup.iss and running it, log off/on (or reboot) if
+Explorer has not already re-registered the changed shortcut.  Uninstalling the
+old EdSharp separately is optional cleanup; it is not required for the hot key.
+
+Immediate manual alternative (no reinstall): open the desktop EdSharp shortcut's
+Properties and change Target to "C:\Program Files\EdSharp\EdSharp.exe" and
+Start in to "C:\Program Files\EdSharp"; the existing Alt+Ctrl+E then launches
+the new version.
+
+---
+
 # EdSharp 5.0 baseline starter -- build notes (revision 38)
 
 Revision 38 reworks document conversion around the bundled 2htm utility and
