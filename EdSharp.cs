@@ -1148,6 +1148,7 @@ this.KeyIndex = iIndex;
 //Clipboard.SetText(Clipboard.GetText() + keyData.ToString() + "\r\n");
 // Util.Say("Repeat " + this.KeyRepeat);
 
+if (HandleSectionMoveKey(keyData)) return true;
 ToolStripMenuItem menuItem;
 if (keyData == Keys.F9) {
 HomerRichTextBox rtb = App.Frame.Child.RTB;
@@ -7310,6 +7311,301 @@ e.Handled = true;
 else e.Handled = false;
 } // ListBox_KeyUp handler
 
+
+// ---- Markdown section move (Control+Alt+Up/Down) ----
+		private bool HandleSectionMoveKey(Keys keyData) {
+		if ((keyData & (Keys.Control | Keys.Alt)) != (Keys.Control | Keys.Alt)) return false;
+		if ((keyData & Keys.Shift) == Keys.Shift) return false;
+		Keys keyCode = keyData & Keys.KeyCode;
+		if (keyCode != Keys.Up && keyCode != Keys.Down) return false;
+
+		if (this.KeyDescriber) {
+		AddMessage(keyCode == Keys.Up ? "Move section up" : "Move section down");
+		return true;
+		}
+
+		MdiChild child = this.Child;
+		if (child == null || child.RTB == null) return true;
+		MoveCurrentSection(child.RTB, keyCode == Keys.Up);
+		return true;
+		} // HandleSectionMoveKey method
+
+			private void MoveCurrentSection(HomerRichTextBox rtb, bool bUp) {
+			if (rtb == null) return;
+			string sText = rtb.Text;
+			if (sText.Length == 0) return;
+
+			if (MoveCurrentMarkdownHeadingSection(rtb, bUp)) return;
+
+				List<int> starts = GetSectionStarts(sText);
+			if (starts.Count <= 1) {
+			AnnounceSectionMoveMessage("No section to move");
+			return;
+			}
+
+		int iCurrent = rtb.Index;
+		if (iCurrent >= sText.Length && sText.Length > 0) iCurrent = sText.Length - 1;
+
+		int iSection = 0;
+		for (int i = 0; i < starts.Count; i++) {
+		int iStart = starts[i];
+		int iEnd = (i + 1 < starts.Count) ? starts[i + 1] : sText.Length;
+		if (iCurrent >= iStart && iCurrent < iEnd) {
+		iSection = i;
+		break;
+		}
+		}
+
+			if (bUp && iSection == 0) {
+			AnnounceSectionMoveMessage("Top!");
+			return;
+			}
+
+			if (!bUp && iSection >= starts.Count - 1) {
+			AnnounceSectionMoveMessage("Bottom!");
+			return;
+			}
+
+		int iThisStart = starts[iSection];
+		int iThisEnd = (iSection + 1 < starts.Count) ? starts[iSection + 1] : sText.Length;
+		int iOffset = iCurrent - iThisStart;
+		string sCurrent = sText.Substring(iThisStart, iThisEnd - iThisStart);
+
+			if (bUp) {
+			int iPrevStart = starts[iSection - 1];
+			string sBefore = sText.Substring(0, iPrevStart);
+			string sPrevious = sText.Substring(iPrevStart, iThisStart - iPrevStart);
+			string sAfter = sText.Substring(iThisEnd);
+				string sPreviousTitle = GetSectionAnnouncementTitle(sPrevious);
+				rtb.Text = sBefore + sCurrent + sPrevious + sAfter;
+				rtb.Index = iPrevStart + iOffset;
+				AnnounceSectionMoveMessage("Above " + sPreviousTitle);
+				}
+				else {
+			int iNextEnd = (iSection + 2 < starts.Count) ? starts[iSection + 2] : sText.Length;
+			string sBefore = sText.Substring(0, iThisStart);
+			string sNext = sText.Substring(iThisEnd, iNextEnd - iThisEnd);
+			string sAfter = sText.Substring(iNextEnd);
+				string sNextTitle = GetSectionAnnouncementTitle(sNext);
+				rtb.Text = sBefore + sNext + sCurrent + sAfter;
+				rtb.Index = iThisStart + sNext.Length + iOffset;
+				AnnounceSectionMoveMessage("Below " + sNextTitle);
+				}
+				rtb.Modified = true;
+				} // MoveCurrentSection method
+
+			private void AnnounceSectionMoveMessage(string sMessage) {
+			try {if (Win32.IsNVDAActive()) Win32.NVDACancelSpeech();} catch {}
+				AddMessage(sMessage, true);
+				} // AnnounceSectionMoveMessage method
+
+				private class MarkdownSectionHeading {
+				public int Start;
+				public int Level;
+				public string Title;
+				} // MarkdownSectionHeading class
+
+				private bool MoveCurrentMarkdownHeadingSection(HomerRichTextBox rtb, bool bUp) {
+				string sText = rtb.Text ?? "";
+				List<MarkdownSectionHeading> headings = GetMarkdownSectionHeadings(sText);
+				if (headings.Count == 0) return false;
+
+				int iCurrent = rtb.Index;
+				if (iCurrent >= sText.Length && sText.Length > 0) iCurrent = sText.Length - 1;
+
+				int iHeading = GetCurrentMarkdownSectionHeadingIndex(headings, iCurrent);
+				if (iHeading < 0) {
+				AnnounceSectionMoveMessage("No heading section");
+				return true;
+				}
+
+				MarkdownSectionHeading current = headings[iHeading];
+				int iSibling = bUp ? GetPreviousSiblingHeadingIndex(headings, iHeading) : GetNextSiblingHeadingIndex(headings, iHeading);
+				if (iSibling < 0) {
+				AnnounceSectionMoveMessage(bUp ? "Top!" : "Bottom!");
+				return true;
+				}
+
+				int iCurrentStart = current.Start;
+				int iCurrentEnd = GetMarkdownSectionEnd(sText, headings, iHeading);
+				int iOffset = Math.Max(0, iCurrent - iCurrentStart);
+				string sCurrent = sText.Substring(iCurrentStart, iCurrentEnd - iCurrentStart);
+
+				if (bUp) {
+				MarkdownSectionHeading previous = headings[iSibling];
+				int iPreviousStart = previous.Start;
+				string sBefore = sText.Substring(0, iPreviousStart);
+				string sPrevious = sText.Substring(iPreviousStart, iCurrentStart - iPreviousStart);
+				string sAfter = sText.Substring(iCurrentEnd);
+				rtb.Text = sBefore + sCurrent + sPrevious + sAfter;
+				rtb.Index = iPreviousStart + Math.Min(iOffset, sCurrent.Length);
+				AnnounceSectionMoveMessage("Above " + GetMarkdownSectionHeadingTitle(previous));
+				}
+				else {
+				MarkdownSectionHeading next = headings[iSibling];
+				int iNextEnd = GetMarkdownSectionEnd(sText, headings, iSibling);
+				string sBefore = sText.Substring(0, iCurrentStart);
+				string sNext = sText.Substring(iCurrentEnd, iNextEnd - iCurrentEnd);
+				string sAfter = sText.Substring(iNextEnd);
+				rtb.Text = sBefore + sNext + sCurrent + sAfter;
+				rtb.Index = iCurrentStart + sNext.Length + Math.Min(iOffset, sCurrent.Length);
+				AnnounceSectionMoveMessage("Below " + GetMarkdownSectionHeadingTitle(next));
+				}
+
+				rtb.Modified = true;
+				return true;
+				} // MoveCurrentMarkdownHeadingSection method
+
+				private static int GetCurrentMarkdownSectionHeadingIndex(List<MarkdownSectionHeading> headings, int iCurrent) {
+				int iHeading = -1;
+				for (int i = 0; i < headings.Count; i++) {
+				if (headings[i].Start <= iCurrent) iHeading = i;
+				else break;
+				}
+				return iHeading;
+				} // GetCurrentMarkdownSectionHeadingIndex method
+
+				private static int GetPreviousSiblingHeadingIndex(List<MarkdownSectionHeading> headings, int iHeading) {
+				int iLevel = headings[iHeading].Level;
+				for (int i = iHeading - 1; i >= 0; i--) {
+				if (headings[i].Level < iLevel) break;
+				if (headings[i].Level == iLevel) return i;
+				}
+				return -1;
+				} // GetPreviousSiblingHeadingIndex method
+
+				private static int GetNextSiblingHeadingIndex(List<MarkdownSectionHeading> headings, int iHeading) {
+				int iLevel = headings[iHeading].Level;
+				for (int i = iHeading + 1; i < headings.Count; i++) {
+				if (headings[i].Level < iLevel) break;
+				if (headings[i].Level == iLevel) return i;
+				}
+				return -1;
+				} // GetNextSiblingHeadingIndex method
+
+				private static int GetMarkdownSectionEnd(string sText, List<MarkdownSectionHeading> headings, int iHeading) {
+				int iLevel = headings[iHeading].Level;
+				for (int i = iHeading + 1; i < headings.Count; i++) {
+				if (headings[i].Level <= iLevel) return headings[i].Start;
+				}
+				return sText.Length;
+				} // GetMarkdownSectionEnd method
+
+				private static string GetMarkdownSectionHeadingTitle(MarkdownSectionHeading heading) {
+				if (heading == null || String.IsNullOrEmpty(heading.Title)) return "section";
+				return heading.Title;
+				} // GetMarkdownSectionHeadingTitle method
+
+				private static List<MarkdownSectionHeading> GetMarkdownSectionHeadings(string sText) {
+				List<MarkdownSectionHeading> headings = new List<MarkdownSectionHeading>();
+				if (String.IsNullOrEmpty(sText)) return headings;
+
+				int iStart = 0;
+				while (iStart <= sText.Length) {
+				int iNewLine = sText.IndexOf('\n', iStart);
+				int iEnd = (iNewLine >= 0) ? iNewLine : sText.Length;
+				string sLine = sText.Substring(iStart, iEnd - iStart);
+				if (sLine.EndsWith("\r")) sLine = sLine.Substring(0, sLine.Length - 1);
+
+				int iLevel;
+				string sTitle;
+				if (TryGetMarkdownSectionHeadingLine(sLine, out iLevel, out sTitle)) {
+				headings.Add(new MarkdownSectionHeading {Start = iStart, Level = iLevel, Title = sTitle});
+				}
+
+				if (iNewLine < 0) break;
+				iStart = iNewLine + 1;
+				}
+
+				return headings;
+				} // GetMarkdownSectionHeadings method
+
+				private static bool TryGetMarkdownSectionHeadingLine(string sLine, out int iLevel, out string sTitle) {
+				iLevel = 0;
+				sTitle = "";
+				if (String.IsNullOrEmpty(sLine)) return false;
+				if (MarkdownReview_IsHeadingLine(sLine, out iLevel, out sTitle)) return true;
+
+				string sTrim = sLine.TrimStart();
+				int iLeading = sLine.Length - sTrim.Length;
+				if (iLeading > 3) return false;
+
+				int i = 0;
+				while (i < sTrim.Length && sTrim[i] == '#' && i < 6) i++;
+				if (i == 0 || i >= sTrim.Length) return false;
+
+				sTitle = sTrim.Substring(i).Trim();
+				if (sTitle.Length == 0) return false;
+				try {sTitle = Regex.Replace(sTitle, @"\s+#+\s*$", "");} catch {}
+				sTitle = Regex.Replace(sTitle, @"\s+", " ").Trim();
+				if (sTitle.Length == 0) return false;
+				iLevel = i;
+				return true;
+				} // TryGetMarkdownSectionHeadingLine method
+
+					private static string GetSectionAnnouncementTitle(string sSection) {
+			if (String.IsNullOrEmpty(sSection)) return "section";
+			string[] aLines = sSection.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+			foreach (string sLine in aLines) {
+			string s = sLine.Replace(FF, "").Trim();
+			if (s.Length == 0) continue;
+			s = MarkdownHeadingPrefixRegex.Replace(s, "");
+			s = MarkdownHeadingSuffixRegex.Replace(s, "");
+			s = MarkdownBulletPrefixRegex.Replace(s, "");
+			s = MarkdownNumberPrefixRegex.Replace(s, "");
+			s = Regex.Replace(s, @"\s+", " ").Trim();
+			if (s.Length > 0) return s;
+			}
+			return "section";
+			} // GetSectionAnnouncementTitle method
+
+			private static List<int> GetSectionStarts(string sText) {
+		List<int> starts = new List<int>();
+		starts.Add(0);
+		if (String.IsNullOrEmpty(sText)) return starts;
+
+		int iSearch = 0;
+		while (iSearch < sText.Length) {
+		int i = sText.IndexOf(SB, iSearch, StringComparison.Ordinal);
+		if (i < 0) break;
+		if (!starts.Contains(i)) starts.Add(i);
+		iSearch = i + SB.Length;
+		}
+		starts.Sort();
+		return starts;
+		} // GetSectionStarts method
+
+			private static readonly Regex MarkdownHeadingPrefixRegex = new Regex(@"^\s*#{1,6}\s+", RegexOptions.CultureInvariant);
+			private static readonly Regex MarkdownHeadingSuffixRegex = new Regex(@"\s+#+\s*$", RegexOptions.CultureInvariant);
+			private static readonly Regex MarkdownBulletPrefixRegex = new Regex(@"^(?<indent>\s*)(?<marker>[-*+])\s+", RegexOptions.CultureInvariant);
+			private static readonly Regex MarkdownNumberPrefixRegex = new Regex(@"^(?<indent>\s*)(?<number>\d+)[.)]\s+", RegexOptions.CultureInvariant);
+
+	private static bool MarkdownReview_IsHeadingLine(string sLine, out int iLevel, out string sHeading) {
+	iLevel = 0;
+	sHeading = "";
+	if (String.IsNullOrEmpty(sLine)) return false;
+
+	string sTrim = sLine.TrimStart();
+	int iLeading = sLine.Length - sTrim.Length;
+	if (iLeading > 3) return false;
+
+	int i = 0;
+	while (i < sTrim.Length && sTrim[i] == '#' && i < 6) i++;
+	if (i == 0) return false;
+	if (i >= sTrim.Length) return false;
+	if (!Char.IsWhiteSpace(sTrim[i])) return false;
+
+	iLevel = i;
+	sHeading = sTrim.Substring(i).Trim();
+	// Strip optional closing sequence of hashes, e.g. "## Heading ##"
+	try {
+	sHeading = Regex.Replace(sHeading, @"\s+#+\s*$", "");
+	}
+	catch {}
+	sHeading = sHeading.Trim();
+	return true;
+	} // MarkdownReview_IsHeadingLine method
+
 } // MdiFrame class
 
 public class HomerRichTextBox : RichTextBox {
@@ -9781,6 +10077,14 @@ public static extern int nvdaController_speakText(string sText);
 public static bool NVDASay(string sText) {
 return nvdaController_speakText(sText) == 0;
 } // NVDASay method
+
+[DllImport("nvdaControllerClient32.dll", CharSet = CharSet.Auto)]
+public static extern int nvdaController_cancelSpeech();
+
+public static bool NVDACancelSpeech() {
+return nvdaController_cancelSpeech() == 0;
+} // NVDACancelSpeech method
+
 [DllImport("nvdaControllerClient32.dll", CharSet = CharSet.Auto)]
 public static extern int nvdaController_brailleMessage(string sText);
 
