@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -449,6 +450,17 @@ public int AppendFromClipboard = 0;
 public IntPtr NextClipboardViewer = (IntPtr) 0;
 public int LastTickCount = 0;
 public string LastClipboardText = "";
+// Markdown review cache (shared by Markdown copy/navigation)
+	public bool MarkdownReviewMode = false;
+	public int TextRevision = 0;
+	public int MarkdownReviewCacheRevision = -1;
+	public int MarkdownReviewCacheLength = 0;
+	public List<int[]> MarkdownReviewInlineLinks = null;
+	public List<int> MarkdownReviewHeadings = null;
+	public List<int> MarkdownReviewLists = null;
+	public List<int> MarkdownReviewListItems = null;
+	public List<int> MarkdownReviewLinks = null;
+	public List<int> MarkdownReviewTables = null;
 private string sFile = "";
 public string File {
 get {
@@ -475,6 +487,7 @@ rtb.AccessibleRole = AccessibleRole.Text;
 rtb.AutoWordSelection = false;
 rtb.Dock = DockStyle.Fill;
 rtb.Multiline = true;
+rtb.TextChanged += delegate(object o, EventArgs e) {try {this.TextRevision++;} catch {}};
 
 string sFont = App.ReadOption("FontDefault", "");
 if (sFont.Length > 0) {
@@ -1148,6 +1161,7 @@ this.KeyIndex = iIndex;
 //Clipboard.SetText(Clipboard.GetText() + keyData.ToString() + "\r\n");
 // Util.Say("Repeat " + this.KeyRepeat);
 
+if (HandleEditorFormattingKey(keyData)) return true;
 ToolStripMenuItem menuItem;
 if (keyData == Keys.F9) {
 HomerRichTextBox rtb = App.Frame.Child.RTB;
@@ -2172,7 +2186,10 @@ Util.SetClipboardText(sText);
 }
 
 if (menuItem == menuEditCopyRichText) {
-rtb.Copy();
+// Markdown-aware rich copy: a Markdown link becomes an RTF hyperlink, a
+// Markdown list becomes a real (Word-style) list, and a formatted line
+// keeps its inline markup; otherwise fall back to the plain RTF copy.
+if (!TryCopyMarkdownLinkAsRichText(this.Child) && !TryCopyMarkdownList(rtb) && !TryCopyMarkdownRichLine(this.Child)) rtb.Copy();
 }
 
 if (menuItem == menuEditCut) {
@@ -7310,6 +7327,1764 @@ e.Handled = true;
 else e.Handled = false;
 } // ListBox_KeyUp handler
 
+
+// ---- Markdown rich-text copy, heading/list shortcuts, and shared Markdown parsing ----
+private static readonly Regex MarkdownHeadingPrefixRegex = new Regex(@"^\s*#{1,6}\s+", RegexOptions.CultureInvariant);
+private static readonly Regex MarkdownHeadingSuffixRegex = new Regex(@"\s+#+\s*$", RegexOptions.CultureInvariant);
+private static readonly Regex MarkdownBulletPrefixRegex = new Regex(@"^(?<indent>\s*)(?<marker>[-*+])\s+", RegexOptions.CultureInvariant);
+private static readonly Regex MarkdownNumberPrefixRegex = new Regex(@"^(?<indent>\s*)(?<number>\d+)[.)]\s+", RegexOptions.CultureInvariant);
+private static readonly Regex MarkdownTableRowRegex = new Regex(@"^\s*\|.*\|\s*$", RegexOptions.CultureInvariant);
+private static readonly Regex MarkdownTableSeparatorRegex = new Regex(@"^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$", RegexOptions.CultureInvariant);
+private static readonly Regex MarkdownHorizontalRuleRegex = new Regex(@"^\s{0,3}([-*_])(\s*\1){2,}\s*$", RegexOptions.CultureInvariant);
+private static readonly Regex HtmlTagRegex = new Regex(@"<[^>]+>", RegexOptions.CultureInvariant);
+private static readonly Regex MarkdownInlineLinkRegex = new Regex(@"!?\[(?<text>[^\]]+)\]\s*\((?<url>[^)]+)\)", RegexOptions.CultureInvariant);
+private static readonly Regex MarkdownAutoLinkRegex = new Regex(@"<https?://[^>]+>", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+private static readonly Regex MarkdownBareUrlRegex = new Regex(@"\bhttps?://[^\s<>]+", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+private static readonly Regex MarkdownWwwUrlRegex = new Regex(@"\bwww\.[^\s<>]+", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+
+				private enum MarkdownReviewKind {
+			Heading,
+			List,
+	ListItem,
+	Link,
+	Table
+	} // MarkdownReviewKind enum
+
+		private sealed class MarkdownReviewInlineSpan {
+		public int Start;
+		public int End;
+		public FontStyle Style;
+		public MarkdownReviewInlineSpan(int iStart, int iEnd, FontStyle style) {
+		Start = iStart;
+		End = iEnd;
+		Style = style;
+		}
+		}
+
+			private void ApplyHeadingShortcut(MdiChild child, int iLevel) {
+			if (child == null) return;
+			HomerRichTextBox rtb = child.RTB;
+			if (rtb == null) return;
+
+			if (IsRichTextFile(child)) {
+			Font fontBase = rtb.Font;
+			if (fontBase == null) return;
+
+			float fSize = fontBase.Size;
+			switch (iLevel) {
+			case 1: fSize += 6; break;
+			case 2: fSize += 4; break;
+			case 3: fSize += 2; break;
+			case 4: fSize += 1; break;
+			default: break;
+			}
+
+			Font fontHeading = null;
+			try {
+			fontHeading = new Font(fontBase.FontFamily, fSize, FontStyle.Bold);
+			int iSelStart = rtb.SelectionStart;
+			int iSelLength = rtb.SelectionLength;
+			if (iSelLength == 0) {
+			int iStart = rtb.RowStart;
+			int iEnd = rtb.RowStart + rtb.RowText.Length;
+			rtb.Select(iStart, iEnd - iStart);
+			rtb.SelectionFont = fontHeading;
+			rtb.Select(iSelStart, 0);
+			}
+			else {
+			rtb.SelectionFont = fontHeading;
+			}
+			}
+			catch {}
+			finally {
+			if (fontHeading != null) fontHeading.Dispose();
+			}
+			return;
+			}
+
+			// Markdown/plain text heading: prefix with hashes.
+			int iStart2, iEnd2;
+			GetSelectedLineSpan(rtb, out iStart2, out iEnd2);
+			if (iEnd2 <= iStart2) return;
+
+			string sText = rtb.GetRange(iStart2, iEnd2);
+			string[] aLines = sText.Split('\n');
+			for (int i = 0; i < aLines.Length; i++) {
+			string sLine = aLines[i];
+			bool bCR = sLine.EndsWith("\r");
+			if (bCR) sLine = sLine.Substring(0, sLine.Length - 1);
+
+			if (sLine.Trim().Length == 0) {
+			aLines[i] = bCR ? "\r" : "";
+			continue;
+			}
+
+			string sContent = sLine.TrimStart();
+			sContent = MarkdownHeadingPrefixRegex.Replace(sContent, "");
+			sContent = MarkdownHeadingSuffixRegex.Replace(sContent, "").Trim();
+			aLines[i] = new string('#', iLevel) + " " + sContent + (bCR ? "\r" : "");
+			}
+
+			string sNewText = String.Join("\n", aLines);
+			rtb.ReplaceRange(iStart2, iEnd2, sNewText);
+			} // ApplyHeadingShortcut method
+
+				private static string BuildHtmlClipboardFragment(string sFragment) {
+				if (String.IsNullOrEmpty(sFragment)) return "";
+				try {
+				string sStart = "<html><body><!--StartFragment-->";
+				string sEnd = "<!--EndFragment--></body></html>";
+				string sTemplate = "Version:0.9\r\nStartHTML:{0:D10}\r\nEndHTML:{1:D10}\r\nStartFragment:{2:D10}\r\nEndFragment:{3:D10}\r\n";
+				string sDummyHeader = String.Format(CultureInfo.InvariantCulture, sTemplate, 0, 0, 0, 0);
+				int iStartHtml = Encoding.UTF8.GetByteCount(sDummyHeader);
+				int iStartFragment = iStartHtml + Encoding.UTF8.GetByteCount(sStart);
+				int iEndFragment = iStartFragment + Encoding.UTF8.GetByteCount(sFragment);
+				int iEndHtml = iEndFragment + Encoding.UTF8.GetByteCount(sEnd);
+				string sHeader = String.Format(CultureInfo.InvariantCulture, sTemplate, iStartHtml, iEndHtml, iStartFragment, iEndFragment);
+				return sHeader + sStart + sFragment + sEnd;
+				}
+				catch {
+				return "";
+				}
+				} // BuildHtmlClipboardFragment method
+
+					private static string BuildRtfHeading(string sText, int iLevel) {
+					if (String.IsNullOrEmpty(sText)) return "";
+					try {
+					using (RichTextBox box = new RichTextBox()) {
+					box.Text = sText;
+					box.SelectAll();
+					float fSize = box.Font.Size;
+					if (iLevel == 1) fSize += 6;
+					else if (iLevel == 2) fSize += 4;
+					else if (iLevel == 3) fSize += 2;
+					box.SelectionFont = new Font(box.Font.FontFamily, fSize, FontStyle.Bold);
+					return box.Rtf;
+					}
+					}
+					catch {
+					return "";
+					}
+					} // BuildRtfHeading method
+
+				private static string BuildRtfHyperlink(string sTitle, string sUrl) {
+			return @"{\rtf1\ansi\uc1{\fonttbl{\f0 Arial;}}{\field{\*\fldinst{" +
+			RtfEncode("HYPERLINK \"" + sUrl + "\"") +
+			@"}}{\fldrslt{" + RtfEncode(sTitle) + @"}}}}";
+			} // BuildRtfHyperlink method
+
+				private static string BuildRtfListParagraph(List<string> items, bool bOrdered) {
+				if (items == null || items.Count == 0) return "";
+				try {
+				string sTab = @"\tab";
+				string sBullet = @"\'b7";
+				StringBuilder sb = new StringBuilder();
+				// RTF header + font table. \uc1 so non-RTF readers skip one fallback char.
+				// Symbol uses \fcharset2 so the bullet glyph renders reliably.
+				sb.Append(@"{\rtf1\ansi\ansicpg1250\deff0\uc1{\fonttbl{\f0\fnil Calibri;}{\f1\fnil\fcharset2 Symbol;}}");
+				// Stylesheet defining "List Paragraph" as \s1 so Word applies that
+				// named paragraph style on paste (matches Word's built-in style).
+				sb.Append(@"{\stylesheet{\s1\fi-360\li720\sa0\jclisttab\tx720 List Paragraph;}}");
+				// List table: one list definition (list id 1).
+				if (bOrdered) {
+				sb.Append(@"{\*\listtable{\list\listtemplateid1\listsimple");
+				sb.Append(@"{\listlevel\levelnfc0\leveljc0\levelfollow0\levelstartat1{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720 }");
+				sb.Append(@"\listid1}}");
+				}
+				else {
+				sb.Append(@"{\*\listtable{\list\listtemplateid1\listsimple");
+				sb.Append(@"{\listlevel\levelnfc23\leveljc0\levelfollow0\levelstartat1{\leveltext\leveltemplateid1\'01" + sBullet + @";}{\levelnumbers;}\f1\fi-360\li720 }");
+				sb.Append(@"\listid1}}");
+				}
+				// List override table maps list id 1 to list style number \ls1.
+				sb.Append(@"{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}");
+				// Body paragraphs: \s1 = List Paragraph style, \ls1\ilvl0 = list binding.
+				for (int n = 0; n < items.Count; n++) {
+				string sItem = RtfEncodeInline(items[n]);
+				sb.Append(@"\pard\plain\s1\ls1\ilvl0\fi-360\li720\sa0\jclisttab\tx720 ");
+				if (bOrdered) {
+				sb.Append(@"{\listtext\f0 ");
+				sb.Append((n + 1).ToString(CultureInfo.InvariantCulture));
+				sb.Append("." + sTab + "}");
+				}
+				else {
+				sb.Append(@"{\listtext\f1 " + sBullet + sTab + "}");
+				}
+				sb.Append(@"\f0 ");
+				sb.Append(sItem);
+				sb.Append(@"\par");
+				sb.Append("\r\n");
+				}
+				sb.Append("}");
+				return sb.ToString();
+				}
+				catch {
+				return "";
+				}
+				} // BuildRtfListParagraph method
+
+					private static string BuildRtfPlainText(string sText) {
+					if (String.IsNullOrEmpty(sText)) return "";
+					try {
+					using (RichTextBox box = new RichTextBox()) {
+					box.Text = sText;
+					return box.Rtf;
+					}
+					}
+					catch {
+					return "";
+					}
+					} // BuildRtfPlainText method
+
+				private bool CopyMarkdownInlineLinkSpanAsRichText(MdiChild child, int[] span) {
+				if (child == null || child.RTB == null) return false;
+				if (span == null || span.Length < 6) return false;
+
+				string sSource = child.RTB.Text ?? "";
+				string sTitle = "";
+				string sUrlRaw = "";
+				try {sTitle = sSource.Substring(span[2], span[3] - span[2]);} catch {sTitle = "";}
+				try {sUrlRaw = sSource.Substring(span[4], span[5] - span[4]);} catch {sUrlRaw = "";}
+
+			sTitle = MarkdownReview_CollapseWhitespace(sTitle);
+			string sUrl = MarkdownReview_NormalizeUrl(sUrlRaw);
+			if (sUrl.Length == 0) sUrl = MarkdownReview_CleanUrl(sUrlRaw);
+			if (sUrl.StartsWith("www.", StringComparison.OrdinalIgnoreCase)) sUrl = "https://" + sUrl;
+			if (sUrl.Length == 0) return false;
+			if (sTitle.Length == 0) sTitle = sUrl;
+
+			DataObject data = new DataObject();
+			data.SetData(DataFormats.UnicodeText, sTitle);
+			data.SetData(DataFormats.Text, sTitle);
+			data.SetData(DataFormats.Rtf, BuildRtfHyperlink(sTitle, sUrl));
+				Clipboard.SetDataObject(data, true);
+					AddMessage("Link copied");
+					return true;
+					} // CopyMarkdownInlineLinkSpanAsRichText method
+
+			private static int GetLeadingWhitespaceLength(string s) {
+			if (String.IsNullOrEmpty(s)) return 0;
+			int i = 0;
+			while (i < s.Length && (s[i] == ' ' || s[i] == '\t')) i++;
+			return i;
+			} // GetLeadingWhitespaceLength method
+
+				private static List<string> GetMarkdownListItemTexts(HomerRichTextBox rtb, int iFirst, int iLast) {
+				List<string> items = new List<string>();
+				if (rtb == null) return items;
+				for (int i = iFirst; i <= iLast; i++) {
+				string sItem;
+				if (!MarkdownReview_TryGetListItemText(rtb.GetRowText(i), out sItem)) continue;
+				sItem = sItem.Trim();
+				if (sItem.Length == 0) sItem = " ";
+				items.Add(sItem);
+				}
+				return items;
+				} // GetMarkdownListItemTexts method
+
+			private static void GetSelectedLineSpan(HomerRichTextBox rtb, out int iStart, out int iEnd) {
+			iStart = 0;
+			iEnd = 0;
+			if (rtb == null) return;
+
+			int iSelStart = rtb.SelectionStart;
+			int iSelLength = rtb.SelectionLength;
+			if (iSelLength == 0) {
+			iStart = rtb.RowStart;
+			iEnd = rtb.RowStart + rtb.RowText.Length;
+			return;
+			}
+
+			int iSelEnd = iSelStart + iSelLength;
+			int iEndIndex = (iSelEnd > iSelStart) ? iSelEnd - 1 : iSelStart;
+			int iStartRow = rtb.GetLineFromCharIndex(iSelStart);
+			int iEndRow = rtb.GetLineFromCharIndex(iEndIndex);
+			if (iStartRow < 0) iStartRow = 0;
+			if (iEndRow < 0) iEndRow = iStartRow;
+
+			iStart = rtb.GetFirstCharIndexFromLine(iStartRow);
+			int iNext = rtb.GetFirstCharIndexFromLine(iEndRow + 1);
+			iEnd = (iNext < 0) ? rtb.TextLength : iNext;
+			} // GetSelectedLineSpan method
+
+			private bool HandleEditorFormattingKey(Keys keyData) {
+// Yield to any command 5.0 already binds to this chord (e.g. Control+Shift+D6
+// Prior Baseline): never shadow an existing hotkey.  The Enter list-continuation
+// path below is exempt because Enter is not a registered command chord.
+if (keyData != Keys.Enter && hashKey.ContainsKey(keyData)) return false;
+			MdiChild child = this.Child;
+			if (child == null) return false;
+
+			HomerRichTextBox rtb = child.RTB;
+			if (rtb == null) return false;
+
+			// List behavior: Enter continues list; Enter on an empty list item ends it.
+			if (keyData == Keys.Enter && !child.MarkdownReviewMode) {
+			if (IsRichTextFile(child) && HandleRichTextNumberedListEnter(rtb)) return true;
+			if (IsMarkdownOrDefault(child) && HandleMarkdownListEnter(rtb)) return true;
+			}
+
+			if ((keyData & (Keys.Control | Keys.Shift | Keys.Alt)) != (Keys.Control | Keys.Shift)) return false;
+
+			Keys keyCode = keyData & Keys.KeyCode;
+			int iDigit = -1;
+			if (keyCode >= Keys.D0 && keyCode <= Keys.D9) iDigit = (int) keyCode - (int) Keys.D0;
+			else if (keyCode >= Keys.NumPad0 && keyCode <= Keys.NumPad9) iDigit = (int) keyCode - (int) Keys.NumPad0;
+			else return false;
+
+			if (iDigit >= 1 && iDigit <= 6) {
+			if (this.KeyDescriber) {
+			AddMessage("Heading " + iDigit);
+			return true;
+			}
+			ApplyHeadingShortcut(child, iDigit);
+			AddMessage("Heading " + iDigit);
+			return true;
+			}
+
+			if (iDigit == 7) {
+			if (this.KeyDescriber) {
+			AddMessage("Toggle bulleted list");
+			return true;
+			}
+			ToggleBulletListShortcut(child);
+			return true;
+			}
+
+			if (iDigit == 8) {
+			if (this.KeyDescriber) {
+			AddMessage("Toggle numbered list");
+			return true;
+			}
+			ToggleNumberedListShortcut(child);
+			return true;
+			}
+
+			if (iDigit == 9) {
+			if (this.KeyDescriber) {
+			AddMessage("Insert Markdown link");
+			return true;
+			}
+			InsertMarkdownLinkShortcut(child);
+			AddMessage("Insert Markdown link");
+			return true;
+			}
+
+			if (iDigit == 0) {
+			if (this.KeyDescriber) {
+			AddMessage("Clear formatting");
+			return true;
+			}
+			ClearFormattingShortcut(child);
+			AddMessage("Clear formatting");
+			return true;
+			}
+
+			return false;
+			} // HandleEditorFormattingKey method
+
+			private static bool HandleMarkdownListEnter(HomerRichTextBox rtb) {
+			if (rtb == null) return false;
+			if (rtb.SelectionLength != 0) return false;
+
+			string sLine = rtb.RowText;
+			bool bCR = sLine.EndsWith("\r");
+			if (bCR) sLine = sLine.Substring(0, sLine.Length - 1);
+
+			Match mBullet = MarkdownBulletPrefixRegex.Match(sLine);
+			Match mNumber = MarkdownNumberPrefixRegex.Match(sLine);
+			Match m = mBullet.Success ? mBullet : mNumber;
+			if (!m.Success) return false;
+
+			int iRowStart = rtb.RowStart;
+			int iContentStart = m.Index + m.Length;
+			string sContent = (iContentStart <= sLine.Length) ? sLine.Substring(iContentStart) : "";
+
+			// End list if the current item is empty (double Enter behavior).
+			if (sContent.Trim().Length == 0) {
+			int iRemoveStart = iRowStart + m.Groups["indent"].Value.Length;
+			int iRemoveEnd = iRowStart + iContentStart;
+			if (iRemoveEnd > iRemoveStart) rtb.ReplaceRange(iRemoveStart, iRemoveEnd, "");
+			rtb.Index = iRemoveStart;
+			return true;
+			}
+
+			// Continue list on Enter.
+			string sIndent = m.Groups["indent"].Value;
+			string sInsert;
+			if (mBullet.Success) {
+			string sMarker = mBullet.Groups["marker"].Value;
+			sInsert = "\n" + sIndent + sMarker + " ";
+			}
+			else {
+			int iNum = 1;
+			try {iNum = Int32.Parse(mNumber.Groups["number"].Value) + 1;} catch {iNum = 1;}
+			sInsert = "\n" + sIndent + iNum.ToString() + ". ";
+			}
+
+			int iIndex = rtb.Index;
+			rtb.ReplaceRange(iIndex, iIndex, sInsert);
+			return true;
+			} // HandleMarkdownListEnter method
+
+			private static bool HandleRichTextNumberedListEnter(HomerRichTextBox rtb) {
+			if (rtb == null) return false;
+			if (rtb.SelectionLength != 0) return false;
+
+			string sLine = rtb.RowText;
+			bool bCR = sLine.EndsWith("\r");
+			if (bCR) sLine = sLine.Substring(0, sLine.Length - 1);
+
+			Match mNumber = MarkdownNumberPrefixRegex.Match(sLine);
+			if (!mNumber.Success) return false;
+
+			int iRowStart = rtb.RowStart;
+			int iContentStart = mNumber.Index + mNumber.Length;
+			string sContent = (iContentStart <= sLine.Length) ? sLine.Substring(iContentStart) : "";
+
+			// End list if the current item is empty (double Enter behavior).
+			if (sContent.Trim().Length == 0) {
+			int iRemoveStart = iRowStart + mNumber.Groups["indent"].Value.Length;
+			int iRemoveEnd = iRowStart + iContentStart;
+			if (iRemoveEnd > iRemoveStart) rtb.ReplaceRange(iRemoveStart, iRemoveEnd, "");
+			rtb.Index = iRemoveStart;
+			return true;
+			}
+
+			// Continue list on Enter.
+			string sIndent = mNumber.Groups["indent"].Value;
+			int iNum = 1;
+			try {iNum = Int32.Parse(mNumber.Groups["number"].Value) + 1;} catch {iNum = 1;}
+			string sInsert = "\n" + sIndent + iNum.ToString() + ". ";
+			int iIndex = rtb.Index;
+			rtb.ReplaceRange(iIndex, iIndex, sInsert);
+			return true;
+			} // HandleRichTextNumberedListEnter method
+
+			private void InsertMarkdownLinkShortcut(MdiChild child) {
+			if (child == null) return;
+			HomerRichTextBox rtb = child.RTB;
+			if (rtb == null) return;
+
+			int iSelStart = rtb.SelectionStart;
+			int iSelLength = rtb.SelectionLength;
+			string sSelected = "";
+			if (iSelLength > 0) sSelected = rtb.SelectedText.Trim();
+
+			string sInsert;
+			int iCursor;
+			if (sSelected.Length == 0) {
+			sInsert = "[]()";
+			iCursor = iSelStart + 1;
+			}
+			else if (IsLikelyMarkdownUrl(sSelected)) {
+			sInsert = "[](" + sSelected + ")";
+			iCursor = iSelStart + 1;
+			}
+			else {
+			sInsert = "[" + sSelected + "]()";
+			iCursor = iSelStart + sInsert.Length - 1;
+			}
+
+			rtb.Select(iSelStart, iSelLength);
+			rtb.SelectedText = sInsert;
+			try {rtb.Select(iCursor, 0);} catch {}
+			rtb.Modified = true;
+			} // InsertMarkdownLinkShortcut method
+
+			private static bool IsExactShortcut(Keys keyData, Keys keyCode, Keys modifiers) {
+			Keys actualKey = keyData & Keys.KeyCode;
+			Keys actualModifiers = keyData & (Keys.Control | Keys.Shift | Keys.Alt);
+			return actualKey == keyCode && actualModifiers == modifiers;
+			} // IsExactShortcut method
+
+			private static bool IsLikelyMarkdownUrl(string sText) {
+			if (String.IsNullOrEmpty(sText)) return false;
+			string s = sText.Trim();
+			return s.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+			s.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
+			s.StartsWith("ftp://", StringComparison.OrdinalIgnoreCase) ||
+			s.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase) ||
+			s.StartsWith("www.", StringComparison.OrdinalIgnoreCase);
+			} // IsLikelyMarkdownUrl method
+
+			private static bool IsMarkdownOrDefault(MdiChild child) {
+			if (child == null) return false;
+			if (MarkdownReview_IsMarkdownFile(child.File)) return true;
+			try {
+			string sExt = Path.GetExtension(child.File);
+			if (String.IsNullOrEmpty(sExt)) {
+			string sDefault = App.ReadOption("ExtensionDefault", "md").Trim();
+			if (Util.Equiv(sDefault, "md")) return true;
+			}
+			}
+			catch {}
+			return false;
+			} // IsMarkdownOrDefault method
+
+			private static bool IsRichTextFile(MdiChild child) {
+			if (child == null) return false;
+			try {
+			return String.Equals(Path.GetExtension(child.File), ".rtf", StringComparison.OrdinalIgnoreCase);
+			}
+			catch {
+			return false;
+			}
+			} // IsRichTextFile method
+
+					private static string MarkdownInlineTextToHtml(string sText) {
+					if (String.IsNullOrEmpty(sText)) return "";
+					string s = System.Net.WebUtility.HtmlEncode(sText);
+					try {
+					s = Regex.Replace(s, @"`([^`]*)`", "<code>$1</code>");
+					for (int i = 0; i < 3; i++) {
+					s = Regex.Replace(s, @"(\*\*|__)(.+?)\1", "<strong>$2</strong>");
+					s = Regex.Replace(s, @"(\*|_)(.+?)\1", "<em>$2</em>");
+					s = Regex.Replace(s, @"~~(.+?)~~", "<del>$1</del>");
+					}
+					}
+					catch {}
+					return s;
+					} // MarkdownInlineTextToHtml method
+
+				private static string MarkdownInlineToHtml(string sText) {
+				if (String.IsNullOrEmpty(sText)) return "";
+				StringBuilder sb = new StringBuilder();
+				int iPos = 0;
+				try {
+				foreach (Match m in MarkdownInlineLinkRegex.Matches(sText)) {
+				if (m == null || !m.Success || m.Index < iPos) continue;
+					sb.Append(MarkdownInlineTextToHtml(sText.Substring(iPos, m.Index - iPos)));
+					string sTitle = StripMarkdownFormatting(m.Groups["text"].Value);
+				string sUrl = MarkdownReview_NormalizeUrl(m.Groups["url"].Value);
+				if (sUrl.Length > 0) {
+				sb.Append("<a href=\"");
+				sb.Append(System.Net.WebUtility.HtmlEncode(sUrl));
+				sb.Append("\">");
+				sb.Append(System.Net.WebUtility.HtmlEncode(sTitle));
+				sb.Append("</a>");
+				}
+				else sb.Append(System.Net.WebUtility.HtmlEncode(sTitle));
+				iPos = m.Index + m.Length;
+				}
+				}
+				catch {}
+					if (iPos < sText.Length) sb.Append(MarkdownInlineTextToHtml(sText.Substring(iPos)));
+					return sb.ToString();
+					} // MarkdownInlineToHtml method
+
+					private static bool MarkdownLineHasRichInlineMarkup(string sLine) {
+					if (String.IsNullOrEmpty(sLine)) return false;
+					if (sLine.IndexOf("**", StringComparison.Ordinal) >= 0) return true;
+					if (sLine.IndexOf("__", StringComparison.Ordinal) >= 0) return true;
+					if (sLine.IndexOf("~~", StringComparison.Ordinal) >= 0) return true;
+					if (sLine.IndexOf('`') >= 0) return true;
+					try {
+					if (MarkdownInlineLinkRegex.IsMatch(sLine)) return true;
+					}
+					catch {}
+					return false;
+					} // MarkdownLineHasRichInlineMarkup method
+
+	private static void MarkdownReview_AddNonInlineLinksFromLine(string sLine, int iLineStart, List<int> links, List<int[]> inlineLinks) {
+	if (String.IsNullOrEmpty(sLine)) return;
+
+	try {
+	foreach (Match m in MarkdownAutoLinkRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	int i = iLineStart + m.Index;
+	if (MarkdownReview_IsIndexInAnyInlineLinkSpan(inlineLinks, i)) continue;
+	links.Add(i);
+	}
+	foreach (Match m in MarkdownBareUrlRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	int i = iLineStart + m.Index;
+	if (MarkdownReview_IsIndexInAnyInlineLinkSpan(inlineLinks, i)) continue;
+	links.Add(i);
+	}
+	foreach (Match m in MarkdownWwwUrlRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	int i = iLineStart + m.Index;
+	if (MarkdownReview_IsIndexInAnyInlineLinkSpan(inlineLinks, i)) continue;
+	links.Add(i);
+	}
+	}
+	catch {}
+	} // MarkdownReview_AddNonInlineLinksFromLine method
+
+	private static string MarkdownReview_CleanUrl(string sUrl) {
+	if (String.IsNullOrEmpty(sUrl)) return "";
+	string s = sUrl.Trim();
+	int iParenOpen = 0, iParenClose = 0, iBracketOpen = 0, iBracketClose = 0, iBraceOpen = 0, iBraceClose = 0;
+	try {
+	for (int i = 0; i < s.Length; i++) {
+	char c = s[i];
+	if (c == '(') iParenOpen++;
+	else if (c == ')') iParenClose++;
+	else if (c == '[') iBracketOpen++;
+	else if (c == ']') iBracketClose++;
+	else if (c == '{') iBraceOpen++;
+	else if (c == '}') iBraceClose++;
+	}
+	}
+	catch {
+	iParenOpen = 0;
+	iParenClose = 0;
+	iBracketOpen = 0;
+	iBracketClose = 0;
+	iBraceOpen = 0;
+	iBraceClose = 0;
+	}
+
+	while (s.Length > 0) {
+	char c = s[s.Length - 1];
+	if (c == ')') {
+	if (iParenClose > iParenOpen) {
+	iParenClose--;
+	s = s.Substring(0, s.Length - 1);
+	continue;
+	}
+	break;
+	}
+	if (c == ']') {
+	if (iBracketClose > iBracketOpen) {
+	iBracketClose--;
+	s = s.Substring(0, s.Length - 1);
+	continue;
+	}
+	break;
+	}
+	if (c == '}') {
+	if (iBraceClose > iBraceOpen) {
+	iBraceClose--;
+	s = s.Substring(0, s.Length - 1);
+	continue;
+	}
+	break;
+	}
+	if (c == '.' || c == ',' || c == ';' || c == ':' || c == '!' || c == '?' || c == '"' || c == '\'') {
+	s = s.Substring(0, s.Length - 1);
+	continue;
+	}
+	break;
+	}
+	return s.Trim();
+	} // MarkdownReview_CleanUrl method
+
+	private static string MarkdownReview_CollapseWhitespace(string sText) {
+	if (String.IsNullOrEmpty(sText)) return "";
+	StringBuilder sb = new StringBuilder(sText.Length);
+	bool bSpace = false;
+	for (int i = 0; i < sText.Length; i++) {
+	char c = sText[i];
+	if (Char.IsWhiteSpace(c)) {
+	bSpace = true;
+	continue;
+	}
+	if (bSpace && sb.Length > 0) sb.Append(' ');
+	bSpace = false;
+	sb.Append(c);
+	}
+	return sb.ToString().Trim();
+	} // MarkdownReview_CollapseWhitespace method
+
+	private void MarkdownReview_EnsureCache(MdiChild child) {
+	if (child == null) return;
+	HomerRichTextBox rtb = child.RTB;
+	if (rtb == null) return;
+
+	string sText = rtb.Text;
+	int iRevision = child.TextRevision;
+	if (child.MarkdownReviewHeadings != null && child.MarkdownReviewCacheRevision == iRevision) return;
+
+	List<int> headings, lists, items, links, tables;
+	List<int[]> inlineLinks;
+	MarkdownReview_ParseText(sText, out headings, out lists, out items, out links, out tables, out inlineLinks);
+
+	child.MarkdownReviewCacheRevision = iRevision;
+	child.MarkdownReviewCacheLength = sText.Length;
+	child.MarkdownReviewInlineLinks = inlineLinks;
+	child.MarkdownReviewHeadings = headings;
+	child.MarkdownReviewLists = lists;
+	child.MarkdownReviewListItems = items;
+	child.MarkdownReviewLinks = links;
+	child.MarkdownReviewTables = tables;
+	} // MarkdownReview_EnsureCache method
+
+	private static List<int[]> MarkdownReview_FindFenceRanges(string sText) {
+	List<int[]> ranges = new List<int[]>();
+	if (String.IsNullOrEmpty(sText)) return ranges;
+
+	bool bInFence = false;
+	int iFenceStart = -1;
+	int iPos = 0;
+	int iLen = sText.Length;
+	while (iPos <= iLen) {
+	int iLf = -1;
+	if (iPos < iLen) {
+	try {iLf = sText.IndexOf('\n', iPos);} catch {iLf = -1;}
+	}
+	bool bHasLf = (iLf >= 0);
+	if (!bHasLf) iLf = iLen;
+
+	int iLineTextEnd = iLf;
+	if (iLineTextEnd > iPos && sText[iLineTextEnd - 1] == '\r') iLineTextEnd--;
+
+	int iFirst = iPos;
+	while (iFirst < iLineTextEnd && Char.IsWhiteSpace(sText[iFirst])) iFirst++;
+	bool bFenceLine = false;
+	if (iFirst + 2 < iLineTextEnd) {
+	char c = sText[iFirst];
+	if ((c == '`' || c == '~') && sText[iFirst + 1] == c && sText[iFirst + 2] == c) bFenceLine = true;
+	}
+
+	if (bFenceLine) {
+	if (!bInFence) {
+	bInFence = true;
+	iFenceStart = iPos;
+	}
+	else {
+	bInFence = false;
+	int iFenceEnd = bHasLf ? (iLf + 1) : iLen;
+	if (iFenceStart < 0) iFenceStart = 0;
+	if (iFenceEnd < iFenceStart) iFenceEnd = iFenceStart;
+	ranges.Add(new int[] {iFenceStart, iFenceEnd});
+	iFenceStart = -1;
+	}
+	}
+
+	if (!bHasLf) break;
+	iPos = iLf + 1;
+	}
+
+	if (bInFence && iFenceStart >= 0) ranges.Add(new int[] {iFenceStart, iLen});
+	return ranges;
+	} // MarkdownReview_FindFenceRanges method
+
+			private static List<int[]> MarkdownReview_FindInlineLinks(string sText) {
+			List<int[]> links = new List<int[]>();
+			if (String.IsNullOrEmpty(sText)) return links;
+
+			List<int[]> fenceRanges = MarkdownReview_FindFenceRanges(sText);
+
+			int iLen = sText.Length;
+			int i = 0;
+			while (i < iLen) {
+			int iBracket = -1;
+			try {iBracket = sText.IndexOf('[', i);} catch {iBracket = -1;}
+			if (iBracket < 0) break;
+
+			if (MarkdownReview_IsIndexInRangesSorted(fenceRanges, iBracket)) {
+			i = iBracket + 1;
+			continue;
+			}
+
+			int iMatchStart = iBracket;
+			try {
+			if (iBracket > 0 && sText[iBracket - 1] == '!') iMatchStart = iBracket - 1;
+			}
+			catch {iMatchStart = iBracket;}
+
+			int iTextStart = iBracket + 1;
+
+			int iClose = -1;
+			bool bEsc = false;
+			for (int j = iTextStart; j < iLen; j++) {
+			char c = sText[j];
+			if (bEsc) {
+			bEsc = false;
+			continue;
+			}
+			if (c == '\\') {
+			bEsc = true;
+			continue;
+			}
+			if (c == ']') {
+			iClose = j;
+			break;
+			}
+			}
+			if (iClose < 0) {
+			i = iBracket + 1;
+			continue;
+			}
+
+			int iTextEnd = iClose;
+
+			int k = iClose + 1;
+			while (k < iLen && Char.IsWhiteSpace(sText[k])) k++;
+			if (k >= iLen || sText[k] != '(') {
+			i = iBracket + 1;
+			continue;
+			}
+
+			int iUrlStart = k + 1;
+			int depth = 1;
+			bool bInDouble = false;
+			bool bInSingle = false;
+			bool bEscape = false;
+			int iUrlEnd = -1;
+			int iMatchEnd = -1;
+			for (int p = iUrlStart; p < iLen; p++) {
+			char c = sText[p];
+			if (bEscape) {
+			bEscape = false;
+			continue;
+			}
+			if (c == '\\') {
+			bEscape = true;
+			continue;
+			}
+
+			if (!bInSingle && c == '"') {
+			bInDouble = !bInDouble;
+			continue;
+			}
+			if (!bInDouble && c == '\'') {
+			bInSingle = !bInSingle;
+			continue;
+			}
+
+			if (!bInDouble && !bInSingle) {
+			if (c == '(') {
+			depth++;
+			continue;
+			}
+			if (c == ')') {
+			depth--;
+			if (depth == 0) {
+			iUrlEnd = p;
+			iMatchEnd = p + 1;
+			break;
+			}
+			}
+			}
+			}
+			if (iUrlEnd < 0 || iMatchEnd < 0) {
+			i = iBracket + 1;
+			continue;
+			}
+
+			if (iMatchStart < 0) iMatchStart = 0;
+			if (iMatchEnd < iMatchStart) iMatchEnd = iMatchStart;
+			if (iTextStart < iMatchStart) iTextStart = iMatchStart;
+			if (iTextEnd < iTextStart) iTextEnd = iTextStart;
+			if (iUrlStart < iMatchStart) iUrlStart = iMatchStart;
+			if (iUrlEnd < iUrlStart) iUrlEnd = iUrlStart;
+
+			links.Add(new int[] {iMatchStart, iMatchEnd, iTextStart, iTextEnd, iUrlStart, iUrlEnd});
+
+			i = iMatchEnd;
+			}
+
+			return links;
+			} // MarkdownReview_FindInlineLinks method
+
+	private static bool MarkdownReview_IsFenceLine(string sLine) {
+	if (sLine == null) return false;
+	string s = sLine.TrimStart();
+	return s.StartsWith("```") || s.StartsWith("~~~");
+	} // MarkdownReview_IsFenceLine method
+
+	private static bool MarkdownReview_IsHeadingLine(string sLine, out int iLevel, out string sHeading) {
+	iLevel = 0;
+	sHeading = "";
+	if (String.IsNullOrEmpty(sLine)) return false;
+
+	string sTrim = sLine.TrimStart();
+	int iLeading = sLine.Length - sTrim.Length;
+	if (iLeading > 3) return false;
+
+	int i = 0;
+	while (i < sTrim.Length && sTrim[i] == '#' && i < 6) i++;
+	if (i == 0) return false;
+	if (i >= sTrim.Length) return false;
+	if (!Char.IsWhiteSpace(sTrim[i])) return false;
+
+	iLevel = i;
+	sHeading = sTrim.Substring(i).Trim();
+	// Strip optional closing sequence of hashes, e.g. "## Heading ##"
+	try {
+	sHeading = Regex.Replace(sHeading, @"\s+#+\s*$", "");
+	}
+	catch {}
+	sHeading = sHeading.Trim();
+	return true;
+	} // MarkdownReview_IsHeadingLine method
+
+	private static bool MarkdownReview_IsIndexInAnyInlineLinkSpan(List<int[]> inlineLinks, int iIndex) {
+	if (inlineLinks == null || inlineLinks.Count == 0) return false;
+	int lo = 0;
+	int hi = inlineLinks.Count - 1;
+	while (lo <= hi) {
+	int mid = (lo + hi) / 2;
+	int[] span = inlineLinks[mid];
+	if (span == null || span.Length < 2) return false;
+	if (iIndex < span[0]) hi = mid - 1;
+	else if (iIndex >= span[1]) lo = mid + 1;
+	else return true;
+	}
+	return false;
+	} // MarkdownReview_IsIndexInAnyInlineLinkSpan method
+
+	private static bool MarkdownReview_IsIndexInAnySpan(int iIndex, List<int[]> spans) {
+	if (spans == null) return false;
+	foreach (int[] span in spans) {
+	if (span == null || span.Length < 2) continue;
+	if (iIndex >= span[0] && iIndex < span[1]) return true;
+	}
+	return false;
+	} // MarkdownReview_IsIndexInAnySpan method
+
+	private static bool MarkdownReview_IsIndexInRangesSorted(List<int[]> ranges, int iIndex) {
+	if (ranges == null || ranges.Count == 0) return false;
+	int lo = 0;
+	int hi = ranges.Count - 1;
+	while (lo <= hi) {
+	int mid = (lo + hi) / 2;
+	int[] span = ranges[mid];
+	if (span == null || span.Length < 2) return false;
+	if (iIndex < span[0]) hi = mid - 1;
+	else if (iIndex >= span[1]) lo = mid + 1;
+	else return true;
+	}
+	return false;
+	} // MarkdownReview_IsIndexInRangesSorted method
+
+	private static bool MarkdownReview_IsListItemLine(string sLine) {
+	if (String.IsNullOrEmpty(sLine)) return false;
+	string s = sLine.TrimStart();
+	if (s.Length < 2) return false;
+
+	char c = s[0];
+	if ((c == '-' || c == '+' || c == '*') && Char.IsWhiteSpace(s[1])) return true;
+
+	if (!Char.IsDigit(c)) return false;
+	int i = 0;
+	while (i < s.Length && Char.IsDigit(s[i])) i++;
+	if (i == 0 || i + 1 >= s.Length) return false;
+	if (s[i] != '.' && s[i] != ')') return false;
+	return Char.IsWhiteSpace(s[i + 1]);
+	} // MarkdownReview_IsListItemLine method
+
+				private static bool MarkdownReview_IsNumberedListItemLine(string sLine) {
+				if (String.IsNullOrEmpty(sLine)) return false;
+				string s = sLine.TrimStart();
+				if (s.Length < 3 || !Char.IsDigit(s[0])) return false;
+				int i = 0;
+				while (i < s.Length && Char.IsDigit(s[i])) i++;
+				if (i == 0 || i + 1 >= s.Length) return false;
+				if (s[i] != '.' && s[i] != ')') return false;
+				return Char.IsWhiteSpace(s[i + 1]);
+				} // MarkdownReview_IsNumberedListItemLine method
+
+	private static string MarkdownReview_NormalizeUrl(string sUrl) {
+	if (String.IsNullOrEmpty(sUrl)) return "";
+	string s = sUrl.Trim();
+
+	// Remove optional title portion from inline link destinations.
+	try {
+	if (s.StartsWith("<") && s.EndsWith(">") && s.Length > 2) {
+	s = s.Substring(1, s.Length - 2).Trim();
+	}
+	else {
+	int iSpace = s.IndexOfAny(new char[] {' ', '\t', '\r', '\n'});
+	if (iSpace > 0) s = s.Substring(0, iSpace).Trim();
+	}
+	}
+	catch {}
+
+	try {s = Util.Unquote(s).Trim();} catch {}
+	s = MarkdownReview_CleanUrl(s);
+
+	if (s.StartsWith("www.", StringComparison.OrdinalIgnoreCase)) s = "https://" + s;
+
+	bool bOk = s.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+	s.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
+	s.StartsWith("ftp://", StringComparison.OrdinalIgnoreCase) ||
+	s.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase);
+	if (!bOk) return "";
+
+	return s;
+	} // MarkdownReview_NormalizeUrl method
+
+	private static void MarkdownReview_ParseText(string sText, out List<int> headings, out List<int> lists, out List<int> items, out List<int> links, out List<int> tables, out List<int[]> inlineLinks) {
+	headings = new List<int>();
+	lists = new List<int>();
+	items = new List<int>();
+	links = new List<int>();
+	tables = new List<int>();
+	inlineLinks = new List<int[]>();
+
+	if (String.IsNullOrEmpty(sText)) return;
+
+	inlineLinks = MarkdownReview_FindInlineLinks(sText);
+	try {
+	foreach (int[] span in inlineLinks) {
+	if (span == null || span.Length < 4) continue;
+	int iTarget = span[2];
+	if (iTarget >= 0 && iTarget <= sText.Length) links.Add(iTarget);
+	}
+	}
+	catch {}
+
+	bool bInFence = false;
+	bool bPrevListItem = false;
+	string sPrevLine = null;
+	int iPrevStart = -1;
+	int iPos = 0;
+	while (true) {
+	int iLf = sText.IndexOf('\n', iPos);
+	bool bHasLf = (iLf >= 0);
+	if (!bHasLf) iLf = sText.Length;
+	int iLineTextEnd = iLf;
+	if (iLineTextEnd > iPos && sText[iLineTextEnd - 1] == '\r') iLineTextEnd--;
+	string sLine = sText.Substring(iPos, iLineTextEnd - iPos);
+	int iStart = iPos;
+
+	if (MarkdownReview_IsFenceLine(sLine)) {
+	bInFence = !bInFence;
+	bPrevListItem = false;
+	sPrevLine = null;
+	iPrevStart = -1;
+	}
+
+	else if (!bInFence) {
+	if (sPrevLine != null && sPrevLine.IndexOf('|') >= 0 && MarkdownTableSeparatorRegex.IsMatch(sLine)) tables.Add(iPrevStart);
+
+	int iLevel;
+	string sHeading;
+	if (MarkdownReview_IsHeadingLine(sLine, out iLevel, out sHeading)) headings.Add(iStart);
+
+	bool bListItem = MarkdownReview_IsListItemLine(sLine);
+	if (bListItem) {
+	items.Add(iStart);
+	if (!bPrevListItem) lists.Add(iStart);
+	bPrevListItem = true;
+	}
+	else if (sLine.Trim().Length == 0) bPrevListItem = false;
+	else bPrevListItem = false;
+
+	MarkdownReview_AddNonInlineLinksFromLine(sLine, iStart, links, inlineLinks);
+
+	sPrevLine = sLine;
+	iPrevStart = iStart;
+	}
+
+	if (!bHasLf) break;
+	iPos = iLf + 1;
+	}
+
+	MarkdownReview_SortUnique(headings);
+	MarkdownReview_SortUnique(lists);
+	MarkdownReview_SortUnique(items);
+	MarkdownReview_SortUnique(links);
+	MarkdownReview_SortUnique(tables);
+	} // MarkdownReview_ParseText method
+
+	private static void MarkdownReview_SortUnique(List<int> list) {
+	if (list == null || list.Count < 2) return;
+	list.Sort();
+	int j = 1;
+	for (int i = 1; i < list.Count; i++) {
+	if (list[i] != list[i - 1]) {
+	list[j] = list[i];
+	j++;
+	}
+	}
+	if (j < list.Count) list.RemoveRange(j, list.Count - j);
+	} // MarkdownReview_SortUnique method
+
+	private static bool MarkdownReview_TryGetInlineLinkSpanContainingIndex(List<int[]> inlineLinks, int iIndex, out int[] span) {
+	span = null;
+	if (inlineLinks == null || inlineLinks.Count == 0) return false;
+	for (int i = 0; i < inlineLinks.Count; i++) {
+	int[] s = inlineLinks[i];
+	if (s == null || s.Length < 6) continue;
+	if (iIndex >= s[0] && iIndex <= s[1]) {
+	span = s;
+	return true;
+	}
+	}
+	return false;
+	} // MarkdownReview_TryGetInlineLinkSpanContainingIndex method
+
+	private static bool MarkdownReview_TryGetLinkUrlFromLine(string sLine, int iOffset, out string sUrl) {
+	sUrl = "";
+	if (String.IsNullOrEmpty(sLine)) return false;
+	if (iOffset < 0) iOffset = 0;
+	if (iOffset > sLine.Length) iOffset = sLine.Length;
+
+	try {
+	foreach (Match m in MarkdownInlineLinkRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	if (m.Index <= iOffset && iOffset <= m.Index + m.Length) {
+	string s = MarkdownReview_NormalizeUrl(m.Groups["url"].Value);
+	if (s.Length == 0) continue;
+	sUrl = s;
+	return true;
+	}
+	}
+	foreach (Match m in MarkdownAutoLinkRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	if (m.Index <= iOffset && iOffset <= m.Index + m.Length) {
+	string s = MarkdownReview_NormalizeUrl(m.Value.Trim('<', '>'));
+	if (s.Length == 0) continue;
+	sUrl = s;
+	return true;
+	}
+	}
+	foreach (Match m in MarkdownBareUrlRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	if (m.Index <= iOffset && iOffset <= m.Index + m.Length) {
+	string s = MarkdownReview_NormalizeUrl(m.Value);
+	if (s.Length == 0) continue;
+	sUrl = s;
+	return true;
+	}
+	}
+	foreach (Match m in MarkdownWwwUrlRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	if (m.Index <= iOffset && iOffset <= m.Index + m.Length) {
+	string s = MarkdownReview_NormalizeUrl(m.Value);
+	if (s.Length == 0) continue;
+	sUrl = s;
+	return true;
+	}
+	}
+	}
+	catch {}
+
+	return false;
+	} // MarkdownReview_TryGetLinkUrlFromLine method
+
+	private static bool MarkdownReview_TryGetListItemText(string sLine, out string sText) {
+	sText = "";
+	if (String.IsNullOrEmpty(sLine)) return false;
+	string s = sLine.TrimStart();
+	if (s.Length < 2) return false;
+
+	char c = s[0];
+	if ((c == '-' || c == '+' || c == '*') && Char.IsWhiteSpace(s[1])) {
+	sText = s.Substring(2).TrimStart();
+	return true;
+	}
+
+	if (!Char.IsDigit(c)) return false;
+	int i = 0;
+	while (i < s.Length && Char.IsDigit(s[i])) i++;
+	if (i == 0 || i + 1 >= s.Length) return false;
+	if (s[i] != '.' && s[i] != ')') return false;
+	if (!Char.IsWhiteSpace(s[i + 1])) return false;
+	sText = s.Substring(i + 2).TrimStart();
+	return true;
+	} // MarkdownReview_TryGetListItemText method
+
+				private static bool MarkdownReview_TryGetSingleInlineLinkSpanOnLine(List<int[]> inlineLinks, int iLineStart, int iLineEnd, out int[] span) {
+				span = null;
+				if (inlineLinks == null || inlineLinks.Count == 0) return false;
+				foreach (int[] s in inlineLinks) {
+				if (s == null || s.Length < 6) continue;
+				if (s[0] < iLineStart || s[1] > iLineEnd) continue;
+				if (span != null) {
+				span = null;
+				return false;
+				}
+				span = s;
+				}
+				return span != null;
+				} // MarkdownReview_TryGetSingleInlineLinkSpanOnLine method
+
+				private static bool MarkdownReview_TryGetSingleUrlFromLine(string sLine, out string sUrl) {
+				sUrl = "";
+				if (String.IsNullOrEmpty(sLine)) return false;
+				List<string> urls = new List<string>();
+				List<int[]> spans = new List<int[]>();
+
+				try {
+				foreach (Match m in MarkdownInlineLinkRegex.Matches(sLine)) {
+				if (m == null || !m.Success) continue;
+				string s = MarkdownReview_NormalizeUrl(m.Groups["url"].Value);
+				if (s.Length == 0) continue;
+				urls.Add(s);
+				spans.Add(new int[] {m.Index, m.Index + m.Length});
+				}
+				foreach (Match m in MarkdownAutoLinkRegex.Matches(sLine)) {
+				if (m == null || !m.Success) continue;
+				if (MarkdownReview_IsIndexInAnySpan(m.Index, spans)) continue;
+				string s = MarkdownReview_NormalizeUrl(m.Value.Trim('<', '>'));
+				if (s.Length == 0) continue;
+				urls.Add(s);
+				spans.Add(new int[] {m.Index, m.Index + m.Length});
+				}
+				foreach (Match m in MarkdownBareUrlRegex.Matches(sLine)) {
+				if (m == null || !m.Success) continue;
+				if (MarkdownReview_IsIndexInAnySpan(m.Index, spans)) continue;
+				string s = MarkdownReview_NormalizeUrl(m.Value);
+				if (s.Length == 0) continue;
+				urls.Add(s);
+				spans.Add(new int[] {m.Index, m.Index + m.Length});
+				}
+				foreach (Match m in MarkdownWwwUrlRegex.Matches(sLine)) {
+				if (m == null || !m.Success) continue;
+				if (MarkdownReview_IsIndexInAnySpan(m.Index, spans)) continue;
+				string s = MarkdownReview_NormalizeUrl(m.Value);
+				if (s.Length == 0) continue;
+				urls.Add(s);
+				spans.Add(new int[] {m.Index, m.Index + m.Length});
+				}
+				}
+				catch {}
+
+				if (urls.Count != 1) return false;
+				sUrl = urls[0];
+				return sUrl.Length > 0;
+				} // MarkdownReview_TryGetSingleUrlFromLine method
+
+			private static string RtfEncode(string sText) {
+			if (sText == null) return "";
+			StringBuilder sb = new StringBuilder();
+			foreach (char c in sText) {
+			switch (c) {
+			case '\\':
+			case '{':
+			case '}':
+			sb.Append('\\');
+			sb.Append(c);
+			break;
+			case '\r':
+			break;
+			case '\n':
+			sb.Append(@"\par ");
+			break;
+			default:
+			if (c <= 0x7f) sb.Append(c);
+			else {
+			int i = (int) c;
+			if (i > 32767) i -= 65536;
+			sb.Append(@"\u");
+			sb.Append(i.ToString(CultureInfo.InvariantCulture));
+			sb.Append('?');
+			}
+			break;
+			}
+			}
+			return sb.ToString();
+			} // RtfEncode method
+
+				private static string RtfEncodeInline(string sText) {
+				if (String.IsNullOrEmpty(sText)) return "";
+				StringBuilder sb = new StringBuilder();
+				foreach (char c in sText) {
+				if (c == '\\' || c == '{' || c == '}') { sb.Append('\\'); sb.Append(c); }
+				else if (c == '\r' || c == '\n') { sb.Append(' '); }
+				else if (c <= 0x7f) sb.Append(c);
+				else {
+				int i = (int) c;
+				if (i > 32767) i -= 65536;
+				sb.Append(@"\u");
+				sb.Append(i.ToString(CultureInfo.InvariantCulture));
+				sb.Append('?');
+				}
+				}
+				return sb.ToString();
+				} // RtfEncodeInline method
+
+			private static string StripHtmlFormatting(string sLine) {
+			if (String.IsNullOrEmpty(sLine)) return "";
+			sLine = Util.RegExpReplaceCase(sLine, @"<\s*br\s*/?\s*>", " ");
+			sLine = Util.RegExpReplaceCase(sLine, @"</\s*(p|div|li|tr|h[1-6])\s*>", " ");
+			sLine = HtmlTagRegex.Replace(sLine, "");
+			try {sLine = System.Net.WebUtility.HtmlDecode(sLine);} catch {}
+			return sLine;
+			} // StripHtmlFormatting method
+
+			private static string StripMarkdownFormatting(string sText) {
+			if (sText == null) return "";
+			string[] aLines = sText.Split('\n');
+			bool bInFence = false;
+			for (int i = 0; i < aLines.Length; i++) {
+			string sLine = aLines[i];
+			bool bCR = sLine.EndsWith("\r");
+			if (bCR) sLine = sLine.Substring(0, sLine.Length - 1);
+
+			string sTrim = sLine.Trim();
+			bool bFence = sTrim.StartsWith("```") || sTrim.StartsWith("~~~");
+			if (bFence) {
+			bInFence = !bInFence;
+			sLine = "";
+			}
+
+			if (!bInFence && !bFence) {
+			if (MarkdownTableSeparatorRegex.IsMatch(sLine) || MarkdownHorizontalRuleRegex.IsMatch(sLine)) {
+			aLines[i] = bCR ? "\r" : "";
+			continue;
+			}
+
+			// Line-level markup.
+			sLine = MarkdownHeadingPrefixRegex.Replace(sLine, "");
+			sLine = MarkdownHeadingSuffixRegex.Replace(sLine, "");
+			sLine = Util.RegExpReplaceCase(sLine, @"^\s*>+\s?", "");
+			sLine = MarkdownBulletPrefixRegex.Replace(sLine, "${indent}", 1);
+			sLine = MarkdownNumberPrefixRegex.Replace(sLine, "${indent}", 1);
+
+				// Links and images.
+				sLine = StripMarkdownInlineLinks(sLine);
+				sLine = Util.RegExpReplaceCase(sLine, @"<(?<url>https?://[^>]+)>", "${url}");
+
+			// Inline code.
+			sLine = Util.RegExpReplaceCase(sLine, @"`([^`]*)`", "$1");
+
+			// Emphasis/strike (apply multiple times to unwrap nested markers).
+			for (int j = 0; j < 3; j++) {
+			sLine = Util.RegExpReplaceCase(sLine, @"(\*\*|__)(.+?)\1", "$2");
+			sLine = Util.RegExpReplaceCase(sLine, @"(\*|_)(.+?)\1", "$2");
+			sLine = Util.RegExpReplaceCase(sLine, @"~~(.+?)~~", "$1");
+			}
+
+			if (MarkdownTableRowRegex.IsMatch(sLine)) sLine = StripMarkdownTableRow(sLine);
+			sLine = StripHtmlFormatting(sLine);
+			}
+
+			aLines[i] = sLine + (bCR ? "\r" : "");
+			}
+
+				return String.Join("\n", aLines);
+				} // StripMarkdownFormatting method
+
+				private static string StripMarkdownInlineLinks(string sLine) {
+				if (String.IsNullOrEmpty(sLine)) return "";
+				List<int[]> links = null;
+				try {links = MarkdownReview_FindInlineLinks(sLine);} catch {links = null;}
+				if (links == null || links.Count == 0) return sLine;
+
+				StringBuilder sb = new StringBuilder(sLine.Length);
+				int iPos = 0;
+				foreach (int[] span in links) {
+				if (span == null || span.Length < 6) continue;
+					int iSpanStart = span[0];
+					if (iSpanStart > 0 && sLine[iSpanStart - 1] == '!') iSpanStart--;
+					if (iSpanStart < iPos || span[0] > sLine.Length) continue;
+					if (span[1] < span[0] || span[1] > sLine.Length) continue;
+					if (span[2] < span[0] || span[3] < span[2] || span[3] > span[1]) continue;
+					sb.Append(sLine.Substring(iPos, iSpanStart - iPos));
+					sb.Append(sLine.Substring(span[2], span[3] - span[2]));
+					iPos = span[1];
+				}
+				if (iPos < sLine.Length) sb.Append(sLine.Substring(iPos));
+				return sb.ToString();
+				} // StripMarkdownInlineLinks method
+
+			private static string StripMarkdownTableRow(string sLine) {
+			if (String.IsNullOrEmpty(sLine)) return "";
+			string s = sLine.Trim();
+			if (s.StartsWith("|")) s = s.Substring(1);
+			if (s.EndsWith("|")) s = s.Substring(0, s.Length - 1);
+			string[] aCells = s.Split('|');
+			for (int i = 0; i < aCells.Length; i++) aCells[i] = aCells[i].Trim();
+			return String.Join("\t", aCells);
+			} // StripMarkdownTableRow method
+
+			private void ToggleBulletListShortcut(MdiChild child) {
+			if (child == null) return;
+			HomerRichTextBox rtb = child.RTB;
+			if (rtb == null) return;
+
+			if (IsRichTextFile(child)) {
+			rtb.SelectionBullet = !rtb.SelectionBullet;
+			AddMessage(rtb.SelectionBullet ? "Bulleted list on" : "Bulleted list off");
+			return;
+			}
+
+			int iStart, iEnd;
+			GetSelectedLineSpan(rtb, out iStart, out iEnd);
+			if (iEnd <= iStart) return;
+			string sText = rtb.GetRange(iStart, iEnd);
+			string[] aLines = sText.Split('\n');
+
+			bool bAllBulleted = true;
+			for (int i = 0; i < aLines.Length; i++) {
+			string sLine = aLines[i];
+			if (sLine.EndsWith("\r")) sLine = sLine.Substring(0, sLine.Length - 1);
+			if (sLine.Trim().Length == 0) continue;
+			if (!MarkdownBulletPrefixRegex.IsMatch(sLine)) {
+			bAllBulleted = false;
+			break;
+			}
+			}
+
+			for (int i = 0; i < aLines.Length; i++) {
+			string sLine = aLines[i];
+			bool bCR = sLine.EndsWith("\r");
+			if (bCR) sLine = sLine.Substring(0, sLine.Length - 1);
+
+			if (sLine.Trim().Length == 0) {
+			aLines[i] = bCR ? "\r" : "";
+			continue;
+			}
+
+			if (bAllBulleted) {
+			// Remove bullet marker, keep indentation.
+			aLines[i] = MarkdownBulletPrefixRegex.Replace(sLine, "${indent}", 1) + (bCR ? "\r" : "");
+			}
+			else {
+			// Convert numbered list items to bullets, and add bullets where missing.
+			sLine = MarkdownNumberPrefixRegex.Replace(sLine, "${indent}", 1);
+			if (!MarkdownBulletPrefixRegex.IsMatch(sLine)) {
+			int iIndent = GetLeadingWhitespaceLength(sLine);
+			string sIndent = sLine.Substring(0, iIndent);
+			string sRest = sLine.Substring(iIndent);
+			sLine = sIndent + "- " + sRest;
+			}
+			aLines[i] = sLine + (bCR ? "\r" : "");
+			}
+			}
+
+			string sNewText = String.Join("\n", aLines);
+			rtb.ReplaceRange(iStart, iEnd, sNewText);
+			AddMessage(bAllBulleted ? "Bulleted list off" : "Bulleted list on");
+			} // ToggleBulletListShortcut method
+
+			private void ToggleNumberedListShortcut(MdiChild child) {
+			if (child == null) return;
+			HomerRichTextBox rtb = child.RTB;
+			if (rtb == null) return;
+
+			if (IsRichTextFile(child)) {
+			int iSelStart = rtb.SelectionStart;
+			int iSelLength = rtb.SelectionLength;
+
+			int iStartRow;
+			int iEndRow;
+			if (iSelLength == 0) {
+			iStartRow = rtb.GetLineFromCharIndex(iSelStart);
+			iEndRow = iStartRow;
+			}
+			else {
+			int iSelEnd = iSelStart + iSelLength;
+			int iEndIndex = (iSelEnd > iSelStart) ? iSelEnd - 1 : iSelStart;
+			iStartRow = rtb.GetLineFromCharIndex(iSelStart);
+			iEndRow = rtb.GetLineFromCharIndex(iEndIndex);
+			}
+			if (iStartRow < 0) iStartRow = 0;
+			if (iEndRow < 0) iEndRow = iStartRow;
+
+			bool bAllNumbered = true;
+			for (int iRow = iStartRow; iRow <= iEndRow; iRow++) {
+			string sLine = rtb.GetRowText(iRow);
+			if (sLine.Trim().Length == 0) continue;
+			if (!MarkdownNumberPrefixRegex.IsMatch(sLine)) {
+			bAllNumbered = false;
+			break;
+			}
+			}
+
+			if (bAllNumbered) {
+			for (int iRow = iEndRow; iRow >= iStartRow; iRow--) {
+			string sLine = rtb.GetRowText(iRow);
+			if (sLine.Trim().Length == 0) continue;
+			Match m = MarkdownNumberPrefixRegex.Match(sLine);
+			if (!m.Success) continue;
+			string sIndent = m.Groups["indent"].Value;
+			int iRowStart = rtb.GetFirstCharIndexFromLine(iRow);
+			if (iRowStart < 0) continue;
+			rtb.Select(iRowStart, m.Length);
+			rtb.SelectedText = sIndent;
+			}
+			AddMessage("Numbered list off");
+			return;
+			}
+
+			int iNumber = 1;
+			for (int iRow = iStartRow; iRow <= iEndRow; iRow++) {
+			string sLine = rtb.GetRowText(iRow);
+			if (sLine.Trim().Length == 0) continue;
+
+			Match mPrefix = MarkdownBulletPrefixRegex.Match(sLine);
+			if (!mPrefix.Success) mPrefix = MarkdownNumberPrefixRegex.Match(sLine);
+			if (mPrefix.Success) {
+			string sIndent = mPrefix.Groups["indent"].Value;
+			int iRowStart = rtb.GetFirstCharIndexFromLine(iRow);
+			if (iRowStart >= 0) {
+			rtb.Select(iRowStart, mPrefix.Length);
+			rtb.SelectedText = sIndent;
+			}
+			sLine = rtb.GetRowText(iRow);
+			}
+
+			int iIndentLength = GetLeadingWhitespaceLength(sLine);
+			int iInsert = rtb.GetFirstCharIndexFromLine(iRow) + iIndentLength;
+			if (iInsert < 0) continue;
+			rtb.Select(iInsert, 0);
+			rtb.SelectedText = iNumber.ToString() + ". ";
+			iNumber++;
+			}
+
+			AddMessage("Numbered list on");
+			return;
+			}
+
+			int iStart, iEnd;
+			GetSelectedLineSpan(rtb, out iStart, out iEnd);
+			if (iEnd <= iStart) return;
+			string sText = rtb.GetRange(iStart, iEnd);
+			string[] aLines = sText.Split('\n');
+
+			bool bAllNumbered2 = true;
+			for (int i = 0; i < aLines.Length; i++) {
+			string sLine = aLines[i];
+			if (sLine.EndsWith("\r")) sLine = sLine.Substring(0, sLine.Length - 1);
+			if (sLine.Trim().Length == 0) continue;
+			if (!MarkdownNumberPrefixRegex.IsMatch(sLine)) {
+			bAllNumbered2 = false;
+			break;
+			}
+			}
+
+			int iNumber2 = 1;
+			for (int i = 0; i < aLines.Length; i++) {
+			string sLine = aLines[i];
+			bool bCR = sLine.EndsWith("\r");
+			if (bCR) sLine = sLine.Substring(0, sLine.Length - 1);
+
+			if (sLine.Trim().Length == 0) {
+			aLines[i] = bCR ? "\r" : "";
+			continue;
+			}
+
+			if (bAllNumbered2) {
+			aLines[i] = MarkdownNumberPrefixRegex.Replace(sLine, "${indent}", 1) + (bCR ? "\r" : "");
+			}
+			else {
+			// Convert bullets to numbers, and add numbers where missing.
+			sLine = MarkdownBulletPrefixRegex.Replace(sLine, "${indent}", 1);
+			sLine = MarkdownNumberPrefixRegex.Replace(sLine, "${indent}", 1);
+			int iIndent = GetLeadingWhitespaceLength(sLine);
+			string sIndent = sLine.Substring(0, iIndent);
+			string sRest = sLine.Substring(iIndent);
+			sLine = sIndent + iNumber2.ToString() + ". " + sRest;
+			aLines[i] = sLine + (bCR ? "\r" : "");
+			iNumber2++;
+			}
+			}
+
+			string sNewText = String.Join("\n", aLines);
+			rtb.ReplaceRange(iStart, iEnd, sNewText);
+			AddMessage(bAllNumbered2 ? "Numbered list off" : "Numbered list on");
+			} // ToggleNumberedListShortcut method
+
+				private bool TryCopyMarkdownLinkAsRichText(MdiChild child) {
+				if (child == null || child.RTB == null) return false;
+				HomerRichTextBox rtb = child.RTB;
+				MarkdownReview_EnsureCache(child);
+
+				int iIndex = rtb.SelectionStart;
+				int[] span = null;
+				if (!MarkdownReview_TryGetInlineLinkSpanContainingIndex(child.MarkdownReviewInlineLinks, iIndex, out span)) {
+				int iRow = rtb.GetLineFromCharIndex(iIndex);
+				int iLineStart = (iRow >= 0) ? rtb.GetFirstCharIndexFromLine(iRow) : -1;
+				int iLineEnd = (iRow >= 0) ? rtb.GetFirstCharIndexFromLine(iRow + 1) : -1;
+				if (iLineStart >= 0) {
+				if (iLineEnd < 0) iLineEnd = rtb.TextLength;
+				MarkdownReview_TryGetSingleInlineLinkSpanOnLine(child.MarkdownReviewInlineLinks, iLineStart, iLineEnd, out span);
+				}
+				}
+				if (span == null || span.Length < 6) return TryCopyMarkdownUrlAsRichText(child, iIndex);
+				return CopyMarkdownInlineLinkSpanAsRichText(child, span);
+				} // TryCopyMarkdownLinkAsRichText method
+
+					private static bool TryCopyMarkdownList(HomerRichTextBox rtb) {
+				if (rtb == null) return false;
+				int iRow = rtb.Row;
+				if (iRow < 0) return false;
+				string sLine = rtb.GetRowText(iRow);
+				if (!MarkdownReview_IsListItemLine(sLine)) return false;
+				bool bOrdered = MarkdownReview_IsNumberedListItemLine(sLine);
+
+				int iFirst = iRow;
+				while (iFirst > 0 && MarkdownReview_IsListItemLine(rtb.GetRowText(iFirst - 1))) iFirst--;
+
+			int iLast = iRow;
+			int iBottom = rtb.BottomRow;
+			while (iLast < iBottom && MarkdownReview_IsListItemLine(rtb.GetRowText(iLast + 1))) iLast++;
+
+			int iStart = rtb.GetFirstCharIndexFromLine(iFirst);
+			int iEnd = rtb.GetFirstCharIndexFromLine(iLast + 1);
+			if (iStart < 0) return false;
+			if (iEnd < 0) iEnd = rtb.TextLength;
+			if (iEnd < iStart) return false;
+
+				List<string> items = GetMarkdownListItemTexts(rtb, iFirst, iLast);
+				string sText = Util.Convert2WinLineBreak(String.Join("\n", items.ToArray()));
+				DataObject data = new DataObject();
+				data.SetData(DataFormats.UnicodeText, sText);
+				data.SetData(DataFormats.Text, sText);
+				// Build a true Word list via RTF list tables so it pastes as the
+				// "List Paragraph" style, not manual bullets. Per consultation we do
+				// NOT add CF_HTML here: leaving HTML in the clipboard can make Word
+				// pick the HTML path (which does not yield a real list). RTF + plain
+				// text gives the most deterministic native-list paste into Word.
+				string sRtf = BuildRtfListParagraph(items, bOrdered);
+				if (sRtf.Length > 0) data.SetData(DataFormats.Rtf, sRtf);
+				Clipboard.SetDataObject(data, true);
+					App.Frame.AddMessage("List copied");
+					return true;
+					} // TryCopyMarkdownList method
+
+					private bool TryCopyMarkdownRichLine(MdiChild child) {
+					if (child == null || child.RTB == null) return false;
+					HomerRichTextBox rtb = child.RTB;
+					if (rtb.SelectionLength != 0) return false;
+					int iRow = rtb.Row;
+					if (iRow < 0) return false;
+					string sLine = rtb.GetRowText(iRow);
+					if (String.IsNullOrEmpty(sLine)) return false;
+					sLine = sLine.TrimEnd('\r', '\n');
+					if (sLine.Trim().Length == 0) return false;
+
+					int iLevel;
+					string sHeading;
+					if (MarkdownReview_IsHeadingLine(sLine, out iLevel, out sHeading)) {
+					string sPlain = StripMarkdownFormatting(sHeading).Trim();
+					if (sPlain.Length == 0) return false;
+					DataObject data = new DataObject();
+					data.SetData(DataFormats.UnicodeText, sPlain);
+					data.SetData(DataFormats.Text, sPlain);
+					data.SetData(DataFormats.Html, BuildHtmlClipboardFragment("<h" + iLevel.ToString(CultureInfo.InvariantCulture) + ">" + MarkdownInlineToHtml(sHeading) + "</h" + iLevel.ToString(CultureInfo.InvariantCulture) + ">"));
+					string sRtf = BuildRtfHeading(sPlain, iLevel);
+					if (sRtf.Length > 0) data.SetData(DataFormats.Rtf, sRtf);
+					Clipboard.SetDataObject(data, true);
+					AddMessage("Heading copied");
+					return true;
+					}
+
+					if (!MarkdownLineHasRichInlineMarkup(sLine)) return false;
+					string sPlainLine = StripMarkdownFormatting(sLine).Trim();
+					if (sPlainLine.Length == 0) return false;
+					DataObject dataLine = new DataObject();
+					dataLine.SetData(DataFormats.UnicodeText, sPlainLine);
+					dataLine.SetData(DataFormats.Text, sPlainLine);
+					dataLine.SetData(DataFormats.Html, BuildHtmlClipboardFragment("<p>" + MarkdownInlineToHtml(sLine) + "</p>"));
+					string sRtfLine = BuildRtfPlainText(sPlainLine);
+					if (sRtfLine.Length > 0) dataLine.SetData(DataFormats.Rtf, sRtfLine);
+					Clipboard.SetDataObject(dataLine, true);
+					AddMessage("Rich text copied");
+					return true;
+					} // TryCopyMarkdownRichLine method
+
+				private bool TryCopyMarkdownUrlAsRichText(MdiChild child, int iIndex) {
+				if (child == null || child.RTB == null) return false;
+			HomerRichTextBox rtb = child.RTB;
+			int iRow = rtb.GetLineFromCharIndex(iIndex);
+			if (iRow < 0) return false;
+			int iStart = rtb.GetFirstCharIndexFromLine(iRow);
+			int iEnd = rtb.GetFirstCharIndexFromLine(iRow + 1);
+			if (iStart < 0) return false;
+			if (iEnd < 0) iEnd = rtb.TextLength;
+				if (iEnd < iStart) return false;
+				string sLine = rtb.GetRange(iStart, iEnd).TrimEnd('\r', '\n');
+				int iOffset = Math.Max(0, iIndex - iStart);
+				string sUrl;
+				if (!MarkdownReview_TryGetLinkUrlFromLine(sLine, iOffset, out sUrl) && !MarkdownReview_TryGetSingleUrlFromLine(sLine, out sUrl)) return false;
+				sUrl = MarkdownReview_NormalizeUrl(sUrl);
+				if (sUrl.Length == 0) return false;
+
+			DataObject data = new DataObject();
+			data.SetData(DataFormats.UnicodeText, sUrl);
+			data.SetData(DataFormats.Text, sUrl);
+			data.SetData(DataFormats.Rtf, BuildRtfHyperlink(sUrl, sUrl));
+			Clipboard.SetDataObject(data, true);
+					AddMessage("Link copied");
+					return true;
+					} // TryCopyMarkdownUrlAsRichText method
+
+
+
+	private static bool MarkdownReview_IsMarkdownFile(string sFile) {
+	if (String.IsNullOrEmpty(sFile)) return false;
+	try {
+	return String.Equals(Path.GetExtension(sFile), ".md", StringComparison.OrdinalIgnoreCase);
+	}
+	catch {
+	return false;
+	}
+	} // MarkdownReview_IsMarkdownFile method
+
+private void RefreshMarkdownReviewAfterEdit(MdiChild child) {
+// No-op here; the Markdown review view is introduced in a separate change.
+// Kept so edit commands can call it unconditionally.
+} // RefreshMarkdownReviewAfterEdit method
+
+			private void ClearFormattingShortcut(MdiChild child) {
+			if (child == null) return;
+			HomerRichTextBox rtb = child.RTB;
+			if (rtb == null) return;
+
+				if (IsRichTextFile(child)) {
+				if (rtb.SelectionLength == 0) {
+				int iIndex = rtb.SelectionStart;
+				int iLineStart, iLineEnd;
+				GetSelectedLineSpan(rtb, out iLineStart, out iLineEnd);
+				string sPlainLine = rtb.GetRange(iLineStart, iLineEnd);
+				Font fontBaseLine = rtb.Font;
+				Color colorBaseLine = rtb.ForeColor;
+				rtb.Select(iLineStart, Math.Max(0, iLineEnd - iLineStart));
+				try {
+				rtb.SelectionBullet = false;
+				rtb.SelectionAlignment = HorizontalAlignment.Left;
+				if (fontBaseLine != null) rtb.SelectionFont = fontBaseLine;
+				rtb.SelectionColor = colorBaseLine;
+				rtb.SelectedText = sPlainLine;
+				}
+				catch {}
+				rtb.Select(Math.Min(iIndex, rtb.TextLength), 0);
+				rtb.Modified = true;
+				RefreshMarkdownReviewAfterEdit(child);
+				return;
+				}
+
+			string sPlain = rtb.SelectedText;
+			Font fontBase = rtb.Font;
+			Color colorBase = rtb.ForeColor;
+			int iSelStart = rtb.SelectionStart;
+			try {
+			rtb.SelectionBullet = false;
+			rtb.SelectionAlignment = HorizontalAlignment.Left;
+			if (fontBase != null) rtb.SelectionFont = fontBase;
+			rtb.SelectionColor = colorBase;
+			rtb.SelectedText = sPlain;
+			}
+			catch {}
+			finally {
+			try {rtb.Select(iSelStart, 0);} catch {}
+			}
+			rtb.Modified = true;
+			RefreshMarkdownReviewAfterEdit(child);
+			return;
+			}
+
+				int iSelStart2 = rtb.SelectionStart;
+				int iSelLength2 = rtb.SelectionLength;
+				int iIndex2 = rtb.SelectionStart;
+				if (iSelLength2 == 0) {
+				int iLineStart2, iLineEnd2;
+				GetSelectedLineSpan(rtb, out iLineStart2, out iLineEnd2);
+				string sText = rtb.GetRange(iLineStart2, iLineEnd2);
+				string sNewText = StripMarkdownFormatting(sText);
+				rtb.Select(iLineStart2, Math.Max(0, iLineEnd2 - iLineStart2));
+				rtb.SelectedText = sNewText;
+				rtb.Select(Math.Min(iIndex2, rtb.TextLength), 0);
+				}
+				else {
+				string sText = rtb.SelectedText;
+				string sNewText = StripMarkdownFormatting(sText);
+				rtb.Select(iSelStart2, iSelLength2);
+				rtb.SelectedText = sNewText;
+				rtb.Select(iSelStart2, sNewText.Length);
+			}
+			rtb.Modified = true;
+			RefreshMarkdownReviewAfterEdit(child);
+			} // ClearFormattingShortcut method
 } // MdiFrame class
 
 public class HomerRichTextBox : RichTextBox {
