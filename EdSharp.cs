@@ -7253,9 +7253,10 @@ int i = Array.IndexOf(aNames, sName);
 string sVerb = aVerbs[i];
 
 // Clipboard.SetText(sVerb);
-// if (sVerb.Replace("&", "") == "Open With...") Win32.OpenWith(sFile);
-// if (sVerb.Replace("&", "") == "Open With...") Process.Start("Rundll32.exe", "shell32.dll, OpenAs_RunDLL " + Util.Quote(sFile));
-if (sVerb.Replace("&", "") == "Open With...") Util.Run("Rundll32.exe shell32.dll, OpenAs_RunDLL " + sFile);
+// "Open With..." goes through ShellExecuteEx verb "openas" (Win32.OpenWith),
+// which shows the modern "Open with" dialog including "Always use this app";
+// the old Rundll32 OpenAs_RunDLL path does not offer that on Windows 10/11.
+if (sVerb.Replace("&", "") == "Open With...") Win32.OpenWith(sFile, this.Handle);
 else COM.InvokeVerb(sFile, sVerb);
 } // ContextMenu method
 
@@ -9951,16 +9952,57 @@ public IntPtr Monitor;
 extern public static bool ShellExecuteEx(ref ShellExecuteInfo lpExecInfo);
 
 public const uint SW_NORMAL = 1;
+public const uint SEE_MASK_INVOKEIDLIST = 0x0000000C;
+public const uint OAIF_ALLOW_REGISTRATION = 0x00000001;
+public const uint OAIF_EXEC = 0x00000004;
 
 public static void OpenWith(string file) {
+OpenWith(file, IntPtr.Zero);
+} //OpenWith method
+
+public static void OpenWith(string file, IntPtr hParent) {
+if (String.IsNullOrEmpty(file)) throw new ArgumentException("No file was specified.", "file");
+
+// Primary path: classic "Open with" dialog via ShellExecuteEx verb "openas".
+// This is the dialog that offers "Always use this app to open ..." so the user
+// can make the association permanent. SHOpenWithDialog (below) cannot do that
+// on Windows 10/11 - it only opens the file once and ignores registration flags.
+try {
 ShellExecuteInfo sei = new ShellExecuteInfo();
 sei.Size = Marshal.SizeOf(sei);
+sei.Mask = SEE_MASK_INVOKEIDLIST;
+sei.hwnd = hParent;
 sei.Verb = "openas";
 sei.File = file;
 sei.Show = SW_NORMAL;
-if (!ShellExecuteEx(ref sei))
-throw new System.ComponentModel.Win32Exception();
-} //OpenAs method
+if (ShellExecuteEx(ref sei)) return;
+}
+catch (EntryPointNotFoundException) {}
+catch (DllNotFoundException) {}
+
+// Fallback: SHOpenWithDialog (single open only on Win10/11, no "always").
+OpenAsInfo info = new OpenAsInfo();
+info.pcszFile = file;
+info.pcszClass = null;
+info.oaifInFlags = OAIF_ALLOW_REGISTRATION | OAIF_EXEC;
+
+int iResult = SHOpenWithDialog(hParent, ref info);
+if (iResult >= 0) return;
+if (iResult == unchecked((int) 0x800704C7)) return; // user cancelled
+Marshal.ThrowExceptionForHR(iResult);
+} //OpenWith method
+
+[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+public struct OpenAsInfo {
+[MarshalAs(UnmanagedType.LPWStr)]
+public string pcszFile;
+[MarshalAs(UnmanagedType.LPWStr)]
+public string pcszClass;
+public uint oaifInFlags;
+}
+
+[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+public static extern int SHOpenWithDialog(IntPtr hwndParent, ref OpenAsInfo poainfo);
 
 } // Win32 class
 
