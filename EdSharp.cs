@@ -633,6 +633,11 @@ this.AppendFromClipboard = 1;
 }
 else if (this.AppendFromClipboard == 1) {
 string sClipboard = Util.GetClipboardText();
+// Do not append a copy made in this same collecting window, which would copy the
+// document back into itself.  this.ContainsFocus is true only when the input
+// focus is in this document, so the copy originated here; a copy made in another
+// EdSharp window or in another application is still collected.
+if (this.ContainsFocus) sClipboard = "";
 //if (sClipboard == this.LastClipboardText && ((Environment.TickCount - this.LastTickCount) < 100)) sClipboard = "";
 if (sClipboard == this.LastClipboardText) sClipboard = "";
 if (sClipboard.Length > 0) {
