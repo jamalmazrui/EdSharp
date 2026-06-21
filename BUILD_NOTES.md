@@ -1,3 +1,40 @@
+# EdSharp 5.0 baseline starter -- build notes (revision 53)
+
+Revision 53: Elevate Version (F11) -- make installing the latest web release work
+even when no newer version is detected, and clarify why "up to date" appears.
+
+Investigation of the "F11 said up to date even though I posted a newer build":
+F11 compares version NUMBERS.  The running exe reports App.VersionString
+("5.0.0"); the release tag is built by tagRelease from the installer's .iss
+AppVersion ("5.0").  CompareVersions("5.0","5.0.0") == 0 (missing parts count as
+zero), so they are equal and F11 correctly reports "up to date".  Re-running
+tagRelease for a new build without raising AppVersion reuses the same tag (asset
+replaced with --clobber), so the version number does not change and F11 cannot
+see the build as newer.  Two consequences for the maintainer:
+  * Bump the version for every release that should be offered as an update, in
+    BOTH places and keep them equal: AppVersion in EdSharp_Setup.iss (the source
+    tagRelease tags from) and App.VersionString in EdSharp.cs (baked into the
+    exe).  They currently differ in form (5.0 vs 5.0.0); equal-but-different
+    forms compare equal, but aligning them avoids confusing version displays.
+  * If only one is bumped they disagree: bumping the .iss but not the const makes
+    every F11 report a newer version forever; bumping the const but not the .iss
+    hides the release from older installs.
+
+Fix for end users: the equal/older branches already offered a reinstall and
+download releases/latest/download/EdSharp_Setup.exe (the newest published asset
+regardless of number), but the wording led with "up to date", which discourages
+acting.  Reworded both branches so F11 clearly offers to download and install the
+latest web release even when the version number is not higher -- covering the
+case where a newer build was published under the same number.  The default stays
+No (F11 does not reinstall unless the user confirms).  Brace balance +11.
+
+Follow-up offered (not done): drive App.VersionString from the .iss at build time
+so the running version and the release tag have a single source and cannot drift.
+
+EdSharp.cs is the only change; rebuild to pick it up.
+
+---
+
 # EdSharp 5.0 baseline starter -- build notes (revision 52)
 
 Revision 52: refine the rev 51 Append from Clipboard change per follow-up.

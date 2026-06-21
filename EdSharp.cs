@@ -6510,8 +6510,8 @@ if (iCompare > 0) {
 sMsg = "A newer EdSharp is available.\nInstalled: " + sLocal + "\nAvailable: " + sLatest + "\n\nDownload and run the new installer now?";
 sDefault = "Y";
 }
-else if (iCompare == 0) sMsg = "EdSharp is up to date (version " + sLocal + ").\nLatest release: " + sLatest + "\n\nReinstall the latest release anyway?";
-else sMsg = "EdSharp is running a newer version (" + sLocal + ") than the latest public release (" + sLatest + ").\n\nReinstall the public release anyway?";
+else if (iCompare == 0) sMsg = "EdSharp's version number (" + sLocal + ") matches the latest release (" + sLatest + "), so no newer version was detected.\nA newer build may still have been published under the same version number.\n\nDownload and install the latest release from the web now?";
+else sMsg = "EdSharp's version number (" + sLocal + ") is higher than the latest public release (" + sLatest + ").\n\nDownload and install the latest public release from the web anyway?";
 if (Dialog.Confirm("Elevate Version", sMsg, sDefault) != "Y") return;
 
 Util.Say("Downloading installer");
