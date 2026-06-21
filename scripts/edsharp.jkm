@@ -244,8 +244,14 @@ Alt+Shift+Apostrophe=TypeCurrentScriptKey
 ;End=TypeCurrentScriptKey
 ;PageUp=TypeCurrentScriptKey
 ;PageDown=TypeCurrentScriptKey
-Alt+UpArrow=TypeCurrentScriptKey
-Alt+DownArrow=TypeCurrentScriptKey
+; Sentence navigation (prior/next sentence) and opening a combo box both use
+; SilentKey, a silent pass-through.  In the editor EdSharp moves to and reads the
+; sentence; in a dialog, Alt+DownArrow reaches the combo box and Windows opens it
+; natively, with JAWS reading the result.  This avoids JAWS speaking the key name
+; -- which the built-in Open/CloseListBox scripts (JAWS's default for these keys,
+; formerly duplicated below) did.  Only this single binding remains for each key.
+Alt+UpArrow=SilentKey
+Alt+DownArrow=SilentKey
 ;Alt+NumPad5=TypeCurrentScriptKey
 Alt+RightArrow=TypeCurrentScriptKey
 Alt+LeftArrow=TypeCurrentScriptKey
@@ -323,12 +329,16 @@ Control+Shift+Period=TypeCurrentScriptKey
 ;Alt+Shift+Period=TypeCurrentScriptKey
 Alt+Shift+UpArrow=MouseUp
 Alt+Shift+DownArrow=MouseDown
-Control+UpArrow=TypeCurrentScriptKey
-Control+DownArrow=TypeCurrentScriptKey
+; Paragraph navigation: use SilentKey (silent pass-through) rather than
+; TypeCurrentScriptKey.  EdSharp's TypeCurrentScriptKey script speaks the key
+; name via SayCurrentScriptKeyLabel() whenever UIIsEditorWindow() returns false,
+; which it currently does in the WinForms edit window -- so the key was announced
+; before the paragraph.  SilentKey passes the key to EdSharp without announcing
+; it; EdSharp still moves to and reads the paragraph.
+Control+UpArrow=SilentKey
+Control+DownArrow=SilentKey
 Control+End=BottomOfFile
 Control+Home=TopOfFile
-Alt+DownArrow=OpenListBox
-Alt+UpArrow=CloseListBox
 Shift+DownArrow=SelectNextLine
 Shift+UpArrow=SelectPriorLine
 Shift+End=SelectToEndOfLine
