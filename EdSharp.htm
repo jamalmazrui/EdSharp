@@ -282,12 +282,15 @@ Control+Space again to extend the selection to the next chunk.</p>
 <p>The Append From Clipboard command, Alt+7 (associate append with the
 ampersand character), is like the "paste board" feature of the NoteTab
 editor. When this mode is toggled on for a document, each snippet of
-text copied to the Windows clipboard from any application will also be
-pasted into the document, which will then automatically be saved to
-disk. EdSharp beeps to confirm this is happening. Snippets are separated
-by a section break sequence, which makes it possible to navigate among
-them with the Control+PageDown and Control+PageUp commands. Thus the
-feature may be used to conveniently collect and save information from
+text copied to the Windows clipboard -- whether from another application
+or from a different document open in EdSharp -- will also be pasted into
+the collecting document, which will then automatically be saved to disk.
+EdSharp beeps to confirm this is happening. Text copied within the
+collecting document itself is not appended, so copying part of that
+document does not copy it back into itself. Snippets are separated by a
+section break sequence, which makes it possible to navigate among them
+with the Control+PageDown and Control+PageUp commands. Thus the feature
+may be used to conveniently collect and save information from
 applications that do not have a built-in appending mechanism. When done,
 toggle off the mode with the same command, Alt+7.</p>
 <p>Press Control+Z to undo the last editing operation, or

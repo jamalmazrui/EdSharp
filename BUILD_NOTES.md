@@ -1,3 +1,161 @@
+# EdSharp 5.0 baseline starter -- build notes (revision 52)
+
+Revision 52: refine the rev 51 Append from Clipboard change per follow-up.
+
+Two adjustments: (1) drop the spoken "Append from Clipboard is on" reminder;
+(2) suppress only copies made in the SAME window that is collecting -- not copies
+made in other EdSharp windows.  The rev 51 test
+(GetWindowThreadProcessId(GetForegroundWindow(),0) == GetCurrentThreadId()) was
+true for any EdSharp window, so a copy in a different document was wrongly
+suppressed.  Replaced it with a single check, "if (this.ContainsFocus)
+sClipboard = \"\";".  ContainsFocus is true only when the input focus is in this
+collecting document, which excludes both other EdSharp windows (a different child
+has focus) and other applications (EdSharp is not foreground).  So a copy made in
+this document is skipped, while a copy made in another EdSharp document or any
+other application is collected as before.  No status message is shown.  Brace
+balance +11.
+
+Docs updated: the Append From Clipboard section now says clips from another
+application or from a different EdSharp document are collected, and only text
+copied within the collecting document itself is skipped; no reminder is
+mentioned.  Regenerated EdSharp.htm.
+
+---
+
+# EdSharp 5.0 baseline starter -- build notes (revision 51)
+
+Revision 51: Append from Clipboard (Alt+7) no longer appends your own copies.
+
+User request (Jim Homme): with Append from Clipboard on, copying within EdSharp
+appended the copy back into the current document; he wanted that suppressed,
+or at least a reminder that the mode is on (he keeps forgetting).
+
+In the WM_DRAWCLIPBOARD handler (MdiChild.WndProc), when AppendFromClipboard==1
+the clip is now appended only if the copy did NOT originate in EdSharp.  Detection
+reuses the existing ForceWindow idiom:
+GetWindowThreadProcessId(GetForegroundWindow(), 0) == GetCurrentThreadId() is true
+when EdSharp's own (single-UI-thread) window is in the foreground, i.e. the copy
+came from EdSharp.  In that case the append is skipped (sClipboard cleared) and
+App.Frame.AddMessage("Append from Clipboard is on") reminds the user -- covering
+both of Jim's suggestions at once.  Clips copied in other applications still
+append and beep as before.  Brace balance +11.
+
+Docs: the Append From Clipboard section now states that only clips from other
+applications are collected and that copying inside EdSharp announces the mode is
+on instead of appending; regenerated EdSharp.htm.
+
+---
+
+# EdSharp 5.0 baseline starter -- build notes (revision 50)
+
+Revision 50 (JAWS keymap only): finish the sentence-key fix that rev 49 missed.
+
+Rev 49 set the FIRST of two Alt+UpArrow/Alt+DownArrow bindings to SilentKey, on
+the assumption that the first duplicate wins.  It did not: the key was still
+spoken, which proves JAWS resolves a duplicated key in a .jkm section to the
+LAST occurrence.  The later binding was Alt+DownArrow=OpenListBox /
+Alt+UpArrow=CloseListBox (JAWS built-ins), so those were active -- they passed
+the key through (sentence navigation worked) but announced the key name.
+
+Fix: removed the OpenListBox/CloseListBox duplicate so a single
+Alt+UpArrow=SilentKey / Alt+DownArrow=SilentKey binding remains for each key.
+One binding means no precedence ambiguity, so the result no longer depends on
+first-vs-last. Sentence navigation stays silent, and combo boxes still open
+(see below).
+
+Findings behind the fix:
+- Sentence-navigation key convention: there is no OS- or screen-reader-standard
+  keystroke for sentence-by-sentence caret movement.  Alt+Down/UpArrow for
+  sentence is EdSharp's own choice and collides with the Windows meaning of
+  Alt+DownArrow (open a combo box).  By contrast Control+Up/DownArrow for
+  paragraph IS standard (Word, and the RichEdit control moves by paragraph
+  natively), which is why those keys were easier.
+- JAWS does NOT do sentence navigation itself in a RichTextBox.  It has reading
+  commands and auto-reads after caret moves, but no sentence-unit caret nav on
+  Alt+Down/Up.  Its DEFAULT for Alt+DownArrow is OpenListBox (combo open),
+  because Alt+DownArrow is the Windows combo key -- that default is exactly what
+  was speaking the key.  EdSharp performs the sentence navigation itself.
+- SilentKey works for combo boxes as well as sentences.  Alt+DownArrow is the
+  native Windows keystroke that drops down a combo box, so a silent pass-through
+  opens the combo (Windows handles it) and JAWS reads the list, with no key
+  announcement -- in the editor the same pass-through gives EdSharp the key for
+  sentence navigation.  EdSharp's dialogs use standard combo boxes, which also
+  respond to F4.
+
+Not changed (still offered): read-by-word (Control+Left/RightArrow) and
+read-by-chunk (Alt+Left/RightArrow) remain on TypeCurrentScriptKey and would
+announce the key the same way; they can get the SilentKey treatment too.
+
+Deploy unchanged: edsharp.jkm is read live -- drop into each JAWS version's
+per-user Settings\<lang> and reload, or rerun --install-jaws-settings.
+EdSharp.cs unchanged.
+
+---
+
+# EdSharp 5.0 baseline starter -- build notes (revision 49)
+
+Revision 49 (JAWS keymap only -- no recompile): extend the SilentKey fix to
+sentence navigation.
+
+Reading by sentence uses Alt+UpArrow (prior sentence) and Alt+DownArrow (next
+sentence).  In edsharp.jkm these keys were bound to TypeCurrentScriptKey (the
+first binding in [Common Keys]); a later duplicate binds the same keys to
+Open/CloseListBox, but JAWS resolves a duplicated key to the first occurrence, so
+TypeCurrentScriptKey was active -- which is why the key name was announced (only
+EdSharp's custom TypeCurrentScriptKey speaks it, via SayCurrentScriptKeyLabel()
+when UIIsEditorWindow() is false).  Changed both to SilentKey, matching the
+Control+Up/DownArrow paragraph fix from rev 48: silent pass-through, sentence
+still moved to and read, no key announcement.  Left the later
+Open/CloseListBox duplicates in place (they remain overridden; combo boxes in
+dialogs still open via the native Alt+Down/Up the pass-through delivers).
+
+Control+UpArrow was already SilentKey (rev 48), so no change was needed there.
+
+Not changed (offered): the read-by-word keys (Control+Left/RightArrow) and
+read-by-chunk keys (Alt+Left/RightArrow) are bound to TypeCurrentScriptKey too
+and would announce the key name the same way; they can get the identical
+SilentKey treatment if wanted.
+
+Deploy is unchanged from rev 48: edsharp.jkm is a keymap (read live), so no
+recompile -- drop it into each JAWS version's per-user settings
+(%APPDATA%\Freedom Scientific\JAWS\<ver>\Settings\<lang>) and reload, or rerun
+EdSharp.exe --install-jaws-settings.  EdSharp.cs unchanged.
+
+---
+
+# EdSharp 5.0 baseline starter -- build notes (revision 48)
+
+Revision 48 (JAWS keymap only -- no recompile): stop JAWS announcing the key
+name on paragraph navigation.
+
+Control+UpArrow / Control+DownArrow were bound to TypeCurrentScriptKey. EdSharp
+redefines that script (EdSharp.JSS ~577); its body calls
+SayCurrentScriptKeyLabel() -- speaking the key name -- whenever UIIsEditorWindow()
+is false, then passes the key through. In the real WinForms RICHEDIT edit window
+UIIsEditorWindow() returns false (the window-class test is too strict, the same
+root cause noted in rev 40), so the key passed through and the paragraph was read
+(correct), but "Control+DownArrow" was spoken first (unwanted).
+
+Fix: bind both keys to SilentKey instead. SilentKey (EdSharp.JSS ~1038) is just
+TypeCurrentScriptKey() with no SayCurrentScriptKeyLabel(), so it is a silent
+pass-through -- the paragraph is still moved to and read, with no key
+announcement. This is a keymap (.jkm) change only; JAWS reads edsharp.jkm live,
+so no .jss/.jsb recompile is required. (The deeper alternative -- correcting
+UIIsEditorWindow() in homer.jss and recompiling EdSharp.jsb -- would also fix it,
+and globally for every TypeCurrentScriptKey-bound key, but needs JAWS to compile;
+the SilentKey keymap change is the distributable no-recompile fix.)
+
+Deploy: ships in Scripts\edsharp.jkm; the installer copies Scripts\* to
+{app}\Scripts and the Finish-page "EdSharp.exe --install-jaws-settings" step copies
+the family into each JAWS version's per-user settings
+(%APPDATA%\Freedom Scientific\JAWS\<ver>\Settings\<lang>). For an existing
+install, dropping the updated edsharp.jkm into that Settings\<lang> folder (e.g.
+enu) is enough -- no recompile, just reload (restart JAWS or its scripts).
+
+EdSharp.cs unchanged this revision.
+
+---
+
 # EdSharp 5.0 baseline starter -- build notes (revision 47)
 
 Revision 47: document the Transform Files job format, and fix a bug found while
