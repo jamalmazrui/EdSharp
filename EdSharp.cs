@@ -461,6 +461,18 @@ public string LastClipboardText = "";
 	public List<int> MarkdownReviewListItems = null;
 	public List<int> MarkdownReviewLinks = null;
 	public List<int> MarkdownReviewTables = null;
+	// Markdown review (preview) mode: a read-only rendered view layered over
+	// the editor, toggled with Escape on .md files.
+	public bool MarkdownReviewOldGuard = false;
+	public MarkdownReviewTextBox MarkdownReviewView = null;
+	public bool MarkdownReviewSync = false;
+	public EventHandler MarkdownReviewRtbSelectionHandler = null;
+	public int[] MarkdownReviewSourceToView = null;
+	public int[] MarkdownReviewViewToSource = null;
+	public int MarkdownReviewLastHeadingRowStart = -1;
+	public int MarkdownReviewLastLinkRowStart = -1;
+	public bool MarkdownReviewAnnounceHeading = false;
+	public int MarkdownReviewViewRevision = -1;
 private string sFile = "";
 public string File {
 get {
@@ -1161,6 +1173,18 @@ this.KeyIndex = iIndex;
 //Clipboard.SetText(Clipboard.GetText() + keyData.ToString() + "\r\n");
 // Util.Say("Repeat " + this.KeyRepeat);
 
+// Markdown review (preview) mode: Escape toggles it on .md files; while
+// active, navigation/elements-list keys are handled here, and arrow keys
+// arm the heading announcement. Checked before the normal editor keys.
+{
+MdiChild reviewChild = this.Child;
+if (reviewChild != null && reviewChild.MarkdownReviewMode) {
+Keys reviewKeyCode = keyData & Keys.KeyCode;
+if (reviewKeyCode == Keys.Up || reviewKeyCode == Keys.Down || reviewKeyCode == Keys.Left || reviewKeyCode == Keys.Right) reviewChild.MarkdownReviewAnnounceHeading = true;
+}
+}
+if (HandleMarkdownReviewKey(keyData)) return true;
+if (ShouldLetMarkdownReviewViewHandleNativeNavigation(keyData)) return false;
 if (HandleEditorFormattingKey(keyData)) return true;
 ToolStripMenuItem menuItem;
 if (keyData == Keys.F9) {
@@ -9011,8 +9035,10 @@ if (keyData != Keys.Enter && hashKey.ContainsKey(keyData)) return false;
 	} // MarkdownReview_IsMarkdownFile method
 
 private void RefreshMarkdownReviewAfterEdit(MdiChild child) {
-// No-op here; the Markdown review view is introduced in a separate change.
-// Kept so edit commands can call it unconditionally.
+try {
+if (child != null && child.MarkdownReviewMode) MarkdownReview_RenderView(child);
+}
+catch {}
 } // RefreshMarkdownReviewAfterEdit method
 
 			private void ClearFormattingShortcut(MdiChild child) {
@@ -9085,7 +9111,1604 @@ private void RefreshMarkdownReviewAfterEdit(MdiChild child) {
 			rtb.Modified = true;
 			RefreshMarkdownReviewAfterEdit(child);
 			} // ClearFormattingShortcut method
+			private bool ShouldLetMarkdownReviewViewHandleNativeNavigation(Keys keyData) {
+			MdiChild child = this.Child;
+			if (child == null || !child.MarkdownReviewMode || child.MarkdownReviewView == null) return false;
+			Keys keyCode = keyData & Keys.KeyCode;
+			Keys modifiers = keyData & (Keys.Control | Keys.Shift | Keys.Alt);
+			return modifiers == Keys.Control && (keyCode == Keys.Up || keyCode == Keys.Down);
+			} // ShouldLetMarkdownReviewViewHandleNativeNavigation method
+
+	private static string MarkdownReview_GetKindName(MarkdownReviewKind kind) {
+	switch (kind) {
+	case MarkdownReviewKind.Heading:
+	return "heading";
+	case MarkdownReviewKind.List:
+	return "list";
+	case MarkdownReviewKind.ListItem:
+	return "list item";
+	case MarkdownReviewKind.Link:
+	return "link";
+	case MarkdownReviewKind.Table:
+	return "table";
+	default:
+	return "item";
+	}
+	} // MarkdownReview_GetKindName method
+
+	private static string MarkdownReview_GetKindPlural(MarkdownReviewKind kind) {
+	switch (kind) {
+	case MarkdownReviewKind.Heading:
+	return "headings";
+	case MarkdownReviewKind.List:
+	return "lists";
+	case MarkdownReviewKind.ListItem:
+	return "list items";
+	case MarkdownReviewKind.Link:
+	return "links";
+	case MarkdownReviewKind.Table:
+	return "tables";
+	default:
+	return "items";
+	}
+	} // MarkdownReview_GetKindPlural method
+
+		private static List<MarkdownReviewInlineSpan> MarkdownReview_GetInlineStyleSpans(string sLine, int iListMarkerStart, int iListMarkerLength, out bool[] aHide) {
+		aHide = null;
+		List<MarkdownReviewInlineSpan> spans = new List<MarkdownReviewInlineSpan>();
+		if (String.IsNullOrEmpty(sLine)) return spans;
+
+		int iLen = sLine.Length;
+		aHide = new bool[iLen];
+
+		bool[] aProtected = null;
+		try {
+		aProtected = new bool[iLen];
+		foreach (Match m in MarkdownAutoLinkRegex.Matches(sLine)) {
+		if (m == null || !m.Success) continue;
+		int iStart = m.Index;
+		int iEnd = m.Index + m.Length;
+		if (iStart < 0) iStart = 0;
+		if (iEnd > iLen) iEnd = iLen;
+		for (int i = iStart; i < iEnd; i++) aProtected[i] = true;
+		}
+		foreach (Match m in MarkdownBareUrlRegex.Matches(sLine)) {
+		if (m == null || !m.Success) continue;
+		int iStart = m.Index;
+		int iEnd = m.Index + m.Length;
+		if (iStart < 0) iStart = 0;
+		if (iEnd > iLen) iEnd = iLen;
+		for (int i = iStart; i < iEnd; i++) aProtected[i] = true;
+		}
+		foreach (Match m in MarkdownWwwUrlRegex.Matches(sLine)) {
+		if (m == null || !m.Success) continue;
+		int iStart = m.Index;
+		int iEnd = m.Index + m.Length;
+		if (iStart < 0) iStart = 0;
+		if (iEnd > iLen) iEnd = iLen;
+		for (int i = iStart; i < iEnd; i++) aProtected[i] = true;
+		}
+		}
+		catch {
+		aProtected = null;
+		}
+
+		Stack<int> stStrongStar = new Stack<int>();
+
+		bool bInCode = false;
+		int iPos = 0;
+		while (iPos < iLen) {
+		// Skip list marker prefix (e.g., "* " or "1. ").
+		if (iListMarkerLength > 0 && iPos >= iListMarkerStart && iPos < iListMarkerStart + iListMarkerLength) {
+		iPos = iListMarkerStart + iListMarkerLength;
+		continue;
+		}
+
+		if (aProtected != null && iPos < aProtected.Length && aProtected[iPos]) {
+		iPos++;
+		continue;
+		}
+
+		char c = sLine[iPos];
+
+		// Escape sequence.
+		if (c == '\\' && iPos + 1 < iLen) {
+		iPos += 2;
+		continue;
+		}
+
+		// Inline code span (basic).
+		if (c == '`') {
+		bInCode = !bInCode;
+		iPos++;
+		continue;
+		}
+		if (bInCode) {
+		iPos++;
+		continue;
+		}
+
+		// Strong with '**'.
+		if (c == '*') {
+		if (iPos + 1 < iLen && sLine[iPos + 1] == '*') {
+		if (stStrongStar.Count > 0) {
+		int iOpen = stStrongStar.Pop();
+		int iContentStart = iOpen + 2;
+		int iContentEnd = iPos;
+		if (iContentEnd > iContentStart) spans.Add(new MarkdownReviewInlineSpan(iContentStart, iContentEnd, FontStyle.Bold));
+		if (iOpen >= 0 && iOpen + 1 < iLen) {aHide[iOpen] = true; aHide[iOpen + 1] = true;}
+		if (iPos >= 0 && iPos + 1 < iLen) {aHide[iPos] = true; aHide[iPos + 1] = true;}
+		}
+		else {
+		stStrongStar.Push(iPos);
+		}
+		iPos += 2;
+		continue;
+		}
+		}
+
+		iPos++;
+		}
+
+		return spans;
+		} // MarkdownReview_GetInlineStyleSpans method
+
+		private bool HandleMarkdownReviewKey(Keys keyData) {
+	// Preserve historical behavior: swallow Insert key.
+	if (keyData == Keys.Insert) return true;
+
+	MdiChild child = this.Child;
+
+	if (keyData == Keys.Escape) {
+	if (child == null) return false;
+	if (!child.MarkdownReviewMode && !MarkdownReview_IsMarkdownFile(child.File)) return false;
+	if (this.KeyDescriber) {
+	AddMessage("Toggle review mode");
+	return true;
+	}
+	MarkdownReview_ToggleCurrent();
+	return true;
+	}
+
+	if (child == null) return false;
+	if (!child.MarkdownReviewMode) return false;
+
+	Keys keyCodeF7 = keyData & Keys.KeyCode;
+	Keys modifiersF7 = keyData & (Keys.Control | Keys.Shift | Keys.Alt);
+	if (keyCodeF7 == Keys.F7 && modifiersF7 == Keys.None) {
+	if (this.KeyDescriber) {
+	AddMessage("Elements list");
+	return true;
+	}
+	if (!MarkdownReview_IsMarkdownFile(child.File)) {
+	AddMessage("Markdown review mode is only for .md files!");
+	return true;
+	}
+	MarkdownReview_ShowElementsList(child);
+	return true;
+	}
+
+	if ((keyData & Keys.Control) == Keys.Control) return false;
+	if ((keyData & Keys.Alt) == Keys.Alt) return false;
+
+	Keys keyCode = keyData & Keys.KeyCode;
+	if (keyCode == Keys.Enter) {
+	if (this.KeyDescriber) {
+	AddMessage("Open link");
+	return true;
+	}
+	string sUrl;
+	if (MarkdownReview_TryGetLinkUrlAtCursor(child, out sUrl)) {
+	string sError;
+	if (!MarkdownReview_TryOpenUrl(sUrl, out sError)) Dialog.Show("Error", sError);
+	}
+	else {
+	AddMessage("No link at cursor");
+	}
+	return true;
+	}
+
+	bool bReverse = (keyData & Keys.Shift) == Keys.Shift;
+	MarkdownReviewKind kind;
+	switch (keyCode) {
+	case Keys.H:
+	kind = MarkdownReviewKind.Heading;
+	break;
+	case Keys.L:
+	kind = MarkdownReviewKind.List;
+	break;
+	case Keys.I:
+	kind = MarkdownReviewKind.ListItem;
+	break;
+	case Keys.K:
+	kind = MarkdownReviewKind.Link;
+	break;
+	case Keys.T:
+	kind = MarkdownReviewKind.Table;
+	break;
+	default:
+	return false;
+	}
+
+	if (this.KeyDescriber) {
+	string sDirection = bReverse ? "previous" : "next";
+	AddMessage("Go to " + sDirection + " " + MarkdownReview_GetKindName(kind));
+	return true;
+	}
+
+	if (!MarkdownReview_IsMarkdownFile(child.File)) {
+	AddMessage("Markdown review mode is only for .md files!");
+	return true;
+	}
+
+	MarkdownReview_Navigate(child, kind, bReverse);
+	return true;
+	} // HandleMarkdownReviewKey method
+
+	private void MarkdownReview_NavigateLinkOrList(MdiChild child, bool bReverse) {
+	if (child == null) return;
+	HomerRichTextBox rtb = child.RTB;
+	if (rtb == null) return;
+
+	MarkdownReview_EnsureCache(child);
+	List<int> targets = new List<int>();
+	Dictionary<int, MarkdownReviewKind> kinds = new Dictionary<int, MarkdownReviewKind>();
+
+	if (child.MarkdownReviewLists != null) {
+	foreach (int i in child.MarkdownReviewLists) {
+	if (!kinds.ContainsKey(i)) kinds.Add(i, MarkdownReviewKind.List);
+	targets.Add(i);
+	}
+	}
+
+	if (child.MarkdownReviewLinks != null) {
+	foreach (int i in child.MarkdownReviewLinks) {
+	kinds[i] = MarkdownReviewKind.Link;
+	targets.Add(i);
+	}
+	}
+
+	MarkdownReview_SortUnique(targets);
+	if (targets.Count == 0) {
+	AddMessage("No lists or links!");
+	return;
+	}
+
+	int iTarget = MarkdownReview_FindTarget(targets, rtb.Index, bReverse);
+	if (iTarget < 0) {
+	AddMessage("No " + (bReverse ? "previous" : "next") + " list or link!");
+	return;
+	}
+
+	try {rtb.Select(iTarget, 0);} catch {}
+	MarkdownReviewKind kind = kinds.ContainsKey(iTarget) ? kinds[iTarget] : MarkdownReviewKind.Link;
+	string sMessage = MarkdownReview_FormatMessage(kind, child, rtb, iTarget);
+	try {if (Win32.IsNVDAActive()) Win32.NVDACancelSpeech();} catch {}
+	AddMessage(sMessage, true);
+	MarkdownReview_SyncViewToEdit(child);
+	} // MarkdownReview_NavigateLinkOrList method
+
+	// Show a screen-reader friendly "elements list" dialog for the current
+	// Markdown document while in preview mode. This is EdSharp's own equivalent
+	// of the NVDA elements list (NVDA+F7), which cannot work over a RichTextBox
+	// because there is no virtual buffer. A first dialog lets the user filter by
+	// type (All / Headings / Links / Lists / Tables, with counts); the second
+	// lists the elements of that type in document order. Choosing one moves the
+	// source caret, which the existing view sync mirrors into the preview, and
+	// announces the target.
+	private void MarkdownReview_ShowElementsList(MdiChild child) {
+	if (child == null) return;
+	HomerRichTextBox rtb = child.RTB;
+	if (rtb == null) return;
+
+	MarkdownReview_EnsureCache(child);
+
+	// Per-type counts (main structures only; individual list items are
+	// intentionally omitted so a long bullet list does not flood the dialog).
+	// "All" is counted as the number of UNIQUE offsets across every type, to
+	// match the de-duplicated list that PickAndJump builds (an element that is
+	// several kinds at one offset must not be double-counted).
+	int iHeadings = MarkdownReview_CountValid(child.MarkdownReviewHeadings, rtb.TextLength);
+	int iLinks = MarkdownReview_CountValid(child.MarkdownReviewLinks, rtb.TextLength);
+	int iLists = MarkdownReview_CountValid(child.MarkdownReviewLists, rtb.TextLength);
+	int iTables = MarkdownReview_CountValid(child.MarkdownReviewTables, rtb.TextLength);
+	int iAll = MarkdownReview_CountUniqueValid(rtb.TextLength, child.MarkdownReviewHeadings, child.MarkdownReviewLists, child.MarkdownReviewTables, child.MarkdownReviewLinks);
+
+	if (iAll == 0) {
+	AddMessage("No elements!");
+	return;
+	}
+
+	// Build the type filter, including only types that actually occur. "all" is
+	// a sentinel value handled below; the others map to MarkdownReviewKind.
+	List<string> filterValues = new List<string>();
+	List<string> filterDisplay = new List<string>();
+	filterValues.Add("all"); filterDisplay.Add("All, " + iAll);
+	if (iHeadings > 0) {filterValues.Add(((int) MarkdownReviewKind.Heading).ToString()); filterDisplay.Add("Headings, " + iHeadings);}
+	if (iLinks > 0) {filterValues.Add(((int) MarkdownReviewKind.Link).ToString()); filterDisplay.Add("Links, " + iLinks);}
+	if (iLists > 0) {filterValues.Add(((int) MarkdownReviewKind.List).ToString()); filterDisplay.Add("Lists, " + iLists);}
+	if (iTables > 0) {filterValues.Add(((int) MarkdownReviewKind.Table).ToString()); filterDisplay.Add("Tables, " + iTables);}
+
+	// Skip the filter step when there is only one type of element present
+	// (filterValues then holds just "all" plus that single type): go straight
+	// to the element list with no filter.
+	if (filterValues.Count > 2) {
+	string sFilter = Dialog.Pick("Filter by type", filterValues.ToArray(), filterDisplay.ToArray(), false, 0);
+	if (sFilter == null || sFilter.Length == 0) return; // cancelled at the filter step
+	int iKind;
+	if (sFilter != "all" && Int32.TryParse(sFilter, out iKind)) MarkdownReview_PickAndJump(child, rtb, (MarkdownReviewKind) iKind);
+	else MarkdownReview_PickAndJump(child, rtb, null);
+	}
+	else {
+	MarkdownReview_PickAndJump(child, rtb, null);
+	}
+	} // MarkdownReview_ShowElementsList method
+
+	// Build the element list for the given filter (null = all main structures),
+	// show it, and jump to the chosen element. Returns false if nothing was
+	// shown/chosen. Pure label building (no caret movement) until the jump.
+	private bool MarkdownReview_PickAndJump(MdiChild child, HomerRichTextBox rtb, MarkdownReviewKind? filter) {
+	if (child == null || rtb == null) return false;
+
+	List<int> offsets = new List<int>();
+	Dictionary<int, MarkdownReviewKind> kinds = new Dictionary<int, MarkdownReviewKind>();
+	// Order of adding decides which kind wins on a shared offset (structure
+	// before link).
+	if (filter == null || filter == MarkdownReviewKind.Heading) MarkdownReview_AddElements(child.MarkdownReviewHeadings, MarkdownReviewKind.Heading, offsets, kinds);
+	if (filter == null || filter == MarkdownReviewKind.List) MarkdownReview_AddElements(child.MarkdownReviewLists, MarkdownReviewKind.List, offsets, kinds);
+	if (filter == null || filter == MarkdownReviewKind.Table) MarkdownReview_AddElements(child.MarkdownReviewTables, MarkdownReviewKind.Table, offsets, kinds);
+	if (filter == null || filter == MarkdownReviewKind.Link) MarkdownReview_AddElements(child.MarkdownReviewLinks, MarkdownReviewKind.Link, offsets, kinds);
+
+	MarkdownReview_SortUnique(offsets);
+
+	string sText = rtb.Text;
+	List<string> listValues = new List<string>();
+	List<string> listDisplay = new List<string>();
+	int iCurrent = rtb.Index;
+	int iIndex = 0;
+	for (int i = 0; i < offsets.Count; i++) {
+	int iOffset = offsets[i];
+	if (iOffset < 0 || iOffset > sText.Length) continue; // guard against a stale/corrupt cache
+	MarkdownReviewKind kind = kinds.ContainsKey(iOffset) ? kinds[iOffset] : MarkdownReviewKind.Link;
+	listValues.Add(iOffset.ToString());
+	listDisplay.Add(MarkdownReview_BuildLabelAt(child, sText, kind, iOffset));
+	if (iOffset <= iCurrent) iIndex = listValues.Count - 1; // default selection: nearest element at or before the caret
+	}
+
+	if (listValues.Count == 0) {
+	AddMessage("No elements!");
+	return false;
+	}
+
+	string[] aValues = listValues.ToArray();
+	string[] aDisplay = listDisplay.ToArray();
+
+	string sPlural = (filter == null) ? "" : MarkdownReview_GetKindPlural(filter.Value);
+	string sTitle = (filter == null) ? "Markdown elements" : (sPlural.Length > 0 ? Char.ToUpper(sPlural[0]) + sPlural.Substring(1) : "Markdown elements");
+	// sort=false: the list is already in document order; alphabetical sorting
+	// would scramble it.
+	string sChoice = Dialog.Pick(sTitle, aValues, aDisplay, false, iIndex);
+	if (sChoice == null || sChoice.Length == 0) return false; // cancelled: end the operation, do not loop back to filter
+
+	// Map the chosen value back to its exact offset and pre-computed label, so
+	// the announcement does not depend on where the caret happens to land.
+	int iChosenIndex = -1;
+	for (int i = 0; i < aValues.Length; i++) {
+	if (aValues[i] == sChoice) {iChosenIndex = i; break;}
+	}
+	if (iChosenIndex < 0) return false;
+
+	int iTarget;
+	if (!Int32.TryParse(sChoice, out iTarget)) return false;
+	if (iTarget < 0) iTarget = 0;
+	if (iTarget > sText.Length) iTarget = sText.Length;
+
+	bool bSelected = false;
+	try {rtb.Select(iTarget, 0); bSelected = true;} catch {}
+	if (!bSelected) return false; // do not announce a wrong element if the jump failed
+	MarkdownReview_SyncViewToEdit(child); // explicit sync, like the other navigators (do not rely solely on SelectionChanged)
+	try {if (child.MarkdownReviewView != null && !child.MarkdownReviewView.IsDisposed) child.MarkdownReviewView.Focus();} catch {}
+	try {if (Win32.IsNVDAActive()) Win32.NVDACancelSpeech();} catch {}
+	AddMessage(aDisplay[iChosenIndex], true);
+	return true;
+	} // MarkdownReview_PickAndJump method
+
+	private static int MarkdownReview_CountValid(List<int> source, int iMax) {
+	if (source == null) return 0;
+	int iCount = 0;
+	foreach (int i in source) if (i >= 0 && i <= iMax) iCount++;
+	return iCount;
+	} // MarkdownReview_CountValid method
+
+	// Count unique valid offsets across several lists, matching how the combined
+	// "All" element list is de-duplicated (so the filter count agrees with it).
+	private static int MarkdownReview_CountUniqueValid(int iMax, params List<int>[] sources) {
+	if (sources == null) return 0;
+	Dictionary<int, bool> seen = new Dictionary<int, bool>();
+	foreach (List<int> source in sources) {
+	if (source == null) continue;
+	foreach (int i in source) {
+	if (i < 0 || i > iMax) continue;
+	if (!seen.ContainsKey(i)) seen.Add(i, true);
+	}
+	}
+	return seen.Count;
+	} // MarkdownReview_CountUniqueValid method
+
+	private static void MarkdownReview_AddElements(List<int> source, MarkdownReviewKind kind, List<int> offsets, Dictionary<int, MarkdownReviewKind> kinds) {
+	if (source == null || offsets == null || kinds == null) return;
+	foreach (int i in source) {
+	if (i < 0) continue; // skip stale/invalid offsets defensively
+	offsets.Add(i);
+	if (!kinds.ContainsKey(i)) kinds.Add(i, kind);
+	}
+	} // MarkdownReview_AddElements method
+
+	// Return the text of the line containing iOffset, without touching the
+	// caret/selection of any control. Used to label elements list entries.
+	private static string MarkdownReview_GetLineAt(string sText, int iOffset) {
+	if (String.IsNullOrEmpty(sText)) return "";
+	if (iOffset < 0) iOffset = 0;
+	if (iOffset > sText.Length) iOffset = sText.Length;
+	int iStart = iOffset;
+	while (iStart > 0 && sText[iStart - 1] != '\n') iStart--;
+	int iEnd = iOffset;
+	while (iEnd < sText.Length && sText[iEnd] != '\n') iEnd++;
+	if (iEnd > iStart && sText[iEnd - 1] == '\r') iEnd--;
+	try {return sText.Substring(iStart, iEnd - iStart);} catch {return "";}
+	} // MarkdownReview_GetLineAt method
+
+	// Build a "Type: text" label for an element from the source text alone,
+	// without moving the real caret (so no spurious screen-reader output and no
+	// scroll/selection side effects). Prefix-with-type ordering chosen for the
+	// elements list per accessibility review.
+	private static string MarkdownReview_BuildLabelAt(MdiChild child, string sText, MarkdownReviewKind kind, int iOffset) {
+	string sLine = MarkdownReview_GetLineAt(sText, iOffset);
+	string sTrim = (sLine == null) ? "" : sLine.Trim();
+
+	switch (kind) {
+	case MarkdownReviewKind.Heading:
+	int iLevel;
+	string sHeading;
+	if (MarkdownReview_IsHeadingLine(sLine, out iLevel, out sHeading)) {
+	if (sHeading.Length == 0) return "Heading " + iLevel;
+	return "Heading " + iLevel + ": " + sHeading;
+	}
+	return sTrim.Length == 0 ? "Heading" : "Heading: " + sTrim;
+	case MarkdownReviewKind.List:
+	string sItem;
+	if (MarkdownReview_TryGetListItemText(sLine, out sItem)) return sItem.Length == 0 ? "List" : "List: " + sItem;
+	return sTrim.Length == 0 ? "List" : "List: " + sTrim;
+	case MarkdownReviewKind.Link:
+	string sLink = MarkdownReview_BuildLinkLabelAt(child, sText, iOffset);
+	return sLink.Length == 0 ? "Link" : "Link: " + sLink;
+	case MarkdownReviewKind.Table:
+	string sTable = MarkdownReview_FormatTableLine(sLine);
+	return sTable.Length == 0 ? "Table" : "Table: " + sTable;
+	default:
+	return sTrim;
+	}
+	} // MarkdownReview_BuildLabelAt method
+
+	// Resolve a human label for a link at iOffset using the cached inline-link
+	// spans (text, then destination), falling back to the bare URL token that
+	// starts at iOffset. Pure: reads only from sText, never the live control.
+	private static string MarkdownReview_BuildLinkLabelAt(MdiChild child, string sText, int iOffset) {
+	try {
+	int[] span;
+	if (child != null && child.MarkdownReviewInlineLinks != null &&
+	MarkdownReview_TryGetInlineLinkSpanAtIndex(child.MarkdownReviewInlineLinks, iOffset, out span) &&
+	span != null && span.Length >= 6) {
+	string sTextPart = "";
+	try {sTextPart = sText.Substring(span[2], span[3] - span[2]);} catch {sTextPart = "";}
+	sTextPart = MarkdownReview_CollapseWhitespace(sTextPart);
+	if (sTextPart.Length > 0) return sTextPart;
+	string sDestRaw = "";
+	try {sDestRaw = sText.Substring(span[4], span[5] - span[4]);} catch {sDestRaw = "";}
+	string sDest = MarkdownReview_NormalizeUrl(sDestRaw.Trim().Trim('<', '>'));
+	if (sDest.Length > 0) return sDest;
+	}
+	}
+	catch {}
+
+	try {
+	int iEnd = iOffset;
+	while (iEnd < sText.Length && !Char.IsWhiteSpace(sText[iEnd])) iEnd++;
+	string sUrl = sText.Substring(iOffset, iEnd - iOffset).Trim().Trim('<', '>');
+	if (sUrl.Length > 0) return MarkdownReview_NormalizeUrl(sUrl);
+	}
+	catch {}
+	return "";
+	} // MarkdownReview_BuildLinkLabelAt method
+
+	private void MarkdownReview_ToggleCurrent() {
+	MdiChild child = this.Child;
+	if (child == null) return;
+
+	if (child.MarkdownReviewMode) {
+	MarkdownReview_Exit(child);
+	return;
+	}
+
+	if (!MarkdownReview_IsMarkdownFile(child.File)) {
+	AddMessage("Markdown review mode is only for .md files!");
+	return;
+	}
+
+	MarkdownReview_Enter(child);
+	} // MarkdownReview_ToggleCurrent method
+
+	private void MarkdownReview_Enter(MdiChild child) {
+	if (child == null) return;
+	HomerRichTextBox rtb = child.RTB;
+	if (rtb == null) return;
+
+		child.MarkdownReviewOldGuard = rtb.ReadOnly;
+			child.MarkdownReviewMode = true;
+			child.MarkdownReviewLastHeadingRowStart = -1;
+			child.MarkdownReviewLastLinkRowStart = -1;
+			child.MarkdownReviewAnnounceHeading = false;
+		rtb.SetGuard(true);
+
+	MarkdownReview_EnsureCache(child);
+	MarkdownReview_ShowView(child);
+	AddMessage("Review");
+	} // MarkdownReview_Enter method
+
+	private void MarkdownReview_Exit(MdiChild child) {
+	if (child == null) return;
+	HomerRichTextBox rtb = child.RTB;
+	if (rtb == null) return;
+
+	MarkdownReview_HideView(child);
+	child.MarkdownReviewMode = false;
+	rtb.SetGuard(child.MarkdownReviewOldGuard);
+	AddMessage("Edit");
+	} // MarkdownReview_Exit method
+
+	private void MarkdownReview_ShowView(MdiChild child) {
+	if (child == null) return;
+	HomerRichTextBox rtb = child.RTB;
+	if (rtb == null) return;
+
+		if (child.MarkdownReviewView == null || child.MarkdownReviewView.IsDisposed) {
+		MarkdownReviewTextBox view = new MarkdownReviewTextBox();
+		view.AccessibleRole = AccessibleRole.Document;
+		view.AccessibleName = "Markdown preview";
+		view.AutoWordSelection = false;
+		view.Dock = DockStyle.Fill;
+	view.Multiline = true;
+	view.ReadOnly = true;
+	view.ScrollBars = rtb.ScrollBars;
+	view.WordWrap = rtb.WordWrap;
+	view.Font = rtb.Font;
+	view.ForeColor = rtb.ForeColor;
+	view.BackColor = rtb.BackColor;
+	view.SelectionChanged += delegate(object o, EventArgs e) {MarkdownReview_SyncFromView(child);};
+		child.Controls.Add(view);
+		child.MarkdownReviewView = view;
+		}
+		else {
+		try {child.MarkdownReviewView.Visible = true;} catch {}
+		}
+
+		if (child.MarkdownReviewRtbSelectionHandler == null) {
+		try {
+		EventHandler eh = delegate(object o, EventArgs e) {MarkdownReview_SyncViewToEdit(child);};
+		child.MarkdownReviewRtbSelectionHandler = eh;
+		rtb.SelectionChanged += eh;
+		}
+		catch {}
+		}
+
+		MarkdownReview_RenderView(child);
+
+		try {
+		child.MarkdownReviewView.BringToFront();
+		child.MarkdownReviewView.Focus();
+	}
+	catch {}
+	} // MarkdownReview_ShowView method
+
+		private void MarkdownReview_HideView(MdiChild child) {
+		if (child == null) return;
+		if (child.MarkdownReviewView == null) return;
+
+		try {
+		if (child.RTB != null && child.MarkdownReviewRtbSelectionHandler != null) child.RTB.SelectionChanged -= child.MarkdownReviewRtbSelectionHandler;
+		}
+		catch {}
+		child.MarkdownReviewRtbSelectionHandler = null;
+
+		try {child.MarkdownReviewView.Visible = false;} catch {}
+
+		try {
+		if (child.RTB != null) {
+		child.RTB.BringToFront();
+		child.RTB.Focus();
+		child.RTB.ScrollToCaret();
+		}
+		}
+		catch {}
+		} // MarkdownReview_HideView method
+
+	private void MarkdownReview_SyncFromView(MdiChild child) {
+	if (child == null) return;
+	if (child.MarkdownReviewSync) return;
+	if (!child.MarkdownReviewMode) return;
+	if (child.MarkdownReviewView == null) return;
+	HomerRichTextBox rtb = child.RTB;
+	if (rtb == null) return;
+
+		try {
+		child.MarkdownReviewSync = true;
+		int iStart = child.MarkdownReviewView.SelectionStart;
+		int iLength = child.MarkdownReviewView.SelectionLength;
+		int iSourceStart = iStart;
+		int iSourceLength = iLength;
+		int[] aViewToSource = child.MarkdownReviewViewToSource;
+		if (aViewToSource != null && aViewToSource.Length == child.MarkdownReviewView.TextLength + 1) {
+		int iViewStart = iStart;
+		int iViewEnd = iStart + iLength;
+		if (iViewStart < 0) iViewStart = 0;
+		if (iViewEnd < 0) iViewEnd = 0;
+		if (iViewStart >= aViewToSource.Length) iViewStart = aViewToSource.Length - 1;
+		if (iViewEnd >= aViewToSource.Length) iViewEnd = aViewToSource.Length - 1;
+		iSourceStart = aViewToSource[iViewStart];
+		int iSourceEnd = aViewToSource[iViewEnd];
+		iSourceLength = iSourceEnd - iSourceStart;
+		if (iSourceLength < 0) {
+		iSourceStart = iSourceEnd;
+		iSourceLength = 0;
+		}
+		}
+
+		if (iSourceStart < 0) iSourceStart = 0;
+		if (iSourceStart > rtb.TextLength) iSourceStart = rtb.TextLength;
+		if (iSourceLength < 0) iSourceLength = 0;
+		if (iSourceStart + iSourceLength > rtb.TextLength) iSourceLength = rtb.TextLength - iSourceStart;
+
+		if (iSourceStart != rtb.SelectionStart || iSourceLength != rtb.SelectionLength) {
+		rtb.Select(iSourceStart, iSourceLength);
+		}
+
+			// Announce headings when moving with caret (e.g. arrow keys).
+				try {
+				string sLine = rtb.RowText;
+				bool bAnnounceNavigation = child.MarkdownReviewAnnounceHeading;
+				int iLevel;
+				string sHeading;
+				if (MarkdownReview_IsHeadingLine(sLine, out iLevel, out sHeading)) {
+				child.MarkdownReviewAnnounceHeading = false;
+				int iRowStart = rtb.RowStart;
+				if (iRowStart != child.MarkdownReviewLastHeadingRowStart) {
+				child.MarkdownReviewLastHeadingRowStart = iRowStart;
+				if (bAnnounceNavigation) Util.Say("Heading level " + iLevel);
+				}
+				}
+				else {
+				child.MarkdownReviewLastHeadingRowStart = -1;
+				child.MarkdownReviewAnnounceHeading = false;
+				}
+				string sLinkAnnouncement;
+				if (MarkdownReview_TryGetLineLinkAnnouncement(child, rtb, iSourceStart, out sLinkAnnouncement)) {
+				int iRowStart = rtb.RowStart;
+				if (iRowStart != child.MarkdownReviewLastLinkRowStart) {
+				child.MarkdownReviewLastLinkRowStart = iRowStart;
+				if (bAnnounceNavigation) Util.Say(sLinkAnnouncement);
+				}
+				}
+				else {
+				child.MarkdownReviewLastLinkRowStart = -1;
+				}
+				}
+				catch {}
+		}
+		catch {}
+		finally {
+		child.MarkdownReviewSync = false;
+		}
+		} // MarkdownReview_SyncFromView method
+
+		private static bool MarkdownReview_TryGetLineLinkAnnouncement(MdiChild child, HomerRichTextBox rtb, int iSourceIndex, out string sMessage) {
+		sMessage = "";
+		if (child == null || rtb == null) return false;
+		try {
+		MarkdownReview_EnsureCacheStatic(child);
+		int iRowStart = rtb.RowStart;
+		string sLine = rtb.RowText ?? "";
+		int iLineEnd = iRowStart + sLine.Length;
+		if (iLineEnd < iRowStart) iLineEnd = iRowStart;
+
+		if (child.MarkdownReviewInlineLinks != null) {
+		foreach (int[] span in child.MarkdownReviewInlineLinks) {
+		if (span == null || span.Length < 6) continue;
+		if (span[0] < iRowStart || span[0] >= iLineEnd) continue;
+		if (span[0] <= iSourceIndex && iSourceIndex <= span[1]) {
+		sMessage = "Link";
+		return true;
+		}
+		if (iSourceIndex >= iRowStart && iSourceIndex <= iLineEnd) {
+		sMessage = "Link";
+		return true;
+		}
+		}
+		}
+
+		string sUrl;
+		int iOffset = iSourceIndex - iRowStart;
+		if (iOffset < 0) iOffset = 0;
+		if (MarkdownReview_TryGetLinkUrlFromLine(sLine, iOffset, out sUrl) || MarkdownReview_TryGetSingleUrlFromLine(sLine, out sUrl)) {
+		sMessage = "Link";
+		return true;
+		}
+		}
+		catch {}
+		return false;
+		} // MarkdownReview_TryGetLineLinkAnnouncement method
+
+		private static void MarkdownReview_EnsureCacheStatic(MdiChild child) {
+		try {
+		if (App.Frame != null) App.Frame.MarkdownReview_EnsureCache(child);
+		}
+		catch {}
+		} // MarkdownReview_EnsureCacheStatic method
+
+		private void MarkdownReview_SyncViewToEdit(MdiChild child) {
+	if (child == null) return;
+	if (child.MarkdownReviewSync) return;
+	if (!child.MarkdownReviewMode) return;
+	if (child.MarkdownReviewView == null) return;
+	HomerRichTextBox rtb = child.RTB;
+	if (rtb == null) return;
+
+		try {
+		child.MarkdownReviewSync = true;
+		int iStart = rtb.SelectionStart;
+		int iLength = rtb.SelectionLength;
+		int iViewStart = iStart;
+		int iViewLength = iLength;
+		int[] aSourceToView = child.MarkdownReviewSourceToView;
+		if (aSourceToView != null && aSourceToView.Length == rtb.TextLength + 1) {
+		int iSourceStart = iStart;
+		int iSourceEnd = iStart + iLength;
+		if (iSourceStart < 0) iSourceStart = 0;
+		if (iSourceEnd < 0) iSourceEnd = 0;
+		if (iSourceStart >= aSourceToView.Length) iSourceStart = aSourceToView.Length - 1;
+		if (iSourceEnd >= aSourceToView.Length) iSourceEnd = aSourceToView.Length - 1;
+		iViewStart = aSourceToView[iSourceStart];
+		int iViewEnd = aSourceToView[iSourceEnd];
+		iViewLength = iViewEnd - iViewStart;
+		if (iViewLength < 0) {
+		iViewStart = iViewEnd;
+		iViewLength = 0;
+		}
+		}
+
+		if (iViewStart < 0) iViewStart = 0;
+		if (iViewLength < 0) iViewLength = 0;
+		if (iViewStart > child.MarkdownReviewView.TextLength) iViewStart = child.MarkdownReviewView.TextLength;
+		if (iViewStart + iViewLength > child.MarkdownReviewView.TextLength) iViewLength = child.MarkdownReviewView.TextLength - iViewStart;
+
+		if (child.MarkdownReviewView.SelectionStart != iViewStart || child.MarkdownReviewView.SelectionLength != iViewLength) {
+		child.MarkdownReviewView.Select(iViewStart, iViewLength);
+		child.MarkdownReviewView.ScrollToCaret();
+		}
+		}
+		catch {}
+	finally {
+	child.MarkdownReviewSync = false;
+	}
+	} // MarkdownReview_SyncViewToEdit method
+
+		private void MarkdownReview_RenderView(MdiChild child) {
+		if (child == null) return;
+		HomerRichTextBox rtb = child.RTB;
+		if (rtb == null) return;
+		if (child.MarkdownReviewView == null) return;
+
+		int iRevision = child.TextRevision;
+		try {
+		if (child.MarkdownReviewViewRevision == iRevision &&
+		child.MarkdownReviewSourceToView != null &&
+		child.MarkdownReviewSourceToView.Length == rtb.TextLength + 1 &&
+		child.MarkdownReviewViewToSource != null &&
+		child.MarkdownReviewViewToSource.Length == child.MarkdownReviewView.TextLength + 1) {
+		MarkdownReview_SyncViewToEdit(child);
+		return;
+		}
+		}
+		catch {}
+
+		string sSource = rtb.Text;
+		int[] aSourceToView;
+		int[] aViewToSource;
+		string sViewText = MarkdownReview_RenderTextForView(sSource, child.MarkdownReviewInlineLinks, out aSourceToView, out aViewToSource);
+		child.MarkdownReviewSourceToView = aSourceToView;
+		child.MarkdownReviewViewToSource = aViewToSource;
+		child.MarkdownReviewView.SuspendLayout();
+		child.MarkdownReviewView.Text = sViewText;
+		MarkdownReview_ApplyViewFormatting(child.MarkdownReviewView, sSource, aSourceToView);
+		child.MarkdownReviewView.ResumeLayout();
+		child.MarkdownReviewViewRevision = iRevision;
+
+		MarkdownReview_SyncViewToEdit(child);
+		} // MarkdownReview_RenderView method
+
+		private static string MarkdownReview_RenderTextForView(string sText, List<int[]> inlineLinks, out int[] aSourceToView, out int[] aViewToSource) {
+		aSourceToView = new int[1] {0};
+		aViewToSource = new int[1] {0};
+		if (String.IsNullOrEmpty(sText)) return "";
+
+		int iLen = sText.Length;
+		int[] aMap = new int[iLen + 1];
+		StringBuilder sb = new StringBuilder(iLen);
+		int iView = 0;
+		int iInlineLink = 0;
+		int[] inlineLinkSpan = (inlineLinks != null && inlineLinks.Count > 0) ? inlineLinks[0] : null;
+
+		bool bInFence = false;
+		bool bInHtmlTag = false;
+		int iHtmlTagView = -1;
+		int iPos = 0;
+		while (iPos < iLen) {
+		int iLf = sText.IndexOf('\n', iPos);
+		bool bHasLf = (iLf >= 0);
+		if (!bHasLf) iLf = iLen;
+		int iLineTextEnd = iLf;
+		bool bHasCr = false;
+		if (iLineTextEnd > iPos && sText[iLineTextEnd - 1] == '\r') {
+		bHasCr = true;
+		iLineTextEnd--;
+		}
+		string sLine = sText.Substring(iPos, iLineTextEnd - iPos);
+
+		bool bFenceLine = MarkdownReview_IsFenceLine(sLine);
+		if (bFenceLine) {
+		bInHtmlTag = false;
+		iHtmlTagView = -1;
+		}
+		if (!bInFence && !bFenceLine && MarkdownTableSeparatorRegex.IsMatch(sLine)) {
+		// Hide table separator row.
+		for (int i = iPos; i < iLineTextEnd; i++) aMap[i] = iView;
+		}
+		else {
+			int iHeadingLevel, iHeadingStart, iHeadingEnd;
+			if (!bInFence && !bFenceLine && MarkdownReview_TryGetHeadingSpan(sLine, out iHeadingLevel, out iHeadingStart, out iHeadingEnd)) {
+			bool[] aHide = null;
+			try {MarkdownReview_GetInlineStyleSpans(sLine, 0, 0, out aHide);} catch {}
+			for (int i = iPos; i < iPos + iHeadingStart; i++) aMap[i] = iView;
+			for (int i = iPos + iHeadingStart; i < iPos + iHeadingEnd; i++) {
+			int j = i - iPos;
+			aMap[i] = iView;
+			while (inlineLinkSpan != null && i >= inlineLinkSpan[1]) {
+			iInlineLink++;
+			inlineLinkSpan = (inlineLinks != null && iInlineLink < inlineLinks.Count) ? inlineLinks[iInlineLink] : null;
+			}
+			if (inlineLinkSpan != null &&
+			i >= inlineLinkSpan[0] && i < inlineLinkSpan[1] &&
+			!(i >= inlineLinkSpan[2] && i < inlineLinkSpan[3])) continue;
+			if (aHide != null && j >= 0 && j < aHide.Length && aHide[j]) continue;
+			sb.Append(sText[i]);
+			iView++;
+			}
+				for (int i = iPos + iHeadingEnd; i < iLineTextEnd; i++) aMap[i] = iView;
+				}
+			else {
+				int iMarkerStart = 0;
+				int iMarkerLength = 0;
+				bool bHasMarker = false;
+				if (!bInFence && !bFenceLine) bHasMarker = MarkdownReview_GetListMarkerSpan(sLine, out iMarkerStart, out iMarkerLength);
+				bool[] aHide = null;
+				try {MarkdownReview_GetInlineStyleSpans(sLine, (bHasMarker ? iMarkerStart : 0), (bHasMarker ? iMarkerLength : 0), out aHide);} catch {}
+				bool bUnorderedMarker = false;
+			if (bHasMarker && iMarkerLength == 2) {
+			try {
+			string sTrim = sLine.TrimStart();
+		if (sTrim.Length > 0) {
+		char c = sTrim[0];
+		bUnorderedMarker = (c == '-' || c == '+' || c == '*');
+		}
+		}
+		catch {}
+		}
+
+		List<Match> aAuto = null;
+		if (!bInFence && !bFenceLine) {
+		try {
+		aAuto = new List<Match>();
+		foreach (Match m in MarkdownAutoLinkRegex.Matches(sLine)) if (m != null && m.Success) aAuto.Add(m);
+		}
+		catch {}
+		}
+
+			int iAuto = 0;
+			int i = 0;
+				while (i < sLine.Length) {
+				if (bInHtmlTag) {
+				int iMapView = (iHtmlTagView >= 0) ? iHtmlTagView : iView;
+				int iGt = -1;
+				try {iGt = sLine.IndexOf('>', i);} catch {iGt = -1;}
+				if (iGt >= i) {
+				for (int j = i; j <= iGt; j++) aMap[iPos + j] = iMapView;
+				i = iGt + 1;
+				bInHtmlTag = false;
+				iHtmlTagView = -1;
+				continue;
+				}
+				for (int j = i; j < sLine.Length; j++) aMap[iPos + j] = iMapView;
+				i = sLine.Length;
+				continue;
+				}
+				int iGlobal = iPos + i;
+				while (inlineLinkSpan != null && iGlobal >= inlineLinkSpan[1]) {
+				iInlineLink++;
+				inlineLinkSpan = (inlineLinks != null && iInlineLink < inlineLinks.Count) ? inlineLinks[iInlineLink] : null;
+				}
+				if (inlineLinkSpan != null &&
+				iGlobal >= inlineLinkSpan[0] && iGlobal < inlineLinkSpan[1] &&
+				!(iGlobal >= inlineLinkSpan[2] && iGlobal < inlineLinkSpan[3])) {
+				aMap[iGlobal] = iView;
+				i++;
+				continue;
+				}
+				if (aHide != null && i >= 0 && i < aHide.Length && aHide[i]) {
+				aMap[iPos + i] = iView;
+				i++;
+				continue;
+				}
+				// Hide raw HTML tags (common in Pandoc output), but preserve autolinks like <https://...>.
+				if (!bInFence && !bFenceLine && i < sLine.Length && sLine[i] == '<') {
+				int iGt = -1;
+				try {iGt = sLine.IndexOf('>', i + 1);} catch {iGt = -1;}
+				if (iGt > i) {
+				string sInner = "";
+				try {sInner = sLine.Substring(i + 1, iGt - i - 1).Trim();} catch {sInner = "";}
+				bool bAutoLink = false;
+				try {
+				bAutoLink = sInner.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+				sInner.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
+				sInner.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase);
+				}
+				catch {bAutoLink = false;}
+
+				if (bAutoLink) {
+				aMap[iPos + i] = iView;
+				for (int j = i + 1; j < iGt; j++) {
+				aMap[iPos + j] = iView;
+				sb.Append(sLine[j]);
+				iView++;
+				}
+				aMap[iPos + iGt] = iView;
+				i = iGt + 1;
+				continue;
+				}
+
+				for (int j = i; j <= iGt; j++) aMap[iPos + j] = iView;
+				sb.Append(' ');
+				iView++;
+				i = iGt + 1;
+				continue;
+				}
+				bool bLooksLikeTag = false;
+				try {
+				char c1 = (i + 1 < sLine.Length) ? sLine[i + 1] : '\0';
+				bLooksLikeTag = Char.IsLetter(c1) || c1 == '/' || c1 == '!' || c1 == '?';
+				}
+				catch {bLooksLikeTag = false;}
+				if (bLooksLikeTag) {
+				iHtmlTagView = iView;
+				for (int j = i; j < sLine.Length; j++) aMap[iPos + j] = iHtmlTagView;
+				sb.Append(' ');
+				iView++;
+				i = sLine.Length;
+				bInHtmlTag = true;
+				continue;
+				}
+				}
+
+		Match mAuto = (aAuto != null && iAuto < aAuto.Count) ? aAuto[iAuto] : null;
+		if (mAuto != null && mAuto.Success && mAuto.Index == i) {
+		int iMatchEnd = mAuto.Index + mAuto.Length;
+		int iLocalStart = mAuto.Index;
+		int iLocalEnd = iMatchEnd;
+			// Skip '<' and '>' brackets.
+			for (int j = iLocalStart; j < iLocalEnd; j++) {
+			if (j == iLocalStart || j == iLocalEnd - 1) aMap[iPos + j] = iView;
+			else {
+			aMap[iPos + j] = iView;
+			if (aHide != null && j >= 0 && j < aHide.Length && aHide[j]) continue;
+			sb.Append(sLine[j]);
+			iView++;
+			}
+			}
+		i = iMatchEnd;
+		iAuto++;
+		continue;
+		}
+
+		if (bHasMarker && i == iMarkerStart && iMarkerLength > 0) {
+		if (bUnorderedMarker && iMarkerLength >= 2) {
+		// Render "- " as "• ".
+		aMap[iPos + i] = iView;
+		sb.Append('•');
+		iView++;
+		aMap[iPos + i + 1] = iView;
+		sb.Append(' ');
+		iView++;
+		}
+		else {
+		for (int j = 0; j < iMarkerLength; j++) {
+		aMap[iPos + i + j] = iView;
+		sb.Append(sLine[i + j]);
+		iView++;
+		}
+		}
+		i += iMarkerLength;
+		continue;
+		}
+
+		char c0 = sLine[i];
+		if (!bInFence && !bFenceLine && c0 == '|') c0 = ' ';
+		aMap[iPos + i] = iView;
+		sb.Append(c0);
+		iView++;
+		i++;
+		}
+		}
+		}
+
+		// Map CR (if any) to the current view index; output a single LF.
+		if (bHasCr) aMap[iLf - 1] = iView;
+		if (bHasLf) {
+		aMap[iLf] = iView;
+		sb.Append('\n');
+		iView++;
+		iPos = iLf + 1;
+		}
+		else {
+		iPos = iLf;
+		}
+
+		if (bFenceLine) bInFence = !bInFence;
+		}
+
+		aMap[iLen] = iView;
+		int[] aReverse = new int[iView + 1];
+		for (int i = 0; i <= iLen; i++) {
+		int v = aMap[i];
+		if (v < 0) v = 0;
+		if (v > iView) v = iView;
+		aReverse[v] = i;
+		}
+
+		aSourceToView = aMap;
+		aViewToSource = aReverse;
+		return sb.ToString();
+		} // MarkdownReview_RenderTextForView method
+
+		private static bool MarkdownReview_TryGetHeadingSpan(string sLine, out int iLevel, out int iTextStart, out int iTextEnd) {
+		iLevel = 0;
+		iTextStart = 0;
+		iTextEnd = 0;
+		if (String.IsNullOrEmpty(sLine)) return false;
+
+		string sTrim = sLine.TrimStart();
+		int iLeading = sLine.Length - sTrim.Length;
+		if (iLeading > 3) return false;
+
+		int i = 0;
+		while (i < sTrim.Length && sTrim[i] == '#' && i < 6) i++;
+		if (i == 0) return false;
+		if (i >= sTrim.Length) return false;
+		if (!Char.IsWhiteSpace(sTrim[i])) return false;
+
+		iLevel = i;
+
+		int j = iLeading + i;
+		while (j < sLine.Length && Char.IsWhiteSpace(sLine[j])) j++;
+		iTextStart = j;
+
+		int iEnd = sLine.Length;
+		while (iEnd > iTextStart && Char.IsWhiteSpace(sLine[iEnd - 1])) iEnd--;
+
+		int iHashStart = iEnd;
+		while (iHashStart > iTextStart && sLine[iHashStart - 1] == '#') iHashStart--;
+		if (iHashStart < iEnd && iHashStart > iTextStart && Char.IsWhiteSpace(sLine[iHashStart - 1])) {
+		iEnd = iHashStart - 1;
+		while (iEnd > iTextStart && Char.IsWhiteSpace(sLine[iEnd - 1])) iEnd--;
+		}
+
+		iTextEnd = iEnd;
+		if (iTextEnd < iTextStart) iTextEnd = iTextStart;
+		return true;
+		} // MarkdownReview_TryGetHeadingSpan method
+
+		private static bool MarkdownReview_GetListMarkerSpan(string sLine, out int iMarkerStart, out int iMarkerLength) {
+		iMarkerStart = 0;
+		iMarkerLength = 0;
+		if (String.IsNullOrEmpty(sLine)) return false;
+
+	int iLeading = sLine.Length - sLine.TrimStart().Length;
+	string s = sLine.TrimStart();
+	if (s.Length < 2) return false;
+
+	char c = s[0];
+	if ((c == '-' || c == '+' || c == '*') && Char.IsWhiteSpace(s[1])) {
+	iMarkerStart = iLeading;
+	iMarkerLength = 2;
+	return true;
+	}
+
+	if (!Char.IsDigit(c)) return false;
+	int i = 0;
+	while (i < s.Length && Char.IsDigit(s[i])) i++;
+	if (i == 0 || i + 1 >= s.Length) return false;
+	if (s[i] != '.' && s[i] != ')') return false;
+	if (!Char.IsWhiteSpace(s[i + 1])) return false;
+	iMarkerStart = iLeading;
+	iMarkerLength = i + 2;
+	return true;
+	} // MarkdownReview_GetListMarkerSpan method
+
+		private static void MarkdownReview_ApplyViewFormatting(RichTextBox rtb, string sSource, int[] aSourceToView) {
+		if (rtb == null) return;
+		if (String.IsNullOrEmpty(sSource)) return;
+		if (aSourceToView == null) return;
+		if (aSourceToView.Length != sSource.Length + 1) return;
+
+	int iSelStart = rtb.SelectionStart;
+	int iSelLength = rtb.SelectionLength;
+
+	List<string> aLines = new List<string>();
+	List<int> aStarts = new List<int>();
+	int iPos = 0;
+	while (true) {
+	aStarts.Add(iPos);
+	int iEnd = sSource.IndexOf('\n', iPos);
+	if (iEnd < 0) iEnd = sSource.Length;
+	string sLine = sSource.Substring(iPos, iEnd - iPos);
+	if (sLine.EndsWith("\r")) sLine = sLine.Substring(0, sLine.Length - 1);
+	aLines.Add(sLine);
+	if (iEnd >= sSource.Length) break;
+	iPos = iEnd + 1;
+	}
+
+		bool bInFence = false;
+		Font fontBase = rtb.Font;
+		if (fontBase == null) return;
+		Dictionary<int, Font> dFonts = new Dictionary<int, Font>();
+		Dictionary<string, Font> dInlineFonts = new Dictionary<string, Font>();
+		for (int i = 0; i < aLines.Count; i++) {
+		string sLine = aLines[i];
+		int iStart = aStarts[i];
+		if (MarkdownReview_IsFenceLine(sLine)) {
+		bInFence = !bInFence;
+		continue;
+		}
+		if (bInFence) continue;
+
+			int iLevel, iHeadingStart, iHeadingEnd;
+			if (MarkdownReview_TryGetHeadingSpan(sLine, out iLevel, out iHeadingStart, out iHeadingEnd)) {
+			float fSize = fontBase.Size;
+			switch (iLevel) {
+		case 1:
+		fSize += 6;
+		break;
+		case 2:
+		fSize += 4;
+		break;
+		case 3:
+		fSize += 2;
+		break;
+		default:
+		break;
+		}
+			try {
+			Font fontHeading;
+			if (!dFonts.TryGetValue(iLevel, out fontHeading)) {
+			fontHeading = new Font(fontBase.FontFamily, fSize, FontStyle.Bold);
+			dFonts[iLevel] = fontHeading;
+			}
+			int iSourceStart = iStart + iHeadingStart;
+			int iSourceEnd = iStart + iHeadingEnd;
+			if (iSourceStart < 0) iSourceStart = 0;
+			if (iSourceEnd < 0) iSourceEnd = 0;
+			if (iSourceStart > sSource.Length) iSourceStart = sSource.Length;
+			if (iSourceEnd > sSource.Length) iSourceEnd = sSource.Length;
+			int iViewStart = aSourceToView[iSourceStart];
+			int iViewEnd = aSourceToView[iSourceEnd];
+			int iViewLength = iViewEnd - iViewStart;
+			if (iViewLength > 0) {
+			if (iViewStart < 0) iViewStart = 0;
+			if (iViewStart > rtb.TextLength) iViewStart = rtb.TextLength;
+			if (iViewStart + iViewLength > rtb.TextLength) iViewLength = rtb.TextLength - iViewStart;
+			if (iViewLength > 0) {
+			rtb.Select(iViewStart, iViewLength);
+			rtb.SelectionFont = fontHeading;
+			}
+			}
+			}
+			catch {}
+			}
+
+			try {
+			int iMarkerStart = 0;
+			int iMarkerLength = 0;
+			bool bHasMarker = MarkdownReview_GetListMarkerSpan(sLine, out iMarkerStart, out iMarkerLength);
+			bool[] aHide;
+			List<MarkdownReviewInlineSpan> spans = MarkdownReview_GetInlineStyleSpans(sLine, (bHasMarker ? iMarkerStart : 0), (bHasMarker ? iMarkerLength : 0), out aHide);
+			foreach (MarkdownReviewInlineSpan span in spans) {
+			if (span == null) continue;
+			int iSourceStart = iStart + span.Start;
+			int iSourceEnd = iStart + span.End;
+			if (iSourceStart < 0) iSourceStart = 0;
+			if (iSourceEnd < 0) iSourceEnd = 0;
+			if (iSourceStart > sSource.Length) iSourceStart = sSource.Length;
+			if (iSourceEnd > sSource.Length) iSourceEnd = sSource.Length;
+			int iViewStart = aSourceToView[iSourceStart];
+			int iViewEnd = aSourceToView[iSourceEnd];
+			int iViewLength = iViewEnd - iViewStart;
+			if (iViewLength <= 0) continue;
+			if (iViewStart < 0) iViewStart = 0;
+			if (iViewStart > rtb.TextLength) iViewStart = rtb.TextLength;
+			if (iViewStart + iViewLength > rtb.TextLength) iViewLength = rtb.TextLength - iViewStart;
+			if (iViewLength <= 0) continue;
+			rtb.Select(iViewStart, iViewLength);
+			Font fontCurrent = rtb.SelectionFont;
+			if (fontCurrent == null) fontCurrent = fontBase;
+			FontStyle styleNew = fontCurrent.Style | span.Style;
+			string sKey = fontCurrent.FontFamily.Name + "|" + fontCurrent.Size.ToString(CultureInfo.InvariantCulture) + "|" + ((int) styleNew).ToString();
+			Font fontInline;
+			if (!dInlineFonts.TryGetValue(sKey, out fontInline)) {
+			fontInline = new Font(fontCurrent.FontFamily, fontCurrent.Size, styleNew);
+			dInlineFonts[sKey] = fontInline;
+			}
+			rtb.SelectionFont = fontInline;
+			}
+			}
+			catch {}
+		}
+
+	try {
+	rtb.Select(iSelStart, iSelLength);
+	}
+	catch {}
+
+		try {
+		foreach (Font f in dFonts.Values) if (f != null) f.Dispose();
+		foreach (Font f in dInlineFonts.Values) if (f != null) f.Dispose();
+		}
+		catch {}
+		} // MarkdownReview_ApplyViewFormatting method
+
+	private void MarkdownReview_Navigate(MdiChild child, MarkdownReviewKind kind, bool bReverse) {
+	if (child == null) return;
+	HomerRichTextBox rtb = child.RTB;
+	if (rtb == null) return;
+
+	MarkdownReview_EnsureCache(child);
+	List<int> list = MarkdownReview_GetList(child, kind);
+	if (list == null || list.Count == 0) {
+	AddMessage("No " + MarkdownReview_GetKindPlural(kind) + "!");
+	return;
+	}
+
+	int iCurrent = rtb.Index;
+	int iTarget = MarkdownReview_FindTarget(list, iCurrent, bReverse);
+	if (iTarget < 0) {
+	AddMessage("No " + (bReverse ? "previous" : "next") + " " + MarkdownReview_GetKindName(kind) + "!");
+	return;
+	}
+
+	try {rtb.Select(iTarget, 0);} catch {}
+		string sMessage = MarkdownReview_FormatMessage(kind, child, rtb, iTarget);
+		try {if (Win32.IsNVDAActive()) Win32.NVDACancelSpeech();} catch {}
+		AddMessage(sMessage);
+		} // MarkdownReview_Navigate method
+
+	private static int MarkdownReview_FindTarget(List<int> list, int iCurrent, bool bReverse) {
+	if (list == null || list.Count == 0) return -1;
+	if (!bReverse) {
+	for (int i = 0; i < list.Count; i++) if (list[i] > iCurrent) return list[i];
+	return -1;
+	}
+	else {
+	for (int i = list.Count - 1; i >= 0; i--) if (list[i] < iCurrent) return list[i];
+	return -1;
+	}
+	} // MarkdownReview_FindTarget method
+
+	private static List<int> MarkdownReview_GetList(MdiChild child, MarkdownReviewKind kind) {
+	switch (kind) {
+	case MarkdownReviewKind.Heading:
+	return child.MarkdownReviewHeadings;
+	case MarkdownReviewKind.List:
+	return child.MarkdownReviewLists;
+	case MarkdownReviewKind.ListItem:
+	return child.MarkdownReviewListItems;
+	case MarkdownReviewKind.Link:
+	return child.MarkdownReviewLinks;
+	case MarkdownReviewKind.Table:
+	return child.MarkdownReviewTables;
+	default:
+	return null;
+	}
+	} // MarkdownReview_GetList method
+
+	private static bool MarkdownReview_TryGetInlineLinkSpanAtIndex(List<int[]> inlineLinks, int iIndex, out int[] span) {
+	span = null;
+	if (inlineLinks == null || inlineLinks.Count == 0) return false;
+	int lo = 0;
+	int hi = inlineLinks.Count - 1;
+	while (lo <= hi) {
+	int mid = (lo + hi) / 2;
+	int[] s = inlineLinks[mid];
+	if (s == null || s.Length < 6) return false;
+	if (iIndex < s[0]) hi = mid - 1;
+	else if (iIndex >= s[1]) lo = mid + 1;
+	else {
+	span = s;
+	return true;
+	}
+	}
+	return false;
+	} // MarkdownReview_TryGetInlineLinkSpanAtIndex method
+
+	private static string MarkdownReview_FormatTableLine(string sLine) {
+	if (String.IsNullOrEmpty(sLine)) return "";
+	string s = sLine.Trim();
+	if (s.Length == 0) return "";
+	if (s.StartsWith("|")) s = s.Substring(1);
+	if (s.EndsWith("|")) s = s.Substring(0, s.Length - 1);
+	string[] a = s.Split('|');
+	List<string> list = new List<string>();
+	foreach (string t in a) {
+	string u = t.Trim();
+	if (u.Length == 0) continue;
+	list.Add(u);
+	}
+	if (list.Count == 0) return sLine.Trim();
+	return String.Join(" | ", list.ToArray());
+	} // MarkdownReview_FormatTableLine method
+
+	private static void MarkdownReview_AddLinksFromLine(string sLine, int iLineStart, List<int> links) {
+	if (String.IsNullOrEmpty(sLine)) return;
+
+	try {
+	List<int[]> spans = new List<int[]>();
+	foreach (Match m in MarkdownInlineLinkRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	links.Add(iLineStart + m.Index);
+	spans.Add(new int[] {m.Index, m.Index + m.Length});
+	}
+	foreach (Match m in MarkdownAutoLinkRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	links.Add(iLineStart + m.Index);
+	spans.Add(new int[] {m.Index, m.Index + m.Length});
+	}
+	foreach (Match m in MarkdownBareUrlRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	if (MarkdownReview_IsIndexInAnySpan(m.Index, spans)) continue;
+	links.Add(iLineStart + m.Index);
+	spans.Add(new int[] {m.Index, m.Index + m.Length});
+	}
+	foreach (Match m in MarkdownWwwUrlRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	if (MarkdownReview_IsIndexInAnySpan(m.Index, spans)) continue;
+	links.Add(iLineStart + m.Index);
+	spans.Add(new int[] {m.Index, m.Index + m.Length});
+	}
+	}
+	catch {}
+	} // MarkdownReview_AddLinksFromLine method
+
+		private static string MarkdownReview_FormatMessage(MarkdownReviewKind kind, MdiChild child, HomerRichTextBox rtb, int iTarget) {
+		string sLine = "";
+		try {
+		sLine = rtb.RowText;
+		}
+	catch {}
+	sLine = (sLine == null) ? "" : sLine.Trim();
+
+	switch (kind) {
+	case MarkdownReviewKind.Heading:
+	int iLevel;
+	string sHeading;
+	if (MarkdownReview_IsHeadingLine(sLine, out iLevel, out sHeading)) {
+	if (sHeading.Length == 0) return "Heading " + iLevel;
+	return sHeading + " Heading " + iLevel;
+	}
+	if (sLine.Length == 0) return "Heading";
+	return sLine + " Heading";
+	case MarkdownReviewKind.List:
+	string sItem;
+	if (MarkdownReview_TryGetListItemText(sLine, out sItem)) {
+	if (sItem.Length == 0) return "List";
+	return sItem + " List";
+	}
+	if (sLine.Length == 0) return "List";
+	return sLine + " List";
+		case MarkdownReviewKind.ListItem:
+		if (MarkdownReview_TryGetListItemText(sLine, out sItem)) {
+		if (sItem.Length == 0) return "Item";
+		return sItem + " Item";
+		}
+		if (sLine.Length == 0) return "Item";
+		return sLine + " Item";
+		case MarkdownReviewKind.Link:
+		return MarkdownReview_FormatLinkMessage(child, rtb, iTarget);
+		case MarkdownReviewKind.Table:
+		string sTable = MarkdownReview_FormatTableLine(sLine);
+		if (sTable.Length == 0) return "Table";
+		return sTable + " Table";
+	default:
+		return sLine;
+		}
+		} // MarkdownReview_FormatMessage method
+
+	private static string MarkdownReview_FormatLinkMessage(MdiChild child, HomerRichTextBox rtb, int iTarget) {
+	string sLine = "";
+	try {
+	sLine = rtb.RowText ?? "";
+	}
+	catch {}
+
+	try {
+	int[] span;
+	if (child != null && child.RTB != null &&
+	child.MarkdownReviewInlineLinks != null &&
+	MarkdownReview_TryGetInlineLinkSpanAtIndex(child.MarkdownReviewInlineLinks, iTarget, out span) &&
+	span != null && span.Length >= 6 &&
+	iTarget >= span[2] && iTarget < span[3]) {
+	string sSource = "";
+	try {sSource = child.RTB.Text ?? "";} catch {sSource = "";}
+
+	string sText = "";
+	try {sText = sSource.Substring(span[2], span[3] - span[2]);} catch {sText = "";}
+	sText = MarkdownReview_CollapseWhitespace(sText);
+
+	string sDestRaw = "";
+	try {sDestRaw = sSource.Substring(span[4], span[5] - span[4]);} catch {sDestRaw = "";}
+
+		string sDest = MarkdownReview_NormalizeUrl(sDestRaw);
+	if (sDest.Length == 0) {
+	sDest = sDestRaw.Trim();
+	try {
+	if (sDest.StartsWith("<") && sDest.EndsWith(">") && sDest.Length > 2) {
+	sDest = sDest.Substring(1, sDest.Length - 2).Trim();
+	}
+	else {
+	int iSpace = sDest.IndexOfAny(new char[] {' ', '\t', '\r', '\n'});
+	if (iSpace > 0) sDest = sDest.Substring(0, iSpace).Trim();
+	}
+	}
+	catch {}
+	try {sDest = Util.Unquote(sDest).Trim();} catch {}
+	sDest = MarkdownReview_CleanUrl(sDest);
+	if (sDest.StartsWith("www.", StringComparison.OrdinalIgnoreCase)) sDest = "https://" + sDest;
+	}
+
+		if (sText.Length > 0) return sText + " Link";
+		if (sDest.Length > 0) return sDest + " Link";
+		return "Link";
+	}
+
+	int iOffset = 0;
+	try {
+	iOffset = iTarget - rtb.RowStart;
+	if (iOffset < 0) iOffset = 0;
+	}
+	catch {
+	iOffset = 0;
+	}
+
+	foreach (Match m in MarkdownAutoLinkRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	if (m.Index <= iOffset && iOffset < m.Index + m.Length) return MarkdownReview_NormalizeUrl(m.Value.Trim('<', '>')) + " Link";
+	}
+	foreach (Match m in MarkdownBareUrlRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	if (m.Index <= iOffset && iOffset < m.Index + m.Length) return MarkdownReview_NormalizeUrl(m.Value) + " Link";
+	}
+	foreach (Match m in MarkdownWwwUrlRegex.Matches(sLine)) {
+	if (m == null || !m.Success) continue;
+	if (m.Index <= iOffset && iOffset < m.Index + m.Length) return MarkdownReview_NormalizeUrl(m.Value) + " Link";
+	}
+	}
+	catch {}
+
+	if (sLine == null) return "Link";
+	sLine = sLine.Trim();
+	if (sLine.Length == 0) return "Link";
+	return sLine + " Link";
+	} // MarkdownReview_FormatLinkMessage method
+
+	private static bool MarkdownReview_TryGetLinkUrlAtCursor(MdiChild child, out string sUrl) {
+	sUrl = "";
+	if (child == null) return false;
+	HomerRichTextBox rtb = child.RTB;
+	if (rtb == null) return false;
+
+	string sSource = "";
+	int iIndex = 0;
+	try {
+	sSource = rtb.Text ?? "";
+	iIndex = rtb.SelectionStart;
+	}
+	catch {
+	sSource = "";
+	iIndex = 0;
+	}
+	if (iIndex < 0) iIndex = 0;
+	if (iIndex > sSource.Length) iIndex = sSource.Length;
+
+	try {
+	int[] span;
+	if (child.MarkdownReviewInlineLinks != null &&
+	MarkdownReview_TryGetInlineLinkSpanAtIndex(child.MarkdownReviewInlineLinks, iIndex, out span) &&
+	span != null && span.Length >= 6 &&
+	iIndex >= span[2] && iIndex < span[3]) {
+	string sDestRaw = "";
+	try {sDestRaw = sSource.Substring(span[4], span[5] - span[4]);} catch {sDestRaw = "";}
+	string sNorm = MarkdownReview_NormalizeUrl(sDestRaw);
+	if (sNorm.Length > 0) {
+	sUrl = sNorm;
+	return true;
+	}
+	}
+	}
+	catch {}
+
+	string sLine = "";
+	int iOffset = 0;
+	try {
+	sLine = rtb.RowText ?? "";
+	iOffset = iIndex - rtb.RowStart;
+	}
+	catch {
+	sLine = "";
+	iOffset = 0;
+	}
+	if (iOffset < 0) iOffset = 0;
+	return MarkdownReview_TryGetLinkUrlFromLine(sLine, iOffset, out sUrl);
+	} // MarkdownReview_TryGetLinkUrlAtCursor method
+
+	private static bool MarkdownReview_TryOpenUrl(string sUrl, out string sError) {
+	sError = "";
+	string s = MarkdownReview_NormalizeUrl(sUrl);
+	if (s.Length == 0) {
+	sError = "Invalid URL.";
+	return false;
+	}
+
+	try {
+	ProcessStartInfo psi = new ProcessStartInfo();
+	psi.FileName = s;
+	psi.UseShellExecute = true;
+	Process.Start(psi);
+	return true;
+	}
+	catch (Exception ex) {
+	sError = ex.Message;
+	return false;
+	}
+	} // MarkdownReview_TryOpenUrl method
 } // MdiFrame class
+
+// MarkdownReviewTextBox: the read-only rendered preview shown in Markdown
+// review mode. Routes command keys back through the frame's central
+// dispatcher so review-mode shortcuts (Escape to leave, h/l/i/k/t
+// navigation, etc.) work while focus is in the preview.
+public class MarkdownReviewTextBox : RichTextBox {
+
+protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+if (App.Frame != null && App.Frame.ProcessCmdKey_Helper(ref msg, keyData)) return true;
+return base.ProcessCmdKey(ref msg, keyData);
+} // ProcessCmdKey handler
+
+} // MarkdownReviewTextBox class
+
 
 public class HomerRichTextBox : RichTextBox {
 public int OldIndex = -1;
@@ -11562,6 +13185,18 @@ public static extern int nvdaController_brailleMessage(string sText);
 public static bool NVDABraille(string sText) {
 return nvdaController_brailleMessage(sText) == 0;
 } // NVDASay method
+
+[DllImport("nvdaControllerClient32.dll", CharSet = CharSet.Auto)]
+public static extern int nvdaController_cancelSpeech();
+
+// Cancel NVDA's current speech. Used by Markdown review mode before
+// announcing its own jump messages so NVDA's automatic caret-move
+// announcement does not read on top of (and double up with) the
+// review-mode message.
+public static bool NVDACancelSpeech() {
+try { return nvdaController_cancelSpeech() == 0; }
+catch { return false; }
+} // NVDACancelSpeech method
 
 [DllImport("saapi32.dll")]
 public static extern int SA_IsRunning();
