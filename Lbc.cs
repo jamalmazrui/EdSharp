@@ -973,6 +973,11 @@ public class LbcDialog : IDisposable
     {
         ListBox lb = sender as ListBox;
         if (lb == null) return;
+        // File-path lists (EdSharp Recent / Favorites) handle Ctrl+C
+        // themselves to copy the full path rather than the display name;
+        // defer so we don't copy twice or speak a misleading message.
+        if (lb.Tag is string && (string)lb.Tag == "edsharp-filelist"
+            && evArgs.KeyData == (Keys.Control | Keys.C)) return;
         if (evArgs.KeyData != (Keys.Control | Keys.C)
             && evArgs.KeyData != (Keys.Alt | Keys.C)) return;
         string sItem = (lb.SelectedItem != null) ? lb.SelectedItem.ToString() : "";

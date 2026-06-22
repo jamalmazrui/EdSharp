@@ -1871,7 +1871,7 @@ aResults = listResults.ToArray();
 string[] aDisplay = new string[aResults.Length];
 for (int i = 0; i < aDisplay.Length; i++) aDisplay[i] = Path.GetFileName(aResults[i]);
 
-sFile = Dialog.Pick("Recent Files", aResults, aDisplay, false, 0);
+sFile = Dialog.PickFile("Recent Files", aResults, aDisplay, false, 0, "Recent");
 if (sFile.Length == 0) return;
 
 OpenOrActivateWindow(sFile, GetViewLevel(sFile));
@@ -3829,7 +3829,7 @@ return;
 
 string[] aDisplay = new string[aResults.Length];
 for (int i = 0; i < aDisplay.Length; i++) aDisplay[i] = Path.GetFileName(aResults[i]);
-sFile = Dialog.Pick("List Favorites", aResults, aDisplay, true, 0);
+sFile = Dialog.PickFile("List Favorites", aResults, aDisplay, true, 0, "Favorites");
 if (sFile.Length == 0) return;
 
 OpenOrActivateWindow(sFile, 0);
@@ -8192,6 +8192,152 @@ if (i >= 0 && i < aVal.Length) sReturn = aVal[i];
 dlg.Dispose();
 return sReturn;
 } // Pick method
+
+// PickFile: a Pick list specialized for file paths (Recent Files,
+// List Favorites). Behaves exactly like Pick(value, display, ...) for
+// choosing a file, but the list also answers per-item file actions so a
+// screen-reader user never has to leave the dialog:
+//   Right Arrow    - Open With... (system "Open with" dialog)
+//   Left Arrow     - speak the full path of the current item
+//   Ctrl+Enter     - show the file in Windows Explorer
+//   Ctrl+C         - copy the full path to the clipboard
+//   Delete / Back  - remove the entry from the list (and from sSection)
+//   Shift+Delete   - permanently delete the file from disk (confirmed)
+// sSection is the INI section the list is stored in ("Recent" /
+// "Favorites"); pass "" to disable the entry-removal actions.
+public static string PickFile(string sTitle, string[] aValue, string[] aDisplay, bool bSort, int iIndex, string sSection) {
+string[] aVal = (string[]) aValue.Clone();
+string[] aDisp = (aDisplay == null) ? (string[]) aVal.Clone() : (string[]) aDisplay.Clone();
+if (bSort) {
+if (aDisplay == null) { Array.Sort(aVal, new CaseInsensitiveComparer()); aDisp = (string[]) aVal.Clone(); }
+else Array.Sort(aDisp, aVal);
+}
+// Keep a mutable view so entry-removal can drop items live.
+List<string> lVal = new List<string>(aVal);
+List<string> lDisp = new List<string>(aDisp);
+
+LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
+ListBox lst = dlg.addListBox(lDisp, "", "Right Arrow Open With, Left Arrow read path, Ctrl+Enter show in Explorer, Ctrl+C copy path, Delete remove, Shift+Delete delete from disk");
+// Mark the list so LbcDialog's default Ctrl+C (copies the display
+// name) defers to us - we copy the full path instead.
+lst.Tag = "edsharp-filelist";
+if (iIndex >= 0 && iIndex < lDisp.Count) lst.SelectedIndex = iIndex;
+
+lst.KeyDown += delegate(object oSender, KeyEventArgs ev) {
+ListBox lb = oSender as ListBox;
+if (lb == null) return;
+int i = lb.SelectedIndex;
+if (i < 0 || i >= lVal.Count) return;
+string sFile = lVal[i];
+if (string.IsNullOrEmpty(sFile)) return;
+
+switch (ev.KeyData) {
+case Keys.Right:
+try { Win32.OpenWith(sFile); App.Frame.AddMessage("Open with"); }
+catch (Exception ex) { Dialog.Show("Error", ex.Message); }
+ev.Handled = true; ev.SuppressKeyPress = true;
+break;
+
+case Keys.Left:
+App.Frame.AddMessage(sFile);
+ev.Handled = true; ev.SuppressKeyPress = true;
+break;
+
+case Keys.Control | Keys.Enter:
+try {
+string sArg = File.Exists(sFile) ? "/select," + Util.Quote(sFile) : Util.Quote(Path.GetDirectoryName(sFile));
+Process.Start("explorer.exe", sArg);
+}
+catch (Exception ex) { Dialog.Show("Error", ex.Message); }
+ev.Handled = true; ev.SuppressKeyPress = true;
+break;
+
+case Keys.Control | Keys.C:
+try { Clipboard.SetText(sFile); App.Frame.AddMessage("Path copied"); }
+catch (Exception ex) { Dialog.Show("Error", ex.Message); }
+ev.Handled = true; ev.SuppressKeyPress = true;
+break;
+
+// Shift+Delete must be checked before plain Delete/Back, which only
+// remove the entry from the list.
+case Keys.Shift | Keys.Delete:
+PickFileDeleteFromDisk(lb, lVal, lDisp, sSection);
+ev.Handled = true; ev.SuppressKeyPress = true;
+break;
+
+case Keys.Delete:
+case Keys.Back:
+PickFileRemoveEntry(lb, lVal, lDisp, sSection, i, true);
+ev.Handled = true; ev.SuppressKeyPress = true;
+break;
+}
+};
+
+string sReturn = "";
+if (dlg.runOkCancel()) {
+int i = lst.SelectedIndex;
+if (i >= 0 && i < lVal.Count) sReturn = lVal[i];
+}
+dlg.Dispose();
+return sReturn;
+} // PickFile method
+
+// Remove the current item from the list box and (when sSection is set)
+// from the backing INI section. Returns the path that was removed.
+private static void PickFileRemoveEntry(ListBox lb, List<string> lVal, List<string> lDisp, string sSection, int i, bool bSpeak) {
+if (i < 0 || i >= lVal.Count) return;
+string sFile = lVal[i];
+if (sSection.Length > 0) App.DeleteKey(sSection, sFile);
+lVal.RemoveAt(i);
+lDisp.RemoveAt(i);
+lb.Items.RemoveAt(i);
+if (lb.Items.Count == 0) {
+if (bSpeak) App.Frame.AddMessage("No items");
+return;
+}
+if (i >= lb.Items.Count) i = lb.Items.Count - 1;
+lb.SelectedIndex = i;
+if (bSpeak) App.Frame.AddMessage("Removed");
+} // PickFileRemoveEntry method
+
+// Permanently delete the current file from disk after an explicit
+// confirmation, then drop its list entry. Mirrors the safeguards of the
+// document-level delete: never deletes directories, closes any editor
+// windows holding the file first, and aborts if a close is canceled.
+private static void PickFileDeleteFromDisk(ListBox lb, List<string> lVal, List<string> lDisp, string sSection) {
+int i = lb.SelectedIndex;
+if (i < 0 || i >= lVal.Count) return;
+string sFile = lVal[i];
+if (sFile.Length == 0) return;
+try {
+if (Directory.Exists(sFile)) { App.Frame.AddMessage("Not a file"); return; }
+if (!File.Exists(sFile)) {
+if (Dialog.Confirm("Confirm", "File not found on disk. Remove this entry from the list?\n" + sFile, "N") != "Y") return;
+PickFileRemoveEntry(lb, lVal, lDisp, sSection, i, true);
+return;
+}
+if (Dialog.Confirm("Confirm", "Permanently delete this file from disk, not just remove it from the list?\n" + sFile, "N") != "Y") return;
+// Close any editor windows on this file first (snapshot the
+// collection; Close() mutates MdiChildren while we iterate).
+foreach (Form f in new List<Form>(App.Frame.MdiChildren)) {
+MdiChild child = f as MdiChild;
+if (child == null) continue;
+if (String.Equals(child.File, sFile, StringComparison.OrdinalIgnoreCase)) child.Close();
+}
+foreach (Form f in App.Frame.MdiChildren) {
+MdiChild child = f as MdiChild;
+if (child == null) continue;
+if (String.Equals(child.File, sFile, StringComparison.OrdinalIgnoreCase) && !child.IsDisposed) {
+App.Frame.AddMessage("Delete canceled");
+return;
+}
+}
+File.Delete(sFile);
+App.Frame.AddMessage("Deleted from disk");
+PickFileRemoveEntry(lb, lVal, lDisp, sSection, i, false);
+}
+catch (Exception ex) { Dialog.Show("Error", ex.Message); }
+} // PickFileDeleteFromDisk method
 
 public static string Confirm(string sTitle, string sText, string sDefault) {
 MessageBoxDefaultButton defaultButton;
