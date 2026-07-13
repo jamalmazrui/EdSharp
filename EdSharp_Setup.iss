@@ -12,9 +12,9 @@
 
 [Setup]
 AppName=EdSharp
-AppVersion=5.0.1
-AppVerName=EdSharp 5.0.1 beta
-VersionInfoVersion=5.0.1
+AppVersion=5.0.2
+AppVerName=EdSharp 5.0.2 beta
+VersionInfoVersion=5.0.2
 SetupIconFile=EdSharp.ico
 UninstallDisplayIcon={app}\EdSharp.exe
 AppPublisher=NonvisualDevelopment.org
@@ -164,5 +164,6 @@ function HasNgen(): boolean;
 begin
   result := FileExists(ExpandConstant('{code:NgenExe}'));
 end;
+
 
 

@@ -42,7 +42,7 @@ public class App : WindowsFormsApplicationBase {
 // Dotted-numeric version used by the Elevate Version command to compare with
 // the latest GitHub release tag.  Bump this on each release; the About dialog
 // shows the friendly "5.0 beta" label separately.
-public const string VersionString = "5.0.1";
+public const string VersionString = "5.0.2";
 public static App Shell;
 public static MdiFrame Frame;
 public static string ProgramName;
