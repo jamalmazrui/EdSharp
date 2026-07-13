@@ -221,7 +221,21 @@ public static class InixCodec
                 sbValue = new StringBuilder();
                 continue;
             }
-            // Single-line value.
+            // Single-line value.  Optional quoting, as in traditional .ini (and
+            // .inix is a consistent superset of it):  if the value begins AND ends
+            // with a double quote, those quotes are delimiters, not content.  Only
+            // the outermost pair is removed, and everything between them is kept
+            // exactly, including spaces.  So:
+            //     Key=""          an empty string  (explicit, unambiguous)
+            //     Key=" dog"      keeps the leading space
+            //     Key="dog "      keeps the trailing space
+            //     Key=""dog""     the literal text  "dog"  (with its quotes)
+            // Quoting is optional: an unquoted value is trimmed, as before, so
+            // existing files are unaffected.  Note this runs AFTER the two
+            // multi-line tests above, so Key="" is an empty single-line value and
+            // does NOT start a multi-line accumulation.
+            if (sValTrim.Length >= 2 && sValTrim.StartsWith("\"") && sValTrim.EndsWith("\""))
+                sValTrim = sValTrim.Substring(1, sValTrim.Length - 2);
             secCurrent.Pairs.Add(new Pair(sKey, sValTrim));
         }
 
@@ -372,8 +386,18 @@ public static class InixCodec
             string sFence = chooseFence(sVal);
             if (sFence == null)
             {
-                // Single-line value, safe to write inline.
-                w.WriteLine(sKey + " = " + sVal);
+                // Quote the value when writing it bare would not read back exactly.
+                // Three cases need it: an empty value (a bare "Key =" would re-read as
+                // the START of a multi-line value), a value with a leading or trailing
+                // space (which a bare value loses to trimming), and a value that itself
+                // begins and ends with a double quote (whose own quotes would be taken
+                // as delimiters on the way back in).  Wrapping adds one outer pair and
+                // the reader strips exactly one, so the original text survives.
+                bool bNeedsQuote = (sVal.Length == 0)
+                    || (sVal != sVal.Trim())
+                    || (sVal.Length >= 2 && sVal.StartsWith("\"") && sVal.EndsWith("\""));
+                if (bNeedsQuote) w.WriteLine(sKey + " = \"" + sVal + "\"");
+                else w.WriteLine(sKey + " = " + sVal);
             }
             else
             {

@@ -1090,12 +1090,23 @@ extension) with one bracketed section per task. Each section has a Find
 key (the regular expression to match) and then either replaces or
 extracts. A Replace key gives the replacement text, in which \n, \t, and
 similar escapes are honored, the usual .NET group references such as $1
-work, and $# inserts the running match count; an empty Replace deletes
-the matched text. Alternatively, an Extract key set to true collects
-each match to the clipboard without changing the file, separated by the
-optional Divider key (a form feed and newline by default). An optional
-Options key takes a comma-separated list of .NET regular expression
-option names such as multiline, ignorecase, or singleline. Because the
+work, and $# inserts the running match count. To delete the matched
+text, simply leave the Replace key out of the section: a task with a
+Find but no Replace removes every match. If you prefer to state the
+empty replacement explicitly, write Replace="" -- a pair of double
+quotes with nothing between them. Do not write a bare Replace= with
+nothing after the equals sign, since that begins a multi-line value
+rather than an empty one. Alternatively, an Extract key set to true
+collects each match to the clipboard without changing the file,
+separated by the optional Divider key (a form feed and newline by
+default). An optional Options key takes a comma-separated list of .NET
+regular expression option names such as multiline, ignorecase, or
+singleline. Any single-line value may be surrounded by double quotes, as
+in traditional .ini files. The quotes are delimiters rather than
+content, and everything between them is kept exactly, so quoting is how
+you preserve a space that would otherwise be trimmed away: Replace="
+dog" keeps the leading space, and Replace="dog " keeps the trailing one.
+Quoting is optional; an unquoted value works as before. Because the
 .inix format supports multi-line values, a Find or Replace expression
 may span several lines. This is the same job format processed by the
 companion Regexer tool. When you run a job, EdSharp offers Test (count

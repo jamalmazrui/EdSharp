@@ -29,7 +29,14 @@ using Homer;
 
 [assembly: AssemblyTitle("EdSharp")]
 [assembly: AssemblyProduct("EdSharp")]
-[assembly: AssemblyVersion("5.0.*")]
+// Single-sourced from AppVersion in EdSharp_setup.iss: BuildEdSharp.cmd generates
+// Version.cs (BuildVersion.Version) from it.  This replaces the wildcard "5.0.*",
+// which made the assembly version a build TIMESTAMP unrelated to the release --
+// so the program, the installer, and the release tag could never agree.
+// AssemblyFileVersion also stamps the Win32 version resource, so the version is
+// visible in Explorer's file properties and readable by tools.
+[assembly: AssemblyVersion(BuildVersion.Version)]
+[assembly: AssemblyFileVersion(BuildVersion.Version)]
 [assembly: AssemblyDescription("EdSharp editor")]
 [assembly: AssemblyCompany("EmpowermentZone.com")]
 [assembly: AssemblyCopyright("Copyright 2007 - 2026 by Jamal Mazrui")]
@@ -42,7 +49,12 @@ public class App : WindowsFormsApplicationBase {
 // Dotted-numeric version used by the Elevate Version command to compare with
 // the latest GitHub release tag.  Bump this on each release; the About dialog
 // shows the friendly "5.0 beta" label separately.
-public const string VersionString = "5.0.2";
+// The version number is NOT stored here.  It lives in exactly one place --
+// AppVersion in EdSharp_Setup.iss -- and BuildEdSharp.cmd generates Version.cs
+// from it at build time, defining BuildVersion.Version.  That makes it
+// impossible for the running program and the installer (and therefore the
+// release tag that F11 compares against) to disagree.
+public const string VersionString = BuildVersion.Version;
 public static App Shell;
 public static MdiFrame Frame;
 public static string ProgramName;
@@ -1557,22 +1569,6 @@ App.WriteData("Job", sTransformFile);
 
 string sJobBody = Util.File2String(sTransformFile);
 string[] aJobLines = sJobBody.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
-
-// Accept the key names in any letter case, so "find=" works as well as "Find=".
-// Lower case reads naturally and matches how the keys are often typed, but the
-// codec matches names exactly, so canonicalize them here before parsing.
-string[] aJobKeys = {"Find", "Replace", "Options", "Extract", "Divider"};
-for (int iLine = 0; iLine < aJobLines.Length; iLine++) {
-string sJobLine = aJobLines[iLine];
-int iEquals = sJobLine.IndexOf('=');
-if (iEquals <= 0) continue;
-string sKey = sJobLine.Substring(0, iEquals).Trim();
-foreach (string sJobKey in aJobKeys) {
-if (String.Compare(sKey, sJobKey, true) != 0) continue;
-aJobLines[iLine] = sJobKey + sJobLine.Substring(iEquals);
-break;
-}
-}
 
 List<InixCodec.Section> lsAll = InixCodec.parseLines(aJobLines);
 List<InixCodec.Section> lsTasks = new List<InixCodec.Section>();
