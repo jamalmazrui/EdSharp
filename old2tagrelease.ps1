@@ -59,8 +59,10 @@
 # the version files it changed (unless -NoCommit) and warns about anything else
 # still outstanding, then proceeds.
 #
-# Run from the repo root:
-#   cd C:\FileDir
+# The script always acts on the CURRENT DIRECTORY, not on its own location, so
+# tagRelease.ps1 and tagRelease.cmd can live in one shared tools folder on your
+# PATH and be run against any repo. Just cd to the repo first:
+#   cd C:\EdSharp
 #   .\tagRelease.cmd                     the normal command; no flags needed
 #   .\tagRelease.cmd -Version 5.1        set an explicit version
 #   .\tagRelease.cmd -NoBump             never bump, even if already released
@@ -426,10 +428,13 @@ try {
     # --- Asset check ---
     Write-Host ""
     Write-Host "--- Asset check ---"
-    if (-not (Test-Path -LiteralPath $sSetupExe -PathType Leaf)) {
+    # Absolute path: tagRelease.ps1 may live anywhere (e.g. a tools folder on
+    # PATH); it always acts on the CURRENT directory, never on its own location.
+    $sSetupPath = Join-Path $sRepoPath $sSetupExe
+    if (-not (Test-Path -LiteralPath $sSetupPath -PathType Leaf)) {
         throw "$sSetupExe not found in $sRepoPath. Build the app, compile $sIssName with Inno Setup, then re-run."
     }
-    $oExe = Get-Item -LiteralPath $sSetupExe
+    $oExe = Get-Item -LiteralPath $sSetupPath
     Write-Host ("Asset:   {0}" -f $oExe.Name)
     Write-Host ("  size:  {0:N0} bytes" -f $oExe.Length)
     Write-Host ("  mtime: {0}" -f $oExe.LastWriteTime)
@@ -519,14 +524,14 @@ try {
     if ($iCode -ne 0) {
         Write-Host "Creating release $sTag with asset $sSetupExe ..."
         invokeChecked -sExe 'gh' -aArgs @(
-            'release', 'create', $sTag, $sSetupExe,
+            'release', 'create', $sTag, $sSetupPath,
             '--title', "$sApp $sVersion",
             '--generate-notes',
             '--latest'
         )
     } else {
         Write-Host "Release $sTag already exists. Replacing asset and marking it latest ..."
-        invokeChecked -sExe 'gh' -aArgs @('release', 'upload', $sTag, $sSetupExe, '--clobber')
+        invokeChecked -sExe 'gh' -aArgs @('release', 'upload', $sTag, $sSetupPath, '--clobber')
         $ErrorActionPreference = 'Continue'
         & gh release edit $sTag --latest 2>$null | Out-Null
     }
