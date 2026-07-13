@@ -1,4 +1,4 @@
-// KeyMap.cs -- portable Homer class. Use after `using Homer;`.
+﻿// KeyMap.cs -- portable Homer class. Use after `using Homer;`.
 //
 // The one authoritative table associating a UI context, a command name, a
 // one-line summary, an optional longer description, and a key chord. Menu

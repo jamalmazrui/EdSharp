@@ -1,4 +1,4 @@
-//EdSharp 5.0
+﻿//EdSharp 5.0
 // June 16, 2026
 //Copyright 2007 - 2026 by Jamal Mazrui
 // GNU Lesser General Public License (LGPL)

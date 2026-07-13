@@ -1,4 +1,4 @@
-; EdSharp_Setup.iss -- Inno Setup script for the AnyCPU EdSharp baseline (x64 and ARM64).
+﻿; EdSharp_Setup.iss -- Inno Setup script for the AnyCPU EdSharp baseline (x64 and ARM64).
 ;
 ; Compile with ISCC.exe (Inno Setup 5.6+ or 6.x). Run BuildEdSharp.cmd
 ; first so EdSharp.exe, EdSharp.dll, and nvdaControllerClient.dll exist.
@@ -136,22 +136,46 @@ Name: "{group}\Uninstall EdSharp"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\EdSharp"; Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\EdSharp.ico"; HotKey: Alt+Ctrl+E; Comment: "Launch or activate EdSharp 5.0 (Alt+Control+E)"
 
 [Run]
-; Install EdSharps JAWS scripts (Finish-page option, like DbDo). Delegates to
-; EdSharp.exe --install-jaws-settings, whose C# implementation copies the
-; settings family into every installed JAWS version and compiles them there.
-Filename: "{app}\EdSharp.exe"; Parameters: "--install-jaws-settings"; WorkingDir: "{app}"; Description: "Install JAWS scripts for EdSharp (recommended if you use JAWS)"; Flags: postinstall skipifsilent
-; Install the NVDA add-on by shell-executing the .nvda-addon file (NVDA
-; registers itself as the handler). Unchecked by default; checking it opens
-; NVDA's add-on install dialog. NVDA must be running, and be restarted after.
-Filename: "{app}\EdSharp.nvda-addon"; Description: "Install NVDA add-on (NVDA must be running; restart NVDA afterward)"; Flags: postinstall shellexec skipifdoesntexist unchecked
-; Pre-generate native images for faster startup (64-bit ngen).
-Filename: "{code:NgenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: HasNgen
-Filename: "{code:NgenExe}"; Parameters: "install ""{app}\EdSharp.exe"" /AppBase:""{app}"" /nologo /silent"; Flags: runhidden; Check: HasNgen
-; EdSharp.dll (the JScript .NET companion) is loaded late-bound at run time, so
-; it is NOT part of EdSharp.exe's static dependency closure and ngen install of
-; the exe does not cover it.  Pre-compile it too, so the first use of a scripting
-; feature does not pay a JIT cost.
-Filename: "{code:NgenExe}"; Parameters: "install ""{app}\EdSharp.dll"" /AppBase:""{app}"" /nologo /silent"; Flags: runhidden; Check: HasNgen
+; The four Finish-page checkboxes, in this order.  All are checked by default
+; except the user guide.  The order here IS the order shown.
+;
+; 1. JAWS scripts.  "EdSharp.exe --install-jaws-settings" copies the script family into
+;    every installed version of JAWS and compiles it there.  The implementation is the
+;    shared Homer.JawsSettingsInstaller (Jaws.cs), so EdSharp, FileDir, and DbDo all
+;    install scripts by the same code, and the command can be re-run later.
+FileName: "{app}\EdSharp.exe"; \
+  Parameters: "--install-jaws-settings"; \
+  WorkingDir: "{app}"; \
+  Description: "Install scripts for improving use with the JAWS screen reader"; \
+  Flags: postinstall waituntilterminated runhidden skipifsilent
+
+; 2. NVDA add-on.  Shell-executing the .nvda-addon hands it to NVDA's own file
+;    association, so NVDA shows its native add-on install dialog.  skipifdoesntexist
+;    means the checkbox simply does not appear if the app ships no add-on yet.
+FileName: "{app}\EdSharp.nvda-addon"; \
+  WorkingDir: "{app}"; \
+  Description: "Install add-on for improving use with the NVDA screen reader"; \
+  Flags: postinstall shellexec waituntilterminated skipifsilent skipifdoesntexist
+
+; 3. Launch the app.
+FileName: "{app}\EdSharp.exe"; \
+  WorkingDir: "{app}"; \
+  Description: "Launch EdSharp (Alt+Control+E)"; \
+  Flags: nowait postinstall skipifsilent
+
+; 4. User guide -- the ONLY box not checked by default.
+FileName: "{app}\EdSharp.htm"; \
+  Description: "Open user guide for EdSharp"; \
+  Flags: postinstall shellexec skipifsilent skipifdoesntexist unchecked
+
+; Native image generation.  Not checkboxes: these run automatically and elevated, so
+; the installed copy starts from a cached native image instead of JIT-compiling.
+; Identical in all three apps.  HasNgen skips them if ngen.exe is absent.
+FileName: "{code:NgenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: HasNgen
+FileName: "{code:NgenExe}"; Parameters: "install ""{app}\EdSharp.exe"" /AppBase:""{app}"" /nologo /silent"; Flags: runhidden; Check: HasNgen
+; EdSharp.dll is loaded late-bound, so it is not in the exe's static dependency closure
+; and ngen of the exe does not cover it.  Pre-compile it too.
+FileName: "{code:NgenExe}"; Parameters: "install ""{app}\EdSharp.dll"" /AppBase:""{app}"" /nologo /silent"; Flags: runhidden; Check: HasNgen
 
 [UninstallRun]
 Filename: "{code:NgenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: HasNgen

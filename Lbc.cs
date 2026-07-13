@@ -1,4 +1,4 @@
-// Lbc.cs -- portable Layout-By-Code dialog classes (LbcTextBox, LbcForm,
+﻿// Lbc.cs -- portable Layout-By-Code dialog classes (LbcTextBox, LbcForm,
 // HelpDialog, LbcDialog), shared source between EdSharp and DbDuo. Build it
 // alongside the main source (csc ... EdSharp.cs Lbc.cs). Enhancements made in
 // either project (e.g. addCheckListBox, the multi-select CheckedListBox adder)
@@ -9,7 +9,6 @@
 // To move this file to DbDuo, change the single namespace line below to
 // DbDuo's namespace; nothing else here is project-specific.
 
-using Microsoft.VisualBasic.ApplicationServices;
 using System.Windows.Automation.Provider;
 using Microsoft.Win32;
 using System;
@@ -29,8 +28,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Windows.Forms;
-using Tektosyne.NetMail ;
-using Tektosyne.Win32Api;
 
 namespace Homer {
 
@@ -2092,6 +2089,148 @@ public class LbcDialog : IDisposable
         foreach (Control c in pnlStack.Controls)
             iTotal += c.Height + c.Margin.Vertical;
         return iTotal + 8;
+    }
+}
+
+// =====================================================================
+// LbcListView: the Lbc-enhanced ListView that embodies DbDo's
+// "db cursor" concept.
+//
+// The db cursor is the user's position in the current recordset:
+// a current ROW and a current COLUMN.
+//
+//   Row    -- always the ListView's single focused row. Whenever
+//             the recordset has at least one row, exactly one row
+//             carries both keyboard focus and ListView selection
+//             (ensureCursorRow enforces the invariant). ListView
+//             selection is purely the cursor; multi-row selection
+//             semantics belong to DbDo's mark infrastructure (the
+//             standard boolean 'marked' column, Set Mark
+//             Control+M, Clear Mark, Toggle Marked Control+Space,
+//             and the marked-navigation family).
+//   Column -- a virtual construct: the standard ListView has no
+//             cell focus, so the current column lives here as
+//             cursorColumn (0-based display-column index) and is
+//             voiced rather than drawn. The owning form keeps the
+//             ADO absolutePosition (1-based) as the row's source
+//             of truth and mirrors it to the focused row.
+//
+// Column-preservation principle: the cursor column persists
+// across row movement (arrows, PageUp/PageDown, jumps, refresh)
+// and changes only when a command explicitly or implicitly says
+// otherwise (Home/End, Alt+Control+LeftArrow/RightArrow, the
+// corner moves, type-ahead column targeting, or a table switch
+// restoring that table's remembered column by name).
+// =====================================================================
+public class LbcListView : ListView
+{
+    // Fields
+    private int iCursorColumn = 0;
+
+    // cursorColumn: 0-based index of the db cursor's current
+    // column among the displayed columns. Clamped on set.
+    public int cursorColumn
+    {
+        get { return iCursorColumn; }
+        set
+        {
+            int iMax = (Columns.Count > 0) ? Columns.Count - 1 : 0;
+            if (value < 0) value = 0;
+            if (value > iMax) value = iMax;
+            iCursorColumn = value;
+        }
+    }
+
+    // cursorRowIndex: 0-based index of the db cursor's row (the
+    // focused row), or -1 when the list is empty.
+    public int cursorRowIndex
+    {
+        get
+        {
+            if (FocusedItem != null) return FocusedItem.Index;
+            if (SelectedIndices.Count > 0) return SelectedIndices[0];
+            return -1;
+        }
+    }
+
+    // ensureCursorRow: enforce the invariant that a non-empty
+    // list always has exactly one row carrying both focus and
+    // selection. Returns true when a row holds the cursor on
+    // exit. Safe in VirtualMode (SelectedIndices.Add and Items[i]
+    // both work against virtual items).
+    public bool ensureCursorRow()
+    {
+        int iRow;
+        if (VirtualListSize <= 0 && !VirtualMode && Items.Count == 0) return false;
+        if (VirtualMode && VirtualListSize <= 0) return false;
+        iRow = cursorRowIndex;
+        if (iRow < 0) iRow = 0;
+        try
+        {
+            if (SelectedIndices.Count == 0) SelectedIndices.Add(iRow);
+            if (FocusedItem == null) Items[iRow].Focused = true;
+            // Force the native selected + focused state so screen
+            // readers see a real selection, not the focused-but-
+            // unselected state that managed selection leaves in
+            // VirtualMode (which JAWS announced as "Unselected").
+            selectAndFocusNative(iRow);
+        }
+        catch { return false; }
+        return true;
+    }
+
+    // ---- Native selection state (VirtualMode) ----
+    // WinForms' SelectedIndices.Add sets the managed selection, but
+    // in VirtualMode the native list-item state that MSAA / UIA
+    // (and therefore JAWS) read for "selected" is not reliably set
+    // until the control is focused and the user acts (pressing
+    // Space). That left the current row announced as "Unselected"
+    // on first open. Sending LVM_SETITEMSTATE with LVIS_SELECTED |
+    // LVIS_FOCUSED reproduces exactly what Space does, so the row
+    // reads as selected immediately and on every programmatic move.
+    private const int c_iLvmFirst = 0x1000;
+    private const int c_iLvmSetItemState = c_iLvmFirst + 43;
+    private const int c_iLvisFocused = 0x0001;
+    private const int c_iLvisSelected = 0x0002;
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    private struct LVITEM
+    {
+        public int mask;
+        public int iItem;
+        public int iSubItem;
+        public int state;
+        public int stateMask;
+        public IntPtr pszText;
+        public int cchTextMax;
+        public int iImage;
+        public IntPtr lParam;
+        public int iIndent;
+        public int iGroupId;
+        public int cColumns;
+        public IntPtr puColumns;
+        public IntPtr piColFmt;
+        public int iGroup;
+    }
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    private static extern IntPtr SendMessage(IntPtr hWnd, int iMsg, IntPtr wParam, ref LVITEM lvi);
+
+    // selectAndFocusNative: force native LVIS_SELECTED | LVIS_FOCUSED
+    // on the given 0-based row. Only state and stateMask are used by
+    // LVM_SETITEMSTATE. Best-effort; never throws.
+    public void selectAndFocusNative(int iIndex)
+    {
+        if (iIndex < 0 || !IsHandleCreated) return;
+        if (VirtualMode && iIndex >= VirtualListSize) return;
+        try
+        {
+            LVITEM lvi = new LVITEM();
+            lvi.stateMask = c_iLvisSelected | c_iLvisFocused;
+            lvi.state = c_iLvisSelected | c_iLvisFocused;
+            SendMessage(this.Handle, c_iLvmSetItemState, (IntPtr)iIndex, ref lvi);
+        }
+        catch { }
     }
 }
 

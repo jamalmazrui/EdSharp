@@ -1,4 +1,4 @@
-// Web.cs -- part of the shared Homer toolkit (namespace Homer).
+﻿// Web.cs -- part of the shared Homer toolkit (namespace Homer).
 //
 // A small, dependency-free web client that brings the practical ideas of the
 // durl.py downloader to C#: a modern TLS handshake, a realistic User-Agent,

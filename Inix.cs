@@ -1,9 +1,8 @@
-// Inix.cs (InixCodec: order-preserving .ini/.inix reader-writer) -- portable, reusable across EdSharp, DbDuo, and other C#
+﻿// Inix.cs (InixCodec: order-preserving .ini/.inix reader-writer) -- portable, reusable across EdSharp, DbDuo, and other C#
 // projects. .inix is a superset of classic .ini (verbatim multi-line values, implicit [Global], order-preserving round-trip). Pure codec, no app dependencies.
 // Namespace Homer is the shared toolkit namespace; reference it with
 // `using Homer;`. To reuse elsewhere, copy this file as-is.
 
-using Microsoft.VisualBasic.ApplicationServices;
 using System.Windows.Automation.Provider;
 using Microsoft.Win32;
 using System;
@@ -23,8 +22,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Windows.Forms;
-using Tektosyne.NetMail ;
-using Tektosyne.Win32Api;
 
 namespace Homer {
 
@@ -54,6 +51,30 @@ public static class InixCodec
                 if (string.Equals(p.Key, sKey, StringComparison.OrdinalIgnoreCase))
                     return p.Value;
             return null;
+        }
+
+        // getArray: the value read as an array of items -- the read side of the
+        // .inix array convention.  A value that spans multiple lines yields one item
+        // per line; a single-line value containing commas is split on commas; any
+        // other non-blank value is a one-item array.  Surrounding whitespace and
+        // blank items are dropped.  Returns an empty list when the key is absent or
+        // blank.
+        public List<string> getArray(string sKey)
+        {
+            List<string> lsItems = new List<string>();
+            string sRaw = get(sKey);
+            if (string.IsNullOrEmpty(sRaw)) return lsItems;
+            string sNorm = sRaw.Replace("\r\n", "\n").Replace("\r", "\n");
+            string[] aParts;
+            if (sNorm.IndexOf('\n') >= 0)     aParts = sNorm.Split('\n');
+            else if (sNorm.IndexOf(',') >= 0) aParts = sNorm.Split(',');
+            else                              aParts = new string[] { sNorm };
+            foreach (string sPart in aParts)
+            {
+                string sItem = (sPart == null ? "" : sPart).Trim();
+                if (sItem.Length > 0) lsItems.Add(sItem);
+            }
+            return lsItems;
         }
 
         // Returns the full ordered list of keys.
@@ -523,6 +544,66 @@ public static class InixCodec
             return true;
         }
         catch { return false; }
+    }
+
+    // fileTask: the declared purpose of an .inix file, read from the "FileTask" key
+    // of its implicit [Global] section -- e.g. "report" for a report definition or
+    // "transfer" for an import map.  Returns "" when the file declares no FileTask,
+    // is unreadable, or is absent.  The value is trimmed and lower-cased so callers
+    // can compare it directly.  This is what lets a command that offers a pick-list
+    // of .inix files show only the files whose task matches the command, so a report
+    // picker never lists an import map or a settings file, and vice versa.
+    public static string fileTask(string sPath)
+    {
+        try { return fileTask(read(sPath)); }
+        catch { return ""; }
+    }
+
+    // fileTask overload for callers that have already parsed the file, so the
+    // FileTask can be read without a second pass over the disk.
+    public static string fileTask(List<Section> lsSections)
+    {
+        if (lsSections == null) return "";
+        foreach (Section section in lsSections)
+            if (string.Equals(section.Name, "Global", StringComparison.OrdinalIgnoreCase))
+            {
+                string sValue = section.get("FileTask");
+                return string.IsNullOrEmpty(sValue) ? "" : sValue.Trim().ToLowerInvariant();
+            }
+        return "";
+    }
+
+    // writeArrayValue: the write side of the .inix array convention.  Stores the
+    // items under sKey, choosing the presentation automatically: inline and
+    // comma-separated when the items are few (up to six) and short and none contains
+    // a space, comma, or backtick; otherwise one item per line, which writeValue
+    // renders as a fenced block.  Blank items are dropped; an empty list clears the
+    // key.
+    public static bool writeArrayValue(string sPath, string sSection, string sKey, List<string> lsItems)
+    {
+        List<string> lsClean = new List<string>();
+        if (lsItems != null)
+            foreach (string sItem in lsItems)
+            {
+                string sOne = (sItem == null ? "" : sItem).Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ").Trim();
+                if (sOne.Length > 0) lsClean.Add(sOne);
+            }
+        if (lsClean.Count == 0) return writeValue(sPath, sSection, sKey, "");
+
+        bool bInline = lsClean.Count <= 6;
+        if (bInline)
+        {
+            int iLength = 0;
+            foreach (string sOne in lsClean)
+            {
+                if (sOne.IndexOf(' ') >= 0 || sOne.IndexOf(',') >= 0 || sOne.IndexOf('`') >= 0) { bInline = false; break; }
+                iLength += sOne.Length + 2;
+            }
+            if (iLength > 80) bInline = false;
+        }
+        string sValue = bInline ? string.Join(", ", lsClean.ToArray())
+                                : string.Join("\n", lsClean.ToArray());
+        return writeValue(sPath, sSection, sKey, sValue);
     }
 }
 

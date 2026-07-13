@@ -1,9 +1,8 @@
-// Say.cs (speech subsystem: Say + UIA notification support) -- portable, reusable across EdSharp, DbDuo, and other C#
+﻿// Say.cs (speech subsystem: Say + UIA notification support) -- portable, reusable across EdSharp, DbDuo, and other C#
 // projects. Say.sayForced dispatches JAWS COM -> NVDA controller client -> native UIA notification. attach(Form) once at startup. No app dependencies.
 // Namespace Homer is the shared toolkit namespace; reference it with
 // `using Homer;`. To reuse elsewhere, copy this file as-is.
 
-using Microsoft.VisualBasic.ApplicationServices;
 using System.Windows.Automation.Provider;
 using Microsoft.Win32;
 using System;
@@ -23,8 +22,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Windows.Forms;
-using Tektosyne.NetMail ;
-using Tektosyne.Win32Api;
 
 namespace Homer {
 
