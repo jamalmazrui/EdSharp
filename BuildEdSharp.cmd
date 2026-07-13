@@ -60,27 +60,7 @@ if /i "%~1"=="nobump" (
   echo Version: !ver! ^(nobump: keeping the current number^)
   echo Version: !ver! ^(nobump^) >> "!log!"
 ) else (
-  rem Increment the last dotted part.  A two-part version gains a third, because
-  rem 5.0 and 5.0.0 compare EQUAL and an existing install would not see it as newer.
-  set "p1=" & set "p2=" & set "p3=" & set "p4="
-  for /f "tokens=1-4 delims=." %%a in ("!ver!") do (
-    set "p1=%%a" & set "p2=%%b" & set "p3=%%c" & set "p4=%%d"
-  )
-  if defined p4 (
-    set /a p4=p4+1
-    set "new=!p1!.!p2!.!p3!.!p4!"
-  ) else if defined p3 (
-    set /a p3=p3+1
-    set "new=!p1!.!p2!.!p3!"
-  ) else if defined p2 (
-    set "new=!p1!.!p2!.1"
-  ) else (
-    set "new=!p1!.0.1"
-  )
-  > version.txt echo !new!
-  echo Version: !ver! -^> !new!
-  echo Version: !ver! -^> !new! >> "!log!"
-  set "ver=!new!"
+  call :takeNextVersion
 )
 
 rem ---- generate Version.cs from version.txt ----
@@ -203,3 +183,43 @@ echo.
 echo BUILD FAILED. Errors from %log%:
 type "!log!" | findstr /C:": error" /C:"error CS" /C:"error JS"
 popd & endlocal & exit /b 1
+
+:takeNextVersion
+rem ---------------------------------------------------------------------------
+rem Take the next version number: increment the last dotted part of !ver!.
+rem
+rem This makes NO network call.  An earlier version asked GitHub whether the number
+rem was already taken -- but gh has no timeout, so a slow or unreachable network hung
+rem the build with no message and no way to interrupt it.  A build script must never
+rem wait on the network.  tagRelease does the "already released" check instead: that
+rem is where a network call belongs, and where a stall is visible and interruptible.
+rem
+rem This runs as a subroutine rather than inside a parenthesised ( ) block, so each
+rem line is parsed on its own -- avoiding the block-parsing traps batch has inside ( ).
+rem ---------------------------------------------------------------------------
+set "p1=" & set "p2=" & set "p3=" & set "p4="
+set "new="
+for /f "tokens=1-4 delims=." %%a in ("!ver!") do (
+  set "p1=%%a" & set "p2=%%b" & set "p3=%%c" & set "p4=%%d"
+)
+if defined p4 (
+  set /a p4=p4+1
+  set "new=!p1!.!p2!.!p3!.!p4!"
+) else if defined p3 (
+  set /a p3=p3+1
+  set "new=!p1!.!p2!.!p3!"
+) else if defined p2 (
+  set "new=!p1!.!p2!.1"
+) else (
+  set "new=!p1!.0.1"
+)
+if not defined new (
+  echo ERROR: could not work out the next version from "!ver!".
+  echo ERROR: could not work out the next version from "!ver!". >> "!log!"
+  goto :eof
+)
+> version.txt echo !new!
+echo Version: !ver! -^> !new!
+echo Version: !ver! -^> !new! >> "!log!"
+set "ver=!new!"
+goto :eof
