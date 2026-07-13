@@ -3,18 +3,24 @@ rem ============================================================
 rem  tagRelease.cmd  -  Launcher for tagRelease.ps1.
 rem
 rem  Generic: drop tagRelease.cmd and tagRelease.ps1 into any repo
-rem  root (next to its single ProgramName_setup.exe and matching
-rem  ProgramName_setup.iss) and run this. The PowerShell script
-rem  discovers the program, version, and GitHub owner/repo itself.
+rem  root (e.g. C:\EdSharp, C:\FileDir, C:\DbDo) and run this. The
+rem  PowerShell script takes the app name from the directory name,
+rem  finds the matching <App>_setup.iss, handles the version number,
+rem  and publishes the GitHub release.
 rem
 rem  Invokes PowerShell with execution policy bypass for this single
 rem  invocation only (does not change the system policy), forwarding
-rem  any arguments. The PowerShell script writes a fresh
-rem  .\tagRelease.log on every run via Start-Transcript.
+rem  any arguments. A fresh .\tagRelease.log is written on every run.
 rem
 rem  Usage:
-rem    tagRelease.cmd                publishes; warns on a dirty tree
-rem    tagRelease.cmd -StrictTree    bails if the working tree is not clean
+rem    tagRelease.cmd                  the normal command; no flags needed.
+rem                                    Bumps the version only if the current one
+rem                                    was already released, so running it again
+rem                                    after a rebuild publishes that same version.
+rem    tagRelease.cmd -Version 5.1     set an explicit version
+rem    tagRelease.cmd -NoBump          never bump, even if already released
+rem    tagRelease.cmd -PrepareOnly     update the version files only, no release
+rem    tagRelease.cmd -SkipStaleCheck  publish even if the installer looks stale
 rem ============================================================
 
 setlocal

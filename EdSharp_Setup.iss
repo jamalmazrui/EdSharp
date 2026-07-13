@@ -12,9 +12,9 @@
 
 [Setup]
 AppName=EdSharp
-AppVersion=5.0
-AppVerName=EdSharp 5.0 beta
-VersionInfoVersion=5.0
+AppVersion=5.0.1
+AppVerName=EdSharp 5.0.1 beta
+VersionInfoVersion=5.0.1
 SetupIconFile=EdSharp.ico
 UninstallDisplayIcon={app}\EdSharp.exe
 AppPublisher=NonvisualDevelopment.org

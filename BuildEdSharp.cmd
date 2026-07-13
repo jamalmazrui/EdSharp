@@ -27,6 +27,33 @@ if not exist "KeyMap.cs" echo ERROR: KeyMap.cs not found.& popd & exit /b 1
 if not exist "EdSharp.js" echo ERROR: EdSharp.js not found.& popd & exit /b 1
 if not exist "EdSharp.manifest" echo ERROR: EdSharp.manifest not found.& popd & exit /b 1
 
+rem ---- version consistency check (keeps Elevate Version / F11 working) ----
+rem F11 compares the version compiled into EdSharp.exe (the "const string
+rem VersionString" line in EdSharp.cs) with the tag of the latest GitHub release,
+rem which tagRelease derives from AppVersion in EdSharp_Setup.iss. If those drift
+rem apart, F11 misreports: EdSharp.cs once said 5.0.0 while EdSharp_Setup.iss said
+rem 5.0, and 5.0.0 compares EQUAL to 5.0, so a new build was never seen as newer.
+rem tagRelease.ps1 keeps the two in step automatically; this check refuses to build
+rem a mismatched pair, so a stale version can never reach an installer.
+set "srcVer="
+set "issVer="
+for /f tokens^=2^ delims^=^" %%v in ('findstr /r /c:"VersionString" EdSharp.cs 2^>nul') do if not defined srcVer set "srcVer=%%v"
+if exist "EdSharp_Setup.iss" (
+  for /f "tokens=2 delims==" %%v in ('findstr /r /c:"^AppVersion=" EdSharp_Setup.iss 2^>nul') do if not defined issVer set "issVer=%%v"
+)
+if defined srcVer if defined issVer (
+  if /i not "!srcVer!"=="!issVer!" (
+    echo ERROR: version mismatch. EdSharp.cs VersionString=!srcVer! but EdSharp_Setup.iss AppVersion=!issVer!.
+    echo Run tagRelease.cmd -PrepareOnly to sync them, then rebuild.
+    echo Version mismatch: EdSharp.cs=!srcVer! EdSharp_Setup.iss=!issVer! >> "!log!"
+    popd & exit /b 1
+  )
+  echo Version: !srcVer! ^(EdSharp.cs and EdSharp_Setup.iss agree^)
+  echo Version: !srcVer! >> "!log!"
+) else (
+  echo NOTE: could not read both version numbers; skipping the version check.
+)
+
 rem ---- locate csc.exe: prefer Roslyn (latest C#), fall back to Framework ----
 set "csc="
 for %%p in (
