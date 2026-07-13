@@ -27,6 +27,25 @@ if not exist "KeyMap.cs" echo ERROR: KeyMap.cs not found.& popd & exit /b 1
 if not exist "EdSharp.js" echo ERROR: EdSharp.js not found.& popd & exit /b 1
 if not exist "EdSharp.manifest" echo ERROR: EdSharp.manifest not found.& popd & exit /b 1
 
+rem ---- assign the next version number (unless "nobump" was passed) ----
+rem The version MUST be settled before anything is compiled, because both the
+rem program (via Version.cs) and the installer (via Inno) bake it in.  Every build
+rem therefore takes a fresh, higher number, which guarantees the installer carries
+rem a version that has never been released -- so tagRelease only has to publish it,
+rem never to change it.  That is what keeps Elevate Version (F11) correct: the
+rem running program, the installer, and the release tag all report the same number.
+rem Pass "nobump" to recompile without taking a new number.
+if /i "%~1"=="nobump" (
+  echo Version: keeping the current number ^(nobump^).
+) else (
+  powershell -NoProfile -ExecutionPolicy Bypass -File "bumpVersion.ps1"
+  if errorlevel 1 (
+    echo ERROR: bumpVersion.ps1 failed.
+    echo ERROR: bumpVersion.ps1 failed. >> "!log!"
+    popd ^& exit /b 1
+  )
+)
+
 rem ---- version: generated from EdSharp_Setup.iss (the SINGLE source of truth) ----
 rem The version number lives in exactly ONE place: AppVersion in EdSharp_Setup.iss.
 rem This step reads it and generates Version.cs, which defines BuildVersion.Version;
