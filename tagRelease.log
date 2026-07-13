@@ -1,12 +1,12 @@
 ﻿**********************
 Windows PowerShell transcript start
-Start time: 20260713012735
+Start time: 20260713013637
 Username: JM-LAPTOP\Jamal
 RunAs User: JM-LAPTOP\Jamal
 Configuration Name: 
 Machine: JM-LAPTOP (Microsoft Windows NT 10.0.26200.0)
-Host Application: powershell -NoProfile -ExecutionPolicy Bypass -File C:\EdSharp\tagRelease.ps1
-Process ID: 18612
+Host Application: powershell -NoProfile -ExecutionPolicy Bypass -File c:\bin\tagRelease.ps1
+Process ID: 33592
 PSVersion: 5.1.26100.8737
 PSEdition: Desktop
 PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.8737
@@ -17,7 +17,7 @@ PSRemotingProtocolVersion: 2.3
 SerializationVersion: 1.1.0.1
 **********************
 === tagRelease.ps1 ===
-Started: 2026-07-13 01:27:35
+Started: 2026-07-13 01:36:37
 Log:     C:\EdSharp\tagRelease.log
 Repo:    C:\EdSharp
 App:     EdSharp  (from the directory name)
@@ -34,37 +34,32 @@ GitHub repo:  JamalMazrui/EdSharp  (from the origin remote)
 
 --- Version ---
 Current version in EdSharp_Setup.iss: 5.0.2
-gh.cmd : release not found
-At C:\EdSharp\tagRelease.ps1:278 char:9
-+         & gh release view $sTag 2>$null | Out-Null
-+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (release not found:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
 v5.0.2 has not been released yet, so it is published as-is (no bump).
 Tag:       v5.0.2
-Synced VersionString in EdSharp.cs to 5.0.2
+EdSharp.cs already reports 5.0.2; left untouched.
 
 --- Asset check ---
 Asset:   EdSharp_Setup.exe
   size:  34,737,415 bytes
   mtime: 7/13/2026 1:24:52 AM
+  built version: 5.0.1                 (from the installer's version resource)
 
 === REBUILD NEEDED -- nothing was published. ===
 
-EdSharp_Setup.exe is older than the version files, so it does not yet contain
-version 5.0.2.  Publishing it would tag a release whose program reports the
-wrong version, and F11 would misbehave for your users.
+EdSharp_Setup.exe was built from version 5.0.1               , not 5.0.2.
+Publishing it would tag a release whose program reports the wrong version,
+and F11 would misbehave for your users.
 
-The version files are now set to 5.0.2.  Do this:
+The version files are set to 5.0.2.  Do this:
 
   1. BuildEdSharp.cmd
   2. Compile EdSharp_Setup.iss in Inno Setup
-  3. .\tagRelease.cmd            (no flags needed)
+  3. tagRelease                  (no flags needed)
 
 Step 3 will publish 5.0.2 as-is: it does not bump again, because
 v5.0.2 has not been released yet.
 
 **********************
 Windows PowerShell transcript end
-End time: 20260713012736
+End time: 20260713013638
 **********************
