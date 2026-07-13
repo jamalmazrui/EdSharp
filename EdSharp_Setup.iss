@@ -10,11 +10,23 @@
 ; been removed. Native code generation via ngen is kept; on ARM64 it targets
 ; the ARM64 framework, and HasNgen skips it gracefully if ngen is absent.
 
+; ---- Version -----------------------------------------------------------------
+; The version number is NOT stored in this script.  It lives in version.txt, one
+; line, which Build<App>.cmd increments on every build.  Inno reads it here, and
+; Build<App>.cmd also generates Version.cs from it, so the program, the installer,
+; and the release tag always report the same number -- which is what Elevate
+; Version (F11) compares.  Because no version literal appears in this file, a
+; stale copy of it can never rewind the version.
+#define VerFile FileOpen(AddBackslash(SourcePath) + "version.txt")
+#define AppVersion Trim(FileRead(VerFile))
+#expr FileClose(VerFile)
+#undef VerFile
+
 [Setup]
 AppName=EdSharp
-AppVersion=5.0.4
-AppVerName=EdSharp 5.0.4 beta
-VersionInfoVersion=5.0.4
+AppVersion={#AppVersion}
+AppVerName=EdSharp {#AppVersion} beta
+VersionInfoVersion={#AppVersion}
 SetupIconFile=EdSharp.ico
 UninstallDisplayIcon={app}\EdSharp.exe
 AppPublisher=NonvisualDevelopment.org
@@ -164,7 +176,5 @@ function HasNgen(): boolean;
 begin
   result := FileExists(ExpandConstant('{code:NgenExe}'));
 end;
-
-
 
 

@@ -5609,9 +5609,17 @@ listLinks.Add(new string[] {aResults[i], ""});
 
 List<string> listFiles = new List<string>();
 string sRef;
+// Name each link the way it will actually be saved (Homer.Web.suggestedName):
+// the server-recommended name from Content-Disposition, with an extension
+// inferred from the MIME type when the URL carries none.  That makes the
+// extension filter below work for links that end in a query rather than a file
+// name.  A URL that already ends in a name with an extension costs no request.
+Dictionary<string, string> dNames = new Dictionary<string, string>();
 foreach (string[] aLink in listLinks) {
 sRef = aLink[0];
-sFile = Util.GetFileFromUri(sRef);
+sFile = Homer.Web.suggestedName(sRef);
+if (sFile.Length == 0) sFile = Util.GetFileFromUri(sRef);
+dNames[sRef] = sFile;
 listFiles.Add(sFile);
 }
 
@@ -5627,7 +5635,7 @@ List<string> listItems = new List<string>();
 List<string> listRefs = new List<string>();
 foreach (string[] aLink in listLinks) {
 sRef = aLink[0];
-sFile = Util.GetFileFromUri(sRef);
+sFile = dNames.ContainsKey(sRef) ? dNames[sRef] : Util.GetFileFromUri(sRef);
 string sExt = Path.GetExtension(sFile).TrimStart('.').ToLower();
 //if (Array.IndexOf(aResults, sExt) == -1) continue;
 if (Array.IndexOf(aResults, sFile) == -1) continue;

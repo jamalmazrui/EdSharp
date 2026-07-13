@@ -255,5 +255,151 @@ if (!File.Exists(sTry)) return sTry;
 return sPath;
 } // uniquePath method
 
+public static bool downloadTo(string sUrl, string sFile, string sUserName, string sPassword) {
+// Download sUrl to the exact path sFile, over HTTP, HTTPS, or FTP.  This replaces
+// Microsoft.VisualBasic.Devices.Network.DownloadFile, so no Visual Basic runtime
+// is needed and every app in the suite transfers files the same way.  Credentials
+// are optional: pass "" for anonymous access.  Returns true on success.
+try {
+configure();
+WebRequest request = WebRequest.Create(sUrl);
+if (sUserName != null && sUserName.Length > 0) request.Credentials = new NetworkCredential(sUserName, sPassword == null ? "" : sPassword);
+FtpWebRequest ftpRequest = request as FtpWebRequest;
+if (ftpRequest != null) {
+ftpRequest.Method = WebRequestMethods.Ftp.DownloadFile;
+ftpRequest.UseBinary = true;
+ftpRequest.UsePassive = true;
+ftpRequest.KeepAlive = false;
+ftpRequest.Timeout = 60000;
+ftpRequest.ReadWriteTimeout = 120000;
+}
+else {
+HttpWebRequest httpRequest = request as HttpWebRequest;
+if (httpRequest != null) {
+httpRequest.UserAgent = userAgent();
+httpRequest.Accept = "*/*";
+httpRequest.AllowAutoRedirect = true;
+httpRequest.MaximumAutomaticRedirections = 16;
+httpRequest.Timeout = 60000;
+httpRequest.ReadWriteTimeout = 120000;
+httpRequest.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+}
+}
+using (WebResponse response = request.GetResponse())
+using (Stream streamIn = response.GetResponseStream())
+using (FileStream streamOut = new FileStream(sFile, FileMode.Create, FileAccess.Write)) {
+byte[] abBuffer = new byte[65536];
+int iRead;
+while ((iRead = streamIn.Read(abBuffer, 0, abBuffer.Length)) > 0) streamOut.Write(abBuffer, 0, iRead);
+}
+return true;
+}
+catch { return false; }
+} // downloadTo method
+
+public static bool uploadFrom(string sFile, string sUrl, string sUserName, string sPassword) {
+// Upload sFile to sUrl over FTP (or HTTP PUT for an http/https address).  This
+// replaces Microsoft.VisualBasic.Devices.Network.UploadFile.  Returns true on
+// success.
+try {
+configure();
+if (!File.Exists(sFile)) return false;
+WebRequest request = WebRequest.Create(sUrl);
+if (sUserName != null && sUserName.Length > 0) request.Credentials = new NetworkCredential(sUserName, sPassword == null ? "" : sPassword);
+FtpWebRequest ftpRequest = request as FtpWebRequest;
+if (ftpRequest != null) {
+ftpRequest.Method = WebRequestMethods.Ftp.UploadFile;
+ftpRequest.UseBinary = true;
+ftpRequest.UsePassive = true;
+ftpRequest.KeepAlive = false;
+ftpRequest.Timeout = 60000;
+ftpRequest.ReadWriteTimeout = 120000;
+ftpRequest.ContentLength = new FileInfo(sFile).Length;
+}
+else {
+request.Method = "PUT";
+HttpWebRequest httpRequest = request as HttpWebRequest;
+if (httpRequest != null) {
+httpRequest.UserAgent = userAgent();
+httpRequest.Timeout = 60000;
+httpRequest.ReadWriteTimeout = 120000;
+}
+}
+using (FileStream streamIn = new FileStream(sFile, FileMode.Open, FileAccess.Read))
+using (Stream streamOut = request.GetRequestStream()) {
+byte[] abBuffer = new byte[65536];
+int iRead;
+while ((iRead = streamIn.Read(abBuffer, 0, abBuffer.Length)) > 0) streamOut.Write(abBuffer, 0, iRead);
+}
+using (WebResponse response = request.GetResponse()) { }
+return true;
+}
+catch { return false; }
+} // uploadFrom method
+
+public static string nameFromUrl(string sUrl) {
+// The file name a URL implies, before any network call: the last path segment,
+// percent-decoded.  Returns "" when the URL carries no usable name.
+try {
+Uri uri = new Uri(sUrl);
+string sName = Path.GetFileName(uri.LocalPath);
+if (sName.Length == 0) return "";
+try { sName = Uri.UnescapeDataString(sName); } catch {}
+return sName.Trim();
+}
+catch { return ""; }
+} // nameFromUrl method
+
+public static string suggestedName(string sUrl) {
+// The name a download would be given on disk, worked out WITHOUT downloading it.
+// This is the durl.py rule, and it is what lets the caller show a target file name
+// beside each link, and let the user filter the list by extension:
+//
+//   1. If the URL already ends in a file name with an extension, use it.  No
+//      network call is made, so a page of ordinary links costs nothing.
+//   2. Otherwise ask the server with a HEAD request: Content-Disposition gives the
+//      name the server recommends, and failing that the MIME type in Content-Type
+//      supplies the extension.  This is what rescues links like
+//      "example.com/download?id=42", which carry no extension at all.
+//   3. If the server will not say, fall back to the bare URL name.
+//
+// The result is sanitized but NOT made unique: uniqueness is applied at save time,
+// against the actual target folder.
+string sName = nameFromUrl(sUrl);
+if (sName.Length > 0 && Path.GetExtension(sName).Length > 1) return sanitizeName(sName);
+
+try {
+configure();
+HttpWebRequest request = makeRequest(sUrl, "HEAD");
+using (HttpWebResponse response = (HttpWebResponse) request.GetResponse()) {
+string sHeaderName = fileFromDisposition(response.Headers["Content-Disposition"]);
+if (sHeaderName.Length > 0) return sanitizeName(sHeaderName);
+if (sName.Length == 0) {
+try { sName = Path.GetFileName(response.ResponseUri.LocalPath); } catch {}
+}
+if (sName.Length == 0) sName = "download";
+if (Path.GetExtension(sName).Length <= 1) {
+string sExt = mimeToExt(response.ContentType);
+if (sExt.Length > 0) sName = sName + "." + sExt;
+}
+return sanitizeName(sName);
+}
+}
+catch { }
+
+if (sName.Length == 0) sName = "download";
+return sanitizeName(sName);
+} // suggestedName method
+
+public static string extensionOf(string sUrl) {
+// The extension a download would end up with, lower case and without the dot, or
+// "" if it cannot be determined.  Callers use this to offer the user a choice of
+// extensions to download, the way durl.py filters links by type.
+string sName = suggestedName(sUrl);
+string sExt = Path.GetExtension(sName);
+if (sExt.Length <= 1) return "";
+return sExt.TrimStart('.').ToLower();
+} // extensionOf method
+
 } // Web class
 } // namespace Homer
