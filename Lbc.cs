@@ -408,8 +408,9 @@ public static class HelpDialog
     {
         using (Form dlg = new LbcForm())
         {
+            // The caption IS the accessible name of a Form; setting AccessibleName
+            // to the same text makes a screen reader announce the title twice.
             dlg.Text = sTitle;
-            dlg.AccessibleName = sTitle;
             dlg.StartPosition = FormStartPosition.CenterParent;
             dlg.ClientSize = new Size(720, 540);
             dlg.MinimumSize = new Size(400, 300);
@@ -469,8 +470,9 @@ public static class HelpDialog
         int iVerdict = 0;
         using (Form dlg = new LbcForm())
         {
+            // The caption IS the accessible name of a Form; setting AccessibleName
+            // to the same text makes a screen reader announce the title twice.
             dlg.Text = sTitle;
-            dlg.AccessibleName = sTitle;
             dlg.StartPosition = FormStartPosition.CenterParent;
             dlg.ClientSize = new Size(720, 540);
             dlg.MinimumSize = new Size(400, 300);
@@ -636,8 +638,12 @@ public class LbcDialog : IDisposable
     {
         owner = ownerWindow;
         frm = new LbcForm();
+        // The caption IS the accessible name of a Form.  Setting AccessibleName to
+        // the same string made the reader speak the dialog title twice when the
+        // dialog opened (once for the window caption, once for the name).  A screen
+        // reader announces the title of a newly activated window by itself, so the
+        // caption alone is both necessary and sufficient.
         frm.Text = sTitle ?? "";
-        frm.AccessibleName = sTitle ?? "";
         frm.StartPosition = FormStartPosition.CenterParent;
         frm.FormBorderStyle = FormBorderStyle.Sizable;
         frm.MaximizeBox = false;

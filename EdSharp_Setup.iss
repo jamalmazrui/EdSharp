@@ -135,6 +135,11 @@ Filename: "{app}\EdSharp.nvda-addon"; Description: "Install NVDA add-on (NVDA mu
 ; Pre-generate native images for faster startup (64-bit ngen).
 Filename: "{code:NgenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: HasNgen
 Filename: "{code:NgenExe}"; Parameters: "install ""{app}\EdSharp.exe"" /AppBase:""{app}"" /nologo /silent"; Flags: runhidden; Check: HasNgen
+; EdSharp.dll (the JScript .NET companion) is loaded late-bound at run time, so
+; it is NOT part of EdSharp.exe's static dependency closure and ngen install of
+; the exe does not cover it.  Pre-compile it too, so the first use of a scripting
+; feature does not pay a JIT cost.
+Filename: "{code:NgenExe}"; Parameters: "install ""{app}\EdSharp.dll"" /AppBase:""{app}"" /nologo /silent"; Flags: runhidden; Check: HasNgen
 
 [UninstallRun]
 Filename: "{code:NgenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: HasNgen

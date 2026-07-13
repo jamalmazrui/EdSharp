@@ -25,7 +25,7 @@ GNU Lesser General Public License (LGPL)\
 - [Development Notes](#development-notes)
 
 ## Description
-EdSharp is a full featured text editor that is friendly, powerful, and open source.  It uses a standard Windows interface for an application that supports multiple document windows.  Though intended for sighted users as well, it seeks to enhance productivity for users of the JAWS, NVDA, Window-Eyes, or System Access screen readers by automatically verbalizing relevant information.  These speech messages supplement default speech heuristics, providing confirmation or results of commands without the need for manually interrogating the screen.  If a screen reader is not detected in memory, EdSharp uses the default SAPI voice, if available, which may be configured via the Speech applet in Control Panel.
+EdSharp is a full featured text editor that is friendly, powerful, and open source.  It uses a standard Windows interface for an application that supports multiple document windows.  Though intended for sighted users as well, it seeks to enhance productivity for users of the JAWS, NVDA, and Narrator screen readers by automatically verbalizing relevant information.  These speech messages supplement default speech heuristics, providing confirmation or results of commands without the need for manually interrogating the screen.  Speech is delivered to JAWS or NVDA directly through the screen reader's own interface; otherwise EdSharp raises a standard accessibility notification, which Narrator and other compatible screen readers announce.
 
 Written in the C# (pronounced C Sharp) language, EdSharp implements the "Homer editor interface," which originally evolved with an editor called TextPal.  The same interface was also implemented in the package of JAWS scripts and tools called HomerKit.  EdSharp 5.0 is built AnyCPU on the .NET Framework 4.8, so it runs as a native 64-bit application on both Intel/AMD (x64) and ARM (ARM64) editions of Windows.  The .NET Framework 4.8 is built into Windows 10 and 11 and is a free download from Microsoft for older systems.
 
@@ -33,7 +33,7 @@ Almost every EdSharp command may be done through a mnemonic keystroke, as well a
 
 ## Installation
 The installation program for EdSharp is called EdSharp_Setup.exe.  When executed, it prompts for a program folder, the default being\
-`C:\Program Files (x86)\EdSharp`
+`C:\Program Files\EdSharp`
 The installer also creates a program group for EdSharp on the Windows start menu, containing choices to launch EdSharp, read Documentation, or uninstall.  Additional choices either set or clear an association between EdSharp and files with a particular extension, such as .txt or ini.  Binary formats such as `pdf or .pptx may also be associated with EdSharp, thus permitting automatic conversion to text when opened via Windows Explorer.
 
 After installing EdSharp, the setup program presents a list of several checkboxes.  One checkbox offers an optional set of JAWS scripts to fine tune the EdSharp speech interface in a few ways that could not be accomplished otherwise.  If the scripts were installed and you would later prefer default JAWS behavior instead, you can disable the scripts via the "Manage Application Settings" dialog from the "Options menu of JAWS.  
@@ -140,7 +140,7 @@ EdSharp bundles the `2htm` utility (in `Convert\2htm`) and uses it, through the 
 The short path of a file or directory is used unless a variable includes a Long suffix, e.g., %ProgDirLong% or %SourceLong%.  Most utilities require long file names to be surrounded by quote marks, e.g., "%SourceLong%" syntax.  For technical reasons, if quotes are used within the command line, then a pair of quotes should also be added around it.  Variables for the Target file are like that of the source.
 
 External converters distributed with EdSharp are stored in the Convert subfolder of the EdSharp program folder, e.g., in (default installation)\
-`C:\Program Files (x86)\EdSharp\Convert`
+`C:\Program Files\EdSharp\Convert`
 
 A text format called Markdown is useful for various conversions, explained in the [Markdown article on Wikipedia](<http://en.wikipedia.org/wiki/Markdown>).
 
@@ -257,7 +257,7 @@ Then type %Signature% in your document where you want that to appear, and use th
 
 ## Working with Structured Text
 Several commands work with a structured text document consisting of a table of contents that lists topics at the beginning of the document, followed by a section for each topic in the body.  Each topic in the table of contents is a line with the same text as the heading of its corresponding section.  A divider sequence of characters -- a line of 10 dashes followed by a form feed and line break, separates each section.  The next line after such a section break is the topic heading of the next section.  For an example of this structure, examine the EdSharp.txt file in the EdSharp program folder.  The default location is\
-`C:\Program Files (x86)\EdSharp\EdSharp.txt`
+`C:\Program Files\EdSharp\EdSharp.txt`
 
 Press Control+PageDown to go to the next section and read its heading, or Control+PageUp to go to the previous one.  When the cursor is on a topic in the table of contents, press F6 to go to its corresponding section in the body.  Press Shift+F6 to go from a section in the body to its topic in the table of contents.  Press Control+F6 to search for a topic based on text within its heading.   The search starts at the beginning of the document.  Press Alt+F6 to search again for the next match.
 
@@ -785,8 +785,7 @@ I thank Jaffer for contributing C++ and PHP snippets.
 ### Third Party Utilities
 PDF conversions use the open source [Xpdf](<http://www.foolabs.com/xpdf/home.html>) software.
 
-The GetText utility is from [Kryltech](<http://www.kryltech.com>)
-with a license in the file GetText.txt (in the EdSharp\Convert\GetText folder).
+Text extraction from document formats uses the open source [2htm](<https://github.com/JamalMazrui/2htm>) utility, bundled in the EdSharp\Convert\2htm folder with its license.  Markdown and other lightweight markup are converted with [Pandoc](<https://pandoc.org>).
 
 I welcome feedback, which helps EdSharp improve over time.  When reporting a problem, the more specifics the better, including steps to reproduce it, if possible.
 

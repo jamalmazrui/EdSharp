@@ -198,13 +198,13 @@ Text</a></li>
 and open source. It uses a standard Windows interface for an application
 that supports multiple document windows. Though intended for sighted
 users as well, it seeks to enhance productivity for users of the JAWS,
-NVDA, Window-Eyes, or System Access screen readers by automatically
-verbalizing relevant information. These speech messages supplement
-default speech heuristics, providing confirmation or results of commands
-without the need for manually interrogating the screen. If a screen
-reader is not detected in memory, EdSharp uses the default SAPI voice,
-if available, which may be configured via the Speech applet in Control
-Panel.</p>
+NVDA, and Narrator screen readers by automatically verbalizing relevant
+information. These speech messages supplement default speech heuristics,
+providing confirmation or results of commands without the need for
+manually interrogating the screen. Speech is delivered to JAWS or NVDA
+directly through the screen reader's own interface; otherwise EdSharp
+raises a standard accessibility notification, which Narrator and other
+compatible screen readers announce.</p>
 <p>Written in the C# (pronounced C Sharp) language, EdSharp implements
 the "Homer editor interface," which originally evolved with an editor
 called TextPal. The same interface was also implemented in the package
@@ -222,7 +222,7 @@ interface for those users.</p>
 <h2 id="installation">Installation</h2>
 <p>The installation program for EdSharp is called EdSharp_Setup.exe.
 When executed, it prompts for a program folder, the default being<br />
-<code>C:\Program Files (x86)\EdSharp</code> The installer also creates a
+<code>C:\Program Files\EdSharp</code> The installer also creates a
 program group for EdSharp on the Windows start menu, containing choices
 to launch EdSharp, read Documentation, or uninstall. Additional choices
 either set or clear an association between EdSharp and files with a
@@ -500,7 +500,7 @@ Variables for the Target file are like that of the source.</p>
 <p>External converters distributed with EdSharp are stored in the
 Convert subfolder of the EdSharp program folder, e.g., in (default
 installation)<br />
-<code>C:\Program Files (x86)\EdSharp\Convert</code></p>
+<code>C:\Program Files\EdSharp\Convert</code></p>
 <p>A text format called Markdown is useful for various conversions,
 explained in the <a
 href="http://en.wikipedia.org/wiki/Markdown">Markdown article on
@@ -743,7 +743,7 @@ dashes followed by a form feed and line break, separates each section.
 The next line after such a section break is the topic heading of the
 next section. For an example of this structure, examine the EdSharp.txt
 file in the EdSharp program folder. The default location is<br />
-<code>C:\Program Files (x86)\EdSharp\EdSharp.txt</code></p>
+<code>C:\Program Files\EdSharp\EdSharp.txt</code></p>
 <p>Press Control+PageDown to go to the next section and read its
 heading, or Control+PageUp to go to the previous one. When the cursor is
 on a topic in the table of contents, press F6 to go to its corresponding
@@ -1662,9 +1662,11 @@ may be installed via Settings Packager.</p>
 <h3 id="third-party-utilities">Third Party Utilities</h3>
 <p>PDF conversions use the open source <a
 href="http://www.foolabs.com/xpdf/home.html">Xpdf</a> software.</p>
-<p>The GetText utility is from <a
-href="http://www.kryltech.com">Kryltech</a> with a license in the file
-GetText.txt (in the EdSharp\Convert\GetText folder).</p>
+<p>Text extraction from document formats uses the open source <a
+href="https://github.com/JamalMazrui/2htm">2htm</a> utility, bundled in
+the EdSharp\Convert\2htm folder with its license. Markdown and other
+lightweight markup are converted with <a
+href="https://pandoc.org">Pandoc</a>.</p>
 <p>I welcome feedback, which helps EdSharp improve over time. When
 reporting a problem, the more specifics the better, including steps to
 reproduce it, if possible.</p>

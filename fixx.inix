@@ -1,0 +1,31 @@
+﻿; fixx.inix -- Dean's transform job, corrected.
+;
+; Two notes on what changed:
+;
+; 1. The key names are Find, Replace, Options, Extract, Divider.  Lower case
+;    (find=, replace=) now works too, but these are the canonical spellings.
+;
+; 2. A leading space in a Replace value is easy to lose, because the value can be
+;    trimmed when the job is read.  Replace values are unescaped, so write a
+;    leading space as \x20 and it always survives.  That is the only change to
+;    the expressions themselves.
+;
+; Remember: the document you have OPEN when you run Transform Files (Alt+=)
+; must contain the LIST of files to transform, one full path per line -- for
+; example a single line reading
+;   C:\Users\Dean\Documents\watermelon snow.txt
+; The open document is not itself the file that gets transformed.
+;
+; Run it on a COPY first, and use Test mode to see the match counts before Run.
+
+[print page numbers]
+Find=\n\-{5,}
+Replace=\x20x
+
+[braille page indicators]
+Find=(\s{2,})([0-9a-eptx]+)\n
+Replace=
+
+[linebreak]
+Find=\n([^\n\s])
+Replace=\x20$1

@@ -71,7 +71,13 @@ public static class Say
         lbl.Text = "";
         lbl.AccessibleName = "";
         lbl.AccessibleRole = AccessibleRole.StaticText;
-        lbl.LiveSetting = System.Windows.Forms.Automation.AutomationLiveSetting.Assertive;
+        // Live region turned OFF.  The announcement is made solely by the UIA
+        // Notification event (see sayViaUia).  Leaving this Assertive meant any
+        // change to the label's Text raised LiveRegionChanged as well, so one
+        // message produced two UIA events and a UIA-listening reader spoke it
+        // twice.  The label is kept only as the element the notification is
+        // raised against.
+        lbl.LiveSetting = System.Windows.Forms.Automation.AutomationLiveSetting.Off;
         frm.Controls.Add(lbl);
         // Force the handle to be created so the AccessibleObject
         // is wired up before the first say() call. Without this,
@@ -392,12 +398,9 @@ public static class Say
     }
 
     // ---- Narrator / generic UIA path ----
-    // Update the hidden Label's Text (auto-raises
-    // LiveRegionChanged because LiveSetting=Assertive) and also
-    // fire the UIA Notification event by reflection. Narrator
-    // listens to both event families; the Label path is the
-    // documented "live region" approach, the Notification path
-    // is the explicit "announce this now" approach.
+    // Fire the UIA Notification event, and ONLY that event.  This is the path
+    // used when neither JAWS nor NVDA is running, so it must not double-speak:
+    // exactly one announcement is raised per message.
     private static void sayViaUia(string sText)
     {
         if (lbl == null) return;
@@ -409,9 +412,14 @@ public static class Say
                 lbl.Invoke(new Action<string>(sayViaUia), new object[] { sText });
                 return;
             }
-            if (lbl.Text == sText) lbl.Text = "";
-            lbl.Text = sText;
-            lbl.AccessibleName = sText;
+            // Raise the UIA Notification event ONLY.  Writing the label's Text used
+            // to be the announcement mechanism, but the label is an ASSERTIVE live
+            // region, so that write also raises LiveRegionChanged: two UIA events
+            // for one message, which a UIA-listening reader speaks TWICE.  The
+            // native UIA Notification reaches Narrator (and any other UIA reader) on
+            // its own, so the live-region write is gone.  The label itself stays --
+            // it is the element the notification is raised against -- but its text is
+            // never changed now, so it raises no event of its own.
             raiseUiaNotification(sText);
         }
         catch { }

@@ -58,7 +58,6 @@ public static List<string> TempFiles = new List<string>();
 //public static object Word = null;
 public static object Boo = null;
 public static object JAWS = null;
-public static object Wineyes = null;
 public static bool WordCreated = false;
 public static bool ExtraSpeech = true;
 public static bool IndentChange = true;
@@ -140,7 +139,6 @@ COM.WordExit();
 }
 if (App.Boo != null) COM.Release(ref App.Boo);
 if (App.JAWS != null) COM.Release(ref App.JAWS);
-if (App.Wineyes != null) COM.Release(ref App.Wineyes);
 
 if (System.IO.File.Exists(App.IndentModeFile)) System.IO.File.Delete(App.IndentModeFile);
 foreach (string sFile in App.TempFiles) if (File.Exists(sFile)) File.Delete(sFile);
@@ -626,7 +624,13 @@ const int WM_DRAWCLIPBOARD = 0x308;
 //if (m.Msg == 776) {
 switch (m.Msg) {
 case WM_DRAWCLIPBOARD :
-if ((int) this.NextClipboardViewer > 0) Win32.SendMessage(this.NextClipboardViewer, m.Msg, (int) m.LParam, (int) m.WParam);
+// Pass the notification along the clipboard-viewer chain.  Handles are
+// pointer-sized: comparing or passing them as int truncates on a 64-bit build,
+// and wParam/lParam were also being passed in the wrong order.  Both are fixed
+// here.  The whole body is guarded, because an exception thrown inside a window
+// procedure is fatal: that is how a clipboard hiccup crashed EdSharp.
+try {
+if (this.NextClipboardViewer != IntPtr.Zero) Win32.SendMessagePtr(this.NextClipboardViewer, m.Msg, m.WParam, m.LParam);
 
 if (this.AppendFromClipboard == -1) {
 this.AppendFromClipboard = 1;
@@ -657,11 +661,24 @@ rtb.Text = sText;
 rtb.Index = rtb.Text.Length - 1;
 } // sClipboard.Length
 } // this.AppendFromClipboard
+}
+catch (Exception) {
+// Never let a clipboard problem take the program down.  The clipboard is a
+// shared resource: another application can hold it locked, and content copied
+// from a browser can fail to convert to text.  Skipping one clip is harmless;
+// crashing is not.
+}
 break;
 case WM_CHANGECBCHAIN :
+try {
+// Same pointer-sized handling here.  This message rebuilds the viewer chain, so
+// truncated handles or swapped parameters corrupt the chain for every viewer --
+// which is how a crash could surface later, on an unrelated copy.
 IntPtr hNextClipboardViewer = m.WParam;
 if (this.NextClipboardViewer == hNextClipboardViewer) this.NextClipboardViewer = m.LParam;
-else if ((int) this.NextClipboardViewer > 0) Win32.SendMessage(hNextClipboardViewer, m.Msg, (int) m.LParam, (int) m.WParam);
+else if (this.NextClipboardViewer != IntPtr.Zero) Win32.SendMessagePtr(this.NextClipboardViewer, m.Msg, m.WParam, m.LParam);
+}
+catch (Exception) { }
 break;
 } // switch msg
 } // WndProc event handler
@@ -813,7 +830,7 @@ public ToolStripMenuItem menuEdit, menuEditSelectAll, menuEditUnselectAll, menuE
 public ToolStripMenuItem menuDelete, menuDeleteReplaceRegular, menuDeleteReplaceWithRegExp, menuDeleteHardLine, menuDeleteParagraph, menuDeleteLine, menuDeleteRight, menuDeleteLeft, menuDeleteDown, menuDeleteUp, menuDeleteFile, menuDeleteTrimBlanks;
 public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateNextBlock, menuNavigatePriorBlock, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateSearchForTopicAgain, menuNavigateGoToStartOfSelection;
 public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles, menuQueryFont;
-public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload, menuMiscWebClientUtilities;
+public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
 public ToolStripMenuItem menuWindow, menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
 public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
 public StatusStrip statusBar;
@@ -1043,8 +1060,7 @@ menuMiscExplorerFolder = CreateMenuItem("Explorer Folder", "Alt+Oem5", menuItem_
 menuMiscCommandPrompt = CreateMenuItem("Command Prompt", "Control+Oem5", menuItem_Click, "frame speak");
 menuMiscBurnToCD = CreateMenuItem("Burn to CD", "Alt+Shift+B", menuItem_Click, "child speak");
 menuMiscWebDownload = CreateMenuItem("Web Download", "Alt+Shift+W", menuItem_Click, "frame speak");
-menuMiscWebClientUtilities = CreateMenuItem("Web Client Utilities", "Alt+Shift+Space", menuItem_Click, "frame speak");
-menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload, menuMiscWebClientUtilities});
+menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload});
 //Dialog.Show("Misc.", menuMisc.DropDownItems.Count);
 
 menuWindow = CreateMenu("&Window");
@@ -1541,6 +1557,23 @@ App.WriteData("Job", sTransformFile);
 
 string sJobBody = Util.File2String(sTransformFile);
 string[] aJobLines = sJobBody.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+
+// Accept the key names in any letter case, so "find=" works as well as "Find=".
+// Lower case reads naturally and matches how the keys are often typed, but the
+// codec matches names exactly, so canonicalize them here before parsing.
+string[] aJobKeys = {"Find", "Replace", "Options", "Extract", "Divider"};
+for (int iLine = 0; iLine < aJobLines.Length; iLine++) {
+string sJobLine = aJobLines[iLine];
+int iEquals = sJobLine.IndexOf('=');
+if (iEquals <= 0) continue;
+string sKey = sJobLine.Substring(0, iEquals).Trim();
+foreach (string sJobKey in aJobKeys) {
+if (String.Compare(sKey, sJobKey, true) != 0) continue;
+aJobLines[iLine] = sJobKey + sJobLine.Substring(iEquals);
+break;
+}
+}
+
 List<InixCodec.Section> lsAll = InixCodec.parseLines(aJobLines);
 List<InixCodec.Section> lsTasks = new List<InixCodec.Section>();
 foreach (InixCodec.Section section in lsAll) {
@@ -1565,13 +1598,23 @@ string sExtractText = "";
 string sClipboardDivider = "\f\n";
 int iExtractTotal = 0;
 
+int iFileCount = 0;
 foreach (string sSourceLine in aSourceLines) {
 string sSourceFile = sSourceLine.Trim();
 if (sSourceFile.Length == 0) continue;
-string sSourceDir = Path.GetDirectoryName(sSourceFile);
+// A line that is not a usable path is skipped rather than throwing.  The current
+// document is expected to hold a list of files, but if it holds ordinary text
+// instead, Path.GetDirectoryName would raise an exception on the first line
+// containing a character that cannot appear in a path.
+string sSourceDir;
+try {
+sSourceDir = Path.GetDirectoryName(sSourceFile);
 if (sSourceDir.Length > 0 && Directory.Exists(sSourceDir)) sDir = sSourceDir;
 else sSourceFile = Path.Combine(sDir, Path.GetFileName(sSourceFile));
+}
+catch (Exception) { continue; }
 if (!File.Exists(sSourceFile)) continue;
+iFileCount++;
 
 AddMessage(Path.GetFileName(sSourceFile));
 Encoding en = App.Frame.Child.GetYieldEncoding();
@@ -1627,6 +1670,16 @@ if (bApply && bChanged) {
 if (bWasCrlf) sSourceBody = sSourceBody.Replace("\n", "\r\n");
 Util.String2File(sSourceBody, sSourceFile, ref en);
 }
+}
+
+// Nothing happened because no file was found to work on.  Say so plainly: the
+// document that is open supplies the LIST of files to transform, one path per
+// line -- it is not itself the file being transformed.  Silently doing nothing
+// is what makes this look broken.
+if (iFileCount == 0) {
+Dialog.Show("Transform Files", "No files were transformed.\n\nThe document that is open should contain the list of files to transform, one full path per line.  It is not itself the file that gets transformed.\n\nTo transform a single file, open a new document, type or paste that file's full path on the first line, and run Transform Files from there.");
+App.CaptureOutput = false;
+return;
 }
 
 if (sExtractText.Length > 0) {
@@ -5624,10 +5677,6 @@ else AddMessage("Could not download " + Path.GetFileName(sFile));
 }
 AddMessage("Done", true);
 }
-if (menuItem == menuMiscWebClientUtilities) {
-App.Frame.WebClientUtilities();
-}
-
 if (menuItem == menuWindowNext) {
 NextWindow();
 }
@@ -7101,55 +7150,6 @@ Dialog.Show("Error", ex.Message);
 return;
 }
 } // CommandPrompt method
-
-public void WebClientUtilities() {
-
-bool bSort;
-int iCount, iIndex;
-string sCommand, sExe, sDir, sFile, sName, sValue, sBase, sTitle, sInputFile, sOutputFile, sCodeFile;
-
-sDir = Path.Combine(App.ProgramDir, "WebClient");
-string[] aFiles = Directory.GetFiles(sDir, "WebClient_*.py");
-iCount = aFiles.Length;
-HomerList hlNames = new HomerList();
-HomerList hlValues = new HomerList();
-for (int iFile = 0; iFile <iCount; iFile++) {
-sFile = aFiles[iFile];
-sName = Path.GetFileName(sFile);
-sBase = Path.GetFileNameWithoutExtension(sName);
-sBase = sBase.Substring("WebClient_".Length);
-hlNames.Add(sBase);
-sValue = Path.Combine(sDir, sName);
-hlValues.Add(sValue);
-} // for
-
-sBase = App.ReadData("WebClientUtilities", "");
-iIndex = -1;
-if (sBase.Length > 0) {
-iIndex = hlNames.IndexOf(sBase);
-}
-if (iIndex == -1) iIndex = 0;
-sTitle = "Web Client Utilities";
-bSort = false;
-string[] aNames = hlNames.ToArray();
-sName = Dialog.Pick(sTitle, aNames, bSort, iIndex);
-if (sName.Length == 0) return;
-
-App.WriteData("WebClientUtilities", sName);
-iIndex = hlNames.IndexOf(sName);
-sFile = hlValues[iIndex];
-sExe = Path.Combine(sDir, "InPy.exe");
-sExe = Win32.GetShortPath(sExe);
-sInputFile = Path.Combine(App.DataDir, "WebClient.ini");
-sBase = Path.GetFileNameWithoutExtension(sFile);
-sOutputFile = Path.Combine(App.DataDir, sBase + ".txt");
-sCodeFile = sFile;
-sCommand = sExe + " " + Util.Quote(sCodeFile) + " " + Util.Quote(sInputFile) + " " + Util.Quote(sOutputFile);
-if (File.Exists(sOutputFile)) File.Delete(sOutputFile);
-Util.SetClipboardText(sCommand);
-Util.RunWait(sCommand);
-if (File.Exists(sOutputFile))  Process.Start(sOutputFile);
-} // WebClientUtilities method
 
 public void BurnToCD() {
 string[] aPaths = GetPathsFromDocument();
@@ -9010,26 +9010,6 @@ object oResult = t.InvokeMember(sProperty, BindingFlags.GetProperty, null, o, ar
 return oResult;
 } // GetProperty method
 
-public static bool JFWSay(string sText) {
-// object oJFW = null;
-// return JFWSay(sText, ref oJFW);
-return JFWSay(sText, ref App.JAWS);
-} // JFWSay method
-
-public static bool JFWSay(string sText, ref object oJFW) {
-try {
-if (oJFW == null) oJFW = CreateObject("FreedomSci.JawsApi");
-// int iResult = (int) CallMethod(oJFW, "SayString", new object[] {sText, 0});
-// return iResult == 1;
-// Console.Beep();
-bool bResult = (bool) CallMethod(oJFW, "SayString", new object[] {sText, false});
-return bResult;
-}
-catch {
-return false;
-}
-} // JFWSay method
-
 public static bool JFWRunFunction(string sText) {
 return JFWRunFunction(sText, ref App.JAWS);
 } // JFWRunFunction method
@@ -9044,46 +9024,6 @@ catch {
 return false;
 }
 } // JFWRunFunction method
-
-public static bool WESay(string sText) {
-//object oWE = null;
-//return WESay(sText, ref oWE);
-return WESay(sText, ref App.Wineyes);
-} // WESay method
-
-public static bool WESay(string sText, ref object oWE) {
-//if ((int) Win32.FindWindow(0, "Window-Eyes") == 0) return false;
-//don't even check since last resort
-if (!Win32.IsWinEyesActive()) return false;
-
-try {
-if (oWE == null) oWE = CreateObject("GwSpeak.Speak");
-CallMethod(oWE, "SpeakString", sText);
-// if (oWE == null) oWE = CreateObject("WindowEyes.Application");
-// object oSpeech = COM.GetProperty(oWE, "Speech");
-// CallMethod(oSpeech, "Speak", sText);
-return true;
-}
-catch {
-return false;
-}
-} // WESay method
-
-public static bool SAPISay(string sText) {
-object oSAPI = null;
-return SAPISay(sText, oSAPI);
-} // SAPISay method
-
-public static bool SAPISay(string sText, object oSAPI) {
-try {
-if (oSAPI == null) oSAPI = CreateObject("SAPI.SPVoice");
-CallMethod(oSAPI, "Speak", sText);
-return true;
-}
-catch {
-return false;
-}
-} // SAPISay method
 
 public static void InvokeVerb(string sPath, string sVerb) {
 // Dialog.Show(sPath, sVerb);
@@ -9732,93 +9672,15 @@ bool bReturn = SystemParametersInfo(iAction, iParam, out bActive, iUpdate);
 return bReturn && bActive;
 } // IsScreenReaderActive method
 
-public static bool IsJAWSActive() {
-string sClass = "JFWUI2";
-string sTitle = "JAWS";
-return (int) FindWindow(sClass, sTitle) != 0;
-} // IsJAWSActive method
-
-public static bool IsWinEyesActive() {
-//string sClass = "AfxFrameOrView42";
-//string sTitle = "Window-Eyes";
-string sClass = "GWMExternalControl";
-string sTitle = "External Control";
-return (int) FindWindow(sClass, sTitle) != 0;
-//int iClass = 0;
-//return (int) FindWindow(iClass, sTitle) != 0;
-} // IsWinEyesActive method
-
-[DllImport("jfwapi.dll")]
-public static extern int JFWRunFunction(string sText);
-
-public static bool JAWSSay(string sText) {
-//if (sText.Length < 2000) return JFWSay(sText);
-if (JFWSay(sText)) return true;
-//if (!JFWSay("")) return false;
-if (!IsJAWSActive()) return false;
-
-Util.String2FileA(sText, App.TempFile);
-return JFWRunFunction("SayTempFile") == 1;
-} // JAWSSay method
-
-[DllImport("jfwapi.dll")]
-public static extern int JFWSayString(string sText, int iInterrupt);
-
-public static bool JFWSay(string sText) {
-try {
-return JFWSayString(sText, 0) == 1;
-}
-catch {
-return false;
-}
-} // JFWSay method
-
-[DllImport("nvdaControllerClient32.dll", CharSet = CharSet.Auto)]
-public static extern int nvdaController_testIfRunning();
-
-public static bool IsNVDAActive() {
-return nvdaController_testIfRunning() == 0;
-} // IsNVDAActive method
-
-[DllImport("nvdaControllerClient32.dll", CharSet = CharSet.Auto)]
-public static extern int nvdaController_speakText(string sText);
-
-public static bool NVDASay(string sText) {
-return nvdaController_speakText(sText) == 0;
-} // NVDASay method
-[DllImport("nvdaControllerClient32.dll", CharSet = CharSet.Auto)]
-public static extern int nvdaController_brailleMessage(string sText);
-
-public static bool NVDABraille(string sText) {
-return nvdaController_brailleMessage(sText) == 0;
-} // NVDASay method
-
-[DllImport("saapi32.dll")]
-public static extern int SA_IsRunning();
-
-public static bool IsSAActive() {
-try {
-return SA_IsRunning() == 1;
-}
-catch {
-return false;
-}
-} // IsSAActive method
-
-[DllImport("saapi32.dll")]
-public static extern int SA_SayU(string sText);
-
-public static bool SASay(string sText) {
-try {
-return SA_SayU(sText) == 1;
-}
-catch {
-return false;
-}
-} // SASay method
-
 [DllImport("user32.dll")]
 public static extern int SendMessage(IntPtr h, int iMsg, int wParam, int lParam);
+
+// Pointer-sized overload.  wParam and lParam are pointer-sized, so on a 64-bit
+// build (x64 or ARM64) they must NOT be passed as int: a window handle above
+// 2 GB truncates, and the message then goes to the wrong window or none at all.
+// Used for the clipboard-viewer chain, whose parameters are window handles.
+[DllImport("user32.dll", EntryPoint = "SendMessage")]
+public static extern IntPtr SendMessagePtr(IntPtr h, int iMsg, IntPtr wParam, IntPtr lParam);
 
 [DllImport("user32.dll")]
 public static extern IntPtr GetForegroundWindow();
@@ -10507,11 +10369,9 @@ if (!IsAppActiveWindow()) return false;
 if ((Control.ModifierKeys & Keys.Alt) != 0 && (Control.ModifierKeys & Keys.Control) != 0) return false;
 }
 
-// if (Win32.JAWSSay(sText)) return true;
-// Speech goes through Say (ported from DbDo): JAWS COM, then the
-// NVDA controller client, then a native UIA notification reaching Narrator
-// and any UIA-listening reader. Replaces the former per-reader COM/Win32
-// chain (JFWSay / WESay / SASay / NVDASay / SAPISay).
+// Speech goes through Homer.Say: JAWS COM, then the NVDA controller client,
+// then a native UIA notification reaching Narrator and any other UIA-listening
+// reader.  The former per-reader COM/Win32 chain has been removed.
 Homer.Say.sayForced(sText);
 return true;
 } // Say method
