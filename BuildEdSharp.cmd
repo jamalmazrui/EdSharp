@@ -156,7 +156,6 @@ rem EdSharp_Setup.iss runs "ngen install" against the INSTALLED copy in Program
 rem Files (elevated, where it actually takes effect) to give a precompiled native
 rem image for faster startup.  Running ngen here, in the build folder and usually
 rem without admin, did nothing useful for the installed program, so it was removed.
-)
 
 rem ---- best-effort: fetch any MISSING third-party Convert tools ----
 rem Only downloads tools that are absent; never fails the build. Edit the
