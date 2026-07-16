@@ -2050,7 +2050,7 @@ AddMessage("No disk file is open for this command!");
 return;
 }
 
-string sName = Dialog.Input("Rename", "File Name", child.Text).Trim();
+string sName = Dialog.Input("Rename", "File Name", child.Text, "Rename").Trim();
 if (sName.Length == 0) return;
 
 string sNewFile = Path.Combine(Path.GetDirectoryName(sFile), sName);
@@ -2574,7 +2574,7 @@ break;
 
 case "&Other" :
 /*
-string sCodePage = Dialog.Input("Input", "Code Page:", "");
+string sCodePage = Dialog.Input("Input", "Code Page:", "", "CodePage");
 if (sCodePage.Length == 0) return;
 Encoding other;
 try {
@@ -2992,7 +2992,7 @@ sText = sText.TrimEnd();
 else sText = "";
 
 if (sText.Length == 0) sText = App.ReadData("Term", "");
-sResult = Dialog.Input("Lookup", "Term", sText).Trim();
+sResult = Dialog.Input("Lookup", "Term", sText, "Lookup").Trim();
 if (sResult.Length == 0) return;
 
 App.WriteData("Term", sResult);
@@ -3231,7 +3231,7 @@ aLabels = new string[] {"&Match", "&Replace"};
 sMatch = App.ReadData("Match", "");
 sReplace = App.ReadData("Replace", "");
 aValues = new string[] {sMatch, sReplace};
-aResults = Dialog.MultiInput(sTitle, aLabels, aValues);
+aResults = Dialog.MultiInput(sTitle, aLabels, aValues, new string[] {"ReplaceMatch", "ReplaceWith"});
 if (aResults == null || aResults.Length == 0) return;
 
 sMatch = aResults[0];
@@ -3265,7 +3265,7 @@ aLabels = new string[] {"&Pattern", "&Substitute"};
 sPattern = App.ReadData("Pattern", "");
 sSubstitute = App.ReadData("Substitute", "");
 aValues = new string[] {sPattern, sSubstitute};
-aResults = Dialog.MultiInput(sTitle, aLabels, aValues);
+aResults = Dialog.MultiInput(sTitle, aLabels, aValues, new string[] {"ReplaceRegExpPattern", "ReplaceRegExpWith"});
 if (aResults == null || aResults.Length == 0) return;
 
 sPattern = aResults[0];
@@ -3368,7 +3368,7 @@ Process.Start(sResult);
 
 if (menuItem == menuMiscSpecialCharacter) {
 string sCode = App.ReadData("Code", "");
-sResult = Dialog.Input("Special Character", "Code:", sCode).Trim().ToLower();
+sResult = Dialog.Input("Special Character", "Code:", sCode, "SpecialCharacter").Trim().ToLower();
 if (sResult.Length == 0) return;
 
 App.WriteData("Code", sResult);
@@ -3501,7 +3501,7 @@ if (menuItem == menuNavigateForwardFind || menuItem == menuNavigateForwardFindAt
 iIndex = rtb.Index;
 iStart = 0;
 sText = App.ReadData("Find", "");
-if (menuItem == menuNavigateForwardFind) sText = Dialog.Input("Forward Find", "Text", sText);
+if (menuItem == menuNavigateForwardFind) sText = Dialog.Input("Forward Find", "Text", sText, "Find");
 else if (menuItem == menuNavigateForwardFindAtCursor) {
 if (rtb.SelectionLength == 0) {
 object[] a = GetChunk();
@@ -3545,7 +3545,7 @@ if (menuItem == menuNavigateReverseFind || menuItem == menuNavigateReverseFindAt
 iIndex = rtb.Index;
 iEnd = 0;
 sText = App.ReadData("Find", "");
-if (menuItem == menuNavigateReverseFind) sText = Dialog.Input("Reverse Find", "Text", sText);
+if (menuItem == menuNavigateReverseFind) sText = Dialog.Input("Reverse Find", "Text", sText, "Find");
 else if (menuItem == menuNavigateReverseFindAtCursor) {
 if (rtb.SelectionLength == 0) {
 object[] a = GetChunk();
@@ -3587,7 +3587,7 @@ else AddMessage("Not found!");
 
 if (menuItem == menuNavigateForwardFindWithRegExp || (this.FindWithRegExp && menuItem == menuNavigateForwardFindAgain)) {
 sMatch = App.ReadData("Pattern", "");
-if (menuItem == menuNavigateForwardFindWithRegExp) sMatch = Dialog.Input("Forward Find with Regular Expression", "Pattern", sMatch);
+if (menuItem == menuNavigateForwardFindWithRegExp) sMatch = Dialog.Input("Forward Find with Regular Expression", "Pattern", sMatch, "FindRegExp");
 if (sMatch.Length == 0) return;
 
 App.WriteData("Pattern", sMatch);
@@ -3615,7 +3615,7 @@ else AddMessage("Not found!");
 
 if (menuItem == menuNavigateReverseFindWithRegExp || (this.FindWithRegExp && menuItem == menuNavigateReverseFindAgain)) {
 sMatch = App.ReadData("Pattern", "");
-if (menuItem == menuNavigateReverseFindWithRegExp) sMatch = Dialog.Input("Reverse Find with Regular Expression", "Pattern", sMatch);
+if (menuItem == menuNavigateReverseFindWithRegExp) sMatch = Dialog.Input("Reverse Find with Regular Expression", "Pattern", sMatch, "FindRegExp");
 if (sMatch.Length == 0) return;
 
 App.WriteData("Pattern", sMatch);
@@ -3682,7 +3682,7 @@ return;
 if (menuItem == menuNavigateSearchForTopic || menuItem == menuNavigateSearchForTopicAgain) {
 sText = App.ReadData("Topic", "");
 if (menuItem == menuNavigateSearchForTopic) {
-sText = Dialog.Input("Search For", "Topic", sText);
+sText = Dialog.Input("Search For", "Topic", sText, "SearchTopic");
 iStart = 0;
 }
 else iStart = rtb.Index;
@@ -4833,7 +4833,7 @@ return;
 }
 
 sText = Util.GetExtensions(aResults);
-sResult = Dialog.Input("Filter", "Extensions", sText).Trim();
+sResult = Dialog.Input("Filter", "Extensions", sText, "FilterExtensions").Trim();
 if (sResult.Length == 0) return;
 
 aResults = Util.GetPathsWithExtensions(aResults, sResult);
@@ -5037,7 +5037,7 @@ AddMessage("No files!");
 return;
 }
 
-sResult = Dialog.Input("Filter", "Extensions", sText);
+sResult = Dialog.Input("Filter", "Extensions", sText, "FilterExtensions");
 if (sResult.Length == 0) return;
 
 aResults = Util.GetPathsWithExtensions(Directory.GetFiles(sDir), sResult);
@@ -5227,7 +5227,7 @@ return;
 }
 else {
 sCommand = App.ReadOption("PromptCommand", "");
-sCommand = Dialog.Input("Prompt", "Command", sCommand).Trim();
+sCommand = Dialog.Input("Prompt", "Command", sCommand, "Command").Trim();
 if (sCommand.Length == 0) return;
 App.WriteOption("PromptCommand", sCommand);
 }
@@ -5587,7 +5587,7 @@ List<string[]> listLinks;
 if (sButton.Replace("&", "") == "Web Page") {
 string sUrl = COM.GetUrl();
 if (sUrl.Length == 0) sUrl = App.ReadData("Url", "");
-sUrl = Dialog.Input("Web Download", "Address", sUrl);
+sUrl = Dialog.Input("Web Download", "Address", sUrl, "WebAddress");
 if (sUrl.Length == 0) return;
 
 AddMessage("Please wait");
@@ -5625,7 +5625,7 @@ listFiles.Add(sFile);
 
 string[] aFiles = listFiles.ToArray();
 sText = Util.GetExtensions(aFiles);
-sResult = Dialog.Input("Filter", "Extensions", sText).Replace(".", "").Trim().ToLower();
+sResult = Dialog.Input("Filter", "Extensions", sText, "DownloadExtensions").Replace(".", "").Trim().ToLower();
 if (sResult.Length == 0) return;
 
 aResults = Util.GetPathsWithExtensions(aFiles, sResult);
@@ -7188,7 +7188,7 @@ return aResults;
 }
 
 string sText = Util.GetExtensions(aResults);
-string sResult = Dialog.Input("Filter", "Extensions", sText).Trim();
+string sResult = Dialog.Input("Filter", "Extensions", sText, "FilterExtensions").Trim();
 if (sResult.Length == 0) return new string[] {};
 
 aResults = Util.GetPathsWithExtensions(aResults, sResult);
@@ -7296,7 +7296,7 @@ e.Handled = true;
 else if(e.KeyCode == Keys.J && ((e.Alt && !e.Control) || (!e.Alt && e.Control)) && !e.Shift) {
 string sText = Dialog.Jump;
 if (e.Control) {
-sText = Dialog.Input("Jump", "Text", sText);
+sText = Dialog.Input("Jump", "Text", sText, "Jump");
 if (sText.Length == 0) return;
 }
 
@@ -8126,6 +8126,58 @@ if (dlg.runOkCancel()) foreach (TextBox txt in lBoxes) lReturn.Add(txt.Text);
 dlg.Dispose();
 return lReturn.ToArray();
 } // MultiInput method
+
+// Input with input history: when sHistoryKey is given (for example "Find"),
+// the field is an editable combo box whose dropdown offers up to
+// historyCount recent entries for the command, newest first. Delegates to
+// the history-aware MultiInput.
+public static string Input(string sTitle, string sLabel, string sValue, string sHistoryKey) {
+if (String.IsNullOrEmpty(sHistoryKey)) return Input(sTitle, sLabel, sValue);
+string[] aLabel = new string[] {sLabel};
+string[] aValue = new string[] {sValue};
+string[] aKey = new string[] {sHistoryKey};
+string[] aReturn = MultiInput(sTitle, aLabel, aValue, aKey);
+string sReturn = "";
+if (aReturn != null && aReturn.Length > 0) sReturn = aReturn[0];
+return sReturn;
+} // Input method (history overload)
+
+// MultiInput with input history: aHistoryKey parallels aLabel; where a key
+// is given, that field is an editable combo box whose dropdown offers up to
+// historyCount recent entries for the command, newest first, persisted in
+// section [Recent<key>] of EdSharp.ini as slot keys term1, term2, and so
+// on. This is the same layout FileDir and DbDo use. [General] historyCount
+// sets the depth; default 10, ceiling 100. Fields with a null or empty key
+// keep the plain text box, so nothing is recorded for them.
+public static string[] MultiInput(string sTitle, string[] aLabel, string[] aValue, string[] aHistoryKey) {
+if (aHistoryKey == null) return MultiInput(sTitle, aLabel, aValue);
+int iCount = Homer.InputHistory.clampCount(App.ReadValue("General", "historyCount", ""));
+LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
+List<Control> lBoxes = new List<Control>();
+for (int i = 0; i < aLabel.Length; i++) {
+string sVal = (aValue != null && i < aValue.Length && aValue[i] != null) ? aValue[i] : "";
+string sKey = (i < aHistoryKey.Length) ? aHistoryKey[i] : null;
+if (String.IsNullOrEmpty(sKey)) { lBoxes.Add(dlg.addInputBox(aLabel[i], sVal)); continue; }
+string sSection = "Recent" + sKey;
+List<string> lRecent = Homer.InputHistory.load(delegate(string sSlot) { return App.ReadValue(sSection, sSlot, ""); }, iCount);
+lBoxes.Add(dlg.addComboHistoryBox(aLabel[i], lRecent, sVal, ""));
+}
+List<string> lReturn = new List<string>();
+if (dlg.runOkCancel()) {
+for (int i = 0; i < lBoxes.Count; i++) {
+string sText = lBoxes[i].Text;
+lReturn.Add(sText);
+string sKey = (i < aHistoryKey.Length) ? aHistoryKey[i] : null;
+if (String.IsNullOrEmpty(sKey) || sText == null || sText.Trim().Length == 0) continue;
+string sSection = "Recent" + sKey;
+List<string> lRecent = Homer.InputHistory.load(delegate(string sSlot) { return App.ReadValue(sSection, sSlot, ""); }, iCount);
+lRecent = Homer.InputHistory.push(lRecent, sText.Trim(), iCount);
+Homer.InputHistory.store(lRecent, delegate(string sSlot, string sSlotValue) { App.WriteValue(sSection, sSlot, sSlotValue); }, iCount);
+}
+}
+dlg.Dispose();
+return lReturn.ToArray();
+} // MultiInput method (history overload)
 
 public static string Pick(string sTitle, string[] aValue, bool bSort) {
 string[] aDisplay = null;

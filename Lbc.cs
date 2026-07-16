@@ -1151,6 +1151,35 @@ public class LbcDialog : IDisposable
         return addComboPickBox(sLabel, lsNames, sSelected, null);
     }
 
+    // addComboHistoryBox: labeled editable combo for text input with a
+    // dropdown of recent entries (newest first). The field pre-fills
+    // with sValue and selects it, so typing replaces; Down or Alt+Down
+    // browses the history. This is the Windows Run-dialog pattern,
+    // which screen readers announce as a single edit combo. Pair with
+    // Homer.InputHistory for loading and recording the entries.
+    public ComboBox addComboHistoryBox(string sLabel, IList<string> lsRecent, string sValue, string sTip)
+    {
+        addFieldLabel(sLabel);
+        ComboBox cb = new ComboBox();
+        cb.DropDownStyle = ComboBoxStyle.DropDown;
+        cb.Size = new Size(innerWidth(), DefaultLineHeight);
+        cb.TabIndex = iTabIndex++;
+        cb.Margin = new Padding(0, 0, 0, DefaultRowGap);
+        if (lsRecent != null)
+            foreach (string sOne in lsRecent)
+                if (!string.IsNullOrEmpty(sOne)) cb.Items.Add(sOne);
+        cb.Text = sValue ?? "";
+        cb.AccessibleName = cleanLabel(sLabel);
+        cb.AccessibleDescription = "Down arrow selects from recent entries";
+        cb.GotFocus += delegate(object oSender, EventArgs evArgs) { cb.SelectAll(); };
+        cb.GotFocus += handleGotFocus;
+        registerWidget(cb, "ComboBox", cb.AccessibleName);
+        if (!string.IsNullOrEmpty(sTip)) dFocusTips[cb] = sTip;
+        pnlStack.Controls.Add(cb);
+        if (ctlFirstFocusable == null) ctlFirstFocusable = cb;
+        return cb;
+    }
+
     // addRadioButton: one option in a radio-button group. The
     // first call after a non-RadioButton control starts a new
     // group automatically (WinForms convention).

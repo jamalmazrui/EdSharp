@@ -607,4 +607,71 @@ public static class InixCodec
     }
 }
 
+// =====================================================================
+// InputHistory: shared persistence scheme for recent-input lists, the
+// same layout DbDo uses: slot keys term1, term2, ... termN under one
+// section per command, newest first, up to historyCount entries
+// (default 10). Pure list logic; the caller supplies key read/write
+// delegates bound to whatever settings store the app uses (an
+// InixCodec path, a classic .ini, or FileDir's dual layer), so one
+// implementation serves EdSharp, FileDir, and DbDo.
+public static class InputHistory
+{
+    public const int CountCeiling = 100;
+    public const int DefaultCount = 10;
+
+    // clampCount: parse a configured history count, falling back to
+    // the default and clamping to the ceiling.
+    public static int clampCount(string sConfigured)
+    {
+        int iValue;
+        if (!int.TryParse((sConfigured ?? "").Trim(), out iValue)) return DefaultCount;
+        if (iValue < 1) return DefaultCount;
+        if (iValue > CountCeiling) return CountCeiling;
+        return iValue;
+    }
+
+    // load: read slots newest-first until the first empty one.
+    public static List<string> load(Func<string, string> fnReadKey, int iMax)
+    {
+        List<string> lsItems = new List<string>();
+        if (fnReadKey == null) return lsItems;
+        if (iMax < 1) iMax = DefaultCount;
+        for (int i = 1; i <= iMax; i++)
+        {
+            string sTerm = null;
+            try { sTerm = fnReadKey("term" + i); } catch { }
+            if (string.IsNullOrEmpty(sTerm)) break;
+            lsItems.Add(sTerm);
+        }
+        return lsItems;
+    }
+
+    // push: move sNew to the front, dropping any case-insensitive
+    // duplicate, and truncate to iMax.
+    public static List<string> push(List<string> lsItems, string sNew, int iMax)
+    {
+        if (lsItems == null) lsItems = new List<string>();
+        if (string.IsNullOrEmpty(sNew)) return lsItems;
+        if (iMax < 1) iMax = DefaultCount;
+        lsItems.RemoveAll(delegate(string sOne) { return string.Equals(sOne, sNew, StringComparison.OrdinalIgnoreCase); });
+        lsItems.Insert(0, sNew);
+        if (lsItems.Count > iMax) lsItems.RemoveRange(iMax, lsItems.Count - iMax);
+        return lsItems;
+    }
+
+    // store: write every slot 1..iMax, blank-padding beyond the list
+    // so stale entries from a longer history are cleared.
+    public static void store(List<string> lsItems, Action<string, string> fnWriteKey, int iMax)
+    {
+        if (fnWriteKey == null) return;
+        if (iMax < 1) iMax = DefaultCount;
+        for (int i = 1; i <= iMax; i++)
+        {
+            string sTerm = (lsItems != null && i <= lsItems.Count) ? (lsItems[i - 1] ?? "") : "";
+            try { fnWriteKey("term" + i, sTerm); } catch { }
+        }
+    }
+}
+
 } // namespace Homer
