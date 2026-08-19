@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.13
-AppVerName=EdSharp 5.0.13 beta
-VersionInfoVersion=5.0.13
+AppVersion=5.0.14
+AppVerName=EdSharp 5.0.14 beta
+VersionInfoVersion=5.0.14
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -124,6 +124,11 @@ Source: "Tools.inix";              DestDir: "{app}"; Flags: ignoreversion skipif
 ; them and so a user can run installPandoc.cmd by hand at any later time.
 Source: "installPandoc.cmd";  DestDir: "{app}"; Flags: ignoreversion
 Source: "installPandoc.ps1";  DestDir: "{app}"; Flags: ignoreversion
+; JAWS script installer, the HomerView way: the installer's job, not the
+; editor's. Run by the Finish page as the ORIGINAL user; can be run by hand
+; after a JAWS upgrade.
+Source: "installJawsScripts.cmd";  DestDir: "{app}"; Flags: ignoreversion
+Source: "installJawsScripts.ps1";  DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp_Setup.iss";  DestDir: "{app}"; Flags: ignoreversion
 Source: "Tektosyne.dll";      DestDir: "{app}"; Flags: ignoreversion
 Source: "Ude.dll";            DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
@@ -187,13 +192,20 @@ Name: "{group}\Uninstall EdSharp"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\EdSharp"; Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\EdSharp.ico"; HotKey: Alt+Ctrl+E; Comment: "Launch or activate EdSharp (Alt+Control+E)"
 
 [Run]
-; Install EdSharps JAWS scripts (Finish-page option, like DbDo). Delegates to
-; EdSharp.exe --install-jaws-settings, whose C# implementation copies the
-; settings family into every installed JAWS version and compiles them there.
-; --quiet skips EdSharp's own report box: the Results box at the very end
-; reports the JAWS outcome, and two boxes in a row is one too many. Run by
-; hand without --quiet, the command still shows its report.
-Filename: "{app}\EdSharp.exe"; Parameters: "--install-jaws-settings --quiet"; WorkingDir: "{app}"; Description: "Install JAWS scripts for EdSharp (recommended)"; Flags: postinstall skipifsilent; Check: haveJaws
+; Install EdSharp's JAWS scripts, the HomerView way: a script owned by the
+; installer, not a feature of the editor. No console window and no message
+; box -- everything goes to the log, and the Results box at the very end
+; reports the outcome through the result file the script writes.
+;
+; runasoriginaluser matters more here than anywhere. JAWS keeps its settings
+; under the user's own roaming application data, and this installer runs
+; elevated; without the flag the scripts would go into the administrator's
+; profile and the user would see nothing at all.
+Filename: "{app}\installJawsScripts.cmd"; Parameters: "-bQuiet"; WorkingDir: "{app}"; Description: "Install JAWS scripts for EdSharp (recommended)"; Flags: postinstall skipifsilent runasoriginaluser waituntilterminated runhidden; Check: haveJaws
+; The same step again for a silent installation, which skips every
+; postinstall entry: without this twin, /SILENT would copy the files, report
+; success, and install no JAWS scripts at all.
+Filename: "{app}\installJawsScripts.cmd"; Parameters: "-bQuiet"; WorkingDir: "{app}"; Flags: runhidden runasoriginaluser waituntilterminated; Check: jawsAndSilent
 ; Install the NVDA add-on by shell-executing the .nvda-addon file (NVDA
 ; registers itself as the handler). Unchecked by default; checking it opens
 ; NVDA's add-on install dialog. NVDA must be running, and be restarted after.
@@ -215,6 +227,11 @@ Filename: "{code:ngenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Fla
 Filename: "{code:ngenExe}"; Parameters: "install ""{app}\EdSharp.exe"" /AppBase:""{app}"" /nologo /silent"; Flags: runhidden; Check: isAdminNgen
 
 [UninstallRun]
+; Take the JAWS scripts back out: ours to remove, since we put them there.
+; The log goes to the temporary folder, because the EdSharp logs folder does
+; not survive the uninstall. No runasoriginaluser here: that is a [Run] flag
+; and [UninstallRun] rejects it.
+Filename: "{app}\installJawsScripts.cmd"; Parameters: "-bUninstall -pathLogFile ""{%TEMP}\EdSharpUninstall.log"""; WorkingDir: "{app}"; Flags: runhidden waituntilterminated skipifdoesntexist; RunOnceId: "RemoveJawsScripts"
 Filename: "{code:ngenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: isAdminNgen; RunOnceId: "NgenUninstall"
 
 [UninstallDelete]
@@ -294,35 +311,31 @@ begin
   end;
 end;
 
-{ Whether the JAWS scripts actually LANDED, which is a different question from
-  whether the box was ticked.  The settings family goes into each JAWS
-  version's Settings\enu folder, so one EdSharp.jss or compiled EdSharp.jsb
-  found there is the observed fact the summary reports. }
-function jawsScriptsInstalled(): boolean;
-var
-  sPath: string;
-  findRec: TFindRec;
+// Both conditions in one identifier, because a Check clause names one of our
+// functions rather than taking an expression.
+function jawsAndSilent(): boolean;
 begin
-  result := False;
-  sPath := ExpandConstant('{userappdata}\Freedom Scientific\JAWS');
-  if not DirExists(sPath) then
-    Exit;
-  if FindFirst(sPath + '\*', findRec) then
+  result := haveJaws and WizardSilent;
+end;
+
+{ The JAWS outcome, read from the result file the script writes -- because
+  the script runs as the ORIGINAL user while this installer is elevated, so
+  neither can see the other's profile; probing folders from here reports the
+  wrong account's state. First line is the exit code; second is the user's
+  log folder, where the setup log is placed too. Returns the exit code, or
+  -1 when the file is absent, which means the step never ran. }
+function jawsResult(var sLogFolder: string): integer;
+var
+  lResult: TArrayOfString;
+begin
+  result := -1;
+  sLogFolder := '';
+  if LoadStringsFromFile('C:\temp\EdSharp_jaws.result', lResult) then
   begin
-    try
-      repeat
-        if (findRec.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then
-          if (findRec.Name <> '.') and (findRec.Name <> '..') then
-            if FileExists(sPath + '\' + findRec.Name + '\Settings\enu\EdSharp.jss')
-               or FileExists(sPath + '\' + findRec.Name + '\Settings\enu\EdSharp.jsb') then
-            begin
-              result := True;
-              Exit;
-            end;
-      until not FindNext(findRec);
-    finally
-      FindClose(findRec);
-    end;
+    if GetArrayLength(lResult) > 0 then
+      result := StrToIntDef(Trim(lResult[0]), 1);
+    if GetArrayLength(lResult) > 1 then
+      sLogFolder := Trim(lResult[1]);
   end;
 end;
 
@@ -375,7 +388,8 @@ end;
 
 procedure DeinitializeSetup();
 var
-  sBreak, sLogDir, sMessage: string;
+  iJaws: integer;
+  sBreak, sJawsLogDir, sLogDir, sMessage: string;
 begin
   // Nothing to report if nothing was installed, and nobody to read it in a
   // silent installation, where a message box would wait forever for a click
@@ -390,17 +404,28 @@ begin
   // nobody can dictate; one fixed path makes it possible to ask for over the
   // phone.  CopyFile, not FileCopy: there is no FileCopy in Pascal Script.
   CopyFile(ExpandConstant('{log}'), sLogDir + '\EdSharp_setup.log', False);
+  // The JAWS script runs as the original user, whose log folder this
+  // elevated installer cannot resolve -- the result file names it, and the
+  // setup log is placed there too, so every log sits in ONE folder.
+  iJaws := jawsResult(sJawsLogDir);
+  if (sJawsLogDir <> '') and DirExists(sJawsLogDir) then
+  begin
+    CopyFile(ExpandConstant('{log}'), AddBackslash(sJawsLogDir) + 'EdSharp_setup.log', False);
+    sLogDir := sJawsLogDir;
+  end;
 
   sMessage := 'EdSharp is installed.' + sBreak + sBreak
     + 'Program files:' + sBreak + '  ' + ExpandConstant('{app}') + sBreak + sBreak
     + 'Results' + sBreak;
 
-  if not haveJaws() then
-    sMessage := sMessage + '  JAWS scripts: not offered, because JAWS was not found on this computer.' + sBreak
-  else if jawsScriptsInstalled() then
+  if iJaws = 0 then
     sMessage := sMessage + '  JAWS scripts: installed.' + sBreak
+  else if iJaws > 0 then
+    sMessage := sMessage + '  JAWS scripts: FAILED. Send the logs named below.' + sBreak
+  else if not haveJaws() then
+    sMessage := sMessage + '  JAWS scripts: not offered, because JAWS was not found on this computer.' + sBreak
   else
-    sMessage := sMessage + '  JAWS scripts: NOT installed. Run the option again from the installer, and send the logs named below if it still fails.' + sBreak;
+    sMessage := sMessage + '  JAWS scripts: NOT installed (the step did not run). Reinstall and leave its box checked, or run installJawsScripts.cmd from the program folder.' + sBreak;
 
   if addonIsInstalled() then
     sMessage := sMessage + '  NVDA add-on: installed. Restart NVDA to use it.' + sBreak
