@@ -1,2 +1,0 @@
-text form
-<title>%text=%</title>

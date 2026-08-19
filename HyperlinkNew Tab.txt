@@ -1,2 +1,0 @@
-text form
-<a href="%Link=%" target="_blank">%LinkText=% </a>

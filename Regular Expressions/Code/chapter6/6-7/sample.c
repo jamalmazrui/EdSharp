@@ -1,1 +1,0 @@
-// MyMethod( 1, "Hello" );

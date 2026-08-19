@@ -1,6 +1,0 @@
-this
-is
-a
-test
-dos
-file

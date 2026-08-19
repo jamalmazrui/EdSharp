@@ -1,2 +1,0 @@
-text form
-<a href=mailto:"%Link=%">%LinkText=% </a>

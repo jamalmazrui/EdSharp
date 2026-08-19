@@ -1,4 +1,0 @@
-print "This"
-print "That"
-print "The other thing"
-print "But not this one";

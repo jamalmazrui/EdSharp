@@ -1,4 +1,0 @@
-user@example.com
-moo
-user@domain.edu.co.uk
-oink@farm

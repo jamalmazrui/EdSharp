@@ -1,4 +1,0 @@
-/my/test/file.txt
-/another/test/file.text
-file.pdf
-/moo.txt

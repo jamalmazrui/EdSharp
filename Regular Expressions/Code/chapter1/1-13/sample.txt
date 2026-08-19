@@ -1,3 +1,0 @@
-ends in word
-doesn't end in 
-word is not at the end

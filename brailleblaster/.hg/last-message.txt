@@ -1,1 +1,0 @@
-version of GUI for others to look at

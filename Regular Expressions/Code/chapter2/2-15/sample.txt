@@ -1,4 +1,0 @@
-http://192.168.25.10/index.html
-http://10.0.0.1/my/url/file.php
-http://10.0.0.2/hello/moo.html
-http://127.0.0.1

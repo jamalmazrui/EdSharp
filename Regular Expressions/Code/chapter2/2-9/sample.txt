@@ -1,4 +1,0 @@
-Link to this URL: http://moo.you.com/index.html.
-Or this url here http://localhost or http://127.0.0.1
-Or this one http://mooyou.com one
-This "http://moo.com" one

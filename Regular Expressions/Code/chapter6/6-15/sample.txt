@@ -1,5 +1,0 @@
-       if ( x == null )
-        if ( x = null )
-        if ( x=null )        if (null == x )
-        if ( x = null )
-        if ( x=null )

@@ -1,5 +1,0 @@
-user@domain.com
-user
-user@example.com
-oink
-moo
