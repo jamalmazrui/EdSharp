@@ -773,9 +773,10 @@ public static class UiaNative
 // =====================================================================
 
 // =====================================================================
-// JawsSettingsInstaller: copy DbDo.jkm and DbDo.jss into every
-// installed JAWS user-settings folder and run scompile.exe to
-// produce DbDo.jsb there. The Pascal-Script equivalent that
+// JawsSettingsInstaller: copy the app's .jkm and .jss script files
+// into every installed JAWS user-settings folder and run scompile.exe
+// to produce the .jsb there. The sAppName parameter names the script
+// family (DbDo, EdSharp, or FileDir) and the per-app log folder. The Pascal-Script equivalent that
 // shipped with v1.0.39 worked but lived inside DbDo_setup.iss;
 // moving it to C# lets the user re-trigger it later without
 // re-running the full installer, and consolidates the JAWS-
@@ -826,12 +827,27 @@ public static class JawsSettingsInstaller
         return null;
     }
 
-    // Run the install. Returns a human-readable report and, via
-    // the iCopied / iCompiled out-parameters, totals the caller
-    // can use for status text. Records every path placed in a
-    // log under %APPDATA%\DbDo\jawsSettings.log so the matching
-    // uninstall path can remove exactly those files.
-    public static string install(string sAppFolder, out int iCopied, out int iCompiled)
+    // Backward-compatible entry: the app ships only <App>.jkm and
+    // <App>.jss, with no support files or library scripts. DbDo uses
+    // this form.
+    public static string install(string sAppName, string sAppFolder, out int iCopied, out int iCompiled)
+    {
+        return install(sAppName, sAppFolder, null, null, out iCopied, out iCompiled);
+    }
+
+    // Full entry. aSupportFiles are extra files copied beside the
+    // scripts into each JAWS settings folder: documentation (.jsd),
+    // configuration (.jcf), and include headers (.jsh) that scompile
+    // must find next to the script. aLibraryScripts are base names
+    // (no extension) of scripts copied AND compiled BEFORE the app's
+    // own script; required when the app script pulls a library in
+    // with Use, because Use loads the compiled .jsb. FileDir, for
+    // example, passes Homer as a library: FileDir.jss says
+    // Use "Homer.jsb", so Homer.jss must compile first.
+    // Records every path placed in a per-app log under
+    // %APPDATA%\<App>\jawsSettings.log so the matching uninstall can
+    // remove exactly those files.
+    public static string install(string sAppName, string sAppFolder, string[] aSupportFiles, string[] aLibraryScripts, out int iCopied, out int iCompiled)
     {
         iCopied = 0;
         iCompiled = 0;
@@ -848,18 +864,35 @@ public static class JawsSettingsInstaller
             return sb.ToString();
         }
 
-        string sJkmSource = System.IO.Path.Combine(sAppFolder, "DbDo.jkm");
-        string sJssSource = System.IO.Path.Combine(sAppFolder, "DbDo.jss");
+        string sJkmSource = System.IO.Path.Combine(sAppFolder, sAppName + ".jkm");
+        string sJssSource = System.IO.Path.Combine(sAppFolder, sAppName + ".jss");
         if (!System.IO.File.Exists(sJkmSource))
         {
-            sb.AppendLine("DbDo.jkm not found in " + sAppFolder + ".");
+            sb.AppendLine(sAppName + ".jkm not found in " + sAppFolder + ".");
             return sb.ToString();
         }
         if (!System.IO.File.Exists(sJssSource))
         {
-            sb.AppendLine("DbDo.jss not found in " + sAppFolder + ".");
+            sb.AppendLine(sAppName + ".jss not found in " + sAppFolder + ".");
             return sb.ToString();
         }
+
+        // Drop entries whose source files are absent, warning once
+        // each, so a missing optional file cannot abort the install.
+        System.Collections.Generic.List<string> lSupport = new System.Collections.Generic.List<string>();
+        if (aSupportFiles != null)
+            foreach (string sOne in aSupportFiles)
+            {
+                if (System.IO.File.Exists(System.IO.Path.Combine(sAppFolder, sOne))) lSupport.Add(sOne);
+                else sb.AppendLine("WARN: support file " + sOne + " not found in " + sAppFolder + "; skipped.");
+            }
+        System.Collections.Generic.List<string> lLibraries = new System.Collections.Generic.List<string>();
+        if (aLibraryScripts != null)
+            foreach (string sOne in aLibraryScripts)
+            {
+                if (System.IO.File.Exists(System.IO.Path.Combine(sAppFolder, sOne + ".jss"))) lLibraries.Add(sOne);
+                else sb.AppendLine("WARN: library script " + sOne + ".jss not found in " + sAppFolder + "; skipped.");
+            }
 
         foreach (string sVersionPath in System.IO.Directory.GetDirectories(sJawsRoot))
         {
@@ -871,9 +904,34 @@ public static class JawsSettingsInstaller
             foreach (string sLangPath in System.IO.Directory.GetDirectories(sSettingsPath))
             {
                 string sLang = System.IO.Path.GetFileName(sLangPath);
-                string sJkmTarget = System.IO.Path.Combine(sLangPath, "DbDo.jkm");
-                string sJssTarget = System.IO.Path.Combine(sLangPath, "DbDo.jss");
-                string sJsbTarget = System.IO.Path.Combine(sLangPath, "DbDo.jsb");
+
+                // Support files first: include headers must be in
+                // place before any script compiles.
+                foreach (string sOne in lSupport)
+                {
+                    string sTarget = System.IO.Path.Combine(sLangPath, sOne);
+                    try { System.IO.File.Copy(System.IO.Path.Combine(sAppFolder, sOne), sTarget, true); iCopied++; lLog.Add(sTarget); }
+                    catch (Exception ex) { sb.AppendLine("FAIL: copy " + sOne + " to " + sTarget + ": " + ex.Message); }
+                }
+
+                // Library scripts next, compiled before the app
+                // script, because Use loads the compiled .jsb.
+                foreach (string sOne in lLibraries)
+                {
+                    string sLibJss = System.IO.Path.Combine(sLangPath, sOne + ".jss");
+                    string sLibJsb = System.IO.Path.Combine(sLangPath, sOne + ".jsb");
+                    bool bLibCopied = false;
+                    try { System.IO.File.Copy(System.IO.Path.Combine(sAppFolder, sOne + ".jss"), sLibJss, true); bLibCopied = true; iCopied++; lLog.Add(sLibJss); }
+                    catch (Exception ex) { sb.AppendLine("FAIL: copy " + sOne + ".jss to " + sLibJss + ": " + ex.Message); }
+                    if (bLibCopied && !string.IsNullOrEmpty(sScompile))
+                    {
+                        if (compileScript(sScompile, sLangPath, sOne + ".jss", sLibJsb, sb)) { iCompiled++; lLog.Add(sLibJsb); }
+                    }
+                }
+
+                string sJkmTarget = System.IO.Path.Combine(sLangPath, sAppName + ".jkm");
+                string sJssTarget = System.IO.Path.Combine(sLangPath, sAppName + ".jss");
+                string sJsbTarget = System.IO.Path.Combine(sLangPath, sAppName + ".jsb");
 
                 bool bJkmOk = false, bJssOk = false, bJsbOk = false;
                 try { System.IO.File.Copy(sJkmSource, sJkmTarget, true); bJkmOk = true; iCopied++; lLog.Add(sJkmTarget); }
@@ -883,28 +941,7 @@ public static class JawsSettingsInstaller
 
                 if (bJssOk && !string.IsNullOrEmpty(sScompile))
                 {
-                    try
-                    {
-                        System.Diagnostics.ProcessStartInfo psi =
-                            new System.Diagnostics.ProcessStartInfo(sScompile, "DbDo.jss");
-                        psi.WorkingDirectory = sLangPath;
-                        psi.UseShellExecute = false;
-                        psi.CreateNoWindow = true;
-                        psi.RedirectStandardOutput = true;
-                        psi.RedirectStandardError = true;
-                        using (System.Diagnostics.Process proc = System.Diagnostics.Process.Start(psi))
-                        {
-                            proc.WaitForExit(10000);
-                            if (proc.HasExited && proc.ExitCode == 0 && System.IO.File.Exists(sJsbTarget))
-                            { bJsbOk = true; iCompiled++; lLog.Add(sJsbTarget); }
-                            else
-                            {
-                                string sErr = proc.HasExited ? proc.StandardError.ReadToEnd() : "(timed out)";
-                                sb.AppendLine("FAIL: compile " + sJsbTarget + " - " + sErr.Trim());
-                            }
-                        }
-                    }
-                    catch (Exception ex) { sb.AppendLine("FAIL: compile " + sJsbTarget + ": " + ex.Message); }
+                    if (compileScript(sScompile, sLangPath, sAppName + ".jss", sJsbTarget, sb)) { bJsbOk = true; iCompiled++; lLog.Add(sJsbTarget); }
                 }
                 else if (bJssOk && string.IsNullOrEmpty(sScompile))
                 {
@@ -923,7 +960,7 @@ public static class JawsSettingsInstaller
         // remove exactly the files we placed.
         try
         {
-            string sLogPath = getLogPath();
+            string sLogPath = getLogPath(sAppName);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(sLogPath));
             System.IO.File.WriteAllLines(sLogPath, lLog);
         }
@@ -932,14 +969,44 @@ public static class JawsSettingsInstaller
         return sb.ToString();
     }
 
+    // compileScript: run scompile.exe on one script inside a settings
+    // folder. Returns true when the compiled file appears; appends a
+    // FAIL line to the report otherwise.
+    private static bool compileScript(string sScompile, string sLangPath, string sScriptFile, string sJsbPath, System.Text.StringBuilder sb)
+    {
+        try
+        {
+            System.Diagnostics.ProcessStartInfo psi =
+                new System.Diagnostics.ProcessStartInfo(sScompile, sScriptFile);
+            psi.WorkingDirectory = sLangPath;
+            psi.UseShellExecute = false;
+            psi.CreateNoWindow = true;
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
+            using (System.Diagnostics.Process proc = System.Diagnostics.Process.Start(psi))
+            {
+                proc.WaitForExit(10000);
+                if (proc.HasExited && proc.ExitCode == 0 && System.IO.File.Exists(sJsbPath)) return true;
+                string sErr = proc.HasExited ? proc.StandardError.ReadToEnd() : "(timed out)";
+                sb.AppendLine("FAIL: compile " + sJsbPath + " - " + sErr.Trim());
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            sb.AppendLine("FAIL: compile " + sJsbPath + ": " + ex.Message);
+            return false;
+        }
+    }
+
     // Uninstall: read the log, delete each path listed, then
     // delete the log itself. Mirrors what the Pascal Script
     // CurUninstallStepChanged did in v1.0.39.
-    public static string uninstall(out int iDeleted)
+    public static string uninstall(string sAppName, out int iDeleted)
     {
         iDeleted = 0;
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        string sLogPath = getLogPath();
+        string sLogPath = getLogPath(sAppName);
         if (!System.IO.File.Exists(sLogPath))
         {
             sb.AppendLine("No jawsSettings.log found; nothing to remove.");
@@ -970,11 +1037,11 @@ public static class JawsSettingsInstaller
         return sb.ToString();
     }
 
-    private static string getLogPath()
+    private static string getLogPath(string sAppName)
     {
         return System.IO.Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            @"DbDo\jawsSettings.log");
+            sAppName + @"\jawsSettings.log");
     }
 }
 

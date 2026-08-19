@@ -842,7 +842,7 @@ public ToolStripMenuItem menuEdit, menuEditSelectAll, menuEditUnselectAll, menuE
 public ToolStripMenuItem menuDelete, menuDeleteReplaceRegular, menuDeleteReplaceWithRegExp, menuDeleteHardLine, menuDeleteParagraph, menuDeleteLine, menuDeleteRight, menuDeleteLeft, menuDeleteDown, menuDeleteUp, menuDeleteFile, menuDeleteTrimBlanks;
 public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateNextBlock, menuNavigatePriorBlock, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateSearchForTopicAgain, menuNavigateGoToStartOfSelection;
 public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles, menuQueryFont;
-public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
+public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
 public ToolStripMenuItem menuWindow, menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
 public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
 public StatusStrip statusBar;
@@ -1043,6 +1043,11 @@ menuMiscPathList = CreateMenuItem("Path List", "Control+Shift+P", menuItem_Click
 menuMiscInsertTime = CreateMenuItem("Insert Time", "Alt+Shift+OemSemicolon", menuItem_Click, "child speak");
 menuMiscCalculateDate = CreateMenuItem("Calculate Date ...", "Control+Shift+OemSemicolon", menuItem_Click, "child silent");
 menuMiscHTMLFormat = CreateMenuItem("HTML Format", "Control+H", menuItem_Click, "child speak");
+menuMiscMarkdownToText = CreateMenuItem("Markdown to Plain Text", "", menuItem_Click, "child speak");
+menuMiscHtmlToMarkdown = CreateMenuItem("HTML to Markdown", "", menuItem_Click, "child speak");
+menuMiscHtmlToText = CreateMenuItem("HTML to Plain Text", "", menuItem_Click, "child speak");
+menuMiscPreviewMarkdown = CreateMenuItem("Preview Markdown", "Control+F9", menuItem_Click, "child silent");
+menuMiscPreviewMarkdownBrowser = CreateMenuItem("Preview Markdown in Web Browser", "", menuItem_Click, "child silent");
 menuMiscTextConvert = CreateMenuItem("&Text Convert", "Control+T", menuItem_Click, "child speak");
 menuMiscTextCombine = CreateMenuItem("Text Combine", "Control+Shift+T", menuItem_Click, "child speak");
 menuMiscTextContents = CreateMenuItem("Text Contents", "Alt+Shift+T", menuItem_Click, "child speak");
@@ -1072,7 +1077,7 @@ menuMiscExplorerFolder = CreateMenuItem("Explorer Folder", "Alt+Oem5", menuItem_
 menuMiscCommandPrompt = CreateMenuItem("Command Prompt", "Control+Oem5", menuItem_Click, "frame speak");
 menuMiscBurnToCD = CreateMenuItem("Burn to CD", "Alt+Shift+B", menuItem_Click, "child speak");
 menuMiscWebDownload = CreateMenuItem("Web Download", "Alt+Shift+W", menuItem_Click, "frame speak");
-menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload});
+menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload});
 //Dialog.Show("Misc.", menuMisc.DropDownItems.Count);
 
 menuWindow = CreateMenu("&Window");
@@ -4799,7 +4804,8 @@ CalculateDate();
 
 if (menuItem == menuMiscHTMLFormat) {
 // Treat the current document as Markdown source and convert it to a complete
-// HTML document with the bundled Pandoc, then open the result in a new window.
+// HTML document with the embedded Markdig library, then open the result in a
+// new window.
 string sBaseName = (child.File != null && child.File.Length > 0) ? Path.GetFileNameWithoutExtension(child.File) : "Untitled";
 string sHtml = Util.Markdown2Html(rtb.Text, sBaseName);
 if (sHtml.Length > 0) {
@@ -4809,6 +4815,83 @@ new MdiChild(this, sFile);
 this.Child.File = sFile;
 this.Child.RTB.Text = sHtml;
 this.Child.RTB.Modified = false;
+}
+}
+
+if (menuItem == menuMiscMarkdownToText) {
+// Treat the current document as Markdown source and render it as plain
+// text with the Markdig library: markup stripped, content and reading
+// order preserved. Useful as a speech-friendly view of a Markdown
+// document. The result opens in a new window.
+string sBaseName = (child.File != null && child.File.Length > 0) ? Path.GetFileNameWithoutExtension(child.File) : "Untitled";
+sText = Util.Markdown2Text(rtb.Text);
+if (sText.Length > 0) {
+if (child.File != null && child.File.IndexOf(@":\") > 0) Directory.SetCurrentDirectory(Path.GetDirectoryName(child.File));
+sFile = sBaseName + ".txt";
+new MdiChild(this, sFile);
+this.Child.File = sFile;
+this.Child.RTB.Text = sText;
+this.Child.RTB.Modified = false;
+}
+}
+
+if (menuItem == menuMiscHtmlToMarkdown) {
+// Treat the current document as HTML source and convert it to Markdown
+// with the ReverseMarkdown library (built on HtmlAgilityPack). The
+// result opens in a new window.
+string sBaseName = (child.File != null && child.File.Length > 0) ? Path.GetFileNameWithoutExtension(child.File) : "Untitled";
+sText = Util.Html2Markdown(rtb.Text);
+if (sText.Length > 0) {
+if (child.File != null && child.File.IndexOf(@":\") > 0) Directory.SetCurrentDirectory(Path.GetDirectoryName(child.File));
+sFile = sBaseName + ".md";
+new MdiChild(this, sFile);
+this.Child.File = sFile;
+this.Child.RTB.Text = sText;
+this.Child.RTB.Modified = false;
+}
+}
+
+if (menuItem == menuMiscHtmlToText) {
+// Treat the current document as HTML source and render it as plain
+// text by chaining HTML to Markdown to plain text, which preserves
+// paragraph breaks and list structure that a raw text extraction
+// loses. The result opens in a new window.
+string sBaseName = (child.File != null && child.File.Length > 0) ? Path.GetFileNameWithoutExtension(child.File) : "Untitled";
+sText = Util.Html2Text(rtb.Text);
+if (sText.Length > 0) {
+if (child.File != null && child.File.IndexOf(@":\") > 0) Directory.SetCurrentDirectory(Path.GetDirectoryName(child.File));
+sFile = sBaseName + ".txt";
+new MdiChild(this, sFile);
+this.Child.File = sFile;
+this.Child.RTB.Text = sText;
+this.Child.RTB.Modified = false;
+}
+}
+
+if (menuItem == menuMiscPreviewMarkdown) {
+// Render the current document's Markdown as HTML in an embedded web
+// view, where the screen reader's own virtual buffer applies: JAWS and
+// NVDA element-navigation keys (H for headings, K for links, T for
+// tables, arrows for reading) work as on any web page. One keystroke
+// replaces the convert, save, and render-in-browser sequence when the
+// goal is reading rather than a saved file. Escape or Alt+F4 returns
+// to the editor.
+string sBaseName = (child.File != null && child.File.Length > 0) ? Path.GetFileNameWithoutExtension(child.File) : "Untitled";
+string sHtml = Util.Markdown2Html(rtb.Text, sBaseName);
+if (sHtml.Length > 0) PreviewForm.ShowPreview(this, sBaseName, sHtml);
+}
+
+if (menuItem == menuMiscPreviewMarkdownBrowser) {
+// Render the current document's Markdown in the default web browser,
+// via a temporary HTML file that EdSharp deletes at exit. One
+// keystroke replaces the convert, save, and F5 sequence.
+string sBaseName = (child.File != null && child.File.Length > 0) ? Path.GetFileNameWithoutExtension(child.File) : "Untitled";
+string sHtml = Util.Markdown2Html(rtb.Text, sBaseName);
+if (sHtml.Length > 0) {
+string sHtmlFile = Path.Combine(Path.GetTempPath(), "edsharp_preview_" + Guid.NewGuid().ToString("N") + ".htm");
+Util.String2FileU(sHtml, sHtmlFile);
+App.TempFiles.Add(sHtmlFile);
+Process.Start(sHtmlFile);
 }
 }
 
@@ -9506,6 +9589,7 @@ CallMethod(oShell, "AppActivate", sTitle);
 // the portable Homer.InixCodec.
 public static class Inix {
 static List<Homer.InixCodec.Section> lSections = null;
+static List<Homer.InixCodec.Section> lProgram = null;
 static bool bLoaded = false;
 
 static string getPath() {
@@ -9515,6 +9599,14 @@ if (sIni.ToLower().EndsWith(".ini")) return sIni.Substring(0, sIni.Length - 4) +
 return sIni + ".inix";
 } // getPath method
 
+static string getProgramPath() {
+// The program-folder EdSharp.inix is the shipped configuration layer:
+// the installer refreshes it on every upgrade (ignoreversion), unlike
+// the data-folder files, which belong to the user and are preserved.
+if (String.IsNullOrEmpty(App.ProgramDir)) return null;
+return Path.Combine(App.ProgramDir, App.GetAppName() + ".inix");
+} // getProgramPath method
+
 static void ensureLoaded() {
 if (bLoaded) return;
 bLoaded = true;
@@ -9523,18 +9615,50 @@ string sPath = getPath();
 if (sPath != null && File.Exists(sPath)) lSections = Homer.InixCodec.read(sPath);
 }
 catch { lSections = null; }
+try {
+string sProgramPath = getProgramPath();
+if (sProgramPath != null && File.Exists(sProgramPath)) lProgram = Homer.InixCodec.read(sProgramPath);
+}
+catch { lProgram = null; }
 } // ensureLoaded method
 
 public static bool tryGet(string sSection, string sKey, out string sValue) {
+// Layer order: the data-folder EdSharp.inix (the user's override
+// layer) wins over the program-folder EdSharp.inix (the shipped
+// configuration layer); both override the classic .ini.
 sValue = null;
 ensureLoaded();
-if (lSections == null) return false;
-foreach (Homer.InixCodec.Section sec in lSections) {
+List<List<Homer.InixCodec.Section>> lLayers = new List<List<Homer.InixCodec.Section>>();
+if (lSections != null) lLayers.Add(lSections);
+if (lProgram != null) lLayers.Add(lProgram);
+foreach (List<Homer.InixCodec.Section> lLayer in lLayers) {
+foreach (Homer.InixCodec.Section sec in lLayer) {
 if (!Util.Equiv(sec.Name, sSection)) continue;
 foreach (Homer.InixCodec.Pair pair in sec.Pairs) if (Util.Equiv(pair.Key, sKey)) { sValue = pair.Value; return true; }
 }
+}
 return false;
 } // tryGet method
+
+// keyNames: every key name a section defines across both inix layers.
+// Lets Ini.ReadSectionKeys list keys that exist only in an inix (new
+// conversions, for example) and recognize tombstones: keys an inix
+// defines with an empty value to retire a stale entry left in an old
+// user .ini, without editing that file.
+public static List<string> keyNames(string sSection) {
+List<string> lReturn = new List<string>();
+ensureLoaded();
+List<List<Homer.InixCodec.Section>> lLayers = new List<List<Homer.InixCodec.Section>>();
+if (lSections != null) lLayers.Add(lSections);
+if (lProgram != null) lLayers.Add(lProgram);
+foreach (List<Homer.InixCodec.Section> lLayer in lLayers) {
+foreach (Homer.InixCodec.Section sec in lLayer) {
+if (!Util.Equiv(sec.Name, sSection)) continue;
+foreach (Homer.InixCodec.Pair pair in sec.Pairs) if (!String.IsNullOrEmpty(pair.Key)) lReturn.Add(pair.Key);
+}
+}
+return lReturn;
+} // keyNames method
 
 // syncWrite: when an EdSharp.inix exists (the user opted into the layer),
 // keep it consistent with writes to the main .ini so an override never masks
@@ -9549,7 +9673,7 @@ try { Homer.InixCodec.writeValue(sPath, sSection, sKey, sValue); reload(); }
 catch {}
 } // syncWrite method
 
-public static void reload() { bLoaded = false; lSections = null; } // reload method
+public static void reload() { bLoaded = false; lSections = null; lProgram = null; } // reload method
 } // Inix class
 
 public class Ini {
@@ -9626,15 +9750,16 @@ return ReadSectionKeys(sFile, sSection, bIncludeComments);
 } // ReadSectionKeys method
 
 public static string[] ReadSectionKeys(string sFile, string sSection, bool bIncludeComments) {
+string sFileOriginal = sFile;
 sFile = RedirectFile(sFile, sSection);
 string[] aDefault = new string[] {};
-if (!File.Exists(sFile)) return aDefault;
+if (!File.Exists(sFile)) return mergeInixKeys(sFileOriginal, sSection, bIncludeComments, aDefault);
 
 string sText = Util.File2String(sFile);
 string sMatch = "^\\[" + sSection + "\\](.|\n)*?((\n\\[)|\\Z)";
 object[] aResult = Util.RegExpContainsCase(sText, sMatch);
 int iIndex = (int) aResult[0];
-if (iIndex == -1) return aDefault;
+if (iIndex == -1) return mergeInixKeys(sFileOriginal, sSection, bIncludeComments, aDefault);
 
 string sValue = (string) aResult[1];
 string[] aLines = sValue.Split('\n');
@@ -9648,11 +9773,32 @@ sb.Append(sKey + "\n");
 }
 
 string sKeys = sb.ToString().Trim();
-if (sKeys.Length == 0) return aDefault;
-
-string[] aReturn = sKeys.Split('\n');
-return aReturn;
+string[] aReturn = (sKeys.Length == 0) ? aDefault : sKeys.Split('\n');
+return mergeInixKeys(sFileOriginal, sSection, bIncludeComments, aReturn);
 } // ReadSectionKeys method
+
+// mergeInixKeys: for the main ini only, append key names that exist
+// only in the inix layers, then drop keys whose effective layered
+// value is empty. An empty inix value is a tombstone: it disables and
+// hides a stale entry that an old user .ini still carries, without
+// editing the user's file. Sections read with comments included are
+// passed through untouched.
+static string[] mergeInixKeys(string sFile, string sSection, bool bIncludeComments, string[] aKeys) {
+if (bIncludeComments || !Util.Equiv(sFile, App.IniFile)) return aKeys;
+List<string> lMerged = new List<string>(aKeys);
+foreach (string sOne in Inix.keyNames(sSection)) {
+bool bFound = false;
+foreach (string sHave in lMerged) if (Util.Equiv(sHave, sOne)) { bFound = true; break; }
+if (!bFound) lMerged.Add(sOne);
+}
+List<string> lReturn = new List<string>();
+foreach (string sOne in lMerged) {
+string sInix;
+if (Inix.tryGet(sSection, sOne, out sInix) && sInix != null && sInix.Length == 0) continue;
+lReturn.Add(sOne);
+}
+return lReturn.ToArray();
+} // mergeInixKeys method
 
 public static string[] ReadSections(string sFile) {
 string[] aDefault = new string[] {};
@@ -11119,41 +11265,101 @@ string sReturn = (string) COM.GetProperty(oShortcut, "TargetPath");
 return sReturn;
 } // GetLfn method
 
+// mdPipeline: the Markdig pipeline used by the Markdown commands, built
+// once on first use. UseAdvancedExtensions activates pipe and grid
+// tables, footnotes, definition and task lists, auto identifiers, and
+// autolinks, giving GitHub-flavored coverage without an external tool.
+static Markdig.MarkdownPipeline mdPipeline = null;
+
+static Markdig.MarkdownPipeline GetMarkdownPipeline() {
+if (mdPipeline == null) mdPipeline = Markdig.MarkdownExtensions.UseAdvancedExtensions(new Markdig.MarkdownPipelineBuilder()).Build();
+return mdPipeline;
+} // GetMarkdownPipeline method
+
 public static string Markdown2Html(string sSource, string sTitle) {
 // Convert Markdown source to a complete (standalone) HTML document using the
-// bundled Pandoc, returning the HTML.  Returns "" if the conversion could not
-// be done, after showing a message.  Used by the HTML Format command, which
-// now assumes the current document is Markdown rather than encoding it
-// literally.  Modern Pandoc flags only (no removed -S/--smart).
-string sPandoc = Path.Combine(App.ProgramDir, @"Convert\Pandoc\pandoc.exe");
-if (!File.Exists(sPandoc)) {
-Dialog.Show("HTML Format", "Pandoc was not found at\n" + sPandoc + "\nRun BuildEdSharp.cmd once to fetch the Convert tools, then try again.");
-return "";
-}
-string sStem = "edsharp_md2htm_" + Guid.NewGuid().ToString("N");
-string sMarkdownFile = Path.Combine(Path.GetTempPath(), sStem + ".md");
-string sHtmlFile = Path.Combine(Path.GetTempPath(), sStem + ".htm");
-App.TempFiles.Add(sMarkdownFile);
-App.TempFiles.Add(sHtmlFile);
-string sHtml = "";
+// bundled Markdig library, returning the HTML. Returns "" if the conversion
+// could not be done, after showing a message. Used by the HTML Format
+// command, which assumes the current document is Markdown. Markdig replaced
+// the former Pandoc-based conversion: it runs in process (no temp files, no
+// child process, no Convert tools required) and is CommonMark compliant.
 try {
-Util.String2FileU(sSource, sMarkdownFile);
-string sCommand = Util.Quote(sPandoc) + " " + Util.Quote(sMarkdownFile) + " -f gfm -t html5 -s --metadata title=" + Util.Quote(sTitle) + " -o " + Util.Quote(sHtmlFile);
 App.Frame.AddMessage("Converting Markdown to HTML");
-Util.RunHideWait(sCommand);
-if (!File.Exists(sHtmlFile)) Util.RunHideWait("cmd.exe /c " + sCommand);
-if (!File.Exists(sHtmlFile)) {
-Dialog.Show("HTML Format", "Pandoc did not produce HTML output.\nThe document may not be valid Markdown source.");
-return "";
-}
-sHtml = Util.File2String(sHtmlFile);
+string sBody = Markdig.Markdown.ToHtml(sSource, GetMarkdownPipeline());
+StringBuilder sb = new StringBuilder();
+sb.Append("<!DOCTYPE html>\r\n");
+sb.Append("<html>\r\n<head>\r\n");
+sb.Append("<meta charset=\"utf-8\" />\r\n");
+sb.Append("<title>" + String2Html(sTitle) + "</title>\r\n");
+sb.Append("</head>\r\n<body>\r\n");
+sb.Append(sBody);
+sb.Append("</body>\r\n</html>\r\n");
+return sb.ToString();
 }
 catch (Exception ex) {
 Dialog.Show("HTML Format", "Could not convert Markdown to HTML.\n" + ex.Message);
 return "";
 }
-return sHtml;
 } // Markdown2Html method
+
+public static string Markdown2Text(string sSource) {
+// Render Markdown source as plain text with markup stripped, via the
+// Markdig library. Returns "" on failure after showing a message.
+try {
+return Markdig.Markdown.ToPlainText(sSource, GetMarkdownPipeline());
+}
+catch (Exception ex) {
+Dialog.Show("Markdown to Plain Text", "Could not convert the document.\n" + ex.Message);
+return "";
+}
+} // Markdown2Text method
+
+// rmConverter: the ReverseMarkdown converter used by the HTML
+// commands, built once on first use. GithubFlavored produces pipe
+// tables and fenced code blocks that Markdig round-trips well;
+// unknown tags are bypassed (contents kept, tags dropped) and HTML
+// comments are removed.
+static ReverseMarkdown.Converter rmConverter = null;
+
+static ReverseMarkdown.Converter GetHtmlConverter() {
+if (rmConverter == null) {
+ReverseMarkdown.Config config = new ReverseMarkdown.Config();
+config.GithubFlavored = true;
+config.RemoveComments = true;
+config.UnknownTags = ReverseMarkdown.Config.UnknownTagsOption.Bypass;
+rmConverter = new ReverseMarkdown.Converter(config);
+}
+return rmConverter;
+} // GetHtmlConverter method
+
+public static string Html2Markdown(string sHtml) {
+// Convert HTML source to Markdown with the ReverseMarkdown library,
+// which parses the HTML through HtmlAgilityPack. Returns "" on
+// failure after showing a message.
+try {
+return GetHtmlConverter().Convert(sHtml);
+}
+catch (Exception ex) {
+Dialog.Show("HTML to Markdown", "Could not convert the document.\n" + ex.Message);
+return "";
+}
+} // Html2Markdown method
+
+public static string Html2Text(string sHtml) {
+// Render HTML source as plain text by chaining the two converters:
+// HTML to Markdown (ReverseMarkdown), then Markdown to plain text
+// (Markdig). Unlike a raw InnerText extraction, the chain preserves
+// paragraph breaks, list structure, and reading order.
+string sMarkdown = Html2Markdown(sHtml);
+if (sMarkdown.Length == 0) return "";
+try {
+return Markdig.Markdown.ToPlainText(sMarkdown, GetMarkdownPipeline());
+}
+catch (Exception ex) {
+Dialog.Show("HTML to Plain Text", "Could not convert the document.\n" + ex.Message);
+return "";
+}
+} // Html2Text method
 
 public static string String2Html(string sText) {
 // Use System.Net.WebUtility.HtmlEncode (in System.dll, always loaded)
@@ -11901,5 +12107,41 @@ return String.Join(Segment.Delimiter.ToString(), aSegments);
 } // Unique method
 
 } // Segment class
+
+// =====================================================================
+// PreviewForm: renders HTML in an embedded WebBrowser control so the
+// screen reader's virtual buffer applies -- JAWS and NVDA element
+// navigation works exactly as on a web page. Used by Preview Markdown
+// (Control+F9). Modeless and owned by the frame, so the editor remains
+// reachable. Escape closes when the browser surface forwards the key
+// (best effort with an embedded browser); Alt+F4 always closes. The
+// WebBrowser control ships inside the .NET Framework, so this feature
+// adds no dependency; if its legacy engine ever falls short, the
+// upgrade path is swapping this one class to Microsoft's WebView2.
+public class PreviewForm : Form {
+WebBrowser browser;
+
+public PreviewForm(string sTitle, string sHtml) {
+this.Text = sTitle + " - Markdown Preview";
+this.StartPosition = FormStartPosition.CenterScreen;
+this.Width = 1000;
+this.Height = 700;
+this.KeyPreview = true;
+this.KeyDown += delegate(object o, KeyEventArgs e) { if (e.KeyCode == Keys.Escape) this.Close(); };
+browser = new WebBrowser();
+browser.Dock = DockStyle.Fill;
+browser.ScriptErrorsSuppressed = true;
+browser.WebBrowserShortcutsEnabled = true;
+browser.PreviewKeyDown += delegate(object o, PreviewKeyDownEventArgs e) { if (e.KeyCode == Keys.Escape) this.Close(); };
+browser.DocumentText = sHtml;
+this.Controls.Add(browser);
+this.Shown += delegate(object o, EventArgs e) { browser.Focus(); };
+} // PreviewForm constructor
+
+public static void ShowPreview(Form frmOwner, string sTitle, string sHtml) {
+PreviewForm frm = new PreviewForm(sTitle, sHtml);
+frm.Show(frmOwner);
+} // ShowPreview method
+} // PreviewForm class
 
 } // EdSharp namespace
