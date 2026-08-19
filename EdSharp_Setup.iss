@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.15
-AppVerName=EdSharp 5.0.15 beta
-VersionInfoVersion=5.0.15
+AppVersion=5.0.16
+AppVerName=EdSharp 5.0.16 beta
+VersionInfoVersion=5.0.16
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -383,8 +383,18 @@ var
 procedure appendSetupLog(sFolder: string);
 var
   lBanner, lSetupLines: TArrayOfString;
+  sSnapshot: string;
 begin
-  if not LoadStringsFromFile(ExpandConstant('{log}'), lSetupLines) then
+  // Inno still holds its log open for WRITING while this runs, and the
+  // line-reading function is refused a file someone is writing. The raw
+  // file copy shares happily with the writer -- the earlier version proved
+  // that on this very file -- so the log is snapshotted first and the
+  // snapshot is read. The last line or two of the session are not in it,
+  // which is the price of reading a log before it closes.
+  sSnapshot := ExpandConstant('{tmp}\innoLogSnapshot.txt');
+  if not CopyFile(ExpandConstant('{log}'), sSnapshot, False) then
+    Exit;
+  if not LoadStringsFromFile(sSnapshot, lSetupLines) then
     Exit;
   SetArrayLength(lBanner, 2);
   lBanner[0] := '';
