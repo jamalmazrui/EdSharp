@@ -47,12 +47,12 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.11
-AppVerName=EdSharp 5.0.11 beta
-VersionInfoVersion=5.0.11
+AppVersion=5.0.12
+AppVerName=EdSharp 5.0.12 beta
+VersionInfoVersion=5.0.12
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
-VersionInfoDescription=EdSharp 5.0 Setup
+VersionInfoDescription=EdSharp Setup
 VersionInfoCopyright=Copyright 2006-2026 by Jamal Mazrui
 SetupIconFile=EdSharp.ico
 UninstallDisplayIcon={app}\EdSharp.exe
@@ -127,7 +127,8 @@ Source: "installPandoc.ps1";  DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp_Setup.iss";  DestDir: "{app}"; Flags: ignoreversion
 Source: "Tektosyne.dll";      DestDir: "{app}"; Flags: ignoreversion
 Source: "Ude.dll";            DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-; JAWS settings family (compiled into each installed JAWS version by [Code]).
+; JAWS settings family (compiled into each installed JAWS version by the
+; Code section).
 Source: "Scripts\*";        DestDir: "{app}\Scripts"; Flags: ignoreversion recursesubdirs skipifsourcedoesntexist
 ; NVDA add-on (installed on the Finish page via [Run]).
 Source: "EdSharp.nvda-addon"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
@@ -174,7 +175,7 @@ Type: files; Name: "{commondesktop}\EdSharp.lnk"
 Name: "{group}\Launch EdSharp";   Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}"
 Name: "{group}\EdSharp Manual";   Filename: "{app}\EdSharp.htm"
 Name: "{group}\EdSharp Tutorial"; Filename: "{app}\Tutorial.htm"
-Name: "{group}\EdSharp 5.0 beta Announcement"; Filename: "{app}\Announce.htm"
+Name: "{group}\EdSharp Announcement"; Filename: "{app}\Announce.htm"
 Name: "{group}\Uninstall EdSharp"; Filename: "{uninstallexe}"
 ; Single hot-key shortcut, following the DbDo model: the one shortcut that owns
 ; Alt+Ctrl+E is created with {autodesktop} (the user desktop for a per-user
@@ -183,18 +184,18 @@ Name: "{group}\Uninstall EdSharp"; Filename: "{uninstallexe}"
 ; single-instance: OnStartupNextInstance brings the running copy to the
 ; foreground, so a plain relaunch activates rather than starting a second copy
 ; (no -activate parameter is needed, unlike DbDo's dual GUI/CLI shortcut).
-Name: "{autodesktop}\EdSharp"; Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\EdSharp.ico"; HotKey: Alt+Ctrl+E; Comment: "Launch or activate EdSharp 5.0 (Alt+Control+E)"
+Name: "{autodesktop}\EdSharp"; Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\EdSharp.ico"; HotKey: Alt+Ctrl+E; Comment: "Launch or activate EdSharp (Alt+Control+E)"
 
 [Run]
 ; Install EdSharps JAWS scripts (Finish-page option, like DbDo). Delegates to
 ; EdSharp.exe --install-jaws-settings, whose C# implementation copies the
 ; settings family into every installed JAWS version and compiles them there.
-Filename: "{app}\EdSharp.exe"; Parameters: "--install-jaws-settings"; WorkingDir: "{app}"; Description: "Install JAWS scripts for EdSharp (recommended if you use JAWS)"; Flags: postinstall skipifsilent
+Filename: "{app}\EdSharp.exe"; Parameters: "--install-jaws-settings"; WorkingDir: "{app}"; Description: "Install JAWS scripts for EdSharp (recommended)"; Flags: postinstall skipifsilent; Check: haveJaws
 ; Install the NVDA add-on by shell-executing the .nvda-addon file (NVDA
 ; registers itself as the handler). Unchecked by default; checking it opens
 ; NVDA's add-on install dialog. NVDA must be running, and be restarted after.
 Filename: "{app}\EdSharp.nvda-addon"; Description: "Install NVDA add-on (NVDA must be running; restart NVDA afterward)"; Flags: postinstall shellexec skipifdoesntexist unchecked
-; Fetch pandoc into {app}\Convert, following the HomerView pattern: checked by
+; Fetch pandoc into {app}\Convert\Pandoc, following the HomerView pattern: checked by
 ; default because the user who needs it cannot tell in advance that they do,
 ; and hidden entirely (needPandoc) once a copy is in place, so a reinstall
 ; asks nothing.  Unlike HomerView this entry runs ELEVATED on purpose -- no
@@ -211,7 +212,7 @@ Filename: "{code:ngenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Fla
 Filename: "{code:ngenExe}"; Parameters: "install ""{app}\EdSharp.exe"" /AppBase:""{app}"" /nologo /silent"; Flags: runhidden; Check: isAdminNgen
 
 [UninstallRun]
-Filename: "{code:ngenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: isAdminNgen
+Filename: "{code:ngenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: isAdminNgen; RunOnceId: "NgenUninstall"
 
 [UninstallDelete]
 Type: files; Name: "{app}\EdSharp.exe"
@@ -219,7 +220,7 @@ Type: files; Name: "{app}\EdSharp.dll"
 Type: files; Name: "{app}\BuildEdSharp.log"
 ; pandoc.exe was placed by installPandoc, not by this installer, so Inno does
 ; not know to remove it; named here so an uninstall leaves no 200 MB orphan.
-Type: files; Name: "{app}\Convert\pandoc.exe"
+Type: files; Name: "{app}\Convert\Pandoc\pandoc.exe"
 
 [Registry]
 ; HKA maps to HKLM in an elevated (all-users) install and to HKCU in a
@@ -238,17 +239,183 @@ end;
 
 function isAdminNgen(): boolean;
 begin
-  // ngen updates the machine-wide native image cache, which requires an
-  // elevated install; in per-user mode we skip it and let the JIT handle
-  // compilation at first launch.
   result := IsAdminInstallMode and FileExists(ExpandConstant('{code:ngenExe}'));
 end;
 
 function needPandoc(): boolean;
 begin
-  // pandoc is fetched by installPandoc.cmd rather than packaged.  The offer
-  // is hidden once a copy is already in place, so a reinstall over a working
-  // installation never even shows the checkbox (the HomerView lesson: an
-  // offer the program always declines is an offer that should not be made).
-  result := not FileExists(ExpandConstant('{app}\Convert\pandoc.exe'));
+  // pandoc is fetched by installPandoc.cmd rather than packaged, and it lives
+  // in the Pandoc subfolder of Convert (the installer's own file list proved
+  // the path).  The offer is hidden once a copy is in place, so a reinstall
+  // over a working installation never even shows the checkbox.
+  result := not FileExists(ExpandConstant('{app}\Convert\Pandoc\pandoc.exe'));
+end;
+
+{ ---------------------------------------------------------------------------
+  Whether JAWS is here at all, checked the HomerView way: the machine-wide
+  program folder first, because an elevated installer resolves the user
+  application data constant to the ELEVATING account, whose profile may hold
+  no JAWS settings even when JAWS is in daily use.  A tester once lost an
+  evening to exactly that.
+  --------------------------------------------------------------------------- }
+function haveJaws(): boolean;
+var
+  sPath: string;
+  findRec: TFindRec;
+begin
+  result := False;
+  if DirExists(ExpandConstant('{commonpf}\Freedom Scientific\JAWS'))
+     or DirExists(ExpandConstant('{commonpf32}\Freedom Scientific\JAWS')) then
+  begin
+    result := True;
+    Exit;
+  end;
+  sPath := ExpandConstant('{userappdata}\Freedom Scientific\JAWS');
+  if not DirExists(sPath) then
+    Exit;
+  if FindFirst(sPath + '\*', findRec) then
+  begin
+    try
+      repeat
+        if (findRec.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then
+          if (findRec.Name <> '.') and (findRec.Name <> '..') then
+            if DirExists(sPath + '\' + findRec.Name + '\Settings') then
+            begin
+              result := True;
+              Exit;
+            end;
+      until not FindNext(findRec);
+    finally
+      FindClose(findRec);
+    end;
+  end;
+end;
+
+{ Whether the JAWS scripts actually LANDED, which is a different question from
+  whether the box was ticked.  The settings family goes into each JAWS
+  version's Settings\enu folder, so one EdSharp.jss or compiled EdSharp.jsb
+  found there is the observed fact the summary reports. }
+function jawsScriptsInstalled(): boolean;
+var
+  sPath: string;
+  findRec: TFindRec;
+begin
+  result := False;
+  sPath := ExpandConstant('{userappdata}\Freedom Scientific\JAWS');
+  if not DirExists(sPath) then
+    Exit;
+  if FindFirst(sPath + '\*', findRec) then
+  begin
+    try
+      repeat
+        if (findRec.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then
+          if (findRec.Name <> '.') and (findRec.Name <> '..') then
+            if FileExists(sPath + '\' + findRec.Name + '\Settings\enu\EdSharp.jss')
+               or FileExists(sPath + '\' + findRec.Name + '\Settings\enu\EdSharp.jsb') then
+            begin
+              result := True;
+              Exit;
+            end;
+      until not FindNext(findRec);
+    finally
+      FindClose(findRec);
+    end;
+  end;
+end;
+
+function nvdaIsRunning(): boolean;
+var
+  iResult: integer;
+begin
+  result := False;
+  if Exec(ExpandConstant('{cmd}'),
+          '/c tasklist /fi "imagename eq nvda.exe" | find /i "nvda.exe"',
+          '', SW_HIDE, ewWaitUntilTerminated, iResult) then
+    result := (iResult = 0);
+end;
+
+function addonIsInstalled(): boolean;
+var
+  sAddons: string;
+begin
+  // NVDA copies an add-on in as <name>.pendingInstall until it restarts, so
+  // both spellings count as installed.
+  sAddons := ExpandConstant('{userappdata}\nvda\addons\');
+  result := DirExists(sAddons + 'EdSharp')
+         or DirExists(sAddons + 'EdSharp.pendingInstall');
+end;
+
+{ ---------------------------------------------------------------------------
+  WHAT THE INSTALLER ACTUALLY DID -- one message box at the very end, read
+  properly by a screen reader, following the HomerView model.  Every line is
+  an OBSERVED FACT, not a checkbox that was ticked: a ticked box says what was
+  ASKED FOR; the folder on disk says what HAPPENED, and those differ often
+  enough to matter -- most of all for the NVDA add-on, which silently does
+  nothing when NVDA is not running.  No console window anywhere waits on a
+  key press; everything worth reading is here or in the logs.
+
+  The Inno Setup log itself is copied into the EdSharp logs folder under the
+  user's local application data, beside installPandoc's logs, so every record
+  of the installation lives in one place.
+  --------------------------------------------------------------------------- }
+var
+  gbInstalled: boolean;
+
+procedure CurStepChanged(iCurStep: TSetupStep);
+begin
+  // DeinitializeSetup runs whenever Setup exits, INCLUDING WHEN THE USER
+  // CANCELS.  Announcing success to somebody who has just backed out would be
+  // a plain lie, so the summary is shown only if the files were copied.
+  if iCurStep = ssPostInstall then
+    gbInstalled := True;
+end;
+
+procedure DeinitializeSetup();
+var
+  sBreak, sLogDir, sMessage: string;
+begin
+  // Nothing to report if nothing was installed, and nobody to read it in a
+  // silent installation, where a message box would wait forever for a click
+  // that a script cannot give.
+  if (not gbInstalled) or WizardSilent then
+    Exit;
+
+  sBreak := Chr(13) + Chr(10);
+  sLogDir := ExpandConstant('{localappdata}\EdSharp\logs');
+  ForceDirectories(sLogDir);
+  // The Inno log otherwise sits in the temporary folder under a dated name
+  // nobody can dictate; one fixed path makes it possible to ask for over the
+  // phone.  CopyFile, not FileCopy: there is no FileCopy in Pascal Script.
+  CopyFile(ExpandConstant('{log}'), sLogDir + '\EdSharp_setup.log', False);
+
+  sMessage := 'EdSharp is installed.' + sBreak + sBreak
+    + 'Program files:' + sBreak + '  ' + ExpandConstant('{app}') + sBreak + sBreak
+    + 'Results' + sBreak;
+
+  if not haveJaws() then
+    sMessage := sMessage + '  JAWS scripts: not offered, because JAWS was not found on this computer.' + sBreak
+  else if jawsScriptsInstalled() then
+    sMessage := sMessage + '  JAWS scripts: installed.' + sBreak
+  else
+    sMessage := sMessage + '  JAWS scripts: NOT installed. Run the option again from the installer, and send the logs named below if it still fails.' + sBreak;
+
+  if addonIsInstalled() then
+    sMessage := sMessage + '  NVDA add-on: installed. Restart NVDA to use it.' + sBreak
+  else if not nvdaIsRunning() then
+    sMessage := sMessage + '  NVDA add-on: NOT installed, because NVDA was not running.' + sBreak
+      + '    Start NVDA, then open:' + sBreak
+      + '    ' + ExpandConstant('{app}\EdSharp.nvda-addon') + sBreak
+  else
+    sMessage := sMessage + '  NVDA add-on: not installed. Open EdSharp.nvda-addon in the program folder to install it.' + sBreak;
+
+  if FileExists(ExpandConstant('{app}\Convert\Pandoc\pandoc.exe')) then
+    sMessage := sMessage + '  pandoc: present. Document conversion will work.' + sBreak
+  else
+    sMessage := sMessage + '  pandoc: not present. To add it later, run installPandoc.cmd from the program folder as an administrator.' + sBreak;
+
+  sMessage := sMessage + sBreak
+    + 'The setup logs are in:' + sBreak + '  ' + sLogDir + sBreak + sBreak
+    + 'To start EdSharp, press Alt+Control+E.';
+
+  MsgBox(sMessage, mbInformation, MB_OK);
 end;

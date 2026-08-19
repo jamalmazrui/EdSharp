@@ -7,7 +7,7 @@
 #   installPandoc.cmd   (from the EdSharp installation folder)
 #
 # What it does, in order:
-#   1. If Convert\pandoc.exe already exists beside this script, report and stop.
+#   1. If Convert\Pandoc\pandoc.exe already exists under this script's folder, report and stop.
 #   2. If a pandoc.exe is already on this machine (on PATH, or in the usual
 #      pandoc install folders), copy that one rather than downloading.
 #   3. Otherwise download the newest Windows pandoc from the official GitHub
@@ -37,7 +37,9 @@ $sScriptDir = ""
 $sTargetFile = ""
 
 $sScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sConvertDir = Join-Path $sScriptDir "Convert"
+# Pandoc lives in the Pandoc subfolder of Convert -- the installer's own
+# file list proved the path; a first draft wrongly used Convert directly.
+$sConvertDir = Join-Path $sScriptDir "Convert\Pandoc"
 $sTargetFile = Join-Path $sConvertDir "pandoc.exe"
 $sLogDir = Join-Path $env:LOCALAPPDATA "$c_sAppName\logs"
 $sLogFile = Join-Path $sLogDir ("installPandoc_" + (Get-Date -Format "yyyyMMdd_HHmmss") + ".log")
