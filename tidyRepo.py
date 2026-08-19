@@ -34,6 +34,10 @@ WHAT IT LOOKS FOR
   2. Large objects anywhere in the history, whether still reachable or not,
      because that is what makes a clone slow and what GitHub complains about.
   3. Files on disk that are neither tracked nor ignored.
+  5. Tags on the remote that still point at the old, heavy history after a
+     rewrite. Rewriting moves the local tags; until the remote's copies are
+     force-pushed too, a fresh clone still downloads the old objects through
+     them. This script pushes them and confirms the remote matches.
   4. The names EdSharp must not carry, wherever they appear -- tracked, on
      disk, or in the history:
        pandoc.exe and the Convert/Pandoc folder: untracked, ignored, and
@@ -315,6 +319,33 @@ def surveyState():
     }
 
 
+def surveyTags(dState):
+    """Tags whose copy on the remote differs from the local, rewritten tag.
+
+    None means the remote could not be read, which is reported rather than
+    treated as all clear. Annotated tags appear twice in ls-remote, once
+    peeled with a trailing ^{}; the peeled lines are skipped so each tag is
+    compared once, tag object to tag object.
+    """
+    if not dState["remote"]:
+        return []
+    dLocal = {}
+    for sLine in gitOut(["show-ref", "--tags"]).splitlines():
+        lParts = sLine.split()
+        if len(lParts) == 2:
+            dLocal[lParts[1]] = lParts[0]
+    result = run(["git", "ls-remote", "--tags", "origin"])
+    if not result or result.returncode:
+        return None
+    lStale = []
+    for sLine in (result.stdout or "").splitlines():
+        lParts = sLine.split()
+        if len(lParts) == 2 and not lParts[1].endswith("^{}"):
+            if lParts[1] in dLocal and dLocal[lParts[1]] != lParts[0]:
+                lStale.append(lParts[1].replace("refs/tags/", ""))
+    return sorted(lStale)
+
+
 # --- The plan ---------------------------------------------------------------
 
 
@@ -499,6 +530,27 @@ def main():
         say("   these trips a per-file limit; together they are most of what a")
         say("   clone has to download.")
         say("")
+    lStaleTags = []
+    bTagsUnknown = False
+    if dState["remote"]:
+        vTags = surveyTags(dState)
+        if vTags is None:
+            bTagsUnknown = True
+            say("5. TAGS: the remote could not be read, so tag state is unknown.")
+            say("")
+        else:
+            lStaleTags = vTags
+            if lStaleTags:
+                say(f"5. TAGS: {len(lStaleTags)} on the remote still point at the old history:")
+                say("")
+                say(f"     {', '.join(lStaleTags)}")
+                say("")
+                say("   The rewrite moved the local tags; the remote's copies keep the")
+                say("   old objects downloadable until they are force-pushed too.")
+            else:
+                say("5. TAGS: every remote tag matches its local copy.")
+            say("")
+
     setHistoryNames = {t[1] for t in lBig}
     bNeedRewrite = bool(lTooBig) or bool(lBulky) or bool(lUnwantedHistory)
     say("=" * 68)
@@ -541,6 +593,10 @@ def main():
             iStep += 1
             sHow = "force-push (the history changed)" if bNeedRewrite else "push"
             say(f"{iStep}. {sHow}.")
+    if lStaleTags and not dArguments.no_push:
+        iStep += 1
+        sTags = "tag" if len(lStaleTags) == 1 else "tags"
+        say(f"{iStep}. Force-push {len(lStaleTags)} {sTags}, so the remote stops holding the old history.")
     if not iStep:
         say("Nothing to do. The repository is already tidy.")
         return 0
@@ -815,6 +871,26 @@ def main():
             run(["git", "push", "origin", dState["branch"]])
     say("")
 
+    # The tags, surveyed again rather than reusing the earlier answer, since a
+    # rewrite above has just moved every local tag.
+    if not dArguments.no_push and dState["remote"]:
+        vTags = surveyTags(dState)
+        if vTags:
+            sTags = "tag" if len(vTags) == 1 else "tags"
+            say(f"Force-pushing {len(vTags)} {sTags}, so the remote stops holding the old history.")
+            run(["git", "push", "--force", "origin", "--tags"])
+            vAfter = surveyTags(dState)
+            if vAfter == []:
+                say("  confirmed: every remote tag now matches its local copy")
+            elif vAfter is None:
+                say("  the remote could not be re-read to confirm the tags; run this again to check")
+            else:
+                say(f"  WARNING: {len(vAfter)} tags still differ after the push: {', '.join(vAfter[:8])}")
+            say("")
+        elif vTags is None:
+            say("The remote could not be read, so the tags were not checked; run this again when it is reachable.")
+            say("")
+
     say("=" * 68)
     say("AFTERWARDS")
     say("=" * 68)
@@ -842,6 +918,25 @@ def main():
             say(f"The repository is now {sLine.split(':', 1)[1].strip()}.")
     lTracked, lStray = surveyTracked(setNeeded)
     say(f"{len(lTracked)} files tracked, {len(lStray)} of them unnecessary.")
+    # The all-but-only certification: nothing needed is missing, and what is
+    # untracked is deliberately so.
+    lBelongAfter, lNotAfter = surveyWorkingTree(setNeeded)
+    if lBelongAfter:
+        say(f"WARNING: {len(lBelongAfter)} files belong in the repository and are still missing:")
+        for sPath in sorted(lBelongAfter):
+            say(f"  {sPath}")
+    else:
+        say("Nothing that belongs in the repository is missing from it.")
+    iNot = len(lNotAfter)
+    sFiles = "file" if iNot == 1 else "files"
+    say(f"{iNot} untracked {sFiles} on disk are deliberately outside the repository.")
+    vTags = surveyTags(dState)
+    if vTags == []:
+        say("Every remote tag matches its local copy.")
+    elif vTags is None:
+        say("The remote could not be read to confirm the tags.")
+    else:
+        say(f"WARNING: {len(vTags)} remote tags still point at the old history.")
     say("")
     say(f"The log is at {pathLog}")
     return 0
