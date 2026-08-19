@@ -38,11 +38,15 @@ $sScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sLogDir = Join-Path $env:LOCALAPPDATA "EdSharp\logs"
 if ($pathLogFile -eq "") {
   New-Item -ItemType Directory -Force -Path $sLogDir | Out-Null
-  $pathLogFile = Join-Path $sLogDir "installJawsScripts.log"
+  # The consolidated log: pandoc, JAWS, and Inno Setup all append to this
+  # one file under dated banners. -pathLogFile still redirects it, which the
+  # uninstaller uses because this folder does not survive an uninstall.
+  $pathLogFile = Join-Path $sLogDir "EdSharp_setup.log"
 } else {
   $sLogDir = Split-Path -Parent $pathLogFile
 }
-Set-Content -LiteralPath $pathLogFile -Value "" -Encoding UTF8
+Add-Content -LiteralPath $pathLogFile -Value "" -Encoding UTF8
+Add-Content -LiteralPath $pathLogFile -Value ("==== installJawsScripts  " + (Get-Date -Format "yyyy-MM-dd HH:mm:ss") + " ====") -Encoding UTF8
 
 function writeLog($sMessage) {
   $sLine = "{0:yyyy-MM-dd HH:mm:ss}  {1}" -f (Get-Date), $sMessage

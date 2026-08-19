@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.14
-AppVerName=EdSharp 5.0.14 beta
-VersionInfoVersion=5.0.14
+AppVersion=5.0.15
+AppVerName=EdSharp 5.0.15 beta
+VersionInfoVersion=5.0.15
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -377,6 +377,22 @@ end;
 var
   gbInstalled: boolean;
 
+{ Inno's own record joins the consolidated EdSharp_setup.log under a dated
+  banner, beside the pandoc and JAWS sections the scripts already appended --
+  one file to read, one file to send. }
+procedure appendSetupLog(sFolder: string);
+var
+  lBanner, lSetupLines: TArrayOfString;
+begin
+  if not LoadStringsFromFile(ExpandConstant('{log}'), lSetupLines) then
+    Exit;
+  SetArrayLength(lBanner, 2);
+  lBanner[0] := '';
+  lBanner[1] := '==== EdSharp installer (Inno Setup)  ' + GetDateTimeString('yyyy/mm/dd hh:nn:ss', '-', ':') + ' ====';
+  SaveStringsToFile(AddBackslash(sFolder) + 'EdSharp_setup.log', lBanner, True);
+  SaveStringsToFile(AddBackslash(sFolder) + 'EdSharp_setup.log', lSetupLines, True);
+end;
+
 procedure CurStepChanged(iCurStep: TSetupStep);
 begin
   // DeinitializeSetup runs whenever Setup exits, INCLUDING WHEN THE USER
@@ -400,17 +416,17 @@ begin
   sBreak := Chr(13) + Chr(10);
   sLogDir := ExpandConstant('{localappdata}\EdSharp\logs');
   ForceDirectories(sLogDir);
-  // The Inno log otherwise sits in the temporary folder under a dated name
-  // nobody can dictate; one fixed path makes it possible to ask for over the
-  // phone.  CopyFile, not FileCopy: there is no FileCopy in Pascal Script.
-  CopyFile(ExpandConstant('{log}'), sLogDir + '\EdSharp_setup.log', False);
+  // Inno's record is APPENDED to the consolidated log, not copied over it:
+  // the pandoc and JAWS sections are already inside, each under its banner.
   // The JAWS script runs as the original user, whose log folder this
-  // elevated installer cannot resolve -- the result file names it, and the
-  // setup log is placed there too, so every log sits in ONE folder.
+  // elevated installer cannot resolve -- the result file names it, so the
+  // record is appended there too, and that is the file the box names.
   iJaws := jawsResult(sJawsLogDir);
+  appendSetupLog(sLogDir);
   if (sJawsLogDir <> '') and DirExists(sJawsLogDir) then
   begin
-    CopyFile(ExpandConstant('{log}'), AddBackslash(sJawsLogDir) + 'EdSharp_setup.log', False);
+    if CompareText(sJawsLogDir, sLogDir) <> 0 then
+      appendSetupLog(sJawsLogDir);
     sLogDir := sJawsLogDir;
   end;
 
@@ -442,7 +458,7 @@ begin
     sMessage := sMessage + '  pandoc: not present. To add it later, run installPandoc.cmd from the program folder as an administrator.' + sBreak;
 
   sMessage := sMessage + sBreak
-    + 'The setup logs are in:' + sBreak + '  ' + sLogDir + sBreak + sBreak
+    + 'The whole installation is in one log:' + sBreak + '  ' + sLogDir + '\EdSharp_setup.log' + sBreak + sBreak
     + 'To start EdSharp, press Alt+Control+E.';
 
   MsgBox(sMessage, mbInformation, MB_OK);

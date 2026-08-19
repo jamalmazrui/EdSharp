@@ -42,7 +42,10 @@ $sScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sConvertDir = Join-Path $sScriptDir "Convert\Pandoc"
 $sTargetFile = Join-Path $sConvertDir "pandoc.exe"
 $sLogDir = Join-Path $env:LOCALAPPDATA "$c_sAppName\logs"
-$sLogFile = Join-Path $sLogDir ("installPandoc_" + (Get-Date -Format "yyyyMMdd_HHmmss") + ".log")
+# One consolidated log for the whole installation: this script, the JAWS
+# script, and Inno Setup's own record all append to EdSharp_setup.log under
+# dated banners, so there is one file to read and one file to send.
+$sLogFile = Join-Path $sLogDir "EdSharp_setup.log"
 
 function writeLog($sText) {
   $sStamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
@@ -78,6 +81,8 @@ function reportVersion($sExeFile) {
 }
 
 New-Item -ItemType Directory -Path $sLogDir -Force | Out-Null
+Add-Content -LiteralPath $sLogFile -Value "" -Encoding UTF8
+Add-Content -LiteralPath $sLogFile -Value ("==== installPandoc  " + (Get-Date -Format "yyyy-MM-dd HH:mm:ss") + " ====") -Encoding UTF8
 
 try {
   # -- Environment, for debugging. ------------------------------------------
