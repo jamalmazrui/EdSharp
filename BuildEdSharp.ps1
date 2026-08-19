@@ -39,6 +39,8 @@
 #
 # Exit codes: 0 build succeeded; 1 build failed (see BuildEdSharp.log).
 
+param([string]$sMode = "")
+
 # ---- constants --------------------------------------------------------------
 $c_sHtmlAgilityPackVersion = "1.11.72"
 # Markdig is pinned at the last 0.x release. The 1.x line (current as of
@@ -149,6 +151,36 @@ function findCsc() {
   throw "No C# compiler found. Install Visual Studio Build Tools 2022 (https://visualstudio.microsoft.com/downloads/) or repair the .NET Framework."
 }
 
+function compareVersions($sLeft, $sRight) {
+  # -1, 0, or 1, comparing dotted numbers part by part with missing parts as
+  # zero. A part that is not a number makes its version compare as older,
+  # so an odd tag can never become the base to count from.
+  $lLeft = $sLeft.Split(".")
+  $lRight = $sRight.Split(".")
+  $iCount = [Math]::Max($lLeft.Count, $lRight.Count)
+  for ($iPart = 0; $iPart -lt $iCount; $iPart++) {
+    $iLeft = 0
+    $iRight = 0
+    if ($iPart -lt $lLeft.Count) { if (-not [int]::TryParse($lLeft[$iPart], [ref]$iLeft)) { return -1 } }
+    if ($iPart -lt $lRight.Count) { if (-not [int]::TryParse($lRight[$iPart], [ref]$iRight)) { return 1 } }
+    if ($iLeft -lt $iRight) { return -1 }
+    if ($iLeft -gt $iRight) { return 1 }
+  }
+  return 0
+}
+
+function nextVersion($sCurrent) {
+  # The last dotted part goes up by one; fewer than three parts gain one,
+  # so 5.0 becomes 5.0.1 and a bare 7 becomes 7.0.1 (HomerScribe's rule).
+  $lParts = $sCurrent.Split(".")
+  if ($lParts.Count -ge 3) {
+    $lParts[$lParts.Count - 1] = [string]([int]$lParts[$lParts.Count - 1] + 1)
+    return ($lParts -join ".")
+  }
+  if ($lParts.Count -eq 2) { return "$sCurrent.1" }
+  return "$sCurrent.0.1"
+}
+
 function findIscc() {
   # Inno Setup 6's command-line compiler, in the two standard locations,
   # exactly as buildHomerScribe.cmd looks for it. Returns "" when absent,
@@ -187,6 +219,57 @@ try {
   writeLog "PowerShell: $($PSVersionTable.PSVersion), platform: $([System.Environment]::OSVersion.VersionString), 64-bit process: $([System.Environment]::Is64BitProcess)"
   writeLog "Working directory: $(Get-Location)"
   writeLog "Settings: ReverseMarkdown=$c_sReverseMarkdownVersion, HtmlAgilityPack=$c_sHtmlAgilityPackVersion, Markdig=$c_sMarkdigVersion, log=$sLogFile"
+
+  # ---- version: bump the iss AppVersion past every released tag ----------
+  # EdSharp's version lives in EdSharp_Setup.iss (the plain AppVersion=
+  # directive; that file is the single source, playing the role version.txt
+  # plays for the other Homer Tools). v5.0 through v5.0.10 are already
+  # released, so a build that leaves the number alone hands tagRelease a
+  # version it must refuse. This is HomerScribe's takeNextVersion pattern:
+  # increment the last dotted part, step over any number that already
+  # carries a v-tag on origin, and rewrite the version lines in the iss.
+  # Run "buildEdSharp nobump" to keep the current number.
+  $sIssFile = Join-Path $sScriptDir "EdSharp_Setup.iss"
+  if (-not (Test-Path -LiteralPath $sIssFile)) { throw "EdSharp_Setup.iss was not found beside the build script." }
+  $sIss = [System.IO.File]::ReadAllText($sIssFile)
+  $matchVersion = [regex]::Match($sIss, "(?m)^AppVersion=(.+)$")
+  if (-not $matchVersion.Success) { throw "No AppVersion= line was found in EdSharp_Setup.iss." }
+  $sOldVersion = $matchVersion.Groups[1].Value.Trim()
+  if ($sMode -ieq "nobump") {
+    writeLog "Version: $sOldVersion (nobump: keeping the current number)"
+  } else {
+    $dReleased = @{}
+    $sRemoteTags = (& git ls-remote --tags origin "v*" 2>&1 | Out-String)
+    if ($LASTEXITCODE -eq 0) {
+      foreach ($sLine in $sRemoteTags -split "`n") {
+        if ($sLine -match "refs/tags/v([^\^\s]+)\s*$") { $dReleased[$Matches[1]] = $true }
+      }
+      writeLog "Released versions on origin: $($dReleased.Count)"
+    } else {
+      writeLog "WARNING: the released tags could not be read, so the next number is taken blindly. tagRelease remains the final check."
+    }
+    # Start from the HIGHEST released version or the iss version, whichever
+    # is greater, then increment. Plain step-over would fill gaps: the real
+    # tag list skips v5.0.3, and minting 5.0.3 after v5.0.10 exists would
+    # put a "new" release below an old one.
+    $sBase = $sOldVersion
+    foreach ($sReleased in $dReleased.Keys) {
+      if ((compareVersions $sReleased $sBase) -gt 0) { $sBase = $sReleased }
+    }
+    if ($sBase -ne $sOldVersion) { writeLog "Highest released version is v$sBase, above the iss's $sOldVersion; counting from there." }
+    $sNewVersion = nextVersion $sBase
+    $iGuard = 0
+    while ($dReleased.ContainsKey($sNewVersion) -and $iGuard -lt 200) {
+      writeLog "Version v$sNewVersion is already released; stepping over it."
+      $sNewVersion = nextVersion $sNewVersion
+      $iGuard = $iGuard + 1
+    }
+    $sIss = [regex]::Replace($sIss, "(?m)^AppVersion=.*$", "AppVersion=$sNewVersion")
+    $sIss = [regex]::Replace($sIss, "(?m)^VersionInfoVersion=.*$", "VersionInfoVersion=$sNewVersion")
+    $sIss = [regex]::Replace($sIss, "(?m)^(AppVerName=.*?)" + [regex]::Escape($sOldVersion) + "(.*)$", "`${1}$sNewVersion`${2}")
+    [System.IO.File]::WriteAllText($sIssFile, $sIss, (New-Object System.Text.UTF8Encoding($true)))
+    writeLog "Version: $sOldVersion -> $sNewVersion (written to EdSharp_Setup.iss; tagRelease will tag v$sNewVersion)"
+  }
 
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
   writeLog "TLS 1.2 enabled for downloads."

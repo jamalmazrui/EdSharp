@@ -66,7 +66,13 @@ import subprocess
 import sys
 
 c_iLargeBytes = 5 * 1024 * 1024          # worth naming in the history
-c_iBulkyBytes = 25 * 1024 * 1024         # worth removing, counted across copies
+# Lowered from 25 MB on 19 August 2026 to truly finish the job: after the
+# main tidy, ten historical blobs of 5 to 24 MB each (old zips, edsetup.exe,
+# an NFBTrans database, a copyrighted PDF) still accounted for most of the
+# remaining 155 MiB of pack. At 5 MB, any unneeded name whose history costs
+# that much is swept; needed names are protected by the isNeeded check
+# regardless of size.
+c_iBulkyBytes = 5 * 1024 * 1024          # worth removing, counted across copies
 c_iGitHubLimit = 100 * 1024 * 1024       # what GitHub refuses outright
 c_sLogName = "tidyRepo.log"
 
@@ -708,6 +714,12 @@ def main():
     # not covered by the canonical Convert/Pandoc/ pattern, and an entry that
     # is missing is a path git add -A can readmit.
     lAdd = [s for s in lStray if s not in sExisting]
+    # The leave-alone files as well. The release path runs git add -A, and an
+    # untracked file with no ignore entry is one commit away from coming back:
+    # 319 old emails and notes were one add -A from rejoining the repository.
+    # Ignored files stay on disk and stay visible; they only stop being
+    # committable by accident.
+    lAdd += [s for s in lNotOurs if s not in sExisting]
     # The names that must never return, whatever else is in the tree: the
     # unwanted files, the installer output that accumulated 24 copies in the
     # history, the dlls the build fetches, and the logs.

@@ -1,0 +1,119 @@
+Subject:
+[program-l] Re: .NET rich textbox and JAWS
+From:
+"George Bell" <george@techno-vision.co.uk>
+Date:
+Thu, 6 May 2010 03:29:37 +0100
+To:
+<program-l@freelists.org>
+
+Hi Jamal & Jacob,
+
+Many thanks to you both for the sample code - it's gone off for
+analysis.
+
+Jamal, I guess the tricky issue now might be to determine why the same
+instructions are failing in EdSharp.  If it possible to determine
+which Property is to blame, at least that could be looked at in
+isolation.
+
+George.
+
+-----Original Message-----
+From: Jamal Mazrui [mailto:empower@smart.net] 
+Sent: 06 May 2010 03:15
+To: program-l@freelists.org
+Cc: George Bell
+Subject: Re: [program-l] .NET rich textbox and JAWS
+
+Here are my results.
+
+After following the instructions, the latest JAWS 11 now correctly
+does a SayAll in the example I posted at
+http://EmpowermentZone.com/RichTextBoxExample.zip
+
+I appreciate that progress.
+
+Unfortunately, SayAll still does not work in EdSharp (without my
+work-around scripts).  I hope the FS representative can look at that
+as well (many blind programmers and others are using this editor).
+EdSharp uses the same RichTextBox control, though some properties such
+as the default font, may be different than the above example.
+
+Although no claims were made about JAWS 10, I tried it as well with
+the same changes.  No improvement there.
+
+Thanks for working on this.  If there is more that I can do, let me
+know.
+
+Jamal
+
+On 5/5/2010 6:47 PM, George Bell wrote:
+> > Well guys, as the says goes, "The grass isn't growing under our feet
+
+> > here!"
+> >
+> > I've just had the following from my contact at Freedom Scientific.
+> >
+> > George.
+> >
+> >
+> > It would be helpful if you could provide some additional feedback 
+> > after reading the following.
+> >
+> > Please make sure you have the latest JAWS update installed before 
+> > continuing. Updating later on version 11 may become tricky and
+result 
+> > in having to uninstall and remove shared before getting any further 
+> > updates.
+> >
+> > The problem is related to the fact that JAWS isn't directly 
+> > communicating with the RichEdit controls used inside .net 
+> > applications.
+> > Under these circumstances when JAWS is using the OSM to do a SayAll,
+
+> > it is not always possible to reliably detect the bottom of the 
+> > document.
+> > This, as was hypothesized, is why the system seems to stop
+functioning 
+> > until Alt+Tabbing away from the application.
+> >
+> > The potential fix involves two steps:
+> > 1. Go into Configuration Manager for the application in question, 
+> > choose Text Processing Options and then enable Extended Edit
+Support.
+> >
+> > 2. Add the following lines to the bottom of FSDomSrv.ini in the 
+> > C:\Program Files\Freedom Scientific\Shared\FsDomSrv\2.0 directory
+> >
+> > [RichEditInDotNet]
+> > DLLName=FSDomNodeRichEdit
+> > MappingFlags=128
+> > WindowClass=WindowsForms10.RichEdit20W
+> > InteractionModeFlags=2
+> >
+> > Restart both JAWS 11 and the .net application.
+> > ** To leave the list, click on the immediately-following link:-
+> > ** [mailto:program-l-request@freelists.org?subject=unsubscribe]
+> > ** If this link doesn't work then send a message to:
+> > ** program-l-request@freelists.org
+> > ** and in the Subject line type
+> > ** unsubscribe
+> > ** For other list commands such as vacation mode, click on the
+> > ** immediately-following link:-
+> > ** [mailto:program-l-request@freelists.org?subject=faq]
+> > ** or send a message, to
+> > ** program-l-request@freelists.org with the Subject:- faq
+> >
+** To leave the list, click on the immediately-following link:-
+** [mailto:program-l-request@freelists.org?subject=unsubscribe]
+** If this link doesn't work then send a message to:
+** program-l-request@freelists.org
+** and in the Subject line type
+** unsubscribe
+** For other list commands such as vacation mode, click on the
+** immediately-following link:-
+** [mailto:program-l-request@freelists.org?subject=faq]
+** or send a message, to
+** program-l-request@freelists.org with the Subject:- faq
+

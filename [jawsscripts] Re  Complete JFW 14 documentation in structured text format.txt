@@ -1,0 +1,87 @@
+
+Subject:
+[jawsscripts] Re: Complete JFW 14 documentation in structured text format
+From:
+Jamal Mazrui <empower@smart.net>
+Date:
+11/10/2012 9:11 PM
+To:
+jawsscripts@freelists.org
+CC:
+Geoff Chapman <gch@internode.net.au>
+
+Personally, and from feedback, many others, find structured text format 
+to be of greater value than the CHM format distributed with JFW.  This 
+is particularly true using an editor that understands the conventions of 
+structured text format and supports navigation accordingly.
+
+EdSharp has the best support for this plain textspecification. Similar 
+to the Windows CHM viewer, one can press F6 on a help topic and be moved 
+to its section of text in the file.  Shift+F6 goes back to the topic in 
+the table of contents.
+
+In addition, Control+F6 may be used to search for any help topic based 
+on text contained in the topic name.  Alt+F6 goes to the next match.  
+Control+PageUp and Control+PageDown, moreover, may be used to navigate 
+to the next or prior topic through the entire file.
+
+Since the file is essentially plain text, other benefits are present.  
+Control+F may be used to do a global forward search in the file.  
+Control+Shift+F does a reverse find.  F3 repeats a search forward and 
+Shift+F3 repeats a search backward.
+
+If one is interested in reading documentation in a sustained fashion 
+over multiple topics, one can simply do a SayAll command.
+
+Some, but definitely not all, of these capabilities are available with 
+the CHM help format and default viewer.
+
+Jamal
+
+On 11/10/2012 8:55 PM, Geoff Chapman wrote:
+> > Jamal.
+> >
+> > Could you explain to us what the advantages might be, of having the docs in
+> > this structured text format you have kindly prepared below? i note that you
+> > do this with every new version of jfw that's released, which must obviously
+> > take you considerable work/time/effort etc.  and, well I'd just like to
+> > hopefully not embarrass myself toooo much, :) by asking, why?
+> >
+> > On an additional note, could you elaborate on the files you indicate have
+> > not yet been updated, which compare scripts and functions available in
+> > different versions? I'm sure they'd be of particular interest to us up here?
+> >
+> > Thanks much for all you do.
+> >
+> > G.
+> > ----- Original Message -----
+> > From: "Jamal Mazrui" <empower@smart.net>
+> > To: <jawsscripts@freelists.org>
+> > Sent: Saturday, November 10, 2012 12:05 PM
+> > Subject: [jawsscripts] Complete JFW 14 documentation in structured text
+> > format
+> >
+> >
+>> >> http://empowermentzone.com/jfw14doc.zip
+>> >>
+>> >> I have not yet updated the files that compare scripts and functions
+>> >> available between the current and prior versions.
+>> >>
+>> >> Jamal
+>> >>
+>> >> __________�
+>> >>
+>> >> View the list's information and change your settings at
+>> >> http://www.freelists.org/list/jawsscripts
+>> >>
+> > __________�
+> >
+> > View the list's information and change your settings at
+> > http://www.freelists.org/list/jawsscripts
+> >
+
+__________�
+
+View the list's information and change your settings at 
+http://www.freelists.org/list/jawsscripts
+
