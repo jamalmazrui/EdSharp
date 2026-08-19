@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.12
-AppVerName=EdSharp 5.0.12 beta
-VersionInfoVersion=5.0.12
+AppVersion=5.0.13
+AppVerName=EdSharp 5.0.13 beta
+VersionInfoVersion=5.0.13
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -190,7 +190,10 @@ Name: "{autodesktop}\EdSharp"; Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}
 ; Install EdSharps JAWS scripts (Finish-page option, like DbDo). Delegates to
 ; EdSharp.exe --install-jaws-settings, whose C# implementation copies the
 ; settings family into every installed JAWS version and compiles them there.
-Filename: "{app}\EdSharp.exe"; Parameters: "--install-jaws-settings"; WorkingDir: "{app}"; Description: "Install JAWS scripts for EdSharp (recommended)"; Flags: postinstall skipifsilent; Check: haveJaws
+; --quiet skips EdSharp's own report box: the Results box at the very end
+; reports the JAWS outcome, and two boxes in a row is one too many. Run by
+; hand without --quiet, the command still shows its report.
+Filename: "{app}\EdSharp.exe"; Parameters: "--install-jaws-settings --quiet"; WorkingDir: "{app}"; Description: "Install JAWS scripts for EdSharp (recommended)"; Flags: postinstall skipifsilent; Check: haveJaws
 ; Install the NVDA add-on by shell-executing the .nvda-addon file (NVDA
 ; registers itself as the handler). Unchecked by default; checking it opens
 ; NVDA's add-on install dialog. NVDA must be running, and be restarted after.
