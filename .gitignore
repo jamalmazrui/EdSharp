@@ -787,3 +787,31 @@ temp.txt
 # project needs inside it.
 adoptRemote.cmd
 adoptRemote.py
+
+# Untracked by tidyRepo: files that reached the repository
+# through git add -A, plus the names that must never return.
+# A folder pattern covers a stray folder with nothing the
+# project needs inside it.
+AudioVault_Directory.md
+Captivating_Numbers.md
+Catalogue.md
+CdpDocs.md
+CdpDocs_Notes.md
+Convert/Tools.lock
+Disqus.md
+Enduring_Enigmas.md
+Greatest_Blind_Persons_v12.md
+Handover.md
+Mental_Marvels.md
+OSARA_Help_Guide.md
+Osara_Notes_2026-08-02b.md
+Persistent_Paradoxes.md
+Sensing.md
+Strange_Creatures.md
+The_Edges_of_Maps.md
+Toolchain.md
+Unsettled_Universe.md
+VLC.md
+VoiceVista.md
+WordPress.md
+Zotero.md
