@@ -118,7 +118,13 @@ def run(lCommand, bCheck=False):
     Everything is logged, including the failures, because a failure with no
     record of what was attempted is what turns one round into three.
     """
-    say(f"  > {' '.join(lCommand)}")
+    # Non-ASCII paths come back octal-quoted unless quotepath is off, and the
+    # quoted form poisons every list a path flows through: on 20 August it
+    # kept 1073 files out of .gitignore because their written entries could
+    # never match their real names.
+    if lCommand and lCommand[0] == "git":
+        lCommand = lCommand[:1] + ["-c", "core.quotepath=false"] + lCommand[1:]
+    say(f"  > {' '.join(lCommand[:1] + lCommand[3:] if lCommand[1:3] == ['-c', 'core.quotepath=false'] else lCommand)}")
     try:
         result = subprocess.run(lCommand, cwd=pathRoot, capture_output=True,
                                 text=True, encoding="utf-8", errors="replace")
@@ -427,6 +433,12 @@ def main():
     if not shutil.which("git"):
         say("git is not on the path, so nothing can be done.")
         return 1
+
+    # Whatever a premature git add -A staged is unstaged before anything is
+    # counted: on 20 August a slow add was caught mid-flight sweeping 1073
+    # unignored files toward a commit. A mixed reset touches no file on
+    # disk, and the real tracked changes are re-staged by the commit step.
+    run(["git", "reset", "-q"])
 
     say("=" * 68)
     say("SURVEY. Everything is looked at before anything is changed.")
@@ -819,6 +831,13 @@ def main():
                     lFinal.append(sTop + "/")
                 continue
         lFinal.append(sPath)
+    def escapeIgnore(sEntry):
+        # Brackets, stars and question marks are GLOB syntax to .gitignore: an
+        # entry for "[program-l] Re ....txt" is a character class that never
+        # matches its own file. Escaped, it matches exactly.
+        return sEntry.replace("[", "\\[").replace("]", "\\]").replace("*", "\\*").replace("?", "\\?")
+    say(f"gitignore bookkeeping: {len(lStray)} strays, {len(lNotOurs)} leave-alone, "
+        f"{len(set(lAdd))} candidate entries, {len(set(lFinal))} after collapsing.")
     if lFinal:
         with open(pathIgnore, "a", encoding="utf-8", newline="\n") as fileIgnore:
             fileIgnore.write(
@@ -827,11 +846,29 @@ def main():
                 "# A folder pattern covers a stray folder with nothing the\n"
                 "# project needs inside it.\n")
             for sPath in sorted(set(lFinal)):
-                fileIgnore.write(sPath + "\n")
+                fileIgnore.write((sPath if sPath.endswith("/") else escapeIgnore(sPath)) + "\n")
         sFolders = "folder" if len(setCollapsed) == 1 else "folders"
         sPatterns = "pattern" if len(set(lFinal)) == 1 else "patterns"
         say(f"Added {len(set(lFinal))} {sPatterns} to .gitignore "
             f"({len(setCollapsed)} whole {sFolders} collapsed to one pattern each)")
+    # The proof, not the assumption: every leave-alone path is fed to git
+    # check-ignore, and any it does not match gets its own exact, escaped
+    # entry. "Deliberately outside" must mean "and ignored", or add -A
+    # sweeps it in -- 1073 files were one commit from that on 20 August.
+    lUnmatched = []
+    if lNotOurs:
+        result = subprocess.run(["git", "-c", "core.quotepath=false", "check-ignore", "--stdin", "-z"],
+                                cwd=pathRoot, input="\0".join(lNotOurs) + "\0",
+                                capture_output=True, text=True, encoding="utf-8", errors="replace")
+        setIgnored = set(s for s in (result.stdout or "").split("\0") if s)
+        lUnmatched = [s for s in lNotOurs if s not in setIgnored]
+    if lUnmatched:
+        sFiles = "file" if len(lUnmatched) == 1 else "files"
+        say(f"{len(lUnmatched)} leave-alone {sFiles} still escaped every pattern; adding exact entries.")
+        with open(pathIgnore, "a", encoding="utf-8", newline="\n") as fileIgnore:
+            fileIgnore.write("# Exact entries for names the patterns above cannot match.\n")
+            for sPath in sorted(set(lUnmatched)):
+                fileIgnore.write(escapeIgnore(sPath) + "\n")
     run(["git", "add", ".gitignore"])
     say("")
 
