@@ -919,19 +919,46 @@ def main():
         # Objects a bookmark keeps occupy disk until the bookmark is deleted,
         # and that is the bargain the bookmark makes, not an error.
         result = run(["git", "rev-list", "--objects", dState["branch"], "--tags", "--remotes"])
-        iLeft = sum(1 for sLine in (result.stdout or "").splitlines()
-                    if any(sName in sLine for sName in lNames))
-        if iLeft:
+        # Exact PATHS, not substrings: on 20 August a single innocent line
+        # containing one of the names as a fragment read as failure and
+        # stopped a healthy 132 MB sweep from pushing.
+        setNames = set(lNames)
+        dLeft = {}
+        for sLine in (result.stdout or "").splitlines():
+            lParts = sLine.split(" ", 1)
+            if len(lParts) == 2 and lParts[1].strip() in setNames:
+                dLeft[lParts[0]] = lParts[1].strip()
+        if dLeft:
+            iLeftBytes = 0
+            for sHash in dLeft:
+                resultSize = run(["git", "cat-file", "-s", sHash])
+                if resultSize and not resultSize.returncode:
+                    try:
+                        iLeftBytes += int((resultSize.stdout or "0").strip())
+                    except ValueError:
+                        pass
+            sObjects = "object" if len(dLeft) == 1 else "objects"
             say("")
-            say(f"  {iLeft} of the old objects are STILL reachable, so the space")
-            say("  was not reclaimed. These refs still exist:")
-            result = run(["git", "for-each-ref", "--format=%(refname)"])
-            for sLine in (result.stdout or "").splitlines()[:12]:
-                say(f"    {sLine.strip()}")
-            say("  Nothing has been pushed. The backup folder is your way back.")
-            return 1
-        say("  the old objects are gone")
-        say("")
+            say(f"  {len(dLeft)} of the old {sObjects} ({iLeftBytes / 1048576:.1f} MB) can still be reached:")
+            for sHash, sPath in sorted(dLeft.items(), key=lambda t: t[1])[:10]:
+                say(f"    {sPath}")
+            if iLeftBytes < c_iBulkyBytes:
+                # Proportion: the sweep is about size. A residue smaller than
+                # the bulk threshold does not justify abandoning the push.
+                say("  That is less than the bulk threshold, so it is noted and the")
+                say("  run continues; the sweep still removed what mattered.")
+                say("")
+            else:
+                say("  That is TOO MUCH to ignore, so nothing has been pushed.")
+                say("  These refs still exist:")
+                result = run(["git", "for-each-ref", "--format=%(refname)"])
+                for sLine in (result.stdout or "").splitlines()[:12]:
+                    say(f"    {sLine.strip()}")
+                say("  The backup folder is your way back. Send this log.")
+                return 1
+        else:
+            say("  the old objects are gone")
+            say("")
 
     # Anything still outstanding. Usually nothing, because the untracking was
     # committed above and the rewrite commits as it goes.
