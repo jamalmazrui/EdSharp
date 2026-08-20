@@ -780,3 +780,10 @@ z.extensionmethods.2.0.10.nupkg
 # project needs inside it.
 EdSharp.cs.startuplog.bak
 temp.txt
+
+# Untracked by tidyRepo: files that reached the repository
+# through git add -A, plus the names that must never return.
+# A folder pattern covers a stray folder with nothing the
+# project needs inside it.
+adoptRemote.cmd
+adoptRemote.py
