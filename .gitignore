@@ -815,3 +815,41 @@ VLC.md
 VoiceVista.md
 WordPress.md
 Zotero.md
+
+# Untracked by tidyRepo: files that reached the repository
+# through git add -A, plus the names that must never return.
+# A folder pattern covers a stray folder with nothing the
+# project needs inside it.
+_ﾚ/
+_ﾟ/
+# Exact entries for names the patterns above cannot match.
+2\[program-l\] Re  .NET rich textbox and JAWS.txt
+FW  \[VoiceCoder\] full enabled editor.txt
+Frequently asked questions \[Universal Encoding Detector\].txt
+Fw  \[VINUX-SUPPORT\] New MarkupBinder beta version - 28 October 2010.eml
+How it works \[Universal Encoding Detector\].txt
+Re  \[PL-COP-MAIN\] Question on software.html
+Supported encodings \[Universal Encoding Detector\].txt
+Usage \[Universal Encoding Detector\].txt
+\[0\]
+\[Content_Types\].xml
+\[EdSharp\] HTML Snippet.eml
+\[EdSharp\] Improvements to EdSharp.txt
+\[EdSharp\] Re  EdSharp crashed, can't reinstall it.html
+\[EdSharp\] Re  New test version of EdSharp.eml
+\[EdSharp\] Re  Prioritizing EdSharp development issues.html
+\[EdSharp\] Re  Prioritizing EdSharp development issues.txt
+\[EdSharp\] Snippet for NSIS.eml
+\[EdSharp\] Snippet forJaws script.eml
+\[jawsscripts\] ASP.net. was  Re  zmud or cmud script.txt
+\[jawsscripts\] Re  Complete JFW 14 documentation in structured text format.txt
+\[jawsscripts\] Re  Jaws Scripts for Visual Studio 2010.eml
+\[jawsscripts\] Re  packaging jaws scripts.txt
+\[program-l\] .NET rich textbox and JAWS.txt
+\[program-l\] Re  .NET rich textbox and JAWS.txt
+\[program-l\] Re  Configuring EdSharp for Python.txt
+\[program-l\] Re  EdSharp - Adding Modality.txt
+\[program-l\] Re  JAWS and Notepad2.txt
+\[program-l\] Re  Saving massive amounts of  files from many links.txt
+\[program-l\] Re  Web development in linux.eml
+\[program-l\] Re  beginning python.eml
