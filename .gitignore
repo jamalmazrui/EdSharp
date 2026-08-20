@@ -1,44 +1,254 @@
-# EdSharp .gitignore
-# Files produced by BuildEdSharp.cmd, or fetched by it, or built by Inno Setup,
-# are reproducible and are not committed. A clone plus BuildEdSharp.cmd (and
-# Inno Setup, for the installer) regenerates everything below.
+# wcag_in_a_book -- .gitignore
 
-# Compiled output
-EdSharp.exe
-EdSharp.dll
-*.pdb
-BuildEdSharp.log
+# W3C WCAG source cache (downloaded on first run, ~30 MB)
+wcag_work/
 
-# Installer output (built from EdSharp_Setup.iss with Inno Setup)
-EdSharp_Setup.exe
+# Generated output files -- re-created by running wcag_in_a_book.py
+wcag_in_a_book.md
+wcag_in_a_book.docx
+wcag_in_a_book.jpg
+wcag_in_a_book.toml
+wcag_in_a_book.epub
+wcag_in_a_book.pdf
 
-# Encoding-detection library fetched by FetchUde.ps1
-Ude.dll
+# Python
+__pycache__/
+*.py[cod]
 
-# Third-party Convert tools fetched by FetchConvertTools.ps1
-/Convert/astyle/
-/Convert/Pandoc/
-/Convert/Tidy/
-/Convert/liblouis/
-/Convert/Xpdf/
-/Convert/Tools.lock
-
-# Pandoc configuration backup written by ModernizePandocConfig.ps1
-*.pandoc-bak
-
-# Scratch files
-temp.txt
-temp.htm
-*.tmp
+# OS
+.DS_Store
+Thumbs.db
 Version.cs
 
 # Untracked by tidyRepo: files that reached the repository
 # through git add -A, plus the names that must never return.
 # A folder pattern covers a stray folder with nothing the
 # project needs inside it.
+"_\357\276\232/
+"_\357\276\237/
+"trafilatura-master/
+.bss
+.data
+.didat
+.didata
+.edata
+.idata
+.itext
+.pad0
+.pad1
+.pad10
+.pad11
+.pad12
+.pad13
+.pad14
+.pad2
+.pad3
+.pad4
+.pad5
+.pad6
+.pad7
+.pad8
+.pad9
+.pdata
+.rdata
+.reloc
+.rsrc/
+.text
+.tkd0
+.tkd1
+.tkd2
+.tkd3
+.tkd4
+.tkd5
+.tkd6
+.tkd7
+.tks0
+.tks1
+.tks2
+.tks3
+.tks4
+.tks5
+.tks6
+.tks7
+.tls
+000_Cutting_The_Cord_With_Blindness_Or_Low_Vision_Playlist.m3u
+001_Cutting_The_Cord_With_Blindness_Or_Low_Vision.mp3
+001_time_to_go_zoom.html
+002_Contact_Information.mp3
+002_chapter_1_what_zoom_is_for.html
+003_Introduction.mp3
+003_chapter_2_accounts_plans_and_what_you_need.html
+004_What_You_Can_Expect_In_The_Class_Content.mp3
+004_chapter_3_installing_zoom_workplace_and_signing_in.html
+005_A_Note_And_Moving_Targets.mp3
+005_chapter_4_jaws_zoom_and_the_optional_zoom_professional_scripts.html
+006_How_Best_To_Use_This_Content.mp3
+006_chapter_5_orientation_in_zoom_workplace.html
+007_Contacting_Us_Directly.mp3
+007_chapter_6_essential_meeting_keystrokes.html
+008_Session_One_-_Apps.mp3
+008_chapter_7_joining_a_meeting.html
+009_Blindness_And_TV_Watching.mp3
+009_chapter_8_your_first_few_minutes_in_a_meeting.html
+00_Audible_Audio_Documentation_playlist.m3u
+01-get-started.html
+010_Audio_Description.mp3
+010_chapter_9_good_meeting_etiquette.html
+011_What_Is_Cord_Cutting.mp3
+011_chapter_10_text_chat_and_alerts.html
+012_The_Different_Platforms_We_Will_Focus_On.mp3
+012_chapter_11_the_participants_list.html
+013_Netflix.mp3
+013_chapter_12_hosting_an_instant_meeting.html
+014_Netflix_on_iOS.mp3
+014_chapter_13_scheduling_meetings.html
+015_Netflix_On_Fire_OS.mp3
+015_chapter_14_scheduling_zoom_meetings_from_outlook_classic.html
+016_Netflix_On_Android.mp3
+016_chapter_15_face_in_view.html
+017_Hulu.mp3
+017_chapter_16_important_settings_in_zoom_workplace.html
+018_Hulu_On_Fire_OS.mp3
+018_chapter_17_settings_on_the_zoom_web_portal.html
+019_Hulu_On_Android.mp3
+019_chapter_18_managing_participants_as_host.html
+01_Audible_Audio_Documentation.mp3
+02-hello-world.html
+020_CBS_All_Access_On_Fire_OS.mp3
+020_chapter_19_waiting_rooms.html
+021_PBS_On_Android.mp3
+021_chapter_20_sharing_your_screen_and_computer_audio.html
+022_Amazon_Prime_On_iOS.mp3
+022_chapter_21_recording_meetings.html
+023_Youtube_On_Android.mp3
+023_chapter_22_captions_and_transcripts.html
+024_Session_Two_-_Set-top_Boxes.mp3
+024_chapter_23_zoom_ai.html
+025_What_Is_A_Set-top_Box.mp3
+025_chapter_24_breakout_rooms.html
+026_Roku.mp3
+026_chapter_25_polls_and_quizzes.html
+027_Fire_TV_Or_Stick.mp3
+027_chapter_26_webinars.html
+028_Enabling_Audio_Descriptions_On_The_Fire_TV_Or_Stick.mp3
+028_chapter_27_zoom_phone.html
+029_Apple_TV.mp3
+029_chapter_28_troubleshooting_and_practical_recovery.html
+02_Introduction_and_Contact_Information.mp3
+03-scripts-on-every-page.html
+030_Enabling_Audio_Descriptions_On_The_Apple_TV.mp3
+030_chapter_29_recommended_meeting_workflows.html
+031_Two_Notes_About_Set-top_Boxes.mp3
+031_appendix_a_keystrokes_mentioned_in_this_book.html
+032_Session_Three_-_Over_The_Top_Services.mp3
+033_What_Are_Over_The_Top_Services.mp3
+034_Profiles.mp3
+035_On_Demand_Content.mp3
+036_Cloud_DVR.mp3
+037_Local_Channels.mp3
+038_Hulu_Live_On_Apple_TV.mp3
+039_Youtube_TV_On_Apple_TV_and_iPhone.mp3
+03_Welcome_to_the_Tutorial.mp3
+04-focus-mode.html
+040_Controling_Youtube_TV_with_Google_Home.mp3
+041_Connecting_Youtube_TV_To_Apple_TV.mp3
+042_Youtube_TV_on_iOS.mp3
+043_Sling_TV.mp3
+044_Sling_TV_On_Roku.mp3
+045_Sling_TV_On_Fire_TV.mp3
+046_DIRECTV_NOW_On_Fire_TV.mp3
+047_DIRECTV_NOW_On_Apple_TV.mp3
+048_PlayStation_Vue.mp3
+049_Some_Notes_About_Signing_Up_For_PlayStation_Vue.mp3
+04_How_Does_Audible_Work_for_Payments.mp3
+05-tabs-manager.html
+050_PlayStation_Vue_On_Apple_TV.mp3
+051_PlayStation_Vue_On_Fire_TV.mp3
+052_Conclusion.mp3
+053_A_Note_About_Setting_Up_Set_Top_Boxes.mp3
+054_Session_Four.mp3
+055_Review_New_And_Updated_Goodies.mp3
+056_Blindness_And_TV_Watching.mp3
+057_Some_Definitions.mp3
+058_Updates_To_Services.mp3
+059_Netflix_Using_iOS.mp3
+05_Family_sharing.mp3
+06-service-worker-events.html
+060_Youtube_TV.mp3
+061_Amazon_Prime.mp3
+062_Updates_About_These_Services.mp3
+063_Hulu_On_iOS.mp3
+064_Sling_Update.mp3
+065_Updates_for_Youtube_TV.mp3
+066_DirecTV_Now_is_now_AT_T_TV_Now.mp3
+067_Channels_Come_And_Go.mp3
+068_Session_Four_Questions_And_Answers.mp3
+069_Session_Five.mp3
+06_Ease_of_Access_to_the_Audible_site.mp3
+07-debug-extensions.html
+070_New_Cord_Cutting_Services.mp3
+071_Apple_TV__App_On_Other_Products.mp3
+072_Disney_.mp3
+073_Frndly_TV.mp3
+074_Youtube_TV_on_Roku_and_Fire_TV.mp3
+075_Fubo.mp3
+076_Vidgo.mp3
+077_Philo.mp3
+078_Session_Five_Questions_And_Answers.mp3
+079_Session_Six.mp3
+07_International_Domains.mp3
+08-fcc-advice-generator.html
+080_Free_Services.mp3
+081_PlutoTv.mp3
+082_Tubi.mp3
+083_IMDB_TV.mp3
+084_Stirr.mp3
+085_Xumo.mp3
+086_TV_Everywhere_Services.mp3
+087_Amazon_Prime_Channels.mp3
+088_Using_Your_Voice_To_Control_TV_Content.mp3
+089_controling_Roku_With_Your_Voice_And_an_App.mp3
+08_Misc_Audible_notes.mp3
+09-devto-architecture-guide.html
+090_Upcoming_Services_As_Of_April_2020.mp3
+091_Session_Six_Questions_And_Answers.mp3
+092_A_World_Of_Discovery_With_Audio_Description_Services_Bonus_Class.mp3
+093_What_Is_Audio_Description.mp3
+094_The_Beginning_Of_Audio_Description.mp3
+095_Ways_To_Get_Audio_Described_Shows.mp3
+096_Ways_To_Watch_DVD_and_Blu-Ray_Accessibly.mp3
+097_Movie_Theater_Experiences.mp3
+098_Streaming_Ways_To_Access_Audio_Descriptions.mp3
+099_Audio_Description_Project.mp3
+09_Demonstrating_The_Audible_Website_While_not_signed_in.mp3
+10-mdn-webextensions.html
+100_On_Demand_Description.mp3
+101_Audio_Description_Class_Questions_And_Answers.mp3
+102_Copyright_Information.mp3
+10_Seeing_what_it_takes_to_sign_up_for_Audible.mp3
+11-mv3-overview.html
+11_Signing_in.mp3
+12_Exploring_some_items_on_the_main_page.mp3
+13_Gifts.mp3
 13edsharp.txt
+14_Inside_Audible_and_Deals.mp3
+15_Working_with_a_book.mp3
+16_Searching_for_a_Book.mp3
+17_Buying_a_Book.mp3
+18_The_Library.mp3
+19_Free_Audible_books.mp3
 2011-07-02_EdSharp.cs
 2012-Learning-Objectives-Final.zip
+20_Getting_Help.mp3
+21_Audible_on_iOS_Devices.mp3
+22_The_Mini_Player.mp3
+23_Audible_on_Android_Devices.mp3
+24_Reading_Audible_books_using_Alexa.mp3
+25_Audible_on_the_BlindShell_Phone.mp3
+26_Using_Audible_on_the_Victor_Stream_Products.mp3
+27_Troubleshooting.mp3
+28_Concluding_Thoughts.mp3
+29_Copyright_Information.mp3
 2Re  Collaborative EdSharp development via GitHub.html
 2Re  Looking At Python Programming.txt
 2[program-l] Re  .NET rich textbox and JAWS.txt
@@ -47,14 +257,21 @@ Version.cs
 3Re  Status update.html
 4Bryan.zip
 4edsharp.txt
+7-Zip Library (32bit)/
 7z.dll
 7z.exe
 7z.sfx
 98edsharp.txt
 AbleData.job
 AbleData.lst
+AccReporter-v2.zip
 Accessibility Question.txt
 Application Configuration Files.txt
+AppxBlockMap.xml
+AppxManifest.xml
+AppxMetadata/
+AppxSignature.p7x
+Assets/
 AssocOff.bas
 AssocOff.exe
 AssocOn.bas
@@ -65,21 +282,33 @@ AutoItX3.dll
 BITS-Development Thoughts on EdSharp_files/
 BatCon.ini
 Batch files - RUNDLL and RUNDLL32.txt
+BuildEdSharp.log
 Burn2CD.dll
 Burn2CD.exe
 C#recipes/
+CERTIFICATE
 Clipboard.txt
 CompileRichTextBoxExample.bat
 Conference call dial-in instructions.txt
 Connecting the Dots  How to embed a manifest in an assembly let me count the ways__.txt
+Convert/Pandoc/
+Convert/Pandoc/COPYING.rtf
+Convert/Pandoc/COPYRIGHT.txt
+Convert/Pandoc/MANUAL.html
+Convert/Pandoc/pandoc.exe
 Csharp_4dot0_in_a_Nutshell_Fourth_Edition.pdf
 CustomEdSharp.zip
 Daring Fireball Markdown Basics.txt
 Daring Fireball Markdown Syntax Documentation.txt
 Daring Fireball Markdown.txt
+Dell.D3.HSA.Client.dll
+Dell.D3.UWP.BackgroundTasks.winmd
+Dell.D3.UWP.dll
+Dell.D3.UWP.exe
 Detect Encoding for In- and Outgoing Text - CodeProject.txt
 DetectEncoding_demo.zip
 DetectEncoding_src.zip
+EPUB/
 Ed-sharp bug report.txt
 EdSharp  Please Consider Changing Indentation Behavior.txt
 EdSharp 3.2 and FileDir 3.8 released.txt
@@ -92,6 +321,7 @@ EdSharp To The Rescue On Days 1 and 2 And a Small Enhancement Request_files/
 EdSharp error  Could not load file or assembly 'Microsoft.JScript, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies. The module was expected to contain an assembly manifest..txt
 EdSharp.cs.bak
 EdSharp.ini.bak
+EdSharp.ini.pandoc-bak
 EdSharp.lnk
 EdSharp.md.cs
 EdSharp.rtf
@@ -104,6 +334,7 @@ EdSharp33.cs
 EdSharp39a.cs
 EdSharp_01.cs
 EdSharp_Hotkeys.txt
+EdSharp_Setup.exe
 EdSharp_setup.exe
 EdSharp_setup.zip
 Edsharp in protuguese language.txt
@@ -114,6 +345,7 @@ Extra speech with EdSharp and FileDir, but only in Jaws.html
 FW  Edsharp feature request to high python productivity.txt
 FW  Escalations Issue # 194639.txt
 FW  [VoiceCoder] full enabled editor.txt
+FileDir-main/
 FileDir_Hotkeys.txt
 French
 Frequently asked questions [Universal Encoding Detector].txt
@@ -121,12 +353,16 @@ Friday.zip
 Fruit basket program in IronRuby using Layout by Code.eml
 Fw  [VINUX-SUPPORT] New MarkupBinder beta version - 28 October 2010.eml
 Getting error when converting to HTML..txt
+Greatest_Blind_Persons_v12.docx
 HTML 5 in Ed Sharp.eml
 Heading.txt
 Hello.exe
 Hello.vb
 HelpEditing - Meta.txt
 How it works [Universal Encoding Detector].txt
+HsaInterface.SCCD
+HsaInterface.can.xml
+HsaInterfaceAW.can.xml
 HtmlAgilityPack.dll
 Humanizer-dev.zip
 Hunspell_iCode_13_JUN_2014.zip
@@ -134,25 +370,47 @@ Hyperlink.txt
 HyperlinkNew Tab.txt
 IMG.txt
 InPy.exe
-InPy.py
 InPyHelp.txt
+Installer.exe
 IronCOM.dll
-Jaws.cs
+JAWS Basic Training/
 JsSupport.dll
+Kindle_Ebook.docx
+LiveSpeaker.cs
+LiveSpeakerDemoConsole.cs
+LiveSpeakerDemoForm.cs
 Localization of EdSharp.html
 MB log.txt
+META-INF/
 Mailto Link.txt
 Markdig.dll
 Markdown - Wikipedia, the free encyclopedia.txt
 May 2011 - Web code.txt
 Mediachance Multimedia and Graphics tools - FAQ.txt
+Microsoft.Graphics.Canvas.dll
+Microsoft.Graphics.Canvas.winmd
+Microsoft.Toolkit.Uwp.UI.Controls/
+Microsoft.Toolkit.Uwp.UI/
 Monday.zip
 Mt_exe (Windows).txt
 NFBTRANS test samples.zip
 NHunspell.1.2.5554.16953.zip
 New Ed Sharp and File-Dir Releases.txt
 NuGet.exe
+OEBPS/
+OpenResearcher-main/
 Other useful development lists.txt
+P-001/
+P-002/
+P-003/
+P-004/
+P-005/
+P-006/
+P-007/
+P-008/
+P-009/
+P-010/
+P-012/
 PAC Audit Report for CEdSharpEdSharp_pdf.txt
 PDF generated by LaTeX; Vinux Solution.txt
 PGK.Extensions.dll
@@ -162,11 +420,13 @@ Part 1.3
 Place to go to get access to EdSharp.html
 ProgKeyCS.zip
 ProgWinForms.zip
+PruneConvert.cmd
 PwrSpell.zip
 PyRTF-0.45.tar
 Python YQL.txt
 RE EdSharp and FileDir.txt
 RE EdSharp is back. Releasing 5.0 beta_files/
+README.txt
 Re   Re   Re   code source of edsharp.txt
 Re   code source of edsharp.txt
 Re  AW  Updates to EdSharp.txt
@@ -201,17 +461,21 @@ ReverseMarkdown.dll
 RichTextBoxExample.exe
 RichTextBoxExample.js
 RichTextBoxExample.zip
+Robmikh.CompositionSurfaceFactory.dll
+Robmikh.CompositionSurfaceFactory.winmd
 RunUnicode.bat
 RunVB.bat
 RunVBExe.bat
 SayFile.exe
 SayLine.exe
+SoundTouch.dll
 Sounds4Stuff1Space.SMF
 StampEdSharp.ini
 Step 6 Create and Embed an Application Manifest (UAC).txt
 StreamReader Constructor (String, Boolean) (System_IO).txt
 Suggestions for EdSharp.txt
 Supported encodings [Universal Encoding Detector].txt
+SurfsUp/
 Teach Your Apps To Work With Windows Vista User Account Control.txt
 TestJS.bat
 Text editor to fix indentation.eml
@@ -222,7 +486,9 @@ Thanks for EdSharp.  I love using it
 Thanks for such a cool tool,.eml
 The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!) - Joel on Software.txt
 The Code King - Making Your Application UAC Aware.txt
+TheWorkBench-main/
 Thursday.zip
+Time to Go Zoom Revisited Microsoft Word.docx
 Title.txt
 TranLang.exe
 Tuesday.zip
@@ -247,14 +513,17 @@ WBDIB44I.DLL
 WBDIC44I.DLL
 WBDKA44I.DLL
 WWZIP34I.DLL
-Web Client Utilities.txt
-WebClient/
 Wednesday.zip
 What's New in the .NET Framework 4.txt
 Wiki.NET-2010-02-17-bin.zip
+Win32Bridge/
 WinMerge.txt
 WindowsRegular Expressions/
+Without PDF/
 XmlComments.dll
+ZoomFull.cab
+[0]
+[Content_Types].xml
 [EdSharp] HTML Snippet.eml
 [EdSharp] Improvements to EdSharp.txt
 [EdSharp] Re  EdSharp crashed, can't reinstall it.html
@@ -276,19 +545,31 @@ XmlComments.dll
 [program-l] Re  Web development in linux.eml
 [program-l] Re  beginning python.eml
 _NET Security Blog  Adding a UAC Manifest to Managed Code.txt
+_RDATA
+_rels/
 a9493455-ce04-40a1-8134-deaba715b368_EdSharp.exe
+addStartupLog.cmd
+addStartupLog.py
 admin_bans.php
 announce31.txt
 announce_EdSharp32_FileDir38.txt
+appModules/
 appstamp.ini
+auditGuides.csv
+background-v2.js
+balcon.exe
+baltran.exe
+blb2txt.exe
+bookFido-main/
 brailleblaster/
 brltex/
-bumpVersion.ps1
 calibre.not
 cc21bd9b-4c4e-4078-b3b2-479c85cf0a79_EdSharp.exe
 chm2txt.exe
 chm2txt.pl
 chm2txt.pro
+chsdet.dll
+clrcompression.dll
 cms_doc.zip
 compile.bat
 compile33.bat
@@ -298,12 +579,22 @@ compileVbSupport.cmd
 compile_01.bat
 compileconsole.bat
 console.bat
+copying.txt
 corrupt_EdSharp.cs
+crypto.dll
+customXml/
 dcramer's py-wikimarkup at master - GitHub.txt
+debugEdSharp.cmd
+debugEdSharp.ps1
+debussy-master/
+define.dll
 detect/
 dll.bat
+doc/
+docProps/
 dotnet.exe
 dotnet_report.bat
+dropChangeLog.py
 ed-sharp editor - portable edition.txt
 ed_scr.exe
 ed_scr.zip
@@ -326,44 +617,72 @@ edsharp30g.cs
 errors.bat
 errors.txt
 errror from ed sharp.txt
+extCheck-main/
 fb.bat
+fileio.dll
 files.zip
+finch-main/
+findCode.cmd
+findCode.log
+findCode.py
 fixx.inix
 fn.inc
 frastlin invited you to EmpowermentZone_EdSharp.html
+fsdn.chm
+fuzzy.dll
 george/
+globalPlugins/
 gpl.txt
 help.txt
 help1.txt
 help2.txt
 hotkeys.txt
+howToTranslate.txt
 html2text.py
 ijs.exe
+index.html
 index1.php
 index1save.php.bas
+installTasks.py
 installing edsharp on windows7.txt
+ipaddr.dll
 jfwapi.dll
 jsSupport.js
 js_installer.iss
 jsx.exe
 jsx.ini
+jumpToMainLandmark/
+languages.txt
 latex-access.txt
 latexaccess/
+libeay32.dll
+liblouis/
+libsamplerate.dll
+locale/
 londonderry air.brf
 looking for AT scripters..txt
+manifest.ini
 markdown.net/
+math.dll
+metadata_parser-main/
+mimetype
+moveFiles.cmd
 mzlatex.batmzlatex.bat
 net4_edsharp.cs
+newSymbols/
 new_NFBTrans/
 new_steve/
 nfbtrans files.zip
 nuget(1).exe
 nvdaControllerClient64.dll
+nvda_addons_feed_to_csv.cmd
+nvda_addons_feed_to_csv.py
 oauth 2_0 - Connecting to Twitter - RestSharp OAuth2 - Stack Overflow.txt
 ok, where are the scripts.txt
 old2tagrelease.ps1
 old_Convert/
 old_edsharp.cs
+onInstall.py
 pandoc.exe
 participate.txt
 pbw.bat
@@ -372,30 +691,74 @@ pdftotext.txt
 problem with installation on a 64 bit OS.txt
 python help please.txt
 python2-chardet-2.0.1.tar
+quietJaws.cmd
+quietJaws.py
+readme.bul.txt
+readme.eng.txt
+readme.fin.txt
+readme.fra.txt
+readme.ger.txt
+readme.ita.txt
+readme.pol.txt
+readme.por.txt
+readme.rus.txt
+readme.spa.txt
 refresh.bat
+regexp.dll
+removeJawsFeature.cmd
+removeJawsFeature.py
+reportBuilder-v2.js
+resources.pri
+restoreFetchConvertTools.cmd
 reverse_test.txt
 rtf2xml.txt
+runConsole.cmd
 saapi32.dll
+sayDocumentURL/
 scriptb
 scripts/
+shared/
+sounds/
+sqlean.dll
+ssleay32.dll
 stamp.bat
+stats.dll
 steve_test/
+styles.css
 sumy-dev.zip
+sysexp.chm
+sysexp.exe
 temp.lst
 test.txt
 test.vbs
+text.dll
 textile-2.0.0.zip
 textile-2.1.4.tar
 textile/
 tidy.exe
+tidyRepo.cmd
 tidyRepo.log
+time.dll
 tlbinf32.dll
 to Jamal, on edsharp.eml
+traceKey.cmd
+traceKey.py
+trafilatura-master/
 txt2tags-2.6.tgz
 txt2tags.py
 uncrustify-0.56-win32.zip
+unicode.dll
 unicows.dll
+urlCheck-main/
+urlFido-main/
+used dependancies.txt
+utilities/
+uuid.dll
+vcruntime140.dll
 version.txt
+vsv.dll
+waves/
+wcag_in_a_book-main/
 white paper on voting.txt
 wiki.net/
 win_trans.zip
@@ -404,7 +767,16 @@ winbt.exe
 wintrans.zip
 wintrans10code/
 wintrans2.0.zip
+word/
 wproc34i.dll
 wwreg34i.DLL
+xl/
 xpdf/
 z.extensionmethods.2.0.10.nupkg
+
+# Untracked by tidyRepo: files that reached the repository
+# through git add -A, plus the names that must never return.
+# A folder pattern covers a stray folder with nothing the
+# project needs inside it.
+EdSharp.cs.startuplog.bak
+temp.txt

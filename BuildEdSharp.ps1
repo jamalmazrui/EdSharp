@@ -41,6 +41,15 @@
 
 param([string]$sMode = "")
 
+# "buildEdSharp console" makes a TEMPORARY DEBUGGING BUILD: the exe becomes a
+# console program, so the class of failure that kills a windowed EdSharp in
+# silence -- a type initializer or assembly that fails before the first line
+# of Main -- prints itself to the command window instead. Console mode also
+# implies nobump (debug builds must not burn release numbers) and skips the
+# installer step (a console EdSharp must never ship). Run plain buildEdSharp
+# afterward to restore the real, windowed build.
+$bConsole = ($sMode -ieq "console")
+
 # ---- constants --------------------------------------------------------------
 $c_sHtmlAgilityPackVersion = "1.11.72"
 # Markdig is pinned at the last 0.x release. The 1.x line (current as of
@@ -57,6 +66,8 @@ $c_sNvdaClientUrl = "https://download.nvaccess.org/releases/stable/nvda_2026.1_c
 # EdSharp targets .NET Framework 4.8.
 $c_sReverseMarkdownVersion = "4.7.1"
 
+# The support sources; since the name-collision lesson they compile INTO
+# EdSharp.exe rather than into a separate EdSharp.dll.
 $c_lDllSources = @("Lbc.cs", "Say.cs", "Inix.cs", "KeyMap.cs", "Web.cs")
 $c_lExeReferences = @("System.dll", "System.Core.dll", "System.Data.dll", "System.Drawing.dll", "System.Web.dll", "System.Windows.Forms.dll", "System.Xml.dll", "Microsoft.VisualBasic.dll")
 # UI Automation, which the support sources use (System.Windows.Automation and
@@ -181,6 +192,17 @@ function nextVersion($sCurrent) {
   return "$sCurrent.0.1"
 }
 
+function findJsc() {
+  # The JScript .NET compiler ships inside the .NET Framework itself, 64-bit
+  # first. It builds the runtime evaluator, so a machine without it needs a
+  # Framework repair, not a workaround.
+  $sJscFile = Join-Path $env:SystemRoot "Microsoft.NET\Framework64\v4.0.30319\jsc.exe"
+  if (Test-Path -LiteralPath $sJscFile) { return $sJscFile }
+  $sJscFile = Join-Path $env:SystemRoot "Microsoft.NET\Framework\v4.0.30319\jsc.exe"
+  if (Test-Path -LiteralPath $sJscFile) { return $sJscFile }
+  return ""
+}
+
 function findIscc() {
   # Inno Setup 6's command-line compiler, in the two standard locations,
   # exactly as buildHomerScribe.cmd looks for it. Returns "" when absent,
@@ -235,7 +257,7 @@ try {
   $matchVersion = [regex]::Match($sIss, "(?m)^AppVersion=(.+)$")
   if (-not $matchVersion.Success) { throw "No AppVersion= line was found in EdSharp_Setup.iss." }
   $sOldVersion = $matchVersion.Groups[1].Value.Trim()
-  if ($sMode -ieq "nobump") {
+  if ($sMode -ieq "nobump" -or $bConsole) {
     writeLog "Version: $sOldVersion (nobump: keeping the current number)"
   } else {
     $dReleased = @{}
@@ -275,14 +297,50 @@ try {
   writeLog "TLS 1.2 enabled for downloads."
 
   # ---- 3. NuGet dependencies ----
-  if (Test-Path -LiteralPath (Join-Path $sScriptDir "ReverseMarkdown.dll")) { writeLog "ReverseMarkdown.dll already present; fetch skipped." }
-  else { fetchNugetPackage "ReverseMarkdown" $c_sReverseMarkdownVersion }
-
-  if (Test-Path -LiteralPath (Join-Path $sScriptDir "HtmlAgilityPack.dll")) { writeLog "HtmlAgilityPack.dll already present; fetch skipped." }
-  else { fetchNugetPackage "HtmlAgilityPack" $c_sHtmlAgilityPackVersion }
-
-  if (Test-Path -LiteralPath (Join-Path $sScriptDir "Markdig.dll")) { writeLog "Markdig.dll already present; fetch skipped." }
-  else { fetchNugetPackage "Markdig" $c_sMarkdigVersion }
+  # PRESENT is not the same as RIGHT. A stray Markdig 1.3 from June once sat
+  # where the pinned 0.42 belonged; the old exists-check trusted it, and every
+  # EdSharp built that day died at startup wanting System.Memory -- silently,
+  # because even the error dialog needed the broken library. So each pinned
+  # dll is now verified by the version stamped inside it: the wrong version
+  # is deleted and the pinned one fetched.
+  foreach ($lPin in @(
+      @("ReverseMarkdown", $c_sReverseMarkdownVersion),
+      @("HtmlAgilityPack", $c_sHtmlAgilityPackVersion),
+      @("Markdig", $c_sMarkdigVersion))) {
+    $sPackageId = $lPin[0]
+    $sPinVersion = $lPin[1]
+    $sDllFile = Join-Path $sScriptDir "$sPackageId.dll"
+    $bFetch = $true
+    if (Test-Path -LiteralPath $sDllFile) {
+      try {
+        $sFound = [System.Reflection.AssemblyName]::GetAssemblyName($sDllFile).Version.ToString()
+      } catch {
+        $sFound = "unreadable ($($_.Exception.Message))"
+      }
+      # The pin "0.42.0" matches assembly version "0.42.0.0": compare on the
+      # pin's own dotted parts.
+      $lPinParts = $sPinVersion.Split(".")
+      $lFoundParts = $sFound.Split(".")
+      $bMatch = ($lFoundParts.Count -ge $lPinParts.Count)
+      if ($bMatch) {
+        for ($iPart = 0; $iPart -lt $lPinParts.Count; $iPart++) {
+          if ($lFoundParts[$iPart] -ne $lPinParts[$iPart]) { $bMatch = $false }
+        }
+      }
+      if ($bMatch) {
+        writeLog "$sPackageId.dll present with the pinned version $sFound; fetch skipped."
+        $bFetch = $false
+      } else {
+        writeLog "$sPackageId.dll present but WRONG VERSION: found $sFound, pinned $sPinVersion. Deleting and refetching."
+        Remove-Item -LiteralPath $sDllFile -Force
+      }
+    }
+    if ($bFetch) {
+      fetchNugetPackage $sPackageId $sPinVersion
+      $sAfter = [System.Reflection.AssemblyName]::GetAssemblyName($sDllFile).Version.ToString()
+      writeLog "$sPackageId.dll fetched; version on disk is now $sAfter."
+    }
+  }
 
   # ---- 4. NVDA controller client (optional) ----
   $sNvdaDllFile = Join-Path $sScriptDir "nvdaControllerClient.dll"
@@ -322,24 +380,53 @@ try {
 
   # ---- 6a. EdSharp.dll (assumption A1) ----
   $lDllExisting = @()
-  foreach ($sSourceFile in $c_lDllSources) {
-    if (Test-Path -LiteralPath (Join-Path $sScriptDir $sSourceFile)) { $lDllExisting += $sSourceFile }
-    else { writeLog "Support source $sSourceFile not found; skipped." }
+  # WHAT EdSharp.dll REALLY IS -- two lessons in one place.
+  #
+  # The name-collision lesson: the C# support sources must NOT be compiled
+  # into a library called EdSharp.dll. Both assemblies would carry the simple
+  # name "EdSharp", .NET binds weak-named assemblies by simple name, and
+  # every runtime request for the library's types would be answered with the
+  # exe itself -- a TypeLoadException the console build finally printed after
+  # a day of silent deaths. The C# is therefore ONE assembly: every .cs file
+  # compiles into EdSharp.exe.
+  #
+  # The evaluator lesson: EdSharp.dll nevertheless EXISTS, and always did --
+  # it is the JScript .NET assembly compiled from EdSharp.js by jsc.exe,
+  # giving EdSharp its runtime evaluation of expressions (the FileDir / DbDo
+  # model). The C# never references it at compile time; it is loaded by
+  # reflection from its path at run time, and in that LoadFrom context the
+  # shared simple name is tolerated, as years of working EdSharp proved.
+  # An earlier fix deleted this file as "stale" -- that would have cost the
+  # evaluator; it is REBUILT here instead.
+  # A running EdSharp holds EdSharp.exe and the loaded evaluator EdSharp.dll,
+  # and both compilers then fail with a sharing violation (jsc's JS2008 was
+  # the first sighting -- itself proof that the fixed EdSharp launched and
+  # lived). The graceful window-close is used, never a kill: an unsaved-
+  # changes prompt inside EdSharp still protects the work, and if it stays
+  # open the build stops with a plain sentence instead of a compiler error.
+  $lRunning = @(Get-Process -Name "EdSharp" -ErrorAction SilentlyContinue)
+  if ($lRunning.Count -gt 0) {
+    writeLog "EdSharp is running (process $(@($lRunning | ForEach-Object { $_.Id }) -join ', ')); asking it to close so the build can write its files."
+    foreach ($processEdSharp in $lRunning) { [void]$processEdSharp.CloseMainWindow() }
+    $iWaited = 0
+    while ($iWaited -lt 10 -and @(Get-Process -Name "EdSharp" -ErrorAction SilentlyContinue).Count -gt 0) {
+      Start-Sleep -Seconds 1
+      $iWaited = $iWaited + 1
+    }
+    if (@(Get-Process -Name "EdSharp" -ErrorAction SilentlyContinue).Count -gt 0) {
+      throw "EdSharp is still running and holds the build outputs. Save your work, close EdSharp, and run buildEdSharp again."
+    }
+    writeLog "EdSharp closed; the build continues."
   }
-  if ($lDllExisting.Count -eq 0) { writeLog "No support sources found; EdSharp.dll step skipped entirely." }
-  else {
-    $lArguments = @("/nologo", "/target:library", "/out:EdSharp.dll", "/platform:anycpu", "/optimize+", $sLibSearch)
-    foreach ($sReference in $c_lExeReferences) { $lArguments += "/r:$sReference" }
-    foreach ($sReference in $c_lUiaReferences) { $lArguments += "/r:$sReference" }
-    if ($sFacadeFile -ne "") { $lArguments += "/r:$sFacadeFile" }
-    if (Test-Path -LiteralPath (Join-Path $sScriptDir "ReverseMarkdown.dll")) { $lArguments += "/r:ReverseMarkdown.dll" }
-    if (Test-Path -LiteralPath (Join-Path $sScriptDir "HtmlAgilityPack.dll")) { $lArguments += "/r:HtmlAgilityPack.dll" }
-    if (Test-Path -LiteralPath (Join-Path $sScriptDir "Markdig.dll")) { $lArguments += "/r:Markdig.dll" }
-    if (Test-Path -LiteralPath (Join-Path $sScriptDir "Tektosyne.dll")) { $lArguments += "/r:Tektosyne.dll" }
-    if (Test-Path -LiteralPath (Join-Path $sScriptDir "Ude.dll")) { $lArguments += "/r:Ude.dll" }
-    $lArguments += $lDllExisting
-    if ((runTool $sCscFile $lArguments "compile EdSharp.dll") -ne 0) { throw "EdSharp.dll compilation failed; the compiler output above names the lines." }
-  }
+
+  $sJsFile = Join-Path $sScriptDir "EdSharp.js"
+  if (-not (Test-Path -LiteralPath $sJsFile)) { throw "EdSharp.js was not found beside the build script; the runtime evaluator cannot be built." }
+  $sJscFile = findJsc
+  if ($sJscFile -eq "") { throw "jsc.exe was not found in the .NET Framework folders; repair the .NET Framework to build the runtime evaluator." }
+  writeLog "JScript compiler: $sJscFile"
+  $sEvaluatorFile = Join-Path $sScriptDir "EdSharp.dll"
+  if (Test-Path -LiteralPath $sEvaluatorFile) { Remove-Item -LiteralPath $sEvaluatorFile -Force }
+  if ((runTool $sJscFile @("/nologo", "/target:library", "/out:EdSharp.dll", "EdSharp.js") "compile EdSharp.dll from EdSharp.js") -ne 0) { throw "The evaluator build failed; the jsc output above names the reason." }
 
   # ---- 6b. EdSharp.exe (assumptions A2, A3) ----
   if (-not (Test-Path -LiteralPath (Join-Path $sScriptDir "EdSharp.cs"))) { throw "EdSharp.cs was not found beside the build script; nothing to compile." }
@@ -375,22 +462,37 @@ try {
     if ($lIgnoreLines -notcontains "Version.cs") { Add-Content -LiteralPath $sGitignoreFile -Value "Version.cs"; writeLog "Added Version.cs to .gitignore." }
     else { writeLog ".gitignore already lists Version.cs." }
   } else { writeLog "No .gitignore found; skipped the ignore entry." }
-  $lArguments = @("/nologo", "/target:winexe", "/out:EdSharp.exe", "/platform:anycpu", "/optimize+", $sLibSearch)
+  $sTarget = "/target:winexe"
+  if ($bConsole) {
+    $sTarget = "/target:exe"
+    writeLog "CONSOLE MODE: compiling EdSharp.exe as a console program so startup errors print. NOT for release."
+  }
+  $lArguments = @("/nologo", $sTarget, "/out:EdSharp.exe", "/platform:anycpu", "/optimize+", $sLibSearch)
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "EdSharp.ico")) { $lArguments += "/win32icon:EdSharp.ico" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "EdSharp.manifest")) { $lArguments += "/win32manifest:EdSharp.manifest" }
   foreach ($sReference in $c_lExeReferences) { $lArguments += "/r:$sReference" }
   foreach ($sReference in $c_lUiaReferences) { $lArguments += "/r:$sReference" }
   if ($sFacadeFile -ne "") { $lArguments += "/r:$sFacadeFile" }
-  if (Test-Path -LiteralPath (Join-Path $sScriptDir "EdSharp.dll")) { $lArguments += "/r:EdSharp.dll" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "ReverseMarkdown.dll")) { $lArguments += "/r:ReverseMarkdown.dll" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "HtmlAgilityPack.dll")) { $lArguments += "/r:HtmlAgilityPack.dll" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "Markdig.dll")) { $lArguments += "/r:Markdig.dll" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "Tektosyne.dll")) { $lArguments += "/r:Tektosyne.dll" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "Ude.dll")) { $lArguments += "/r:Ude.dll" }
-  $lArguments += @("EdSharp.cs", "Version.cs")
+  # One assembly: the main source, the support sources, and the generated
+  # version, all inside EdSharp.exe.
+  $lArguments += @("EdSharp.cs")
+  foreach ($sSourceFile in $c_lDllSources) {
+    if (Test-Path -LiteralPath (Join-Path $sScriptDir $sSourceFile)) { $lArguments += $sSourceFile }
+    else { writeLog "Support source $sSourceFile not found; skipped." }
+  }
+  $lArguments += @("Version.cs")
   if ((runTool $sCscFile $lArguments "compile EdSharp.exe") -ne 0) { throw "EdSharp.exe compilation failed; the compiler output above names the lines." }
 
   # ---- 7. installer, if Inno Setup is present (buildHomerScribe pattern) ----
+  if ($bConsole) {
+    writeLog "CONSOLE MODE: the installer step is skipped; run plain buildEdSharp for the release build."
+    $sIsccFile = ""
+  } else {
   $sIsccFile = findIscc
   if ($sIsccFile -eq "") {
     writeLog "Inno Setup was not found, so no installer was built. To produce EdSharp_Setup.exe, install Inno Setup 6 or open EdSharp_Setup.iss in Inno Setup and choose Compile."
@@ -400,6 +502,8 @@ try {
     if ((runTool $sIsccFile @("EdSharp_Setup.iss") "compile EdSharp_Setup.exe") -ne 0) { throw "The installer build failed; the Inno Setup output above names the reason." }
     writeLog "Built EdSharp_Setup.exe."
   }
+
+    }
 
   # ---- 8. report ----
   writeLog "Artifacts:"

@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.16
-AppVerName=EdSharp 5.0.16 beta
-VersionInfoVersion=5.0.16
+AppVersion=5.0.19
+AppVerName=EdSharp 5.0.19
+VersionInfoVersion=5.0.19
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -103,7 +103,14 @@ Source: "EdSharp.exe";        DestDir: "{app}"; Flags: ignoreversion
 ; sit next to EdSharp.exe, and ignoreversion ensures it is always refreshed so
 ; it stays in sync with the executable.
 Source: "EdSharp.exe.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "EdSharp.dll";        DestDir: "{app}"; Flags: ignoreversion
+; The three libraries the build fetches and links. NOT optional: without
+; them the installed EdSharp.exe dies at startup with an assembly-load
+; failure before any window appears -- perfect silence. They live beside
+; the exe in the development folder, which is why running from C:\EdSharp
+; never showed the problem.
+Source: "ReverseMarkdown.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HtmlAgilityPack.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Markdig.dll";        DestDir: "{app}"; Flags: ignoreversion
 Source: "nvdaControllerClient.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 ; Source and build inputs (shipped so users can recompile, EdSharp-style).
 Source: "EdSharp.cs";         DestDir: "{app}"; Flags: ignoreversion
@@ -113,6 +120,10 @@ Source: "Inix.cs";            DestDir: "{app}"; Flags: ignoreversion skipifsourc
 Source: "KeyMap.cs";          DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "Web.cs";             DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "EdSharp.ico";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+; The runtime evaluator: EdSharp.dll is JScript .NET, compiled from
+; EdSharp.js by the build, loaded by reflection at run time. It is NOT a
+; C# support library -- those sources compile into EdSharp.exe itself.
+Source: "EdSharp.dll";        DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp.js";         DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp.manifest";   DestDir: "{app}"; Flags: ignoreversion
 Source: "BuildEdSharp.cmd";   DestDir: "{app}"; Flags: ignoreversion

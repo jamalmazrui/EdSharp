@@ -1275,7 +1275,14 @@ menuItem.Name = sCommand;
 // rebinding is no longer supported (defaults are chosen to be optimal).
 sKey = sKey.Replace("&", "");
 Keys keyData = Util.String2Key(sKey);
-if (hashKey.ContainsKey(keyData)) {
+// Keys.None means a menu-only command: no shortcut text and no entry in
+// the shortcut table, where several unbound items would otherwise alert as
+// duplicates of one another at startup. KeyMap.register below already
+// handles unbound commands, so it still runs.
+if (keyData == Keys.None) {
+menuItem.Text = sText;
+}
+else if (hashKey.ContainsKey(keyData)) {
 string s = hashKey[keyData].Name;
 Dialog.Show("Alert", "Cannot assign " + sKey + " to " + sCommand + ",\nsince already assigned to " + s);
 }
@@ -10583,7 +10590,18 @@ return TypeDescriptor.GetConverter(typeof(Keys)).ConvertToString(keyData);
 } // Key2String method
 
 public static Keys String2Key(string sKey) {
-return (Keys) TypeDescriptor.GetConverter(typeof(Keys)).ConvertFromString(sKey);
+// Keys.None for a blank key: menu-only commands are part of the design --
+// KeyMap models them as unbound -- and the converter returns null for an
+// empty string, which the old cast turned into the silent startup crash of
+// 19 August 2026 (four keyless conversion menu items, added with the
+// Markdown features, were the first blank keys ever to reach this method).
+// The conversion itself is unchanged.
+if (sKey == null) return Keys.None;
+sKey = sKey.Trim();
+if (sKey.Length == 0) return Keys.None;
+object oKey = TypeDescriptor.GetConverter(typeof(Keys)).ConvertFromString(sKey);
+if (oKey == null) return Keys.None;
+return (Keys) oKey;
 } // String2Key method
 
 public static string Font2String(Font font) {

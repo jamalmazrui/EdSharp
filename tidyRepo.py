@@ -311,17 +311,32 @@ def surveyState():
     # A repository with no remote, or a branch the remote has never seen, is
     # ordinary rather than an error, so the failure is expected and quiet.
     sAhead = ""
+    iBehind = 0
+    lRemoteOnly = []
     if sRemote:
+        # Fetch first: without it, every count below compares against a STALE
+        # picture of the remote, and a push rejection ("fetch first") arrives
+        # as a surprise instead of a survey line. The 19 August rejection --
+        # remote work the folder did not have -- is exactly what this shows.
+        run(["git", "fetch", "origin", "--tags"])
         result = run(["git", "rev-list", "--count", f"origin/{sBranch}..HEAD"])
         if result and not result.returncode:
             sAhead = (result.stdout or "").strip()
         else:
             sAhead = "unknown, the remote has not seen this branch"
+        result = run(["git", "rev-list", "--count", f"HEAD..origin/{sBranch}"])
+        if result and not result.returncode:
+            iBehind = int((result.stdout or "0").strip() or "0")
+        if iBehind:
+            sLog = gitOut(["log", "--oneline", "--no-decorate", f"HEAD..origin/{sBranch}"])
+            lRemoteOnly = [s for s in sLog.splitlines() if s.strip()]
     return {
         "ahead": sAhead or "0",
+        "behind": iBehind,
         "branch": sBranch,
         "dirty": [s for s in sStatus.splitlines() if s.strip()],
         "remote": sRemote,
+        "remoteOnly": lRemoteOnly,
     }
 
 
@@ -387,7 +402,15 @@ def main():
     dState = surveyState()
     say(f"Branch:   {dState['branch']}")
     say(f"Remote:   {dState['remote'] or '(none)'}")
-    say(f"Unpushed: {dState['ahead']} commits")
+    sCommits = "commit" if dState["ahead"] == "1" else "commits"
+    say(f"Unpushed: {dState['ahead']} {sCommits}")
+    if dState["behind"]:
+        sThem = "commit" if dState["behind"] == 1 else "commits"
+        say(f"Behind:   {dState['behind']} {sThem} the remote has that this folder does not:")
+        for sLine in dState["remoteOnly"][:10]:
+            say(f"            {sLine}")
+        say("          The local work is replayed on top of these before pushing")
+        say("          (a rebase), so both survive in order.")
     say("")
 
     bDirty = bool(dState["dirty"])
@@ -879,6 +902,16 @@ def main():
             say("Anyone else who has cloned this will have to clone it again.")
             run(["git", "push", "--force", "origin", dState["branch"]])
         else:
+            if dState["behind"]:
+                sThem = "commit" if dState["behind"] == 1 else "commits"
+                say(f"Replaying the local work on top of the {dState['behind']} remote {sThem} (rebase), so both survive.")
+                result = run(["git", "pull", "--rebase", "origin", dState["branch"]])
+                if not result or result.returncode:
+                    run(["git", "rebase", "--abort"])
+                    say("FAILED: the local and remote work changed the same lines, and")
+                    say("merging them needs a human decision. Nothing was pushed and the")
+                    say("rebase was undone. Send this log.")
+                    return 1
             say("Pushing.")
             run(["git", "push", "origin", dState["branch"]])
     say("")
