@@ -212,10 +212,41 @@ def isNeeded(sPath, setNeeded):
     return False
 
 
-def surveyTracked(setNeeded):
-    """Tracked files the project does not appear to need."""
+def isNeededExactly(sPath, setNeeded):
+    """Whether the setup script names this path ITSELF, not via a pattern.
+
+    The difference bit on 20 August: the script ships the root *.md files and
+    the whole Convert tree, and the missing-files step read those patterns as
+    a wish list -- it added 26 personal documents (book drafts, help notes)
+    that merely happened to be markdown at the root. A pattern proves a
+    tracked file is allowed; only an exact name proves an absent file is
+    wanted.
+    """
+    sPath = sPath.replace("\\", "/")
+    if unwantedKind(sPath):
+        return False
+    return sPath in setNeeded
+
+
+def surveyTracked(setNeeded, setRemoteTree=None):
+    """Tracked files the project does not appear to need.
+
+    setRemoteTree, when available, is the file list of origin's branch: a
+    tracked file that is allowed only BY PATTERN and that origin does not
+    track either is a stray that slipped in (the 26 personal documents were
+    committed exactly this way before the strict rule existed), so it is
+    untracked again rather than kept.
+    """
     lTracked = [s for s in gitOut(["ls-files"]).splitlines() if s.strip()]
-    lStray = [s for s in lTracked if not isNeeded(s, setNeeded)]
+    lStray = []
+    for sPath in lTracked:
+        sNormal = sPath.replace("\\", "/")
+        if not isNeeded(sNormal, setNeeded):
+            lStray.append(sPath)
+            continue
+        if setRemoteTree is not None and sNormal not in setRemoteTree:
+            if not isNeededExactly(sNormal, setNeeded) and not sNormal.startswith("docs/"):
+                lStray.append(sPath)
     return lTracked, lStray
 
 
@@ -268,9 +299,12 @@ def surveyWorkingTree(setNeeded):
     lBelong, lNot = [], []
     for sPath in lUntracked:
         sNormal = sPath.replace("\\", "/")
-        # Anything the setup script ships, and any source under addon, is part
-        # of the program whether or not git has noticed it yet.
-        bBelongs = isNeeded(sNormal, setNeeded)
+        # Only a file the setup script names EXACTLY is added when missing.
+        # Pattern matches (the root *.md documentation line, the wholesale
+        # Convert tree) prove a tracked file is allowed, not that an
+        # untracked one is wanted: the pattern reading once swept 26
+        # personal documents into the repository.
+        bBelongs = isNeededExactly(sNormal, setNeeded)
         # Except the things that are generated or personal.
         if sNormal.endswith((".log", ".pyc")) or "__pycache__" in sNormal:
             bBelongs = False
@@ -400,6 +434,13 @@ def main():
     say("")
 
     dState = surveyState()
+    # Origin's file list, for telling pattern-allowed strays from the real
+    # tree. Absent remote or branch leaves it as None and the extra rule off.
+    setRemoteTree = None
+    if dState["remote"]:
+        sTree = gitOut(["ls-tree", "-r", "--name-only", f"origin/{dState['branch']}"])
+        if sTree.strip():
+            setRemoteTree = set(s.strip() for s in sTree.splitlines() if s.strip())
     say(f"Branch:   {dState['branch']}")
     say(f"Remote:   {dState['remote'] or '(none)'}")
     sCommits = "commit" if dState["ahead"] == "1" else "commits"
@@ -437,7 +478,7 @@ def main():
     if setNeeded is None:
         return 1
 
-    lTracked, lStray = surveyTracked(setNeeded)
+    lTracked, lStray = surveyTracked(setNeeded, setRemoteTree)
     say(f"1. TRACKED FILES: {len(lTracked)} tracked, {len(lStray)} the project does not need.")
     say("")
     if lStray:
@@ -871,8 +912,13 @@ def main():
         run(["git", "gc", "--prune=now", "--aggressive"])
 
         # Checked here rather than only at the end, because if this did not
-        # work there is no point pushing.
-        result = run(["git", "rev-list", "--objects", "--all"])
+        # work there is no point pushing. Reachability is measured over the
+        # branch, the tags, and the remotes -- NOT over localBefore_ bookmark
+        # branches, which hold the old lineage deliberately: on 20 August the
+        # bookmark's objects read as a failure and stopped a healthy run.
+        # Objects a bookmark keeps occupy disk until the bookmark is deleted,
+        # and that is the bargain the bookmark makes, not an error.
+        result = run(["git", "rev-list", "--objects", dState["branch"], "--tags", "--remotes"])
         iLeft = sum(1 for sLine in (result.stdout or "").splitlines()
                     if any(sName in sLine for sName in lNames))
         if iLeft:
@@ -961,7 +1007,7 @@ def main():
     for sLine in (result.stdout or "").splitlines():
         if sLine.startswith("size-pack"):
             say(f"The repository is now {sLine.split(':', 1)[1].strip()}.")
-    lTracked, lStray = surveyTracked(setNeeded)
+    lTracked, lStray = surveyTracked(setNeeded, setRemoteTree)
     say(f"{len(lTracked)} files tracked, {len(lStray)} of them unnecessary.")
     # The all-but-only certification: nothing needed is missing, and what is
     # untracked is deliberately so.
