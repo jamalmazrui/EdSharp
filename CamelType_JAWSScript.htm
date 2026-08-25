@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>CamelType_JAWSScript</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="camel-type-jaws-script-coding-guidelines">Camel Type: JAWS
+Script Coding Guidelines</h1>
+<p>Camel Type is a coding style optimized for screen reader productivity
+and systematic readability. This document adapts the Camel Type rules to
+the JAWS scripting language as used in EdSharp's <code>.jss</code>
+script files and the related JAWS settings files.</p>
+<p>JAWS Script, like VBScript, is <strong>case-insensitive</strong>, so
+these guidelines follow the same shape as the Camel Type rules for
+VBScript: lower camel case is a discipline for readability rather than a
+requirement of the language. Where JAWS Script differs from VBScript,
+the JAWS-specific rule is called out below.</p>
+<hr />
+<h2 id="1-file-family">1. File Family</h2>
+<p>A JAWS application script set is a family of files that share a base
+name (for EdSharp, <code>EdSharp</code>) and differ by extension.
+Preserve the whole family; each plays a role:</p>
+<ul>
+<li><code>.jss</code> — script source (compiled to
+<code>.jsb</code>).</li>
+<li><code>.jsh</code> — header file, brought in with
+<code>Include</code>.</li>
+<li><code>.jsb</code> — compiled binary, brought in with
+<code>Use</code> or produced by the compiler.</li>
+<li><code>.jkm</code> — key map: binds keystrokes to script names.</li>
+<li><code>.jcf</code> — configuration file (script-specific
+options).</li>
+<li><code>.jsd</code> — documentation strings shown by the Key Describer
+/ help.</li>
+</ul>
+<p>There is no equivalent of <code>Option Explicit</code>; instead, the
+discipline is to declare every variable with <code>Var</code> (see
+section 5) before use.</p>
+<hr />
+<h2 id="2-variable-and-argument-naming">2. Variable and Argument
+Naming</h2>
+<p>Use the same Hungarian prefixes as the VBScript guidelines to
+indicate type:</p>
+<ul>
+<li><code>a</code> — array</li>
+<li><code>b</code> — boolean</li>
+<li><code>bin</code> — binary buffer</li>
+<li><code>dt</code> — date-time</li>
+<li><code>f</code> — file object</li>
+<li><code>h</code> — handle (window handle, or a JAWS object/window
+handle)</li>
+<li><code>i</code> — integer</li>
+<li><code>l</code> — list</li>
+<li><code>n</code> — real number</li>
+<li><code>s</code> — string</li>
+<li><code>d</code> — dictionary-like object</li>
+<li><code>o</code> — generic object (any COM object obtained via the
+JAWS object functions)</li>
+<li><code>v</code> — variant / unknown or mixed type</li>
+</ul>
+<p>For a named COM object obtained in a script, use a prefix that
+reflects the object class or a well-known abbreviation (for example
+<code>re</code> for a regular expression object, <code>fso</code> for a
+file-system object). If only one instance of that object type is in
+scope, the abbreviation is the entire variable name.</p>
+<hr />
+<h2 id="3-constant-naming">3. Constant Naming</h2>
+<p>Constants use the <strong>same lower camel case naming convention as
+variables</strong>, including the Hungarian type prefix, and are
+distinguished only by being declared with <code>Const</code>. Examples:
+<code>Const sDefaultVoice = "Eloquence"</code>,
+<code>Const iSpeedStep = 5</code>.</p>
+<p>JAWS built-in constants (for example the message-box and speech
+constants defined in <code>HJConst.jsh</code>, such as
+<code>OT_LINE</code>, <code>MB_OKCANCEL</code>, <code>True</code>,
+<code>False</code>) must always be used by their built-in name, never by
+their underlying numeric value.</p>
+<hr />
+<h2 id="4-capitalization">4. Capitalization</h2>
+<p>Use <strong>lower camel case</strong> for all custom names:
+variables, constants, <code>Function</code> names, and
+<code>Script</code> names. JAWS Script is case-insensitive, but Camel
+Type enforces lower camel case as a discipline for readability.</p>
+<p>When calling JAWS built-in functions (for example
+<code>SayString</code>, <code>SayLine</code>, <code>GetCursorRow</code>,
+<code>Speak</code>) or referencing built-ins from
+<code>HJConst.jsh</code>, use the capitalization that the JAWS
+documentation specifies; these are not custom names.</p>
+<p>Note on key maps: because JAWS Script is case-insensitive, a
+<code>.jkm</code> binding such as
+<code>Control+C=copySelectedTextToClipboard</code> resolves to a script
+declared as <code>Script copySelectedTextToClipboard()</code> regardless
+of case, so re-casing existing script names to lower camel case does not
+break existing key maps.</p>
+<hr />
+<h2 id="5-variable-and-constant-declarations">5. Variable and Constant
+Declarations</h2>
+<ul>
+<li>Declare constants with <code>Const</code> and variables with
+<code>Var</code>.</li>
+<li>Declare them at the <strong>top of the script file</strong> (global
+scope, after <code>Include</code> and <code>Use</code> lines) or at the
+<strong>top of each <code>Script</code> /
+<code>Function</code></strong>, before any logic.</li>
+<li>Group <code>Const</code> lines by type first, then <code>Var</code>
+lines by type.</li>
+<li>One <code>Const</code> or <code>Var</code> statement per type group,
+names listed <strong>alphabetically</strong> and
+<strong>comma-separated</strong> on a single line.</li>
+<li>Type groups appear in <strong>alphabetical order</strong> by prefix
+letter.</li>
+</ul>
+<p>Example:</p>
+<pre><code>Const iSpeedStep = 5
+Const sLogName = &quot;Speech.log&quot;
+
+Var
+    int iColumn, iRow,
+    string sText, sTitle</code></pre>
+<p>(JAWS Script uses a single <code>Var</code> block with one type
+keyword per line; keep the names on each type line alphabetical, and the
+type lines in alphabetical order by prefix.)</p>
+<hr />
+<h2 id="6-script-structure-and-entry-point">6. Script Structure and
+Entry Point</h2>
+<p>A <code>.jss</code> file begins with its <code>Include</code> and
+<code>Use</code> lines, then any <code>Globals</code> /
+<code>Const</code> declarations, then the routines. Unlike a standalone
+VBScript there is no single entry point — JAWS invokes individual
+<code>Script</code> routines in response to keystrokes (via the
+<code>.jkm</code>) and events. Keep the file's opening section
+(includes, globals, constants) minimal and place the routines after
+it.</p>
+<pre><code>; EdSharp.jss -- JAWS scripts for EdSharp.exe
+Include &quot;HJConst.jsh&quot;
+Use &quot;Homer.jsb&quot;
+
+Const iSpeedStep = 5
+
+Script bottomOfFile()
+    ; ...
+EndScript</code></pre>
+<hr />
+<h2 id="7-routine-order">7. Routine Order</h2>
+<p>List all routines in <strong>strict alphabetical order</strong> by
+name, mixing <code>Script</code> and <code>Function</code> routines
+together in that one order. There are no section dividers grouping
+routines — alphabetical order is sufficient for navigation.</p>
+<hr />
+<h2 id="8-scripts-vs-functions">8. Scripts vs Functions</h2>
+<p>VBScript Camel Type says "define all routines as Functions." JAWS
+Script needs one adaptation, because only a
+<strong><code>Script</code></strong> can be bound in a <code>.jkm</code>
+key map or invoked as an event handler:</p>
+<ul>
+<li>Use <strong><code>Script</code></strong> for any routine that is
+bound to a keystroke or is a JAWS event handler. This is required by
+JAWS, not a style choice.</li>
+<li>Use <strong><code>Function</code></strong> for every helper routine
+that is called only from other script code. Prefer a
+<code>Function</code> (which can return a value) over a
+<code>Void</code> routine, and have it return a meaningful value even
+when the caller usually ignores it.</li>
+<li>Use <strong>single-line <code>If</code></strong> syntax for simple
+one-consequence conditionals:</li>
+</ul>
+<pre><code>If sText == &quot;&quot; Then SayString (&quot;Blank&quot;) EndIf</code></pre>
+<p>(JAWS Script requires the <code>EndIf</code> terminator; keep the
+whole condition-and-consequence on one line when it is a single simple
+action.)</p>
+<hr />
+<h2 id="9-loops">9. Loops</h2>
+<p>Prefer a collection-style iteration when the language and API allow
+it. JAWS Script's looping constructs are <code>While ... EndWhile</code>
+and the counted <code>For i = start To end ... EndFor</code>. Use the
+counted <code>For</code> only when the index itself is needed; when
+simply walking a sequence, drive a <code>While</code> loop off a
+cursor/iterator function rather than an explicit index where that reads
+more clearly.</p>
+<hr />
+<h2 id="10-string-delimiters">10. String Delimiters</h2>
+<p>JAWS Script string literals use <strong>double quotes</strong> only.
+Use <code>+</code> for string concatenation.</p>
+<pre><code>sPath = sScriptDir + &quot;\&quot; + sName</code></pre>
+<hr />
+<h2 id="11-magic-numbers">11. Magic Numbers</h2>
+<p>Never use a literal numeric or string value in logic. Assign it to a
+named <code>Const</code> and reference the constant. Always use the
+built-in named constants from <code>HJConst.jsh</code> (for example
+<code>OT_SCREEN</code>, <code>VARIABLE_TYPE</code>) rather than their
+numeric equivalents.</p>
+<hr />
+<h2 id="12-object-creation">12. Object Creation</h2>
+<p>When a script needs a COM object, create it with the JAWS object
+function (for example <code>CreateObjectEx</code>) using the full ProgID
+string, assign it to a variable named with the object's prefix
+convention, and release it when done.</p>
+<pre><code>Const sReProgId = &quot;VBScript.RegExp&quot;
+Var object oRe
+Let oRe = CreateObjectEx (sReProgId, ...)
+; ... use oRe ...
+Let oRe = Null</code></pre>
+<hr />
+<h2 id="13-error-handling">13. Error Handling</h2>
+<p>JAWS Script does not provide structured
+<code>try</code>/<code>catch</code>. Guard operations that can fail by
+checking the relevant status or return value immediately after the call,
+and keep the guarded region as small as possible. Where a JAWS built-in
+reports failure through a return code, test that return code on the next
+line rather than assuming success.</p>
+<hr />
+<h2 id="14-comments">14. Comments</h2>
+<p>Use the semicolon (<code>;</code>) line comment for ordinary remarks
+and <code>/* ... */</code> for block comments. Lead each
+<code>Script</code> or <code>Function</code> with a short comment
+stating what it does and, for a bound <code>Script</code>, the keystroke
+that invokes it (mirrored in the <code>.jkm</code> and
+<code>.jsd</code>).</p>
+</body>
+</html>

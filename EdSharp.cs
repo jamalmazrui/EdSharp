@@ -64,6 +64,7 @@ public static string DataDir;
 public static string DefaultIniFile;
 public static string HotkeyIniFile;
 public static string IniFile;
+public static string LogFile = "";
 public static string IndentModeFile;
 public static string TempFile;
 public static List<string> TempFiles = new List<string>();
@@ -97,6 +98,31 @@ MessageBox.Show(sReport, "EdSharp JAWS scripts: " + iCopied + " copied, " + iCom
 return;
 }
 }
+// Runtime log, in the Homer Tools convention: one file per session,
+// EdSharp_<timestamp>.log, beside the setup log. It opens with the
+// version and environment, and Util.Log adds a line for every outside
+// command EdSharp runs, with its exit code -- so a failed conversion
+// can be diagnosed from the log instead of guessed at. The newest
+// thirty session logs are kept; older ones are pruned.
+try {
+string sLogDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"EdSharp\logs");
+Directory.CreateDirectory(sLogDir);
+App.LogFile = Path.Combine(sLogDir, "EdSharp_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".log");
+StringBuilder sbHeader = new StringBuilder();
+sbHeader.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")).Append("  EdSharp ").Append(BuildVersion.Version).Append(" starting.\r\n");
+sbHeader.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")).Append("  Program: ").Append(Application.ExecutablePath).Append("\r\n");
+sbHeader.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")).Append("  Arguments: ").Append(String.Join(" ", cmdLineArgs)).Append("\r\n");
+sbHeader.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")).Append("  Windows: ").Append(Environment.OSVersion.ToString()).Append(", 64-bit process: ").Append(Environment.Is64BitProcess).Append("\r\n");
+sbHeader.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")).Append("  Working directory: ").Append(Environment.CurrentDirectory).Append("\r\n");
+File.AppendAllText(App.LogFile, sbHeader.ToString());
+string[] aOldLogs = Directory.GetFiles(sLogDir, "EdSharp_2*.log");
+Array.Sort(aOldLogs);
+for (int iLog = 0; iLog < aOldLogs.Length - 30; iLog++) {
+try { File.Delete(aOldLogs[iLog]); } catch (Exception) {}
+}
+}
+catch (Exception) { App.LogFile = ""; }
+
 // Multicore background JIT: record JIT decisions on first launch and, on
 // later launches, compile methods in parallel on background cores. This
 // shortens startup for a large single-assembly app. Wrapped so a failure
@@ -605,9 +631,14 @@ App.Frame.KeyDescriber = false;
 }
 
 string sFile = this.File;
+// The mode-flag file may be held open by a screen reader script at
+// this instant; a share collision must never take down a focus event.
+try {
 bool b = System.IO.File.Exists(App.IndentModeFile);
 if (b && !this.RTB.IndentMode) System.IO.File.Delete(App.IndentModeFile);
 else if (!b && this.RTB.IndentMode) System.IO.File.Create(App.IndentModeFile).Close();
+}
+catch (Exception) {}
 if (this.FileTimeChecked || sFile.IndexOf(@"\") == -1 || !System.IO.File.Exists(sFile)) return;
 
 DateTime dt = System.IO.File.GetLastWriteTime(sFile);
@@ -842,7 +873,7 @@ public ToolStripMenuItem menuEdit, menuEditSelectAll, menuEditUnselectAll, menuE
 public ToolStripMenuItem menuDelete, menuDeleteReplaceRegular, menuDeleteReplaceWithRegExp, menuDeleteHardLine, menuDeleteParagraph, menuDeleteLine, menuDeleteRight, menuDeleteLeft, menuDeleteDown, menuDeleteUp, menuDeleteFile, menuDeleteTrimBlanks;
 public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateNextBlock, menuNavigatePriorBlock, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateSearchForTopicAgain, menuNavigateGoToStartOfSelection;
 public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles, menuQueryFont;
-public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
+public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
 public ToolStripMenuItem menuWindow, menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
 public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
 public StatusStrip statusBar;
@@ -1048,6 +1079,9 @@ menuMiscHtmlToMarkdown = CreateMenuItem("HTML to Markdown", "", menuItem_Click, 
 menuMiscHtmlToText = CreateMenuItem("HTML to Plain Text", "", menuItem_Click, "child speak");
 menuMiscPreviewMarkdown = CreateMenuItem("Preview Markdown", "Control+F9", menuItem_Click, "child silent");
 menuMiscPreviewMarkdownBrowser = CreateMenuItem("Preview Markdown in Web Browser", "", menuItem_Click, "child silent");
+menuMiscCheckMarkdown = CreateMenuItem("Check Markdown", "Alt+F9", menuItem_Click, "child speak");
+menuMiscRunCodeBlocks = CreateMenuItem("Run Code Blocks", "Alt+Shift+F9", menuItem_Click, "child speak");
+menuMiscChatWithAI = CreateMenuItem("Chat with AI", "F12", menuItem_Click, "child speak");
 menuMiscTextConvert = CreateMenuItem("&Text Convert", "Control+T", menuItem_Click, "child speak");
 menuMiscTextCombine = CreateMenuItem("Text Combine", "Control+Shift+T", menuItem_Click, "child speak");
 menuMiscTextContents = CreateMenuItem("Text Contents", "Alt+Shift+T", menuItem_Click, "child speak");
@@ -1077,7 +1111,7 @@ menuMiscExplorerFolder = CreateMenuItem("Explorer Folder", "Alt+Oem5", menuItem_
 menuMiscCommandPrompt = CreateMenuItem("Command Prompt", "Control+Oem5", menuItem_Click, "frame speak");
 menuMiscBurnToCD = CreateMenuItem("Burn to CD", "Alt+Shift+B", menuItem_Click, "child speak");
 menuMiscWebDownload = CreateMenuItem("Web Download", "Alt+Shift+W", menuItem_Click, "frame speak");
-menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload});
+menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload});
 //Dialog.Show("Misc.", menuMisc.DropDownItems.Count);
 
 menuWindow = CreateMenu("&Window");
@@ -1394,14 +1428,27 @@ if (sLine.Length == 0) return;
 string sComment = App.ReadOption("QuotePrefix", "> ");
 if (sLine.StartsWith(sComment)) return;
 int iLevels = GetIndent();
-if (rtb.IndentLevels == iLevels) {
-// Environment.SetEnvironmentVariable("EdSharpIndent", "", EnvironmentVariableTarget.User);
-// Ini.WriteValue(App.IndentModeFile, "Data", "IndentChange", "", false);
-System.IO.File.Create(App.IndentModeFile).Close();
-return;}
+// Indent Mode announcements ("In 1", "Out 2") are spoken directly by
+// EdSharp through the Homer speech subsystem, which dispatches to the
+// JAWS COM interface, the NVDA controller client, or a native UIA
+// notification -- whichever screen reader is running. This retires the
+// old synchronization protocol, which wrote each delta into
+// IndentMode.tmp under an IndentChange key for a JAWS script to read
+// back and speak. That design had three faults this history preserves:
+// the file was truncated on EVERY cursor move where the level was
+// unchanged, an unguarded write that could collide with the script's
+// read; the script could read a stale delta and announce the previous
+// line's change on the wrong line; and avoiding double speech required
+// the obscure convention of a hyphen inside the ExtraSpeech option to
+// mute EdSharp's own voice. (An even older mechanism, a per-user
+// EdSharpIndent environment variable, had already been retired.)
+// IndentMode.tmp itself remains -- created and deleted as a pure mode
+// flag when Indent Mode toggles or a window gains focus -- so screen
+// reader scripts can still adapt key behavior to the mode; it just no
+// longer carries data. The hyphen convention still silences these
+// announcements for anyone who prefers quiet.
+if (rtb.IndentLevels == iLevels) return;
 string sDelta = GetDelta(rtb.IndentLevels, iLevels);
-// Environment.SetEnvironmentVariable("EdSharpIndent", sDelta, EnvironmentVariableTarget.User);
-Ini.WriteValue(App.IndentModeFile, "Data", "IndentChange", sDelta, false);
 if (App.IndentChange) Util.Say(sDelta);
 rtb.IndentLevels = iLevels;
 } // SetStatusAddress method
@@ -1451,13 +1498,43 @@ return false;
 else return true;
 } // IsCharacter method
 
+// The indentation unit that actually governs the current document: the
+// leading whitespace of its first indented line whose prefix repeats a
+// single character (four spaces, two spaces, or a tab, whatever the
+// file uses), scanning at most a few hundred lines; when no indented
+// line exists yet, the IndentUnit setting, and failing that two spaces.
+// Every indentation command and announcement below uses this, so a
+// four-space Python file reports level 2 where the old fixed setting
+// of two spaces reported level 4 -- and Tab inserts what the file uses.
+// The Infer Indent command still lets you configure the setting
+// explicitly, which then governs documents with no indentation yet.
+public string GetIndentUnit() {
+if (this.Child != null) {
+string[] aLines = this.Child.RTB.Text.Replace("\r\n", "\n").Split('\n');
+int iLimit = Math.Min(aLines.Length, 400);
+for (int iLine = 0; iLine < iLimit; iLine++) {
+string sLine = aLines[iLine];
+string sTrim = sLine.TrimStart();
+if (sTrim.Length == 0) continue;
+int iWs = sLine.Length - sTrim.Length;
+if (iWs == 0) continue;
+string sWs = sLine.Substring(0, iWs);
+bool bUniform = true;
+foreach (char c in sWs) if (c != sWs[0]) { bUniform = false; break; }
+if (bUniform) return sWs;
+}
+}
+string sUnit = Util.Literalize(App.ReadOption("IndentUnit", "\t"));
+if (sUnit.Length == 0) sUnit = "\t";
+return sUnit;
+} // GetIndentUnit method
+
 public int GetIndent() {
 return GetIndent(this.Child.RTB.Row);
 } // GetIndent method
 
 public int GetIndent(int iRow) {
-string sIndent = App.ReadOption("IndentUnit", "  ");
-sIndent = Util.Literalize(sIndent);
+string sIndent = GetIndentUnit();
 MdiChild child = this.Child;
 HomerRichTextBox rtb = child.RTB;
 string sLine = rtb.GetRowText(iRow);
@@ -1528,6 +1605,22 @@ sDir = Path.Combine(App.DataDir, sBaseDir);
 if (!Directory.Exists(sDir)) Directory.CreateDirectory(sDir);
 aResults = Directory.GetFiles(sDir);
 foreach (string s in aResults) if (!listFiles.Contains(Path.GetFileName(s).ToLower())) listResults.Add(s);
+
+// Snippets shipped with the program (the installer places the Snippets
+// folder in the program directory) join the list last, so a same-named
+// snippet in the data directory always wins: the user's copy overrides
+// the shipped one, and shipped snippets appear without any copying.
+foreach (string s in listResults) if (!listFiles.Contains(Path.GetFileName(s).ToLower())) listFiles.Add(Path.GetFileName(s).ToLower());
+string[] aProgramDirs = new string[] {Path.Combine(App.ProgramDir, @"Snippets\" + App.ReadData("Compiler", "Default")), Path.Combine(App.ProgramDir, @"Snippets\Default")};
+foreach (string sProgramDir in aProgramDirs) {
+if (!Directory.Exists(sProgramDir)) continue;
+foreach (string s in Directory.GetFiles(sProgramDir)) {
+string sName = Path.GetFileName(s).ToLower();
+if (listFiles.Contains(sName)) continue;
+listFiles.Add(sName);
+listResults.Add(s);
+}
+}
 aResults = listResults.ToArray();
 
 aValues = new string[aResults.Length];
@@ -2684,8 +2777,7 @@ AddMessage("Level " + this.GetIndent());
 }
 
 if (menuItem == menuEditIndent) {
-string sIndent = App.ReadOption("IndentUnit", "  ");
-sIndent = Util.Literalize(sIndent);
+string sIndent = GetIndentUnit();
 iIndex = rtb.Index;
 bool bLine;
 if (rtb.SelectionLength == 0) {
@@ -2713,8 +2805,7 @@ AddMessage("Level " + this.GetIndent());
 }
 
 if (menuItem == menuEditOutdent) {
-string sIndent = App.ReadOption("IndentUnit", "  ");
-sIndent = Util.Literalize(sIndent);
+string sIndent = GetIndentUnit();
 iIndex = rtb.Index;
 if (rtb.SelectionLength == 0) {
 // AddMessage("Line");
@@ -2737,8 +2828,7 @@ AddMessage("Level " + this.GetIndent());
 }
 
 if (menuItem == menuEditAlign) {
-string sIndent = App.ReadOption("IndentUnit", "  ");
-sIndent = Util.Literalize(sIndent);
+string sIndent = GetIndentUnit();
 iIndex = rtb.Index;
 bool bLine;
 if (rtb.SelectionLength == 0) {
@@ -2800,10 +2890,14 @@ AddMessage("Level " + this.GetIndent());
 if (menuItem == menuEditIndentMode) {
 rtb.IndentMode = !rtb.IndentMode;
 AddMessage(rtb.IndentMode ? "On" : "Off");
-// Environment.SetEnvironmentVariable("EdSharpIndent", "", EnvironmentVariableTarget.User);
+// The same share-collision guard as in CheckFileTime: the flag file
+// may be open in a screen reader script when the mode toggles.
+try {
 bool b = System.IO.File.Exists(App.IndentModeFile);
 if (b && !rtb.IndentMode) System.IO.File.Delete(App.IndentModeFile);
 else if (!b && rtb.IndentMode) System.IO.File.Create(App.IndentModeFile).Close();
+}
+catch (Exception) {}
 //return;
 }
 
@@ -3169,40 +3263,47 @@ AddMessage("IndentUnit configured");
 }
 
 if (menuItem == menuMiscFormatCode) {
-// String sExe = Path.Combine(App.ProgramDir, @"Convert\Uncrustify\uncrustify.exe");
+// Route the document to the right formatter by extension. The former
+// test here, sExt.Contains(sExt), was always true, so EVERY file --
+// including Python source -- went through the HTML tidy tool, which
+// rewrote it as if it were markup. Now: web markup goes to tidy;
+// Python is normalized by the structure engine (indentation rebuilt
+// from the IndentUnit setting, spoken "# end" markers refreshed at
+// block ends); the C-family goes to astyle; anything else is declined
+// with its name instead of being damaged.
 sFile = App.Frame.Child.File;
-string sExt = Path.GetExtension(sFile).ToLower();
+string sExt = Path.GetExtension(sFile).ToLower().TrimStart('.');
 string sCommand = "";
-if (sExt.Contains(sExt)) {
+sText = "";
+if (sExt == "htm" || sExt == "html" || sExt == "xhtml" || sExt == "xml") {
 sCommand = "%ProgDir%\\Convert\\Tidy\\tidy.exe -config %ProgDir%\\Convert\\Tidy\\tidy.cfg -m \"%SourceLong%\"";
 sCommand = Util.ExpandCommandLine(sCommand, sFile, sFile);
 Util.RunHideWait(sCommand);
 sText = File.ReadAllText(sFile);
 }
-else {
+else if (sExt == "py" || sExt == "pyw") {
+sText = PyBrace2Dent(PyDent2Brace(App.Frame.Child.RTB.Text));
+}
+else if (sExt == "c" || sExt == "cc" || sExt == "cpp" || sExt == "h" || sExt == "hpp" || sExt == "cs" || sExt == "java" || sExt == "m") {
 String sExe = Path.Combine(App.ProgramDir, @"Convert\astyle\astyle.exe");
 sExe = Win32.GetShortPath(sExe);
-String sCfg = Path.Combine(App.ProgramDir, @"Convert\Uncrustify\defaults.cfg");
-sCfg = Win32.GetShortPath(sCfg);
-
 string sSourceFile = Path.GetTempFileName();
 sSourceFile = Path.ChangeExtension(sSourceFile, Path.GetExtension(App.Frame.Child.File));
 File.WriteAllText(sSourceFile, App.Frame.Child.RTB.Text);
 if (File.Exists(App.TempFile)) File.Delete(App.TempFile);
 File.Copy(sSourceFile, App.TempFile);
-string sTargetFile = Path.GetTempFileName();
-// string sCommand = sExe + " -c " + sCfg + " -f " + sSourceFile + " -o " + sTargetFile;
-
-        string sIndent = App.ReadOption("IndentUnit", "  ");
-        sIndent = Util.Literalize(sIndent);
+string sIndent = App.ReadOption("IndentUnit", "\t");
+sIndent = Util.Literalize(sIndent);
 sCommand = sExe + " " + sSourceFile;
 if (sIndent == "\t") sCommand = sExe + " --indent=tab " + sSourceFile;
 Util.RunHideWait(sCommand);
-// sText = File.ReadAllText(sTargetFile);
 sText = File.ReadAllText(sSourceFile);
 File.Delete(sSourceFile);
-File.Delete(sTargetFile);
-} // if html file
+}
+else {
+AddMessage("No formatter for ." + sExt + " files!");
+return;
+}
 
 if (sText.Length == 0) {
 AddMessage(" Error !");
@@ -4613,39 +4714,36 @@ else AddMessage(GetPercentAddress(rtb));
 }
 
 if (menuItem == menuQueryIndent) {
-// Jared request to always say levels
-//if (!rtb.IndentMode)  AddMessage("Level " + this.GetIndent());
-// else {
+// First press: the line's indentation level, measured with the
+// document's own detected unit. Second press: the whole chain of
+// enclosing blocks, outermost first -- for Python, the class, the
+// function, and each nested statement the cursor sits inside; for a
+// brace language, each enclosing opener. This answers the question
+// "where am I?" that indentation shows a sighted reader at a glance.
 if (this.KeyRepeat % 2 == 0) {
 AddMessage("Level " + this.GetIndent());
 return;
 }
-// AddMessage("Block");
 
-char[] a = {' ', '\t'};
-sLine = "";
-string sComment = App.ReadOption("QuotePrefix", "> ");
-int iLevels = GetIndent();
-int i = iLevels;
-int iRow = rtb.Row;
-int iTop = 0;
-while (iRow > iTop) {
-iRow--;
-sLine = rtb.GetRowText(iRow).Trim(a);
-if (sLine.Length == 0 || sLine.StartsWith(sComment)) continue;
-i = GetIndent(iRow);
-// Util.Say("row " + iRow + " indent " + i);
-// Only stop for less indentation
-// if (iLevels != i) break;
-if (iLevels > i) break;
+string sQuoteComment = App.ReadOption("QuotePrefix", "> ");
+int iCurrentLevels = GetIndent();
+int iLowest = iCurrentLevels;
+List<string> lsChain = new List<string>();
+int iChainRow = rtb.Row;
+while (iChainRow > 0) {
+iChainRow--;
+string sChainLine = rtb.GetRowText(iChainRow);
+string sChainTrim = sChainLine.Trim();
+if (sChainTrim.Length == 0 || sChainTrim.StartsWith(sQuoteComment) || sChainTrim.StartsWith("#")) continue;
+int iRowLevels = GetIndent(iChainRow);
+if (iRowLevels < iLowest) {
+lsChain.Insert(0, sChainTrim);
+iLowest = iRowLevels;
+if (iRowLevels == 0) break;
 }
-
-if (iLevels == i) {
-//AddMessage("Top!");
 }
-//else AddMessage(GetDelta(iLevels, i));
-Util.Say(sLine);
-// }
+if (lsChain.Count == 0) AddMessage("Top level");
+else AddMessage(String.Join(", ", lsChain.ToArray()));
 }
 
 if (menuItem == menuQueryPath) {
@@ -4900,6 +4998,79 @@ Util.String2FileU(sHtml, sHtmlFile);
 App.TempFiles.Add(sHtmlFile);
 Process.Start(sHtmlFile);
 }
+}
+
+if (menuItem == menuMiscCheckMarkdown) {
+// Check the current document as Markdown and report findings, one per
+// line, in a new window. Pandoc has no lint mode and no solid .NET
+// linting package exists, so these are EdSharp's own line-based rules,
+// chosen for accessibility and correct conversion rather than style
+// pedantry: heading levels that jump, images without alt text, bare
+// URLs, duplicate headings, unclosed code fences, pipe-table rows whose
+// cell counts disagree with their header, and reference links that are
+// used but never defined or defined but never used. Fenced code blocks
+// are skipped, so code examples do not raise false alarms.
+string sBaseName = (child.File != null && child.File.Length > 0) ? Path.GetFileNameWithoutExtension(child.File) : "Untitled";
+string sReport = checkMarkdown(rtb.Text);
+new MdiChild(this, sBaseName + "_check.txt");
+this.Child.File = this.Child.Text;
+this.Child.RTB.Text = sReport;
+this.Child.RTB.Modified = false;
+this.Child.RTB.Index = 0;
+}
+
+if (menuItem == menuMiscRunCodeBlocks) {
+// Run the document's executable code blocks and insert each block's
+// results right below it. Two block languages are supported. A fenced
+// block whose info string is sql runs through sqlean.exe, the SQLite
+// command line shipped in the program folder: the fence line may name
+// the database after the language (three backticks, sql, then a path),
+// and with no path a .db file with the document's own base name in the
+// document's folder is assumed. Query results arrive as a real
+// Markdown table, so the .mdx pipeline carries them into docx and HTML
+// as real tables. A fenced block whose info string is jscript runs
+// through the built-in JScript .NET evaluator, and whatever text it
+// returns is inserted as it is. Results live between output-begins and
+// output-ends comment markers, and running the command again REPLACES
+// the marked region, so a document can be refreshed repeatedly.
+// Execution happens only by this explicit command -- never during
+// conversion or export -- so opening or converting a document can
+// never run code by surprise.
+int iBlocksRun = runCodeBlocks();
+AddMessage(Util.Pluralize(iBlocksRun, "block") + " run");
+}
+
+if (menuItem == menuMiscChatWithAI) {
+// A simple, flexible chat with a local model through Ollama. The
+// selection, or with no selection the whole document, travels with
+// your instruction; the model's answer opens in a NEW window, so the
+// source window is never touched and the reply is immediately a
+// document -- readable with ordinary keys, savable, or convertible.
+// This serves both conversation (empty document, just ask) and
+// transformation (select text, say what to do to it). Everything runs
+// locally: the model, the data, and the answer never leave the
+// machine. The Ollama service installs from a checkbox at the end of
+// EdSharp's setup and is shared with every other application that
+// uses Ollama.
+string sContext;
+if (rtb.SelectionLength > 0) { AddMessage("Selected"); sContext = rtb.SelectedText; }
+else sContext = rtb.Text;
+string sInstruction = Dialog.Input("Chat with AI", "Instruction", App.ReadData("ChatInstruction", ""), "Chat").Trim();
+if (sInstruction.Length == 0) return;
+App.WriteData("ChatInstruction", sInstruction);
+string sModel = App.ReadOption("OllamaModel", "llama3.2");
+AddMessage("Asking " + sModel);
+string sPrompt = sInstruction;
+if (sContext.Trim().Length > 0) sPrompt += "\n\n" + sContext;
+string sAnswer = askOllama(sPrompt, sModel);
+if (sAnswer.Length == 0) return;
+string sBaseName = (child.File != null && child.File.Length > 0) ? Path.GetFileNameWithoutExtension(child.File) : "Untitled";
+new MdiChild(this, sBaseName + "_ai.md");
+this.Child.File = this.Child.Text;
+this.Child.RTB.Text = sAnswer.Replace("\r\n", "\n").Replace("\n", "\r\n");
+this.Child.RTB.Modified = true;
+this.Child.RTB.Index = 0;
+AddMessage("Done");
 }
 
 if (menuItem == menuMiscTextConvert || menuItem == menuMiscTextCombine) {
@@ -5262,6 +5433,22 @@ AddMessage("Folder " + Path.GetFileName(s));
 Directory.SetCurrentDirectory(s);
 }
 
+// A compiler is now defined by a named section, "Compiler <name>",
+// with one clearly named key per setting -- CompileCommand,
+// JumpPosition, AbbreviateOutput, NavigatePart, QuotePrefix,
+// ExtensionDefault, GoToEnvironment -- kept verbatim (and multiline
+// when needed) in EdSharp.inix. When such a section exists, it is the
+// definition, and the value in the [Compilers] list is free to be a
+// human-readable description. The old tilde-packed value is unpacked
+// only for entries that have no section, so private legacy compiler
+// lines keep working unchanged.
+string sSection = "Compiler " + sResult;
+string[] aKeys = new string[] {"CompileCommand", "JumpPosition", "AbbreviateOutput", "NavigatePart", "QuotePrefix", "ExtensionDefault", "GoToEnvironment"};
+bool bSectionDefined = false;
+foreach (string sKey in aKeys) {
+if (Ini.ReadValue(App.IniFile, sSection, sKey, "\0") != "\0") { bSectionDefined = true; break; }
+}
+if (!bSectionDefined) {
 sValue = Ini.ReadValue(App.IniFile, "Compilers", sResult, "");
 string[] a = sValue.Split('~');
 Ini.WriteQuote(App.IniFile, "Options", "CompileCommand", a[0]);
@@ -5271,12 +5458,7 @@ if (a.Length > 3) Ini.WriteQuote(App.IniFile, "Options", "NavigatePart", a[3]);
 if (a.Length > 4) Ini.WriteQuote(App.IniFile, "Options", "QuotePrefix", a[4]);
 if (a.Length > 5) Ini.WriteQuote(App.IniFile, "Options", "ExtensionDefault", a[5]);
 if (a.Length > 6) Ini.WriteQuote(App.IniFile, "Options", "GoToEnvironment", a[6]);
-// More robust alternative to the tilde-packed value: if a section named
-// "Compiler <name>" exists (most naturally in EdSharp.inix, which keeps each
-// value verbatim), its named keys override the unpacked fields. This avoids any
-// collision with the ~ delimiter and makes regex settings easy to read and edit.
-string sSection = "Compiler " + sResult;
-string[] aKeys = new string[] {"CompileCommand", "JumpPosition", "AbbreviateOutput", "NavigatePart", "QuotePrefix", "ExtensionDefault", "GoToEnvironment"};
+}
 foreach (string sKey in aKeys) {
 string sVal = Ini.ReadValue(App.IniFile, sSection, sKey, "\0");
 if (sVal != "\0") Ini.WriteQuote(App.IniFile, "Options", sKey, sVal);
@@ -5309,6 +5491,15 @@ if (sCsc.Length > 0) {
 sCommand = "\"" + sCsc + "\" /nologo \"%SourceLong%\" 2>&1";
 sDefaultJump = @"\(\d+,\d+\)";
 }
+}
+// The same courtesy for Python: with no compiler configured, a .py or
+// .pyw file runs with the python on PATH (the installer's optional
+// Python task installs the latest official build there), jumping to
+// the traceback's line number. Picking the Python compiler with
+// Control+Shift+F5 still overrides this default.
+if (sCommand.Trim().Length == 0 && (child.File.ToLower().EndsWith(".py") || child.File.ToLower().EndsWith(".pyw"))) {
+sCommand = "python \"%SourceLong%\" 2>&1";
+sDefaultJump = @"line \d+";
 }
 if (sCommand.Trim().Length == 0) {
 AddMessage("No compiler configured. Press Control+Shift+F5 to pick one.");
@@ -5868,6 +6059,326 @@ ElevateVersion();
 
 } // menuItem_Click handler
 
+// Ask the local Ollama service for one completion and return its text.
+// Plain HttpWebRequest against the generate endpoint with streaming
+// off; the tiny JSON involved is built and read here directly, so no
+// serializer assembly is needed. Failures explain themselves: the
+// most common is simply that Ollama is not installed or not running.
+public string askOllama(string sPrompt, string sModel) {
+string sUrl = App.ReadOption("OllamaUrl", "http://localhost:11434").TrimEnd('/') + "/api/generate";
+int iTimeoutSeconds = 300;
+try { iTimeoutSeconds = Int32.Parse(App.ReadOption("OllamaTimeout", "300")); } catch {}
+string sBody = "{\"model\":\"" + jsonEscape(sModel) + "\",\"prompt\":\"" + jsonEscape(sPrompt) + "\",\"stream\":false}";
+try {
+System.Net.HttpWebRequest request = (System.Net.HttpWebRequest) System.Net.WebRequest.Create(sUrl);
+request.Method = "POST";
+request.ContentType = "application/json";
+request.Timeout = iTimeoutSeconds * 1000;
+request.ReadWriteTimeout = iTimeoutSeconds * 1000;
+byte[] aBytes = Encoding.UTF8.GetBytes(sBody);
+request.ContentLength = aBytes.Length;
+using (Stream stream = request.GetRequestStream()) stream.Write(aBytes, 0, aBytes.Length);
+string sJson;
+using (System.Net.WebResponse response = request.GetResponse())
+using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8)) sJson = reader.ReadToEnd();
+string sAnswer = jsonExtractString(sJson, "response");
+if (sAnswer.Length == 0) {
+string sError = jsonExtractString(sJson, "error");
+Dialog.Show("Chat with AI", sError.Length > 0 ? "Ollama reported: " + sError : "Ollama sent an empty answer.");
+}
+return sAnswer;
+}
+catch (System.Net.WebException ex) {
+// A reachable Ollama still answers some requests with an HTTP error --
+// asking for a model that has not been pulled returns 404 with a JSON
+// body naming the problem -- and HttpWebRequest turns any error status
+// into this exception. So read the body first: a real explanation like
+// "model \"llama3.2\" not found" beats "(404) Not Found" with install
+// hints for a service that is plainly running.
+string sDetail = "";
+try {
+if (ex.Response != null) using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream(), Encoding.UTF8)) sDetail = reader.ReadToEnd();
+}
+catch {}
+string sReported = jsonExtractString(sDetail, "error");
+string sHint;
+if (sReported.Length > 0) {
+sHint = "Ollama reported: " + sReported;
+if (sReported.IndexOf("not found", StringComparison.OrdinalIgnoreCase) >= 0) {
+// No manual steps: offer to fetch the model right now. The pull runs
+// in a visible command window so its progress is readable, and the
+// window stays open at the end so the outcome can be reviewed.
+if (MessageBox.Show("The " + sModel + " model is not on this machine yet. Fetch it now? It is about 2 gigabytes, shared by every app that uses Ollama.", "Chat with AI", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+try { Process.Start("cmd.exe", "/k ollama pull " + sModel + " && echo. && echo Done. Press F12 in EdSharp to chat."); } catch (Exception exStart) { Dialog.Show("Chat with AI", exStart.Message); }
+AddMessage("Pulling " + sModel);
+return "";
+}
+sHint += "\n\nWhen you are ready, fetch it with: ollama pull " + sModel + "\nThe OllamaModel setting picks a different model.";
+}
+}
+else sHint = "Could not reach Ollama at " + sUrl + ".\n" + ex.Message + "\n\nIf Ollama is not installed, rerun the EdSharp installer and check the Ollama box at the finish page, or run: winget install Ollama.Ollama\nIf the model is missing, run: ollama pull " + sModel;
+Dialog.Show("Chat with AI", sHint);
+return "";
+}
+catch (Exception ex) {
+Dialog.Show("Chat with AI", ex.Message);
+return "";
+}
+} // askOllama method
+
+static string jsonEscape(string sText) {
+StringBuilder sbJson = new StringBuilder();
+foreach (char c in sText) {
+if (c == '"') sbJson.Append("\\\"");
+else if (c == '\\') sbJson.Append("\\\\");
+else if (c == '\n') sbJson.Append("\\n");
+else if (c == '\r') sbJson.Append("\\r");
+else if (c == '\t') sbJson.Append("\\t");
+else if (c < ' ') sbJson.Append("\\u").Append(((int) c).ToString("x4"));
+else sbJson.Append(c);
+}
+return sbJson.ToString();
+} // jsonEscape method
+
+// Read one string field from a flat JSON object: find the key, then
+// walk the value honoring escapes. Enough for Ollama's responses
+// without a serializer dependency.
+static string jsonExtractString(string sJson, string sKey) {
+string sMarker = "\"" + sKey + "\":\"";
+int iStart = sJson.IndexOf(sMarker);
+if (iStart == -1) return "";
+iStart += sMarker.Length;
+StringBuilder sbValue = new StringBuilder();
+int i = iStart;
+while (i < sJson.Length) {
+char c = sJson[i];
+if (c == '\\' && i + 1 < sJson.Length) {
+char cNext = sJson[i + 1];
+if (cNext == 'n') sbValue.Append('\n');
+else if (cNext == 'r') sbValue.Append('\r');
+else if (cNext == 't') sbValue.Append('\t');
+else if (cNext == '"') sbValue.Append('"');
+else if (cNext == '\\') sbValue.Append('\\');
+else if (cNext == '/') sbValue.Append('/');
+else if (cNext == 'u' && i + 5 < sJson.Length) {
+try { sbValue.Append((char) Convert.ToInt32(sJson.Substring(i + 2, 4), 16)); } catch {}
+i += 4;
+}
+i += 2;
+continue;
+}
+if (c == '"') break;
+sbValue.Append(c);
+i++;
+}
+return sbValue.ToString();
+} // jsonExtractString method
+
+public int runCodeBlocks() {
+const string c_sOutputBegins = "<!-- output begins -->";
+const string c_sOutputEnds = "<!-- output ends -->";
+HomerRichTextBox rtb = this.Child.RTB;
+string sDocFile = this.Child.File;
+string sDocDir = (sDocFile != null && sDocFile.Contains("\\")) ? Path.GetDirectoryName(sDocFile) : Directory.GetCurrentDirectory();
+List<string> lsLines = new List<string>(rtb.Text.Replace("\r\n", "\n").Split('\n'));
+int iBlocksRun = 0;
+int i = 0;
+while (i < lsLines.Count) {
+string sTrim = lsLines[i].TrimStart();
+bool bFence = sTrim.StartsWith("```") || sTrim.StartsWith("~~~");
+if (!bFence) { i++; continue; }
+string sFenceMark = sTrim.Substring(0, 3);
+string sInfo = sTrim.Substring(3).Trim();
+string sLanguage = sInfo.Split(' ')[0].ToLowerInvariant();
+if (sLanguage != "sql" && sLanguage != "jscript") { 
+// Skip to this block's closing fence so its body cannot start a run.
+i++;
+while (i < lsLines.Count && !lsLines[i].TrimStart().StartsWith(sFenceMark)) i++;
+i++;
+continue;
+}
+string sArgument = (sInfo.Length > sLanguage.Length) ? sInfo.Substring(sLanguage.Length).Trim() : "";
+StringBuilder sbBody = new StringBuilder();
+int iBodyStart = i + 1;
+int iClose = -1;
+for (int j = iBodyStart; j < lsLines.Count; j++) {
+if (lsLines[j].TrimStart().StartsWith(sFenceMark)) { iClose = j; break; }
+sbBody.Append(lsLines[j]).Append("\n");
+}
+if (iClose == -1) { i = lsLines.Count; continue; }
+
+string sOutput;
+if (sLanguage == "sql") sOutput = runSqlBlock(sbBody.ToString(), sArgument, sDocFile, sDocDir);
+else sOutput = runJscriptBlock(sbBody.ToString());
+iBlocksRun++;
+
+// Replace an existing marked region right after the fence, or insert one.
+int iRegionStart = iClose + 1;
+int iRegionEnd = -1;
+if (iRegionStart < lsLines.Count && lsLines[iRegionStart].Trim() == c_sOutputBegins) {
+for (int j = iRegionStart + 1; j < lsLines.Count; j++) {
+if (lsLines[j].Trim() == c_sOutputEnds) { iRegionEnd = j; break; }
+}
+}
+if (iRegionEnd >= 0) lsLines.RemoveRange(iRegionStart, iRegionEnd - iRegionStart + 1);
+List<string> lsRegion = new List<string>();
+lsRegion.Add(c_sOutputBegins);
+foreach (string sOutputLine in sOutput.Replace("\r\n", "\n").TrimEnd('\n').Split('\n')) lsRegion.Add(sOutputLine);
+lsRegion.Add(c_sOutputEnds);
+lsLines.InsertRange(iRegionStart, lsRegion);
+i = iRegionStart + lsRegion.Count;
+}
+if (iBlocksRun > 0) {
+int iIndex = rtb.Index;
+rtb.Text = String.Join("\n", lsLines.ToArray());
+rtb.Modified = true;
+if (iIndex <= rtb.TextLength) rtb.Index = iIndex;
+}
+return iBlocksRun;
+} // runCodeBlocks method
+
+string runSqlBlock(string sBody, string sArgument, string sDocFile, string sDocDir) {
+string sSqleanFile = Path.Combine(App.ProgramDir, "sqlean.exe");
+if (!File.Exists(sSqleanFile)) return "No sqlean.exe was found in the program folder, so the sql block did not run.";
+string sDbFile = sArgument.Trim('"');
+if (sDbFile.Length == 0) {
+if (sDocFile != null && sDocFile.Contains("\\")) sDbFile = Path.ChangeExtension(sDocFile, ".db");
+else return "Name the database on the fence line (three backticks, sql, then the path), or save the document so a database with its base name can be assumed.";
+}
+if (!Path.IsPathRooted(sDbFile)) sDbFile = Path.Combine(sDocDir, sDbFile);
+if (!File.Exists(sDbFile)) return "The database was not found: " + sDbFile;
+try {
+ProcessStartInfo psi = new ProcessStartInfo(sSqleanFile, "-csv -header \"" + sDbFile + "\"");
+psi.UseShellExecute = false;
+psi.CreateNoWindow = true;
+psi.RedirectStandardInput = true;
+psi.RedirectStandardOutput = true;
+psi.RedirectStandardError = true;
+using (Process process = Process.Start(psi)) {
+process.StandardInput.Write(sBody);
+process.StandardInput.Close();
+string sOut = process.StandardOutput.ReadToEnd();
+string sErr = process.StandardError.ReadToEnd();
+if (!process.WaitForExit(60000)) {
+try { process.Kill(); } catch {}
+return "The sql block was stopped after 60 seconds.";
+}
+if (sErr.Trim().Length > 0 && sOut.Trim().Length == 0) return "SQL error: " + sErr.Trim();
+if (sOut.Trim().Length == 0) return "0 rows";
+Homer.InixTable.TableData table = Homer.InixTable.tableFromDelimitedText(sOut, ',');
+string sTable = Homer.InixTable.tableToMarkdown(table);
+string sNote = Util.Pluralize(table.Rows.Count, "row");
+if (sErr.Trim().Length > 0) sNote += "; SQL messages: " + sErr.Trim();
+return sTable + "\n" + sNote;
+}
+}
+catch (Exception ex) {
+return "The sql block failed: " + ex.Message;
+}
+} // runSqlBlock method
+
+string runJscriptBlock(string sBody) {
+string sResult = Script.run(sBody);
+if (sResult == null || sResult.Length == 0) return "(no result)";
+return sResult;
+} // runJscriptBlock method
+
+public string checkMarkdown(string sText) {
+List<string> lsFindings = new List<string>();
+string[] aLines = sText.Replace("\r\n", "\n").Split('\n');
+int iPriorHeadingLevel = 0;
+Dictionary<string, int> dHeadings = new Dictionary<string, int>();
+Dictionary<string, int> dRefsDefined = new Dictionary<string, int>();
+Dictionary<string, int> dRefsUsed = new Dictionary<string, int>();
+bool bInFence = false;
+string sFenceMark = "";
+int iFenceLine = 0;
+int iTableHeaderCells = 0;
+int iTableHeaderLine = 0;
+Regex rexHeading = new Regex(@"^(#{1,6})\s+(.*)$");
+Regex rexEmptyAlt = new Regex(@"!\[\s*\]\(");
+Regex rexBareUrl = new Regex(@"(^|[\s])(https?://[^\s)>\]]+)");
+Regex rexRefDefinition = new Regex(@"^\s*\[([^\]^]+)\]:\s*\S");
+Regex rexRefUse = new Regex(@"\[[^\]]*\]\[([^\]]+)\]");
+
+for (int i = 0; i < aLines.Length; i++) {
+string sLine = aLines[i];
+string sTrim = sLine.TrimStart();
+int iLineNumber = i + 1;
+
+// Fences first: findings inside a code block would be false alarms.
+if (sTrim.StartsWith("```") || sTrim.StartsWith("~~~")) {
+string sMark = sTrim.Substring(0, 3);
+if (!bInFence) { bInFence = true; sFenceMark = sMark; iFenceLine = iLineNumber; }
+else if (sMark == sFenceMark) bInFence = false;
+continue;
+}
+if (bInFence) continue;
+
+// Pipe tables: a row whose cell count differs from its header will
+// not convert as intended.
+if (sTrim.StartsWith("|")) {
+bool bSeparator = true;
+foreach (char c in sTrim) if (c != '|' && c != '-' && c != ':' && c != ' ' && c != '\t') { bSeparator = false; break; }
+int iCells = sTrim.Trim('|').Split('|').Length;
+if (iTableHeaderCells == 0) { iTableHeaderCells = iCells; iTableHeaderLine = iLineNumber; }
+else if (!bSeparator && iCells != iTableHeaderCells) {
+lsFindings.Add("Line " + iLineNumber + ": table row has " + Util.Pluralize(iCells, "cell") + " but the header on line " + iTableHeaderLine + " has " + iTableHeaderCells + ".");
+}
+}
+else iTableHeaderCells = 0;
+
+Match matchHeading = rexHeading.Match(sLine);
+if (matchHeading.Success) {
+int iLevel = matchHeading.Groups[1].Value.Length;
+if (iPriorHeadingLevel > 0 && iLevel > iPriorHeadingLevel + 1) {
+lsFindings.Add("Line " + iLineNumber + ": heading level jumps from " + iPriorHeadingLevel + " to " + iLevel + "; screen reader heading navigation works best when levels step by one.");
+}
+iPriorHeadingLevel = iLevel;
+string sHeadingText = matchHeading.Groups[2].Value.Trim().ToLowerInvariant();
+if (dHeadings.ContainsKey(sHeadingText)) {
+lsFindings.Add("Line " + iLineNumber + ": duplicate heading; the same text is a heading on line " + dHeadings[sHeadingText] + ", which makes links to it ambiguous.");
+}
+else dHeadings[sHeadingText] = iLineNumber;
+}
+
+if (rexEmptyAlt.IsMatch(sLine)) {
+lsFindings.Add("Line " + iLineNumber + ": image with no alt text; a screen reader has nothing to announce for it.");
+}
+
+foreach (Match matchUrl in rexBareUrl.Matches(sLine)) {
+int iAt = matchUrl.Groups[2].Index;
+char cBefore = (iAt > 0) ? sLine[iAt - 1] : ' ';
+if (cBefore == '(' || cBefore == '<' || cBefore == '"') continue;
+lsFindings.Add("Line " + iLineNumber + ": bare web address; reader-friendly link text with the address behind it reads far better aloud.");
+}
+
+Match matchDefinition = rexRefDefinition.Match(sLine);
+if (matchDefinition.Success) {
+string sRef = matchDefinition.Groups[1].Value.Trim().ToLowerInvariant();
+if (!dRefsDefined.ContainsKey(sRef)) dRefsDefined[sRef] = iLineNumber;
+}
+foreach (Match matchUse in rexRefUse.Matches(sLine)) {
+string sRef = matchUse.Groups[1].Value.Trim().ToLowerInvariant();
+if (!dRefsUsed.ContainsKey(sRef)) dRefsUsed[sRef] = iLineNumber;
+}
+}
+
+if (bInFence) lsFindings.Add("Line " + iFenceLine + ": code fence is never closed, so everything after it becomes part of the code block.");
+foreach (KeyValuePair<string, int> pairUsed in dRefsUsed) {
+if (!dRefsDefined.ContainsKey(pairUsed.Key)) lsFindings.Add("Line " + pairUsed.Value + ": reference link [" + pairUsed.Key + "] is used but never defined, so it will not become a link.");
+}
+foreach (KeyValuePair<string, int> pairDefined in dRefsDefined) {
+if (!dRefsUsed.ContainsKey(pairDefined.Key)) lsFindings.Add("Line " + pairDefined.Value + ": reference link [" + pairDefined.Key + "] is defined but never used.");
+}
+
+StringBuilder sbReport = new StringBuilder();
+sbReport.Append("Check Markdown: " + Util.Pluralize(lsFindings.Count, "finding") + "\r\n\r\n");
+foreach (string sFinding in lsFindings) sbReport.Append(sFinding + "\r\n");
+if (lsFindings.Count == 0) sbReport.Append("No problems found by the rules: heading level jumps, missing image alt text, bare web addresses, duplicate headings, unclosed code fences, uneven table rows, and undefined or unused reference links.\r\n");
+return sbReport.ToString();
+} // checkMarkdown method
+
 object[] GetChunk() {
 bool bLoop;
 int iIndex, iStart, iEnd;
@@ -6057,249 +6568,228 @@ rtb.Index = iIndex;
 Util.Say(rtb.RowText);
 } // InvokeSnippet method
 
-public string PyDent2Brace(string sText) {
-sText = Util.RegExpReplaceCase(sText, @"^\t*\# end \w+$", "");
-string sOld = sText;
-while (true) {
-sText = Util.RegExpReplaceCase(sText, @"^(\t*) ", "$1\t");
-if (sText == sOld) break;
-else sOld = sText;
-}
+// ===== Python structure engine (rewritten 24 August 2026) ==================
+// PyBrace and PyDent convert between Python's indentation and a flat,
+// brace-marked form that is far friendlier under a screen reader: block
+// structure is spoken as visible text ("... {" and "} end def") instead
+// of counted spaces. The previous engine corrupted three common things:
+// dictionary and set literals (any line ending in a brace was taken for
+// a block), docstrings and other triple-quoted strings (their interior
+// indentation was flattened), and braces inside strings such as
+// f-strings. This engine tracks string and bracket state character by
+// character, so only real compound statements (def, class, if, elif,
+// else, for, while, try, except, finally, with, match, case, and their
+// async forms) open blocks, only "} end word" lines close them, string
+// interiors pass through verbatim, and continuation lines keep an extra
+// indent unit. Round trips are exact: PyDent(PyBrace(code)) reproduces
+// the original, apart from normalized indentation and the spoken
+// "# end" markers PyDent adds at block ends.
 
-// does not work
-/*
-sText = Util.RegExpReplaceCase(sText, @"^\t*\#", "#");
-sText = Util.RegExpReplaceCase(sText, @"^\#([^ ])", "# $1");
-string[] aIndent = Util.RegExpExtractCase(sText, @"^\t+");
-int iMax = 0;
-int iMin = 1000;
-foreach (string s in aIndent) {
-iLength = s.Length;
-if (iLength > iMax) iMax = iLength;
-if (iLength < iMin) iMin = iLength;
-}
+static readonly string[] c_aPythonBlockWords = new string[] {"def", "class", "if", "elif", "else", "for", "while", "try", "except", "finally", "with", "match", "case"};
 
-if (iMin > 0) {
-string sMin = "\t".PadRight(iMin, '\t');
-string sAbbrev = "\t".PadRight(iMin - 1, '\t');
-for (int n = 1; n <= iMax / iMin; n++) {
-sText = Util.RegExpReplaceCase(sText, @"^" + sMin, sAbbrev);
-}
-}
-*/
+static bool isPythonBlockWord(string sWord) {
+foreach (string s in c_aPythonBlockWords) if (s == sWord) return true;
+return false;
+} // isPythonBlockWord method
 
-HomerList hl = new HomerList(sText.Split('\n'));
+// Walk one raw line, carrying triple-quote state across lines. Returns
+// the line with string interiors blanked and any comment removed, and
+// reports the bracket-depth change from this line's real code.
+static string scanPythonLine(string sLine, ref bool bInTriple, ref char cTriple, out int iDepthDelta) {
+StringBuilder sbCode = new StringBuilder();
+int iDepth = 0;
+bool bInSingle = false;
+char cSingle = ' ';
 int i = 0;
-int iOldLevel = 0;
-int iCount = 0;
-char[] a = {' ', ':'};
-HomerList hlCode = new HomerList();
-HomerList hlLevel = new HomerList();
-bool bTripleQuote = false;
-int iBrace = 0;
-int iBracket = 0;
-int iParen = 0;
-int iTripleQuote = 0;
-int iDoubleQuote = 0;
-int iSingleQuote = 0;
-bool bQuote = false;
+while (i < sLine.Length) {
+char c = sLine[i];
+if (bInTriple) {
+if (c == cTriple && i + 2 < sLine.Length + 1 && sLine.Length - i >= 3 && sLine[i + 1] == cTriple && sLine[i + 2] == cTriple) {
+bInTriple = false; i += 3; sbCode.Append("   "); continue;
+}
+i++; sbCode.Append(' '); continue;
+}
+if (bInSingle) {
+if (c == '\\') { i += 2; sbCode.Append("  "); continue; }
+if (c == cSingle) bInSingle = false;
+i++; sbCode.Append(' '); continue;
+}
+if (c == '"' || c == '\'') {
+if (sLine.Length - i >= 3 && sLine[i + 1] == c && sLine[i + 2] == c) {
+bInTriple = true; cTriple = c; i += 3; sbCode.Append("   "); continue;
+}
+bInSingle = true; cSingle = c; i++; sbCode.Append(' '); continue;
+}
+if (c == '#') break;
+if (c == '(' || c == '[' || c == '{') iDepth++;
+else if (c == ')' || c == ']' || c == '}') iDepth--;
+sbCode.Append(c); i++;
+}
+iDepthDelta = iDepth;
+return sbCode.ToString();
+} // scanPythonLine method
 
-while ( i < hl.Count) {
-string sLine = hl[i];
-string sTrim = sLine.TrimEnd();
-string sPack = sTrim.TrimStart();
-int iTrim = sTrim.Length;
-int iPack = sPack.Length;
+static string pythonFirstWord(string sCode) {
+string sTrim = sCode.Trim();
+if (sTrim.StartsWith("async ")) sTrim = sTrim.Substring(6).TrimStart();
+StringBuilder sbWord = new StringBuilder();
+foreach (char c in sTrim) {
+if (Char.IsLetterOrDigit(c) || c == '_') sbWord.Append(c);
+else break;
+}
+return sbWord.ToString();
+} // pythonFirstWord method
 
-if (!bTripleQuote && (iPack == 0 || sPack.StartsWith("#"))) hl[i] = sPack;
-else {
-iParen = 0;
-iBracket = 0;
-iBrace = 0;
-iSingleQuote = 0;
-iDoubleQuote = 0;
-while (true) {
-int iCharCount = iPack;
-int iChar = 0;
-while (iChar < iCharCount) {
-switch (sPack[iChar]) {
-case '"' :
-if (iChar > 0 && sPack[iChar - 1] == '\\') break;
-if ((iChar + 2 < iCharCount) && sPack[iChar + 1] == '"' && sPack[iChar + 2] == '"') {
-if (bTripleQuote && iTripleQuote > 0) {
-bTripleQuote = false;
-bQuote = false;
-iTripleQuote--;
-iSingleQuote = 0;
-iDoubleQuote = 0;
+// The indent unit of a Python document: the leading whitespace of its
+// first indented code line (uniform characters only), else the given
+// default. This makes PyBrace respect the file's own style.
+static string detectPythonUnit(string sText, string sDefault) {
+bool bInTriple = false;
+char cTriple = ' ';
+int iDelta;
+foreach (string sRaw in sText.Replace("\r\n", "\n").Split('\n')) {
+bool bWasTriple = bInTriple;
+scanPythonLine(sRaw, ref bInTriple, ref cTriple, out iDelta);
+if (bWasTriple) continue;
+string sTrim = sRaw.TrimStart();
+if (sTrim.Length == 0 || sTrim.StartsWith("#")) continue;
+string sWs = sRaw.Substring(0, sRaw.Length - sTrim.Length);
+if (sWs.Length == 0) continue;
+char cFirst = sWs[0];
+foreach (char c in sWs) if (c != cFirst) return sDefault;
+return sWs;
 }
-else if (!bQuote && !bTripleQuote && iTripleQuote == 0) {
-bTripleQuote = true;
-bQuote = true;
-iTripleQuote++;
-iSingleQuote = 0;
-iDoubleQuote = 0;
-}
-iChar += 2;
-}
-else if (bQuote && iDoubleQuote > 0) {
-bQuote = false;
-iDoubleQuote--;
-}
-else if (!bQuote && iDoubleQuote == 0) {
-bQuote = true;
-iDoubleQuote++;
-}
-break;
-case '\'' :
-if (iChar > 0 && sPack[iChar - 1] == '\\') break;
-if (bQuote && iSingleQuote > 0) {
-bQuote = false;
-iSingleQuote--;
-}
-else if (!bQuote && iSingleQuote == 0) {
-bQuote = true;
-iSingleQuote++;
-}
-break;
-case '(' :
-if (!bQuote) iParen++;
-break;
-case ')' :
-if (!bQuote) iParen--;
-break;
-case '[' :
-if (!bQuote) iBracket++;
-break;
-case ']' :
-if (!bQuote) iBracket--;
-break;
-case '{' :
-if (!bQuote) iBrace++;
-break;
-case '}' :
-if (!bQuote) iBrace--;
-break;
-}
-iChar++;
-}
+return sDefault;
+} // detectPythonUnit method
 
-if ((iParen + iBracket + iBrace == 0) || bTripleQuote) break;
-hl[i] = sPack + @" \";
+static int pythonIndentLevels(string sWs, string sUnit) {
+int iLevels = 0;
+while (sUnit.Length > 0 && sWs.StartsWith(sUnit)) { iLevels++; sWs = sWs.Substring(sUnit.Length); }
+return iLevels;
+} // pythonIndentLevels method
 
-do  i++;
-while (i < hl.Count && (hl[i].Trim().Length == 0 || hl[i].TrimStart().StartsWith("#")));
-if (i == hl.Count) break;
+// True for a marker line PyDent wrote: "# end" followed by one word.
+static bool isEndMarkerLine(string sTrim) {
+if (!sTrim.StartsWith("# end ")) return false;
+string sWord = sTrim.Substring(6).Trim();
+if (sWord.Length == 0) return false;
+foreach (char c in sWord) if (!Char.IsLetterOrDigit(c) && c != '_') return false;
+return true;
+} // isEndMarkerLine method
 
-sLine = hl[i];
-sTrim = sLine.TrimEnd();
-iTrim = sTrim.Length;
-sPack = sTrim.TrimStart();
-iPack = sPack.Length;
+public string PyDent2Brace(string sText) {
+string sUnitDefault = Util.Literalize(App.ReadOption("IndentUnit", "\t"));
+if (sUnitDefault.Trim('\t', ' ').Length > 0 || sUnitDefault.Length == 0) sUnitDefault = "\t";
+string sUnit = detectPythonUnit(sText, sUnitDefault);
+List<string> lsOut = new List<string>();
+List<string> lsBlanks = new List<string>();
+List<int> lsStackLevel = new List<int>();
+List<string> lsStackWord = new List<string>();
+bool bInTriple = false;
+char cTriple = ' ';
+int iContDepth = 0;
+bool bBackslash = false;
+foreach (string sRaw in sText.Replace("\r\n", "\n").Split('\n')) {
+string sTrim = sRaw.Trim();
+if (isEndMarkerLine(sTrim)) continue;
+bool bWasTriple = bInTriple;
+bool bWasCont = iContDepth > 0 || bBackslash;
+int iDelta;
+string sScanned = scanPythonLine(sRaw, ref bInTriple, ref cTriple, out iDelta);
+if (bWasTriple) {
+// Triple-quoted interiors keep their exact text: indentation there is content.
+lsOut.AddRange(lsBlanks); lsBlanks.Clear();
+lsOut.Add(sRaw);
+iContDepth = Math.Max(0, iContDepth + iDelta);
+bBackslash = sScanned.TrimEnd().EndsWith("\\");
+continue;
 }
-
-if (i == hl.Count) break;
-
-if (bTripleQuote) {
-hl[i] = sTrim;
+if (bWasCont) {
+lsOut.AddRange(lsBlanks); lsBlanks.Clear();
+lsOut.Add(sTrim);
+iContDepth = Math.Max(0, iContDepth + iDelta);
+bBackslash = sScanned.TrimEnd().EndsWith("\\");
+continue;
 }
-else {
-int iNewLevel = iTrim - iPack;
-//if (i == 75 || i == 76) Dialog.Show(iNewLevel, hl[i]);
-int iDelta = iOldLevel - iNewLevel;
-
-int k = i - 1;
-while (k >= 0 && hl[k].StartsWith("#")) k--;
-k++;
-
-while (hlCode.Count > 0 && iDelta > 0 && Int32.Parse(hlLevel[hlLevel.Max]) >= iNewLevel) {
-hl.Insert(k, "} end " + hlCode.Pop());
-hlLevel.Pop();
-iCount--;
-i++;
-k++;
-iDelta--;
+if (sTrim.Length == 0) { lsBlanks.Add(""); continue; }
+string sWs = sRaw.Substring(0, sRaw.Length - sRaw.TrimStart().Length);
+int iLevel = pythonIndentLevels(sWs, sUnit);
+// A line at a shallower indent closes the blocks it leaves; comments
+// close blocks by their own indent but never open one. Blank lines
+// are held back so closers land right after the block's last line.
+while (lsStackLevel.Count > 0 && lsStackLevel[lsStackLevel.Count - 1] >= iLevel) {
+lsOut.Add("} end " + lsStackWord[lsStackWord.Count - 1]);
+lsStackLevel.RemoveAt(lsStackLevel.Count - 1);
+lsStackWord.RemoveAt(lsStackWord.Count - 1);
 }
-
-if (iOldLevel > iNewLevel) {
-hl.Insert(k, "");
-i++;
+lsOut.AddRange(lsBlanks); lsBlanks.Clear();
+string sCodeTrimmed = sScanned.TrimEnd();
+if (!sTrim.StartsWith("#") && sCodeTrimmed.EndsWith(":") && iContDepth + iDelta == 0 && !bInTriple) {
+int iColon = sCodeTrimmed.Length - 1 - sWs.Length;
+string sBody = (iColon >= 0 && iColon <= sTrim.Length) ? sTrim.Substring(0, iColon).TrimEnd() : sTrim.TrimEnd(':', ' ');
+lsOut.Add(sBody + " {");
+string sWord = pythonFirstWord(sScanned);
+lsStackLevel.Add(iLevel);
+lsStackWord.Add(sWord.Length > 0 ? sWord : "block");
 }
-iOldLevel = iNewLevel;
-
-if (sPack.EndsWith(":")) {
-sPack = sPack.TrimEnd(a) + " {";
-iCount++;
-string[] aCode = sPack.Split(' ');
-hlCode.Add(aCode[0].TrimEnd('{'));
-hlLevel.Add(iNewLevel.ToString());
+else lsOut.Add(sTrim);
+iContDepth = Math.Max(0, iContDepth + iDelta);
+bBackslash = sScanned.TrimEnd().EndsWith("\\") && !bInTriple;
 }
-else if (sPack.EndsWith(@"\")) {
-hl[i] = sPack;
-i++;
-if (i == iCount) break;
-sPack = hl[i].Trim();
+while (lsStackLevel.Count > 0) {
+lsOut.Add("} end " + lsStackWord[lsStackWord.Count - 1]);
+lsStackLevel.RemoveAt(lsStackLevel.Count - 1);
+lsStackWord.RemoveAt(lsStackWord.Count - 1);
 }
-hl[i] = sPack;
-
-}
-}
-i++;
-}
-
-while (iCount > 0) {
-hl.Add("} end " + hlCode.Pop());
-iCount--;
-}
-
-sText = String.Join("\n", hl.ToArray()).Trim() + "\n";;
-sText = Util.RegExpReplaceCase(sText, @"\n\n+", "\n\n");
-sText = Util.RegExpReplaceCase(sText, @"\n+\n\}", "\n}");
-sText = Util.RegExpReplaceCase(sText, @"\n+el", "\nel");
-return sText;
+lsOut.AddRange(lsBlanks);
+return String.Join("\n", lsOut.ToArray()).Trim('\n') + "\n";
 } // PyDent2Brace method
 
 public string PyBrace2Dent(string sText) {
-sText = Util.RegExpReplaceCase(sText, @"^\t*\# end \w+$", "");
-//sText = Util.RegExpReplaceCase(sText, @"^\t*\#", "#");
-//sText = Util.RegExpReplaceCase(sText, @"^\#([^ ])", "# $1");
-
-HomerList hl = new HomerList(sText.Split('\n'));
-int i = 0;
-int iCount = 0;
-char[] a = {' ', '{'};
-HomerList hlCode = new HomerList();
-string sIndent = App.ReadOption("IndentUnit", "  ");
-sIndent = Util.Literalize(sIndent);
-
-while ( i < hl.Count) {
-string sPack = hl[i].Trim();
-//if (iCount > 0) sLine = "\t".PadLeft(iCount, '\t') + sPack;
-string sLine;
-if (iCount > 0) sLine = Util.Replicate(sIndent, iCount) + sPack;
-else sLine = sPack;
-
-if (sPack.EndsWith("{")) {
-sLine = sLine.TrimEnd(a) + ":";
-iCount++;
-string[] aCode = sPack.Split(' ');
-hlCode.Add(aCode[0].TrimEnd('{'));
+string sUnit = Util.Literalize(App.ReadOption("IndentUnit", "\t"));
+if (sUnit.Trim('\t', ' ').Length > 0 || sUnit.Length == 0) sUnit = "\t";
+List<string> lsOut = new List<string>();
+List<string> lsStack = new List<string>();
+bool bInTriple = false;
+char cTriple = ' ';
+int iContDepth = 0;
+bool bBackslash = false;
+foreach (string sRaw in sText.Replace("\r\n", "\n").Split('\n')) {
+string sTrim = sRaw.Trim();
+bool bWasTriple = bInTriple;
+bool bWasCont = iContDepth > 0 || bBackslash;
+if (!bWasTriple && sTrim.StartsWith("} end ")) {
+string sWord = sTrim.Substring(6).Trim();
+if (lsStack.Count > 0) lsStack.RemoveAt(lsStack.Count - 1);
+lsOut.Add(Util.Replicate(sUnit, lsStack.Count) + "# end " + sWord);
+continue;
 }
-else if (sPack.StartsWith("}")) {
-sLine = "# end " + hlCode.Pop();
-//if (iCount > 1) sLine = "\t".PadLeft(iCount - 1, '\t') + sLine;
-if (iCount > 1) sLine = Util.Replicate(sIndent, iCount - 1) + sLine;
-iCount--;
+// Only a compound-statement keyword line ending in a lone brace opens
+// a block; a dictionary literal like "table = {" is ordinary code.
+bool bOpener = false;
+string sScanSource = sRaw;
+if (!bWasTriple && !bWasCont && sTrim.EndsWith("{") && !sTrim.StartsWith("#")) {
+if (isPythonBlockWord(pythonFirstWord(sTrim))) {
+bOpener = true;
+sScanSource = sTrim.Substring(0, sTrim.Length - 1).TrimEnd();
 }
-hl[i] = sLine;
-i++;
 }
-
-sText = String.Join("\n", hl.ToArray()).Trim() + "\n";;
-sText = Util.RegExpReplaceCase(sText, @"\n+\n", "\n\n");
-//sText = Util.RegExpReplaceCase(sText, @"\n+(\t*)el", "\n$1el");
-sText = Util.RegExpReplaceCase(sText, @"\n+(" + sIndent + ")el", "\n$1el");
-return sText;
+int iDelta;
+string sScanned = scanPythonLine(sScanSource, ref bInTriple, ref cTriple, out iDelta);
+if (bWasTriple) lsOut.Add(sRaw);
+else if (sTrim.Length == 0) lsOut.Add("");
+else if (bOpener) {
+lsOut.Add(Util.Replicate(sUnit, lsStack.Count) + sTrim.Substring(0, sTrim.Length - 1).TrimEnd() + ":");
+lsStack.Add(pythonFirstWord(sTrim));
+}
+else {
+int iExtra = (bWasCont && sTrim.Length > 0 && sTrim[0] != ')' && sTrim[0] != ']' && sTrim[0] != '}') ? 1 : 0;
+lsOut.Add(Util.Replicate(sUnit, lsStack.Count + iExtra) + sTrim);
+}
+iContDepth = Math.Max(0, iContDepth + iDelta);
+bBackslash = sScanned.TrimEnd().EndsWith("\\") && !bInTriple;
+}
+return String.Join("\n", lsOut.ToArray()).Trim('\n') + "\n";
 } // PyBrace2Dent method
 
 public void HardLineBreak() {
@@ -9237,6 +9727,13 @@ string sExt = Path.GetExtension(sSource).ToLower().TrimStart('.');
 string sMatch = "^" + sExt + @"(2\w+)?$";
 if (bTextOnly) sMatch = "^" + sExt + @"2txt$";
 hl.KeepLike(sMatch);
+// The bare extension entry and a real <ext>2txt converter both display
+// as "txt", and choosing the bare one opens the file RAW -- a duplicated
+// row whose twin quietly does something different (the Open Other Format
+// confusion found in the 22 August 2026 audit). When the real converter
+// exists it serves the txt row alone; when none does, the bare entry
+// stays, and the raw-read fallback below is what its txt offer means.
+if (hl.Contains(sExt) && hl.Contains(sExt + "2txt")) hl.Remove(sExt);
 //if (hl.Count > 0) hl.Push(sExt + "2" + sExt);
 // do not offer original format, since already available with Control+O
 if (hl.Count > 1) hl.Push(sExt + "2" + sExt);
@@ -9277,6 +9774,17 @@ System.IO.File.Move(sTarget, s);
 sTarget = s;
 }
 
+// Middleware policy for Markdown imports: the outside tool's only job
+// is reading the source format -- 2htm turns Word documents, PDF
+// (through Word's PDF Reflow), slides, and spreadsheets into HTML --
+// and the HTML becomes Markdown INSIDE the binary with the same
+// ReverseMarkdown converter the HTML paste command uses. Pandoc is not
+// involved: it cannot read PDF anyway, and the fewer outside legs a
+// conversion has, the fewer ways it can fail. The [Import] commands
+// for a Markdown target therefore call any2htm.cmd, and this flag
+// finishes the second leg here.
+bool bFinishMarkdownInBinary = (sTargetExt == "md" && sCommand.IndexOf("any2htm.cmd", StringComparison.OrdinalIgnoreCase) >= 0);
+if (bFinishMarkdownInBinary) sTarget = Path.ChangeExtension(sTarget, ".htm");
 sCommand = Util.ExpandCommandLine(sCommand, sSource, sTarget);
 // Dialog.Show(sTarget, "target file");
 // Dialog.Show(sCommand);
@@ -9299,13 +9807,22 @@ iLoop--;
 }
 */
 }
+if (bFinishMarkdownInBinary && File.Exists(sTarget)) {
+// Second leg, in the binary: HTML to Markdown with ReverseMarkdown.
+string sHtml = Util.File2String(sTarget);
+string sMarkdown = Util.Html2Markdown(sHtml);
+try { File.Delete(sTarget); } catch (Exception) {}
+sTarget = Path.ChangeExtension(sTarget, ".md");
+Util.String2File(sMarkdown, sTarget);
+Util.Log("converted to Markdown in the binary: " + sTarget);
+}
 // Read the converted target. File2String detects its encoding (byte-order
 // mark first, then content detection) and decodes it correctly, so the old
 // re-encode pass through Convert\EasyEncode\utf8b.exe is no longer needed.
 // Dropping it removes that external tool from the conversion path.
 if (File.Exists(sTarget)) sText = Util.File2String(sTarget);
 
-if (sText.Length == 0) Dialog.Show("Error", "Command line:\n" + sCommand);
+if (sText.Length == 0) Dialog.Show("Error", "The conversion produced no output.\nCommand line:\n" + sCommand + "\n\nThe run log records each step and its exit code:\n" + App.LogFile);
 }
 else {
 if (sTargetExt == sExt) {
@@ -10926,6 +11443,14 @@ sText = Util.RegExpReplaceCase(sText, sMatch, sReplace);
 return sText;
 } // Convert2WinLineBreakMethod
 
+// One line to the session log, timestamped. Never throws; a missing or
+// locked log must not affect the work being logged.
+public static void Log(string sMessage) {
+if (App.LogFile == null || App.LogFile.Length == 0) return;
+try { File.AppendAllText(App.LogFile, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "  " + sMessage + "\r\n"); }
+catch (Exception) {}
+} // Log method
+
 public static int RunHideWait(string sPath) {
 return runShell(sPath, ProcessWindowStyle.Hidden, true);
 } //RunHideWait method
@@ -10962,8 +11487,25 @@ ProcessStartInfo psi = new ProcessStartInfo(sExe, sArgs);
 psi.UseShellExecute = false;
 psi.WindowStyle = style;
 psi.CreateNoWindow = (style == ProcessWindowStyle.Hidden);
+Log((bWait ? "run and wait: " : "run: ") + sCommand);
 Process p = Process.Start(psi);
-if (bWait && p != null) p.WaitForExit();
+if (p == null) Log("FAILED to start: " + sCommand);
+if (bWait && p != null) {
+// A converter that blocks -- a hidden Office dialog, a tool waiting for
+// input it will never get -- used to freeze all of EdSharp forever,
+// because this wait had no limit and runs on the interface thread (the
+// hang suspected in the 22 August 2026 audit). Two minutes is generous
+// for a big document. A process still running after that is ended, and
+// the caller's own error dialog then shows the command line for
+// diagnosis, which beats a frozen editor with no explanation.
+const int c_iWaitMilliseconds = 120000;
+if (!p.WaitForExit(c_iWaitMilliseconds)) {
+Log("TIMEOUT after 120 seconds; process ended: " + sCommand);
+try { p.Kill(); }
+catch (Exception) {}
+}
+else Log("exit code " + p.ExitCode + ": " + sExe);
+}
 return (p != null) ? p.Id : 0;
 } // runShell method
 
@@ -11311,6 +11853,17 @@ sb.Append("<meta charset=\"utf-8\" />\r\n");
 sb.Append("<title>" + String2Html(sTitle) + "</title>\r\n");
 sb.Append("</head>\r\n<body>\r\n");
 sb.Append(sBody);
+// Mermaid diagrams: the Advanced extension set turns a fenced mermaid
+// block into a div of class mermaid. When one is present, include the
+// mermaid script so a real browser renders the diagram. The embedded
+// preview's WebBrowser control uses the old Internet Explorer engine,
+// which current mermaid does not support, so there the diagram appears
+// as its readable source text -- itself the accessible view -- while
+// Preview Markdown in Web Browser and any saved .htm render it drawn.
+if (sBody.Contains("class=\"mermaid\"")) {
+sb.Append("<script src=\"https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js\"></script>\r\n");
+sb.Append("<script>if (window.mermaid) mermaid.initialize({startOnLoad:true});</script>\r\n");
+}
 sb.Append("</body>\r\n</html>\r\n");
 return sb.ToString();
 }
@@ -11507,7 +12060,7 @@ sText = "";
 if (File.Exists(sTarget)) sText = Util.File2String(sTarget);
 if (sText.Length == 0) {
 if (File.Exists(sTarget)) File.Delete(sTarget);
-Dialog.Show("Error", "Command line:\n" + sCommand);
+Dialog.Show("Error", "The conversion produced no output.\nCommand line:\n" + sCommand + "\n\nThe run log records each step and its exit code:\n" + App.LogFile);
 }
 }
 else {

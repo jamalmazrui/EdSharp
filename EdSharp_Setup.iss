@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.21
-AppVerName=EdSharp 5.0.21
-VersionInfoVersion=5.0.21
+AppVersion=5.0.23
+AppVerName=EdSharp 5.0.23
+VersionInfoVersion=5.0.23
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -134,6 +134,24 @@ Source: "Tools.inix";              DestDir: "{app}"; Flags: ignoreversion skipif
 ; pandoc fetch scripts, installed so the Finish-page checkbox below can run
 ; them and so a user can run installPandoc.cmd by hand at any later time.
 Source: "installPandoc.cmd";  DestDir: "{app}"; Flags: ignoreversion
+; sqlean: SQLite with the sqlean extension set (decision of 24 August 2026).
+; TWO files, both needed for full functionality. sqlean.exe is the sqlean
+; SHELL -- the SQLite command line with the extensions baked in -- from the
+; nalgeon/sqlite builds project, which is frozen upstream. sqlean.dll is the
+; single-file extension BUNDLE from nalgeon/sqlean, still actively released;
+; it loads into any SQLite host (DbDo does exactly that), and the frozen
+; shell can .load it to pick up extensions newer than its baked-in set.
+; BuildEdSharp refreshes the DLL from the sqlean releases; the EXE ships as
+; the copy kept in the source folder. skipifsourcedoesntexist protects a
+; fresh clone that has not fetched them yet.
+Source: "installGitHub.cmd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dropLatexJawsKeys.cmd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dropLatexJawsKeys.py"; DestDir: "{app}"; Flags: ignoreversion
+Source: "installNode.cmd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "installPython.cmd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "installOllama.cmd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "sqlean.exe";  DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "sqlean.dll";  DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "installPandoc.ps1";  DestDir: "{app}"; Flags: ignoreversion
 ; JAWS script installer, the HomerView way: the installer's job, not the
 ; editor's. Run by the Finish page as the ORIGINAL user; can be run by hand
@@ -221,19 +239,55 @@ Filename: "{app}\installJawsScripts.cmd"; Parameters: "-bQuiet"; WorkingDir: "{a
 ; registers itself as the handler). Unchecked by default; checking it opens
 ; NVDA's add-on install dialog. NVDA must be running, and be restarted after.
 Filename: "{app}\EdSharp.nvda-addon"; Description: "Install NVDA add-on (NVDA must be running; restart NVDA afterward)"; Flags: postinstall shellexec skipifdoesntexist unchecked
-; Fetch pandoc into {app}\Convert\Pandoc, following the HomerView pattern: checked by
-; default because the user who needs it cannot tell in advance that they do,
-; and hidden entirely (needPandoc) once a copy is in place, so a reinstall
-; asks nothing.  Unlike HomerView this entry runs ELEVATED on purpose -- no
-; runasoriginaluser -- because the destination is under Program Files and only
-; an elevated process can write there.  The console window stays visible so
-; the download progress can be read; the script also writes a detailed log to
-; the user's local application data, EdSharp\logs.
-Filename: "{app}\installPandoc.cmd"; WorkingDir: "{app}"; Description: "Download and install pandoc, used to convert document formats (about 200 MB)"; Flags: postinstall skipifsilent; Check: needPandoc
+; pandoc is CENTRAL to EdSharp (decision of 24 August 2026), so it is no
+; longer an optional checkbox: whenever {app}\Convert\Pandoc\pandoc.exe is
+; absent, the fetch runs automatically, in silent installs too. Elevated on
+; purpose -- no runasoriginaluser -- because the destination is under
+; Program Files. The script writes its detailed log into the consolidated
+; setup log in the user's local application data, EdSharp\logs.
+Filename: "{app}\installPandoc.cmd"; WorkingDir: "{app}"; Flags: runhidden waituntilterminated; Check: needPandoc
+; Optional developer tools, unchecked by default, installed through winget
+; with each one's standard stable Windows release (Git plus the GitHub
+; command line; Node.js LTS; Python 3). Each entry runs only when its
+; checkbox is marked AND the tool is not already on the path, appending its
+; output to the consolidated setup log.
 ; Pre-generate native images for faster startup (64-bit ngen).  ngen writes to
 ; the machine-wide native image cache, so it needs an elevated install; the
 ; isAdminNgen check skips it gracefully in a per-user install, where EdSharp
 ; simply JIT-compiles on first launch.
+; ---- The Finish-page checkbox list, in the Homer Tools pattern ----
+; No Tasks page: every optional install is a checkbox in this list at
+; the end, all unchecked, each running a visible probe-first script.
+; The scripts notice what is already installed and say so in a second,
+; reuse rather than duplicate, log to the consolidated setup log, and
+; pause on failure so the message can be read. runascurrentuser
+; matters: winget installs per user, into the profile of whoever is
+; signed in, while this installer runs elevated.
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installGitHub.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descGitHub}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installNode.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descNode}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installPython.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descPython}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installOllama.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descOllama}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked
+
 Filename: "{code:ngenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: isAdminNgen
 Filename: "{code:ngenExe}"; Parameters: "install ""{app}\EdSharp.exe"" /AppBase:""{app}"" /nologo /silent"; Flags: runhidden; Check: isAdminNgen
 
@@ -260,6 +314,162 @@ Type: files; Name: "{app}\Convert\Pandoc\pandoc.exe"
 Root: HKA; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\EdSharp.exe"; ValueType: string; ValueName: ""; ValueData: "{app}\EdSharp.exe"; Flags: uninsdeletekey
 
 [Code]
+// ---- Live Finish-page labels ----------------------------------------------
+// Each optional-install checkbox asks winget about its package when the
+// Finish page builds: not installed reads "Install ...", installed with
+// an update available reads "Update <tool> from <old> to <new>", and
+// installed and current says so. Results are cached so winget runs once
+// per package, and any probe failure falls back to the plain install
+// label, so an offline machine still gets a working page.
+
+var
+  gDescCache: array[0..3] of string;
+
+function probeLines(sCommand: string; var lsLines: TArrayOfString): boolean;
+var
+  sTempFile: string;
+  iResult: integer;
+begin
+  sTempFile := ExpandConstant('{tmp}\wingetProbe.txt');
+  result := Exec(ExpandConstant('{cmd}'), '/c ' + sCommand + ' > "' + sTempFile + '" 2>&1', '', SW_HIDE, ewWaitUntilTerminated, iResult);
+  if result then
+    result := LoadStringsFromFile(sTempFile, lsLines);
+end;
+
+function wingetInfo(sId: string; var sInstalled, sAvailable: string): boolean;
+// True when winget lists the package as installed; fills the installed
+// version and, when an update exists, the available version. Columns
+// are located by the header line, since names can contain spaces.
+var
+  lsLines: TArrayOfString;
+  i, iVer, iAvail, iSrc: integer;
+  sLine: string;
+begin
+  result := false;
+  sInstalled := '';
+  sAvailable := '';
+  iVer := 0;
+  iAvail := 0;
+  iSrc := 0;
+  if not probeLines('winget list --id ' + sId + ' --exact --disable-interactivity', lsLines) then
+    exit;
+  for i := 0 to GetArrayLength(lsLines) - 1 do
+  begin
+    sLine := lsLines[i];
+    if (iVer = 0) and (Pos('Name', sLine) > 0) and (Pos('Version', sLine) > 0) then
+    begin
+      iVer := Pos('Version', sLine);
+      iAvail := Pos('Available', sLine);
+      iSrc := Pos('Source', sLine);
+      continue;
+    end;
+    if (iVer > 0) and (Pos(sId, sLine) > 0) then
+    begin
+      result := true;
+      if iAvail > 0 then
+      begin
+        sInstalled := Trim(Copy(sLine, iVer, iAvail - iVer));
+        if iSrc > iAvail then
+          sAvailable := Trim(Copy(sLine, iAvail, iSrc - iAvail))
+        else
+          sAvailable := Trim(Copy(sLine, iAvail, 200));
+      end
+      else if iSrc > iVer then
+        sInstalled := Trim(Copy(sLine, iVer, iSrc - iVer))
+      else
+        sInstalled := Trim(Copy(sLine, iVer, 200));
+      exit;
+    end;
+  end;
+end;
+
+function exeVersion(sExe: string): string;
+// The tool's own version line, for installs winget does not know about
+// (an MSI put on the machine outside winget, or under another id).
+var
+  lsLines: TArrayOfString;
+  i: integer;
+begin
+  result := '';
+  if not probeLines(sExe + ' --version', lsLines) then
+    exit;
+  for i := 0 to GetArrayLength(lsLines) - 1 do
+    if Trim(lsLines[i]) <> '' then
+    begin
+      result := Trim(lsLines[i]);
+      exit;
+    end;
+end;
+
+function devToolDesc(iIndex: integer; sIdList, sExe, sTool, sInstallLabel: string): string;
+// sIdList holds one or more winget ids separated by semicolons -- Node
+// installed from the plain download registers as OpenJS.NodeJS while
+// the LTS winget package is OpenJS.NodeJS.LTS, so both are tried. When
+// no id matches but the executable answers, the label reports the
+// version the tool itself gives, without update information.
+var
+  sInstalled, sAvailable, sId, sRest, sVersion: string;
+  iSplit: integer;
+begin
+  if gDescCache[iIndex] <> '' then
+  begin
+    result := gDescCache[iIndex];
+    exit;
+  end;
+  result := '';
+  sRest := sIdList;
+  while (result = '') and (sRest <> '') do
+  begin
+    iSplit := Pos(';', sRest);
+    if iSplit > 0 then
+    begin
+      sId := Copy(sRest, 1, iSplit - 1);
+      sRest := Copy(sRest, iSplit + 1, 500);
+    end
+    else
+    begin
+      sId := sRest;
+      sRest := '';
+    end;
+    if wingetInfo(sId, sInstalled, sAvailable) then
+    begin
+      if sAvailable <> '' then
+        result := 'Update ' + sTool + ' from ' + sInstalled + ' to ' + sAvailable
+      else if sInstalled <> '' then
+        result := sTool + ' ' + sInstalled + ' is installed and current';
+    end;
+  end;
+  if result = '' then
+  begin
+    sVersion := exeVersion(sExe);
+    if sVersion <> '' then
+      result := sTool + ' ' + sVersion + ' is installed'
+    else
+      result := sInstallLabel;
+  end;
+  gDescCache[iIndex] := result;
+end;
+
+function descGitHub(sParam: string): string;
+begin
+  result := devToolDesc(0, 'Git.Git', 'git', 'Git', 'Install Git and the GitHub command line, for version control');
+end;
+
+function descNode(sParam: string): string;
+begin
+  result := devToolDesc(1, 'OpenJS.NodeJS.LTS;OpenJS.NodeJS', 'node', 'Node.js', 'Install Node.js LTS, used by tools such as Mermaid image export');
+end;
+
+function descPython(sParam: string): string;
+begin
+  result := devToolDesc(2, 'Python.Python.3.13;Python.Python.3.12', 'python', 'Python', 'Install the latest official Python for Windows, for the Python compiler and helper scripts');
+end;
+
+function descOllama(sParam: string): string;
+begin
+  result := devToolDesc(3, 'Ollama.Ollama', 'ollama', 'Ollama', 'Install Ollama and a chat model, for the Chat with AI command (about 2 GB, shared with other apps)');
+end;
+
 function ngenExe(sParam: string): string;
 begin
   // ngen ships with the 64-bit .NET Framework runtime; on an ARM64 system the

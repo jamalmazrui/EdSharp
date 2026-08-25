@@ -1,0 +1,9 @@
+text form caret
+```mermaid
+flowchart TD
+    A[%Start step=Start%] --> B{%Decision=Is it ready?%}
+    B -->|Yes| C[%Yes outcome=Ship it%]
+    B -->|No| D[%No outcome=Fix it%]
+    D --> A
+^^
+```

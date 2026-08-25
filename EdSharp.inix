@@ -1,37 +1,69 @@
-; EdSharp.inix -- the SHIPPED configuration layer, read from the program
+﻿; EdSharp.inix -- the SHIPPED configuration layer, read from the program
 ; folder. Entries here override the same [Section] Key in EdSharp.ini,
 ; and the installer refreshes this file on every upgrade -- so do not
 ; put personal settings here. For personal overrides, create an
 ; EdSharp.inix next to your EdSharp.ini in EdSharp's data folder; that
 ; user layer outranks this file, which outranks both .ini files.
+; An EMPTY value here is a tombstone: it disables and hides that entry
+; everywhere, including stale copies in a user's old EdSharp.ini.
 ;
-; This file carries the conversion tables, modernized July 2026 for
-; current Pandoc after a review found most entries failing:
-;   * -S was removed in Pandoc 2.0; every entry drops it.
-;   * markdown_github is deprecated; gfm is the current name.
-;   * The txt2tags reader is named t2t, so the tt2 entries now work.
-;   * There is no epub3 reader (epub reads EPUB 2 and 3); the old
-;     epub32 entries are tombstoned below.
-;   * --reference-docx became --reference-doc and is no longer passed
-;     by default; to style docx output, create a reference document
-;     and add, in your data-folder EdSharp.inix, a docx line ending
-;     with: --reference-doc "%DataDir%\reference.docx"
+; Conversion policy, applied 23 August 2026:
+;   * Pandoc does every conversion it supports, called directly.
+;   * When Pandoc cannot read a format (old Word .doc, PDF, PowerPoint,
+;     Excel), 2htm.exe or the OfficeConvert utilities do the work,
+;     through .cmd batch files in Convert (never .bat).
+;   * Entries whose tools are gone from Convert are tombstoned:
+;     braille (liblouis), HTML Tidy, WinHelp and WordPerfect (GetText),
+;     and the epub32 entries that never had a Pandoc reader.
+;   * pdf2txt now uses 2htm (Word's PDF Reflow) since Xpdf is gone.
+;   * Updated 24 August 2026: Pandoc 3.8.3 added pptx and xlsx READERS,
+;     so pptx2* and xlsx2* imports now call pandoc.exe directly and the
+;     middleware for them is retired. installPandoc keeps Pandoc
+;     current, so no version gating is needed. Bridges remain only
+;     where Pandoc has no reader or writer: legacy .doc/.ppt/.xls and
+;     PDF still go through 2htm or OfficeConvert, xls2md still builds
+;     its CSV with OfficeConvert (sheet2md.cmd), and xlsx2csv keeps
+;     XlVert because Pandoc has no CSV writer. New in the same spirit:
+;     AsciiDoc (adoc) and typst (typ) imports, an md2pptx export, and
+;     md2docxrefs, which runs --citeproc for citation-ready Word
+;     output (see Pandoc_Office_Guide.md).
+;   * Also 24 August 2026: the .inix TABLE conversions. inixVert.exe
+;     (built from the shared Inix.cs) moves tabular data between
+;     .inix, .csv, .tsv, .md, and .xlsx in pure .NET -- no Office, no
+;     ACE. Import: csv2inix, md2inix, xlsx2inix. Export: inix2csv,
+;     inix2md, inix2xlsx. xlsx2csv also uses it now, so that
+;     conversion no longer needs Office either.
+;   * The .mdx format (Markdown with embedded inix tables): a fenced
+;     code block whose info string is "inix" holds records the
+;     field = value way, and expansion turns each block into a real
+;     Markdown table (a grid table when cells are multi-line) before
+;     pandoc renders docx or HTML. mdx2md shows the expansion;
+;     mdx2htm and mdx2docx chain it with pandoc. A block's optional
+;     [Global] section may set caption and fields; with no Global,
+;     every field appears in first-seen order.
+;   * The md2htm and md2html EXPORTS carry --mathjax (24 August 2026,
+;     from the AROW accessible-authoring lesson): TeX math in Markdown
+;     reaches the browser as real, screen-reader-accessible math.
+;   * New: HTML and Markdown targets for doc, pdf, ppt, and pptx via
+;     any2htm.cmd (2htm reads the source and makes HTML; EdSharp's
+;     built-in ReverseMarkdown converter then makes the Markdown --
+;     the Markdown from it), and rtf2htm, rtf2md, rtf2txt via Pandoc's
+;     RTF reader.
+;   * The Compiler lines for MinGW C++ and PowerBASIC now call the
+;     .cmd scripts; the .bat versions are retired.
+;   * To style docx output, create a reference document and add, in
+;     your data-folder EdSharp.inix, a docx line ending with:
+;     --reference-doc "%DataDir%\reference.docx"
 ;   * PDF targets use Pandoc's documented method (the .pdf output
 ;     extension selects PDF) and need a LaTeX engine like MiKTeX.
-;   * brf2txt and brl2txt back-translate through liblouis via
-;     Convert\liblouis\brl2txt.bat, replacing NFBTrans; edit that
-;     batch file to change the braille language tables.
-;   * htm2tidy and html2tidy use the new Convert\Tidy\tidy.cfg.
-;   * New: odt2htm, odt2html, odt2md, odt2txt (Pandoc reads ODT) and
-;     xlsx2md (needs a recent Pandoc 3.x with the xlsx reader).
-; 2htm still serves doc, ppt, pptx, xls, and xlsx text extraction via
-; any2txt.cmd; XlVert remains the only CSV producer.
-;
-; A key with an empty value below is a tombstone: it disables and
-; hides an entry that an older user EdSharp.ini may still carry.
 [Import]
-brf2txt=%ProgDir%\Convert\liblouis\brl2txt.bat %ProgDir%\Convert\liblouis "%SourceLong%" %Target%
-brl2txt=%ProgDir%\Convert\liblouis\brl2txt.bat %ProgDir%\Convert\liblouis "%SourceLong%" %Target%
+adoc2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f asciidoc -t html -s -o %Target%
+adoc2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f asciidoc -t gfm -o %Target%
+adoc2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f asciidoc -t plain -o %Target%
+csv2inix=%ProgDir%\Convert\inixVert.exe "%SourceLong%" %Target% /quiet
+doc2htm=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+doc2html=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+doc2md=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
 doc2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
 docx2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f docx -t html -s -o %Target%
 docx2html=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f docx -t html -s -o %Target%
@@ -50,13 +82,11 @@ htm2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t gfm -o %Tar
 htm2mw=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t mediawiki -o %Target%
 htm2rst=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t rst -o %Target%
 htm2tex=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t latex -s -o %Target%
-htm2tidy=%ProgDir%\Convert\Tidy\tidy.exe -config %ProgDir%\Convert\Tidy\tidy.cfg -o %Target% %Source%
 htm2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t plain -o %Target%
 html2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t gfm -o %Target%
 html2mw=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t mediawiki -o %Target%
 html2rst=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t rst -o %Target%
 html2tex=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t latex -s -o %Target%
-html2tidy=%ProgDir%\Convert\Tidy\tidy.exe -config %ProgDir%\Convert\Tidy\tidy.cfg -o %Target% %Source%
 html2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t plain -o %Target%
 md2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t html -s -o %Target%
 md2html=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t html -s -o %Target%
@@ -65,19 +95,36 @@ md2rst=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t rst -o %Targ
 md2rtf=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t rtf -s -o %Target%
 md2tex=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t latex -s -o %Target%
 md2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t plain -o %Target%
+md2inix=%ProgDir%\Convert\inixVert.exe "%SourceLong%" %Target% /quiet
+mdx2htm=%ProgDir%\Convert\mdx2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+mdx2md=%ProgDir%\Convert\inixVert.exe "%SourceLong%" %Target% /quiet
 odt2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f odt -t html -s -o %Target%
 odt2html=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f odt -t html -s -o %Target%
 odt2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f odt -t gfm -o %Target%
 odt2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f odt -t plain -o %Target%
-pdf2txt=%ProgDir%\Convert\Xpdf\pdftotext.exe "%SourceLong%" %Target%
+pdf2htm=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+pdf2html=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+pdf2md=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+pdf2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+ppt2htm=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+ppt2md=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
 ppt2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-pptx2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+pptx2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f pptx -t html -s -o %Target%
+pptx2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f pptx -t gfm -o %Target%
+pptx2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f pptx -t plain -o %Target%
 rst2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f rst -t html -s -o %Target%
 rst2html=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f rst -t html -s -o %Target%
 rst2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f rst -t gfm -o %Target%
 rst2mw=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f rst -t mediawiki -o %Target%
 rst2tex=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f rst -t latex -s -o %Target%
 rst2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f rst -t plain -o %Target%
+rtf2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f rtf -t html -s -o %Target%
+rtf2html=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f rtf -t html -s -o %Target%
+rtf2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f rtf -t gfm -o %Target%
+rtf2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f rtf -t plain -o %Target%
+typ2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f typst -t html -s -o %Target%
+typ2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f typst -t gfm -o %Target%
+typ2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f typst -t plain -o %Target%
 tex2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f latex -t html -s -o %Target%
 tex2html=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f latex -t html -s -o %Target%
 tex2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f latex -t gfm -o %Target%
@@ -91,12 +138,23 @@ tt2mw=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f t2t -t mediawiki -o 
 tt2rst=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f t2t -t rst -o %Target%
 tt2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f t2t -t plain -o %Target%
 xls2csv=%ProgDir%\Convert\OfficeConvert\XlVert.exe "%SourceLong%" %Target%
+xls2htm=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+xls2md=%ProgDir%\Convert\sheet2md.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
 xls2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-xlsx2csv=%ProgDir%\Convert\OfficeConvert\XlVert.exe "%SourceLong%" %Target%
+xlsx2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f xlsx -t html -s -o %Target%
+xlsx2csv=%ProgDir%\Convert\inixVert.exe "%SourceLong%" %Target% /quiet
+xlsx2inix=%ProgDir%\Convert\inixVert.exe "%SourceLong%" %Target% /quiet
+xlsx2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f xlsx -t plain -o %Target%
 xlsx2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f xlsx -t gfm -o %Target%
-xlsx2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-; Tombstones: hlp2txt and wpd2txt lost their reader when GetText
-; retired; the epub32 entries never had a valid Pandoc reader.
+; Tombstones: an empty value disables and hides the entry everywhere,
+; including stale copies in a user's old EdSharp.ini. hlp2txt and
+; wpd2txt lost their reader when GetText retired; the epub32 entries
+; never had a valid Pandoc reader; the braille and Tidy entries lost
+; their tools when Convert was pruned in August 2026.
+brf2txt=
+brl2txt=
+htm2tidy=
+html2tidy=
 epub32htm=
 epub32html=
 epub32md=
@@ -106,23 +164,32 @@ epub32txt=
 hlp2txt=
 wpd2txt=
 [Export]
+; Tombstones for the retired Tidy tool:
+htm2tidy=
+html2tidy=
 htm2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t gfm -o %Target%
 htm2mw=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t mediawiki -o %Target%
 htm2rst=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t rst -o %Target%
 htm2tex=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t latex -s -o %Target%
-htm2tidy=%ProgDir%\Convert\Tidy\tidy.exe -config %ProgDir%\Convert\Tidy\tidy.cfg -o %Target% %Source%
 htm2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t plain -o %Target%
 html2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t gfm -o %Target%
 html2mw=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t mediawiki -o %Target%
 html2rst=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t rst -o %Target%
 html2tex=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t latex -s -o %Target%
-html2tidy=%ProgDir%\Convert\Tidy\tidy.exe -config %ProgDir%\Convert\Tidy\tidy.cfg -o %Target% %Source%
 html2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f html -t plain -o %Target%
 md2docx=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t docx -o %Target%
+md2docxrefs=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f markdown -t docx --citeproc -o %Target%
+md2pptx=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f markdown -t pptx -o %Target%
+inix2csv=%ProgDir%\Convert\inixVert.exe "%SourceLong%" %Target% /quiet
+inix2md=%ProgDir%\Convert\inixVert.exe "%SourceLong%" %Target% /quiet
+inix2xlsx=%ProgDir%\Convert\inixVert.exe "%SourceLong%" %Target% /quiet
+mdx2docx=%ProgDir%\Convert\mdx2docx.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+mdx2htm=%ProgDir%\Convert\mdx2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+mdx2md=%ProgDir%\Convert\inixVert.exe "%SourceLong%" %Target% /quiet
 md2epub=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t epub -o %Target%
 md2epub3=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t epub3 -o %Target%
-md2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t html -s -o %Target%
-md2html=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t html -s -o %Target%
+md2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t html -s --mathjax -o %Target%
+md2html=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t html -s --mathjax -o %Target%
 md2mw=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t mediawiki -o %Target%
 md2pdf=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -o %Target%
 md2rst=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t rst -o %Target%
@@ -168,3 +235,126 @@ tt2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f t2t -t plain -o %Ta
 ; [Compiler C#]
 ; CompileCommand="csc.exe" /nologo "%SourceLong%" 2>&1
 ; JumpPosition=\(\d+,\d+\)
+
+[Compilers]
+; Overrides so the Compiler menu calls the .cmd scripts; the .bat
+; versions are retired.
+MinGW C++="%ProgDir%\Convert\MinGW.cmd %SourceDir%\%SourceRoot% 2>&1~:\d+:~^.*?\.cpp~^( |\t|\w)*((void)|(int)|(string)|(bool)|(DateTime)|(class))[^;]*?\{ *$~//~cs~%ProgDir%\ijs.exe"
+PowerBASIC="%ProgDir%\Convert\pbw.cmd "%Source%" "%SourceDir%\%SourceRoot%.log" 2>&1~\(\d+\:\d+\)~(Power(.|\n)*?Reserved)|(Primary source:(.|\n)*)~^( |\t)*((Function)|(Sub)) +\w+~'~bas"
+
+; ===== Compiler definitions (24 August 2026) ================================
+; One section per compiler, one named key per setting, values verbatim.
+; This replaces the tilde-packed [Compilers] values. Keys:
+;   CompileCommand    the command Control+F5 runs; %Source%, %SourceLong%,
+;                     %SourceDir%, %SourceRoot%, %ProgDir%, %NetDir% expand
+;   JumpPosition      regular expression locating the error position in the
+;                     output; the first number in the match is the line, the
+;                     next number, when present, the column
+;   AbbreviateOutput  regular expression for output text to condense before
+;                     speaking
+;   NavigatePart      regular expression for the starts of parts, used by
+;                     Alt+PageUp and Alt+PageDown and Go to Part
+;   QuotePrefix       the comment prefix, used to skip comments in
+;                     indentation navigation and announcements
+;   ExtensionDefault  default file extension for the compiler
+;   GoToEnvironment   the interactive environment Control+Shift+G opens
+; Every regular expression below was traced against the tool's real
+; message format, noted beside it.
+
+[Compiler C#]
+; csc: "Program.cs(12,34): error CS1002: ; expected". The old jump
+; pattern lacked the parentheses, so any "12,34" in program output
+; could hijack the jump; anchored now.
+CompileCommand="%NetDir%\csc.exe /nologo "%Source%" 2>&1"
+JumpPosition="\(\d+,\d+\)"
+AbbreviateOutput="^.*?\.cs"
+NavigatePart="^( |\t)*(public|private|protected|internal|static|class|namespace|void)\b"
+QuotePrefix="//"
+ExtensionDefault="cs"
+GoToEnvironment="%ProgDir%\ijs.exe"
+
+[Compiler Python]
+; Traceback: File "prog.py", line 12, in main -- and syntax errors use
+; the same "line 12" form. NavigatePart now includes async def.
+CompileCommand="python "%Source%" 2>&1"
+JumpPosition="line \d+"
+AbbreviateOutput="\r"
+NavigatePart="^( |\t)*(async +)?(def|class) +\w+"
+QuotePrefix="#"
+ExtensionDefault="py"
+GoToEnvironment="python.exe"
+
+[Compiler JavaScript]
+; node prints the failing location as path:line for syntax errors and
+; path:line:column inside stack frames; the pattern matches both, so
+; the jump lands on line and column when the column is given.
+CompileCommand="node "%SourceLong%" 2>&1"
+JumpPosition=":\d+(:\d+)?"
+AbbreviateOutput="\r"
+NavigatePart="^( |\t)*((async +)?function|class) +\w+"
+QuotePrefix="//"
+ExtensionDefault="js"
+GoToEnvironment="node.exe"
+
+[Compiler PowerShell]
+; Errors report "At C:\path\script.ps1:12 char:5". The old command
+; interpolated an undefined %file_name% variable; fixed to
+; %SourceLong%, with profile loading and execution policy handled.
+CompileCommand="powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%SourceLong%" 2>&1"
+JumpPosition=":\d+ char:\d+"
+AbbreviateOutput="\nAt .*?1:"
+NavigatePart="^( |\t)*(function|class) +[\w-]+"
+QuotePrefix="#"
+ExtensionDefault="ps1"
+GoToEnvironment="powershell.exe"
+
+[Compiler JAWS Script]
+; scompile reports "line 12, column 5". The old entry hardcoded the
+; JAWS 12 installation path; EdSharp already puts the running JAWS
+; folder on PATH at startup, so the bare name finds the compiler for
+; whatever JAWS version is installed.
+CompileCommand="scompile.exe "%Source%" 2>&1"
+JumpPosition="line \d+, column \d+"
+AbbreviateOutput="((^Compiling .*?\.js.)|(file .*?,))"
+NavigatePart="^( |\t)*(Function|Script) +\w+"
+QuotePrefix=";"
+ExtensionDefault="jss"
+
+[Compiler VBScript]
+; cscript reports "script.vbs(12, 5) Microsoft VBScript ...". The old
+; jump pattern \(\d+.*?\) also matched parenthesized program output;
+; it now requires the line, comma, column shape.
+CompileCommand="cscript.exe //nologo "%Source%" 2>&1"
+JumpPosition="\(\d+, *\d+\)"
+AbbreviateOutput="((^.*?\.vbs)|(Microsoft VBScript compilation error))"
+NavigatePart="^( |\t)*(Function|Sub|Class) +\w+"
+QuotePrefix="'"
+ExtensionDefault="vbs"
+GoToEnvironment="%ProgDir%\ijs.exe"
+
+[Compiler JScript .NET]
+; jsc reports "prog.js(12,3) : error JS1002". The old NavigatePart
+; expression had an unbalanced parenthesis -- three closers after
+; (function) -- so Go to Part threw an invalid-pattern exception the
+; moment it was used with this compiler.
+CompileCommand="%NetDir%\jsc.exe /nologo /r:%ProgDir%\EdSharp.dll;System.dll;System.Windows.Forms.dll;System.Drawing.dll;Accessibility.dll;Microsoft.VisualBasic.dll "%Source%" 2>&1"
+JumpPosition="\(\d+,\d+\)"
+AbbreviateOutput="^.*?\.js"
+NavigatePart="^( |\t)*(function|class) +\w+"
+QuotePrefix="//"
+ExtensionDefault="js"
+GoToEnvironment="%ProgDir%\ijs.exe"
+
+[Compiler HTML Tidy]
+; tidy reports "line 12 column 5 - Warning: ...".
+CompileCommand="%ProgDir%\Convert\Tidy\tidy.exe -config %ProgDir%\Convert\Tidy\tidy.cfg -f %TempFile% %Source%"
+JumpPosition="line \d+ column \d+"
+AbbreviateOutput="\r"
+NavigatePart="\n\n"
+QuotePrefix="#"
+ExtensionDefault="htm"
+
+[Compiler Default]
+QuotePrefix="> "
+ExtensionDefault="rtf"
+GoToEnvironment="%ProgDir%\ijs.exe"

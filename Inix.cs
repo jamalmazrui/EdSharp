@@ -1,27 +1,34 @@
-﻿// Inix.cs (InixCodec: order-preserving .ini/.inix reader-writer) -- portable, reusable across EdSharp, DbDuo, and other C#
-// projects. .inix is a superset of classic .ini (verbatim multi-line values, implicit [Global], order-preserving round-trip). Pure codec, no app dependencies.
-// Namespace Homer is the shared toolkit namespace; reference it with
-// `using Homer;`. To reuse elsewhere, copy this file as-is.
+﻿// Inix.cs (Homer.InixCodec + Homer.InixTable) -- the shared Inix toolkit.
+// Portable across EdSharp, DbDo, and every other Homer Tool: copy this file
+// as-is and reference it with `using Homer;`.
+//
+// .inix is a superset of classic .ini: ';' or '#' comments, [Section]
+// headers, name = value lines, PLUS verbatim multi-line values (backtick or
+// triple-quote fences), inline or fenced arrays, an implicit [Global]
+// section, and order-preserving round trips.
+//
+// As TABULAR DATA, .inix is a screen-reader-friendly way to review a
+// table: instead of many field values crowded onto one line, each record
+// is a [RecordNNN] section whose fields sit on their own field = value
+// lines, with fenced multi-line values when a value needs them. One
+// record, one screen of related lines -- no column counting.
+//
+// InixCodec is the reader-writer for the format. InixTable (added
+// 24 August 2026) is the GENERIC table-conversion layer: it moves tabular
+// data between .inix, .csv, .tsv, Markdown pipe tables, and .xlsx
+// workbooks, in any direction, with .inix as the home format. The .xlsx
+// side is pure OpenXML over System.IO.Compression -- no Office, no ACE
+// provider, no COM -- so it runs anywhere .NET runs. Compiling this file
+// therefore needs references to System.IO.Compression.dll and
+// System.Xml.dll (BuildEdSharp adds them).
 
-using System.Windows.Automation.Provider;
-using Microsoft.Win32;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
+using System.Globalization;
 using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Runtime.InteropServices;
+using System.IO.Compression;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
-using System.Windows.Forms;
+using System.Xml;
 
 namespace Homer {
 
@@ -615,6 +622,729 @@ public static class InixCodec
 // delegates bound to whatever settings store the app uses (an
 // InixCodec path, a classic .ini, or FileDir's dual layer), so one
 // implementation serves EdSharp, FileDir, and DbDo.
+
+// =====================================================================
+// InixTable: generic tabular conversions with .inix as the home format.
+// A table is fields (column names, in order) plus rows (one ordered
+// dictionary of field -> string value per record). Values are always
+// strings: the purpose is faithful, screen-reader-friendly REVIEW of
+// data, not calculation.
+// =====================================================================
+public static class InixTable
+{
+    public class TableData
+    {
+        public List<string> Fields = new List<string>();
+        public List<Dictionary<string, string>> Rows = new List<Dictionary<string, string>>();
+    }
+
+    // ---- reading and writing the home format ----
+
+    public static TableData readInix(string sPath)
+    {
+        TableData table = new TableData();
+        List<InixCodec.Section> lsSections = InixCodec.read(sPath);
+        foreach (InixCodec.Section section in lsSections)
+        {
+            if (section == null || section.Pairs.Count == 0) continue;
+            // A Global section in an otherwise table-shaped file is a
+            // document header, not a row (same tolerance DbDo uses).
+            if (string.Equals(section.Name, "Global", StringComparison.OrdinalIgnoreCase) && lsSections.Count > 1) continue;
+            Dictionary<string, string> dRow = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (InixCodec.Pair pair in section.Pairs)
+            {
+                if (!dRow.ContainsKey(pair.Key)) dRow[pair.Key] = pair.Value ?? "";
+                if (!containsField(table.Fields, pair.Key)) table.Fields.Add(pair.Key);
+            }
+            table.Rows.Add(dRow);
+        }
+        return table;
+    }
+
+    public static void writeInix(string sPath, TableData table)
+    {
+        InixCodec.writeAsTable(sPath, table.Fields, table.Rows);
+    }
+
+    // ---- CSV and TSV (RFC 4180: quotes, embedded delimiters, embedded
+    // line breaks; tolerant of both CRLF and LF) ----
+
+    public static TableData readDelimited(string sPath, char cDelimiter)
+    {
+        string sText = File.ReadAllText(sPath, detectEncoding(sPath));
+        List<List<string>> llRecords = parseDelimited(sText, cDelimiter);
+        return rowsFromGrid(llRecords);
+    }
+
+    public static void writeDelimited(string sPath, TableData table, char cDelimiter)
+    {
+        using (StreamWriter writer = new StreamWriter(sPath, false, new UTF8Encoding(true)))
+        {
+            writer.NewLine = "\r\n";
+            writer.WriteLine(joinDelimited(table.Fields, cDelimiter));
+            foreach (Dictionary<string, string> dRow in table.Rows)
+            {
+                List<string> lsValues = new List<string>();
+                foreach (string sField in table.Fields)
+                {
+                    string sValue;
+                    lsValues.Add(dRow != null && dRow.TryGetValue(sField, out sValue) ? (sValue ?? "") : "");
+                }
+                writer.WriteLine(joinDelimited(lsValues, cDelimiter));
+            }
+        }
+    }
+
+    static List<List<string>> parseDelimited(string sText, char cDelimiter)
+    {
+        List<List<string>> llRecords = new List<List<string>>();
+        List<string> lsRecord = new List<string>();
+        StringBuilder sbField = new StringBuilder();
+        bool bQuoted = false;
+        bool bAny = false;
+        int i = 0;
+        while (i < sText.Length)
+        {
+            char c = sText[i];
+            if (bQuoted)
+            {
+                if (c == '"')
+                {
+                    if (i + 1 < sText.Length && sText[i + 1] == '"') { sbField.Append('"'); i += 2; continue; }
+                    bQuoted = false; i++; continue;
+                }
+                sbField.Append(c); i++; continue;
+            }
+            if (c == '"' && sbField.Length == 0) { bQuoted = true; bAny = true; i++; continue; }
+            if (c == cDelimiter) { lsRecord.Add(sbField.ToString()); sbField.Length = 0; bAny = true; i++; continue; }
+            if (c == '\r' || c == '\n')
+            {
+                if (c == '\r' && i + 1 < sText.Length && sText[i + 1] == '\n') i++;
+                i++;
+                if (bAny || sbField.Length > 0 || lsRecord.Count > 0)
+                {
+                    lsRecord.Add(sbField.ToString()); sbField.Length = 0;
+                    llRecords.Add(lsRecord); lsRecord = new List<string>();
+                    bAny = false;
+                }
+                continue;
+            }
+            sbField.Append(c); bAny = true; i++;
+        }
+        if (bAny || sbField.Length > 0 || lsRecord.Count > 0)
+        {
+            lsRecord.Add(sbField.ToString());
+            llRecords.Add(lsRecord);
+        }
+        return llRecords;
+    }
+
+    static string joinDelimited(List<string> lsValues, char cDelimiter)
+    {
+        StringBuilder sbLine = new StringBuilder();
+        for (int i = 0; i < lsValues.Count; i++)
+        {
+            if (i > 0) sbLine.Append(cDelimiter);
+            string sValue = lsValues[i] ?? "";
+            bool bNeedsQuote = sValue.IndexOf(cDelimiter) >= 0 || sValue.IndexOf('"') >= 0
+                || sValue.IndexOf('\r') >= 0 || sValue.IndexOf('\n') >= 0
+                || (sValue.Length > 0 && (sValue[0] == ' ' || sValue[sValue.Length - 1] == ' '));
+            if (bNeedsQuote) sbLine.Append('"').Append(sValue.Replace("\"", "\"\"")).Append('"');
+            else sbLine.Append(sValue);
+        }
+        return sbLine.ToString();
+    }
+
+    // ---- Markdown pipe tables. A cell cannot hold a real line break,
+    // so line breaks become <br> on the way out and back again on the
+    // way in; '|' is escaped as '\|'. ----
+
+    public static TableData readMarkdown(string sPath)
+    {
+        List<List<string>> llRecords = new List<List<string>>();
+        foreach (string sRaw in File.ReadAllLines(sPath, detectEncoding(sPath)))
+        {
+            string sLine = sRaw.Trim();
+            if (sLine.Length < 2 || sLine[0] != '|') continue;
+            if (isMarkdownSeparator(sLine)) continue;
+            llRecords.Add(splitMarkdownRow(sLine));
+        }
+        return rowsFromGrid(llRecords);
+    }
+
+    public static void writeMarkdown(string sPath, TableData table)
+    {
+        using (StreamWriter writer = new StreamWriter(sPath, false, new UTF8Encoding(true)))
+        {
+            writer.NewLine = "\r\n";
+            writer.WriteLine(markdownRow(table.Fields));
+            StringBuilder sbRule = new StringBuilder("|");
+            for (int i = 0; i < table.Fields.Count; i++) sbRule.Append(" --- |");
+            writer.WriteLine(sbRule.ToString());
+            foreach (Dictionary<string, string> dRow in table.Rows)
+            {
+                List<string> lsValues = new List<string>();
+                foreach (string sField in table.Fields)
+                {
+                    string sValue;
+                    lsValues.Add(dRow != null && dRow.TryGetValue(sField, out sValue) ? (sValue ?? "") : "");
+                }
+                writer.WriteLine(markdownRow(lsValues));
+            }
+        }
+    }
+
+    static bool isMarkdownSeparator(string sLine)
+    {
+        foreach (char c in sLine) if (c != '|' && c != '-' && c != ':' && c != ' ' && c != '\t') return false;
+        return sLine.IndexOf('-') >= 0;
+    }
+
+    static List<string> splitMarkdownRow(string sLine)
+    {
+        List<string> lsCells = new List<string>();
+        StringBuilder sbCell = new StringBuilder();
+        // Interior of "| a | b |": strip one leading and one trailing bar.
+        string sInner = sLine.Substring(1);
+        if (sInner.EndsWith("|")) sInner = sInner.Substring(0, sInner.Length - 1);
+        int i = 0;
+        while (i < sInner.Length)
+        {
+            char c = sInner[i];
+            if (c == '\\' && i + 1 < sInner.Length && sInner[i + 1] == '|') { sbCell.Append('|'); i += 2; continue; }
+            if (c == '|') { lsCells.Add(cleanMarkdownCell(sbCell.ToString())); sbCell.Length = 0; i++; continue; }
+            sbCell.Append(c); i++;
+        }
+        lsCells.Add(cleanMarkdownCell(sbCell.ToString()));
+        return lsCells;
+    }
+
+    static string cleanMarkdownCell(string sCell)
+    {
+        return sCell.Trim().Replace("<br>", "\n").Replace("<br/>", "\n").Replace("<br />", "\n");
+    }
+
+    static string markdownRow(List<string> lsValues)
+    {
+        StringBuilder sbRow = new StringBuilder("|");
+        foreach (string sRaw in lsValues)
+        {
+            string sValue = (sRaw ?? "").Replace("|", "\\|");
+            sValue = sValue.Replace("\r\n", "<br>").Replace("\r", "<br>").Replace("\n", "<br>");
+            sbRow.Append(' ').Append(sValue).Append(" |");
+        }
+        return sbRow.ToString();
+    }
+
+    // ---- XLSX, pure OpenXML: a workbook is a zip of XML parts. Writing
+    // uses inline strings (no shared-string table needed); reading
+    // handles both inline and shared strings and reads every cell as
+    // the text it shows. First worksheet only -- the format's job here
+    // is table review, not workbook management. ----
+
+    public static TableData readXlsx(string sPath)
+    {
+        using (FileStream stream = new FileStream(sPath, FileMode.Open, FileAccess.Read))
+        using (ZipArchive archive = new ZipArchive(stream, ZipArchiveMode.Read))
+        {
+            List<string> lsShared = readSharedStrings(archive);
+            ZipArchiveEntry entrySheet = findFirstSheet(archive);
+            if (entrySheet == null) throw new InvalidDataException("No worksheet was found inside the workbook.");
+            List<List<string>> llRecords = new List<List<string>>();
+            using (Stream streamSheet = entrySheet.Open())
+            using (XmlReader reader = XmlReader.Create(streamSheet))
+            {
+                List<string> lsRow = null;
+                int iColumn = 0;
+                string sCellType = "";
+                bool bInValue = false, bInInline = false;
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        if (reader.LocalName == "row") { lsRow = new List<string>(); iColumn = 0; }
+                        else if (reader.LocalName == "c" && lsRow != null)
+                        {
+                            string sRef = reader.GetAttribute("r");
+                            int iAt = (sRef != null) ? columnIndex(sRef) : iColumn;
+                            while (lsRow.Count < iAt) lsRow.Add("");
+                            iColumn = iAt + 1;
+                            sCellType = reader.GetAttribute("t") ?? "";
+                            lsRow.Add("");
+                        }
+                        else if (reader.LocalName == "v") bInValue = true;
+                        else if (reader.LocalName == "is") bInInline = true;
+                        else if (reader.LocalName == "t" && bInInline && lsRow != null && lsRow.Count > 0 && !reader.IsEmptyElement)
+                        {
+                            lsRow[lsRow.Count - 1] = lsRow[lsRow.Count - 1] + reader.ReadElementContentAsString();
+                        }
+                    }
+                    else if (reader.NodeType == XmlNodeType.Text && bInValue && lsRow != null && lsRow.Count > 0)
+                    {
+                        string sValue = reader.Value;
+                        if (sCellType == "s")
+                        {
+                            int iShared;
+                            if (int.TryParse(sValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out iShared)
+                                && iShared >= 0 && iShared < lsShared.Count) sValue = lsShared[iShared];
+                        }
+                        lsRow[lsRow.Count - 1] = sValue;
+                    }
+                    else if (reader.NodeType == XmlNodeType.EndElement)
+                    {
+                        if (reader.LocalName == "v") bInValue = false;
+                        else if (reader.LocalName == "is") bInInline = false;
+                        else if (reader.LocalName == "row" && lsRow != null) { llRecords.Add(lsRow); lsRow = null; }
+                    }
+                }
+            }
+            return rowsFromGrid(llRecords);
+        }
+    }
+
+    public static void writeXlsx(string sPath, TableData table)
+    {
+        using (FileStream stream = new FileStream(sPath, FileMode.Create, FileAccess.Write))
+        using (ZipArchive archive = new ZipArchive(stream, ZipArchiveMode.Create))
+        {
+            writeArchiveText(archive, "[Content_Types].xml",
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+                + "<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">"
+                + "<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"
+                + "<Default Extension=\"xml\" ContentType=\"application/xml\"/>"
+                + "<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>"
+                + "<Override PartName=\"/xl/worksheets/sheet1.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>"
+                + "</Types>");
+            writeArchiveText(archive, "_rels/.rels",
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+                + "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"
+                + "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>"
+                + "</Relationships>");
+            writeArchiveText(archive, "xl/workbook.xml",
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+                + "<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">"
+                + "<sheets><sheet name=\"Table\" sheetId=\"1\" r:id=\"rId1\"/></sheets></workbook>");
+            writeArchiveText(archive, "xl/_rels/workbook.xml.rels",
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+                + "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"
+                + "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet1.xml\"/>"
+                + "</Relationships>");
+            ZipArchiveEntry entrySheet = archive.CreateEntry("xl/worksheets/sheet1.xml");
+            using (Stream streamSheet = entrySheet.Open())
+            {
+                XmlWriterSettings settings = new XmlWriterSettings();
+                settings.Encoding = new UTF8Encoding(false);
+                using (XmlWriter writer = XmlWriter.Create(streamSheet, settings))
+                {
+                    string sNs = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+                    writer.WriteStartElement("worksheet", sNs);
+                    writer.WriteStartElement("sheetData", sNs);
+                    writeXlsxRow(writer, sNs, 1, table.Fields);
+                    for (int i = 0; i < table.Rows.Count; i++)
+                    {
+                        Dictionary<string, string> dRow = table.Rows[i];
+                        List<string> lsValues = new List<string>();
+                        foreach (string sField in table.Fields)
+                        {
+                            string sValue;
+                            lsValues.Add(dRow != null && dRow.TryGetValue(sField, out sValue) ? (sValue ?? "") : "");
+                        }
+                        writeXlsxRow(writer, sNs, i + 2, lsValues);
+                    }
+                    writer.WriteEndElement();
+                    writer.WriteEndElement();
+                }
+            }
+        }
+    }
+
+    static void writeXlsxRow(XmlWriter writer, string sNs, int iRow, List<string> lsValues)
+    {
+        writer.WriteStartElement("row", sNs);
+        writer.WriteAttributeString("r", iRow.ToString(CultureInfo.InvariantCulture));
+        for (int i = 0; i < lsValues.Count; i++)
+        {
+            writer.WriteStartElement("c", sNs);
+            writer.WriteAttributeString("r", columnName(i) + iRow.ToString(CultureInfo.InvariantCulture));
+            writer.WriteAttributeString("t", "inlineStr");
+            writer.WriteStartElement("is", sNs);
+            writer.WriteStartElement("t", sNs);
+            writer.WriteAttributeString("xml", "space", null, "preserve");
+            writer.WriteString(lsValues[i] ?? "");
+            writer.WriteEndElement();
+            writer.WriteEndElement();
+            writer.WriteEndElement();
+        }
+        writer.WriteEndElement();
+    }
+
+    static List<string> readSharedStrings(ZipArchive archive)
+    {
+        List<string> lsShared = new List<string>();
+        ZipArchiveEntry entry = archive.GetEntry("xl/sharedStrings.xml");
+        if (entry == null) return lsShared;
+        using (Stream stream = entry.Open())
+        using (XmlReader reader = XmlReader.Create(stream))
+        {
+            StringBuilder sbItem = null;
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "si") sbItem = new StringBuilder();
+                else if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "t" && sbItem != null && !reader.IsEmptyElement)
+                    sbItem.Append(reader.ReadElementContentAsString());
+                else if (reader.NodeType == XmlNodeType.EndElement && reader.LocalName == "si" && sbItem != null)
+                { lsShared.Add(sbItem.ToString()); sbItem = null; }
+            }
+        }
+        return lsShared;
+    }
+
+    static ZipArchiveEntry findFirstSheet(ZipArchive archive)
+    {
+        ZipArchiveEntry entry = archive.GetEntry("xl/worksheets/sheet1.xml");
+        if (entry != null) return entry;
+        foreach (ZipArchiveEntry candidate in archive.Entries)
+            if (candidate.FullName.StartsWith("xl/worksheets/", StringComparison.OrdinalIgnoreCase)
+                && candidate.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase)) return candidate;
+        return null;
+    }
+
+    // ---- shared plumbing ----
+
+    static TableData rowsFromGrid(List<List<string>> llRecords)
+    {
+        TableData table = new TableData();
+        if (llRecords.Count == 0) return table;
+        foreach (string sHeader in llRecords[0])
+        {
+            string sName = (sHeader ?? "").Trim();
+            if (sName.Length == 0) sName = "Field" + (table.Fields.Count + 1).ToString(CultureInfo.InvariantCulture);
+            while (containsField(table.Fields, sName)) sName += "2";
+            table.Fields.Add(sName);
+        }
+        for (int i = 1; i < llRecords.Count; i++)
+        {
+            List<string> lsRecord = llRecords[i];
+            bool bAll = true;
+            foreach (string sValue in lsRecord) if ((sValue ?? "").Length > 0) { bAll = false; break; }
+            if (bAll) continue;
+            Dictionary<string, string> dRow = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            for (int j = 0; j < table.Fields.Count; j++)
+                dRow[table.Fields[j]] = (j < lsRecord.Count) ? (lsRecord[j] ?? "") : "";
+            table.Rows.Add(dRow);
+        }
+        return table;
+    }
+
+    static bool containsField(List<string> lsFields, string sName)
+    {
+        foreach (string sField in lsFields)
+            if (string.Equals(sField, sName, StringComparison.OrdinalIgnoreCase)) return true;
+        return false;
+    }
+
+    static int columnIndex(string sCellRef)
+    {
+        int iIndex = 0;
+        foreach (char c in sCellRef)
+        {
+            if (c >= 'A' && c <= 'Z') iIndex = iIndex * 26 + (c - 'A' + 1);
+            else if (c >= 'a' && c <= 'z') iIndex = iIndex * 26 + (c - 'a' + 1);
+            else break;
+        }
+        return (iIndex > 0) ? iIndex - 1 : 0;
+    }
+
+    static string columnName(int iIndex)
+    {
+        string sName = "";
+        iIndex++;
+        while (iIndex > 0)
+        {
+            int iRemainder = (iIndex - 1) % 26;
+            sName = ((char)('A' + iRemainder)) + sName;
+            iIndex = (iIndex - 1) / 26;
+        }
+        return sName;
+    }
+
+    static Encoding detectEncoding(string sPath)
+    {
+        // UTF-8 with or without a byte-order mark covers every Homer
+        // file; the StreamReader BOM sniff handles UTF-16 arrivals.
+        using (StreamReader reader = new StreamReader(sPath, new UTF8Encoding(false), true))
+        { reader.Peek(); return reader.CurrentEncoding; }
+    }
+
+    static void writeArchiveText(ZipArchive archive, string sName, string sContent)
+    {
+        ZipArchiveEntry entry = archive.CreateEntry(sName);
+        using (Stream stream = entry.Open())
+        {
+            byte[] aBytes = new UTF8Encoding(false).GetBytes(sContent);
+            stream.Write(aBytes, 0, aBytes.Length);
+        }
+    }
+
+
+    // ---- Embedded inix tables in Markdown (.mdx, or .md that opts in).
+    // A fenced code block whose info string is "inix" holds records in
+    // the tabular inix form; expansion replaces the block with a real
+    // Markdown table, which Pandoc then renders as a real table in
+    // docx, HTML, and every other output -- no filter, no extension.
+    // A [Global] section at the top of a block may supply options, but
+    // none is required:
+    //     caption = A caption printed under the table
+    //     fields  = the columns to show, in order (default: every
+    //               field, in first-seen order)
+    // Pipe tables carry single-line cells; if any cell is multi-line,
+    // a GRID table is written instead, because grid tables are the
+    // Markdown form that holds multi-line cells. Text outside the
+    // fences passes through untouched, so a file with no inix blocks
+    // expands to itself. ----
+
+    public static string expandMarkdownText(string sText)
+    {
+        string[] aLines = sText.Replace("\r\n", "\n").Split('\n');
+        StringBuilder sbOut = new StringBuilder();
+        List<string> lsBlock = null;
+        string sFenceClose = null;
+        foreach (string sLine in aLines)
+        {
+            if (lsBlock == null)
+            {
+                string sTrim = sLine.TrimStart();
+                if ((sTrim.StartsWith("```") || sTrim.StartsWith("~~~"))
+                    && sTrim.Substring(3).Trim().ToLowerInvariant() == "inix")
+                {
+                    lsBlock = new List<string>();
+                    sFenceClose = sTrim.Substring(0, 3);
+                    continue;
+                }
+                sbOut.Append(sLine).Append("\r\n");
+                continue;
+            }
+            if (sLine.TrimStart().StartsWith(sFenceClose))
+            {
+                sbOut.Append(renderBlock(lsBlock));
+                lsBlock = null;
+                continue;
+            }
+            lsBlock.Add(sLine);
+        }
+        // An unclosed block is a mistake worth surfacing gently: it is
+        // rendered as far as it goes rather than swallowed.
+        if (lsBlock != null) sbOut.Append(renderBlock(lsBlock));
+        return sbOut.ToString();
+    }
+
+    public static void expandMarkdownFile(string sSourcePath, string sDestPath)
+    {
+        string sText = File.ReadAllText(sSourcePath, detectEncoding(sSourcePath));
+        File.WriteAllText(sDestPath, expandMarkdownText(sText), new UTF8Encoding(true));
+    }
+
+    static string renderBlock(List<string> lsBlockLines)
+    {
+        List<InixCodec.Section> lsSections = InixCodec.parseLines(lsBlockLines.ToArray());
+        string sCaption = "";
+        List<string> lsWanted = null;
+        TableData table = new TableData();
+        foreach (InixCodec.Section section in lsSections)
+        {
+            if (section == null || section.Pairs.Count == 0) continue;
+            if (string.Equals(section.Name, "Global", StringComparison.OrdinalIgnoreCase) && lsSections.Count > 1)
+            {
+                string sValue = section.get("caption");
+                if (sValue != null) sCaption = sValue;
+                List<string> lsFields = section.getArray("fields");
+                if (lsFields != null && lsFields.Count > 0) lsWanted = lsFields;
+                continue;
+            }
+            Dictionary<string, string> dRow = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (InixCodec.Pair pair in section.Pairs)
+            {
+                if (!dRow.ContainsKey(pair.Key)) dRow[pair.Key] = pair.Value ?? "";
+                if (!containsField(table.Fields, pair.Key)) table.Fields.Add(pair.Key);
+            }
+            table.Rows.Add(dRow);
+        }
+        if (lsWanted != null)
+        {
+            List<string> lsOrdered = new List<string>();
+            foreach (string sField in lsWanted)
+                if (containsField(table.Fields, sField.Trim())) lsOrdered.Add(sField.Trim());
+            if (lsOrdered.Count > 0) table.Fields = lsOrdered;
+        }
+        if (table.Fields.Count == 0) return "\r\n";
+        bool bMultiline = false;
+        foreach (Dictionary<string, string> dRow in table.Rows)
+            foreach (string sValue in dRow.Values)
+                if (sValue != null && (sValue.IndexOf('\n') >= 0 || sValue.IndexOf('\r') >= 0)) { bMultiline = true; break; }
+        StringBuilder sbTable = new StringBuilder();
+        sbTable.Append("\r\n");
+        if (bMultiline) appendGridTable(sbTable, table);
+        else
+        {
+            sbTable.Append(markdownRow(table.Fields)).Append("\r\n");
+            StringBuilder sbRule = new StringBuilder("|");
+            for (int i = 0; i < table.Fields.Count; i++) sbRule.Append(" --- |");
+            sbTable.Append(sbRule.ToString()).Append("\r\n");
+            foreach (Dictionary<string, string> dRow in table.Rows)
+                sbTable.Append(markdownRow(valuesFor(table, dRow))).Append("\r\n");
+        }
+        if (sCaption.Length > 0) sbTable.Append("\r\n: ").Append(sCaption.Replace("\r", " ").Replace("\n", " ")).Append("\r\n");
+        sbTable.Append("\r\n");
+        return sbTable.ToString();
+    }
+
+    static List<string> valuesFor(TableData table, Dictionary<string, string> dRow)
+    {
+        List<string> lsValues = new List<string>();
+        foreach (string sField in table.Fields)
+        {
+            string sValue;
+            lsValues.Add(dRow != null && dRow.TryGetValue(sField, out sValue) ? (sValue ?? "") : "");
+        }
+        return lsValues;
+    }
+
+    // A Pandoc GRID table: dashed borders, '=' under the header, cells
+    // that may span several lines. Every cell is padded to the column
+    // width, which is sized to the longest line in that column.
+    static void appendGridTable(StringBuilder sbOut, TableData table)
+    {
+        int iColumns = table.Fields.Count;
+        List<List<List<string>>> lllRows = new List<List<List<string>>>();
+        List<List<string>> llHeader = new List<List<string>>();
+        foreach (string sField in table.Fields) llHeader.Add(cellLines(sField));
+        lllRows.Add(llHeader);
+        foreach (Dictionary<string, string> dRow in table.Rows)
+        {
+            List<List<string>> llRow = new List<List<string>>();
+            foreach (string sValue in valuesFor(table, dRow)) llRow.Add(cellLines(sValue));
+            lllRows.Add(llRow);
+        }
+        int[] aWidths = new int[iColumns];
+        foreach (List<List<string>> llRow in lllRows)
+            for (int i = 0; i < iColumns; i++)
+                foreach (string sLine in llRow[i])
+                    if (sLine.Length > aWidths[i]) aWidths[i] = sLine.Length;
+        for (int i = 0; i < iColumns; i++) if (aWidths[i] < 3) aWidths[i] = 3;
+        string sDashes = gridRule(aWidths, '-');
+        string sEquals = gridRule(aWidths, '=');
+        sbOut.Append(sDashes).Append("\r\n");
+        for (int iRow = 0; iRow < lllRows.Count; iRow++)
+        {
+            List<List<string>> llRow = lllRows[iRow];
+            int iHeight = 1;
+            foreach (List<string> lsCell in llRow) if (lsCell.Count > iHeight) iHeight = lsCell.Count;
+            for (int iLine = 0; iLine < iHeight; iLine++)
+            {
+                sbOut.Append('|');
+                for (int i = 0; i < iColumns; i++)
+                {
+                    string sCell = (iLine < llRow[i].Count) ? llRow[i][iLine] : "";
+                    sbOut.Append(' ').Append(sCell.PadRight(aWidths[i])).Append(" |");
+                }
+                sbOut.Append("\r\n");
+            }
+            sbOut.Append(iRow == 0 ? sEquals : sDashes).Append("\r\n");
+        }
+    }
+
+    static List<string> cellLines(string sValue)
+    {
+        List<string> lsLines = new List<string>();
+        foreach (string sLine in (sValue ?? "").Replace("\r\n", "\n").Replace('\r', '\n').Split('\n'))
+            lsLines.Add(sLine);
+        return lsLines;
+    }
+
+    static string gridRule(int[] aWidths, char cFill)
+    {
+        StringBuilder sbRule = new StringBuilder("+");
+        foreach (int iWidth in aWidths) sbRule.Append(new string(cFill, iWidth + 2)).Append('+');
+        return sbRule.ToString();
+    }
+
+    // ---- in-memory helpers for hosts (EdSharp code blocks, DbDo) ----
+
+    // Parse delimited TEXT already in memory (e.g. captured command
+    // output) with the same RFC 4180 state machine used for files.
+    public static TableData tableFromDelimitedText(string sText, char cDelimiter)
+    {
+        return rowsFromGrid(parseDelimited(sText ?? "", cDelimiter));
+    }
+
+    // Render a table as Markdown text: a pipe table normally, a grid
+    // table when any cell is multi-line (the same decision the .mdx
+    // expansion makes), so the result converts to real tables in docx
+    // and HTML.
+    public static string tableToMarkdown(TableData table)
+    {
+        if (table == null || table.Fields.Count == 0) return "";
+        bool bMultiline = false;
+        foreach (Dictionary<string, string> dRow in table.Rows)
+            foreach (string sValue in dRow.Values)
+                if (sValue != null && (sValue.IndexOf('\n') >= 0 || sValue.IndexOf('\r') >= 0)) { bMultiline = true; break; }
+        StringBuilder sbTable = new StringBuilder();
+        if (bMultiline) appendGridTable(sbTable, table);
+        else
+        {
+            sbTable.Append(markdownRow(table.Fields)).Append("\r\n");
+            StringBuilder sbRule = new StringBuilder("|");
+            for (int i = 0; i < table.Fields.Count; i++) sbRule.Append(" --- |");
+            sbTable.Append(sbRule.ToString()).Append("\r\n");
+            foreach (Dictionary<string, string> dRow in table.Rows)
+                sbTable.Append(markdownRow(valuesFor(table, dRow))).Append("\r\n");
+        }
+        return sbTable.ToString();
+    }
+
+    // ---- the one-call converter ----
+
+    // Reads by the source extension, writes by the destination
+    // extension. Known on both sides: inix, csv, tsv (or tab), md (or
+    // markdown), xlsx. Throws with a plain message for anything else.
+    public static void convertFile(string sSourcePath, string sDestPath)
+    {
+        TableData table = readAny(sSourcePath);
+        writeAny(sDestPath, table);
+    }
+
+    public static TableData readAny(string sPath)
+    {
+        switch (extensionOf(sPath))
+        {
+            case "inix": return readInix(sPath);
+            case "csv": return readDelimited(sPath, ',');
+            case "tsv": case "tab": return readDelimited(sPath, '\t');
+            case "md": case "markdown": return readMarkdown(sPath);
+            case "xlsx": return readXlsx(sPath);
+            default: throw new ArgumentException("Reading ." + extensionOf(sPath) + " is not supported. Supported: .inix, .csv, .tsv, .md, .xlsx");
+        }
+    }
+
+    public static void writeAny(string sPath, TableData table)
+    {
+        switch (extensionOf(sPath))
+        {
+            case "inix": writeInix(sPath, table); break;
+            case "csv": writeDelimited(sPath, table, ','); break;
+            case "tsv": case "tab": writeDelimited(sPath, table, '\t'); break;
+            case "md": case "markdown": writeMarkdown(sPath, table); break;
+            case "xlsx": writeXlsx(sPath, table); break;
+            default: throw new ArgumentException("Writing ." + extensionOf(sPath) + " is not supported. Supported: .inix, .csv, .tsv, .md, .xlsx");
+        }
+    }
+
+    static string extensionOf(string sPath)
+    {
+        return Path.GetExtension(sPath ?? "").TrimStart('.').ToLowerInvariant();
+    }
+}
+
 public static class InputHistory
 {
     public const int CountCeiling = 100;

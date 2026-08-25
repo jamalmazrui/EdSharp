@@ -1,0 +1,9 @@
+text form caret
+```mermaid
+sequenceDiagram
+    participant A as %First participant=User%
+    participant B as %Second participant=Program%
+    A->>B: %First message=Request%
+    B-->>A: %Reply=Response%
+^^
+```

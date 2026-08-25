@@ -1,0 +1,41 @@
+@echo off
+rem installNode.cmd -- part of EdSharp setup, Homer Tools pattern: probe first,
+rem update when present, install when absent, pause on failure so the
+rem message can be read. Tool output stays IN THIS WINDOW so progress
+rem is readable with a screen reader; the consolidated log records
+rem milestones and exit codes.
+setlocal
+set "logFile=%LOCALAPPDATA%\EdSharp\logs\EdSharp_setup.log"
+if not exist "%LOCALAPPDATA%\EdSharp\logs" mkdir "%LOCALAPPDATA%\EdSharp\logs" >nul 2>&1
+echo [installNode.cmd] started %date% %time% >> "%logFile%"
+echo If Windows asks permission during an install or update, a User Account
+echo Control prompt appears on a separate screen; press Alt+Y to allow it.
+echo A large download can also run quietly for several minutes.
+echo.
+
+where node >nul 2>&1
+if errorlevel 1 goto install_node
+echo Node.js LTS is already installed; checking for an update.
+echo [installNode.cmd] winget upgrade OpenJS.NodeJS.LTS >> "%logFile%"
+winget upgrade --id OpenJS.NodeJS.LTS -e --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
+echo [installNode.cmd] winget upgrade OpenJS.NodeJS.LTS exit %errorlevel% >> "%logFile%"
+if errorlevel 1 (echo Node.js LTS is already current.) else (echo Node.js LTS updated.)
+goto after_node
+:install_node
+echo Installing Node.js LTS with winget; this can take a few minutes.
+echo [installNode.cmd] winget install OpenJS.NodeJS.LTS >> "%logFile%"
+winget install --id OpenJS.NodeJS.LTS -e --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
+echo [installNode.cmd] winget install OpenJS.NodeJS.LTS exit %errorlevel% >> "%logFile%"
+if errorlevel 1 goto fail_node
+goto after_node
+:fail_node
+echo The Node.js LTS install did not finish. The log is:
+echo %logFile%
+echo [installNode.cmd] FAILED: OpenJS.NodeJS.LTS >> "%logFile%"
+pause
+exit /b 3
+:after_node
+
+echo Done. Node.js is ready.
+echo [installNode.cmd] done >> "%logFile%"
+exit /b 0

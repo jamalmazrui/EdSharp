@@ -1,0 +1,8 @@
+text form caret
+```mermaid
+pie title %Chart title=Share by category%
+    "%First label=First%" : %First value=45%
+    "%Second label=Second%" : %Second value=30%
+    "%Third label=Third%" : %Third value=25%
+^^
+```

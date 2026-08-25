@@ -1,4 +1,4 @@
-# EdSharp User Guide
+﻿# EdSharp User Guide
 
 EdSharp\
 Version 5.0 beta\
@@ -265,6 +265,19 @@ To create a structured text document, press Control+Enter to insert a section br
 
 You can adjust the LimitItem configuration setting to perform comparison operations on sections rather than lines of text.  For example, press Alt+Shift+C for Configuration Options, and Alt+S for the SectionBreak setting.  Since the text is initially selected, press Control+C to copy it to the clipboard.  Then press Alt+L for LimitItem, Control+V to paste, and Enter to save settings.  Now you can sort sections alphabetically with the Order Items command (Alt+Shift+O), reverse them with the Reverse Items command (Alt+Shift+Z), or eliminate duplicates with the Keep Unique Items command (Alt+Shift+U).
 
+### Mermaid Diagrams
+
+A fenced code block whose language is mermaid holds a diagram written as
+plain text: flowcharts, sequence diagrams, pie charts, and more. The
+block text is itself the accessible view, since it reads as structured
+text under a screen reader. When you convert or preview such a document
+as HTML, EdSharp includes the mermaid script, so a real web browser
+draws the diagram for sighted readers. The embedded preview window uses
+the older browser engine inside Windows, which cannot run current
+mermaid; there the block appears as its source text. Shipped snippets
+named Mermaid Flowchart, Mermaid Sequence Diagram, and Mermaid Pie Chart
+insert ready skeletons: press Alt+V, pick one, and answer the prompts.
+
 ## Word Processing
 EdSharp supports several aspects of Rich Text Format (.rtf) as well as plain text (with optional structure).  In certain situations, EdSharp behaves differently if a file has a .rtf extension rather than any other one.  Specifically, the Open Other Format command, Control+Shift+O, imports a .rtf file with its formatting rather than converting it to plain text.  The Save, Save As, and Save Copy commands, Control+S, Control+Shift+S, and Alt+S, save a .rtf file with formatting preserved.  The Print command, Control+P, prints a .rtf file using the associated program for this operation in the Windows registry (typically Microsoft Word or WordPad).  Use the Copy Rich Text command, Control+Shift+C, to copy selected text with formatting to the clipboard.
 
@@ -290,13 +303,23 @@ With that installation, EdSharp's LaTeX compiler option lets you check and corre
 ## Programming
 Press Tab to indent the current line of text, or Shift+Tab to outdent it.  If multiple lines of text are selected, these commands are applied to all of them.  The Trim Blanks command, Control+Shift+Enter, removes all indentation and trailing spaces at once, as well as removing more than two consecutive blank lines (when multiple lines are selected).
 
-Press Alt+I to hear the number of indentation levels of the current line.  Alt+Shift+I toggles a mode in which you are alerted to changes in indentation level, such as when using the up and down arrow keys.  EdSharp will say how many levels in or out the indentation has changed.  This mode also reverses the rols of the Enter and Shift+Enter keys.
+Press Alt+I to hear the number of indentation levels of the current line.  Press it twice to hear the whole chain of enclosing blocks, outermost first: in Python, the class, the function, and each nested statement the cursor sits inside; in a brace language, each enclosing opener.  Alt+Shift+I toggles a mode in which you are alerted to changes in indentation level, such as when using the up and down arrow keys.  EdSharp will say how many levels in or out the indentation has changed, speaking directly to whichever screen reader is running: JAWS, NVDA, or Narrator.  No screen reader script is needed for these announcements.  This mode also reverses the roles of the Enter and Shift+Enter keys.  A hyphen anywhere in the ExtraSpeech setting silences the announcements for anyone who prefers quiet.
 
-When Indent Mode is off, you can start a new line of text with the same indentation as the current one by pressing Shift+Enter.  By default, an indentation unit is one tab character.  This may be changed with the Configuration Options command, Alt+Shift+C.
+When Indent Mode is off, you can start a new line of text with the same indentation as the current one by pressing Shift+Enter.  EdSharp detects the indentation unit of the current document automatically, from its first indented line, so a four space Python file, a two space file, and a tab indented file all report true levels and all get the right unit when you press Tab.  When a document has no indentation yet, the IndentUnit setting applies; its default is a single tab per level, and it may be changed with the Configuration Options command, Alt+Shift+C, or captured from a file with Infer Indent. The tab default is a deliberate choice for screen reader productivity: one keystroke makes a level, one character stands for it when arrowing through a line, and the level count is always the character count. Style guides written for sighted readers, such as PEP 8's four spaces, optimize a visual layout; EdSharp optimizes the coder's own efficiency, and the interpreter accepts both. The NVDA screen reader's own source code makes the same choice of tab indentation for the same reason. When you share code with a project that requires spaces, open it and EdSharp follows its unit automatically, or convert on the way out with Format Code after setting IndentUnit to the project's style.
 
 To go to the first character of the current line after any indentation, press Alt+Home.  To go to the last non-white space character, press Alt+End.
 
 Use the Infer Indent command, Alt+RightBracket, to hear what indent unit the current document seems to be using.  EdSharp looks at the first line that starts with a space or tab character.  If this key is pressed again without moving the cursor, that sequence of space or tab characters is configured as EdSharp's IndentUnit setting.  This makes it easy to use the same indentation style as a file you have opened.
+
+### Chat with AI
+
+Press F12 to talk with an AI model running on your own computer. Whatever is selected, or the whole document when nothing is selected, is sent along with the instruction you type, and the answer opens in a new window named after the current document with ai in the name. The original window is never changed, and the answer arrives as an ordinary document: read it with your usual keys, save it, or convert it. This one command covers both conversation, by asking a question in an empty document, and transformation, by selecting text and saying what to do with it, such as summarize this, translate this to Spanish, or add docstrings to these functions. Everything runs locally through Ollama: your text never leaves the machine, there is no account and no charge, and one Ollama installation is shared by every application that uses it. The last page of EdSharp's installer offers Ollama and a starter chat model as a checkbox; the OllamaModel setting picks a different model whenever you like.
+
+### Compilers
+
+Press Control+Shift+F5 to pick the compiler for your work. The shipped set covers what Windows developers realistically use today: C#, Python, JavaScript through Node.js, PowerShell, JAWS Script, VBScript, JScript .NET, and HTML Tidy for checking web pages, plus Default for plain editing. Each compiler is defined by a section named Compiler followed by its name in EdSharp.inix, with one clearly named key per setting: CompileCommand, JumpPosition, AbbreviateOutput, NavigatePart, QuotePrefix, ExtensionDefault, and GoToEnvironment. Values are kept exactly as written and may span multiple lines, so regular expressions are easy to read and edit. Every expression in the shipped set was checked against the tool's real message format, so Compile, Control+F5, jumps to the true error line and column. Older compilers that no longer earn a place, such as Perl, Ruby, and PowerBASIC, were retired from the shipped list; any of them can return as a private section, and old-style packed entries still work for compilers that have no section.
+
+EdSharp aims to be the most friendly and productive editor for screen reader users writing Python. The pieces working together: the PyBrace command, Alt+Shift+LeftBracket, converts indented Python to a flat form in which structure is spoken text rather than counted spaces, and PyDent, Alt+LeftBracket, converts back, rebuilding clean indentation and leaving a # end comment at the close of every block so the ends of functions, classes, and loops are audible while you read. Both directions now track strings and brackets character by character, so dictionary literals, docstrings, f-strings, and line continuations survive the round trip exactly. The Format Code command routes a .py file through this same engine to normalize its indentation. Compile, Control+F5, runs a Python file with the python on your path even before any compiler is picked, jumping to the traceback's line number; the installer offers the latest official Python for Windows as an optional checkbox. Indent Mode, block navigation, and Infer Indent complete the set.
 
 Press Control+B to go to the next code block, or Control+Shift+B to go to the previous one.  A block is defined as lines with the same or greater indentation/nesting.  Control+I and Control+Shift+I have a similar purpose, but they move to the next or previous change in indentation.  EdSharp skips blank or commented lines with these commands.  
 
@@ -360,6 +383,8 @@ EdSharp also adds some methods and properties in its inherited version of the Ri
 These classes will be further documented based on questions received.  At present, the best way to learn them is to examine code in sample .js snippet files and the main EdSharp.cs program file, which implement behavior you experience when running the application.  Although the .cs code is in the C# language, its syntax is similar to JScript, and the names of classes, methods, and properties are the same.
 
 ## Miscellaneous
+
+EdSharp writes a log for each session, named EdSharp followed by a time stamp, in the logs folder under your local application data, beside the setup log. It records the version, the environment, and every outside command EdSharp runs with its exit code, so a failed conversion or compile can be diagnosed from the log rather than guessed at. The newest thirty session logs are kept.
 Extra speech messages may be toggled off -- or reactivated -- with Control+Shift+X.  When off, such messages are redirected to a text file in the EdSharp data directory called Speech.log, which may be examined in an editing window with Alt+Shift+X.  This file is initialized when EdSharp starts, and the Extra Speech setting is remembered from the previous session.
 
 With the optional JAWS scripts, you can toggle a speech setting of reading all or no punctuation using JAWSKey plus the grave accent at the top left of the main keypad (U.S. keyboard).  All punctuation is useful when reading carefully for details whereas no punctuation is useful when reading quickly for concepts.
@@ -462,7 +487,7 @@ You can configure whether EdSharp's application window is maximized at startup, 
 
 The HardPageAddress option determines whether the Address command, Alt+A, gives a page number instead of document percentage (default is No).  A form feed character specifies a hard page break.  It is part of the sequence inserted by the Section Break command, Control+Enter, which is configurable via the SectionBreak option of the configuration dialog.  Use the Control+PageDown and Control+PageUp commands to navigate by page.  Pressing Alt+A a second time in a row gives the alternate type of address information, so you can still get a page number without changing the HardPageAddress setting.
 
-The ViewLevels option controls whether EdSharp converts a file when it is opened from outside the editor -- through Windows Explorer, the "Open with" menu, the command line, or the Recent Files command.  (The ordinary Open command, Control+O, always opens a file raw, and Open Other Format, Control+Shift+O, always converts; ViewLevels affects only the outside-the-editor paths.)  By default EdSharp opens files raw, with one exception: binary and document formats whose raw bytes are not readable -- Word (.doc, .docx), Excel (.xls, .xlsx), PowerPoint (.ppt, .pptx), PDF (.pdf), EPUB (.epub, .epub3), WordPerfect (.wpd), WinHelp (.hlp), and rich text (.rtf) -- are converted to text (or, for .rtf, shown as rich text).  Every text, markup, data, source-code, or otherwise unrecognized format opens raw, so no text format is ever auto-converted.  Braille files (.brl, .brf) are treated as text and therefore open raw, showing the braille content as it is stored rather than back-translating it.  Use ViewLevels to override any extension: a value of 0 opens that type raw and 1 converts it.  For example, "docx:0" would open Word files raw, "rst:1" would auto-convert reStructuredText, and "brl:1 brf:1" would back-translate braille on open.  The option is a single space-separated list, as in ViewLevels="docx:0 rst:1".
+The ViewLevels option controls whether EdSharp converts a file when it is opened from outside the editor -- through Windows Explorer, the "Open with" menu, the command line, or the Recent Files command.  (The ordinary Open command, Control+O, always opens a file raw, and Open Other Format, Control+Shift+O, always converts; ViewLevels affects only the outside-the-editor paths.)  By default EdSharp opens files raw, with one exception: binary and document formats whose raw bytes are not readable -- Word (.doc, .docx), Excel (.xls, .xlsx), PowerPoint (.ppt, .pptx), PDF (.pdf), EPUB (.epub, .epub3), WordPerfect (.wpd), WinHelp (.hlp), and rich text (.rtf) -- are converted to text (or, for .rtf, shown as rich text).  Every text, markup, data, source-code, or otherwise unrecognized format opens raw, so no text format is ever auto-converted.  Braille files (.brl, .brf) are treated as text and therefore open raw, showing the braille content as it is stored rather than back-translating it.  Use ViewLevels to override any extension: a value of 0 opens that type raw and 1 converts it.  For example, "docx:0" would open Word files raw and "rst:1" would auto-convert reStructuredText.  (Braille back-translation was retired in August 2026 along with its converter tools, so .brl and .brf files always open raw, showing the stored braille.)  The option is a single space-separated list, as in ViewLevels="docx:0 rst:1".
 
 The UseIndentModeDefault setting determines the state of indent mode when a new document window is opened.  This mode may be toggled on a per-window basis with Alt+Shift+I.  The configuration setting determines whether it is initially on or off when a file is opened (default is No).
 
@@ -513,6 +538,8 @@ The following are EdSharp commands listed in related groups.
 Launch EdSharp=Alt+Control+E, Launch or activate the EdSharp application via a Windows desktop shortcut
 Documentation=F1, Open Documentation in web browser
 About=Alt+F1, Display version and release date
+Tutorial=Control+Shift+F1, Open the step-by-step tutorial
+Hotkey Summary=Alt+Shift+H, Show the hotkeys summarized and sorted in different ways
 History of Changes=Shift+F1, Display list of fixes and improvements
 Key Describer=Control+F1, Toggle a mode in which pressing a key describes its action
 Alternate Menu=Alt+F10, Present all commands in a single, alphabetized list
@@ -535,6 +562,7 @@ Read All=Alt+F8, Say all text (without moving cursor)
 
 Say Address=Alt+A, Say line, column, and percent position of cursor
 Say Block=Alt+B, Say the rest of the current code block, or the whole block if repeated
+Say Braces=Alt+Shift+RightBracket, Say the brace or bracket nesting at the cursor
 Say Indent=Alt+I, Say the indentation level of the current line, or the preceding line with less indentation if repeated
 Say Yield=Alt+Y, Say number of characters, words, and lines in all or selected text
 Say Status=Alt+Z, Say whether current file has been modified since last save to disk, or say its character encoding if repeated
@@ -585,7 +613,7 @@ Guard Document=Control+F7, Make document read-only
 No Guard=Control+Shift+F7, Clear read-only status
 
 Extra Speech Toggle=Control+Shift+X, Toggle extra speech messages on or off, redirecting to Speech.log file
-Extra Speech Log=Alt+Shift+X Open speech.log file in a new window
+Extra Speech Log=Alt+Shift+X, Open speech.log file in a new window
 
 Go to Percent=Control+G, Go to percentage point in document
 Go to Percent Again=Alt+G, Repeat Go command
@@ -657,6 +685,17 @@ Replace Tokens=Control+Shift+Equals, Swap user-defined tokens with their compute
 Transform Files=Alt+Equals, Apply a set of search and replace tasks to a list of files in the current window
 Trim Blanks=Control+Shift+Enter, Trim leading and trailing blanks from the current or selected lines, and remove more than two consecutive blank lines
 
+Preview Markdown=Control+F9, Show the current Markdown as formatted text in a preview window
+Preview Markdown in Web Browser=Menu only, Open the current Markdown as a web page in the default browser
+Check Markdown=Alt+F9, Check the current Markdown and report problems, one per line, in a new window: heading level jumps, images with no alt text, bare web addresses, duplicate headings, unclosed code fences, uneven table rows, and reference links that are undefined or unused
+Run Code Blocks=Alt+Shift+F9, Run the document's sql and jscript fenced code blocks and insert each block's results below it between output markers; a sql fence may name its database after the language word, defaulting to a .db file with the document's base name; results of a query arrive as a real Markdown table; running again replaces the previous results; code runs only by this command, never during conversion or export
+Chat with AI=F12, Send the selection, or the whole document when nothing is selected, together with your typed instruction to a local AI model through Ollama; the answer opens in a new window named after the document, leaving the original untouched; works as plain conversation in an empty document or as text transformation with a selection; the model, address, and timeout are the OllamaModel, OllamaUrl, and OllamaTimeout settings
+Markdown to Plain Text=Menu only, Convert the current Markdown to plain text
+HTML to Markdown=Menu only, Convert the current HTML to Markdown
+HTML to Plain Text=Menu only, Convert the current HTML to plain text
+Lookup Term=Alt+F7, Look up the selected or current word online
+Translate Language=Alt+Shift+F7, Translate the selected or current text to another language
+
 End Character=Alt+End, Go to last non-blank character of line and read it
 Home Character=Alt+Home, Go to first non-blank character of line and read it
 Next Word=Control+RightArrow, Go to next word and read it
@@ -675,8 +714,8 @@ Delete Up=Alt+Shift+Backspace, Delete from cursor to top of file
 Delete Line=Alt+Backspace, Delete current line
 Delete Hard Line=Control+D, Delete line ending in hard line break
 Delete Paragraph=Control+Shift+D, Delete past one or more blank lines
-Delete File=Alt+Shift+D Delete current file on disk
-Rename=Alt+Shift+R Rename current file on disk
+Delete File=Alt+Shift+D, Delete current file on disk
+Rename=Alt+Shift+R, Rename current file on disk
 
 Next Section=Control+PageDown, Go to next section
 Prior Section=Control+PageUp, Go to Prior Section
@@ -736,8 +775,8 @@ Number Items=Alt+Shift+N, Insert numbers at the start of items in all or selecte
 List Different Items=Alt+Shift+L, Compare two lists and put non-overlapping items in a new window
 Query Common Items=Alt+Shift+Q, Compare two lists and put overlapping items in a new window
 
-PyDent=Alt+LeftBracket, Convert from PyBrace format, or reformat typical Python code, using the IndentUnit setting and adding comments at ends of blocks
-PyBrace=Alt+Shift+LeftBracket, Convert from PyDent format, or reformat typical Python code, using braces instead of indentation and adding comments at ends of blocks
+PyDent=Alt+LeftBracket, Convert from PyBrace format back to indented Python, rebuilding indentation from the IndentUnit setting (four spaces when unset) and writing a spoken # end comment at the close of every block; dictionary literals, docstrings, and braces inside strings pass through untouched
+PyBrace=Alt+Shift+LeftBracket, Convert indented Python to the flat PyBrace form, where block structure is spoken text: a compound statement ends with a brace and every block closes with a brace end line naming its keyword; the file's own indent unit is detected, and dictionary literals, docstrings, and braces inside strings pass through untouched
 
 Explorer Folder=Alt+Backslash, Open Windows Explorer in the EdSharp program folder, data folder, or current folder
 Command Prompt=Control+Backslash, Open a command prompt in the EdSharp program folder, data folder, or current folder
@@ -764,8 +803,6 @@ Voice Louder=Alt+Grave, Increase JAWS voice volume by 5%
 Voice Softer=Alt+Shift+Grave, Decrease JAWS voice volume by 5%
 Voice Faster=Control+Grave, Increase JAWS voice rate by 5%
 Voice Slower=Control+Shift+Grave, Decrease JAWS voice rate by 5%
-Insert Script Path=Control+I, Insert JAWS script path in Open or Save Dialog
-Insert All Users Path=Control+Shift+I, Insert JAWS All Users path in Open or Save Dialog
 ```
 
 ### Development Notes

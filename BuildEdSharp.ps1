@@ -52,11 +52,12 @@ $bConsole = ($sMode -ieq "console")
 
 # ---- constants --------------------------------------------------------------
 $c_sHtmlAgilityPackVersion = "1.11.72"
-# Markdig is pinned at the last 0.x release. The 1.x line (current as of
-# mid-2026) is a major-version bump, and EdSharp.cs was written against the
-# 0.x API; raise this only when ready to test. Markdig ships netstandard2.0
-# for Framework use, so the netstandard facade reference below is required.
-$c_sMarkdigVersion = "0.42.0"
+# Markdig is pinned at the latest release (decision of 24 August 2026):
+# the 1.x line still targets netstandard2.0, which .NET Framework 4.8
+# loads through the netstandard facade, so the newest Markdig runs in the
+# EdSharp binary. The core API used here (Markdown.ToHtml, ToPlainText,
+# MarkdownPipelineBuilder.UseAdvancedExtensions) is unchanged from 0.x.
+$c_sMarkdigVersion = "1.3.2"
 $c_sNvdaClientUrl = "https://download.nvaccess.org/releases/stable/nvda_2026.1_controllerClient.zip"
 # ReverseMarkdown is pinned at the last line that supports .NET Framework:
 # the 4.x series ships netstandard2.0, which net48 consumes; 5.x and 6.x ship
@@ -69,7 +70,7 @@ $c_sReverseMarkdownVersion = "4.7.1"
 # The support sources; since the name-collision lesson they compile INTO
 # EdSharp.exe rather than into a separate EdSharp.dll.
 $c_lDllSources = @("Lbc.cs", "Say.cs", "Inix.cs", "KeyMap.cs", "Web.cs")
-$c_lExeReferences = @("System.dll", "System.Core.dll", "System.Data.dll", "System.Drawing.dll", "System.Web.dll", "System.Windows.Forms.dll", "System.Xml.dll", "Microsoft.VisualBasic.dll")
+$c_lExeReferences = @("System.dll", "System.Core.dll", "System.Data.dll", "System.Drawing.dll", "System.IO.Compression.dll", "System.Web.dll", "System.Windows.Forms.dll", "System.Xml.dll", "Microsoft.VisualBasic.dll")
 # UI Automation, which the support sources use (System.Windows.Automation and
 # the provider interfaces such as IRawElementProviderSimple). On a machine
 # without the .NET Framework Developer Pack these assemblies live in the WPF
@@ -297,7 +298,7 @@ try {
   writeLog "TLS 1.2 enabled for downloads."
 
   # ---- 3. NuGet dependencies ----
-  # PRESENT is not the same as RIGHT. A stray Markdig 1.3 from June once sat
+  # PRESENT is not the same as RIGHT. A stray wrong-version Markdig once sat
   # where the pinned 0.42 belonged; the old exists-check trusted it, and every
   # EdSharp built that day died at startup wanting System.Memory -- silently,
   # because even the error dialog needed the broken library. So each pinned
@@ -487,6 +488,95 @@ try {
   }
   $lArguments += @("Version.cs")
   if ((runTool $sCscFile $lArguments "compile EdSharp.exe") -ne 0) { throw "EdSharp.exe compilation failed; the compiler output above names the lines." }
+
+  # ---- 5b. sqlean.dll: keep the SQLite extension bundle current ----
+  # sqlean ships as TWO files in {app} (iss decision of 24 August 2026):
+  # sqlean.exe, the sqlean SHELL from the nalgeon/sqlite builds project,
+  # which is FROZEN upstream -- there is nothing newer to fetch, so the
+  # copy beside this script ships as it is; and sqlean.dll, the
+  # single-file extension bundle from nalgeon/sqlean, which is still
+  # actively released -- the win-x64 zip asset of each release carries it.
+  # This step asks the sqlean releases for the newest tag and refreshes
+  # the DLL when it differs from the stamp in sqlean.version. The frozen
+  # shell can .load the newer DLL, so refreshing the DLL is what keeps the
+  # extension set current. Every failure -- offline, API limit, missing
+  # asset -- is logged and leaves the existing copy in place: freshness is
+  # wanted, but the build never breaks over it.
+  $sSqleanDllFile = Join-Path $sScriptDir "sqlean.dll"
+  $sStampFile = Join-Path $sScriptDir "sqlean.version"
+  try {
+    $oRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/nalgeon/sqlean/releases/latest" -TimeoutSec 30
+    $sLatest = "$($oRelease.tag_name)"
+    $sHave = if (Test-Path -LiteralPath $sStampFile) { (Get-Content -LiteralPath $sStampFile -Raw).Trim() } else { "" }
+    if ($sLatest -and ($sLatest -ne $sHave -or -not (Test-Path -LiteralPath $sSqleanDllFile))) {
+      $oAsset = $oRelease.assets | Where-Object { $_.name -match "win.*x64.*\.zip$" } | Select-Object -First 1
+      if ($null -eq $oAsset) {
+        writeLog "sqlean $sLatest has no Windows x64 zip asset; the current sqlean.dll stays."
+      } else {
+        $sZipFile = Join-Path $env:TEMP "sqlean_fetch.zip"
+        Invoke-WebRequest -Uri $oAsset.browser_download_url -OutFile $sZipFile -TimeoutSec 300
+        $sUnpackDir = Join-Path $env:TEMP "sqlean_fetch"
+        if (Test-Path -LiteralPath $sUnpackDir) { Remove-Item -LiteralPath $sUnpackDir -Recurse -Force }
+        Expand-Archive -LiteralPath $sZipFile -DestinationPath $sUnpackDir -Force
+        $oFound = Get-ChildItem -LiteralPath $sUnpackDir -Recurse -Filter "sqlean.dll" | Select-Object -First 1
+        if ($null -eq $oFound) {
+          writeLog "The sqlean $sLatest archive holds no sqlean.dll; the current copy stays."
+        } else {
+          Copy-Item -LiteralPath $oFound.FullName -Destination $sSqleanDllFile -Force
+          Set-Content -LiteralPath $sStampFile -Value $sLatest
+          writeLog "sqlean.dll refreshed to $sLatest. (sqlean.exe, the shell, is frozen upstream and ships as-is; it can .load the newer dll.)"
+        }
+      }
+    } else {
+      writeLog "sqlean.dll is current ($sHave)."
+    }
+  } catch {
+    writeLog "sqlean freshness check skipped: $($_.Exception.Message). The current copies stay."
+  }
+
+  # ---- 6b2. Convert\inixVert.exe: the Inix table converter ----
+  # Compiled from the thin wrapper plus the shared Inix.cs, so the Import
+  # and Export tables can move data between .inix, .csv, .tsv, .md, and
+  # .xlsx with no Office and no ACE provider (added 24 August 2026).
+  if (Test-Path -LiteralPath (Join-Path $sScriptDir "inixVert.cs")) {
+    $lArguments = @("/nologo", "/target:exe", "/out:Convert\inixVert.exe", "/platform:anycpu", "/optimize+", $sLibSearch)
+    foreach ($sReference in @("System.dll", "System.Core.dll", "System.IO.Compression.dll", "System.Xml.dll")) { $lArguments += "/r:$sReference" }
+    $lArguments += @("inixVert.cs", "Inix.cs")
+    if ((runTool $sCscFile $lArguments "compile Convert\inixVert.exe") -ne 0) { throw "The inixVert build failed; the compiler output above names the lines." }
+  } else {
+    writeLog "inixVert.cs is not present, so Convert\inixVert.exe is left as it is."
+  }
+
+  # ---- 6c. paired documentation: every tracked .md keeps a fresh .htm ----
+  # Judgment call, 23 August 2026 (audit follow-up): the documentation set
+  # pairs each Markdown file with an .htm made by pandoc, and a manual
+  # conversion is a step someone forgets -- the shipped EdSharp.htm had
+  # drifted behind EdSharp.md. So the build regenerates the .htm for every
+  # GIT-TRACKED root .md whose .htm is missing or older. Tracked only, so
+  # personal notes that live in the folder are never touched; a newly
+  # created .md joins the rule at the first build after it is committed.
+  $sPandocFile = Join-Path $sScriptDir "Convert\Pandoc\pandoc.exe"
+  if (-not (Test-Path -LiteralPath $sPandocFile)) {
+    writeLog "pandoc is not at Convert\Pandoc, so the .htm documentation pairs are left as they are (run installPandoc to fetch it)."
+  } else {
+    $lTrackedMd = @()
+    try { $lTrackedMd = @(& git -c core.quotepath=false ls-files "*.md" 2>$null) } catch {}
+    $lTrackedMd = @($lTrackedMd | Where-Object { $_ -and ($_ -notmatch "[/\\]") })
+    $iFresh = 0
+    foreach ($sMdName in $lTrackedMd) {
+      $sMdFile = Join-Path $sScriptDir $sMdName.Trim()
+      if (-not (Test-Path -LiteralPath $sMdFile)) { continue }
+      $sHtmFile = [System.IO.Path]::ChangeExtension($sMdFile, ".htm")
+      $bMake = -not (Test-Path -LiteralPath $sHtmFile)
+      if (-not $bMake) { $bMake = ((Get-Item -LiteralPath $sMdFile).LastWriteTime -gt (Get-Item -LiteralPath $sHtmFile).LastWriteTime) }
+      if (-not $bMake) { continue }
+      if ((runTool $sPandocFile @($sMdFile, "-f", "gfm", "-t", "html", "-s", "-o", $sHtmFile) "regenerate $([System.IO.Path]::GetFileName($sHtmFile))") -ne 0) {
+        writeLog "WARNING: the .htm for $sMdName was not regenerated; pandoc's output above says why."
+      } else { $iFresh++ }
+    }
+    $sPairs = if ($iFresh -eq 1) { "pair" } else { "pairs" }
+    writeLog "Documentation: $iFresh .htm $sPairs regenerated."
+  }
 
   # ---- 7. installer, if Inno Setup is present (buildHomerScribe pattern) ----
   if ($bConsole) {
