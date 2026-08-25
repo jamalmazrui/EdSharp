@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.25
-AppVerName=EdSharp 5.0.25
-VersionInfoVersion=5.0.25
+AppVersion=5.0.27
+AppVerName=EdSharp 5.0.27
+VersionInfoVersion=5.0.27
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -401,6 +401,28 @@ begin
     end;
 end;
 
+function wingetLatest(sId: string): string;
+// The newest version winget offers for a package, installed or not,
+// so the Install label can carry a number parallel to the Update one.
+var
+  lsLines: TArrayOfString;
+  i: integer;
+  sLine: string;
+begin
+  result := '';
+  if not probeLines('winget show --id ' + sId + ' --exact --disable-interactivity', lsLines) then
+    exit;
+  for i := 0 to GetArrayLength(lsLines) - 1 do
+  begin
+    sLine := Trim(lsLines[i]);
+    if Pos('Version:', sLine) = 1 then
+    begin
+      result := Trim(Copy(sLine, 9, 100));
+      exit;
+    end;
+  end;
+end;
+
 function devToolDesc(iIndex: integer; sIdList, sExe, sTool, sInstallLabel: string): string;
 // sIdList holds one or more winget ids separated by semicolons -- Node
 // installed from the plain download registers as OpenJS.NodeJS while
@@ -408,7 +430,7 @@ function devToolDesc(iIndex: integer; sIdList, sExe, sTool, sInstallLabel: strin
 // no id matches but the executable answers, the label reports the
 // version the tool itself gives, without update information.
 var
-  sInstalled, sAvailable, sId, sRest, sVersion: string;
+  sInstalled, sAvailable, sId, sRest, sVersion, sFirstId: string;
   iSplit: integer;
 begin
   if gDescCache[iIndex] <> '' then
@@ -417,6 +439,9 @@ begin
     exit;
   end;
   result := '';
+  sFirstId := sIdList;
+  if Pos(';', sFirstId) > 0 then
+    sFirstId := Copy(sFirstId, 1, Pos(';', sFirstId) - 1);
   sRest := sIdList;
   while (result = '') and (sRest <> '') do
   begin
@@ -445,7 +470,16 @@ begin
     if sVersion <> '' then
       result := sTool + ' ' + sVersion + ' is installed'
     else
-      result := sInstallLabel;
+    begin
+      // Parallel wording: "Install <tool> <latest>" mirrors
+      // "Update <tool> from <old> to <new>". When winget cannot say
+      // (offline), the plain label still works.
+      sVersion := wingetLatest(sFirstId);
+      if sVersion <> '' then
+        result := 'Install ' + sTool + ' ' + sVersion
+      else
+        result := sInstallLabel;
+    end;
   end;
   gDescCache[iIndex] := result;
 end;
@@ -466,8 +500,16 @@ begin
 end;
 
 function descOllama(sParam: string): string;
+var
+  sUserCopy: string;
 begin
-  result := devToolDesc(3, 'Ollama.Ollama', 'ollama', 'Ollama', 'Install Ollama and a chat model, for the Chat with AI command (about 2 GB, shared with other apps)');
+  // Ollama installs per user; when it is absent from PATH, its own exe
+  // in the profile still answers for a version.
+  sUserCopy := ExpandConstant('{localappdata}\Programs\Ollama\ollama.exe');
+  if FileExists(sUserCopy) then
+    result := devToolDesc(3, 'Ollama.Ollama', '"' + sUserCopy + '"', 'Ollama', 'Install Ollama and a chat model, for the Chat with AI command (about 2 GB, shared with other apps)')
+  else
+    result := devToolDesc(3, 'Ollama.Ollama', 'ollama', 'Ollama', 'Install Ollama and a chat model, for the Chat with AI command (about 2 GB, shared with other apps)');
 end;
 
 function ngenExe(sParam: string): string;

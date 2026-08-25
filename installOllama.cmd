@@ -13,6 +13,10 @@ echo separate screen; press Alt+Y to allow it. The model download is about
 echo 2 gigabytes and shows its progress here.
 echo.
 
+rem A just-installed Ollama is not on this console's PATH yet, and Scott's
+rem test showed the gap: where missed it, so the script reinstalled a
+rem program that was already there. Probe the install location too.
+if exist "%LOCALAPPDATA%\Programs\Ollama\ollama.exe" set "PATH=%LOCALAPPDATA%\Programs\Ollama;%PATH%"
 where ollama >nul 2>&1
 if errorlevel 1 goto install_ollama
 echo Ollama is already installed; checking for an update.

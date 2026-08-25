@@ -1,12 +1,12 @@
 ﻿**********************
 Windows PowerShell transcript start
-Start time: 20260825072529
+Start time: 20260825073330
 Username: JM-LAPTOP\Jamal
 RunAs User: JM-LAPTOP\Jamal
 Configuration Name: 
 Machine: JM-LAPTOP (Microsoft Windows NT 10.0.26200.0)
 Host Application: powershell -NoProfile -ExecutionPolicy Bypass -File c:\bin\tagRelease.ps1
-Process ID: 52952
+Process ID: 27728
 PSVersion: 5.1.26100.9168
 PSEdition: Desktop
 PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9168
@@ -17,7 +17,7 @@ PSRemotingProtocolVersion: 2.3
 SerializationVersion: 1.1.0.1
 **********************
 === tagRelease.ps1 (installer-version edition, 2026-07-13) ===
-Started: 2026-08-25 07:25:29
+Started: 2026-08-25 07:33:30
 Log:     C:\EdSharp\tagRelease.log
 Repo:    C:\EdSharp
 App:     EdSharp  (from the directory name)
@@ -33,20 +33,20 @@ Installer:    EdSharp_Setup.exe  (from OutputBaseFilename)
 GitHub repo:  JamalMazrui/EdSharp  (from the origin remote)
 
 --- Version ---
-Version (stamped in EdSharp_Setup.exe): 5.0.24
-  built: 8/25/2026 7:24:42 AM   8,345,704 bytes
-NOTE: version.txt says 5.0.12 but the installer carries 5.0.24.
-      The installer is what ships, so v5.0.24 is what will be tagged.
+Version (stamped in EdSharp_Setup.exe): 5.0.25
+  built: 8/25/2026 7:31:26 AM   8,345,568 bytes
+NOTE: version.txt says 5.0.12 but the installer carries 5.0.25.
+      The installer is what ships, so v5.0.25 is what will be tagged.
       (Recompile EdSharp_Setup.iss in Inno Setup if that is not what you meant.)
-v5.0.24 has not been released yet.
-Tag:       v5.0.24
+v5.0.25 has not been released yet.
+Tag:       v5.0.25
 
 --- Working tree ---
 NOTE: other uncommitted changes are present. Releasing anyway:
  M tagRelease.log
 
 --- Tag ---
-git.exe : fatal: ambiguous argument 'v5.0.24': unknown revision or path not in the working tree.
+git.exe : fatal: ambiguous argument 'v5.0.25': unknown revision or path not in the working tree.
 At C:\bin\tagRelease.ps1:225 char:5
 +     & $sExe @aArgs 2>$null | Out-Null
 +     ~~~~~~~~~~~~~~~~~~~~~~
@@ -54,11 +54,11 @@ At C:\bin\tagRelease.ps1:225 char:5
     + FullyQualifiedErrorId : NativeCommandError
 Use '--' to separate paths from revisions, like this:
 'git <command> [<revision>...] -- [<file>...]'
-Creating tag v5.0.24 ...
-  > git tag -a v5.0.24 -m EdSharp 5.0.24
+Creating tag v5.0.25 ...
+  > git tag -a v5.0.25 -m EdSharp 5.0.25
 
-Pushing tag v5.0.24 to origin ...
-  > git push origin v5.0.24
+Pushing tag v5.0.25 to origin ...
+  > git push origin v5.0.25
 Enumerating objects: 1, done.
 Counting objects: 100% (1/1), done.
 Writing objects: 100% (1/1), 174 bytes | 174.00 KiB/s, done.
@@ -66,7 +66,7 @@ Total 1 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
 remote: This repository moved. Please use the new location:
 remote:   https://github.com/jamalmazrui/EdSharp.git
 To https://github.com/JamalMazrui/EdSharp
- * [new tag]         v5.0.24 -> v5.0.24
+ * [new tag]         v5.0.25 -> v5.0.25
 
 --- Release ---
 gh.cmd : release not found
@@ -75,15 +75,15 @@ At C:\bin\tagRelease.ps1:225 char:5
 +     ~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : NotSpecified: (release not found:String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
-Creating release v5.0.24 with asset EdSharp_Setup.exe ...
-  > gh release create v5.0.24 C:\EdSharp\EdSharp_Setup.exe --title EdSharp 5.0.24 --generate-notes --latest
-https://github.com/jamalmazrui/EdSharp/releases/tag/v5.0.24
+Creating release v5.0.25 with asset EdSharp_Setup.exe ...
+  > gh release create v5.0.25 C:\EdSharp\EdSharp_Setup.exe --title EdSharp 5.0.25 --generate-notes --latest
+https://github.com/jamalmazrui/EdSharp/releases/tag/v5.0.25
 
 --- URL verification ---
 Public URL: https://github.com/JamalMazrui/EdSharp/releases/latest/download/EdSharp_Setup.exe
 URL check: HTTP 200
 
-=== EdSharp 5.0.24 published. ===
+=== EdSharp 5.0.25 published. ===
 
 Stable public download URL (does not change between versions):
 
@@ -95,5 +95,5 @@ Users on an older version will now see this release from Elevate Version (F11).
 --- Log saved at: C:\EdSharp\tagRelease.log ---
 **********************
 Windows PowerShell transcript end
-End time: 20260825072538
+End time: 20260825073338
 **********************

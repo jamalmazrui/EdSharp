@@ -630,6 +630,11 @@ App.Frame.SetMessage("No Key Describer");
 App.Frame.KeyDescriber = false;
 }
 
+// Jim's request of 19 August 2026, in the spirit of the word wrap
+// announcement: a document that is collecting clipboard copies says so
+// the moment focus arrives, so the mode is never a surprise.
+if (this.AppendFromClipboard == 1) Util.Say("Append from clipboard");
+
 string sFile = this.File;
 // The mode-flag file may be held open by a screen reader script at
 // this instant; a share collision must never take down a focus event.
@@ -764,6 +769,16 @@ LoadTextOrRtfFile(sFile, bLiteral);
 public void LoadTextOrRtfFile(string sFile, bool bLiteral) {
 this.FileTimeChecked = false;
 this.FileTime = System.IO.File.GetLastWriteTime(sFile);
+// Jim's request of 24 August 2026: the current directory used to follow
+// only SAVES, so opening a file to read it left the next Open dialog
+// pointing at wherever the last save happened, and reaching a sibling
+// file meant navigating the whole way again. Every load now brings the
+// current directory along, so opening a file makes its folder the
+// starting point for the next open.
+try {
+if (sFile != null && sFile.IndexOf(@":\") > 0) Directory.SetCurrentDirectory(Path.GetDirectoryName(sFile));
+}
+catch (Exception) {}
 try {
 if (!bLiteral && Path.GetExtension(sFile).ToLower() == ".rtf") this.RTB.LoadFile(sFile, RichTextBoxStreamType.RichText);
 //else this.RTB.LoadFile(sFile, RichTextBoxStreamType.UnicodePlainText);
@@ -5063,8 +5078,33 @@ string sModel = App.ReadOption("OllamaModel", "llama3.2");
 AddMessage("Asking " + sModel);
 string sPrompt = sInstruction;
 if (sContext.Trim().Length > 0) sPrompt += "\n\n" + sContext;
-string sAnswer = askOllama(sPrompt, sModel);
+// A local model can think for minutes on a long document, and a silent
+// wait is indistinguishable from a hang. The request runs on a worker
+// thread while this loop keeps the interface alive and speaks a
+// succinct count every fifteen seconds, directly to the running screen
+// reader, until the answer lands.
+string sAnswer = "";
+bool bAnswerDone = false;
+System.Threading.Thread threadAsk = new System.Threading.Thread(delegate() {
+try { sAnswer = askOllama(sPrompt, sModel); }
+catch (Exception) { sAnswer = ""; }
+bAnswerDone = true;
+});
+threadAsk.IsBackground = true;
+threadAsk.Start();
+int iWaited = 0;
+int iSpoken = 0;
+while (!bAnswerDone) {
+System.Threading.Thread.Sleep(100);
+Application.DoEvents();
+iWaited += 100;
+if (iWaited - iSpoken >= 15000) {
+iSpoken = iWaited;
+Util.Say((iWaited / 1000) + " seconds");
+}
+}
 if (sAnswer.Length == 0) return;
+Util.Say("Answer ready");
 // The answer opens in a plain new window that EdSharp titles itself,
 // NoName style -- the same pattern as List Different Items and Query
 // Common Items. Temporary output earns a name only when the person
@@ -9817,7 +9857,16 @@ else if (aResults.Length == 1) sResult = aResults[0];
 else {
 //sResult = Dialog.Pick("Import Format", aResults, true, 0);
 string sTitle = "Import " + sExt + " to ";
-sResult = Dialog.Pick(sTitle, aResults, aDisplay, true, 0);
+// The list opens on the target format used LAST time, when this
+// source can offer it -- open an epub as txt, and the next pdf's list
+// starts on txt too. When the remembered target is absent, the first
+// item is selected, as before.
+string sLastTarget = App.ReadData("ImportTarget", "");
+int iDefaultPick = 0;
+for (int iPick = 0; iPick < aDisplay.Length; iPick++) {
+if (aDisplay[iPick] == sLastTarget) { iDefaultPick = iPick; break; }
+}
+sResult = Dialog.Pick(sTitle, aResults, aDisplay, true, iDefaultPick);
 //Dialog.Show(sResult);
 if (sResult.Length == 0) return "";
 
@@ -9826,6 +9875,8 @@ string sTempExt = Util.RegExpReplaceCase(sResult, @"^\w+2", "");
 //Dialog.Show(s, sResult);
 if (sTempExt != sResult) sTargetExt = sTempExt;
 else sResult = sExt;
+// Remember the chosen target so the next import's list starts there.
+if (sTargetExt != null && sTargetExt.Length > 0) App.WriteData("ImportTarget", sTargetExt);
 string sCommand = Ini.ReadValue(App.IniFile, "Import", sResult, "");
 if (sCommand.Length > 0) {
 // Dialog.Show(sTargetExt, "target extension");
@@ -9845,7 +9896,7 @@ sTarget = s;
 // conversion has, the fewer ways it can fail. The [Import] commands
 // for a Markdown target therefore call any2htm.cmd, and this flag
 // finishes the second leg here.
-bool bFinishMarkdownInBinary = (sTargetExt == "md" && sCommand.IndexOf("any2htm.cmd", StringComparison.OrdinalIgnoreCase) >= 0);
+bool bFinishMarkdownInBinary = ((sTargetExt == "md" || sTargetExt == "txt") && sCommand.IndexOf("any2htm.cmd", StringComparison.OrdinalIgnoreCase) >= 0);
 if (bFinishMarkdownInBinary) sTarget = Path.ChangeExtension(sTarget, ".htm");
 sCommand = Util.ExpandCommandLine(sCommand, sSource, sTarget);
 // Dialog.Show(sTarget, "target file");
@@ -9870,13 +9921,18 @@ iLoop--;
 */
 }
 if (bFinishMarkdownInBinary && File.Exists(sTarget)) {
-// Second leg, in the binary: HTML to Markdown with ReverseMarkdown.
+// Second leg, in the binary: HTML to Markdown with ReverseMarkdown,
+// and for a plain-text target, on to text -- the same conversions the
+// editor's own commands use, with no second outside process. This
+// covers pdf2txt and doc2txt too, which used to run a separate
+// any2txt script with its own copy of the quoting defect.
 string sHtml = Util.File2String(sTarget);
-string sMarkdown = Util.Html2Markdown(sHtml);
+string sConverted = Util.Html2Markdown(sHtml);
+if (sTargetExt == "txt") sConverted = Util.Markdown2Text(sConverted);
 try { File.Delete(sTarget); } catch (Exception) {}
-sTarget = Path.ChangeExtension(sTarget, ".md");
-Util.String2File(sMarkdown, sTarget);
-Util.Log("converted to Markdown in the binary: " + sTarget);
+sTarget = Path.ChangeExtension(sTarget, "." + sTargetExt);
+Util.String2File(sConverted, sTarget);
+Util.Log("converted to " + sTargetExt + " in the binary: " + sTarget);
 }
 // Read the converted target. File2String detects its encoding (byte-order
 // mark first, then content detection) and decodes it correctly, so the old
