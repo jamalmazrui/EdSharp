@@ -51,7 +51,11 @@ param([string]$sMode = "")
 $bConsole = ($sMode -ieq "console")
 
 # ---- constants --------------------------------------------------------------
-$c_sHtmlAgilityPackVersion = "1.11.72"
+# ReverseMarkdown 4.7.1 is compiled against HtmlAgilityPack 1.12.1, and a
+# mismatched copy fails at runtime with a manifest-definition error the
+# moment any HTML-to-Markdown path runs (Scott's crash of 25 August 2026).
+# The pin therefore follows ReverseMarkdown's own reference.
+$c_sHtmlAgilityPackVersion = "1.12.1"
 # Markdig is pinned at the latest release (decision of 24 August 2026):
 # the 1.x line still targets netstandard2.0, which .NET Framework 4.8
 # loads through the netstandard facade, so the newest Markdig runs in the

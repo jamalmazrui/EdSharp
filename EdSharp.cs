@@ -890,7 +890,7 @@ public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReve
 public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles, menuQueryFont;
 public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
 public ToolStripMenuItem menuWindow, menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
-public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
+public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
 public StatusStrip statusBar;
 public ToolStripStatusLabel lblStatus;
 
@@ -1144,13 +1144,14 @@ menuHelpAbout = CreateMenuItem("&About ...", "Alt+F1", menuItem_Click, "frame si
 menuHelpDocumentation = CreateMenuItem("Documentation", "F1", menuItem_Click, "frame speak");
 menuHelpTutorial = CreateMenuItem("Tutorial", "Control+Shift+F1", menuItem_Click, "frame speak");
 menuHelpHistoryOfChanges = CreateMenuItem("History of Changes", "Shift+F1", menuItem_Click, "frame speak");
+menuHelpCopyLog = CreateMenuItem("Copy Log", "Control+F12", menuItem_Click, "frame speak");
 menuHelpKeyDescriber = CreateMenuItem("Key Describer", "Control+F1", menuItem_Click, "frame silent");
 menuHelpHotKeySummary = CreateMenuItem("Hotkey Summary", "Alt+Shift+H", menuItem_Click, "frame speak");
 menuHelpAlternateMenu= CreateMenuItem("Alternate Menu ...", "Alt+F10", menuItem_Click, "frame silent");
 menuHelpContextMenu= CreateMenuItem("Context Menu ...", "Shift+F10", menuItem_Click, "child silent");
 menuHelpSendToMenu= CreateMenuItem("SendTo Menu ...", "Control+F10", menuItem_Click, "child silent");
 menuHelpElevateVersion = CreateMenuItem("Elevate Version", "F11", menuItem_Click, "frame speak");
-menuHelp.DropDownItems.AddRange(new ToolStripItem[] {menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion});
+menuHelp.DropDownItems.AddRange(new ToolStripItem[] {menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion});
 //Dialog.Show("Help.", menuHelp.DropDownItems.Count);
 
 menuMain.Items.AddRange(new ToolStripItem[] {menuFile, menuEdit, menuDelete, menuNavigate, menuQuery, menuMisc, menuWindow, menuHelp});
@@ -5111,6 +5112,7 @@ Util.Say("Answer ready");
 // decides to save it.
 child = new MdiChild(this);
 this.Child.RTB.Text = sAnswer.Replace("\r\n", "\n").Replace("\n", "\r\n");
+this.Child.RTB.Modified = false;
 this.Child.RTB.Index = 0;
 AddMessage("Done");
 }
@@ -6053,6 +6055,31 @@ Process.Start(sFile);
 if (menuItem == menuHelpHistoryOfChanges) {
 sFile = Path.Combine(App.ProgramDir, "History.txt");
 OpenOrActivateWindow(sFile, 1);
+}
+
+if (menuItem == menuHelpCopyLog) {
+// Put this session's run log path on the clipboard in BOTH formats at
+// once, the way HomerView and FileDir's Copy command do: a file drop
+// list, so Control+V in a new mail message attaches the log file
+// itself, and plain text, so any program that just reads clipboard
+// text gets the path. Both matter; a DataObject carries the two
+// formats together.
+if (App.LogFile == null || App.LogFile.Length == 0 || !File.Exists(App.LogFile)) {
+AddMessage("No log for this session!");
+return;
+}
+try {
+DataObject dataLog = new DataObject();
+System.Collections.Specialized.StringCollection colLogFiles = new System.Collections.Specialized.StringCollection();
+colLogFiles.Add(App.LogFile);
+dataLog.SetFileDropList(colLogFiles);
+dataLog.SetText(App.LogFile);
+Clipboard.SetDataObject(dataLog, true);
+AddMessage("Log path copied");
+}
+catch (Exception ex) {
+Dialog.Show("Copy Log", ex.Message);
+}
 }
 
 if (menuItem == menuHelpKeyDescriber) {
@@ -7480,7 +7507,12 @@ if (s.StartsWith(@"{\rtf") && s.EndsWith("}")) this.Child.RTB.Rtf = sText;
 else this.Child.RTB.Text = sText;
 this.Child.Text = Path.GetFileNameWithoutExtension(sFile) + "." + sTargetExt;
 this.Child.File = this.Child.Text;
-this.Child.RTB.Modified = false;
+// A converted document opens under a real base name in the title, so
+// closing it with Control+F4 must ask about saving -- the content came
+// from work the person asked for and has no disk home yet. Windows
+// titled NoName style stay quiet on close, since that pattern marks
+// temporary output whose saving is a deliberate act.
+this.Child.RTB.Modified = true;
 
 }
 // Try disabling for auto bookmark
@@ -9896,7 +9928,12 @@ sTarget = s;
 // conversion has, the fewer ways it can fail. The [Import] commands
 // for a Markdown target therefore call any2htm.cmd, and this flag
 // finishes the second leg here.
-bool bFinishMarkdownInBinary = ((sTargetExt == "md" || sTargetExt == "txt") && sCommand.IndexOf("any2htm.cmd", StringComparison.OrdinalIgnoreCase) >= 0);
+// Markdown is the one target no outside reader emits from Office and
+// PDF sources, so it alone takes two legs: 2htm to HTML, then the
+// binary's ReverseMarkdown. Plain text goes single-step through
+// 2htm's own -p mode in any2txt.cmd, per the conversion-path review
+// of 25 August 2026.
+bool bFinishMarkdownInBinary = (sTargetExt == "md" && sCommand.IndexOf("any2htm.cmd", StringComparison.OrdinalIgnoreCase) >= 0);
 if (bFinishMarkdownInBinary) sTarget = Path.ChangeExtension(sTarget, ".htm");
 sCommand = Util.ExpandCommandLine(sCommand, sSource, sTarget);
 // Dialog.Show(sTarget, "target file");
@@ -9928,7 +9965,6 @@ if (bFinishMarkdownInBinary && File.Exists(sTarget)) {
 // any2txt script with its own copy of the quoting defect.
 string sHtml = Util.File2String(sTarget);
 string sConverted = Util.Html2Markdown(sHtml);
-if (sTargetExt == "txt") sConverted = Util.Markdown2Text(sConverted);
 try { File.Delete(sTarget); } catch (Exception) {}
 sTarget = Path.ChangeExtension(sTarget, "." + sTargetExt);
 Util.String2File(sConverted, sTarget);
