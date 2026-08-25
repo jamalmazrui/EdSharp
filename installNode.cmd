@@ -4,6 +4,11 @@ rem update when present, install when absent, pause on failure so the
 rem message can be read. Tool output stays IN THIS WINDOW so progress
 rem is readable with a screen reader; the consolidated log records
 rem milestones and exit codes.
+rem 64-bit by rule: every winget call asks for the x64 build, and where a
+rem package offers a machine-wide install it is taken, so components land in
+rem the default Windows places -- Program Files, and the PATH every program
+rem inherits -- rather than in a per-user corner EdSharp would have to hunt
+rem for.
 setlocal
 set "logFile=%LOCALAPPDATA%\EdSharp\logs\EdSharp_setup.log"
 if not exist "%LOCALAPPDATA%\EdSharp\logs" mkdir "%LOCALAPPDATA%\EdSharp\logs" >nul 2>&1
@@ -17,14 +22,14 @@ where node >nul 2>&1
 if errorlevel 1 goto install_node
 echo Node.js LTS is already installed; checking for an update.
 echo [installNode.cmd] winget upgrade OpenJS.NodeJS.LTS >> "%logFile%"
-winget upgrade --id OpenJS.NodeJS.LTS -e --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
+winget upgrade --id OpenJS.NodeJS.LTS -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
 echo [installNode.cmd] winget upgrade OpenJS.NodeJS.LTS exit %errorlevel% >> "%logFile%"
 if errorlevel 1 (echo Node.js LTS is already current.) else (echo Node.js LTS updated.)
 goto after_node
 :install_node
 echo Installing Node.js LTS with winget; this can take a few minutes.
 echo [installNode.cmd] winget install OpenJS.NodeJS.LTS >> "%logFile%"
-winget install --id OpenJS.NodeJS.LTS -e --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
+winget install --id OpenJS.NodeJS.LTS -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
 echo [installNode.cmd] winget install OpenJS.NodeJS.LTS exit %errorlevel% >> "%logFile%"
 if errorlevel 1 goto fail_node
 goto after_node

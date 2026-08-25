@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Fruit Basket</title>
+<style>
+body { font-family: sans-serif; margin: 2em; max-width: 40em; }
+.row { margin-bottom: 1em; }
+label { display: block; margin-bottom: 0.25em; font-weight: bold; }
+input, select, button { font-size: 1em; padding: 0.3em; }
+input, select { width: 20em; }
+select { height: 10em; }
+#status { margin-top: 1em; }
+</style>
+</head>
+<body>
+<h1>Fruit Basket</h1>
+
+<div class="row">
+<label for="fruit">Fruit</label>
+<input type="text" id="fruit" autocomplete="off" />
+<button type="button" id="add" accesskey="a">Add</button>
+</div>
+
+<div class="row">
+<label for="basket">Basket</label>
+<select id="basket" size="8"></select>
+<button type="button" id="delete" accesskey="d">Delete</button>
+</div>
+
+<p id="status" role="status" aria-live="polite"></p>
+
+<script src="fruitBasket.js"></script>
+</body>
+</html>

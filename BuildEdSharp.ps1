@@ -71,6 +71,7 @@ $c_sNvdaClientUrl = "https://download.nvaccess.org/releases/stable/nvda_2026.1_c
 # EdSharp targets .NET Framework 4.8.
 $c_sReverseMarkdownVersion = "4.7.1"
 
+
 # The support sources; since the name-collision lesson they compile INTO
 # EdSharp.exe rather than into a separate EdSharp.dll.
 $c_lDllSources = @("Lbc.cs", "Say.cs", "Inix.cs", "KeyMap.cs", "Web.cs")
@@ -308,6 +309,27 @@ try {
 
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
   writeLog "TLS 1.2 enabled for downloads."
+
+  # ---- 2b. Source audit ----
+  # Checks the compiler cannot make: shortcut collisions, dialog buttons
+  # sharing an access key, compiler-table patterns that are not legal
+  # expressions, conversion entries pointing at scripts that are gone,
+  # brace balance, and which features still reach for Microsoft Office.
+  # Each of these has broken EdSharp at least once. A failure stops the
+  # build here, where it costs a second, rather than in a tester's hands.
+  $sAuditScript = Join-Path $sScriptDir "auditEdSharp.py"
+  if (Test-Path -LiteralPath $sAuditScript) {
+    $sPython = (Get-Command python -ErrorAction SilentlyContinue)
+    if ($sPython) {
+      writeLog "RUN (source audit): python auditEdSharp.py"
+      $lAuditOutput = & python $sAuditScript -pathRoot $sScriptDir 2>&1
+      foreach ($sLine in $lAuditOutput) { writeLog "  $sLine" }
+      if ($LASTEXITCODE -ne 0) { throw "The source audit failed; the lines above name each failing check." }
+      writeLog "Source audit passed."
+    } else {
+      writeLog "Python was not found, so the source audit was skipped."
+    }
+  }
 
   # ---- 3. NuGet dependencies ----
   # PRESENT is not the same as RIGHT. A stray wrong-version Markdig once sat

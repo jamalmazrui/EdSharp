@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Fruit Basket as a Web Component</title>
+<!-- No framework at all: the custom elements and shadow-free templates
+     that browsers ship with. Nothing is downloaded and nothing is
+     installed; this is the standards answer to the same problem the
+     frameworks solve. -->
+<style>
+body { font-family: sans-serif; margin: 2em; max-width: 40em; }
+.row { margin-bottom: 1em; }
+label { display: block; margin-bottom: 0.25em; font-weight: bold; }
+input, select, button { font-size: 1em; padding: 0.3em; }
+input, select { width: 20em; }
+select { height: 10em; }
+</style>
+</head>
+<body>
+<h1>Fruit Basket as a Web Component</h1>
+
+<fruit-basket></fruit-basket>
+
+<script>
+"use strict";
+
+// The fruit basket specification as a custom element, written in Camel
+// Type. Light DOM is used on purpose rather than a shadow root: labels
+// tied to fields with for and id work everywhere, and screen readers
+// meet ordinary controls with nothing between them and the page.
+
+class fruitBasketElement extends HTMLElement {
+    connectedCallback() {
+        this.innerHTML = [
+            "<div class=\"row\">",
+            "<label for=\"fruit\">Fruit</label>",
+            "<input id=\"fruit\" type=\"text\" autocomplete=\"off\" />",
+            "<button type=\"button\" id=\"add\">Add</button>",
+            "</div>",
+            "<div class=\"row\">",
+            "<label for=\"basket\">Basket</label>",
+            "<select id=\"basket\" size=\"8\"></select>",
+            "<button type=\"button\" id=\"delete\">Delete</button>",
+            "</div>",
+            "<p id=\"status\" role=\"status\" aria-live=\"polite\">The basket is empty.</p>"
+        ].join("\n");
+
+        this.basketSelect = this.querySelector("#basket");
+        this.fruitInput = this.querySelector("#fruit");
+        this.statusRegion = this.querySelector("#status");
+
+        this.querySelector("#add").addEventListener("click", this.addFruit.bind(this));
+        this.querySelector("#delete").addEventListener("click", this.deleteFruit.bind(this));
+        this.fruitInput.addEventListener("keydown", function (oEvent) {
+            if (oEvent.key === "Enter") { oEvent.preventDefault(); this.addFruit(); }
+        }.bind(this));
+        this.basketSelect.addEventListener("keydown", function (oEvent) {
+            if (oEvent.key === "Delete") { oEvent.preventDefault(); this.deleteFruit(); }
+        }.bind(this));
+
+        this.fruitInput.focus();
+    }
+
+    countBasket() {
+        var iCount = this.basketSelect.options.length;
+        if (iCount === 0) return "The basket is empty.";
+        if (iCount === 1) return "1 fruit in the basket.";
+        return iCount + " fruits in the basket.";
+    }
+
+    addFruit() {
+        var optionFruit, sFruit;
+        sFruit = this.fruitInput.value.trim();
+        if (sFruit === "") {
+            this.statusRegion.textContent = "No fruit to add.";
+            this.fruitInput.focus();
+            return;
+        }
+        optionFruit = document.createElement("option");
+        optionFruit.textContent = sFruit;
+        this.basketSelect.appendChild(optionFruit);
+        this.basketSelect.selectedIndex = this.basketSelect.options.length - 1;
+        this.fruitInput.value = "";
+        this.statusRegion.textContent = sFruit + " added. " + this.countBasket();
+        this.fruitInput.focus();
+    }
+
+    deleteFruit() {
+        var iFruit, sFruit;
+        iFruit = this.basketSelect.selectedIndex;
+        if (iFruit === -1) {
+            this.statusRegion.textContent = "No fruit to delete.";
+            this.basketSelect.focus();
+            return;
+        }
+        sFruit = this.basketSelect.options[iFruit].textContent;
+        this.basketSelect.remove(iFruit);
+        if (iFruit > this.basketSelect.options.length - 1) iFruit = this.basketSelect.options.length - 1;
+        if (iFruit >= 0) this.basketSelect.selectedIndex = iFruit;
+        this.statusRegion.textContent = sFruit + " deleted. " + this.countBasket();
+        this.basketSelect.focus();
+    }
+}
+
+// Custom element names must contain a hyphen; the class name follows
+// Camel Type.
+customElements.define("fruit-basket", fruitBasketElement);
+</script>
+</body>
+</html>

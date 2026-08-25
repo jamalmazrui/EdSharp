@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.30
-AppVerName=EdSharp 5.0.30
-VersionInfoVersion=5.0.30
+AppVersion=5.0.31
+AppVerName=EdSharp 5.0.31
+VersionInfoVersion=5.0.31
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -145,6 +145,7 @@ Source: "installPandoc.cmd";  DestDir: "{app}"; Flags: ignoreversion
 ; the copy kept in the source folder. skipifsourcedoesntexist protects a
 ; fresh clone that has not fetched them yet.
 Source: "installGitHub.cmd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "installPdfTools.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dropLatexJawsKeys.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dropLatexJawsKeys.py"; DestDir: "{app}"; Flags: ignoreversion
 Source: "installNode.cmd"; DestDir: "{app}"; Flags: ignoreversion
@@ -187,6 +188,7 @@ Source: "lgpl.txt";           DestDir: "{app}"; Flags: ignoreversion skipifsourc
 ; machine instead, so the installer stays small enough for GitHub.
 Source: "Snippets\*"; DestDir: "{app}\Snippets"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
 Source: "Convert\*";  DestDir: "{app}\Convert";  Excludes: "pandoc.exe,*.sln,*.vcproj,*.vcxproj,*.vcxproj.filters,*.suo,*.user,*.c,*.asm,*.cs,*.obj,*.zip,temp.htm,temp.txt"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
+Source: "Samples\*"; DestDir: "{app}\Samples"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
 
 [Dirs]
 Name: "{userappdata}\EdSharp";
@@ -283,6 +285,12 @@ Filename: "{cmd}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked
 
 Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installPdfTools.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "Install the free document tools: rich PDF conversion and the thesaurus, in place of Microsoft Office (about 55 MB; needs Python)"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked
+
+Filename: "{cmd}"; \
   Parameters: "/c """"{app}\installOllama.cmd""""";  \
   WorkingDir: "{app}"; \
   Description: "{code:descOllama}"; \
@@ -331,6 +339,9 @@ var
   iResult: integer;
 begin
   sTempFile := ExpandConstant('{tmp}\wingetProbe.txt');
+  // The probes run 64-bit like everything else here: the installer itself is
+  // marked x64, so {cmd} is the 64-bit shell and winget reports the machine's
+  // real 64-bit packages rather than a WOW64 view.
   result := Exec(ExpandConstant('{cmd}'), '/c ' + sCommand + ' > "' + sTempFile + '" 2>&1', '', SW_HIDE, ewWaitUntilTerminated, iResult);
   if result then
     result := LoadStringsFromFile(sTempFile, lsLines);

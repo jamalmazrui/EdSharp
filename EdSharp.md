@@ -178,6 +178,8 @@ Press Alt+S to save all or selected text to a file that may be conveniently past
 
 Press Alt+V to pick one of the available snippets and paste it into the current document.  This command lists snippets in the Default snippet folder, as well as those in the folder associated with a Compiler being used.  This lets you have a set of snippets that are available regardless of the programming language in use.  
 
+A snippet collection grows over the years, so each row in the list says where its snippet came from: a name alone means the Default folder, a name followed by a language in parentheses means that language's folder, and a name followed by "shipped" means a snippet that came with EdSharp rather than one you saved. The name still leads each row, so typing part of a name finds it exactly as before. Snippets are divided by compiler on purpose, which is what keeps a large collection manageable: save a snippet while a compiler is chosen and it belongs to that language; save it with no compiler chosen and it is available everywhere.
+
 Use the View Snippet command, Alt+Shift+V, to load a snippet file into EdSharp for viewing or editing rather than execution.  You can also manage snippet files with the Explorer Folder command, Alt+Backslash, which lets you open Windows Explorer in the subfolder containing snippet files.
 
 EdSharp processes a snippet with a .js extension as JScript .NET code to be evaluated.  Such a file can do almost anything in EdSharp, as explained in the section about EdSharp's scripting capability.  For example, the "ul from selected.js" file generates an HTML unordered list from selected lines of text.
@@ -311,13 +313,45 @@ To go to the first character of the current line after any indentation, press Al
 
 Use the Infer Indent command, Alt+RightBracket, to hear what indent unit the current document seems to be using.  EdSharp looks at the first line that starts with a space or tab character.  If this key is pressed again without moving the cursor, that sequence of space or tab characters is configured as EdSharp's IndentUnit setting.  This makes it easy to use the same indentation style as a file you have opened.
 
+### Mailing a Document
+
+Two commands send the open document by mail, and neither needs Microsoft Word. Mail Body opens a new message in whatever mail program this computer uses, with the document as the message text and its name as the subject; a document too long for a mail link is offered as an attachment instead, since a truncated message helps nobody. Mail Attach writes the document to a temporary file, opens a new message, and also puts the file on the clipboard as a file, so pressing Control+V in the message attaches it even with mail programs that ignore attachments on a link. If you prefer the old behavior and have Word, set the Mailer option to Word.
+
+### Thesaurus
+
+Press Shift+F7 on a word, or with a word selected, to see synonyms. EdSharp uses WordNet, a free lexical database, so Microsoft Word is not needed; the same installPdfTools.cmd that installs the PDF reader installs the thesaurus.
+
+The list is grouped by meaning, which is what makes a thesaurus worth having: each entry reads as the word, its part of speech, and a short definition of the sense it belongs to, so choosing a synonym for light as in weight never offers you words about illumination. Pick an entry and choose Replace to put it in the document, keeping your original capitalization, or Copy to put it on the clipboard. If you prefer the Microsoft Word thesaurus and have Word, set the Thesaurus option to Word with Configuration Options, Alt+Shift+C.
+
+### Sample Programs
+
+Press Control+Shift+F2, Sample Programs, for a list of them, or find them in the Samples folder of the EdSharp program directory. The list is built from the folder itself, so each row reads as the file's name, the folder it sits in, and a short description taken from the program's own first line; choosing Open reads a program into EdSharp, where Control+F5 compiles or runs it, while a web page opens in your browser, and choosing Folder shows the file in Windows Explorer. The Samples folder holds the fruit basket program written three ways: in C# with Windows Forms, in standard HTML and JavaScript, and in Python with wxPython. The fruit basket is a small exercise from a listserv project of blind programmers, just large enough to show how a language handles the things that decide whether a program is pleasant with a screen reader: labels tied to fields, a real list control, a default button, keyboard access to every action, and messages that arrive where you are.
+
+A Web folder inside it holds browser versions as well: React, Vue, and a framework-free custom element, each needing nothing installed, with a small Node script that serves them and opens your browser. All of them obey the same rules and are written in Camel Type, so reading one after another shows what changes between languages and frameworks and what does not. Open any of them in EdSharp and press Control+F5: the C# one compiles with the compiler built into Windows, and the Python one runs if wxPython is installed. The folder's ReadMe explains each.
+
+### Converting PDF Files
+
+EdSharp converts a PDF to Markdown, HTML, a Word document, or plain text with its structure intact: headings stay headings, lists stay lists, tables stay tables, and bold and italic survive. This matters more with a screen reader than it does on paper, because headings and lists are how you move through a document.
+
+The work is done by a free PDF reader that EdSharp can install for you. Tick the PDF box on the last page of the installer, or run installPdfTools.cmd in the EdSharp program folder at any time; it needs Python, which the same installer offers. Nothing here needs Microsoft Word, and nothing costs anything.
+
+Every PDF conversion follows one path. The reader turns the PDF into rich Markdown, and EdSharp finishes from there: Markdown as it is, HTML in the binary, plain text in the binary, or a Word document with Pandoc. If the reader is missing, the conversion stops with a message telling you which script to run. If a PDF is a scan of images rather than text, no converter can help; that needs optical character recognition first.
+
+### Spell Check
+
+Press F7 to check spelling. EdSharp uses the spell checker built into Windows, so nothing extra is installed and no Microsoft Word is needed; words you have taught Windows in other programs are already known here. If text is selected, only that text is checked; otherwise the whole document is.
+
+The check walks the document the way Compile walks errors: the first misspelling in the text comes first, then the next, in the order they appear. At each stop EdSharp selects the word in the document, so you can read around it with your usual reading keys after the dialog closes, and opens a small dialog that says the word and spells it out, tells you how far along you are, and shows the sentence it sits in. The first control is a box holding the best suggestion. Press Down and Up to walk the other suggestions, or type your own correction. Then choose a button: Replace puts the correction in and moves on, and is the default, so pressing Enter accepts the top suggestion; Skip leaves the word alone; Add to Dictionary teaches Windows the word, for every program on the computer; Cancel stops the pass and leaves the rest of the document untouched. Each button has its own letter, so Alt with R, S, A, or C chooses one directly. At the end EdSharp says how many words were changed, skipped, and added.
+
+Two settings shape the check. SpellLanguage names the language, "en-US" unless you change it. SpellChecker chooses the checker: "Windows" by default, or "Word" to use the Microsoft Word dialog as older versions of EdSharp did, which needs Word installed.
+
 ### Chat with AI
 
 Press F12 to talk with an AI model running on your own computer. Whatever is selected, or the whole document when nothing is selected, is sent along with the instruction you type, and the answer opens in a plain new window, titled by EdSharp like any unnamed document. The original window is never changed, and the answer arrives as an ordinary document: read it with your usual keys, save it, or convert it. This one command covers both conversation, by asking a question in an empty document, and transformation, by selecting text and saying what to do with it, such as summarize this, translate this to Spanish, or add docstrings to these functions. Everything runs locally through Ollama: your text never leaves the machine, there is no account and no charge, and one Ollama installation is shared by every application that uses it. The last page of EdSharp's installer offers Ollama and a starter chat model as a checkbox; the OllamaModel setting picks a different model whenever you like.
 
 ### Compilers
 
-Press Control+Shift+F5 to pick the compiler for your work. The shipped set covers what Windows developers realistically use today: C#, Python, JavaScript through Node.js, PowerShell, JAWS Script, VBScript, JScript .NET, and HTML Tidy for checking web pages, plus Default for plain editing. Each compiler is defined by a section named Compiler followed by its name in EdSharp.inix, with one clearly named key per setting: CompileCommand, JumpPosition, AbbreviateOutput, NavigatePart, QuotePrefix, ExtensionDefault, and GoToEnvironment. Values are kept exactly as written and may span multiple lines, so regular expressions are easy to read and edit. Every expression in the shipped set was checked against the tool's real message format, so Compile, Control+F5, jumps to the true error line and column. Older compilers that no longer earn a place, such as Perl, Ruby, and PowerBASIC, were retired from the shipped list; any of them can return as a private section, and old-style packed entries still work for compilers that have no section.
+Press Control+Shift+F5 to pick the compiler for your work. The shipped set covers what Windows developers realistically use today: C#, Python, JavaScript through Node.js, PowerShell, JAWS Script, VBScript, JScript .NET, and HTML Tidy for checking web pages, plus Default for plain editing. Each compiler is defined by a section named Compiler followed by its name in EdSharp.inix, with one clearly named key per setting: CompileCommand, JumpPosition, AbbreviateOutput, NavigatePart, QuotePrefix, ExtensionDefault, and GoToEnvironment. Values are kept exactly as written and may span multiple lines, so regular expressions are easy to read and edit. Every expression in the shipped set was checked against the tool's real message format, so Compile, Control+F5, jumps to the true error line and column. Two things make that practical to work with. Noise is removed before you hear anything, so the announcement starts with an error rather than with your own file path, which Python and most compilers repeat in every message. And when a tool reports several problems, EdSharp goes to the one earliest in the file, whatever order the tool printed them in, and begins speaking there: fix it, press Control+F5 again, and the next problem is waiting, so you work down the file from the top. The full output, including anything skipped, is always available with Review Output. Older compilers that no longer earn a place, such as Perl, Ruby, and PowerBASIC, were retired from the shipped list; any of them can return as a private section, and old-style packed entries still work for compilers that have no section.
 
 EdSharp aims to be the most friendly and productive editor for screen reader users writing Python. The pieces working together: the PyBrace command, Alt+Shift+LeftBracket, converts indented Python to a flat form in which structure is spoken text rather than counted spaces, and PyDent, Alt+LeftBracket, converts back, rebuilding clean indentation and leaving a # end comment at the close of every block so the ends of functions, classes, and loops are audible while you read. Both directions now track strings and brackets character by character, so dictionary literals, docstrings, f-strings, and line continuations survive the round trip exactly. The Format Code command routes a .py file through this same engine to normalize its indentation. Compile, Control+F5, runs a Python file with the python on your path even before any compiler is picked, jumping to the traceback's line number; the installer offers the latest official Python for Windows as an optional checkbox. Indent Mode, block navigation, and Infer Indent complete the set.
 
@@ -383,6 +417,8 @@ EdSharp also adds some methods and properties in its inherited version of the Ri
 These classes will be further documented based on questions received.  At present, the best way to learn them is to examine code in sample .js snippet files and the main EdSharp.cs program file, which implement behavior you experience when running the application.  Although the .cs code is in the C# language, its syntax is similar to JScript, and the names of classes, methods, and properties are the same.
 
 ## Miscellaneous
+
+The developer folder holds auditEdSharp.cmd, which checks the things a compiler cannot: two commands claiming one shortcut, dialog buttons sharing an access key, patterns in the compiler table that are not legal expressions, conversion entries pointing at scripts that no longer exist, unbalanced braces, and which features still reach for Microsoft Office. The build runs it automatically and stops if a check fails.
 
 EdSharp writes a log for each session, named EdSharp followed by a time stamp, in the logs folder under your local application data, beside the setup log. It records the version, the environment, and every outside command EdSharp runs with its exit code, so a failed conversion or compile can be diagnosed from the log rather than guessed at. The newest thirty session logs are kept. Press Control+F12, Copy Log, to put the current log's path on the clipboard as both a file and text, ready to paste as a mail attachment.
 Extra speech messages may be toggled off -- or reactivated -- with Control+Shift+X.  When off, such messages are redirected to a text file in the EdSharp data directory called Speech.log, which may be examined in an editing window with Alt+Shift+X.  This file is initialized when EdSharp starts, and the Extra Speech setting is remembered from the previous session.
@@ -541,6 +577,7 @@ About=Alt+F1, Display version and release date
 Tutorial=Control+Shift+F1, Open the step-by-step tutorial
 Hotkey Summary=Alt+Shift+H, Show the hotkeys summarized and sorted in different ways
 History of Changes=Shift+F1, Display list of fixes and improvements
+Sample Programs ...=Control+Shift+F2, List the sample programs that ship with EdSharp and open one, in EdSharp for a program or in the browser for a web page
 Copy Log=Control+F12, Copy the full path of this session's run log to the clipboard in two formats at once: as a file, so pasting into a new mail message attaches the log itself, and as plain text, for programs that read clipboard text; handy when sending the log to the developer
 Key Describer=Control+F1, Toggle a mode in which pressing a key describes its action
 Alternate Menu=Alt+F10, Present all commands in a single, alphabetized list
@@ -660,7 +697,7 @@ Go to Folder=Control+0, Go to folder containing recent or favorite files
 Go to Special Folder=Control+Shift+0, Go to special folder of Windows
 Go to Environment=Control+Shift+G, Go to interactive environment of current compiler
 
-Spell Check=F7, Spell check all or selected text
+Spell Check=F7, Check spelling with the checker built into Windows, walking the document one misspelling at a time in the order they appear; each stop selects the word in the document and opens a small dialog that names and spells the word, shows the sentence around it, and offers an editable box of suggestions with Replace, Skip, Add to Dictionary, and Cancel; no Microsoft Word needed
 Thesaurus=Shift+F7, Look up synonyms for word at cursor
 
 Say Path=Alt+P, Say full path of current file

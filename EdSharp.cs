@@ -890,7 +890,7 @@ public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReve
 public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles, menuQueryFont;
 public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
 public ToolStripMenuItem menuWindow, menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
-public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
+public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
 public StatusStrip statusBar;
 public ToolStripStatusLabel lblStatus;
 
@@ -1145,6 +1145,7 @@ menuHelpAbout = CreateMenuItem("&About ...", "Alt+F1", menuItem_Click, "frame si
 menuHelpDocumentation = CreateMenuItem("Documentation", "F1", menuItem_Click, "frame speak");
 menuHelpTutorial = CreateMenuItem("Tutorial", "Control+Shift+F1", menuItem_Click, "frame speak");
 menuHelpHistoryOfChanges = CreateMenuItem("History of Changes", "Shift+F1", menuItem_Click, "frame speak");
+menuHelpSamplePrograms = CreateMenuItem("Sample Programs ...", "Control+Shift+F2", menuItem_Click, "frame speak");
 menuHelpCopyLog = CreateMenuItem("Copy Log", "Control+F12", menuItem_Click, "frame speak");
 menuHelpKeyDescriber = CreateMenuItem("Key Describer", "Control+F1", menuItem_Click, "frame silent");
 menuHelpHotKeySummary = CreateMenuItem("Hotkey Summary", "Alt+Shift+H", menuItem_Click, "frame speak");
@@ -1152,7 +1153,7 @@ menuHelpAlternateMenu= CreateMenuItem("Alternate Menu ...", "Alt+F10", menuItem_
 menuHelpContextMenu= CreateMenuItem("Context Menu ...", "Shift+F10", menuItem_Click, "child silent");
 menuHelpSendToMenu= CreateMenuItem("SendTo Menu ...", "Control+F10", menuItem_Click, "child silent");
 menuHelpElevateVersion = CreateMenuItem("Elevate Version", "F11", menuItem_Click, "frame speak");
-menuHelp.DropDownItems.AddRange(new ToolStripItem[] {menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion});
+menuHelp.DropDownItems.AddRange(new ToolStripItem[] {menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion});
 //Dialog.Show("Help.", menuHelp.DropDownItems.Count);
 
 menuMain.Items.AddRange(new ToolStripItem[] {menuFile, menuEdit, menuDelete, menuNavigate, menuQuery, menuMisc, menuWindow, menuHelp});
@@ -1607,6 +1608,57 @@ sFont += ", Color=" + sColor;
 return sFont;
 } // GetFontText method
 
+// Walk the Samples folder and its subfolders, building one row per
+// sample: the file's name, its folder when it is in one, and a short
+// description. Folders are visited in name order and files within them
+// likewise, so the list reads the same way every time.
+void collectSamples(string sDir, string sPrefix, List<object> lPaths, List<string> lDisplay) {
+string[] aFiles = Directory.GetFiles(sDir);
+Array.Sort(aFiles);
+foreach (string sFile in aFiles) {
+string sName = Path.GetFileName(sFile);
+if (sName.ToLower() == "readme.md") continue;
+string sWhat = describeSample(sFile);
+string sRow = (sPrefix.Length > 0) ? sPrefix + ": " + sName : sName;
+if (sWhat.Length > 0) sRow += " -- " + sWhat;
+lPaths.Add(sFile);
+lDisplay.Add(sRow);
+}
+string[] aDirs = Directory.GetDirectories(sDir);
+Array.Sort(aDirs);
+foreach (string sSubDir in aDirs) collectSamples(sSubDir, Path.GetFileName(sSubDir), lPaths, lDisplay);
+} // collectSamples method
+
+// A sample's first comment line, cleaned of its comment marks: the
+// programs already explain themselves on their first line, so the list
+// takes the description from the sample rather than from a table
+// someone must remember to update.
+string describeSample(string sFile) {
+try {
+foreach (string sLine in File.ReadLines(sFile)) {
+string sTrim = sLine.Trim();
+if (sTrim.Length == 0) continue;
+if (sTrim.StartsWith("<!DOCTYPE") || sTrim.StartsWith("<html") || sTrim.StartsWith("<head") || sTrim.StartsWith("<meta")) continue;
+if (sTrim.StartsWith("<title>")) return sTrim.Replace("<title>", "").Replace("</title>", "").Trim();
+string sText = sTrim;
+if (sText.StartsWith("//")) sText = sText.Substring(2);
+else if (sText.StartsWith("rem ")) sText = sText.Substring(4);
+else if (sText.StartsWith("\"\"\"")) sText = sText.Substring(3);
+else if (sText.StartsWith("#")) sText = sText.TrimStart('#');
+else continue;
+sText = sText.Trim();
+// "fruitBasket.py -- the fruit basket program in Python": the part
+// after the dashes is the description.
+int iDash = sText.IndexOf(" -- ");
+if (iDash >= 0) sText = sText.Substring(iDash + 4);
+if (sText.Length > 80) sText = sText.Substring(0, 77) + "...";
+return sText.TrimEnd('.');
+}
+}
+catch (Exception) {}
+return "";
+} // describeSample method
+
 public string[] GetSnippetFiles(out string[] aValues) {
 string sBaseDir = @"Snippets\" + App.ReadData("Compiler", "Default");
 string sDir = Path.Combine(App.DataDir, sBaseDir);
@@ -1640,8 +1692,22 @@ listResults.Add(s);
 }
 aResults = listResults.ToArray();
 
+// Each row reads as the snippet's name and, when it did not come from
+// the shared Default folder, the folder it did come from: "Mermaid
+// Flowchart.txt (Python)" or "... (shipped)". A snippet collection
+// grows over years, and a list that says where each entry lives is far
+// easier to keep in order than a flat one -- while the name itself
+// still leads, so typing to match a snippet works exactly as before.
 aValues = new string[aResults.Length];
-for (int i = 0; i < aResults.Length; i++) aValues[i] = Path.GetFileName(aResults[i]);
+string sProgramSnippets = Path.Combine(App.ProgramDir, "Snippets").ToLower();
+for (int i = 0; i < aResults.Length; i++) {
+string sName = Path.GetFileName(aResults[i]);
+string sFolder = Path.GetFileName(Path.GetDirectoryName(aResults[i]));
+bool bShipped = aResults[i].ToLower().StartsWith(sProgramSnippets);
+if (bShipped) aValues[i] = sName + " (shipped)";
+else if (String.Compare(sFolder, "Default", true) != 0) aValues[i] = sName + " (" + sFolder + ")";
+else aValues[i] = sName;
+}
 return aResults;
 } // GetSnippetFiles method
 
@@ -5537,6 +5603,7 @@ if (!Util.ActivateProcess(sProcess)) Util.Run(sCommand);
 if (menuItem == menuMiscCompile|| menuItem == menuMiscPromptCommand) {
 string sCommand;
 string sDefaultJump = "";
+string sDefaultAbbreviate = "";
 if (menuItem == menuMiscCompile) {
 sCommand = App.ReadOption("CompileCommand", "");
 // Built-in default: with no compiler configured, compile a C# (.cs) file with
@@ -5546,8 +5613,12 @@ sCommand = App.ReadOption("CompileCommand", "");
 if (sCommand.Trim().Length == 0 && child.File.ToLower().EndsWith(".cs")) {
 string sCsc = Util.FindCscPath();
 if (sCsc.Length > 0) {
-sCommand = "\"" + sCsc + "\" /nologo \"%SourceLong%\" 2>&1";
+// 64-bit output by default, matching the compiler chosen above and the
+// standing preference for 64-bit everywhere. The compiler names the
+// source file in every message, so that prefix is abbreviated away.
+sCommand = "\"" + sCsc + "\" /nologo /platform:x64 \"%SourceLong%\" 2>&1";
 sDefaultJump = @"\(\d+,\d+\)";
+sDefaultAbbreviate = @"^.*?\.cs";
 }
 }
 // The same courtesy for Python: with no compiler configured, a .py or
@@ -5558,6 +5629,24 @@ sDefaultJump = @"\(\d+,\d+\)";
 if (sCommand.Trim().Length == 0 && (child.File.ToLower().EndsWith(".py") || child.File.ToLower().EndsWith(".pyw"))) {
 sCommand = "python \"%SourceLong%\" 2>&1";
 sDefaultJump = @"line \d+";
+// Python names the file in every traceback frame -- File "C:\long\path
+// \script.py", line 4 -- and hearing your own path read out before the
+// error wastes the moment that matters. Drop the file prefix and the
+// traceback banner, so speech starts at "line 4" and reaches the
+// message itself immediately.
+sDefaultAbbreviate = @"(^[ \t]*File "".*?"", )|(^Traceback \(most recent call last\):[ \t]*\r?\n)";
+}
+// And for JavaScript: with no compiler configured, a .js, .mjs, or .cjs
+// file runs with the node on PATH (the installer's optional Node task
+// installs the 64-bit LTS build there). Node reports a syntax error as
+// path:line above the source echo, and a runtime error in stack frames
+// as path:line:column, so the jump pattern reads both; frames inside
+// Node's own internals are abbreviated away so they can never win the
+// earliest-error comparison.
+if (sCommand.Trim().Length == 0 && (child.File.ToLower().EndsWith(".js") || child.File.ToLower().EndsWith(".mjs") || child.File.ToLower().EndsWith(".cjs"))) {
+sCommand = "node \"%SourceLong%\" 2>&1";
+sDefaultJump = @":\d+(:\d+)?";
+sDefaultAbbreviate = @"(^[ \t]*at .*node:(internal|diagnostics_channel).*$)|(file:///.*/)|(^[A-Za-z]:\\.*\\)";
 }
 if (sCommand.Trim().Length == 0) {
 AddMessage("No compiler configured. Press Control+Shift+F5 to pick one.");
@@ -5571,13 +5660,22 @@ if (sCommand.Length == 0) return;
 App.WriteOption("PromptCommand", sCommand);
 }
 
+// Compiling means compiling what you wrote, so the document goes to
+// disk first: no separate Control+S, and never a stale file compiled
+// while the fix sits unsaved in the window. A document with no disk
+// home yet is offered the Save As dialog rather than refused outright.
 sFile = child.File;
 if (!sFile.Contains(@"\")) sFile = "";
-if (sCommand.IndexOf("%Source") >=0 && sFile.Length == 0) {
-AddMessage("No disk file is open for this command!");
-return;
+if (sCommand.IndexOf("%Source") >= 0 && sFile.Length == 0) {
+AddMessage("Save first");
+string sNewFile = Dialog.SaveFile(child.Text, "");
+if (sNewFile.Length == 0) return;
+child.File = sNewFile;
+child.Text = Path.GetFileName(sNewFile);
+child.SaveTextOrRtfFile(sNewFile);
+sFile = sNewFile;
 }
-else if (sFile.Length > 0) child.SaveTextOrRtfFile(sFile);
+else if (sFile.Length > 0 && (child.RTB.Modified || !File.Exists(sFile))) child.SaveTextOrRtfFile(sFile);
 
 string sDir = Directory.GetCurrentDirectory();
 if (sCommand.IndexOf("%SourceDir%") >=0) Directory.SetCurrentDirectory(Path.GetDirectoryName(sFile));
@@ -5614,38 +5712,70 @@ Dialog.Show(sOutput);
 if (sDir != Directory.GetCurrentDirectory()) Directory.SetCurrentDirectory(sDir);
 
 if (menuItem == menuMiscCompile) {
+// Speech first, then the cursor. The tool's noise -- your own file path
+// in every Python traceback frame, the compiler's echo of the source
+// file name, Node's frames inside its own internals -- is removed
+// before anything else, so what you hear begins with an error rather
+// than with your own directory read aloud.
+string sAbbreviateOutput = App.ReadOption("AbbreviateOutput", "\r");
+if (sDefaultAbbreviate.Length > 0 && (sAbbreviateOutput == "\\r" || sAbbreviateOutput.Trim().Length == 0)) sAbbreviateOutput = sDefaultAbbreviate;
+sOutput = Util.RegExpReplaceEquiv(sOutput, sAbbreviateOutput, "\n").Trim();
+
+// Then the EARLIEST error in the file, not the first one the tool
+// happened to print. Compilers report in their own order -- C# by
+// severity and file, PowerShell innermost first, Node with its stack
+// above the location -- and a person working down a file wants the
+// topmost problem each time, so every position in the output is read
+// and the smallest line and column wins. Fix it, compile again, and the
+// next one is waiting: the file is worked through from the top.
 string sJumpPosition = App.ReadOption("JumpPosition", "");
 if (sJumpPosition.Trim().Length == 0) sJumpPosition = sDefaultJump;
-object[] a = Util.RegExpContainsCase(sOutput, sJumpPosition);
-iIndex = (int) a[0];
-if (iIndex >= 0) {
-sText = (string) a[1];
-a = Util.RegExpContainsCase(sText, @"\d+");
-iIndex = (int) a[0];
-if (iIndex >= 0) {
-sLine = (string) a[1];
-iIndex += sLine.Length;
-sText = sText.Substring(iIndex);
-a = Util.RegExpContainsCase(sText, @"\d+");
-iIndex = (int) a[0];
-string sColumn;
-if (iIndex == -1) sColumn = "1";
-else sColumn = (string) a[1];
-string s = sLine + ", " + sColumn;
-// Dialog.Show("s", s);
-App.WriteData("Line", s);
-
+int iEarliestLine = 0, iEarliestColumn = 0, iEarliestAt = -1;
+if (sJumpPosition.Trim().Length > 0) {
 try {
-rtb.Line = Int32.Parse(sLine);
-rtb.Column = Int32.Parse(sColumn);
+foreach (Match match in Regex.Matches(sOutput, sJumpPosition)) {
+MatchCollection matchNumbers = Regex.Matches(match.Value, @"\d+");
+if (matchNumbers.Count == 0) continue;
+int iThisLine = 0, iThisColumn = 1;
+if (!Int32.TryParse(matchNumbers[0].Value, out iThisLine)) continue;
+if (matchNumbers.Count > 1) Int32.TryParse(matchNumbers[1].Value, out iThisColumn);
+if (iThisLine < 1) continue;
+if (iEarliestLine == 0 || iThisLine < iEarliestLine || (iThisLine == iEarliestLine && iThisColumn < iEarliestColumn)) {
+iEarliestLine = iThisLine;
+iEarliestColumn = iThisColumn;
+iEarliestAt = match.Index;
+}
+}
+}
+catch (Exception) {}
+}
+
+if (iEarliestLine > 0) {
+// A tool that gives no column marks the spot with carets under an echo
+// of the source line instead; read that when the column is still 1.
+if (iEarliestColumn <= 1) {
+string sDocLine = "";
+try { if (iEarliestLine >= 1 && iEarliestLine <= rtb.Lines.Length) sDocLine = rtb.GetRowText(iEarliestLine - 1); }
+catch (Exception) {}
+int iCaretColumn = Util.CaretMarkerColumn(sOutput, sDocLine);
+if (iCaretColumn > 1) iEarliestColumn = iCaretColumn;
+}
+App.WriteData("Line", iEarliestLine + ", " + iEarliestColumn);
+try {
+rtb.Line = iEarliestLine;
+rtb.Column = iEarliestColumn;
 }
 catch {}
+// Speak from the earliest error onward, so the first words are the
+// problem to fix. The lines above it stay in the output file, which
+// Review Output shows in full.
+if (iEarliestAt > 0) {
+int iLineStart = sOutput.LastIndexOf('\n', Math.Min(iEarliestAt, sOutput.Length - 1));
+if (iLineStart >= 0 && iLineStart + 1 < sOutput.Length) sOutput = sOutput.Substring(iLineStart + 1);
 }
 }
 
-string sAbbreviateOutput = App.ReadOption("AbbreviateOutput", "\r");
-sOutput = Util.RegExpReplaceEquiv(sOutput, sAbbreviateOutput, "\n").Trim();
-if (sOutput.Length == 0) sOutput = "Done";
+if (sOutput.Trim().Length == 0) sOutput = "Done";
 AddMessage(sOutput);
 }
 Util.String2File(sOutput, App.TempFile);
@@ -5918,7 +6048,7 @@ BurnToCD();
 if (menuItem == menuMiscWebDownload) {
 string sButton = "Web Page";
 if (App.Frame.Child != null) {
-sButton = Dialog.Choose("Choose Source of URLs", "", new string[] {"&Web Page", "&Current Document"}, 0);
+sButton = Dialog.Choose("Choose Source of URLs", "", new string[] {"&Web Page", "&Document"}, 0);
 if (sButton.Length == 0) return;
 } // if
 
@@ -6069,6 +6199,51 @@ Process.Start(sFile);
 if (menuItem == menuHelpHistoryOfChanges) {
 sFile = Path.Combine(App.ProgramDir, "History.txt");
 OpenOrActivateWindow(sFile, 1);
+}
+
+if (menuItem == menuHelpSamplePrograms) {
+// One menu item, one list. The samples live in a folder rather than in
+// menus, snippets or the compiler table, because a sample is something
+// you READ once in a while, not something you invoke while working:
+// putting them anywhere that grows -- the snippet list a person picks
+// from every day, or the menus themselves -- would make the tools you
+// use constantly noisier in order to shelve things you open rarely.
+//
+// The list is built from the folder, so adding a sample is a matter of
+// dropping a file in, with no code, no menu entry and no setting. Each
+// row reads as its file name followed by the first sentence of what it
+// is, taken from the ReadMe beside it when there is one, so the list
+// explains itself rather than demanding the ReadMe be opened first.
+string sSamplesDir = Path.Combine(App.ProgramDir, "Samples");
+if (!Directory.Exists(sSamplesDir)) {
+Dialog.Show("Sample Programs", "The Samples folder was not found at:\n" + sSamplesDir);
+return;
+}
+List<object> lPaths = new List<object>();
+List<string> lDisplay = new List<string>();
+collectSamples(sSamplesDir, "", lPaths, lDisplay);
+if (lPaths.Count == 0) {
+Dialog.Show("Sample Programs", "No samples were found in:\n" + sSamplesDir);
+return;
+}
+object[] aPicked = Dialog.PickAndChoose("Sample Programs", lPaths.ToArray(), lDisplay.ToArray(), new string[] {"&Open", "&Folder"}, false, 0);
+if (aPicked.Length == 0) return;
+string sPicked = aPicked[0].ToString();
+string sButton = ((string) aPicked[1]).Replace("&", "");
+if (sButton == "Folder") {
+try { Process.Start("explorer.exe", "/select,\"" + sPicked + "\""); }
+catch (Exception ex) { Dialog.Show("Sample Programs", ex.Message); }
+return;
+}
+// Open: a program or a document opens in EdSharp, where it can be read,
+// compiled and run; a web page opens in the browser, where it runs.
+string sExt = Path.GetExtension(sPicked).ToLower();
+if (sExt == ".htm" || sExt == ".html") {
+try { Process.Start(sPicked); AddMessage("Opened in the browser"); }
+catch (Exception ex) { Dialog.Show("Sample Programs", ex.Message); }
+return;
+}
+OpenOrActivateWindow(sPicked, 0);
 }
 
 if (menuItem == menuHelpCopyLog) {
@@ -7067,7 +7242,87 @@ rtb.Index = iIndex;
 Util.Say(rtb.RowText);
 } // CalculateDate method
 
+// Mail a document as the body of a message, or as an attachment, using
+// the mail program Windows already knows about -- no Microsoft Word.
+//
+// For the body, a mailto link carries the subject and text: every mail
+// program on Windows registers for mailto, including Outlook, Thunderbird
+// and the Mail app, so the message opens in whatever the person already
+// uses. Mail links have a practical length limit, so a long document is
+// offered as an attachment instead rather than arriving truncated.
+//
+// For an attachment, the document is written to a temporary file and the
+// Windows "mailto with attachment" path is used where the mail program
+// supports it; when it does not, EdSharp says so plainly and puts the
+// file on the clipboard in both formats, so one paste into a new message
+// attaches it -- the same dual-format trick Copy Log uses.
 public void Mail(bool bAttach) {
+if (App.ReadOption("Mailer", "Windows").Trim().ToLower() == "word") { MailWord(bAttach); return; }
+HomerRichTextBox rtb = this.Child.RTB;
+string sBody = rtb.Text;
+if (sBody.Trim().Length == 0) { AddMessage("No text!"); return; }
+string sSubject = Path.GetFileNameWithoutExtension(this.Child.Text);
+if (sSubject.Trim().Length == 0) sSubject = "Document";
+
+if (!bAttach) {
+// mailto carries about 2000 characters safely across mail programs.
+const int c_iBodyLimit = 1800;
+if (sBody.Length > c_iBodyLimit) {
+if (Dialog.Confirm("Mail", "This document is longer than a mail link can carry (" + Util.Pluralize(sBody.Length, "character") + ").\n\nSend it as an attachment instead?", "Y") != "Y") return;
+bAttach = true;
+}
+else {
+string sUrl = "mailto:?subject=" + Uri.EscapeDataString(sSubject) + "&body=" + Uri.EscapeDataString(Util.Convert2WinLineBreak(sBody));
+try {
+Process.Start(sUrl);
+AddMessage("Mail message opened");
+Util.Log("mailto opened, " + sBody.Length + " characters");
+}
+catch (Exception ex) {
+Dialog.Show("Mail", "No mail program answered.\n" + ex.Message);
+}
+return;
+}
+}
+
+// Attachment: write the document beside the temporary files EdSharp
+// already cleans up, then hand the file to the mail program.
+string sName = this.Child.Text;
+if (Path.GetExtension(sName).Length == 0) sName += ".txt";
+string sFile = Path.Combine(Path.GetTempPath(), sName);
+try {
+if (File.Exists(sFile)) File.Delete(sFile);
+Util.String2File(Util.Convert2WinLineBreak(sBody), sFile);
+App.TempFiles.Add(sFile);
+}
+catch (Exception ex) {
+Dialog.Show("Mail", "The attachment could not be written.\n" + ex.Message);
+return;
+}
+
+// Most mail programs accept an attachment on a mailto link; Outlook
+// does not, so the clipboard path below is the reliable answer there.
+bool bOpened = false;
+try {
+Process.Start("mailto:?subject=" + Uri.EscapeDataString(sSubject) + "&attach=" + Uri.EscapeDataString(sFile));
+bOpened = true;
+}
+catch (Exception) { bOpened = false; }
+try {
+DataObject dataFile = new DataObject();
+System.Collections.Specialized.StringCollection colFiles = new System.Collections.Specialized.StringCollection();
+colFiles.Add(sFile);
+dataFile.SetFileDropList(colFiles);
+dataFile.SetText(sFile);
+Clipboard.SetDataObject(dataFile, true);
+}
+catch (Exception) {}
+Util.Log("mail attachment prepared: " + sFile);
+if (bOpened) AddMessage("Mail message opened; the file is also on the clipboard");
+else Dialog.Show("Mail", "The document is saved as:\n" + sFile + "\n\nIt is on the clipboard as a file, so pressing Control+V in a new mail message attaches it.");
+} // Mail method
+
+public void MailWord(bool bAttach) {
 bool bCreate, bVisible, bSendMailAttach;
 int iDisplayAlerts;
 string sText, sFile, sDir;
@@ -7123,7 +7378,246 @@ App.Frame.Activate();
 App.Frame.Child.RTB.Select();
 } // MailBody method
 
+// ===== Spell check without Word ============================================
+// Windows has carried a spell checking service since Windows 8: the same
+// engine that underlines misspellings in built-in edit controls, with
+// the user's own added words. It is reached through COM, so no library
+// ships with EdSharp, nothing is downloaded, and a machine without
+// Microsoft Office spell checks exactly as well as one with it. The
+// interfaces are declared here rather than referenced from an assembly,
+// keeping EdSharp a single binary.
+
+[ComImport, Guid("B6FD0B71-E2BC-4653-8D05-F197E412770B"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface ISpellCheckerFactory {
+void _VtblGap1_1();
+int IsSupported([MarshalAs(UnmanagedType.LPWStr)] string languageTag, out bool value);
+void _VtblGap2_1();
+ISpellChecker CreateSpellChecker([MarshalAs(UnmanagedType.LPWStr)] string languageTag);
+} // ISpellCheckerFactory interface
+
+[ComImport, Guid("B6FD0B71-E2BC-4653-8D05-F197E412770A"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface ISpellChecker {
+void _VtblGap1_1();
+IEnumSpellingError Check([MarshalAs(UnmanagedType.LPWStr)] string text);
+[return: MarshalAs(UnmanagedType.Interface)] object Suggest([MarshalAs(UnmanagedType.LPWStr)] string word);
+void Add([MarshalAs(UnmanagedType.LPWStr)] string word);
+void Ignore([MarshalAs(UnmanagedType.LPWStr)] string word);
+void AutoCorrect([MarshalAs(UnmanagedType.LPWStr)] string from, [MarshalAs(UnmanagedType.LPWStr)] string to);
+void _VtblGap2_4();
+IEnumSpellingError ComprehensiveCheck([MarshalAs(UnmanagedType.LPWStr)] string text);
+} // ISpellChecker interface
+
+[ComImport, Guid("803E3BD4-2828-4410-8290-418D1D73C762"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface IEnumSpellingError {
+ISpellingError Next();
+} // IEnumSpellingError interface
+
+[ComImport, Guid("B7C82D61-FBE8-4B47-9B27-6C0D2E0DE0A3"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface ISpellingError {
+uint StartIndex { get; }
+uint Length { get; }
+uint CorrectiveAction { get; }
+[return: MarshalAs(UnmanagedType.LPWStr)] string Replacement { get; }
+} // ISpellingError interface
+
+[ComImport, Guid("7AB36653-1796-484B-BDFA-E74F1DB7C1DC")]
+class SpellCheckerFactoryClass {
+} // SpellCheckerFactoryClass
+
+// One misspelling found in the document: where it starts, how long it
+// is, the word itself, and what the system suggests instead.
+public class SpellingProblem {
+public int Start;
+public int Length;
+public string Word;
+public List<string> Suggestions;
+} // SpellingProblem class
+
+// Ask Windows to check a stretch of text. Returns the problems in
+// document order, each with its suggestions. Returns null when the
+// service is unavailable, so the caller can say so plainly.
+public List<SpellingProblem> findSpellingProblems(string sText, string sLanguage) {
+List<SpellingProblem> lsProblems = new List<SpellingProblem>();
+try {
+ISpellCheckerFactory factory = (ISpellCheckerFactory) new SpellCheckerFactoryClass();
+bool bSupported = false;
+try { factory.IsSupported(sLanguage, out bSupported); }
+catch (Exception) { bSupported = true; }
+if (!bSupported && sLanguage != "en-US") {
+sLanguage = "en-US";
+try { factory.IsSupported(sLanguage, out bSupported); } catch (Exception) {}
+}
+ISpellChecker checker = factory.CreateSpellChecker(sLanguage);
+IEnumSpellingError errors = checker.ComprehensiveCheck(sText);
+while (true) {
+ISpellingError error = null;
+try { error = errors.Next(); }
+catch (Exception) { break; }
+if (error == null) break;
+SpellingProblem problem = new SpellingProblem();
+problem.Start = (int) error.StartIndex;
+problem.Length = (int) error.Length;
+if (problem.Start < 0 || problem.Length <= 0 || problem.Start + problem.Length > sText.Length) continue;
+problem.Word = sText.Substring(problem.Start, problem.Length);
+problem.Suggestions = new List<string>();
+// CorrectiveAction 3 is "replace with this word" -- the system is
+// certain -- so that replacement leads the suggestion list.
+try {
+if (error.CorrectiveAction == 3) {
+string sReplacement = error.Replacement;
+if (!String.IsNullOrEmpty(sReplacement)) problem.Suggestions.Add(sReplacement);
+}
+}
+catch (Exception) {}
+try {
+System.Collections.IEnumerable enumSuggestions = checker.Suggest(problem.Word) as System.Collections.IEnumerable;
+if (enumSuggestions != null) {
+foreach (object oSuggestion in enumSuggestions) {
+string sSuggestion = (oSuggestion == null) ? "" : oSuggestion.ToString();
+if (sSuggestion.Length > 0 && !problem.Suggestions.Contains(sSuggestion)) problem.Suggestions.Add(sSuggestion);
+if (problem.Suggestions.Count >= 20) break;
+}
+}
+}
+catch (Exception) {}
+lsProblems.Add(problem);
+}
+return lsProblems;
+}
+catch (Exception ex) {
+Util.Log("spell check unavailable: " + ex.Message);
+return null;
+}
+} // findSpellingProblems method
+
+// Add a word to the user's Windows dictionary, so every program that
+// uses the system spell checker knows it from now on.
+public bool addWordToDictionary(string sWord, string sLanguage) {
+try {
+ISpellCheckerFactory factory = (ISpellCheckerFactory) new SpellCheckerFactoryClass();
+ISpellChecker checker = factory.CreateSpellChecker(sLanguage);
+checker.Add(sWord);
+return true;
+}
+catch (Exception ex) {
+Util.Log("could not add to dictionary: " + ex.Message);
+return false;
+}
+} // addWordToDictionary method
+
+// Walk the document's misspellings one at a time, the way Compile walks
+// errors: the earliest problem in the text first, the caret moved to it
+// and the word selected so the surrounding line reads with ordinary
+// reading keys, then a small dialog whose first control already holds
+// the answer.
+//
+// The shape follows what the screen readers do well. JAWS, NVDA, and
+// VoiceOver all handle a spell check best when the misspelled word is
+// SPOKEN FIRST and spelled out letter by letter, when the suggestions
+// are a real list the arrow keys walk rather than a graphic, and when
+// the choice needs no hunting for controls. So the dialog announces the
+// word, spells it, and gives its position in the pass; the first
+// control is an editable combo box holding the best suggestion, where
+// Down and Up walk the rest and typing corrects the word by hand; and
+// the buttons are few, plainly named, and ordered by how often they are
+// wanted -- Replace, Skip, Add to Dictionary, Cancel -- each with its
+// own access key (R, S, A, C) and Replace the default, so Enter accepts
+// the top suggestion and moves on. Escape
+// stops the pass and leaves the rest of the document alone.
 public void SpellCheck() {
+HomerRichTextBox rtb = this.Child.RTB;
+if (App.ReadOption("SpellChecker", "Windows").Trim().ToLower() == "word") { SpellCheckWord(); return; }
+
+int iStart;
+string sText;
+bool bWholeDocument = (rtb.SelectionLength == 0);
+if (bWholeDocument) { AddMessage("All"); iStart = 0; sText = rtb.Text; }
+else { AddMessage("Selected"); iStart = rtb.SelectionStart; sText = rtb.SelectedText; }
+if (sText.Trim().Length == 0) { AddMessage("No text!"); return; }
+
+string sLanguage = App.ReadOption("SpellLanguage", "en-US").Trim();
+if (sLanguage.Length == 0) sLanguage = "en-US";
+AddMessage("Checking");
+List<SpellingProblem> lsProblems = findSpellingProblems(sText, sLanguage);
+if (lsProblems == null) {
+Dialog.Show("Spell Check", "The Windows spell checker could not be started on this computer.\n\nIf Microsoft Word is installed, set the SpellChecker option to Word with Configuration Options, Alt+Shift+C, and press F7 again to use its checker instead.");
+return;
+}
+if (lsProblems.Count == 0) { AddMessage("No spelling problems"); return; }
+
+// Problems are visited in document order. Replacements are applied to
+// a working copy of the text and the positions of later problems are
+// shifted by however much each replacement changed the length, so a
+// long correction early in the file cannot misplace a later one.
+int iChanged = 0, iSkipped = 0, iAdded = 0;
+StringBuilder sbText = new StringBuilder(sText);
+int iDrift = 0;
+for (int iProblem = 0; iProblem < lsProblems.Count; iProblem++) {
+SpellingProblem problem = lsProblems[iProblem];
+int iWordStart = iStart + problem.Start + iDrift;
+try {
+rtb.Select(iWordStart, problem.Length);
+rtb.ScrollToCaret();
+}
+catch (Exception) {}
+
+string sContext = spellingContext(sbText.ToString(), problem.Start + iDrift, problem.Length);
+List<string> lsChoices = new List<string>(problem.Suggestions);
+if (lsChoices.Count == 0) lsChoices.Add(problem.Word);
+StringBuilder sbSpelled = new StringBuilder();
+foreach (char cLetter in problem.Word) { if (sbSpelled.Length > 0) sbSpelled.Append(' '); sbSpelled.Append(cLetter); }
+string sPrompt = "Not in dictionary: " + problem.Word + ", spelled " + sbSpelled.ToString() + ". Word " + (iProblem + 1) + " of " + lsProblems.Count;
+object[] aResult = Dialog.SpellChoice("Spell Check", sPrompt, sContext, lsChoices);
+string sButton = (string) aResult[0];
+string sReplacement = ((string) aResult[1]).Trim();
+
+if (sButton == "Cancel") { AddMessage("Stopped"); break; }
+if (sButton == "Skip") { iSkipped++; continue; }
+if (sButton == "Add to Dictionary") {
+if (addWordToDictionary(problem.Word, sLanguage)) iAdded++;
+else AddMessage("Could not add the word");
+continue;
+}
+// Replace, the default: anything else that comes back leaves the word
+// alone rather than guessing.
+if (sButton != "Replace" || sReplacement.Length == 0 || sReplacement == problem.Word) { iSkipped++; continue; }
+sbText.Remove(problem.Start + iDrift, problem.Length);
+sbText.Insert(problem.Start + iDrift, sReplacement);
+iDrift += sReplacement.Length - problem.Length;
+iChanged++;
+}
+
+if (iChanged > 0) {
+string sNewText = sbText.ToString();
+if (bWholeDocument) {
+int iCaret = rtb.Index;
+rtb.Text = sNewText;
+if (iCaret <= rtb.TextLength) rtb.Index = iCaret;
+}
+else {
+rtb.Select(iStart, sText.Length);
+rtb.SelectedText = sNewText;
+}
+rtb.Modified = true;
+}
+else rtb.Select(iStart, 0);
+AddMessage(Util.Pluralize(iChanged, "change") + ", " + Util.Pluralize(iSkipped, "skip") + ", " + Util.Pluralize(iAdded, "word") + " added");
+} // SpellCheck method
+
+// The words around a misspelling, for the dialog to show: enough to
+// place the word in its sentence without reading the line again.
+string spellingContext(string sText, int iStart, int iLength) {
+if (iStart < 0 || iLength <= 0 || iStart + iLength > sText.Length) return "";
+int iFrom = Math.Max(0, iStart - 60);
+int iTo = Math.Min(sText.Length, iStart + iLength + 60);
+string sPart = sText.Substring(iFrom, iTo - iFrom);
+return sPart.Replace("\r", " ").Replace("\n", " ").Trim();
+} // spellingContext method
+
+// The original Microsoft Word spell check, kept as a fallback for
+// anyone who prefers its dialog and has Word installed. Reached by
+// setting the SpellChecker option to "Word".
+public void SpellCheckWord() {
 bool bCreate, bVisible;
 int iDisplayAlerts, iStart, iEnd, iLength;
 string sText, sOldText;
@@ -7193,7 +7687,79 @@ rtb.Index = iStart;
 }
 } // SpellCheck method
 
+// Shift+F7: synonyms without Microsoft Word. WordNet, Princeton's freely
+// licensed lexical database, gives synonyms grouped by MEANING -- which
+// is the part a thesaurus is really for, since "light" as the opposite
+// of heavy and "light" as illumination want different words -- along
+// with the part of speech and a short definition of each sense. The
+// database is read by a small Python helper that EdSharp installs on
+// request, the same way the PDF reader is installed; when it is absent,
+// the Word thesaurus still answers for anyone who has Word.
 public void Thesaurus() {
+if (App.ReadOption("Thesaurus", "WordNet").Trim().ToLower() == "word") { ThesaurusWord(); return; }
+HomerRichTextBox rtb = this.Child.RTB;
+string sWord;
+int iStart, iLength;
+if (rtb.SelectionLength > 0) { sWord = rtb.SelectedText.Trim(); iStart = rtb.SelectionStart; iLength = rtb.SelectionLength; }
+else {
+// The word under the caret, taken by letters so punctuation stops it.
+string sLine = rtb.RowText;
+int iColumn = rtb.Column - 1;
+if (sLine.Length == 0) { AddMessage("No word!"); return; }
+if (iColumn >= sLine.Length) iColumn = sLine.Length - 1;
+if (iColumn < 0) iColumn = 0;
+int iFrom = iColumn, iTo = iColumn;
+while (iFrom > 0 && (Char.IsLetter(sLine[iFrom - 1]) || sLine[iFrom - 1] == '\'')) iFrom--;
+while (iTo < sLine.Length && (Char.IsLetter(sLine[iTo]) || sLine[iTo] == '\'')) iTo++;
+sWord = sLine.Substring(iFrom, iTo - iFrom).Trim();
+iStart = rtb.RowStart + iFrom;
+iLength = sWord.Length;
+}
+if (sWord.Length == 0 || !Char.IsLetter(sWord[0])) { AddMessage("No word!"); return; }
+
+AddMessage("Looking up " + sWord);
+string sHelper = Path.Combine(App.ProgramDir, @"Convert\wordNet.py");
+if (!File.Exists(sHelper)) { Dialog.Show("Thesaurus", "The thesaurus helper was not found at:\n" + sHelper); return; }
+string sOutput = Util.GetProgramOutput("python", "\"" + sHelper + "\" \"" + sWord + "\"");
+if (sOutput == null) sOutput = "";
+sOutput = sOutput.Trim();
+if (sOutput.StartsWith("NOTINSTALLED")) {
+Dialog.Show("Thesaurus", "The free thesaurus database is not installed yet.\n\nRun installPdfTools.cmd in the EdSharp program folder -- it installs the thesaurus as well -- or set the Thesaurus option to Word with Configuration Options, Alt+Shift+C, to use the Microsoft Word thesaurus instead.");
+return;
+}
+if (sOutput.StartsWith("NOWORD") || sOutput.Length == 0) { AddMessage("No entry for " + sWord); return; }
+
+// Each line the helper writes is one choice: the replacement word, then
+// a tab, then how it reads in the list -- word, part of speech, and the
+// sense it belongs to.
+List<object> lValues = new List<object>();
+List<string> lDisplay = new List<string>();
+foreach (string sLine in sOutput.Replace("\r\n", "\n").Split('\n')) {
+if (sLine.Trim().Length == 0) continue;
+string[] aParts = sLine.Split('\t');
+lValues.Add(aParts[0]);
+lDisplay.Add((aParts.Length > 1) ? aParts[1] : aParts[0]);
+}
+if (lValues.Count == 0) { AddMessage("No entry for " + sWord); return; }
+
+object[] aChoice = Dialog.PickAndChoose("Thesaurus: " + sWord, lValues.ToArray(), lDisplay.ToArray(), new string[] {"&Replace", "Cop&y"}, false, 0);
+if (aChoice.Length == 0) return;
+string sChosen = aChoice[0].ToString();
+string sButton = ((string) aChoice[1]).Replace("&", "");
+if (sButton == "Copy") {
+try { Clipboard.SetText(sChosen); AddMessage("Copied " + sChosen); }
+catch (Exception ex) { Dialog.Show("Thesaurus", ex.Message); }
+return;
+}
+// Replace, keeping the original capitalization of the word replaced.
+if (Char.IsUpper(sWord[0]) && sChosen.Length > 0) sChosen = Char.ToUpper(sChosen[0]) + sChosen.Substring(1);
+rtb.Select(iStart, iLength);
+rtb.SelectedText = sChosen;
+rtb.Modified = true;
+AddMessage("Replaced with " + sChosen);
+} // Thesaurus method
+
+public void ThesaurusWord() {
 bool bCreate, bVisible;
 int iDisplayAlerts, iStart, iEnd, iLength;
 string sText, sOldText;
@@ -9019,6 +9585,29 @@ COM.InvokeVerb(sPath, "Properties");
 // Win32.ShellExecute("Properties", sPath);
 } // Properties method
 
+// The spell check dialog: a heading that names and spells the word, the
+// sentence it sits in, one editable combo box of suggestions, and four
+// plainly named buttons. Returns the button clicked and the text in the
+// combo box. Escape returns Cancel.
+public static object[] SpellChoice(string sTitle, string sPrompt, string sContext, List<string> lsSuggestions) {
+LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
+dlg.addLabel(sPrompt);
+if (sContext.Length > 0) dlg.addTextLine("Context", sContext);
+ComboBox cbSuggestions = dlg.addComboHistoryBox("Replace with", lsSuggestions, (lsSuggestions.Count > 0) ? lsSuggestions[0] : "", "Down and Up walk the suggestions; type to correct the word yourself");
+// Homer Tools rule: every button has its OWN access key, preferably the
+// initial letter of its first word. Change and Cancel would both claim
+// C, so the action is named Replace instead -- as familiar a word for
+// this and equally plain -- giving R, S, A, C, and the dialog's own
+// Help on H, all distinct.
+string sClicked = dlg.runWithButtons(new string[] {"&Replace", "&Skip", "&Add to Dictionary", "&Cancel"});
+string sReplacement = (cbSuggestions == null) ? "" : cbSuggestions.Text;
+dlg.Dispose();
+string sButton;
+if (sClicked == null || sClicked.Length == 0) sButton = "Cancel";
+else sButton = sClicked.Replace("&", "");
+return new object[] {sButton, sReplacement};
+} // SpellChoice method
+
 public static string Choose (string sTitle, string sText, string[] aButtons, int iDefault) {
 LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
 if (sText != "") dlg.addLabel(sText);
@@ -9968,6 +10557,13 @@ sTarget = s;
 // of 25 August 2026.
 bool bFinishMarkdownInBinary = (sTargetExt == "md" && sCommand.IndexOf("any2htm.cmd", StringComparison.OrdinalIgnoreCase) >= 0);
 if (bFinishMarkdownInBinary) sTarget = Path.ChangeExtension(sTarget, ".htm");
+// The PDF path produces RICH Markdown for every target: headings, lists,
+// tables and emphasis, never a plain text dump. When the target is HTML
+// or plain text, the outside step still writes Markdown and the last
+// step happens here -- Markdig for HTML, and HTML to text for plain --
+// so one good conversion serves all three.
+bool bFinishFromRichMarkdown = ((sTargetExt == "htm" || sTargetExt == "html" || sTargetExt == "txt") && sCommand.IndexOf("pdf2md.cmd", StringComparison.OrdinalIgnoreCase) >= 0);
+if (bFinishFromRichMarkdown) sTarget = Path.ChangeExtension(sTarget, ".md");
 sCommand = Util.ExpandCommandLine(sCommand, sSource, sTarget);
 // Dialog.Show(sTarget, "target file");
 // Dialog.Show(sCommand);
@@ -9989,6 +10585,16 @@ System.Threading.Thread.Sleep(100);
 iLoop--;
 }
 */
+}
+if (bFinishFromRichMarkdown && File.Exists(sTarget)) {
+string sRich = Util.ConvertedFile2String(sTarget);
+string sFinished;
+if (sTargetExt == "txt") sFinished = Util.Markdown2Text(sRich);
+else sFinished = Util.Markdown2Html(sRich, Path.GetFileNameWithoutExtension(sSource));
+try { File.Delete(sTarget); } catch (Exception) {}
+sTarget = Path.ChangeExtension(sTarget, "." + sTargetExt);
+Util.String2File(sFinished, sTarget);
+Util.Log("finished rich PDF conversion as " + sTargetExt + " in the binary: " + sTarget);
 }
 if (bFinishMarkdownInBinary && File.Exists(sTarget)) {
 // Second leg, in the binary: HTML to Markdown with ReverseMarkdown,
@@ -11026,15 +11632,23 @@ public static string FindCscPath() {
 // the latest C# language version), then fall back to the csc.exe that ships
 // with the running .NET Framework, which is always present. Returns "" if none.
 string sWin = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+// 64-bit first throughout, per the standing preference: the 64-bit
+// Program Files copies of the Visual Studio Roslyn compiler come before
+// their 32-bit twins, and the Framework64 compiler that ships with
+// every Windows 11 comes before the 32-bit Framework one. The running
+// runtime directory sits between them, since a 64-bit EdSharp is itself
+// running on the 64-bit framework.
 string[] aCandidates = new string[] {
-@"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\Roslyn\csc.exe",
 @"C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\Roslyn\csc.exe",
-@"C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\Roslyn\csc.exe",
+@"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\Roslyn\csc.exe",
+@"C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\Roslyn\csc.exe",
 @"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\Roslyn\csc.exe",
-@"C:\Program Files (x86)\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\Roslyn\csc.exe",
-@"C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\Roslyn\csc.exe",
-Path.Combine(System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(), "csc.exe"),
 Path.Combine(sWin, @"Microsoft.NET\Framework64\v4.0.30319\csc.exe"),
+Path.Combine(System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(), "csc.exe"),
+@"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\Roslyn\csc.exe",
+@"C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\Roslyn\csc.exe",
+@"C:\Program Files (x86)\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\Roslyn\csc.exe",
+@"C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\Roslyn\csc.exe",
 Path.Combine(sWin, @"Microsoft.NET\Framework\v4.0.30319\csc.exe")
 };
 foreach (string s in aCandidates) {
@@ -12161,6 +12775,40 @@ byte[] aBytes = File.ReadAllBytes(sFile);
 try { return new UTF8Encoding(false, true).GetString(aBytes); }
 catch (Exception) { return Encoding.Default.GetString(aBytes); }
 } // PlainFile2String method
+
+// The column marked by a caret line in tool output. Python answers a
+// syntax error with an echo of the source line followed by a line of
+// carets under the offending part; the column is the caret's position
+// less the indentation the echo added. Returns 0 when there is no such
+// marker line.
+public static int CaretMarkerColumn(string sOutput) {
+return CaretMarkerColumn(sOutput, "");
+} // CaretMarkerColumn method
+
+// The same, given the document's own text for that line. Tools differ in
+// how they echo: Python adds four spaces of its own, Node repeats the
+// line verbatim with its real indentation. Comparing the echo with the
+// document line resolves the difference, so the column is right either
+// way.
+public static int CaretMarkerColumn(string sOutput, string sDocLine) {
+string[] aLines = sOutput.Replace("\r\n", "\n").Split('\n');
+for (int i = 1; i < aLines.Length; i++) {
+string sTrim = aLines[i].Trim();
+if (sTrim.Length == 0) continue;
+bool bMarkerOnly = true;
+foreach (char c in sTrim) if (c != '^' && c != '~') { bMarkerOnly = false; break; }
+if (!bMarkerOnly) continue;
+string sEcho = aLines[i - 1];
+int iEchoIndent = sEcho.Length - sEcho.TrimStart().Length;
+int iCaret = aLines[i].IndexOf('^');
+if (iCaret < 0) continue;
+int iDocIndent = 0;
+if (sDocLine != null && sDocLine.Trim().Length > 0 && sDocLine.Trim() == sEcho.Trim()) iDocIndent = sDocLine.Length - sDocLine.TrimStart().Length;
+int iColumn = iCaret - iEchoIndent + iDocIndent + 1;
+return (iColumn > 0) ? iColumn : 0;
+}
+return 0;
+} // CaretMarkerColumn method
 
 public static string ConvertedFile2String(string sFile) {
 try {

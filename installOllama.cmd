@@ -3,6 +3,11 @@ rem installOllama.cmd -- smart install of Ollama plus a chat model for
 rem EdSharp's Chat with AI command. Probe first: an existing Ollama is
 rem updated in place, never duplicated. Tool output stays in this
 rem window so progress is readable; the log records milestones.
+rem 64-bit by rule: the winget calls ask for the x64 build. Ollama installs
+rem per user by its own design, into %LOCALAPPDATA%\Programs\Ollama with its
+rem models under the profile -- that IS its default Windows location, and one
+rem installation serves every program on the machine through its local
+rem service, so it is left exactly there.
 setlocal
 set "logFile=%LOCALAPPDATA%\EdSharp\logs\EdSharp_setup.log"
 if not exist "%LOCALAPPDATA%\EdSharp\logs" mkdir "%LOCALAPPDATA%\EdSharp\logs" >nul 2>&1
@@ -21,14 +26,14 @@ where ollama >nul 2>&1
 if errorlevel 1 goto install_ollama
 echo Ollama is already installed; checking for an update.
 echo [installOllama] winget upgrade Ollama.Ollama >> "%logFile%"
-winget upgrade --id Ollama.Ollama -e --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
+winget upgrade --id Ollama.Ollama -e --architecture x64 --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
 echo [installOllama] winget upgrade exit %errorlevel% >> "%logFile%"
 if errorlevel 1 (echo Ollama is already current.) else (echo Ollama updated.)
 goto pull_model
 :install_ollama
 echo Installing Ollama with winget; this can take a few minutes.
 echo [installOllama] winget install Ollama.Ollama >> "%logFile%"
-winget install --id Ollama.Ollama -e --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
+winget install --id Ollama.Ollama -e --architecture x64 --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
 echo [installOllama] winget install exit %errorlevel% >> "%logFile%"
 set "PATH=%LOCALAPPDATA%\Programs\Ollama;%PATH%"
 where ollama >nul 2>&1

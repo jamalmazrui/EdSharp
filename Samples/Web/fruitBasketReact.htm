@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Fruit Basket in React</title>
+<!-- React from the official content delivery network, plus Babel so the
+     JSX below runs in the browser with no build step. Open this file and
+     it works; nothing is installed. For the version that builds with
+     Node, see fruitBasketReactBuild.js and the ReadMe. -->
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+body { font-family: sans-serif; margin: 2em; max-width: 40em; }
+.row { margin-bottom: 1em; }
+label { display: block; margin-bottom: 0.25em; font-weight: bold; }
+input, select, button { font-size: 1em; padding: 0.3em; }
+input, select { width: 20em; }
+select { height: 10em; }
+</style>
+</head>
+<body>
+<h1>Fruit Basket in React</h1>
+<div id="root"></div>
+
+<script type="text/babel">
+"use strict";
+
+// The fruit basket specification in React, written in Camel Type.
+//
+// React redraws from state, so the two things that matter for a screen
+// reader -- where the focus lands and what gets announced -- are done
+// deliberately: refs move the focus after each action, and messages go
+// to a live region rather than to an alert box.
+
+// React requires a component's name to begin with a capital letter: a
+// lower case name in JSX is taken for an HTML element instead. Camel
+// Type yields to the language where the language insists, so this one
+// name is upper camel while everything inside it is lower camel.
+function FruitBasket() {
+    var aBasket = React.useState([]);
+    var lsBasket = aBasket[0], setBasket = aBasket[1];
+    var aSelected = React.useState(-1);
+    var iSelected = aSelected[0], setSelected = aSelected[1];
+    var aFruit = React.useState("");
+    var sFruit = aFruit[0], setFruit = aFruit[1];
+    var aStatus = React.useState("The basket is empty.");
+    var sStatus = aStatus[0], setStatus = aStatus[1];
+    var refFruit = React.useRef(null);
+    var refBasket = React.useRef(null);
+
+    function countBasket(iCount) {
+        if (iCount === 0) return "The basket is empty.";
+        if (iCount === 1) return "1 fruit in the basket.";
+        return iCount + " fruits in the basket.";
+    }
+
+    function addFruit() {
+        var sTrimmed = sFruit.trim();
+        if (sTrimmed === "") {
+            setStatus("No fruit to add.");
+            if (refFruit.current) refFruit.current.focus();
+            return;
+        }
+        var lsNew = lsBasket.concat([sTrimmed]);
+        setBasket(lsNew);
+        setSelected(lsNew.length - 1);
+        setFruit("");
+        setStatus(sTrimmed + " added. " + countBasket(lsNew.length));
+        if (refFruit.current) refFruit.current.focus();
+    }
+
+    function deleteFruit() {
+        if (iSelected < 0 || iSelected >= lsBasket.length) {
+            setStatus("No fruit to delete.");
+            if (refBasket.current) refBasket.current.focus();
+            return;
+        }
+        var sGone = lsBasket[iSelected];
+        var lsNew = lsBasket.slice(0, iSelected).concat(lsBasket.slice(iSelected + 1));
+        var iNext = iSelected;
+        if (iNext > lsNew.length - 1) iNext = lsNew.length - 1;
+        setBasket(lsNew);
+        setSelected(iNext);
+        setStatus(sGone + " deleted. " + countBasket(lsNew.length));
+        if (refBasket.current) refBasket.current.focus();
+    }
+
+    return (
+        <div>
+            <div className="row">
+                <label htmlFor="fruit">Fruit</label>
+                <input id="fruit" type="text" autoComplete="off" ref={refFruit}
+                    value={sFruit}
+                    onChange={function (oEvent) { setFruit(oEvent.target.value); }}
+                    onKeyDown={function (oEvent) { if (oEvent.key === "Enter") { oEvent.preventDefault(); addFruit(); } }} />
+                <button type="button" onClick={addFruit}>Add</button>
+            </div>
+            <div className="row">
+                <label htmlFor="basket">Basket</label>
+                <select id="basket" size="8" ref={refBasket}
+                    value={iSelected >= 0 ? String(iSelected) : ""}
+                    onChange={function (oEvent) { setSelected(Number(oEvent.target.value)); }}
+                    onKeyDown={function (oEvent) { if (oEvent.key === "Delete") { oEvent.preventDefault(); deleteFruit(); } }}>
+                    {lsBasket.map(function (sName, iIndex) {
+                        return <option key={iIndex} value={String(iIndex)}>{sName}</option>;
+                    })}
+                </select>
+                <button type="button" onClick={deleteFruit}>Delete</button>
+            </div>
+            <p role="status" aria-live="polite">{sStatus}</p>
+        </div>
+    );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<FruitBasket />);
+</script>
+</body>
+</html>

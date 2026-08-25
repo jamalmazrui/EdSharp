@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Fruit Basket in Vue</title>
+<!-- Vue 3 from the official content delivery network, in the build that
+     compiles templates in the browser. No installation, no build step:
+     open this file and it works. -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<style>
+body { font-family: sans-serif; margin: 2em; max-width: 40em; }
+.row { margin-bottom: 1em; }
+label { display: block; margin-bottom: 0.25em; font-weight: bold; }
+input, select, button { font-size: 1em; padding: 0.3em; }
+input, select { width: 20em; }
+select { height: 10em; }
+</style>
+</head>
+<body>
+<h1>Fruit Basket in Vue</h1>
+
+<div id="app">
+    <div class="row">
+        <label for="fruit">Fruit</label>
+        <input id="fruit" ref="refFruit" type="text" autocomplete="off"
+            v-model="sFruit" @keydown.enter.prevent="addFruit" />
+        <button type="button" @click="addFruit">Add</button>
+    </div>
+    <div class="row">
+        <label for="basket">Basket</label>
+        <select id="basket" ref="refBasket" size="8"
+            v-model="iSelected" @keydown.delete.prevent="deleteFruit">
+            <option v-for="(sName, iIndex) in lsBasket" :key="iIndex" :value="iIndex">{{ sName }}</option>
+        </select>
+        <button type="button" @click="deleteFruit">Delete</button>
+    </div>
+    <p role="status" aria-live="polite">{{ sStatus }}</p>
+</div>
+
+<script>
+"use strict";
+
+// The fruit basket specification in Vue 3, written in Camel Type.
+//
+// Vue keeps the list and the selection in data and redraws from them.
+// The two things that matter for a screen reader are handled on
+// purpose: focus is moved with refs after each action, and messages go
+// to a live region rather than to an alert box.
+
+var appFruitBasket = Vue.createApp({
+    data: function () {
+        return {
+            iSelected: -1,
+            lsBasket: [],
+            sFruit: "",
+            sStatus: "The basket is empty."
+        };
+    },
+
+    methods: {
+        countBasket: function (iCount) {
+            if (iCount === 0) return "The basket is empty.";
+            if (iCount === 1) return "1 fruit in the basket.";
+            return iCount + " fruits in the basket.";
+        },
+
+        addFruit: function () {
+            var sTrimmed = this.sFruit.trim();
+            if (sTrimmed === "") {
+                this.sStatus = "No fruit to add.";
+                this.$refs.refFruit.focus();
+                return;
+            }
+            this.lsBasket.push(sTrimmed);
+            this.iSelected = this.lsBasket.length - 1;
+            this.sFruit = "";
+            this.sStatus = sTrimmed + " added. " + this.countBasket(this.lsBasket.length);
+            this.$refs.refFruit.focus();
+        },
+
+        deleteFruit: function () {
+            if (this.iSelected < 0 || this.iSelected >= this.lsBasket.length) {
+                this.sStatus = "No fruit to delete.";
+                this.$refs.refBasket.focus();
+                return;
+            }
+            var sGone = this.lsBasket[this.iSelected];
+            this.lsBasket.splice(this.iSelected, 1);
+            if (this.iSelected > this.lsBasket.length - 1) this.iSelected = this.lsBasket.length - 1;
+            this.sStatus = sGone + " deleted. " + this.countBasket(this.lsBasket.length);
+            this.$refs.refBasket.focus();
+        }
+    },
+
+    mounted: function () {
+        this.$refs.refFruit.focus();
+    }
+});
+
+appFruitBasket.mount("#app");
+</script>
+</body>
+</html>

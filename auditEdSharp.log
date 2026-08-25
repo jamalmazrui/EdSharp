@@ -1,0 +1,18 @@
+EdSharp audit 2026-08-25 15:57:48
+Folder: C:\EdSharp
+Python: 3.14.3
+
+PASS  EdSharp.cs braces balance: depth at end of file is 0
+PASS  Command shortcuts are unique: 218 shortcuts checked
+PASS  Dialog buttons have distinct access keys: 9 button sets checked, 4 with run-time labels skipped
+PASS  Microsoft Office is used only by named fallbacks: MailWord (line 7349); SpellCheckWord (line 7650); ThesaurusWord (line 7794); WordFile2String (line 10705); WordSource2TargetFormat (line 10884)
+PASS  Inix.cs braces balance: depth at end of file is 0
+PASS  BuildEdSharp.ps1 brackets balance: braces, parentheses and brackets all balance
+PASS  Compiler table patterns compile: 24 patterns checked
+PASS  Conversion scripts named in the table exist: 6 scripts checked
+NOTE  fetched tools not present in this folder (the build or installer supplies them): tidy.exe
+NOTE  options not mentioned in the guide: BraceMatch, DateFormat, FontDefault, GoToEnVironment, KeepBackup, MaximizeWindow, PromptCommand, RecentFiles, WordWrap
+PASS  Shipped options were checked against the guide: 33 options checked, 9 not yet in the guide
+
+All checks passed.
+Log: C:\EdSharp\auditEdSharp.log

@@ -102,10 +102,15 @@ odt2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f odt -t html -s -o 
 odt2html=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f odt -t html -s -o %Target%
 odt2md=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f odt -t gfm -o %Target%
 odt2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f odt -t plain -o %Target%
-pdf2htm=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-pdf2html=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-pdf2md=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-pdf2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+; PDF conversion goes one way for every target: pdf2md.cmd reads the
+; PDF with the free PyMuPDF reader and writes RICH Markdown -- headings,
+; lists, tables, emphasis -- and EdSharp turns that into HTML or plain
+; text in the binary, or into a Word document with Pandoc. Nothing here
+; needs Microsoft Word, and no target is a bare text dump.
+pdf2htm=%ProgDir%\Convert\pdf2md.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+pdf2html=%ProgDir%\Convert\pdf2md.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+pdf2md=%ProgDir%\Convert\pdf2md.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
+pdf2txt=%ProgDir%\Convert\pdf2md.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
 ppt2htm=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
 ppt2md=%ProgDir%\Convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
 ppt2txt=%ProgDir%\Convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
@@ -237,10 +242,12 @@ tt2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f t2t -t plain -o %Ta
 ; JumpPosition=\(\d+,\d+\)
 
 [Compilers]
-; Overrides so the Compiler menu calls the .cmd scripts; the .bat
-; versions are retired.
-MinGW C++="%ProgDir%\Convert\MinGW.cmd %SourceDir%\%SourceRoot% 2>&1~:\d+:~^.*?\.cpp~^( |\t|\w)*((void)|(int)|(string)|(bool)|(DateTime)|(class))[^;]*?\{ *$~//~cs~%ProgDir%\ijs.exe"
-PowerBASIC="%ProgDir%\Convert\pbw.cmd "%Source%" "%SourceDir%\%SourceRoot%.log" 2>&1~\(\d+\:\d+\)~(Power(.|\n)*?Reserved)|(Primary source:(.|\n)*)~^( |\t)*((Function)|(Sub)) +\w+~'~bas"
+; Empty by design. Every shipped compiler is defined by a [Compiler <name>]
+; section below, with one named key per setting. The tilde-packed form is
+; still read for any private entry a person adds here. The MinGW C++ and
+; PowerBASIC lines that lived here were removed on 25 August 2026 with the
+; compilers themselves; the audit script noticed they still pointed at
+; retired scripts.
 
 ; ===== Compiler definitions (24 August 2026) ================================
 ; One section per compiler, one named key per setting, values verbatim.
@@ -265,7 +272,7 @@ PowerBASIC="%ProgDir%\Convert\pbw.cmd "%Source%" "%SourceDir%\%SourceRoot%.log" 
 ; csc: "Program.cs(12,34): error CS1002: ; expected". The old jump
 ; pattern lacked the parentheses, so any "12,34" in program output
 ; could hijack the jump; anchored now.
-CompileCommand="%NetDir%\csc.exe /nologo "%Source%" 2>&1"
+CompileCommand="%NetDir%\csc.exe /nologo /platform:x64 "%Source%" 2>&1"
 JumpPosition="\(\d+,\d+\)"
 AbbreviateOutput="^.*?\.cs"
 NavigatePart="^( |\t)*(public|private|protected|internal|static|class|namespace|void)\b"
@@ -275,10 +282,13 @@ GoToEnvironment="%ProgDir%\ijs.exe"
 
 [Compiler Python]
 ; Traceback: File "prog.py", line 12, in main -- and syntax errors use
-; the same "line 12" form. NavigatePart now includes async def.
+; the same "line 12" form. NavigatePart includes async def.
+; AbbreviateOutput drops the File "path" prefix from every frame and the
+; traceback banner, so the announcement starts at the line number and
+; reaches the message without reading your own path aloud first.
 CompileCommand="python "%Source%" 2>&1"
 JumpPosition="line \d+"
-AbbreviateOutput="\r"
+AbbreviateOutput="(^[ \t]*File ".*?", )|(^Traceback \(most recent call last\):[ \t]*\r?\n)"
 NavigatePart="^( |\t)*(async +)?(def|class) +\w+"
 QuotePrefix="#"
 ExtensionDefault="py"
@@ -288,9 +298,11 @@ GoToEnvironment="python.exe"
 ; node prints the failing location as path:line for syntax errors and
 ; path:line:column inside stack frames; the pattern matches both, so
 ; the jump lands on line and column when the column is given.
+; AbbreviateOutput drops Node's frames inside its own internals and the
+; file:/// path prefix, leaving the script name, line and column.
 CompileCommand="node "%SourceLong%" 2>&1"
 JumpPosition=":\d+(:\d+)?"
-AbbreviateOutput="\r"
+AbbreviateOutput="(^[ \t]*at .*node:(internal|diagnostics_channel).*$)|(file:///.*/)|(^[A-Za-z]:\\.*\\)"
 NavigatePart="^( |\t)*((async +)?function|class) +\w+"
 QuotePrefix="//"
 ExtensionDefault="js"
@@ -300,9 +312,11 @@ GoToEnvironment="node.exe"
 ; Errors report "At C:\path\script.ps1:12 char:5". The old command
 ; interpolated an undefined %file_name% variable; fixed to
 ; %SourceLong%, with profile loading and execution policy handled.
+; AbbreviateOutput removes the "At <path>" prefix from each error
+; position, leaving the script name, line and character.
 CompileCommand="powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%SourceLong%" 2>&1"
 JumpPosition=":\d+ char:\d+"
-AbbreviateOutput="\nAt .*?1:"
+AbbreviateOutput="^At .*\\"
 NavigatePart="^( |\t)*(function|class) +[\w-]+"
 QuotePrefix="#"
 ExtensionDefault="ps1"
