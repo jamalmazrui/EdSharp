@@ -15,6 +15,11 @@ set "dst=%~3"
 if exist "%dst%" del /f /q "%dst%"
 if exist "%dst%.log" del /f /q "%dst%.log"
 set "outdir=%~dp3"
+rem %~dp3 ends with a backslash, and a quoted argument ending backslash-quote
+rem makes the quote a literal character to a .NET tool's argument parser --
+rem 2htm then saw an output directory ending in a quote and refused it as an
+rem illegal path (the very words the capture log surfaced). Trim it.
+if "%outdir:~-1%"=="\" set "outdir=%outdir:~0,-1%"
 if not exist "%prog%\Convert\2htm\2htm.exe" (
   echo 2htm.exe was not found at %prog%\Convert\2htm\2htm.exe > "%dst%.log"
   echo Run restoreFetchConvertTools.cmd in the EdSharp folder to fetch the conversion tools. >> "%dst%.log"
@@ -22,7 +27,7 @@ if not exist "%prog%\Convert\2htm\2htm.exe" (
 )
 "%prog%\Convert\2htm\2htm.exe" "%src%" -f -o "%outdir%" > "%dst%.log" 2>&1
 set "toolExit=%errorlevel%"
-set "made=%outdir%%~n2.htm"
+set "made=%outdir%\%~n2.htm"
 if exist "%made%" if /i not "%made%"=="%dst%" move /y "%made%" "%dst%" >nul
 if not exist "%dst%" (
   if "%toolExit%"=="0" set "toolExit=9"
