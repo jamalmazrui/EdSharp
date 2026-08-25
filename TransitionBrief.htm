@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>TransitionBrief</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="edsharp-transition-brief----20-august-2026">EdSharp Transition
+Brief -- 20 August 2026</h1>
+<p>Start-of-chat context for continuing work on EdSharp. Everything
+below was true when v5.0.20 was released and the repository was
+certified clean.</p>
+<h2 id="where-things-stand">Where things stand</h2>
+<ul>
+<li>EdSharp v5.0.20 is released and working. It is the first good
+release since v5.0.10; every release from v5.0.11 through v5.0.19 ships
+a program that cannot start, for reasons fixed and recorded below.</li>
+<li>The repository at <a
+href="https://github.com/JamalMazrui/EdSharp">github.com/JamalMazrui/EdSharp</a>
+is certified: 466 files tracked and none unnecessary, nothing missing,
+every remote tag matching its local copy, the pack at 83.15 MiB, no file
+of 5 MB or more left in history, and zero untracked files that are not
+gitignored. The saved emails, personal book drafts, help notes, and the
+copyrighted PDF are out of both tracking and history.</li>
+<li>The working folder is C:\EdSharp. The release routine is:
+buildEdSharp; launch C:\EdSharp\EdSharp.exe as a check; install; git add
+-A; git commit; git push; tagRelease. All of it now behaves: add -A is
+instant and stages only real changes.</li>
+</ul>
+<h2 id="how-edsharp-is-built-do-not-rediscover-this-the-hard-way">How
+EdSharp is built (do not rediscover this the hard way)</h2>
+<ul>
+<li>The C# is ONE assembly. Every source file -- EdSharp.cs, Lbc.cs,
+Say.cs, Inix.cs, KeyMap.cs, Web.cs, plus the generated Version.cs --
+compiles into EdSharp.exe. Never compile the support sources into a
+library called EdSharp.dll: two weak-named assemblies sharing the simple
+name "EdSharp" compile perfectly and can never run, because .NET answers
+requests for the library's types with the exe itself. That was the
+day-long silent launch failure.</li>
+<li>EdSharp.dll still exists and must keep existing: it is the JScript
+.NET EVALUATOR, compiled from EdSharp.js by jsc.exe, loaded by
+reflection at run time for evaluating expression strings (the FileDir
+and DbDo model). The build rebuilds it every run; the installer ships it
+beside EdSharp.js.</li>
+<li>Three libraries are pinned and version-verified at build time:
+ReverseMarkdown 4.7.1, HtmlAgilityPack 1.11.72, Markdig 0.42.0 (the last
+dependency-free Markdig). The build checks the version stamped inside
+any dll already on disk and refetches on mismatch. A stray Markdig 1.3
+that passed a mere exists-check caused startup death by missing
+dependencies.</li>
+<li>The compiler is Roslyn csc found via vswhere, with the netstandard
+facade referenced for Markdig. buildEdSharp bumps the version by
+counting from the highest released tag; "buildEdSharp nobump" keeps the
+number; "buildEdSharp console" makes a temporary console-mode exe for
+debugging startup errors (runConsole.cmd captures its output), skips the
+installer, and never bumps. The build closes a running EdSharp politely
+(window close, never kill) before compiling, because a running EdSharp
+holds EdSharp.exe and EdSharp.dll open.</li>
+<li>Menu key facts: bindings are BUILT INTO the source as literals, by
+design; the legacy ini rebinding is gone; Hotkeys.ini supplies
+descriptions only. A blank key string means a menu-only command --
+String2Key returns Keys.None for it and CreateMenuItem skips shortcut
+bookkeeping. Four Markdown-era menu items are deliberately
+menu-only.</li>
+</ul>
+<h2 id="how-the-installer-works">How the installer works</h2>
+<ul>
+<li>One consolidated log: %LOCALAPPDATA%\EdSharp\logs\EdSharp_setup.log.
+installPandoc, installJawsScripts, and Inno Setup's own record all
+append under dated banners (Inno's log is snapshot-copied first, because
+Inno holds it open for writing).</li>
+<li>JAWS scripts are the INSTALLER's job, not the editor's:
+installJawsScripts.ps1 copies the Scripts folder into each JAWS
+version's settings and compiles with that version's scompile. It runs as
+the ORIGINAL user (runasoriginaluser), because JAWS settings live in the
+user's profile and the installer is elevated; the two sides cannot see
+each other's profiles, so the script reports through a small result file
+in C:\temp that the closing Results box reads. A silent-install twin
+entry exists because /SILENT skips postinstall tasks. The uninstall
+entry must NOT carry runasoriginaluser -- that flag is Run-only and
+breaks compilation.</li>
+<li>pandoc is fetched by installPandoc into Convert\Pandoc,
+checkbox-gated when absent. The Results box reports observed facts
+only.</li>
+</ul>
+<h2 id="the-repository-lessons-apply-to-every-project">The repository
+lessons (apply to every project)</h2>
+<ul>
+<li>Certify by PROOF, not assertion. "Untracked and left alone" must
+mean "and gitignored", verified with git check-ignore over every such
+path. Unignored leftovers are exactly what git add -A sweeps in.</li>
+<li>Always run git with core.quotepath=false in scripts. Otherwise
+non-ASCII paths flow through every list in an octal-quoted disguise, and
+ignore entries written for them can never match.</li>
+<li>Square brackets in .gitignore are glob character classes. Escape
+them (and
+<ul>
+<li>and ?) when writing literal entries, or names like "[program-l] Re
+....txt" are never matched by their own entries.</li>
+</ul></li>
+<li>An installer pattern (root *.md, a wholesale folder) proves a
+tracked file is ALLOWED. It never proves an absent file is WANTED. Only
+exact names justify adding missing files, or personal documents get
+swept in.</li>
+<li>Fetch before counting ahead and behind. A push rejection should be a
+survey line, not a surprise.</li>
+<li>Two kinds of divergence, two cures: same lineage behind the remote
+means rebase then push; two different lineages mean ADOPT the good
+remote history -- bookmark the old lineage as a branch, mixed-reset to
+the remote, restore files the good tree has that the folder lacks, keep
+modified files as pending changes, and replace local tags with the
+remote's so nothing old force-pushes over good tags.</li>
+<li>History rewrites need proportionate verification: check reachability
+of the removed paths EXACTLY (not as substrings) over the branch, tags,
+and remotes -- not over bookmark branches, which hold old objects on
+purpose -- and let a residue smaller than the bulk threshold warn rather
+than abort.</li>
+<li>Every destructive step gets a dated backup first, and an aborted run
+must push NOTHING. That safety saved the good GitHub history three times
+in one day.</li>
+<li>tidyRepo.py (v10, on disk) embodies all of this. One future
+hardening is queued: skip nameless objects (unreachable debris) when
+listing rewrite candidates; garbage collection removes them anyway.</li>
+</ul>
+<h2 id="the-debugging-lessons-apply-to-every-program">The debugging
+lessons (apply to every program)</h2>
+<ul>
+<li>A windowed .NET program that fails before Main's first line dies in
+perfect silence, and hooks inside Main never see it. The cheap decisive
+instruments: a console-mode build that prints the loader exception, and
+the Windows Application event log, which records the exception type for
+every silent .NET startup death.</li>
+<li>The error dialog can share the disease: if its own types depend on
+the broken library, the program that would explain the failure is the
+failure. Diagnose with instruments that do not depend on the
+patient.</li>
+<li>"It used to work" plus "it compiles" proves nothing about running:
+an assembly-name collision and a wrong-version library both compile
+clean and both kill at startup. Test a LAUNCH after build changes, not
+just the build.</li>
+<li>Evidence beats plausible stories. The menu crash was solved by
+scanning the real source for the actual inputs (four empty key strings),
+not by blaming the converter that had always worked.</li>
+</ul>
+<h2 id="editing-scripts-safely-the-delivery-lessons">Editing scripts
+safely (the delivery lessons)</h2>
+<ul>
+<li>Locate Inno Setup sections by line-anchored regex, never substring;
+a section token inside a comment once amputated half the file. Verify
+structurally after editing: the ten sections in order, Pascal code only
+after the Code header.</li>
+<li>Edit C# by brace-matching with a scanner that blanks strings,
+verbatim strings, char literals, and comments first; refuse to write
+unless the whole file still balances and no reference survives.</li>
+<li>Chain packaging on edit success (the shell "and" operator), or a
+failed edit ships a stale file.</li>
+<li>Match the noun to the count in every announcement, and deliver
+scripts, never manual steps, with debug-grade logs that make the next
+round unnecessary.</li>
+</ul>
+<h2 id="open-items-none-urgent">Open items, none urgent</h2>
+<ul>
+<li>Delete the nine broken releases v5.0.11 through v5.0.19 and their
+tags from GitHub so nobody installs one; a script for this is on
+offer.</li>
+<li>Reclaim local disk: three dated C:\EdSharp_backup_20260820 folders
+and the localBefore_20260820_095055 bookmark branch hold several
+gigabytes; deletable once v5.0.20 has settled.</li>
+<li>Optional source cleanups, scripts already on disk but never run:
+removeJawsFeature.py deletes the now-orphaned JAWS-install code from
+EdSharp.cs; addStartupLog.py gives every EdSharp run a timestamped log
+with crash capture. Either requires a rebuild afterward.</li>
+<li>JAWS content question: the old installer reported Notifications and
+VoiceProfiles buckets (72 files); the new script installs exactly what
+the Scripts folder contains (36). If that extra content matters, add
+Scripts\Notifications and Scripts\VoiceProfiles subfolders and the next
+install carries them automatically.</li>
+<li>The mystery of how C:\EdSharp's history got replaced by an old
+lineage mid-day was never solved; the bookmark branch preserves the
+evidence.</li>
+</ul>
+<h2 id="summary">Summary</h2>
+<p>EdSharp v5.0.20 is released and working, the repository is certified
+clean in tracking and history, and the whole build, installer, and
+release pipeline is scripted with its hard-won rules written into the
+scripts themselves. The one-assembly rule, the evaluator's identity,
+version- verified fetching, proof-based gitignore coverage, quotepath
+and glob escaping, exact-and-proportionate rewrite verification, and
+launch-testing after build changes are the lessons that made the
+nightmare survivable and should keep it from recurring here or in any
+other project.</p>
+</body>
+</html>

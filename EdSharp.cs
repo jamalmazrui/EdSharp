@@ -5010,10 +5010,11 @@ if (menuItem == menuMiscCheckMarkdown) {
 // cell counts disagree with their header, and reference links that are
 // used but never defined or defined but never used. Fenced code blocks
 // are skipped, so code examples do not raise false alarms.
-string sBaseName = (child.File != null && child.File.Length > 0) ? Path.GetFileNameWithoutExtension(child.File) : "Untitled";
 string sReport = checkMarkdown(rtb.Text);
-new MdiChild(this, sBaseName + "_check.txt");
-this.Child.File = this.Child.Text;
+// The report opens in a plain new window that EdSharp titles itself,
+// NoName style, like List Different Items -- temporary output earns a
+// name only when the person decides to save it.
+child = new MdiChild(this);
 this.Child.RTB.Text = sReport;
 this.Child.RTB.Modified = false;
 this.Child.RTB.Index = 0;
@@ -5064,11 +5065,12 @@ string sPrompt = sInstruction;
 if (sContext.Trim().Length > 0) sPrompt += "\n\n" + sContext;
 string sAnswer = askOllama(sPrompt, sModel);
 if (sAnswer.Length == 0) return;
-string sBaseName = (child.File != null && child.File.Length > 0) ? Path.GetFileNameWithoutExtension(child.File) : "Untitled";
-new MdiChild(this, sBaseName + "_ai.md");
-this.Child.File = this.Child.Text;
+// The answer opens in a plain new window that EdSharp titles itself,
+// NoName style -- the same pattern as List Different Items and Query
+// Common Items. Temporary output earns a name only when the person
+// decides to save it.
+child = new MdiChild(this);
 this.Child.RTB.Text = sAnswer.Replace("\r\n", "\n").Replace("\n", "\r\n");
-this.Child.RTB.Modified = true;
 this.Child.RTB.Index = 0;
 AddMessage("Done");
 }
@@ -6064,6 +6066,55 @@ ElevateVersion();
 // off; the tiny JSON involved is built and read here directly, so no
 // serializer assembly is needed. Failures explain themselves: the
 // most common is simply that Ollama is not installed or not running.
+// Fetch a model in the background and report the outcome in a plain
+// message box -- no console window to find or close. Ollama may have
+// been installed moments ago, in which case this process's PATH
+// predates it, so the per-user install location is tried when the
+// bare name is not found.
+public void pullOllamaModel(string sModel) {
+string sExe = "ollama";
+string sUserCopy = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Programs\Ollama\ollama.exe");
+if (File.Exists(sUserCopy)) sExe = sUserCopy;
+AddMessage("Pulling " + sModel);
+Util.Log("ollama pull " + sModel + " via " + sExe);
+System.Threading.Thread thread = new System.Threading.Thread(delegate() {
+string sOutcome;
+bool bWorked = false;
+try {
+ProcessStartInfo psi = new ProcessStartInfo(sExe, "pull " + sModel);
+psi.UseShellExecute = false;
+psi.CreateNoWindow = true;
+psi.RedirectStandardOutput = true;
+psi.RedirectStandardError = true;
+using (Process process = Process.Start(psi)) {
+string sOut = process.StandardOutput.ReadToEnd();
+string sErr = process.StandardError.ReadToEnd();
+process.WaitForExit();
+bWorked = (process.ExitCode == 0);
+Util.Log("ollama pull exit code " + process.ExitCode);
+if (bWorked) sOutcome = "The " + sModel + " model is ready. Press F12 to chat.";
+else {
+string sTail = (sErr.Trim().Length > 0 ? sErr : sOut).Trim();
+if (sTail.Length > 400) sTail = sTail.Substring(sTail.Length - 400);
+sOutcome = "The " + sModel + " model download did not finish.\n" + sTail;
+}
+}
+}
+catch (Exception ex) {
+sOutcome = "The model download could not start: " + ex.Message + "\nIf Ollama was installed a moment ago, sign out and back in so new programs are on the path, or restart EdSharp.";
+}
+try {
+this.BeginInvoke((MethodInvoker) delegate() {
+MessageBox.Show(sOutcome, "Chat with AI");
+if (bWorked) AddMessage("Model ready");
+});
+}
+catch (Exception) {}
+});
+thread.IsBackground = true;
+thread.Start();
+} // pullOllamaModel method
+
 public string askOllama(string sPrompt, string sModel) {
 string sUrl = App.ReadOption("OllamaUrl", "http://localhost:11434").TrimEnd('/') + "/api/generate";
 int iTimeoutSeconds = 300;
@@ -6109,8 +6160,7 @@ if (sReported.IndexOf("not found", StringComparison.OrdinalIgnoreCase) >= 0) {
 // in a visible command window so its progress is readable, and the
 // window stays open at the end so the outcome can be reviewed.
 if (MessageBox.Show("The " + sModel + " model is not on this machine yet. Fetch it now? It is about 2 gigabytes, shared by every app that uses Ollama.", "Chat with AI", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-try { Process.Start("cmd.exe", "/k ollama pull " + sModel + " && echo. && echo Done. Press F12 in EdSharp to chat."); } catch (Exception exStart) { Dialog.Show("Chat with AI", exStart.Message); }
-AddMessage("Pulling " + sModel);
+pullOllamaModel(sModel);
 return "";
 }
 sHint += "\n\nWhen you are ready, fetch it with: ollama pull " + sModel + "\nThe OllamaModel setting picks a different model.";
@@ -9734,9 +9784,21 @@ hl.KeepLike(sMatch);
 // exists it serves the txt row alone; when none does, the bare entry
 // stays, and the raw-read fallback below is what its txt offer means.
 if (hl.Contains(sExt) && hl.Contains(sExt + "2txt")) hl.Remove(sExt);
-//if (hl.Count > 0) hl.Push(sExt + "2" + sExt);
-// do not offer original format, since already available with Control+O
-if (hl.Count > 1) hl.Push(sExt + "2" + sExt);
+// The source format is never offered as a target: converting a
+// document to its own format is Control+O's plain Open, and an "epub"
+// row in an epub's target list is noise. (A leftover line here used to
+// push exactly that entry, against its own comment.) And only TEXT
+// formats belong in an import target list, since importing means
+// bringing the document into the editor as text.
+string[] aTextTargets = new string[] {"txt", "md", "mdx", "htm", "html", "xhtml", "rtf", "brf", "csv"};
+HomerList hlText = new HomerList();
+foreach (string sEntry in hl.ToArray()) {
+string sTargetPart = Util.RegExpReplaceCase(sEntry, @"^\w+2", "");
+bool bText = false;
+foreach (string sAllowed in aTextTargets) if (sTargetPart == sAllowed) { bText = true; break; }
+if (bText && sTargetPart != sExt) hlText.Add(sEntry);
+}
+hl = hlText;
 aResults = hl.ToArray();
 hl.ReplaceLike("^" + sExt + "$", sExt + "2txt");
 hl.ReplaceLike(@"^\w+2", "");
@@ -9822,7 +9884,22 @@ Util.Log("converted to Markdown in the binary: " + sTarget);
 // Dropping it removes that external tool from the conversion path.
 if (File.Exists(sTarget)) sText = Util.File2String(sTarget);
 
-if (sText.Length == 0) Dialog.Show("Error", "The conversion produced no output.\nCommand line:\n" + sCommand + "\n\nThe run log records each step and its exit code:\n" + App.LogFile);
+if (sText.Length == 0) {
+// The conversion scripts capture their tool's console output beside
+// the target as <target>.log; its last lines usually name the real
+// problem, so show them right in the dialog.
+string sToolLog = sTarget + ".log";
+string sToolWords = "";
+try {
+if (File.Exists(sToolLog)) {
+string[] aToolLines = File.ReadAllLines(sToolLog);
+int iFrom = Math.Max(0, aToolLines.Length - 6);
+sToolWords = "\n\nThe converter said:\n" + String.Join("\n", aToolLines, iFrom, aToolLines.Length - iFrom);
+}
+}
+catch (Exception) {}
+Dialog.Show("Error", "The conversion produced no output.\nCommand line:\n" + sCommand + sToolWords + "\n\nThe run log records each step and its exit code:\n" + App.LogFile);
+}
 }
 else {
 if (sTargetExt == sExt) {

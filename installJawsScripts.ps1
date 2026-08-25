@@ -133,6 +133,30 @@ try {
           $iCopied = $iCopied + 1
           writeLog "  copied $($fileSource.Name) -> $sDestDir"
         }
+        # Scrub the retired Process LaTeX feature from the copies just
+        # placed, whatever the source still carries: its F12-family key
+        # bindings from every .jkm, and its Script blocks from every
+        # .jss. The compile below then rebuilds each .jsb clean, so no
+        # install can resurrect the feature and reclaim F12 from the
+        # Chat with AI command.
+        foreach ($fileMap in @(Get-ChildItem -LiteralPath $sDestDir -File -Filter "*.jkm")) {
+          $lKept = @(); $iDropped = 0
+          foreach ($sLine in @(Get-Content -LiteralPath $fileMap.FullName)) {
+            if ($sLine -match "=.*late[xc]") { $iDropped = $iDropped + 1 } else { $lKept += $sLine }
+          }
+          if ($iDropped -gt 0) {
+            Set-Content -LiteralPath $fileMap.FullName -Value $lKept
+            writeLog "  scrubbed $iDropped LaTeX binding(s) from $($fileMap.Name)"
+          }
+        }
+        foreach ($fileScript in @(Get-ChildItem -LiteralPath $sDestDir -File -Filter "*.jss")) {
+          $sBody = [System.IO.File]::ReadAllText($fileScript.FullName)
+          $sClean = [regex]::Replace($sBody, "(?ims)^[ \t]*Script[ \t]+\w*late[xc]\w*[ \t]*\(.*?^[ \t]*EndScript[ \t]*\r?\n?", "")
+          if ($sClean -ne $sBody) {
+            [System.IO.File]::WriteAllText($fileScript.FullName, $sClean)
+            writeLog "  scrubbed LaTeX script block(s) from $($fileScript.Name)"
+          }
+        }
         writeLog "JAWS $sVersion / $sBucket`: done"
       }
     }

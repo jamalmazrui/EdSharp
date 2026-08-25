@@ -140,6 +140,14 @@ function fetchNugetPackage($sPackageId, $sVersion) {
   writeLog "Chose lib target: $sChosenDir"
 
   foreach ($fDll in Get-ChildItem -LiteralPath $sChosenDir -Filter "*.dll") {
+    # A running EdSharp loads these libraries from this folder, and a locked
+    # dll fails the copy with an unhelpful IOException. Name the culprit and
+    # the remedy instead.
+    $lLockers = @(Get-Process -Name EdSharp, ijs -ErrorAction SilentlyContinue | Where-Object { try { (Split-Path $_.Path -Parent) -ieq $sScriptDir } catch { $false } })
+    if ($lLockers.Count -gt 0) {
+      $sWho = ($lLockers | ForEach-Object { "$($_.ProcessName) (pid $($_.Id))" }) -join ", "
+      throw "Cannot replace $($fDll.Name): $sWho is running from $sScriptDir and holds it. Close it and run the build again."
+    }
     Copy-Item -LiteralPath $fDll.FullName -Destination (Join-Path $sScriptDir $fDll.Name) -Force
     writeLog "Copied $($fDll.Name) ($($fDll.Length) bytes) to the build folder."
   }

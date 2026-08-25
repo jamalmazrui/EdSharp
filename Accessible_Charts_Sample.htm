@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Accessible_Charts_Sample</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="accessible-charts-sample">Accessible Charts Sample</h1>
+<p>Every chart in this sample follows the text twin rule: the drawing,
+the data behind it, and a sentence of description travel together.
+Preview this document in the web browser to see the drawn charts. Under
+a screen reader, each chart reads as structured text right here in the
+source, and each data table reads as a real table after conversion.
+Nothing in this document needs Node or Python: the browser draws the
+mermaid charts, and the SVG chart is hand-written text.</p>
+<h2 id="quarterly-revenue-as-a-table">Quarterly revenue as a table</h2>
+<p>The table is the foundation. It alone satisfies the alternative text
+rule from the accessibility guidelines: a table of the data presented in
+a chart serves the equivalent purpose.</p>
+<table>
+<thead>
+<tr>
+<th>Quarter</th>
+<th>Revenue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>First</td>
+<td>42</td>
+</tr>
+<tr>
+<td>Second</td>
+<td>58</td>
+</tr>
+<tr>
+<td>Third</td>
+<td>51</td>
+</tr>
+<tr>
+<td>Fourth</td>
+<td>73</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-same-data-as-a-bar-chart">The same data as a bar chart</h2>
+<p>Revenue rose over the year, dipping slightly in the third quarter and
+finishing strongest in the fourth.</p>
+<pre class="mermaid"><code>xychart-beta
+    title &quot;Revenue by quarter&quot;
+    x-axis [First, Second, Third, Fourth]
+    y-axis &quot;Revenue&quot; 0 --&gt; 80
+    bar [42, 58, 51, 73]</code></pre>
+<h2 id="the-same-data-as-a-line-chart">The same data as a line
+chart</h2>
+<p>The line form emphasizes the trend rather than the individual
+amounts.</p>
+<pre class="mermaid"><code>xychart-beta
+    title &quot;Revenue trend&quot;
+    x-axis [First, Second, Third, Fourth]
+    y-axis &quot;Revenue&quot; 0 --&gt; 80
+    line [42, 58, 51, 73]</code></pre>
+<h2 id="market-share-as-a-pie-chart">Market share as a pie chart</h2>
+<p>Three products split the market, with the first holding nearly
+half.</p>
+<pre class="mermaid"><code>pie title Market share
+    &quot;Product A&quot; : 45
+    &quot;Product B&quot; : 30
+    &quot;Product C&quot; : 25</code></pre>
+<h2 id="a-hand-written-svg-bar-chart">A hand-written SVG bar chart</h2>
+<p>SVG is itself a plain text language, so a chart can be authored
+character by character in the editor. The title and desc elements inside
+the SVG are read by screen readers in the browser, and the same file
+drives a braille embosser for a tactile copy.</p>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" role="img" aria-labelledby="chartTitle chartDesc">
+  <title id="chartTitle">Revenue by quarter</title>
+  <desc id="chartDesc">Bar chart of quarterly revenue: First 42, Second 58, Third 51, Fourth 73. Revenue rose over the year with a small dip in the third quarter.</desc>
+  <rect x="40"  y="136" width="60" height="64"  fill="#336699" />
+  <rect x="130" y="104" width="60" height="96"  fill="#336699" />
+  <rect x="220" y="118" width="60" height="82"  fill="#336699" />
+  <rect x="310" y="74"  width="60" height="126" fill="#336699" />
+  <text x="70"  y="215" text-anchor="middle" font-size="12">First</text>
+  <text x="160" y="215" text-anchor="middle" font-size="12">Second</text>
+  <text x="250" y="215" text-anchor="middle" font-size="12">Third</text>
+  <text x="340" y="215" text-anchor="middle" font-size="12">Fourth</text>
+  <text x="70"  y="130" text-anchor="middle" font-size="12">42</text>
+  <text x="160" y="98"  text-anchor="middle" font-size="12">58</text>
+  <text x="250" y="112" text-anchor="middle" font-size="12">51</text>
+  <text x="340" y="68"  text-anchor="middle" font-size="12">73</text>
+</svg>
+</body>
+</html>
