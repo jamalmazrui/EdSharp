@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.28
-AppVerName=EdSharp 5.0.28
-VersionInfoVersion=5.0.28
+AppVersion=5.0.29
+AppVerName=EdSharp 5.0.29
+VersionInfoVersion=5.0.29
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup

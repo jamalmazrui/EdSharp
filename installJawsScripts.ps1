@@ -142,7 +142,13 @@ try {
         foreach ($fileMap in @(Get-ChildItem -LiteralPath $sDestDir -File -Filter "*.jkm")) {
           $lKept = @(); $iDropped = 0
           foreach ($sLine in @(Get-Content -LiteralPath $fileMap.FullName)) {
-            if ($sLine -match "=.*late[xc]") { $iDropped = $iDropped + 1 } else { $lKept += $sLine }
+            # Two removals. Any binding whose script name mentions LaTeX in
+            # any spelling goes, and so does EVERY F12-family binding
+            # whatever it is called: the retired Process LaTeX feature also
+            # bound F12 keys under other names, such as a "metrix" command,
+            # and those bindings swallow EdSharp's own F12 and Control+F12
+            # (Chat with AI and Copy Log).
+            if (($sLine -match "=.*late[xc]") -or ($sLine -match "^\s*[^;=]*\bf12\b[^=]*=")) { $iDropped = $iDropped + 1 } else { $lKept += $sLine }
           }
           if ($iDropped -gt 0) {
             Set-Content -LiteralPath $fileMap.FullName -Value $lKept

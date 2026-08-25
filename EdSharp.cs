@@ -9963,7 +9963,7 @@ if (bFinishMarkdownInBinary && File.Exists(sTarget)) {
 // editor's own commands use, with no second outside process. This
 // covers pdf2txt and doc2txt too, which used to run a separate
 // any2txt script with its own copy of the quoting defect.
-string sHtml = Util.File2String(sTarget);
+string sHtml = Util.ConvertedFile2String(sTarget);
 string sConverted = Util.Html2Markdown(sHtml);
 try { File.Delete(sTarget); } catch (Exception) {}
 sTarget = Path.ChangeExtension(sTarget, "." + sTargetExt);
@@ -9974,7 +9974,7 @@ Util.Log("converted to " + sTargetExt + " in the binary: " + sTarget);
 // mark first, then content detection) and decodes it correctly, so the old
 // re-encode pass through Convert\EasyEncode\utf8b.exe is no longer needed.
 // Dropping it removes that external tool from the conversion path.
-if (File.Exists(sTarget)) sText = Util.File2String(sTarget);
+if (File.Exists(sTarget)) sText = Util.ConvertedFile2String(sTarget);
 
 if (sText.Length == 0) {
 // The conversion scripts capture their tool's console output beside
@@ -10856,7 +10856,21 @@ charsetDetector.Feed(aBytes, 0, aBytes.Length);
 charsetDetector.DataEnd();
 string sCharset = charsetDetector.Charset;
 if (String.IsNullOrEmpty(sCharset)) return enUtf8b;
-return CharsetName2Encoding(sCharset, enUtf8b);
+Encoding enDetected = CharsetName2Encoding(sCharset, enUtf8b);
+// A sanity check on the heuristic, from Scott's plain-text conversion of
+// 25 August 2026: Ude reported UTF-16 for ordinary single-byte text with
+// no byte-order mark, and reading it that way fused every two letters
+// into one far-eastern character. Detection is guesswork, but this part
+// is arithmetic -- every Latin letter in UTF-16 carries a zero byte, so
+// content without zero bytes CANNOT be UTF-16 or UTF-32, whatever the
+// detector says. When the two disagree, the arithmetic wins.
+if (enDetected == Encoding.Unicode || enDetected == Encoding.BigEndianUnicode || enDetected == Encoding.UTF32) {
+int iSample = Math.Min(aBytes.Length, 4096);
+bool bAnyZero = false;
+for (int i = 0; i < iSample; i++) if (aBytes[i] == 0) { bAnyZero = true; break; }
+if (!bAnyZero) return enUtf8b;
+}
+return enDetected;
 }
 catch { return enUtf8b; }
 #else
@@ -12071,6 +12085,37 @@ rmConverter = new ReverseMarkdown.Converter(config);
 }
 return rmConverter;
 } // GetHtmlConverter method
+
+// Read a file a converter just wrote. Byte-order marks are obeyed, and
+// unmarked content whose bytes alternate with zeros is UTF-16 whose
+// order those zeros reveal -- a certainty worth applying before any
+// heuristic. Everything else goes to File2String, whose Ude-based
+// detection now refuses to call zero-free content UTF-16 (see
+// DetectEncodingNoBom).
+public static string ConvertedFile2String(string sFile) {
+try {
+byte[] aBytes = File.ReadAllBytes(sFile);
+if (aBytes.Length >= 2) {
+if (aBytes[0] == 0xFF && aBytes[1] == 0xFE) return Encoding.Unicode.GetString(aBytes, 2, aBytes.Length - 2);
+if (aBytes[0] == 0xFE && aBytes[1] == 0xFF) return Encoding.BigEndianUnicode.GetString(aBytes, 2, aBytes.Length - 2);
+}
+if (aBytes.Length >= 3 && aBytes[0] == 0xEF && aBytes[1] == 0xBB && aBytes[2] == 0xBF) return Encoding.UTF8.GetString(aBytes, 3, aBytes.Length - 3);
+int iSample = Math.Min(aBytes.Length, 4096);
+int iZeroEven = 0, iZeroOdd = 0;
+for (int i = 0; i < iSample; i++) {
+if (aBytes[i] != 0) continue;
+if (i % 2 == 0) iZeroEven++;
+else iZeroOdd++;
+}
+int iPairs = iSample / 2;
+if (iPairs >= 8) {
+if (iZeroOdd > iPairs / 2 && iZeroEven < iPairs / 8) return Encoding.Unicode.GetString(aBytes);
+if (iZeroEven > iPairs / 2 && iZeroOdd < iPairs / 8) return Encoding.BigEndianUnicode.GetString(aBytes);
+}
+}
+catch (Exception) {}
+return File2String(sFile);
+} // ConvertedFile2String method
 
 public static string Html2Markdown(string sHtml) {
 // Convert HTML source to Markdown with the ReverseMarkdown library,

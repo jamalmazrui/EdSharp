@@ -18,8 +18,8 @@ program's Scripts folder under Program Files when it is writable, and
 then every JAWS version's user settings folder, where it also:
 
   1. EdSharp.jkm: removes every key binding whose script name mentions
-     LaTeX (any spelling), and any F12-family binding pointing at such
-     a script.
+     LaTeX (any spelling), and every F12-family binding whatever its
+     script is called, so F12 and Control+F12 reach EdSharp itself.
   2. EdSharp.jss: removes every Script block whose name mentions LaTeX,
      from its Script line through its EndScript line.
   3. Recompiles EdSharp.jss with the newest scompile.exe found, so the
@@ -61,7 +61,12 @@ def isLatexName(sName):
 
 
 def isF12Key(sKey):
-    return "f12" in sKey.lower()
+    """Any binding in the F12 family, whatever its script is called.
+
+    The retired feature bound F12 keys under several names -- a "metrix"
+    command among them -- and every such binding steals a key EdSharp
+    now uses itself (F12 for Chat with AI, Control+F12 for Copy Log)."""
+    return re.search(r"\bf12\b", sKey, re.IGNORECASE) is not None
 
 
 def cleanJkm(pathFile):
@@ -74,7 +79,7 @@ def cleanJkm(pathFile):
         sTrim = sLine.strip()
         if "=" in sTrim and not sTrim.startswith(";") and not sTrim.startswith("["):
             sKey, sScript = sTrim.split("=", 1)
-            if isLatexName(sScript) or (isF12Key(sKey) and isLatexName(sScript)):
+            if isLatexName(sScript) or isF12Key(sKey):
                 iRemoved += 1
                 say("  removed binding: " + sTrim)
                 continue
