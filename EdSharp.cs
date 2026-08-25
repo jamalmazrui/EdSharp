@@ -888,7 +888,7 @@ public ToolStripMenuItem menuEdit, menuEditSelectAll, menuEditUnselectAll, menuE
 public ToolStripMenuItem menuDelete, menuDeleteReplaceRegular, menuDeleteReplaceWithRegExp, menuDeleteHardLine, menuDeleteParagraph, menuDeleteLine, menuDeleteRight, menuDeleteLeft, menuDeleteDown, menuDeleteUp, menuDeleteFile, menuDeleteTrimBlanks;
 public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateNextBlock, menuNavigatePriorBlock, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateSearchForTopicAgain, menuNavigateGoToStartOfSelection;
 public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles, menuQueryFont;
-public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
+public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
 public ToolStripMenuItem menuWindow, menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
 public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
 public StatusStrip statusBar;
@@ -1097,6 +1097,7 @@ menuMiscPreviewMarkdownBrowser = CreateMenuItem("Preview Markdown in Web Browser
 menuMiscCheckMarkdown = CreateMenuItem("Check Markdown", "Alt+F9", menuItem_Click, "child speak");
 menuMiscRunCodeBlocks = CreateMenuItem("Run Code Blocks", "Alt+Shift+F9", menuItem_Click, "child speak");
 menuMiscChatWithAI = CreateMenuItem("Chat with AI", "F12", menuItem_Click, "child speak");
+menuMiscChatWithDocument = CreateMenuItem("Chat about Document", "Shift+F12", menuItem_Click, "child speak");
 menuMiscTextConvert = CreateMenuItem("&Text Convert", "Control+T", menuItem_Click, "child speak");
 menuMiscTextCombine = CreateMenuItem("Text Combine", "Control+Shift+T", menuItem_Click, "child speak");
 menuMiscTextContents = CreateMenuItem("Text Contents", "Alt+Shift+T", menuItem_Click, "child speak");
@@ -1126,7 +1127,7 @@ menuMiscExplorerFolder = CreateMenuItem("Explorer Folder", "Alt+Oem5", menuItem_
 menuMiscCommandPrompt = CreateMenuItem("Command Prompt", "Control+Oem5", menuItem_Click, "frame speak");
 menuMiscBurnToCD = CreateMenuItem("Burn to CD", "Alt+Shift+B", menuItem_Click, "child speak");
 menuMiscWebDownload = CreateMenuItem("Web Download", "Alt+Shift+W", menuItem_Click, "frame speak");
-menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload});
+menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload});
 //Dialog.Show("Misc.", menuMisc.DropDownItems.Count);
 
 menuWindow = CreateMenu("&Window");
@@ -5057,7 +5058,7 @@ int iBlocksRun = runCodeBlocks();
 AddMessage(Util.Pluralize(iBlocksRun, "block") + " run");
 }
 
-if (menuItem == menuMiscChatWithAI) {
+if (menuItem == menuMiscChatWithAI || menuItem == menuMiscChatWithDocument) {
 // A simple, flexible chat with a local model through Ollama. The
 // selection, or with no selection the whole document, travels with
 // your instruction; the model's answer opens in a NEW window, so the
@@ -5069,12 +5070,25 @@ if (menuItem == menuMiscChatWithAI) {
 // machine. The Ollama service installs from a checkbox at the end of
 // EdSharp's setup and is shared with every other application that
 // uses Ollama.
-string sContext;
-if (rtb.SelectionLength > 0) { AddMessage("Selected"); sContext = rtb.SelectedText; }
-else sContext = rtb.Text;
+// What travels with the question. A selection is an explicit choice and
+// always goes. With nothing selected, the instruction decides: asking
+// the model to summarize, translate, or fix "this" clearly means the
+// open document, while a general question -- Scott's "When is
+// Thanksgiving this year?" of 25 August 2026 -- does not, and sending a
+// whole document with it both slows the answer to minutes and drags the
+// model's attention onto the wrong material. Shift+F12, Chat about
+// Document, sends the open text whatever the wording, for when the
+// instruction gives no hint -- the selection when there is one, the
+// whole document otherwise. The status line names the choice, so it is
+// never a mystery.
+string sContext = "";
 string sInstruction = Dialog.Input("Chat with AI", "Instruction", App.ReadData("ChatInstruction", ""), "Chat").Trim();
 if (sInstruction.Length == 0) return;
 App.WriteData("ChatInstruction", sInstruction);
+if (rtb.SelectionLength > 0) { sContext = rtb.SelectedText; AddMessage("With selection"); }
+else if (menuItem == menuMiscChatWithDocument) { sContext = rtb.Text; AddMessage("With document"); }
+else if (rtb.Text.Trim().Length > 0 && instructionWantsDocument(sInstruction)) { sContext = rtb.Text; AddMessage("With document"); }
+else AddMessage("Question only");
 string sModel = App.ReadOption("OllamaModel", "llama3.2");
 AddMessage("Asking " + sModel);
 string sPrompt = sInstruction;
@@ -6138,6 +6152,25 @@ ElevateVersion();
 // been installed moments ago, in which case this process's PATH
 // predates it, so the per-user install location is tried when the
 // bare name is not found.
+// True when an instruction plainly refers to the open document, so the
+// document should travel with it. Three signals: verbs that only make
+// sense applied to text at hand (summarize, translate, proofread,
+// refactor ...); a pointing word attached to a word for the material
+// ("this paragraph", "the code", "these functions"); and short bare
+// commands such as "summarize" or "explain it". A general-knowledge
+// question matches none of them and is sent alone, which is both
+// faster and more accurate.
+public bool instructionWantsDocument(string sInstruction) {
+string sText = sInstruction.ToLowerInvariant().Trim();
+string[] aVerbs = new string[] {"summar", "translat", "rewrit", "rephras", "paraphras", "proofread", "outlin", "shorten", "condense", "simplify", "refactor", "critique", "polish", "tighten", "bullet", "keyword", "heading", "docstring", "transcribe"};
+foreach (string sVerb in aVerbs) if (sText.Contains(sVerb)) return true;
+string sNouns = "(document|text|file|code|selection|passage|article|chapter|section|paragraph|page|snippet|function|method|class|script|essay|draft|list|table|note|email|message|letter)";
+if (Regex.IsMatch(sText, @"\b(this|that|these|those|the|my|above|below|following|preceding)\b(\s+\w+){0,2}\s+" + sNouns + @"\b")) return true;
+if (Regex.IsMatch(sText, @"^(summarize|translate|proofread|explain|expand|edit|fix|format|review|improve|check)\s*(it|this|that)?\s*[.?!]?$")) return true;
+if (Regex.IsMatch(sText, @"\b(explain|describe|analyze|check|improve|review|edit|fix|expand)\b.*\b(this|that|it|above|below)\b")) return true;
+return false;
+} // instructionWantsDocument method
+
 public void pullOllamaModel(string sModel) {
 string sExe = "ollama";
 string sUserCopy = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Programs\Ollama\ollama.exe");
@@ -9975,6 +10008,21 @@ Util.Log("converted to " + sTargetExt + " in the binary: " + sTarget);
 // re-encode pass through Convert\EasyEncode\utf8b.exe is no longer needed.
 // Dropping it removes that external tool from the conversion path.
 if (File.Exists(sTarget)) sText = Util.ConvertedFile2String(sTarget);
+// Last line of defense against the far-eastern gibberish: whatever
+// decided the encoding, text that is mostly CJK characters when the
+// source document was not is the signature of single-byte text read as
+// UTF-16. Re-read it the plain way and log the rescue.
+// A genuinely Chinese or Japanese document is also mostly CJK, so the
+// rescue is accepted only when reading the file plainly makes the CJK
+// share go away -- proof that the characters were an artifact of the
+// decode rather than the document's own script.
+if (sText.Length > 0 && Util.LooksLikeMisreadUtf16(sText)) {
+string sPlain = Util.PlainFile2String(sTarget);
+if (sPlain.Length > 0 && !Util.LooksLikeMisreadUtf16(sPlain)) {
+sText = sPlain;
+Util.Log("re-read as single-byte text after a wide-encoding misread: " + sTarget);
+}
+}
 
 if (sText.Length == 0) {
 // The conversion scripts capture their tool's console output beside
@@ -12092,14 +12140,42 @@ return rmConverter;
 // heuristic. Everything else goes to File2String, whose Ude-based
 // detection now refuses to call zero-free content UTF-16 (see
 // DetectEncodingNoBom).
+// True when decoded text looks like single-byte content misread as a
+// wide encoding: a large share of characters in the far-eastern blocks,
+// which is what pairing Latin letters two at a time produces.
+public static bool LooksLikeMisreadUtf16(string sText) {
+int iSample = Math.Min(sText.Length, 2000);
+if (iSample < 20) return false;
+int iCjk = 0;
+for (int i = 0; i < iSample; i++) {
+char c = sText[i];
+if (c >= '\u3000' && c <= '\u9FFF') iCjk++;
+}
+return iCjk * 2 > iSample;
+} // LooksLikeMisreadUtf16 method
+
+// Read a file as UTF-8, falling back to the system single-byte encoding
+// when the bytes are not valid UTF-8. No detection, no guessing.
+public static string PlainFile2String(string sFile) {
+byte[] aBytes = File.ReadAllBytes(sFile);
+try { return new UTF8Encoding(false, true).GetString(aBytes); }
+catch (Exception) { return Encoding.Default.GetString(aBytes); }
+} // PlainFile2String method
+
 public static string ConvertedFile2String(string sFile) {
 try {
 byte[] aBytes = File.ReadAllBytes(sFile);
+// Say in the log which rule decided the encoding and what the opening
+// bytes were. When a conversion comes back as gibberish, that one line
+// separates a bad decode from a bad conversion without guesswork.
+StringBuilder sbHead = new StringBuilder();
+for (int i = 0; i < Math.Min(aBytes.Length, 8); i++) sbHead.Append(aBytes[i].ToString("x2")).Append(" ");
+string sHead = Path.GetFileName(sFile) + ", " + aBytes.Length + " bytes, starts " + sbHead.ToString().Trim();
 if (aBytes.Length >= 2) {
-if (aBytes[0] == 0xFF && aBytes[1] == 0xFE) return Encoding.Unicode.GetString(aBytes, 2, aBytes.Length - 2);
-if (aBytes[0] == 0xFE && aBytes[1] == 0xFF) return Encoding.BigEndianUnicode.GetString(aBytes, 2, aBytes.Length - 2);
+if (aBytes[0] == 0xFF && aBytes[1] == 0xFE) { Log("read as UTF-16 little endian by mark: " + sHead); return Encoding.Unicode.GetString(aBytes, 2, aBytes.Length - 2); }
+if (aBytes[0] == 0xFE && aBytes[1] == 0xFF) { Log("read as UTF-16 big endian by mark: " + sHead); return Encoding.BigEndianUnicode.GetString(aBytes, 2, aBytes.Length - 2); }
 }
-if (aBytes.Length >= 3 && aBytes[0] == 0xEF && aBytes[1] == 0xBB && aBytes[2] == 0xBF) return Encoding.UTF8.GetString(aBytes, 3, aBytes.Length - 3);
+if (aBytes.Length >= 3 && aBytes[0] == 0xEF && aBytes[1] == 0xBB && aBytes[2] == 0xBF) { Log("read as UTF-8 by mark: " + sHead); return Encoding.UTF8.GetString(aBytes, 3, aBytes.Length - 3); }
 int iSample = Math.Min(aBytes.Length, 4096);
 int iZeroEven = 0, iZeroOdd = 0;
 for (int i = 0; i < iSample; i++) {
@@ -12109,9 +12185,15 @@ else iZeroOdd++;
 }
 int iPairs = iSample / 2;
 if (iPairs >= 8) {
-if (iZeroOdd > iPairs / 2 && iZeroEven < iPairs / 8) return Encoding.Unicode.GetString(aBytes);
-if (iZeroEven > iPairs / 2 && iZeroOdd < iPairs / 8) return Encoding.BigEndianUnicode.GetString(aBytes);
+if (iZeroOdd > iPairs / 2 && iZeroEven < iPairs / 8) { Log("read as UTF-16 little endian by zero pattern: " + sHead); return Encoding.Unicode.GetString(aBytes); }
+if (iZeroEven > iPairs / 2 && iZeroOdd < iPairs / 8) { Log("read as UTF-16 big endian by zero pattern: " + sHead); return Encoding.BigEndianUnicode.GetString(aBytes); }
 }
+// No byte-order mark and no alternating zeros: single-byte text or
+// UTF-8, never UTF-16. Decide here rather than passing the file to the
+// general detector, whose heuristic produced the far-eastern gibberish
+// in the first place.
+try { string sUtf8 = new UTF8Encoding(false, true).GetString(aBytes); Log("read as UTF-8: " + sHead); return sUtf8; }
+catch (Exception) { Log("read as system single-byte: " + sHead); return Encoding.Default.GetString(aBytes); }
 }
 catch (Exception) {}
 return File2String(sFile);
@@ -12271,7 +12353,7 @@ sCommand = "cmd.exe /c " + sCommand;
 Util.RunHideWait(sCommand);
 }
 sText = "";
-if (File.Exists(sTarget)) sText = Util.File2String(sTarget);
+if (File.Exists(sTarget)) sText = Util.ConvertedFile2String(sTarget);
 if (sText.Length == 0) {
 if (File.Exists(sTarget)) File.Delete(sTarget);
 Dialog.Show("Error", "The conversion produced no output.\nCommand line:\n" + sCommand + "\n\nThe run log records each step and its exit code:\n" + App.LogFile);

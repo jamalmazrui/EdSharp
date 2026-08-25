@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.29
-AppVerName=EdSharp 5.0.29
-VersionInfoVersion=5.0.29
+AppVersion=5.0.30
+AppVerName=EdSharp 5.0.30
+VersionInfoVersion=5.0.30
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -461,19 +461,21 @@ begin
       if sAvailable <> '' then
         result := 'Update ' + sTool + ' from ' + sInstalled + ' to ' + sAvailable
       else if sInstalled <> '' then
-        result := sTool + ' ' + sInstalled + ' is installed and current';
+        result := 'Reinstall ' + sTool + ' ' + sInstalled + ' (current version)';
     end;
   end;
   if result = '' then
   begin
     sVersion := exeVersion(sExe);
     if sVersion <> '' then
-      result := sTool + ' ' + sVersion + ' is installed'
+      result := 'Reinstall ' + sTool + ' ' + sVersion + ' (installed version)'
     else
     begin
-      // Parallel wording: "Install <tool> <latest>" mirrors
-      // "Update <tool> from <old> to <new>". When winget cannot say
-      // (offline), the plain label still works.
+      // All three labels start with the action the checkbox performs and
+      // carry version numbers in parallel: "Install <tool> <latest>",
+      // "Update <tool> from <old> to <new>", and "Reinstall <tool>
+      // <version> (current version)". When winget cannot say which
+      // version is current (offline), the plain label still works.
       sVersion := wingetLatest(sFirstId);
       if sVersion <> '' then
         result := 'Install ' + sTool + ' ' + sVersion
