@@ -1,7 +1,9 @@
 @echo off
 rem installGitHub.cmd -- part of EdSharp setup, Homer Tools pattern: probe first,
 rem update when present, install when absent, pause on failure so the
-rem message can be read. Tool output stays IN THIS WINDOW so progress
+rem reason is logged. NOTHING PAUSES: a console waiting for a keypress
+rem interrupts the installation, and the summary shown at the very end --
+rem after every checkbox has run -- is where the outcome is reported. Tool output stays IN THIS WINDOW so progress
 rem is readable with a screen reader; the consolidated log records
 rem milestones and exit codes.
 rem 64-bit by rule: every winget call asks for the x64 build, and where a
@@ -37,7 +39,6 @@ goto after_git
 echo The Git install did not finish. The log is:
 echo %logFile%
 echo [installGitHub.cmd] FAILED: Git.Git >> "%logFile%"
-pause
 exit /b 3
 :after_git
 
@@ -60,7 +61,6 @@ goto after_gh
 echo The The GitHub command line install did not finish. The log is:
 echo %logFile%
 echo [installGitHub.cmd] FAILED: GitHub.cli >> "%logFile%"
-pause
 exit /b 3
 :after_gh
 

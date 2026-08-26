@@ -233,7 +233,10 @@ checkboxes: Git with the GitHub command line, Node.js, Python, the free
 document tools for rich PDF conversion and the thesaurus, and Ollama
 with a chat model. Each label says whether that tool is missing, out of
 date, or already current, with version numbers. They run after you press
-Finish, and a summary then reports each one by name, saying what is
+Finish, each in its own window that shows progress and closes when it is
+done; none of them ever waits for a keypress. When they have all
+finished, a single Results box reports everything: the JAWS scripts, the
+NVDA add-on, pandoc, and each optional install by name, saying what is
 installed and which version, or what to run later for anything that is
 not. The summary is saved as EdSharp_setup_summary.txt in the logs
 folder under your local application data, and you can see it again at
@@ -1064,7 +1067,12 @@ file through this same engine to normalize its indentation. Compile,
 Control+F5, runs a Python file with the python on your path even before
 any compiler is picked, jumping to the traceback's line number; the
 installer offers the latest official Python for Windows as an optional
-checkbox. Indent Mode, block navigation, and Infer Indent complete the
+checkbox. That is the build from python.org, not the Microsoft Store
+edition, which installs into a sandboxed folder and behaves differently
+in ways that break tools. Windows also puts a stub named python on your
+path that only advertises the Store; EdSharp ignores it and looks for
+the real Python by its own location, and installPython.cmd does the
+same. Indent Mode, block navigation, and Infer Indent complete the
 set.</p>
 <p>Press Control+B to go to the next code block, or Control+Shift+B to
 go to the previous one. A block is defined as lines with the same or

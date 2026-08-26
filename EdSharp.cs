@@ -5640,7 +5640,13 @@ sDefaultAbbreviate = @"^.*?\.cs";
 // the traceback's line number. Picking the Python compiler with
 // Control+Shift+F5 still overrides this default.
 if (sCommand.Trim().Length == 0 && (child.File.ToLower().EndsWith(".py") || child.File.ToLower().EndsWith(".pyw"))) {
-sCommand = "python \"%SourceLong%\" 2>&1";
+// The official python.org build, by its own path when it can be found.
+// Windows puts a stub named python on the path that only advertises the
+// Microsoft Store; running a program through it produces an
+// advertisement rather than an error, which is a baffling thing to hear
+// when you expected your program to run.
+string sPythonExe = Util.FindPythonPath();
+sCommand = ((sPythonExe.Length > 0) ? "\"" + sPythonExe + "\"" : "python") + " \"%SourceLong%\" 2>&1";
 sDefaultJump = @"line \d+";
 // Python names the file in every traceback frame -- File "C:\long\path
 // \script.py", line 4 -- and hearing your own path read out before the
@@ -11644,6 +11650,42 @@ System.Threading.Thread.Sleep(40);
 }
 }
 } // SetClipboardText method
+
+// The official Python from python.org, never the Microsoft Store stub.
+// The stub lives under WindowsApps and answers when asked, so any path
+// there is rejected; the usual python.org locations are searched next,
+// newest version first, and whatever is chosen must actually answer
+// --version. Returns an empty string when nothing real is installed, so
+// the caller can fall back to the bare name.
+public static string FindPythonPath() {
+try {
+string sPath = Environment.GetEnvironmentVariable("PATH");
+if (sPath != null) {
+foreach (string sDir in sPath.Split(';')) {
+if (sDir.Trim().Length == 0) continue;
+if (sDir.IndexOf(@"\WindowsApps", StringComparison.OrdinalIgnoreCase) >= 0) continue;
+string sTry = Path.Combine(sDir.Trim(), "python.exe");
+if (File.Exists(sTry)) return sTry;
+}
+}
+List<string> lsRoots = new List<string>();
+lsRoots.Add(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
+lsRoots.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Programs\Python"));
+List<string> lsFound = new List<string>();
+foreach (string sRoot in lsRoots) {
+if (!Directory.Exists(sRoot)) continue;
+foreach (string sDir in Directory.GetDirectories(sRoot, "Python3*")) {
+string sTry = Path.Combine(sDir, "python.exe");
+if (File.Exists(sTry)) lsFound.Add(sTry);
+}
+}
+lsFound.Sort();
+lsFound.Reverse();
+if (lsFound.Count > 0) return lsFound[0];
+}
+catch (Exception) {}
+return "";
+} // FindPythonPath method
 
 public static string FindCscPath() {
 // Locate a C# compiler: prefer the newest Roslyn csc (from VS Build Tools, for

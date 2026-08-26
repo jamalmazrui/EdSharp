@@ -1,12 +1,12 @@
 ﻿**********************
 Windows PowerShell transcript start
-Start time: 20260825165349
+Start time: 20260825173215
 Username: JM-LAPTOP\Jamal
 RunAs User: JM-LAPTOP\Jamal
 Configuration Name: 
 Machine: JM-LAPTOP (Microsoft Windows NT 10.0.26200.0)
 Host Application: powershell -NoProfile -ExecutionPolicy Bypass -File c:\bin\tagRelease.ps1
-Process ID: 42632
+Process ID: 62160
 PSVersion: 5.1.26100.9168
 PSEdition: Desktop
 PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9168
@@ -17,14 +17,14 @@ PSRemotingProtocolVersion: 2.3
 SerializationVersion: 1.1.0.1
 **********************
 === tagRelease.ps1 (installer-version edition, 2026-07-13) ===
-Started: 2026-08-25 16:53:49
+Started: 2026-08-25 17:32:15
 Log:     C:\EdSharp\tagRelease.log
 Repo:    C:\EdSharp
 App:     EdSharp  (from the directory name)
 
 --- Tool checks ---
-git: git version 2.47.1.windows.1
-gh:  gh version 2.92.0 (2026-04-28)
+git: git version 2.55.0.windows.3
+gh:  gh version 2.98.0 (2026-08-20)
 gh authentication: OK
 
 --- Discovery ---
@@ -33,20 +33,20 @@ Installer:    EdSharp_Setup.exe  (from OutputBaseFilename)
 GitHub repo:  JamalMazrui/EdSharp  (from the origin remote)
 
 --- Version ---
-Version (stamped in EdSharp_Setup.exe): 5.0.32
-  built: 8/25/2026 4:53:11 PM   8,375,573 bytes
-NOTE: version.txt says 5.0.12 but the installer carries 5.0.32.
-      The installer is what ships, so v5.0.32 is what will be tagged.
+Version (stamped in EdSharp_Setup.exe): 5.0.33
+  built: 8/25/2026 5:29:56 PM   8,379,891 bytes
+NOTE: version.txt says 5.0.12 but the installer carries 5.0.33.
+      The installer is what ships, so v5.0.33 is what will be tagged.
       (Recompile EdSharp_Setup.iss in Inno Setup if that is not what you meant.)
-v5.0.32 has not been released yet.
-Tag:       v5.0.32
+v5.0.33 has not been released yet.
+Tag:       v5.0.33
 
 --- Working tree ---
 NOTE: other uncommitted changes are present. Releasing anyway:
  M tagRelease.log
 
 --- Tag ---
-git.exe : fatal: ambiguous argument 'v5.0.32': unknown revision or path not in the working tree.
+git.exe : fatal: ambiguous argument 'v5.0.33': unknown revision or path not in the working tree.
 At C:\bin\tagRelease.ps1:225 char:5
 +     & $sExe @aArgs 2>$null | Out-Null
 +     ~~~~~~~~~~~~~~~~~~~~~~
@@ -54,11 +54,11 @@ At C:\bin\tagRelease.ps1:225 char:5
     + FullyQualifiedErrorId : NativeCommandError
 Use '--' to separate paths from revisions, like this:
 'git <command> [<revision>...] -- [<file>...]'
-Creating tag v5.0.32 ...
-  > git tag -a v5.0.32 -m EdSharp 5.0.32
+Creating tag v5.0.33 ...
+  > git tag -a v5.0.33 -m EdSharp 5.0.33
 
-Pushing tag v5.0.32 to origin ...
-  > git push origin v5.0.32
+Pushing tag v5.0.33 to origin ...
+  > git push origin v5.0.33
 Enumerating objects: 1, done.
 Counting objects: 100% (1/1), done.
 Writing objects: 100% (1/1), 174 bytes | 87.00 KiB/s, done.
@@ -66,7 +66,7 @@ Total 1 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
 remote: This repository moved. Please use the new location:
 remote:   https://github.com/jamalmazrui/EdSharp.git
 To https://github.com/JamalMazrui/EdSharp
- * [new tag]         v5.0.32 -> v5.0.32
+ * [new tag]         v5.0.33 -> v5.0.33
 
 --- Release ---
 gh.cmd : release not found
@@ -75,15 +75,15 @@ At C:\bin\tagRelease.ps1:225 char:5
 +     ~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : NotSpecified: (release not found:String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
-Creating release v5.0.32 with asset EdSharp_Setup.exe ...
-  > gh release create v5.0.32 C:\EdSharp\EdSharp_Setup.exe --title EdSharp 5.0.32 --generate-notes --latest
-https://github.com/jamalmazrui/EdSharp/releases/tag/v5.0.32
+Creating release v5.0.33 with asset EdSharp_Setup.exe ...
+  > gh release create v5.0.33 C:\EdSharp\EdSharp_Setup.exe --title EdSharp 5.0.33 --generate-notes --latest
+https://github.com/jamalmazrui/EdSharp/releases/tag/v5.0.33
 
 --- URL verification ---
 Public URL: https://github.com/JamalMazrui/EdSharp/releases/latest/download/EdSharp_Setup.exe
 URL check: HTTP 200
 
-=== EdSharp 5.0.32 published. ===
+=== EdSharp 5.0.33 published. ===
 
 Stable public download URL (does not change between versions):
 
@@ -95,5 +95,5 @@ Users on an older version will now see this release from Elevate Version (F11).
 --- Log saved at: C:\EdSharp\tagRelease.log ---
 **********************
 Windows PowerShell transcript end
-End time: 20260825165357
+End time: 20260825173225
 **********************

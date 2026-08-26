@@ -8,6 +8,9 @@ rem per user by its own design, into %LOCALAPPDATA%\Programs\Ollama with its
 rem models under the profile -- that IS its default Windows location, and one
 rem installation serves every program on the machine through its local
 rem service, so it is left exactly there.
+rem NOTHING PAUSES: a console waiting for a keypress interrupts the
+rem installation. Failures are logged, and the summary shown at the very
+rem end reports the outcome of every checkbox.
 setlocal
 set "logFile=%LOCALAPPDATA%\EdSharp\logs\EdSharp_setup.log"
 if not exist "%LOCALAPPDATA%\EdSharp\logs" mkdir "%LOCALAPPDATA%\EdSharp\logs" >nul 2>&1
@@ -53,12 +56,10 @@ exit /b 0
 echo Ollama was not found after the install step. The log is:
 echo %logFile%
 echo [installOllama] FAILED: ollama not found after install >> "%logFile%"
-pause
 exit /b 3
 
 :fail_model
 echo The model download did not finish. Run this script again later, or
 echo run: ollama pull %modelName%
 echo [installOllama] model pull failed >> "%logFile%"
-pause
 exit /b 4

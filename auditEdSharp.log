@@ -1,11 +1,11 @@
-EdSharp audit 2026-08-25 17:29:44
+EdSharp audit 2026-08-25 18:11:01
 Folder: C:\EdSharp
 Python: 3.14.3
 
 PASS  EdSharp.cs braces balance: depth at end of file is 0
 PASS  Command shortcuts are unique: 218 shortcuts checked
 PASS  Dialog buttons have distinct access keys: 9 button sets checked, 4 with run-time labels skipped
-PASS  Microsoft Office is used only by named fallbacks: MailWord (line 7367); SpellCheckWord (line 7668); ThesaurusWord (line 7812); WordFile2String (line 10723); WordSource2TargetFormat (line 10902)
+PASS  Microsoft Office is used only by named fallbacks: MailWord (line 7373); SpellCheckWord (line 7674); ThesaurusWord (line 7818); WordFile2String (line 10729); WordSource2TargetFormat (line 10908)
 PASS  Inix.cs braces balance: depth at end of file is 0
 PASS  BuildEdSharp.ps1 brackets balance: braces, parentheses and brackets all balance
 PASS  Compiler table patterns compile: 24 patterns checked

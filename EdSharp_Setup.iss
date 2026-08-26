@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.33
-AppVerName=EdSharp 5.0.33
-VersionInfoVersion=5.0.33
+AppVersion=5.0.34
+AppVerName=EdSharp 5.0.34
+VersionInfoVersion=5.0.34
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -308,8 +308,8 @@ Filename: "{cmd}"; \
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\summarizeSetup.cmd""""";  \
   WorkingDir: "{app}"; \
-  Description: "Show a summary of what was installed"; \
-  Flags: postinstall skipifsilent runascurrentuser
+  Description: "Show the results of this installation"; \
+  Flags: postinstall skipifsilent runascurrentuser runhidden
 
 Filename: "{code:ngenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: isAdminNgen
 Filename: "{code:ngenExe}"; Parameters: "install ""{app}\EdSharp.exe"" /AppBase:""{app}"" /nologo /silent"; Flags: runhidden; Check: isAdminNgen
@@ -352,6 +352,43 @@ var
   would be tidier, but a log that is still in memory when something goes
   wrong is a log nobody can read: the value of these lines is precisely
   that they survive whatever happens next. }
+{ Hand what is known at this point to the summary that runs last, so one
+  Results box can report everything: these findings and the outcome of
+  every finish-page checkbox. }
+procedure saveResultsForSummary(sLogDir: string; sText: string);
+var
+  lsLines: TArrayOfString;
+  sRest, sLine: string;
+  iAt, iCount: integer;
+begin
+  try
+    sRest := sText;
+    iCount := 0;
+    SetArrayLength(lsLines, 0);
+    while sRest <> '' do
+    begin
+      iAt := Pos(Chr(13), sRest);
+      if iAt = 0 then
+      begin
+        sLine := sRest;
+        sRest := '';
+      end
+      else
+      begin
+        sLine := Copy(sRest, 1, iAt - 1);
+        sRest := Copy(sRest, iAt + 1, Length(sRest));
+        if (sRest <> '') and (sRest[1] = Chr(10)) then
+          sRest := Copy(sRest, 2, Length(sRest));
+      end;
+      iCount := iCount + 1;
+      SetArrayLength(lsLines, iCount);
+      lsLines[iCount - 1] := sLine;
+    end;
+    SaveStringsToFile(sLogDir + '\\EdSharp_setup_results.txt', lsLines, False);
+  except
+  end;
+end;
+
 procedure logLine(sLogDir: string; sText: string);
 var
   lsLine: TArrayOfString;
@@ -814,5 +851,11 @@ begin
     + 'The whole installation is in one log:' + sBreak + '  ' + sLogDir + '\EdSharp_setup.log' + sBreak + sBreak
     + 'To start EdSharp, press Alt+Control+E.';
 
-  MsgBox(sMessage, mbInformation, MB_OK);
+  // Not shown here. These findings are true already, but the optional
+  // installs run after this point, and two boxes -- one now, one after --
+  // would ask the person to read the story in halves. The lines are handed
+  // to the summary, which shows ONE Results box at the very end with
+  // everything in it. If the summary somehow never runs, this file still
+  // sits in the logs folder to be read.
+  saveResultsForSummary(sLogDir, sMessage);
 end;

@@ -17,30 +17,45 @@ set "sumFile=%logDir%\EdSharp_setup_summary.txt"
 if exist "%sumFile%" del /f /q "%sumFile%"
 if exist "%LOCALAPPDATA%\Programs\Ollama" set "PATH=%LOCALAPPDATA%\Programs\Ollama;%PATH%"
 
-call :head "EdSharp setup summary  %date% %time%"
+set "resultsFile=%logDir%\EdSharp_setup_results.txt"
+call :head "EdSharp setup results  %date% %time%"
 call :head ""
+rem What the installer knew before the checkboxes ran -- the JAWS scripts,
+rem the NVDA add-on, pandoc -- was handed over in a file so that ONE box
+rem tells the whole story instead of two telling halves.
+if exist "%resultsFile%" (
+  for /f "usebackq delims=" %%l in ("%resultsFile%") do call :head "%%l"
+  del /f /q "%resultsFile%" >nul 2>&1
+  call :head ""
+  call :head "Optional installs"
+)
 call :tool "Git" git "winget install Git.Git"
 call :tool "GitHub command line" gh "winget install GitHub.cli"
 call :tool "Node.js" node "run installNode.cmd in the EdSharp folder"
-call :tool "Python" python "run installPython.cmd in the EdSharp folder"
+call :python
 call :module "PDF reader (rich PDF conversion)" pymupdf4llm "run installPdfTools.cmd in the EdSharp folder"
 call :wordnet
 call :tool "Ollama (Chat with AI)" ollama "run installOllama.cmd in the EdSharp folder"
 call :model
 call :pandoc
 call :head ""
+call :head "This summary is saved as: %sumFile%"
 call :head "Full detail is in: %logFile%"
+call :head ""
+call :head "To start EdSharp, press Alt+Control+E."
 
-echo.
-echo This summary is also saved as:
-echo %sumFile%
-powershell -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; [void][System.Windows.Forms.MessageBox]::Show((Get-Content -Raw '%sumFile%'), 'EdSharp Setup Summary')" >nul 2>&1
+rem The only thing the person sees: one Results box, after everything.
+rem This script runs hidden, so nothing flashes and nothing waits for a
+rem keypress; the text also stays in the summary file and the log.
+powershell -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; [void][System.Windows.Forms.MessageBox]::Show((Get-Content -Raw '%sumFile%'), 'EdSharp Setup Results')" >nul 2>&1
 exit /b 0
 
 :head
-echo %~1
-echo %~1>> "%sumFile%"
-echo [summary] %~1 >> "%logFile%"
+rem An empty line must be echoed as a blank line; "echo" with nothing after
+rem it prints "ECHO is off." instead, which appeared in the first summary.
+if "%~1"=="" (echo.) else (echo %~1)
+if "%~1"=="" (echo.>> "%sumFile%") else (echo %~1>> "%sumFile%")
+if not "%~1"=="" echo [summary] %~1 >> "%logFile%"
 exit /b 0
 
 :tool
@@ -55,14 +70,30 @@ for /f "delims=" %%v in ('%2 --version 2^>^&1') do if not defined toolVersion se
 call :head "%~1: installed, !toolVersion!"
 exit /b 0
 
+:python
+call :findPython
+if not defined pythonExe (
+  where python >nul 2>&1
+  if errorlevel 1 (
+    call :head "Python: not installed. To add it later, run installPython.cmd in the EdSharp folder."
+  ) else (
+    call :head "Python: not installed. Windows has only the Microsoft Store stub, which is not Python; run installPython.cmd in the EdSharp folder for the official python.org build."
+  )
+  exit /b 0
+)
+set "pyVersion="
+for /f "delims=" %%v in ('"%pythonExe%" --version 2^>^&1') do if not defined pyVersion set "pyVersion=%%v"
+call :head "Python: installed, !pyVersion! at %pythonExe%"
+exit /b 0
+
 :module
 rem %1 = friendly name, %2 = python module, %3 = how to add it later
-where python >nul 2>&1
-if errorlevel 1 (
+call :findPython
+if not defined pythonExe (
   call :head "%~1: not installed, because Python is missing."
   exit /b 0
 )
-python -c "import %2" >nul 2>&1
+"%pythonExe%" -c "import %2" >nul 2>&1
 if errorlevel 1 (
   call :head "%~1: not installed. To add it later, %~3."
 ) else (
@@ -71,12 +102,12 @@ if errorlevel 1 (
 exit /b 0
 
 :wordnet
-where python >nul 2>&1
-if errorlevel 1 (
+call :findPython
+if not defined pythonExe (
   call :head "Thesaurus database: not installed, because Python is missing."
   exit /b 0
 )
-python -c "from nltk.corpus import wordnet; wordnet.synsets('test')" >nul 2>&1
+"%pythonExe%" -c "from nltk.corpus import wordnet; wordnet.synsets('test')" >nul 2>&1
 if errorlevel 1 (
   call :head "Thesaurus database: not installed. To add it later, run installPdfTools.cmd in the EdSharp folder."
 ) else (
@@ -100,5 +131,32 @@ if exist "%~dp0Convert\Pandoc\pandoc.exe" (
   call :head "Pandoc: present. Document conversion will work."
 ) else (
   call :head "Pandoc: not present. To add it later, run installPandoc.cmd as an administrator."
+)
+exit /b 0
+
+:findPython
+rem Sets pythonExe to a REAL python.org Python, or leaves it empty. The
+rem Microsoft "app execution alias" at %LOCALAPPDATA%\Microsoft\WindowsApps
+rem answers `where python` and then advertises the Store rather than running
+rem anything, so that path is rejected; what remains must actually answer
+rem --version. Freshly installed Python is also looked for by location,
+rem because this console's PATH was inherited before the install happened.
+set "pythonExe="
+for /f "delims=" %%p in ('where python 2^>nul') do (
+  echo %%p | find /i "\WindowsApps\" >nul
+  if errorlevel 1 (
+    if not defined pythonExe set "pythonExe=%%p"
+  )
+)
+if not defined pythonExe (
+  for %%d in ("%ProgramFiles%" "%LOCALAPPDATA%\Programs\Python") do (
+    for /d %%s in ("%%~d\Python3*") do (
+      if exist "%%~s\python.exe" if not defined pythonExe set "pythonExe=%%~s\python.exe"
+    )
+  )
+)
+if defined pythonExe (
+  "%pythonExe%" --version >nul 2>&1
+  if errorlevel 1 set "pythonExe="
 )
 exit /b 0
