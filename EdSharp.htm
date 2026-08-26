@@ -228,21 +228,28 @@ editors. EdSharp then adds many beneficial features. Optional scripts
 for some screen readers provide further fine tuning of the speech
 interface for those users.</p>
 <h2 id="installation">Installation</h2>
-<p>The last page of the installer offers optional installs as
-checkboxes: Git with the GitHub command line, Node.js, Python, the free
-document tools for rich PDF conversion and the thesaurus, and Ollama
-with a chat model. Each label says whether that tool is missing, out of
-date, or already current, with version numbers. They run after you press
-Finish, each in its own window that shows progress and closes when it is
-done; none of them ever waits for a keypress. When they have all
-finished, a single Results box reports everything: the JAWS scripts, the
-NVDA add-on, pandoc, and each optional install by name, saying what is
-installed and which version, or what to run later for anything that is
-not. The summary is saved as EdSharp_setup_summary.txt in the logs
-folder under your local application data, and you can see it again at
-any time by running summarizeSetup.cmd from the program folder. The
-installation program for EdSharp is called EdSharp_Setup.exe. When
-executed, it prompts for a program folder, the default being<br />
+<p>The last page of the installer offers components as checkboxes,
+ticked or not according to what EdSharp itself gains from them. Python
+and the document tools, which give rich PDF conversion and the
+thesaurus, are ticked: together they cost about 155 megabytes and every
+user benefits. Git with the GitHub command line, Node.js, and Ollama
+with its chat model are not ticked; each serves a real feature, but each
+serves some people and not others, and Ollama alone costs about three
+gigabytes. The boxes are ordered by what they will do: those that
+install something come first, then those that update something, and last
+anything already current, offered only for repair. Each label says
+whether that tool is missing, out of date, or already current, with
+version numbers. They run after you press Finish, each in its own window
+that shows progress and closes when it is done; none of them ever waits
+for a keypress. When they have all finished, a single Results box
+reports everything: the JAWS scripts, the NVDA add-on, pandoc, and each
+optional install by name, saying what is installed and which version, or
+what to run later for anything that is not. The summary is saved as
+EdSharp_setup_summary.txt in the logs folder under your local
+application data, and you can see it again at any time by running
+summarizeSetup.cmd from the program folder. The installation program for
+EdSharp is called EdSharp_Setup.exe. When executed, it prompts for a
+program folder, the default being<br />
 <code>C:\Program Files\EdSharp</code> The installer also creates a
 program group for EdSharp on the Windows start menu, containing choices
 to launch EdSharp, read Documentation, or uninstall. Additional choices
@@ -989,11 +996,16 @@ you which script to run. If a PDF is a scan of images rather than text,
 no converter can help; that needs optical character recognition
 first.</p>
 <h3 id="spell-check">Spell Check</h3>
-<p>Press F7 to check spelling. EdSharp uses the spell checker built into
-Windows, so nothing extra is installed and no Microsoft Word is needed;
-words you have taught Windows in other programs are already known here.
-If text is selected, only that text is checked; otherwise the whole
-document is.</p>
+<p>Press F7 to check spelling. EdSharp uses Hunspell, the free spelling
+engine behind LibreOffice and Firefox, with a dictionary that ships in
+the Dictionaries folder beside the program. Nothing is registered with
+Windows and no Microsoft Word is needed. Words you add go in
+Dictionary.txt in your EdSharp settings folder, a plain list you can
+edit by hand. The SpellChecker setting chooses a different engine:
+"Windows" for the checker built into Windows, which knows the words you
+have taught Windows in other programs, or "Word" for the Microsoft Word
+dialog. If text is selected, only that text is checked; otherwise the
+whole document is.</p>
 <p>The check walks the document the way Compile walks errors: the first
 misspelling in the text comes first, then the next, in the order they
 appear. At each stop EdSharp selects the word in the document, so you
@@ -1016,19 +1028,20 @@ older versions of EdSharp did, which needs Word installed.</p>
 <h3 id="chat-with-ai">Chat with AI</h3>
 <p>Press F12 to talk with an AI model running on your own computer.
 Whatever is selected, or the whole document when nothing is selected, is
-sent along with the instruction you type, and the answer opens in a
-plain new window, titled by EdSharp like any unnamed document. The
-original window is never changed, and the answer arrives as an ordinary
-document: read it with your usual keys, save it, or convert it. This one
-command covers both conversation, by asking a question in an empty
-document, and transformation, by selecting text and saying what to do
-with it, such as summarize this, translate this to Spanish, or add
-docstrings to these functions. Everything runs locally through Ollama:
-your text never leaves the machine, there is no account and no charge,
-and one Ollama installation is shared by every application that uses it.
-The last page of EdSharp's installer offers Ollama and a starter chat
-model as a checkbox; the OllamaModel setting picks a different model
-whenever you like.</p>
+sent along with the instruction you type, and you type the prompt in a
+box that keeps its lines -- Enter starts a new line, Control+Enter
+submits -- and the answer opens in a plain new window, titled by EdSharp
+like any unnamed document. The original window is never changed, and the
+answer arrives as an ordinary document: read it with your usual keys,
+save it, or convert it. This one command covers both conversation, by
+asking a question in an empty document, and transformation, by selecting
+text and saying what to do with it, such as summarize this, translate
+this to Spanish, or add docstrings to these functions. Everything runs
+locally through Ollama: your text never leaves the machine, there is no
+account and no charge, and one Ollama installation is shared by every
+application that uses it. The last page of EdSharp's installer offers
+Ollama and a starter chat model as a checkbox; the OllamaModel setting
+picks a different model whenever you like.</p>
 <h3 id="compilers">Compilers</h3>
 <p>Press Control+Shift+F5 to pick the compiler for your work. The
 shipped set covers what Windows developers realistically use today: C#,
@@ -1266,6 +1279,13 @@ sharing an access key, patterns in the compiler table that are not legal
 expressions, conversion entries pointing at scripts that no longer
 exist, unbalanced braces, and which features still reach for Microsoft
 Office. The build runs it automatically and stops if a check fails.</p>
+<p>EdSharp speaks only what your screen reader cannot already tell you.
+Window titles, and the name, role and value of whatever has keyboard
+focus, are announced by JAWS, NVDA or Narrator on their own, so EdSharp
+stays quiet about them; what it does speak is the answer to a command,
+such as a count, a level, or the text a navigation command reached. Each
+message goes to one voice only: JAWS if it is running, otherwise NVDA,
+otherwise a system notification that Narrator reads.</p>
 <p>EdSharp writes a log for each session, named EdSharp followed by a
 time stamp, in the logs folder under your local application data, beside
 the setup log. It records the version, the environment, and every

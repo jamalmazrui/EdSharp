@@ -52,6 +52,8 @@ if ($pathLogFile -eq "") {
 Add-Content -LiteralPath $pathLogFile -Value "" -Encoding UTF8
 Add-Content -LiteralPath $pathLogFile -Value ("==== installJawsScripts  " + (Get-Date -Format "yyyy-MM-dd HH:mm:ss") + " ====") -Encoding UTF8
 
+$bScrubBlocked = $false
+
 function writeLog($sMessage) {
   $sLine = "{0:yyyy-MM-dd HH:mm:ss}  {1}" -f (Get-Date), $sMessage
   Add-Content -LiteralPath $pathLogFile -Value $sLine -Encoding UTF8
@@ -173,16 +175,40 @@ try {
             if (($sLine -match "=.*late[xc]") -or ($sLine -match "^\s*[^;=]*\bf12\b[^=]*=")) { $iDropped = $iDropped + 1 } else { $lKept += $sLine }
           }
           if ($iDropped -gt 0) {
-            Set-Content -LiteralPath $fileMap.FullName -Value $lKept
-            writeLog "  scrubbed $iDropped LaTeX binding(s) from $($fileMap.Name)"
+            # JAWS keeps its key map open while it is running, so this
+            # write can fail with a sharing error. That must never fail
+            # the installation: the scripts are already copied and
+            # working, and the only casualty is a retired key binding.
+            # It is retried after a moment, then reported as advice.
+            $bWritten = $false
+            foreach ($iTry in 1..3) {
+              try {
+                Set-Content -LiteralPath $fileMap.FullName -Value $lKept -Force -ErrorAction Stop
+                $bWritten = $true
+                break
+              } catch {
+                Start-Sleep -Milliseconds 400
+              }
+            }
+            if ($bWritten) { writeLog "  scrubbed $iDropped retired binding(s) from $($fileMap.Name)" }
+            else {
+              writeLog "  WARNING: $($fileMap.Name) is open in JAWS, so $iDropped retired binding(s) could not be removed."
+              writeLog "  Close JAWS, or restart it, and run installJawsScripts.cmd from the EdSharp folder."
+              $script:bScrubBlocked = $true
+            }
           }
         }
         foreach ($fileScript in @(Get-ChildItem -LiteralPath $sDestDir -File -Filter "*.jss")) {
           $sBody = [System.IO.File]::ReadAllText($fileScript.FullName)
           $sClean = [regex]::Replace($sBody, "(?ims)^[ \t]*Script[ \t]+\w*late[xc]\w*[ \t]*\(.*?^[ \t]*EndScript[ \t]*\r?\n?", "")
           if ($sClean -ne $sBody) {
-            [System.IO.File]::WriteAllText($fileScript.FullName, $sClean)
-            writeLog "  scrubbed LaTeX script block(s) from $($fileScript.Name)"
+            try {
+              [System.IO.File]::WriteAllText($fileScript.FullName, $sClean)
+              writeLog "  scrubbed retired script block(s) from $($fileScript.Name)"
+            } catch {
+              writeLog "  WARNING: $($fileScript.Name) is open in JAWS, so retired scripts could not be removed: $($_.Exception.Message)"
+              $script:bScrubBlocked = $true
+            }
           }
         }
         writeLog "JAWS $sVersion / $sBucket`: done"

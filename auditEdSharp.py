@@ -284,6 +284,153 @@ def checkPowerShellBalance(sScript, sName):
            "; ".join(lProblems) if lProblems else "braces, parentheses and brackets all balance")
 
 
+def checkSpellCheckInterfaces(sCode):
+    """The spell checker's COM declarations must match Windows' own.
+
+    A COM interface is a table of function pointers in a fixed order. A
+    gap of the wrong size calls the wrong function, and nothing says so
+    until the feature fails at run time -- which is exactly how the first
+    version of this code shipped. The layouts below are from Microsoft's
+    spellcheck.h; this compares them with what EdSharp declares."""
+    dLayouts = {
+        "ISpellCheckerFactory": ["get_SupportedLanguages", "IsSupported", "CreateSpellChecker"],
+        "ISpellChecker": ["get_LanguageTag", "Check", "Suggest", "Add", "Ignore", "AutoCorrect",
+                          "GetOptionValue", "get_OptionIds", "get_Id", "get_LocalizedName",
+                          "add_SpellCheckerChanged", "remove_SpellCheckerChanged",
+                          "GetOptionDescription", "ComprehensiveCheck"],
+        "ISpellingError": ["get_StartIndex", "get_Length", "get_CorrectiveAction", "get_Replacement"],
+    }
+    dGuids = {
+        "ISpellCheckerFactory": "8E018A9D-2415-4677-BF08-794EA61F94BB",
+        "ISpellChecker": "B6FD0B71-E2BC-4653-8D05-F197E412770A",
+        "IEnumSpellingError": "803E3BD4-2828-4410-8290-418D1D73C762",
+        "ISpellingError": "B7C82D61-FBE8-4B47-9B27-6C0D2E0DE0A3",
+    }
+    lProblems = []
+    for sName, sGuid in dGuids.items():
+        if not re.search(r'Guid\("' + sGuid + r'"\)[^\n]*\]\s*\ninterface ' + sName + r'\b', sCode, re.I):
+            lProblems.append(sName + " does not carry its documented interface identifier")
+    for sName, lMethods in dLayouts.items():
+        oBody = re.search(r"interface " + sName + r" \{(.*?)\n\} // " + sName, sCode, re.S)
+        if not oBody:
+            lProblems.append(sName + " was not found")
+            continue
+        iSlot = 0
+        for sLine in oBody.group(1).split("\n"):
+            sLine = sLine.split("//")[0].strip()
+            if not sLine:
+                continue
+            oGap = re.match(r"void _VtblGap\d+_(\d+)\(\);", sLine)
+            if oGap:
+                iSlot += int(oGap.group(1))
+                continue
+            sLine = re.sub(r"^\[[^\]]*\]\s*", "", sLine)
+            sLine = re.sub(r"\[[^\]]*\]\s*", "", sLine)
+            oProperty = re.match(r"[\w\.<>\[\]]+ (\w+) \{ get; \}", sLine)
+            oCall = re.search(r"\b(\w+)\s*\(", sLine)
+            sHere = ("get_" + oProperty.group(1)) if oProperty else (oCall.group(1) if oCall else None)
+            if sHere is None:
+                continue
+            if iSlot >= len(lMethods) or lMethods[iSlot] != sHere:
+                lProblems.append(sName + " slot " + str(iSlot) + " declares " + sHere
+                                 + " where Windows has " + (lMethods[iSlot] if iSlot < len(lMethods) else "nothing"))
+            iSlot += 1
+    report("Spell check interfaces match Windows' own layout", not lProblems,
+           "; ".join(lProblems) if lProblems else plural(len(dLayouts), "interface") + " checked")
+
+
+def normalizeKeyName(sKey):
+    """One spelling for a key, so that Alt+D7 and Alt+7 compare equal.
+
+    Hotkeys.ini spells keys the way a person says them, because its text
+    is what the Key Describer reads aloud; the code spells them the way
+    the framework names them. Neither is wrong, so both are reduced to a
+    common form before comparing."""
+    dSynonyms = {"back": "backspace", "oemquestion": "slash", "oemcomma": "comma",
+                 "oemperiod": "period", "oemminus": "dash", "oemplus": "equals",
+                 "oemsemicolon": "semicolon", "semi-colon": "semicolon",
+                 "oemtilde": "backquote", "oemquotes": "quote", "oempipe": "backslash",
+                 "oemopenbrackets": "leftbracket", "oem6": "rightbracket",
+                 "oemclosebrackets": "rightbracket", "]": "rightbracket", "[": "leftbracket",
+                 "oem5": "backslash", "\\": "backslash", "apostrophe": "quote",
+                 "oem1": "semicolon", "oem2": "slash", "oem3": "backquote",
+                 "oem4": "leftbracket", "oem7": "quote", "oem8": "backquote",
+                 "rightarrow": "right", "leftarrow": "left", "uparrow": "up", "downarrow": "down"}
+    lParts = []
+    for sPart in sKey.split("+"):
+        sPart = sPart.strip().lower().replace("&", "")
+        if not sPart:
+            continue
+        if len(sPart) == 2 and sPart[0] == "d" and sPart[1].isdigit():
+            sPart = sPart[1]
+        lParts.append(dSynonyms.get(sPart, sPart))
+    return "+".join(lParts)
+
+
+def checkCommandsDescribed(sCode, sHotkeys):
+    """Every command must have a description, and the right key with it.
+
+    Key Describer mode reads these lines aloud. A command missing from
+    Hotkeys.ini answers "No description available", which is exactly the
+    moment a person wanted to be told something -- and a description
+    naming the wrong key is worse than none."""
+    # The built-in table in EdSharp.cs is the source of truth, so it is
+    # checked first; Hotkeys.ini is a supplement anyone may edit.
+    dDescribed = {}
+    oTable = re.search(r"c_aCommandSummaries = new string\[\] \{\n(.*?)\n\}; // c_aCommandSummaries", sCode, re.S)
+    if oTable:
+        for sRow in re.findall(r'^"((?:[^"\\]|\\.)*)",?$', oTable.group(1), re.M):
+            sRow = sRow.replace('\\"', '"').replace("\\\\", "\\")
+            if "\\t" not in sRow:
+                continue
+            sName, sValue = sRow.split("\\t", 1)
+            dDescribed[sName] = sValue
+    else:
+        lFailures.append("the built-in description table was not found in EdSharp.cs")
+    for sLine in sHotkeys.replace("\r\n", "\n").split("\n"):
+        sLine = sLine.strip()
+        if "=" not in sLine or sLine.startswith(";") or sLine.startswith("["):
+            continue
+        sName, sValue = sLine.split("=", 1)
+        if sName.strip() not in dDescribed:
+            dDescribed[sName.strip()] = sValue.strip()
+    lMissing = []
+    lWrongKey = []
+    lCommands = re.findall(r'CreateMenuItem\(\s*"([^"]*)"\s*,\s*"([^"]*)"', sCode)
+    for sText, sKey in lCommands:
+        sName = sText.replace("&", "").replace("...", "").strip()
+        sValue = dDescribed.get(sName, dDescribed.get("Say " + sName, ""))
+        if sValue == "":
+            lMissing.append(sName)
+            continue
+        sDescribedKey = sValue.split(",")[0].strip()
+        if sKey and sDescribedKey and normalizeKeyName(sDescribedKey) != normalizeKeyName(sKey):
+            lWrongKey.append(sName + " is bound to " + sKey + " but described as " + sDescribedKey)
+    report("Every command has a description in the program", not lMissing,
+           "; ".join(lMissing) if lMissing else plural(len(lCommands), "command") + " checked")
+    report("Descriptions name the right key", not lWrongKey,
+           "; ".join(lWrongKey) if lWrongKey else "keys agree with the bindings")
+
+
+def checkInterfaceAccessibility(sCode):
+    """A public method may not return or accept a private type.
+
+    The COM interfaces are declared inside the frame class with no
+    modifier, which makes them private; a public method handing one back
+    fails to compile with "inconsistent accessibility". That cost a build
+    on 26 August 2026, so it is checked here where it costs a second."""
+    lPrivateTypes = re.findall(r"^interface (\w+) \{", sCode, re.M)
+    lProblems = []
+    for oMatch in re.finditer(r"^public\s+([\w<>\[\], .]+?)\s+(\w+)\s*\(([^)]*)\)\s*\{", sCode, re.M):
+        sReturn, sName, sArguments = oMatch.groups()
+        lTypes = set(re.findall(r"\b(\w+)\b", sReturn + " " + sArguments))
+        lExposed = sorted(lTypes.intersection(lPrivateTypes))
+        if lExposed:
+            lProblems.append(sName + " exposes " + ", ".join(lExposed))
+    report("Public methods do not expose private interfaces", not lProblems,
+           "; ".join(lProblems) if lProblems else plural(len(lPrivateTypes), "interface") + " checked")
+
+
 def checkOfficeDependencies(sCode):
     """Report which features still reach for Microsoft Office, by name."""
     lUses = []
@@ -340,11 +487,19 @@ def main():
         checkShortcutsUnique(sCode)
         checkAccessKeysUnique(sCode)
         checkOfficeDependencies(sCode)
+        checkSpellCheckInterfaces(sCode)
+        checkInterfaceAccessibility(sCode)
+        sHotkeys = readFile("Hotkeys.ini")
+        if sHotkeys is None:
+            report("Hotkeys.ini is present", False, "not found in " + pathRoot)
+        else:
+            checkCommandsDescribed(sCode, sHotkeys)
     if sInix2 is not None:
         checkBracesBalance(sInix2, "Inix.cs")
-    sBuild = readFile("BuildEdSharp.ps1")
-    if sBuild is not None:
-        checkPowerShellBalance(sBuild, "BuildEdSharp.ps1")
+    for sScriptName in ("BuildEdSharp.ps1", "summarizeSetup.ps1", "installJawsScripts.ps1"):
+        sScript = readFile(sScriptName)
+        if sScript is not None:
+            checkPowerShellBalance(sScript, sScriptName)
     if sInix is not None:
         checkRegexesCompile(sInix)
         checkConversionScriptsExist(sInix)

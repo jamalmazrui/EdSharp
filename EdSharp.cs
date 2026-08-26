@@ -65,6 +65,7 @@ public static string DefaultIniFile;
 public static string HotkeyIniFile;
 public static string IniFile;
 public static string LogFile = "";
+public static string SpellCheckError = "";
 public static string IndentModeFile;
 public static string TempFile;
 public static List<string> TempFiles = new List<string>();
@@ -638,8 +639,13 @@ this.Show();
 } // child constructor
 
 public void CheckFileTime(object sender, EventArgs e) {
+// Moving between windows leaves Key Describer mode, since the mode
+// belongs to the window it was switched on in. The status bar records
+// it; it is not SPOKEN here, because a screen reader is already
+// announcing the window switch and a second voice on top of that is
+// exactly the chatter this handler used to add.
 if (App.Frame.KeyDescriber) {
-App.Frame.SetMessage("No Key Describer");
+App.Frame.SetStatus("No Key Describer");
 App.Frame.KeyDescriber = false;
 }
 
@@ -1955,6 +1961,279 @@ foreach (string sBinaryFormat in sBinaryFormats.Split(' ')) if (sExt == sBinaryF
 return 0;
 } // GetViewLevel method
 
+// ===== Command descriptions ================================================
+// Every command's key and description, in the program itself. They used
+// to live only in Hotkeys.ini beside the executable, which had two
+// faults: a command added to the code but not to the file answered "No
+// description available" in Key Describer mode, and -- worse -- the
+// installer leaves an existing Hotkeys.ini alone, so a computer that had
+// EdSharp before kept an old file and never saw new descriptions at all.
+// That is what happened with Chat with AI on 26 August 2026.
+//
+// So the table below is the source of truth, shipped inside the binary
+// where it cannot go stale. Hotkeys.ini is still read, and still wins
+// where it has an entry, so anyone who has customized a description
+// keeps it; anything the file lacks is answered from here.
+//
+// Each line is the command name, a tab, then the key and the
+// description separated by a comma -- the same shape as the file, so the
+// two can be compared, and the audit script does compare them.
+static readonly string[] c_aCommandSummaries = new string[] {
+"Launch EdSharp\tAlt+Control+E, Launch or activate the EdSharp application via a Windows desktop shortcut",
+"Hotkey Summary\tAlt+Shift+H, Display this list of command names, hot keys, and descriptions in a new window",
+"Documentation\tF1, Open Documentation in web browser",
+"About\tAlt+F1, Display version and release date",
+"History of Changes\tShift+F1, Display list of fixes and improvements",
+"Key Describer\tControl+F1, Toggle a mode in which pressing a key describes its action",
+"Alternate Menu\tAlt+F10, Present all commands in a single, alphabetized list",
+"Context Menu\tShift+F10, Pick a command from those available to Windows Explorer for the current file extension",
+"SendTo Menu\tControl+F10, Pick a command from those available as Windows \"Send To\" options",
+"Select All\tControl+A, Select all text",
+"Unselect All\tControl+Shift+A, Clear text selection",
+"Select Chunk\tControl+Space, Select contiguous sequence of non-blank characters at cursor, or select the next chunk if a selection already exists",
+"Say Selected\tShift+Space, or JAWSKey+Shift+DownArrow, Say selected text, or spell if repeated",
+"Say Chunk\tShift+BackSpace, Say chunk at cursor",
+"Start Selection\tF8, Mark starting point of text to be selected",
+"Complete Selection\tShift+F8, Select text from starting point to cursor",
+"Reselect\tControl+Shift+F8, Reselect between previous start and end positions",
+"Go to Start of Selection\tAlt+Shift+F8, Return to start position of selection",
+"Copy All\tControl+F8, Copy all text to clipboard",
+"Read All\tAlt+F8, Say all text (without moving cursor)",
+"Say Address\tAlt+A, Say line, column, and percent position of cursor",
+"Say Block\tAlt+B, Say the rest of the current code block, or the whole block if repeated",
+"Say Braces\tAlt+Shift+], Say number of braces on either side of cursor",
+"Say Indentation\tAlt+I, Say the indentation level of the current line, or the preceding line with less indentation if repeated",
+"Say Yield\tAlt+Y, Say number of characters, words, and lines in all or selected text",
+"Say Status\tAlt+Z, Say whether current file has been modified since last save to disk, or say its character encoding if repeated",
+"Say Clipboard\tAlt+Apostrophe, Say clipboard text, or spell if repeated",
+"Say Time\tAlt+Semi-colon, Say current time and date",
+"Insert Time\tAlt+Shift+Semi-colon, Insert current time and date",
+"Calculate Date\tControl+Shift+Semi-colon, Calculate and insert date",
+"Configuration Options\tAlt+Shift+C, Adjust configuration options through a dialog",
+"Set Default Font and Color\tAlt+Shift+Equals, Set default font and color for editing window",
+"Manual Options\tAlt+Shift+M, Adjust options by directly editing the main configuration file",
+"Reset Configuration\tAlt+Shift+0, Revert to default options, or define a new compiler configuration",
+"Copy\tControl+C, Copy selected text to clipboard, or copy current line if no selection",
+"Copy Append\tAlt+C, Append selected text to clipboard, or append current line if no selection",
+"Copy Rich Text\tControl+Shift+C, Copy selected text with formatting to clipboard",
+"Cut\tControl+X, Cut selected text to clipboard, or cut current line if no selection",
+"Cut Append\tAlt+X, Cut and append selected text to clipboard, or cut and append current line if no selection",
+"Paste\tControl+V, Paste text from clipboard",
+"Paste File\tControl+Shift+V, Insert another file at cursor position",
+"Append from Clipboard\tAlt+7, Toggle a mode in which text copied to the clipboard is also saved to a file",
+"Undo\tControl+Z, Undo the last editing action",
+"Redo\tControl+Shift+Z, Redo the last action that was undone",
+"Save Snippet\tAlt+S, Save all or selected text to a snippet file",
+"Invoke Snippet\tAlt+V, Pick snippet file to paste or execute",
+"View Snippet\tAlt+Shift+V, Pick snippet file to view or edit",
+"Yield with Regular Expression\tControl+Shift+Y, Count parts of text matching a regular expression",
+"Extract with Regular Expression\tControl+Shift+E, Extract text matching a regular expression, putting matches in a new window",
+"Replace with Regular Expression\tControl+Shift+R, Search and replace regular expression in all or selected text",
+"Replace\tControl+R, Search and replace string in all or selected text",
+"File Find\tAlt+Shift+F, Open file from list of files containing a search string",
+"Forward Find\tControl+F, Search forward for string in all or selected text",
+"Reverse Find\tControl+Shift+F, Search backward for string",
+"Forward Find with Regular Expression\tControl+F3, Search forward for regular expression in all or selected text",
+"Reverse Find with Regular Expression\tControl+Shift+F3, Search forward for regular expression in all or selected text",
+"Forward Find at Cursor\tAlt+F3, Search forward for chunk or selected text",
+"Reverse Find at Cursor\tAlt+Shift+F3, Search backward for chunk or selected text",
+"Forward Find Again\tF3, Search forward for next match",
+"Reverse Find Again\tShift+F3, Search backward for previous match",
+"Word Wrap\tControl+W, Word wrap lines",
+"Unwrap\tControl+Shift+W, Unwrap lines",
+"Guard Document\tControl+F7, Make document read-only",
+"No Guard\tControl+Shift+F7, Clear read-only status",
+"Toggle Punctuation\tJAWSKey+Grave, Accent, Toggle JAWS voice between all and no punctuation",
+"Voice Louder\tAlt+Grave, Increase JAWS voice volume by 5%",
+"Voice Softer\tAlt+Shift+Grave, Decrease JAWS voice volume by 5%",
+"Voice Faster\tControl+Grave, Increase JAWS voice rate by 5%",
+"Voice Slower\tControl+Shift+Grave, Decrease JAWS voice rate by 5%",
+"Extra Speech Toggle\tControl+Shift+X, Toggle extra speech messages on or off, redirecting to Speech.log file",
+"Extra Speech Log\tAlt+Shift+X, Open speech.log file in a new window",
+"Go to Percent\tControl+G, Go to percentage point in document",
+"Go to Percent Again\tAlt+G, Repeat Go command",
+"Jump to Line\tControl+J, Jump to line number or to line, column position",
+"Jump to Line Again\tAlt+J, Repeat Jump command",
+"Set Bookmark\tControl+K, Set bookmark at cursor position",
+"Clear Bookmark\tControl+Shift+K, Clear bookmark at cursor position",
+"Go to Bookmark\tAlt+K, Go to bookmark in current file",
+"Set Favorite\tControl+L, Add current file to the list of favorites",
+"Clear Favorite\tControl+Shift+L, Clear current file from the list of favorites",
+"List Favorites\tAlt+L, Open a file from the list of favorites",
+"Recent Files\tAlt+R, Open a file from the list of those recently used",
+"New\tControl+N, Open a new editing window",
+"New from Clipboard\tControl+Shift+N, Open a new editing window containing clipboard text",
+"Open\tControl+O, Open file",
+"Open Other Format\tControl+Shift+O, Open file in another format and convert it to text",
+"Open Again\tAlt+O, Reload the current file from disk",
+"Properties\tAlt+Enter, display Windows properties dialog for current file",
+"Save\tControl+S, Save",
+"Save As\tControl+Shift+S, Save As",
+"Save Copy\tAlt+Shift+S, Save copy of document using a different name",
+"Export Format\tAlt+Shift+E, Export document to another format",
+"Print\tControl+P, Print current file",
+"Mail Body\tControl+M, Mail current file as body of an email message",
+"Mail Attachment\tControl+Shift+M, Mail current file as an email attachment",
+"Burn to CD\tAlt+Shift+B, Burn a list of files or folders to a CD",
+"Web Download\tAlt+Shift+W, Pick files to download from a web page or the current document",
+"Web Client Utilities\tAlt+Shift+Space, Pick a web client utility to run",
+"Run\tF5, Execute current file, based on its extension",
+"Run at Cursor\tShift+F5, Execute a web URL or email address at cursor position or in selected text",
+"Prompt Command\tAlt+F5, Prompt for a command line to execute and say its standard output",
+"Review Output\tAlt+Shift+F5, Open standard output of last prompt or compile command in a new editing window",
+"Compile\tControl+F5, Compile source code, say output, and jump to error position",
+"Pick Compiler\tControl+Shift+F5, Pick a compiler or interpreter from the list of those configured",
+"Say Compiler\tAlt+0, Say current compiler and folder",
+"Go to Folder\tControl+0, Go to folder containing recent or favorite files",
+"Go to Special Folder\tControl+Shift+0, Go to special folder of Windows",
+"Go to Environment\tControl+Shift+G, Go to interactive environment of current compiler",
+"Spell Check\tF7, Spell check all or selected text",
+"Thesaurus\tShift+F7, Look up synonyms for word at cursor",
+"Lookup Term\tAlt+F7, Look up information from dictionary.com, thesaurus.com, and wikipedia.org",
+"Translate Language\tAlt+Shift+F7, Translate all or selected text from one natural language to another",
+"Say Path\tAlt+P, Say full path of current file",
+"Path to Clipboard\tAlt+Shift+P, Copy full path of current file to clipboard",
+"Path List\tControl+Shift+P, Generate a list of files in a new editing window",
+"Special Character\tF2, Insert character indirectly by specifying its Unicode value",
+"Quote\tControl+Q, Add prefix sequence to current or selected lines",
+"Unquote\tControl+Shift+Q, Remove prefix sequence from current or selected lines",
+"Join Lines\tControl+Shift+J, Word wrap lines in all or selected paragraphs",
+"Hard Line Break\tControl+Shift+H, Set the maximum width of lines in all or selected text",
+"Upper Case\tControl+U, Convert current or selected characters to upper case",
+"Lower Case\tControl+Shift+U, Convert current or selected characters to lower case",
+"Proper Case\tAlt+U, Convert current or selected characters to proper case",
+"Swap Case\tAlt+Shift+U, Convert lower case characters to upper case, and vice versa",
+"Yield Encoding\tAlt+Shift+Y, Render all or selected text based on a character encoding",
+"Format Code\tControl+4, Arrange indentation and other stylistic conventions in a C-like language",
+"Repeat Line\tControl+Y, Copy current line below it",
+"Evaluate Expression\tControl+Equals, Evaluate current line or selected text as a JScript.NET expression and copy the result below",
+"Replace Tokens\tControl+Shift+Equals, Swap user-defined tokens with their computed results in all or selected text",
+"Transform Files\tAlt+Equals, Apply a set of search and replace tasks to a list of files in the current window",
+"Trim Blanks\tControl+Shift+Enter, Trim leading and trailing blanks from the current or selected lines, and remove more than two consecutive blank lines",
+"End Character\tAlt+End, Go to last non-blank character of line and read it",
+"Home Character\tAlt+Home, Go to first non-blank character of line and read it",
+"Next Word\tControl+RightArrow, Go to next word and read it",
+"Prior Word\tControl+LeftArrow, Go to previous word and read it",
+"Next Chunk\tAlt+RightArrow, Go to next chunk and read it",
+"Prior Chunk\tAlt+LeftArrow, Go to previous chunk and read it",
+"Next Sentence\tAlt+DownArrow, Go to next sentence and read it",
+"Prior Sentence\tAlt+UpArrow, Go to previous sentence and read it",
+"Next Paragraph\tControl+DownArrow, Go to next paragraph and read it",
+"Prior Paragraph\tControl+UpArrow, Go to previous paragraph and read it",
+"Delete Right\tControl+Shift+Delete, Delete from cursor to end of line",
+"Delete Left\tControl+Shift+Backspace, Delete from cursor to start of line",
+"Delete Down\tAlt+Shift+Delete, Delete from cursor to bottom of file",
+"Delete Up\tAlt+Shift+Backspace, Delete from cursor to top of file",
+"Delete Line\tAlt+Backspace, Delete current line",
+"Delete Hard Line\tControl+D, Delete line ending in hard line break",
+"Delete Paragraph\tControl+Shift+D, Delete past one or more blank lines",
+"Delete File\tAlt+Shift+D, Delete current file on disk",
+"Rename\tAlt+Shift+R, Rename current file on disk",
+"Next Section\tControl+PageDown, Go to next section",
+"Prior Section\tControl+PageUp, Go to Prior Section",
+"Go to Section\tF6, Go to section in body from topic in table of contents",
+"Go to Contents\tShift+F6, Go to topic in table of contents from section in body",
+"Search for Topic\tControl+F6, Search for a topic based on text in its heading",
+"Search for Topic Again\tAlt+F6, Search again for the next matching topic",
+"Topic\tAlt+T, Say topic of current section",
+"Text Contents\tAlt+Shift+T, Generate and prepend a table of contents to the current document",
+"Section Break\tControl+Enter, Insert a section break at the cursor position",
+"HTML Format\tControl+H, Convert current document to HTML in a new window",
+"Text Convert\tControl+T, Convert other formats to text files with the same name except for a .txt extension",
+"Text Combine\tControl+Shift+T, Convert other formats to text and combine them in a new editing window",
+"Justify\tAlt+Shift+J, Set justification of cursor or selected text",
+"Style\tAlt+Shift+Slash, Set style of cursor or selected text",
+"Baseline\tAlt+Shift+6, Set vertical alignment of cursor or selected text",
+"Set Selection Font\tAlt+Shift+Dash, Set font of cursor or selected text",
+"Next Alignment\tControl+RightBracket, Go to next change in justification",
+"Prior Alignment\tControl+LeftBracket, Go to previous change in justification",
+"Next Style\tControl+Slash, Go to next change in style",
+"Prior Style\tControl+Shift+Slash, Go to previous change in style",
+"Next Baseline\tControl+6, Go to next change in baseline",
+"Prior Baseline\tControl+Shift+6, Go to previous change in baseline",
+"Next Font\tControl+Dash, Go to next change in font",
+"Prior Font\tControl+Shift+Dash, Go to previous change in font",
+"Say Font\tAlt+Dash, Say current font and color",
+"Say Styles\tAlt+Slash, Say current justification and styles",
+"Infer Indent\tAlt+RightBracket, Infer the indent unit of the current document, or configure EdSharp accordingly if repeated",
+"Toggle Indentation\tWindows+Grave, Toggle announcement of indentation by JAWS",
+"Indent Mode\tAlt+Shift+I, Toggle auto indent with Enter, and announcement of indentation changes",
+"Enter New Line\tEnter, Start new line at left margin",
+"Indent New Line\tShift+Enter, Start new line with same indentation as current one",
+"Indent New Line Prior\tAlt+Shift+Enter, insert prior line with same indentation as current one",
+"Indent\tTab, Indent current line or selected text by one unit",
+"Outdent\tShift+Tab, Reduce indentation of current or selected lines by one unit",
+"Align\tAlt+Shift+A, Adjust indentation of current or selected lines according to prior line",
+"Next Block\tControl+B, Go to the next block of code, having the same or less indentation",
+"Prior Block\tControl+Shift+B, Go to the previous block of code, having the same or less indentation",
+"Next Indent\tControl+I, Go to the next change in indentation",
+"Prior Indent\tControl+Shift+I, Go to the previous change in indentation",
+"Right Brace\tControl+Shift+RightBracket, Search forward for matching right brace character",
+"Left Brace\tControl+Shift+LeftBracket, Search backward for matching left brace character",
+"End Tag\tControl+Shift+Period, go to closing tag of HTML element",
+"Start Tag\tControl+Shift+Comma, Go to opening tag of HTML element",
+"Next Part\tAlt+PageDown, Go to next match of NavigatePart setting",
+"Prior Part\tAlt+PageUp, Go to previous match of NavigatePart setting",
+"Go to Part\tAlt+Shift+G, Pick a part to go to",
+"Order Items\tAlt+Shift+O, Sort items alphabetically in all or selected text",
+"Reverse Items\tAlt+Shift+Z, Reverse order of all or selected items of text",
+"Keep Unique Items\tAlt+Shift+K, Discard repetitive items in all or selected text",
+"Number Items\tAlt+Shift+N, Insert numbers at the start of items in all or selected text",
+"List Different Items\tAlt+Shift+L, Compare two lists and put non-overlapping items in a new window",
+"Query Common Items\tAlt+Shift+Q, Compare two lists and put overlapping items in a new window",
+"PyDent\tAlt+LeftBracket, Convert from PyBrace format, or reformat typical Python code, using the IndentUnit setting and adding comments at ends of blocks",
+"PyBrace\tAlt+Shift+LeftBracket, Convert from PyDent format, or reformat typical Python code, using braces instead of indentation and adding comments at ends of blocks",
+"Insert Script Path\tControl+I, Insert JAWS script path in Open or Save Dialog",
+"Insert All Users Path\tControl+Shift+I, Insert JAWS All Users path in Open or Save Dialog",
+"Explorer Folder\tAlt+Backslash, Open Windows Explorer in the EdSharp program folder, data folder, or current folder",
+"Command Prompt\tControl+Backslash, Open a command prompt in the EdSharp program folder, data folder, or current folder",
+"Environment Variables\tControl+E, Change Windows environment variables for the current process, user, or system",
+"Next Window\tControl+Tab, Cycle to next editing window",
+"Prior Window\tControl+Shift+Tab, Cycle to previous editing window",
+"Windows Open\tShift+F4, Say titles of current editing windows",
+"Current Windows\tF4, Activate an editing window from a list of those currently open",
+"Close Window\tControl+F4, Close current editing window",
+"Close All but Current Window\tControl+Shift+F4, Close all editing windows except the current one",
+"Exit EdSharp\tAlt+F4, Exit the EdSharp application",
+"Arrange Icons\tAlt+F11, Arrange open windows",
+"Cascade\tControl+F11, Cascade open windows",
+"Tile Horizontal\tAlt+Shift+F11, Tile open windows horizontally",
+"Tile Vertical\tControl+Shift+F11, Tile open windows vertically",
+"Elevate Version\tF11, Download latest EdSharp version and run installer (after confirming)",
+"Set on Favorite List\tControl+L, Add or remove the current file on the favorites list",
+"Markdown to Plain Text\t, Convert the Markdown in this window to plain text",
+"HTML to Markdown\t, Convert the HTML in this window to Markdown",
+"HTML to Plain Text\t, Convert the HTML in this window to plain text, keeping paragraphs and lists",
+"Preview Markdown\tControl+F9, Show this Markdown as a formatted page in a preview window",
+"Preview Markdown in Web Browser\t, Show this Markdown as a formatted page in your web browser, where diagrams are drawn",
+"Check Markdown\tAlt+F9, Report problems in this Markdown: heading jumps, images without alt text, bare web addresses, unclosed code fences, mismatched table rows, and link references defined but never used",
+"Run Code Blocks\tAlt+Shift+F9, Run this document's sql and jscript code blocks and put each block's results below it",
+"Chat with AI\tF12, Ask an AI model on this computer a question; the answer opens in a new window, and the document travels with the question when your wording refers to it",
+"Chat about Document\tShift+F12, Ask an AI model on this computer about the open text: the selection when text is selected, the whole document when it is not",
+"Tutorial\tControl+Shift+F1, Open the EdSharp tutorial in your web browser",
+"Sample Programs\tControl+Shift+F2, List the sample programs that ship with EdSharp and open one",
+"Copy Log\tControl+F12, Copy this session's log path to the clipboard, as a file for pasting into a mail message and as text"
+}; // c_aCommandSummaries
+
+static Dictionary<string, string> dCommandSummaries = null;
+
+// The table as a lookup, built once.
+public static string builtInSummary(string sCommand) {
+if (dCommandSummaries == null) {
+dCommandSummaries = new Dictionary<string, string>();
+foreach (string sLine in c_aCommandSummaries) {
+int iTab = sLine.IndexOf('\t');
+if (iTab <= 0) continue;
+string sName = sLine.Substring(0, iTab);
+if (!dCommandSummaries.ContainsKey(sName)) dCommandSummaries.Add(sName, sLine.Substring(iTab + 1));
+}
+}
+string sValue;
+if (dCommandSummaries.TryGetValue(sCommand, out sValue)) return sValue;
+if (dCommandSummaries.TryGetValue("Say " + sCommand, out sValue)) return sValue;
+return "";
+} // builtInSummary method
+
 public string[] GetKeySummary(ToolStripMenuItem item) {
 string sCommand = item.Name;
 // KeyMap (Homer) is the single source. The first time a command's summary
@@ -1963,8 +2242,13 @@ string sCommand = item.Name;
 // cost nothing. The Hotkeys.ini format and parse are unchanged.
 string sValue = KeyMap.getSummary(sCommand);
 if (sValue.Length == 0) {
+// Hotkeys.ini first, so a description someone has edited still wins,
+// then the table built into the program, which cannot be missing or
+// out of date. Only a command in neither is left undescribed, and the
+// audit script makes sure there is no such command.
 sValue = Ini.ReadValue(App.HotkeyIniFile, "Hotkeys", sCommand, "");
 if (sValue.Length == 0) sValue = Ini.ReadValue(App.HotkeyIniFile, "Hotkeys", "Say " + sCommand, "");
+if (sValue.Length == 0) sValue = builtInSummary(sCommand);
 if (sValue.Length == 0) sValue = "No description available";
 KeyMap.setSummary(sCommand, sValue);
 }
@@ -1992,6 +2276,17 @@ string sOptions = (string) menuItem.Tag;
 sOptions = " " + sOptions.Trim().ToLower() + " ";
 //sLabel = menuItem.Text.Replace("&", "").Replace(" ...", "").Split('\t')[0];
 sLabel = menuItem.Name;
+// Exit EdSharp switches the mode OFF and then goes ahead. Turning it off
+// matters as much as exiting: closing a document may ask whether to save
+// it, and those questions must answer to ordinary keys rather than being
+// caught and described. The change of mode is announced as usual, so
+// nothing happens silently.
+if (this.KeyDescriber && sLabel == "Exit EdSharp") {
+this.KeyDescriber = false;
+AddMessage("No Key Describer");
+}
+// Everything else is described instead of done -- except Key Describer
+// itself, or the mode could not be switched off.
 if (this.KeyDescriber && sLabel != "Key Describer") {
 string[] aSummary = GetKeySummary(menuItem);
 SetMessage(aSummary[0]);
@@ -5161,7 +5456,11 @@ if (menuItem == menuMiscChatWithAI || menuItem == menuMiscChatWithDocument) {
 // whole document otherwise. The status line names the choice, so it is
 // never a mystery.
 string sContext = "";
-string sInstruction = Dialog.Input("Chat with AI", "Instruction", App.ReadData("ChatInstruction", ""), "Chat").Trim();
+// A prompt is often several lines -- an instruction, then an example, or
+// a list of things to change -- so the box is a proper multiline one:
+// Enter starts a new line, Tab reaches OK and then Cancel, and
+// Control+Enter submits from anywhere in the dialog.
+string sInstruction = Dialog.Prompt("AI Chat", "Prompt", App.ReadData("ChatInstruction", "")).Trim();
 if (sInstruction.Length == 0) return;
 App.WriteData("ChatInstruction", sInstruction);
 if (rtb.SelectionLength > 0) { sContext = rtb.SelectedText; AddMessage("With selection"); }
@@ -7411,29 +7710,70 @@ App.Frame.Child.RTB.Select();
 // interfaces are declared here rather than referenced from an assembly,
 // keeping EdSharp a single binary.
 
-[ComImport, Guid("B6FD0B71-E2BC-4653-8D05-F197E412770B"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+// The interfaces exactly as Windows declares them in spellcheck.h.
+//
+// EVERY METHOD IS DECLARED, in order, including the ones EdSharp never
+// calls. The previous version skipped them with _VtblGap markers, which
+// exist for exactly that purpose -- but the object came back refusing to
+// be an ISpellChecker, which is the signature of a call landing on the
+// wrong slot: the gaps were not counted as the header counts them.
+// Naming every slot removes the guesswork. An unused method needs no
+// real signature, because it is never called, only counted.
+
+[ComImport, Guid("8E018A9D-2415-4677-BF08-794EA61F94BB"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 interface ISpellCheckerFactory {
-void _VtblGap1_1();
-int IsSupported([MarshalAs(UnmanagedType.LPWStr)] string languageTag, out bool value);
-void _VtblGap2_1();
-ISpellChecker CreateSpellChecker([MarshalAs(UnmanagedType.LPWStr)] string languageTag);
+void get_SupportedLanguages();
+void IsSupported([MarshalAs(UnmanagedType.LPWStr)] string languageTag, [MarshalAs(UnmanagedType.Bool)] out bool value);
+// Returned as a plain object rather than as ISpellChecker: the runtime
+// would otherwise demand that interface at the moment of return and
+// throw if the answer were no, leaving nothing to examine. Asking
+// afterwards lets the code say what it actually received.
+[return: MarshalAs(UnmanagedType.IUnknown)] object CreateSpellChecker([MarshalAs(UnmanagedType.LPWStr)] string languageTag);
 } // ISpellCheckerFactory interface
 
 [ComImport, Guid("B6FD0B71-E2BC-4653-8D05-F197E412770A"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 interface ISpellChecker {
-void _VtblGap1_1();
-IEnumSpellingError Check([MarshalAs(UnmanagedType.LPWStr)] string text);
-[return: MarshalAs(UnmanagedType.Interface)] object Suggest([MarshalAs(UnmanagedType.LPWStr)] string word);
+void get_LanguageTag();
+[return: MarshalAs(UnmanagedType.Interface)] IEnumSpellingError Check([MarshalAs(UnmanagedType.LPWStr)] string text);
+[return: MarshalAs(UnmanagedType.Interface)] System.Runtime.InteropServices.ComTypes.IEnumString Suggest([MarshalAs(UnmanagedType.LPWStr)] string word);
 void Add([MarshalAs(UnmanagedType.LPWStr)] string word);
 void Ignore([MarshalAs(UnmanagedType.LPWStr)] string word);
 void AutoCorrect([MarshalAs(UnmanagedType.LPWStr)] string from, [MarshalAs(UnmanagedType.LPWStr)] string to);
-void _VtblGap2_4();
-IEnumSpellingError ComprehensiveCheck([MarshalAs(UnmanagedType.LPWStr)] string text);
+void GetOptionValue();
+void get_OptionIds();
+void get_Id();
+void get_LocalizedName();
+void add_SpellCheckerChanged();
+void remove_SpellCheckerChanged();
+void GetOptionDescription();
+[return: MarshalAs(UnmanagedType.Interface)] IEnumSpellingError ComprehensiveCheck([MarshalAs(UnmanagedType.LPWStr)] string text);
 } // ISpellChecker interface
+
+// ISpellChecker2 is ISpellChecker with one more method. An object that
+// refuses the first identifier may accept this one, so it is worth
+// asking before giving up.
+[ComImport, Guid("E7ED1C71-87F7-4378-A840-C9200DACEE47"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface ISpellChecker2 {
+void get_LanguageTag();
+[return: MarshalAs(UnmanagedType.Interface)] IEnumSpellingError Check([MarshalAs(UnmanagedType.LPWStr)] string text);
+[return: MarshalAs(UnmanagedType.Interface)] System.Runtime.InteropServices.ComTypes.IEnumString Suggest([MarshalAs(UnmanagedType.LPWStr)] string word);
+void Add([MarshalAs(UnmanagedType.LPWStr)] string word);
+void Ignore([MarshalAs(UnmanagedType.LPWStr)] string word);
+void AutoCorrect([MarshalAs(UnmanagedType.LPWStr)] string from, [MarshalAs(UnmanagedType.LPWStr)] string to);
+void GetOptionValue();
+void get_OptionIds();
+void get_Id();
+void get_LocalizedName();
+void add_SpellCheckerChanged();
+void remove_SpellCheckerChanged();
+void GetOptionDescription();
+[return: MarshalAs(UnmanagedType.Interface)] IEnumSpellingError ComprehensiveCheck([MarshalAs(UnmanagedType.LPWStr)] string text);
+void Remove([MarshalAs(UnmanagedType.LPWStr)] string word);
+} // ISpellChecker2 interface
 
 [ComImport, Guid("803E3BD4-2828-4410-8290-418D1D73C762"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 interface IEnumSpellingError {
-ISpellingError Next();
+[return: MarshalAs(UnmanagedType.Interface)] ISpellingError Next();
 } // IEnumSpellingError interface
 
 [ComImport, Guid("B7C82D61-FBE8-4B47-9B27-6C0D2E0DE0A3"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -7441,7 +7781,9 @@ interface ISpellingError {
 uint StartIndex { get; }
 uint Length { get; }
 uint CorrectiveAction { get; }
-[return: MarshalAs(UnmanagedType.LPWStr)] string Replacement { get; }
+// The marshaling attribute goes on the getter, since this is a property;
+// on the property itself the compiler ignores it with a warning.
+string Replacement { [return: MarshalAs(UnmanagedType.LPWStr)] get; }
 } // ISpellingError interface
 
 [ComImport, Guid("7AB36653-1796-484B-BDFA-E74F1DB7C1DC")]
@@ -7460,10 +7802,212 @@ public List<string> Suggestions;
 // Ask Windows to check a stretch of text. Returns the problems in
 // document order, each with its suggestions. Returns null when the
 // service is unavailable, so the caller can say so plainly.
+// What a COM object will admit to being. Each identifier is offered in
+// turn and the ones it accepts are named, which turns "no such
+// interface" from a dead end into a description of what came back.
+public string describeInterfaces(object oObject) {
+string[,] aKnown = new string[,] {
+{"B6FD0B71-E2BC-4653-8D05-F197E412770A", "ISpellChecker"},
+{"E7ED1C71-87F7-4378-A840-C9200DACEE47", "ISpellChecker2"},
+{"8E018A9D-2415-4677-BF08-794EA61F94BB", "ISpellCheckerFactory"},
+{"AA176B85-0E12-4844-8E1A-EEF1DA77F586", "IUserDictionariesRegistrar"},
+{"00000101-0000-0000-C000-000000000046", "IEnumString"},
+{"803E3BD4-2828-4410-8290-418D1D73C762", "IEnumSpellingError"},
+{"00020400-0000-0000-C000-000000000046", "IDispatch"}
+};
+List<string> lsSupported = new List<string>();
+IntPtr ptrUnknown = IntPtr.Zero;
+try {
+ptrUnknown = Marshal.GetIUnknownForObject(oObject);
+for (int i = 0; i < aKnown.GetLength(0); i++) {
+Guid guid = new Guid(aKnown[i, 0]);
+IntPtr ptrInterface;
+if (Marshal.QueryInterface(ptrUnknown, ref guid, out ptrInterface) == 0) {
+lsSupported.Add(aKnown[i, 1]);
+Marshal.Release(ptrInterface);
+}
+}
+}
+catch (Exception ex) { return "could not be examined: " + ex.Message; }
+finally { if (ptrUnknown != IntPtr.Zero) Marshal.Release(ptrUnknown); }
+if (lsSupported.Count == 0) return "none of the spell checking interfaces";
+return String.Join(", ", lsSupported.ToArray());
+} // describeInterfaces method
+
+// The object as a spell checker, if it is one. Returns null rather than
+// throwing, so the caller can report what it got instead of dying on the
+// cast.
+// Not public: the interface it returns is private to this class, and C#
+// will not let a public method hand back a type the caller cannot name.
+// His machine answered the diagnostic with "ISpellChecker2" and nothing
+// else: the object supports the newer interface but refuses the older
+// one, whatever the header implies about their relationship. So the
+// newer one is used when it is offered. The two share their first
+// fourteen methods, so the code below works through either.
+ISpellChecker asSpellChecker(object oObject) {
+try { return (ISpellChecker) oObject; }
+catch (Exception) {}
+return null;
+} // asSpellChecker method
+
+ISpellChecker2 asSpellChecker2(object oObject) {
+try { return (ISpellChecker2) oObject; }
+catch (Exception) {}
+return null;
+} // asSpellChecker2 method
+
+// Held as a plain object: naming the library's own type would make the
+// compiler read every member of it, and some are declared in terms of a
+// span, which .NET Framework 4.8 does not have. Only the two members
+// EdSharp uses are reached, through reflection, just below.
+static object wordListHunspell = null;
+static bool bHunspellTried = false;
+
+// The dictionary, loaded once. Two plain files in the Dictionaries
+// folder beside the program: an affix file describing how words change,
+// and a word list. Nothing is registered with Windows, nothing is
+// downloaded at run time, and a missing dictionary simply means this
+// engine is unavailable rather than an error.
+static object hunspellDictionary(string sLanguage) {
+if (bHunspellTried) return wordListHunspell;
+bHunspellTried = true;
+try {
+string sDir = Path.Combine(App.ProgramDir, "Dictionaries");
+string sBase = (sLanguage.Length > 0) ? sLanguage.Replace("-", "_") : "en_US";
+string sAff = Path.Combine(sDir, sBase + ".aff");
+string sDic = Path.Combine(sDir, sBase + ".dic");
+if (!File.Exists(sAff) || !File.Exists(sDic)) {
+sAff = Path.Combine(sDir, "en_US.aff");
+sDic = Path.Combine(sDir, "en_US.dic");
+}
+if (!File.Exists(sAff) || !File.Exists(sDic)) {
+Util.Log("spell check: no dictionary in " + sDir);
+return null;
+}
+// Even loading the dictionary goes through reflection, so the compiler
+// never reads the library's members and cannot object to the ones
+// declared with types this framework lacks. The assembly is still
+// referenced and still does all the work.
+Type typeWordList = Type.GetType("WeCantSpell.Hunspell.WordList, WeCantSpell.Hunspell");
+if (typeWordList == null) {
+Util.Log("spell check: the Hunspell library was not found beside EdSharp");
+return null;
+}
+System.Reflection.MethodInfo methodCreate = typeWordList.GetMethod("CreateFromFiles", new Type[] {typeof(string), typeof(string)});
+if (methodCreate == null) {
+Util.Log("spell check: the Hunspell library has no CreateFromFiles(string, string)");
+return null;
+}
+wordListHunspell = methodCreate.Invoke(null, new object[] {sDic, sAff});
+Util.Log("spell check: dictionary loaded from " + sDic);
+}
+catch (Exception ex) {
+Util.Log("spell check: the dictionary could not be loaded: " + ex.Message);
+wordListHunspell = null;
+}
+return wordListHunspell;
+} // hunspellDictionary method
+
+// Hunspell's own Check and Suggest are declared in terms of a span, a
+// type .NET Framework 4.8 does not have, so calling them directly asks
+// the compiler for an assembly that does not exist here. Reflection
+// picks the plain-string form of each at run time, which the library
+// still provides; the work is Hunspell's either way.
+static System.Reflection.MethodInfo methodHunspellCheck = null;
+static System.Reflection.MethodInfo methodHunspellSuggest = null;
+
+static System.Reflection.MethodInfo hunspellMethod(object oWordList, string sName) {
+foreach (System.Reflection.MethodInfo method in oWordList.GetType().GetMethods()) {
+if (method.Name != sName) continue;
+System.Reflection.ParameterInfo[] aParameters = method.GetParameters();
+if (aParameters.Length == 1 && aParameters[0].ParameterType == typeof(string)) return method;
+}
+return null;
+} // hunspellMethod method
+
+static bool hunspellCheck(object oWordList, string sWord) {
+if (methodHunspellCheck == null) methodHunspellCheck = hunspellMethod(oWordList, "Check");
+if (methodHunspellCheck == null) return true;   // cannot judge, so do not accuse
+return (bool) methodHunspellCheck.Invoke(oWordList, new object[] {sWord});
+} // hunspellCheck method
+
+static List<string> hunspellSuggest(object oWordList, string sWord) {
+List<string> lsSuggestions = new List<string>();
+if (methodHunspellSuggest == null) methodHunspellSuggest = hunspellMethod(oWordList, "Suggest");
+if (methodHunspellSuggest == null) return lsSuggestions;
+object oResult = methodHunspellSuggest.Invoke(oWordList, new object[] {sWord});
+System.Collections.IEnumerable enumResult = oResult as System.Collections.IEnumerable;
+if (enumResult != null) foreach (object oSuggestion in enumResult) if (oSuggestion != null) lsSuggestions.Add(oSuggestion.ToString());
+return lsSuggestions;
+} // hunspellSuggest method
+
+// Check with Hunspell: walk the text word by word, and report each word
+// the dictionary does not know, with its suggestions. Words are taken as
+// runs of letters and apostrophes, so punctuation and numbers are left
+// alone, and a word the person has added to their own list is accepted.
+public List<SpellingProblem> findSpellingProblemsHunspell(string sText, string sLanguage) {
+object wordList = hunspellDictionary(sLanguage);
+if (wordList == null) return null;
+List<SpellingProblem> lsProblems = new List<SpellingProblem>();
+List<string> lsAdded = userDictionaryWords();
+int i = 0;
+while (i < sText.Length) {
+if (!Char.IsLetter(sText[i])) { i++; continue; }
+int iStart = i;
+while (i < sText.Length && (Char.IsLetter(sText[i]) || sText[i] == '\'' || sText[i] == '\u2019')) i++;
+string sWord = sText.Substring(iStart, i - iStart).Trim('\'', '\u2019');
+if (sWord.Length < 2) continue;
+if (lsAdded.Contains(sWord.ToLowerInvariant())) continue;
+if (hunspellCheck(wordList, sWord)) continue;
+SpellingProblem problem = new SpellingProblem();
+problem.Start = iStart;
+problem.Length = sWord.Length;
+problem.Word = sWord;
+problem.Suggestions = new List<string>();
+try {
+foreach (string sSuggestion in hunspellSuggest(wordList, sWord)) {
+if (!problem.Suggestions.Contains(sSuggestion)) problem.Suggestions.Add(sSuggestion);
+if (problem.Suggestions.Count >= 20) break;
+}
+}
+catch (Exception) {}
+lsProblems.Add(problem);
+}
+return lsProblems;
+} // findSpellingProblemsHunspell method
+
+// Words the person has added, kept in a plain file beside the settings
+// so they survive updates and can be edited by hand.
+public List<string> userDictionaryWords() {
+List<string> lsWords = new List<string>();
+try {
+string sFile = Path.Combine(App.DataDir, "Dictionary.txt");
+if (File.Exists(sFile)) foreach (string sLine in File.ReadAllLines(sFile)) {
+string sWord = sLine.Trim().ToLowerInvariant();
+if (sWord.Length > 0) lsWords.Add(sWord);
+}
+}
+catch (Exception) {}
+return lsWords;
+} // userDictionaryWords method
+
+public bool addWordToUserDictionary(string sWord) {
+try {
+string sFile = Path.Combine(App.DataDir, "Dictionary.txt");
+File.AppendAllText(sFile, sWord + "\r\n");
+return true;
+}
+catch (Exception ex) {
+Util.Log("could not add to the personal dictionary: " + ex.Message);
+return false;
+}
+} // addWordToUserDictionary method
+
 public List<SpellingProblem> findSpellingProblems(string sText, string sLanguage) {
 List<SpellingProblem> lsProblems = new List<SpellingProblem>();
 try {
 ISpellCheckerFactory factory = (ISpellCheckerFactory) new SpellCheckerFactoryClass();
+Util.Log("spell check: factory created");
 bool bSupported = false;
 try { factory.IsSupported(sLanguage, out bSupported); }
 catch (Exception) { bSupported = true; }
@@ -7471,8 +8015,17 @@ if (!bSupported && sLanguage != "en-US") {
 sLanguage = "en-US";
 try { factory.IsSupported(sLanguage, out bSupported); } catch (Exception) {}
 }
-ISpellChecker checker = factory.CreateSpellChecker(sLanguage);
-IEnumSpellingError errors = checker.ComprehensiveCheck(sText);
+object oChecker = factory.CreateSpellChecker(sLanguage);
+Util.Log("spell check: created an object for " + sLanguage + "; " + describeInterfaces(oChecker));
+ISpellChecker checker = asSpellChecker(oChecker);
+ISpellChecker2 checker2 = (checker == null) ? asSpellChecker2(oChecker) : null;
+if (checker == null && checker2 == null) {
+App.SpellCheckError = "Windows returned an object that is not a spell checker. What it does support: " + describeInterfaces(oChecker);
+Util.Log("spell check: " + App.SpellCheckError);
+return null;
+}
+Util.Log("spell check: checker ready for " + sLanguage + " through " + ((checker != null) ? "ISpellChecker" : "ISpellChecker2"));
+IEnumSpellingError errors = (checker != null) ? checker.ComprehensiveCheck(sText) : checker2.ComprehensiveCheck(sText);
 while (true) {
 ISpellingError error = null;
 try { error = errors.Next(); }
@@ -7494,13 +8047,22 @@ if (!String.IsNullOrEmpty(sReplacement)) problem.Suggestions.Add(sReplacement);
 }
 catch (Exception) {}
 try {
-System.Collections.IEnumerable enumSuggestions = checker.Suggest(problem.Word) as System.Collections.IEnumerable;
+// Suggest returns the standard COM string enumerator, walked one at a
+// time; the count it fills is zero when the list is exhausted.
+System.Runtime.InteropServices.ComTypes.IEnumString enumSuggestions = (checker != null) ? checker.Suggest(problem.Word) : checker2.Suggest(problem.Word);
 if (enumSuggestions != null) {
-foreach (object oSuggestion in enumSuggestions) {
-string sSuggestion = (oSuggestion == null) ? "" : oSuggestion.ToString();
-if (sSuggestion.Length > 0 && !problem.Suggestions.Contains(sSuggestion)) problem.Suggestions.Add(sSuggestion);
-if (problem.Suggestions.Count >= 20) break;
+string[] aOne = new string[1];
+IntPtr ptrFetched = Marshal.AllocCoTaskMem(sizeof(int));
+try {
+while (problem.Suggestions.Count < 20) {
+aOne[0] = null;
+enumSuggestions.Next(1, aOne, ptrFetched);
+if (Marshal.ReadInt32(ptrFetched) == 0) break;
+string sSuggestion = aOne[0];
+if (!String.IsNullOrEmpty(sSuggestion) && !problem.Suggestions.Contains(sSuggestion)) problem.Suggestions.Add(sSuggestion);
 }
+}
+finally { Marshal.FreeCoTaskMem(ptrFetched); }
 }
 }
 catch (Exception) {}
@@ -7509,7 +8071,8 @@ lsProblems.Add(problem);
 return lsProblems;
 }
 catch (Exception ex) {
-Util.Log("spell check unavailable: " + ex.Message);
+App.SpellCheckError = ex.Message;
+Util.Log("spell check unavailable: " + ex.ToString());
 return null;
 }
 } // findSpellingProblems method
@@ -7519,9 +8082,12 @@ return null;
 public bool addWordToDictionary(string sWord, string sLanguage) {
 try {
 ISpellCheckerFactory factory = (ISpellCheckerFactory) new SpellCheckerFactoryClass();
-ISpellChecker checker = factory.CreateSpellChecker(sLanguage);
-checker.Add(sWord);
-return true;
+object oChecker = factory.CreateSpellChecker(sLanguage);
+ISpellChecker checker = asSpellChecker(oChecker);
+if (checker != null) { checker.Add(sWord); return true; }
+ISpellChecker2 checker2 = asSpellChecker2(oChecker);
+if (checker2 != null) { checker2.Add(sWord); return true; }
+return false;
 }
 catch (Exception ex) {
 Util.Log("could not add to dictionary: " + ex.Message);
@@ -7562,9 +8128,15 @@ if (sText.Trim().Length == 0) { AddMessage("No text!"); return; }
 string sLanguage = App.ReadOption("SpellLanguage", "en-US").Trim();
 if (sLanguage.Length == 0) sLanguage = "en-US";
 AddMessage("Checking");
-List<SpellingProblem> lsProblems = findSpellingProblems(sText, sLanguage);
+// Hunspell first: it needs nothing from Windows, so it cannot be refused
+// by it. The Windows checker is tried when Hunspell has no dictionary,
+// and Word remains available through the SpellChecker option.
+string sEngine = App.ReadOption("SpellChecker", "Hunspell").Trim().ToLower();
+List<SpellingProblem> lsProblems = null;
+if (sEngine != "windows") lsProblems = findSpellingProblemsHunspell(sText, sLanguage);
+if (lsProblems == null) lsProblems = findSpellingProblems(sText, sLanguage);
 if (lsProblems == null) {
-Dialog.Show("Spell Check", "The Windows spell checker could not be started on this computer.\n\nIf Microsoft Word is installed, set the SpellChecker option to Word with Configuration Options, Alt+Shift+C, and press F7 again to use its checker instead.");
+Dialog.Show("Spell Check", "No spell checker could be started.\n\nThe dictionary should be here:\n" + Path.Combine(App.ProgramDir, @"Dictionaries\en_US.dic") + "\n\nThe Windows checker also refused: \n\n" + App.SpellCheckError + "\n\nThe run log has the detail:\n" + App.LogFile + "\n\nIf Microsoft Word is installed, set the SpellChecker option to Word with Configuration Options, Alt+Shift+C.");
 return;
 }
 if (lsProblems.Count == 0) { AddMessage("No spelling problems"); return; }
@@ -7598,7 +8170,11 @@ string sReplacement = ((string) aResult[1]).Trim();
 if (sButton == "Cancel") { AddMessage("Stopped"); break; }
 if (sButton == "Skip") { iSkipped++; continue; }
 if (sButton == "Add to Dictionary") {
-if (addWordToDictionary(problem.Word, sLanguage)) iAdded++;
+// Both dictionaries learn the word: the personal list Hunspell reads,
+// and Windows' own, so every program benefits when that checker works.
+bool bAdded = addWordToUserDictionary(problem.Word);
+addWordToDictionary(problem.Word, sLanguage);
+if (bAdded) iAdded++;
 else AddMessage("Could not add the word");
 continue;
 }
@@ -9613,6 +10189,21 @@ COM.InvokeVerb(sPath, "Properties");
 // sentence it sits in, one editable combo box of suggestions, and four
 // plainly named buttons. Returns the button clicked and the text in the
 // combo box. Escape returns Cancel.
+// A multiline prompt: a labelled box that keeps its lines, with OK and
+// Cancel after it in the tab order. Enter inside the box inserts a line
+// break rather than submitting, which is what a person typing several
+// sentences expects; Control+Enter submits from anywhere, the Homer
+// convention. Returns an empty string when cancelled.
+public static string Prompt(string sTitle, string sLabel, string sValue) {
+LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
+TextBox tbPrompt = dlg.addMemoBox(sLabel, sValue, "Enter starts a new line; Control+Enter submits");
+string sClicked = dlg.runWithButtons(new string[] {"&OK", "&Cancel"});
+string sText = (tbPrompt == null) ? "" : tbPrompt.Text;
+dlg.Dispose();
+if (sClicked == null || sClicked.Replace("&", "") != "OK") return "";
+return sText;
+} // Prompt method
+
 public static object[] SpellChoice(string sTitle, string sPrompt, string sContext, List<string> lsSuggestions) {
 LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
 dlg.addLabel(sPrompt);
@@ -11671,6 +12262,9 @@ if (File.Exists(sTry)) return sTry;
 List<string> lsRoots = new List<string>();
 lsRoots.Add(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
 lsRoots.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Programs\Python"));
+// The python.org installer's own default when it installs for all users
+// is a folder straight off the drive root, such as C:\Python314.
+lsRoots.Add(Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)));
 List<string> lsFound = new List<string>();
 foreach (string sRoot in lsRoots) {
 if (!Directory.Exists(sRoot)) continue;
@@ -11986,6 +12580,24 @@ bool bGlobal = false;
 return Say(oText, bGlobal);
 } // Say method
 
+// WHAT EDSHARP SPEAKS, AND WHAT IT LEAVES TO THE SCREEN READER.
+//
+// A screen reader already announces, on its own: the title of a window
+// that opens or gains focus, and the name, role, state and value of the
+// control that receives keyboard focus. JAWS, NVDA and Narrator all do
+// this from the accessibility information Windows publishes, without
+// being asked. So EdSharp must NOT speak those things itself: doing so
+// produces the doubled announcements that make a program tiring to use.
+//
+// What EdSharp does speak is what only EdSharp knows: the ANSWER to a
+// command. "3 changes, 2 skips", "Level 2", "In 1", the text a
+// navigation command lands on, a count, a warning. Those are the
+// command's own output, not a description of the interface, and they
+// are exactly what this method is for.
+//
+// One message, one voice: Homer.Say tries JAWS, then NVDA, then a native
+// UIA notification, and STOPS at the first that answers -- so a message
+// is never delivered twice by two mechanisms.
 public static bool Say(object oText, bool bGlobal) {
 string sText = oText.ToString();
 if (sText.Trim().Length == 0) sText = "Blank";

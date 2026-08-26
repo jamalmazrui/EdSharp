@@ -1,13 +1,19 @@
-EdSharp audit 2026-08-25 18:11:01
+EdSharp audit 2026-08-26 08:33:24
 Folder: C:\EdSharp
 Python: 3.14.3
 
 PASS  EdSharp.cs braces balance: depth at end of file is 0
 PASS  Command shortcuts are unique: 218 shortcuts checked
-PASS  Dialog buttons have distinct access keys: 9 button sets checked, 4 with run-time labels skipped
-PASS  Microsoft Office is used only by named fallbacks: MailWord (line 7373); SpellCheckWord (line 7674); ThesaurusWord (line 7818); WordFile2String (line 10729); WordSource2TargetFormat (line 10908)
+PASS  Dialog buttons have distinct access keys: 10 button sets checked, 4 with run-time labels skipped
+PASS  Microsoft Office is used only by named fallbacks: MailWord (line 7672); SpellCheckWord (line 8250); ThesaurusWord (line 8394); WordFile2String (line 11320); WordSource2TargetFormat (line 11499)
+PASS  Spell check interfaces match Windows' own layout: 3 interfaces checked
+PASS  Public methods do not expose private interfaces: 5 interfaces checked
+PASS  Every command has a description in the program: 222 commands checked
+PASS  Descriptions name the right key: keys agree with the bindings
 PASS  Inix.cs braces balance: depth at end of file is 0
 PASS  BuildEdSharp.ps1 brackets balance: braces, parentheses and brackets all balance
+PASS  summarizeSetup.ps1 brackets balance: braces, parentheses and brackets all balance
+PASS  installJawsScripts.ps1 brackets balance: braces, parentheses and brackets all balance
 PASS  Compiler table patterns compile: 24 patterns checked
 PASS  Conversion scripts named in the table exist: 6 scripts checked
 NOTE  fetched tools not present in this folder (the build or installer supplies them): tidy.exe

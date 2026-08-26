@@ -16,9 +16,6 @@ set "logFile=%LOCALAPPDATA%\EdSharp\logs\EdSharp_setup.log"
 if not exist "%LOCALAPPDATA%\EdSharp\logs" mkdir "%LOCALAPPDATA%\EdSharp\logs" >nul 2>&1
 set "modelName=llama3.2"
 echo [installOllama] started %date% %time% >> "%logFile%"
-echo If Windows asks permission, a User Account Control prompt appears on a
-echo separate screen; press Alt+Y to allow it. The model download is about
-echo 2 gigabytes and shows its progress here.
 echo.
 
 rem A just-installed Ollama is not on this console's PATH yet, and Scott's
@@ -27,28 +24,28 @@ rem program that was already there. Probe the install location too.
 if exist "%LOCALAPPDATA%\Programs\Ollama\ollama.exe" set "PATH=%LOCALAPPDATA%\Programs\Ollama;%PATH%"
 where ollama >nul 2>&1
 if errorlevel 1 goto install_ollama
-echo Ollama is already installed; checking for an update.
+echo Updating Ollama ...
 echo [installOllama] winget upgrade Ollama.Ollama >> "%logFile%"
-winget upgrade --id Ollama.Ollama -e --architecture x64 --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
+winget upgrade --id Ollama.Ollama -e --architecture x64 --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installOllama] winget upgrade exit %errorlevel% >> "%logFile%"
-if errorlevel 1 (echo Ollama is already current.) else (echo Ollama updated.)
+if errorlevel 1 (echo Already current.) else (echo Updated.)
 goto pull_model
 :install_ollama
-echo Installing Ollama with winget; this can take a few minutes.
+echo Installing Ollama ...
 echo [installOllama] winget install Ollama.Ollama >> "%logFile%"
-winget install --id Ollama.Ollama -e --architecture x64 --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
+winget install --id Ollama.Ollama -e --architecture x64 --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installOllama] winget install exit %errorlevel% >> "%logFile%"
 set "PATH=%LOCALAPPDATA%\Programs\Ollama;%PATH%"
 where ollama >nul 2>&1
 if errorlevel 1 goto fail_ollama
 
 :pull_model
-echo Fetching the %modelName% chat model.
+echo Fetching the %modelName% model, about 2 GB ...
 echo [installOllama] ollama pull %modelName% >> "%logFile%"
-ollama pull %modelName%
+ollama pull %modelName% >> "%logFile%" 2>&1
 echo [installOllama] ollama pull exit %errorlevel% >> "%logFile%"
 if errorlevel 1 goto fail_model
-echo Done. EdSharp's Chat with AI command is ready.
+echo Done.
 echo [installOllama] done >> "%logFile%"
 exit /b 0
 

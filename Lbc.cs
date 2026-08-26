@@ -1327,14 +1327,34 @@ public class LbcDialog : IDisposable
         // left-to-right as given. RightToLeft FlowDirection
         // puts the first-added at the right; we want first-
         // given at the left, so iterate in reverse.
+        //
+        // Tab order is a separate matter, and it must follow the ORDER
+        // GIVEN rather than the order added: one tab from the last field
+        // should reach OK, then Cancel, and only then Help. Adding in
+        // reverse used to number them backwards, so Help came first --
+        // an odd thing to meet when you have finished typing.
+        int[] aTabIndexes = new int[aButtonLabels.Length];
+        for (int iGiven = 0; iGiven < aButtonLabels.Length; iGiven++) aTabIndexes[iGiven] = iTabIndex++;
         for (int i = aButtonLabels.Length - 1; i >= 0; i--)
         {
             string sLabel = aButtonLabels[i] ?? "";
+            string sPlain = sLabel.Replace("&", "");
             Button btn = new Button();
-            btn.Text = "&" + sLabel.Replace("&", "");
-            btn.AccessibleName = sLabel.Replace("&", "");
+            // The caller's own ampersand decides the access key, so a
+            // dialog can avoid collisions -- "Cop&y" when Cancel already
+            // has C. With no ampersand given, the first letter is used.
+            // OK and Cancel are the exceptions: they get no access key at
+            // all, because Control+Enter and Escape are their keys, and
+            // an unnecessary Alt+O or Alt+C would only take a letter
+            // another button may need.
+            bool bNoAccessKey = string.Equals(sPlain, "OK", StringComparison.OrdinalIgnoreCase)
+                             || string.Equals(sPlain, "Cancel", StringComparison.OrdinalIgnoreCase);
+            if (bNoAccessKey) btn.Text = sPlain;
+            else if (sLabel.IndexOf('&') >= 0) btn.Text = sLabel;
+            else btn.Text = "&" + sPlain;
+            btn.AccessibleName = sPlain;
             btn.Size = new Size(DefaultButtonWidth, DefaultButtonHeight);
-            btn.TabIndex = iTabIndex++;
+            btn.TabIndex = aTabIndexes[i];
             btn.Margin = new Padding(DefaultRowGap, 0, 0, 0);
             btn.UseVisualStyleBackColor = true;
 

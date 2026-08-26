@@ -71,6 +71,13 @@ $c_sNvdaClientUrl = "https://download.nvaccess.org/releases/stable/nvda_2026.1_c
 # EdSharp targets .NET Framework 4.8.
 $c_sReverseMarkdownVersion = "4.7.1"
 
+# Hunspell, the spell checking engine behind LibreOffice and Firefox, as
+# a managed C# port: no COM, no native library, and dictionaries that are
+# plain files. EdSharp's first attempt used the spell checker built into
+# Windows, which refused every interface offered to it on the developer's
+# own machine; this needs nothing from Windows at all.
+$c_sHunspellVersion = "7.0.1"
+
 
 # The support sources; since the name-collision lesson they compile INTO
 # EdSharp.exe rather than into a separate EdSharp.dll.
@@ -254,7 +261,7 @@ try {
   writeLog "Command line: $($MyInvocation.Line)"
   writeLog "PowerShell: $($PSVersionTable.PSVersion), platform: $([System.Environment]::OSVersion.VersionString), 64-bit process: $([System.Environment]::Is64BitProcess)"
   writeLog "Working directory: $(Get-Location)"
-  writeLog "Settings: ReverseMarkdown=$c_sReverseMarkdownVersion, HtmlAgilityPack=$c_sHtmlAgilityPackVersion, Markdig=$c_sMarkdigVersion, log=$sLogFile"
+  writeLog "Settings: ReverseMarkdown=$c_sReverseMarkdownVersion, HtmlAgilityPack=$c_sHtmlAgilityPackVersion, Markdig=$c_sMarkdigVersion, Hunspell=$c_sHunspellVersion, log=$sLogFile"
 
   # ---- version: bump the iss AppVersion past every released tag ----------
   # EdSharp's version lives in EdSharp_Setup.iss (the plain AppVersion=
@@ -310,6 +317,64 @@ try {
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
   writeLog "TLS 1.2 enabled for downloads."
 
+  # ---- 2c. The spelling dictionary ----
+  # Hunspell dictionaries are two plain text files, an affix file and a
+  # word list, published by the LibreOffice project. About one megabyte
+  # for American English, fetched once and then left alone.
+  $sDictDir = Join-Path $sScriptDir "Dictionaries"
+  if (-not (Test-Path -LiteralPath $sDictDir)) { New-Item -ItemType Directory -Force -Path $sDictDir | Out-Null }
+  foreach ($sPair in @(@("en_US.aff", "https://raw.githubusercontent.com/LibreOffice/dictionaries/master/en/en_US.aff"),
+                       @("en_US.dic", "https://raw.githubusercontent.com/LibreOffice/dictionaries/master/en/en_US.dic"))) {
+    $sName = $sPair[0]
+    $sUrl = $sPair[1]
+    $sTarget = Join-Path $sDictDir $sName
+    if (Test-Path -LiteralPath $sTarget) {
+      writeLog "Dictionary $sName present; fetch skipped."
+      continue
+    }
+    try {
+      writeLog "Fetching $sName from $sUrl"
+      Invoke-WebRequest -Uri $sUrl -OutFile $sTarget -UseBasicParsing
+      writeLog "Fetched $sName ($([math]::Round((Get-Item $sTarget).Length / 1KB)) KB)"
+    } catch {
+      writeLog "WARNING: $sName could not be fetched: $($_.Exception.Message). Spell check will fall back to the Windows checker."
+    }
+  }
+
+  # ---- 2a. Retire the LaTeX scripts at the source ----
+  # The JAWS scripts folder in this repository still carries the Process
+  # LaTeX feature, retired long ago: its key bindings claim F12 and its
+  # neighbours, which EdSharp now uses for Chat with AI and Copy Log.
+  # Every installation copies this folder into the user's JAWS settings,
+  # so cleaning it here is the only permanent cure -- the installer's own
+  # scrub cannot always write to those settings while JAWS is running.
+  $sScriptsDir = Join-Path $sScriptDir "Scripts"
+  if (Test-Path -LiteralPath $sScriptsDir) {
+    $iScrubbed = 0
+    foreach ($fileMap in @(Get-ChildItem -LiteralPath $sScriptsDir -File -Filter "*.jkm" -ErrorAction SilentlyContinue)) {
+      $lKept = @(); $iDropped = 0
+      foreach ($sLine in @(Get-Content -LiteralPath $fileMap.FullName)) {
+        if (($sLine -match "=.*late[xc]") -or ($sLine -match "^\s*[^;=]*\bf12\b[^=]*=")) { $iDropped++ } else { $lKept += $sLine }
+      }
+      if ($iDropped -gt 0) {
+        Set-Content -LiteralPath $fileMap.FullName -Value $lKept
+        writeLog "Scripts: removed $iDropped retired binding(s) from $($fileMap.Name)"
+        $iScrubbed += $iDropped
+      }
+    }
+    foreach ($fileScript in @(Get-ChildItem -LiteralPath $sScriptsDir -File -Filter "*.jss" -ErrorAction SilentlyContinue)) {
+      $sBody = [System.IO.File]::ReadAllText($fileScript.FullName)
+      $sClean = [regex]::Replace($sBody, "(?ims)^[ \t]*Script[ \t]+\w*late[xc]\w*[ \t]*\(.*?^[ \t]*EndScript[ \t]*\r?\n?", "")
+      if ($sClean -ne $sBody) {
+        [System.IO.File]::WriteAllText($fileScript.FullName, $sClean)
+        writeLog "Scripts: removed retired script block(s) from $($fileScript.Name)"
+        $iScrubbed++
+      }
+    }
+    if ($iScrubbed -eq 0) { writeLog "Scripts: no retired LaTeX bindings or scripts remain." }
+    else { writeLog "Scripts: $iScrubbed retired item(s) removed; commit the Scripts folder." }
+  }
+
   # ---- 2b. Source audit ----
   # Checks the compiler cannot make: shortcut collisions, dialog buttons
   # sharing an access key, compiler-table patterns that are not legal
@@ -341,7 +406,8 @@ try {
   foreach ($lPin in @(
       @("ReverseMarkdown", $c_sReverseMarkdownVersion),
       @("HtmlAgilityPack", $c_sHtmlAgilityPackVersion),
-      @("Markdig", $c_sMarkdigVersion))) {
+      @("Markdig", $c_sMarkdigVersion),
+      @("WeCantSpell.Hunspell", $c_sHunspellVersion))) {
     $sPackageId = $lPin[0]
     $sPinVersion = $lPin[1]
     $sDllFile = Join-Path $sScriptDir "$sPackageId.dll"
@@ -362,6 +428,16 @@ try {
           if ($lFoundParts[$iPart] -ne $lPinParts[$iPart]) { $bMatch = $false }
         }
       }
+      # The note left by the last fetch counts as proof, for the packages
+      # whose assembly stamp does not match their package number.
+      $sFetchedFile = Join-Path $sScriptDir "$sPackageId.fetched"
+      if ((-not $bMatch) -and (Test-Path -LiteralPath $sFetchedFile)) {
+        $sFetchedVersion = (Get-Content -LiteralPath $sFetchedFile -TotalCount 1).Trim()
+        if ($sFetchedVersion -eq $sPinVersion) {
+          writeLog "$sPackageId.dll stamps itself $sFound but was fetched as $sPinVersion; fetch skipped."
+          $bMatch = $true
+        }
+      }
       if ($bMatch) {
         writeLog "$sPackageId.dll present with the pinned version $sFound; fetch skipped."
         $bFetch = $false
@@ -374,6 +450,13 @@ try {
       fetchNugetPackage $sPackageId $sPinVersion
       $sAfter = [System.Reflection.AssemblyName]::GetAssemblyName($sDllFile).Version.ToString()
       writeLog "$sPackageId.dll fetched; version on disk is now $sAfter."
+      # Some packages stamp their assembly with a rounder number than the
+      # package version: Markdig 1.3.2 reports 1.3.0.0, and Hunspell
+      # 7.0.1 reports 7.0.0.0. Without a note of what was actually
+      # fetched, the version check above would find a mismatch and
+      # download the same file on every build for ever. The note fixes
+      # that, and deleting it forces a fresh fetch.
+      Set-Content -LiteralPath (Join-Path $sScriptDir "$sPackageId.fetched") -Value $sPinVersion
     }
   }
 
@@ -513,6 +596,15 @@ try {
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "Markdig.dll")) { $lArguments += "/r:Markdig.dll" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "Tektosyne.dll")) { $lArguments += "/r:Tektosyne.dll" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "Ude.dll")) { $lArguments += "/r:Ude.dll" }
+  # Hunspell is referenced only when present, and the spell checking code
+  # that uses it is compiled only then, so a build without the library
+  # still succeeds -- it simply falls back to the Windows checker.
+  if (Test-Path -LiteralPath (Join-Path $sScriptDir "WeCantSpell.Hunspell.dll")) {
+    # Referenced so the library is found at run time; the spell checking
+    # code reaches it by reflection, so no symbol is defined and a build
+    # without the library still produces a working EdSharp.
+    $lArguments += "/r:WeCantSpell.Hunspell.dll"
+  }
   # One assembly: the main source, the support sources, and the generated
   # version, all inside EdSharp.exe.
   $lArguments += @("EdSharp.cs")

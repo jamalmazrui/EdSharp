@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.34
-AppVerName=EdSharp 5.0.34
-VersionInfoVersion=5.0.34
+AppVersion=5.0.35
+AppVerName=EdSharp 5.0.35
+VersionInfoVersion=5.0.35
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -147,6 +147,7 @@ Source: "installPandoc.cmd";  DestDir: "{app}"; Flags: ignoreversion
 Source: "installGitHub.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "installPdfTools.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "summarizeSetup.cmd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "summarizeSetup.ps1"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dropLatexJawsKeys.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dropLatexJawsKeys.py"; DestDir: "{app}"; Flags: ignoreversion
 Source: "installNode.cmd"; DestDir: "{app}"; Flags: ignoreversion
@@ -190,6 +191,9 @@ Source: "lgpl.txt";           DestDir: "{app}"; Flags: ignoreversion skipifsourc
 Source: "Snippets\*"; DestDir: "{app}\Snippets"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
 Source: "Convert\*";  DestDir: "{app}\Convert";  Excludes: "pandoc.exe,*.sln,*.vcproj,*.vcxproj,*.vcxproj.filters,*.suo,*.user,*.c,*.asm,*.cs,*.obj,*.zip,temp.htm,temp.txt"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
 Source: "Samples\*"; DestDir: "{app}\Samples"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
+; The spelling dictionary: two plain files the spell checker reads.
+Source: "Dictionaries\*"; DestDir: "{app}\Dictionaries"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "WeCantSpell.Hunspell.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 
 [Dirs]
 Name: "{userappdata}\EdSharp";
@@ -262,54 +266,127 @@ Filename: "{app}\installPandoc.cmd"; WorkingDir: "{app}"; Flags: runhidden waitu
 ; isAdminNgen check skips it gracefully in a per-user install, where EdSharp
 ; simply JIT-compiles on first launch.
 ; ---- The Finish-page checkbox list, in the Homer Tools pattern ----
-; No Tasks page: every optional install is a checkbox in this list at
-; the end, all unchecked, each running a visible probe-first script.
-; The scripts notice what is already installed and say so in a second,
-; reuse rather than duplicate, log to the consolidated setup log, and
-; pause on failure so the message can be read. runascurrentuser
-; matters: winget installs per user, into the profile of whoever is
-; signed in, while this installer runs elevated.
+;
+; No Tasks page: every optional install is a checkbox in this list at the
+; end, each running a probe-first script that reuses whatever is already
+; installed, logs to the consolidated setup log, and never pauses.
+; runascurrentuser matters: winget installs per user, into the profile of
+; whoever is signed in, while this installer runs elevated.
+;
+; WHICH BOXES ARE TICKED BY DEFAULT. The question is what an EdSharp user
+; gets for the download, not what a developer might enjoy:
+;   Python (about 100 MB) and the document tools (about 55 MB) are TICKED.
+;     They are what makes EdSharp itself better: rich PDF conversion with
+;     headings, lists and tables, and the thesaurus that replaces the one
+;     Microsoft Word used to provide. Together they cost less than a fifth
+;     of what Ollama alone costs, and every EdSharp user benefits.
+;   Git with the GitHub command line (about 350 MB), Node.js (about 80 MB)
+;     and Ollama with its chat model (about 3 GB) are NOT ticked. Each
+;     serves a real feature -- version control, static diagram images, the
+;     local AI chat -- but each serves some users and not others, and the
+;     largest of them costs more than everything else combined.
+;
+; WHY EACH TOOL APPEARS THREE TIMES BELOW. The label says what the box
+; will do, and the boxes are grouped so the ones that do something come
+; first: everything to be installed, then everything to be updated, then
+; anything already current, which is offered last and never ticked
+; because there is nothing to gain. Only one entry per tool is ever
+; shown; the other two are skipped by their Check function.
 
-Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installGitHub.cmd""""";  \
-  WorkingDir: "{app}"; \
-  Description: "{code:descGitHub}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked
-
-Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installNode.cmd""""";  \
-  WorkingDir: "{app}"; \
-  Description: "{code:descNode}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked
+; ---- Install: not on this computer yet ----
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\installPython.cmd""""";  \
   WorkingDir: "{app}"; \
   Description: "{code:descPython}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked
+  Flags: postinstall skipifsilent runascurrentuser; Check: pythonNeedsInstall
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\installPdfTools.cmd""""";  \
   WorkingDir: "{app}"; \
-  Description: "Install the free document tools: rich PDF conversion and the thesaurus, in place of Microsoft Office (about 55 MB; needs Python)"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked
+  Description: "{code:descDocTools}"; \
+  Flags: postinstall skipifsilent runascurrentuser; Check: docToolsNeedInstall
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installGitHub.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descGitHub}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: gitNeedsInstall
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installNode.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descNode}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeNeedsInstall
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\installOllama.cmd""""";  \
   WorkingDir: "{app}"; \
   Description: "{code:descOllama}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaNeedsInstall
+
+; ---- Update: installed, but a newer version is available ----
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installPython.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descPython}"; \
+  Flags: postinstall skipifsilent runascurrentuser; Check: pythonNeedsUpdate
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installGitHub.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descGitHub}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: gitNeedsUpdate
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installNode.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descNode}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeNeedsUpdate
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installOllama.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descOllama}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaNeedsUpdate
+
+; ---- Reinstall: already current, offered only for repair ----
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installPython.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descPython}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: pythonIsCurrent
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installPdfTools.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descDocTools}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: docToolsAreCurrent
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installGitHub.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descGitHub}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: gitIsCurrent
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installNode.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descNode}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeIsCurrent
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installOllama.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descOllama}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaIsCurrent
 
 ; The summary, last of all. The Results box appears before these
-; checkboxes run, so it cannot know how they fared; this reports what is
-; actually on the computer afterwards, tool by tool, with what to run
-; later for anything missing. It is checked by default because a person
-; who ticked boxes deserves to hear what became of them.
-Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\summarizeSetup.cmd""""";  \
-  WorkingDir: "{app}"; \
-  Description: "Show the results of this installation"; \
-  Flags: postinstall skipifsilent runascurrentuser runhidden
+; The results summary is NOT listed here. It is not an option -- it always
+; runs, and it must run last of all -- so it is started from code at the
+; ssDone step, once every entry above has finished. See CurStepChanged.
 
 Filename: "{code:ngenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: isAdminNgen
 Filename: "{code:ngenExe}"; Parameters: "install ""{app}\EdSharp.exe"" /AppBase:""{app}"" /nologo /silent"; Flags: runhidden; Check: isAdminNgen
@@ -582,6 +659,175 @@ begin
   gDescCache[iIndex] := result;
 end;
 
+{ Which of the three things a box would do: 0 install, 1 update, 2
+  reinstall. Computed from the same probes the labels use, cached so
+  winget is asked once, and consulted by the Check functions that decide
+  which of a tool's three entries is shown. }
+var
+  gStateCache: array[0..4] of integer;
+  gStateKnown: array[0..4] of boolean;
+
+function devToolState(iIndex: integer; sIdList, sExe: string): integer;
+var
+  sInstalled, sAvailable, sId, sRest: string;
+  iSplit: integer;
+begin
+  if gStateKnown[iIndex] then
+  begin
+    result := gStateCache[iIndex];
+    exit;
+  end;
+  result := 0;
+  sRest := sIdList;
+  while sRest <> '' do
+  begin
+    iSplit := Pos(';', sRest);
+    if iSplit > 0 then
+    begin
+      sId := Copy(sRest, 1, iSplit - 1);
+      sRest := Copy(sRest, iSplit + 1, 500);
+    end
+    else
+    begin
+      sId := sRest;
+      sRest := '';
+    end;
+    if wingetInfo(sId, sInstalled, sAvailable) then
+    begin
+      if sAvailable <> '' then result := 1
+      else result := 2;
+      break;
+    end;
+  end;
+  // Installed outside winget's knowledge still counts as installed: the
+  // person should be offered a reinstall, not a second copy.
+  if (result = 0) and (exeVersion(sExe) <> '') then result := 2;
+  gStateCache[iIndex] := result;
+  gStateKnown[iIndex] := True;
+end;
+
+{ A real Python to ask questions of. The name alone is unreliable: it may
+  be the Microsoft Store stub, and a computer often carries more than one
+  Python -- this developer's has 3.14 in C:\Python314 and 3.13 under the
+  profile. The common locations are tried newest first, and the plain name
+  last. }
+function pythonExeForProbe(): string;
+var
+  lsCandidates: TArrayOfString;
+  i: integer;
+begin
+  SetArrayLength(lsCandidates, 6);
+  lsCandidates[0] := 'C:\Python314\python.exe';
+  lsCandidates[1] := 'C:\Python313\python.exe';
+  lsCandidates[2] := ExpandConstant('{commonpf}\Python314\python.exe');
+  lsCandidates[3] := ExpandConstant('{commonpf}\Python313\python.exe');
+  lsCandidates[4] := ExpandConstant('{localappdata}\Programs\Python\Python314\python.exe');
+  lsCandidates[5] := ExpandConstant('{localappdata}\Programs\Python\Python313\python.exe');
+  for i := 0 to GetArrayLength(lsCandidates) - 1 do
+    if FileExists(lsCandidates[i]) then
+    begin
+      result := '"' + lsCandidates[i] + '"';
+      exit;
+    end;
+  result := 'python';
+end;
+
+function gitNeedsInstall(): boolean;
+begin
+  result := devToolState(0, 'Git.Git', 'git') = 0;
+end;
+
+function gitNeedsUpdate(): boolean;
+begin
+  result := devToolState(0, 'Git.Git', 'git') = 1;
+end;
+
+function gitIsCurrent(): boolean;
+begin
+  result := devToolState(0, 'Git.Git', 'git') = 2;
+end;
+
+function nodeNeedsInstall(): boolean;
+begin
+  result := devToolState(1, 'OpenJS.NodeJS.LTS;OpenJS.NodeJS', 'node') = 0;
+end;
+
+function nodeNeedsUpdate(): boolean;
+begin
+  result := devToolState(1, 'OpenJS.NodeJS.LTS;OpenJS.NodeJS', 'node') = 1;
+end;
+
+function nodeIsCurrent(): boolean;
+begin
+  result := devToolState(1, 'OpenJS.NodeJS.LTS;OpenJS.NodeJS', 'node') = 2;
+end;
+
+function pythonNeedsInstall(): boolean;
+begin
+  result := devToolState(2, 'Python.Python.3.14;Python.Python.3.13;Python.Python.3.12', 'python') = 0;
+end;
+
+function pythonNeedsUpdate(): boolean;
+begin
+  result := devToolState(2, 'Python.Python.3.14;Python.Python.3.13;Python.Python.3.12', 'python') = 1;
+end;
+
+function pythonIsCurrent(): boolean;
+begin
+  result := devToolState(2, 'Python.Python.3.14;Python.Python.3.13;Python.Python.3.12', 'python') = 2;
+end;
+
+function ollamaNeedsInstall(): boolean;
+begin
+  result := devToolState(3, 'Ollama.Ollama', 'ollama') = 0;
+end;
+
+function ollamaNeedsUpdate(): boolean;
+begin
+  result := devToolState(3, 'Ollama.Ollama', 'ollama') = 1;
+end;
+
+function ollamaIsCurrent(): boolean;
+begin
+  result := devToolState(3, 'Ollama.Ollama', 'ollama') = 2;
+end;
+
+{ The document tools are Python packages rather than winget packages, so
+  they are either there or not; pip keeps them current when asked. }
+function docToolsPresent(): boolean;
+var
+  lsLines: TArrayOfString;
+begin
+  if gStateKnown[4] then
+  begin
+    result := (gStateCache[4] = 2);
+    exit;
+  end;
+  result := probeLines(pythonExeForProbe() + ' -c "import pymupdf4llm"', lsLines);
+  if result then
+    result := (GetArrayLength(lsLines) = 0) or (Trim(lsLines[0]) = '');
+  if result then gStateCache[4] := 2 else gStateCache[4] := 0;
+  gStateKnown[4] := True;
+end;
+
+function docToolsNeedInstall(): boolean;
+begin
+  result := not docToolsPresent();
+end;
+
+function docToolsAreCurrent(): boolean;
+begin
+  result := docToolsPresent();
+end;
+
+function descDocTools(sParam: string): string;
+begin
+  if docToolsPresent() then
+    result := 'Reinstall the document tools: rich PDF conversion and the thesaurus (installed)'
+  else
+    result := 'Install the document tools: rich PDF conversion and the thesaurus, in place of Microsoft Office (about 55 MB, needs Python)';
+end;
+
 function descGitHub(sParam: string): string;
 begin
   result := devToolDesc(0, 'Git.Git', 'git', 'Git', 'Install Git and the GitHub command line, for version control');
@@ -594,7 +840,7 @@ end;
 
 function descPython(sParam: string): string;
 begin
-  result := devToolDesc(2, 'Python.Python.3.13;Python.Python.3.12', 'python', 'Python', 'Install the latest official Python for Windows, for the Python compiler and helper scripts');
+  result := devToolDesc(2, 'Python.Python.3.14;Python.Python.3.13;Python.Python.3.12', 'python', 'Python', 'Install the latest official Python for Windows, for the Python compiler and helper scripts');
 end;
 
 function descOllama(sParam: string): string;
@@ -776,6 +1022,21 @@ begin
   SaveStringsToFile(AddBackslash(sFolder) + 'EdSharp_setup.log', lSetupLines, True);
 end;
 
+{ The single Results box: always shown, always last. Inno reaches ssDone
+  after the finish page's entries have run, which is the only moment at
+  which the disposition of every checkbox is actually known. The script
+  is hidden and shows one message box; setup does not wait for it, so
+  closing the box is the last thing that happens. }
+procedure showResultsSummary();
+var
+  iResult: integer;
+begin
+  try
+    Exec(ExpandConstant('{cmd}'), '/c ""' + ExpandConstant('{app}\summarizeSetup.cmd') + '""', ExpandConstant('{app}'), SW_HIDE, ewNoWait, iResult);
+  except
+  end;
+end;
+
 procedure CurStepChanged(iCurStep: TSetupStep);
 begin
   // DeinitializeSetup runs whenever Setup exits, INCLUDING WHEN THE USER
@@ -829,9 +1090,7 @@ begin
   if addonIsInstalled() then
     sMessage := sMessage + '  NVDA add-on: installed. Restart NVDA to use it.' + sBreak
   else if not nvdaIsRunning() then
-    sMessage := sMessage + '  NVDA add-on: NOT installed, because NVDA was not running.' + sBreak
-      + '    Start NVDA, then open:' + sBreak
-      + '    ' + ExpandConstant('{app}\EdSharp.nvda-addon') + sBreak
+    sMessage := sMessage + '  NVDA add-on: not installed; NVDA was not running. Start NVDA, then open ' + ExpandConstant('{app}\EdSharp.nvda-addon') + sBreak
   else
     sMessage := sMessage + '  NVDA add-on: not installed. Open EdSharp.nvda-addon in the program folder to install it.' + sBreak;
 
@@ -844,18 +1103,12 @@ begin
   // Ollama -- run from the finish page AFTER this box is shown, so their
   // outcome cannot be reported here. The summary that runs last says how
   // each one fared; this box points at it rather than staying silent.
-  sMessage := sMessage + sBreak
-    + 'Anything you ticked on the next page -- Git, Node, Python, the document tools, Ollama -- installs after you press Finish.' + sBreak
-    + 'A summary then reports each one by name, and is saved as:' + sBreak
-    + '  ' + sLogDir + '\EdSharp_setup_summary.txt' + sBreak + sBreak
-    + 'The whole installation is in one log:' + sBreak + '  ' + sLogDir + '\EdSharp_setup.log' + sBreak + sBreak
-    + 'To start EdSharp, press Alt+Control+E.';
-
-  // Not shown here. These findings are true already, but the optional
-  // installs run after this point, and two boxes -- one now, one after --
-  // would ask the person to read the story in halves. The lines are handed
-  // to the summary, which shows ONE Results box at the very end with
-  // everything in it. If the summary somehow never runs, this file still
-  // sits in the logs folder to be read.
-  saveResultsForSummary(sLogDir, sMessage);
+  // Succinct on purpose: the summary adds the file paths and the starting
+  // hint itself, so repeating them here would say everything twice.
+saveResultsForSummary(sLogDir, sMessage);
+  // ... and the summary itself, which reads that file, reports every
+  // optional install, and shows the one Results box. This is the last
+  // thing setup does, so by now the finish page's entries have all run
+  // and their outcome is a fact rather than a guess.
+  showResultsSummary();
 end;

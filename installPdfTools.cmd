@@ -12,49 +12,59 @@ setlocal
 set "logFile=%LOCALAPPDATA%\EdSharp\logs\EdSharp_setup.log"
 if not exist "%LOCALAPPDATA%\EdSharp\logs" mkdir "%LOCALAPPDATA%\EdSharp\logs" >nul 2>&1
 echo [installPdfTools] started %date% %time% >> "%logFile%"
-echo If Windows asks permission, a User Account Control prompt appears on a
-echo separate screen; press Alt+Y to allow it.
 echo.
 
 call :findPython
 if not defined pythonExe goto no_python
-echo Using %pythonExe%
 echo [installPdfTools] python: %pythonExe% >> "%logFile%"
 "%pythonExe%" -c "import pymupdf4llm" >nul 2>&1
 if errorlevel 1 goto install_reader
-echo The PDF reader is already installed; checking for an update.
+echo Updating the PDF reader ...
 echo [installPdfTools] pip install --upgrade pymupdf4llm >> "%logFile%"
-"%pythonExe%" -m pip install --upgrade pymupdf4llm
+"%pythonExe%" -m pip install --upgrade pymupdf4llm >> "%logFile%" 2>&1
 echo [installPdfTools] upgrade exit %errorlevel% >> "%logFile%"
 goto done
 
 :install_reader
-echo Installing the PDF reader; this takes a minute and about 25 megabytes.
+echo Installing the PDF reader ...
 echo [installPdfTools] pip install pymupdf4llm >> "%logFile%"
-"%pythonExe%" -m pip install pymupdf4llm
+"%pythonExe%" -m pip install pymupdf4llm >> "%logFile%" 2>&1
 echo [installPdfTools] install exit %errorlevel% >> "%logFile%"
 if errorlevel 1 goto failed
 
 :done
-"%pythonExe%" -c "import pymupdf4llm" >nul 2>&1
+rem Prove it rather than assume it. pip returning 0 means pip ran, not
+rem that the package can be imported: a wheel can install and still fail
+rem to load. The import is attempted with the SAME interpreter that did
+rem the installing, and whatever it says goes into the log, so a
+rem disagreement with the summary can never again be a mystery.
+"%pythonExe%" -c "import pymupdf4llm; print('pymupdf4llm ready')" >> "%logFile%" 2>&1
 if errorlevel 1 goto failed
+echo [installPdfTools] verified pymupdf4llm with %pythonExe% >> "%logFile%"
+echo %pythonExe%> "%LOCALAPPDATA%\EdSharp\logs\EdSharp_python.txt"
+echo PDF reader ready.
 
 rem The free thesaurus: WordNet, Princeton's lexical database, read through
 rem the nltk package. Roughly 30 megabytes with its data, and it gives
 rem synonyms grouped by meaning with a definition for each sense.
 echo.
-echo Installing the free thesaurus database.
+echo Installing the thesaurus ...
 echo [installPdfTools] pip install nltk >> "%logFile%"
-"%pythonExe%" -m pip install --upgrade nltk
+"%pythonExe%" -m pip install --upgrade nltk >> "%logFile%" 2>&1
 echo [installPdfTools] nltk exit %errorlevel% >> "%logFile%"
 "%pythonExe%" -c "import nltk; nltk.download('wordnet'); nltk.download('omw-1.4')"
 echo [installPdfTools] wordnet data exit %errorlevel% >> "%logFile%"
-"%pythonExe%" -c "from nltk.corpus import wordnet; wordnet.synsets('test')" >nul 2>&1
-if errorlevel 1 (echo The thesaurus did not install; the PDF reader is still ready.) else (echo The thesaurus is ready: press Shift+F7 on a word in EdSharp.)
+"%pythonExe%" -c "from nltk.corpus import wordnet; wordnet.synsets('test'); print('wordnet ready')" >> "%logFile%" 2>&1
+if errorlevel 1 (
+  echo Thesaurus not installed; the PDF reader is ready.
+  echo [installPdfTools] wordnet verify FAILED >> "%logFile%"
+) else (
+  echo Thesaurus ready.
+  echo [installPdfTools] verified wordnet with %pythonExe% >> "%logFile%"
+)
 
 echo.
-echo Done. EdSharp can now convert PDF files to Markdown, HTML and Word
-echo documents with their headings, lists and tables intact.
+echo Done.
 echo [installPdfTools] done >> "%logFile%"
 exit /b 0
 
@@ -89,7 +99,7 @@ for /f "delims=" %%p in ('where python 2^>nul') do (
   )
 )
 if not defined pythonExe (
-  for %%d in ("%ProgramFiles%" "%LOCALAPPDATA%\Programs\Python") do (
+  for %%d in ("%ProgramFiles%" "%LOCALAPPDATA%\Programs\Python" "%SystemDrive%\") do (
     for /d %%s in ("%%~d\Python3*") do (
       if exist "%%~s\python.exe" if not defined pythonExe set "pythonExe=%%~s\python.exe"
     )

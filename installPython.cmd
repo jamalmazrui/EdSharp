@@ -3,9 +3,8 @@ rem installPython.cmd -- part of EdSharp setup, Homer Tools pattern: probe first
 rem update when present, install when absent, pause on failure so the
 rem reason is logged. NOTHING PAUSES: a console waiting for a keypress
 rem interrupts the installation, and the summary shown at the very end --
-rem after every checkbox has run -- is where the outcome is reported. Tool output stays IN THIS WINDOW so progress
-rem is readable with a screen reader; the consolidated log records
-rem milestones and exit codes.
+rem after every checkbox has run -- is where the outcome is reported. The console says only what is happening in a few plain
+rem words; every detail goes to the consolidated log.
 rem 64-bit by rule: every winget call asks for the x64 build, and where a
 rem package offers a machine-wide install it is taken, so components land in
 rem the default Windows places -- Program Files, and the PATH every program
@@ -37,27 +36,27 @@ call :findPython
 if defined pythonExe goto upgrade_python
 where python >nul 2>&1
 if not errorlevel 1 (
-  echo Windows has a stub named python that only advertises the Microsoft Store.
-  echo Installing the real Python from python.org now; it will take precedence.
+  echo The python on this computer is only a Microsoft Store stub.
+  echo Installing the official Python ...
   echo [installPython.cmd] Store alias found on PATH; installing python.org build >> "%logFile%"
 )
 
-echo Installing the official Python from python.org; this takes a few minutes.
+echo Installing Python ...
 echo [installPython.cmd] winget install Python.Python.3.13 >> "%logFile%"
-winget install --id Python.Python.3.13 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
+winget install --id Python.Python.3.13 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installPython.cmd] winget install exit %errorlevel% >> "%logFile%"
 call :findPython
 if not defined pythonExe goto fail_python
-echo Python installed: %pythonExe%
+echo Installed at %pythonExe%
 echo [installPython.cmd] installed at %pythonExe% >> "%logFile%"
 goto done_python
 
 :upgrade_python
-echo Python is already installed at %pythonExe%; checking for an update.
+echo Updating Python ...
 echo [installPython.cmd] winget upgrade Python.Python.3.13 >> "%logFile%"
-winget upgrade --id Python.Python.3.13 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
+winget upgrade --id Python.Python.3.13 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installPython.cmd] winget upgrade exit %errorlevel% >> "%logFile%"
-if errorlevel 1 (echo Python is already current.) else (echo Python updated.)
+if errorlevel 1 (echo Already current.) else (echo Updated.)
 goto done_python
 
 :fail_python
@@ -77,7 +76,7 @@ exit /b 3
 
 :done_python
 
-echo Done. Python is ready.
+echo Done.
 echo [installPython.cmd] done >> "%logFile%"
 exit /b 0
 
@@ -97,7 +96,7 @@ for /f "delims=" %%p in ('where python 2^>nul') do (
   )
 )
 if not defined pythonExe (
-  for %%d in ("%LOCALAPPDATA%\Programs\Python" "%ProgramFiles%\Python313" "%ProgramFiles%\Python312" "%LOCALAPPDATA%\Programs\Python\Python313" "%LOCALAPPDATA%\Programs\Python\Python312") do (
+  for %%d in ("%LOCALAPPDATA%\Programs\Python" "%ProgramFiles%" "%SystemDrive%\") do (
     if exist "%%~d\python.exe" if not defined pythonExe set "pythonExe=%%~d\python.exe"
     for /d %%s in ("%%~d\Python3*") do (
       if exist "%%~s\python.exe" if not defined pythonExe set "pythonExe=%%~s\python.exe"
