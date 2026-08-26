@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Development</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="edsharp-development">EdSharp Development</h1>
+<p>How EdSharp is built, how it is put together, and the conventions it
+follows. For using EdSharp, see the user guide; for learning it by role,
+the tutorials.</p>
+<h2 id="building">Building</h2>
+<p>Clone the project and run <strong>BuildEdSharp.cmd</strong> from the
+project folder. It needs nothing installed beyond Windows itself, though
+it uses more when it is there.</p>
+<p>The build does these things in order, writing everything to
+BuildEdSharp.log:</p>
+<ol type="1">
+<li>Works out the next version number from the release tags on the
+remote, and writes it into the installer script.</li>
+<li>Fetches the spelling dictionary if it is missing.</li>
+<li>Removes retired JAWS script bindings from the Scripts folder.</li>
+<li><strong>Runs the source audit</strong> and stops if any check fails.
+See below.</li>
+<li>Fetches the pinned libraries from the package gallery when they are
+absent or the wrong version: the Markdown reader and writer, the HTML
+parser, the character-set detector, the spelling engine.</li>
+<li>Compiles EdSharp.js into EdSharp.dll with the JScript compiler that
+ships with the framework, then compiles the C# sources into EdSharp.exe
+with the best C# compiler it can find — the Roslyn compiler from Visual
+Studio Build Tools if present, otherwise the one inside Windows.</li>
+<li>Regenerates the .htm for every tracked Markdown file whose .htm is
+older.</li>
+<li>Builds the installer if Inno Setup is present.</li>
+</ol>
+<p>A build that fails says why in the log, and the log is the thing to
+send.</p>
+<h2 id="the-source-audit">The Source Audit</h2>
+<p><strong>auditEdSharp.cmd</strong> checks what a compiler cannot. Each
+check exists because something once broke:</p>
+<ul>
+<li>Braces balance in the C# sources, counted outside comments and
+strings.</li>
+<li>Brackets balance in every shipped PowerShell script.</li>
+<li>No two commands claim the same key.</li>
+<li>Every dialog's buttons have distinct access keys, with OK and Cancel
+deliberately having none, since Control+Enter and Escape serve
+them.</li>
+<li>Every command has a description, and each description names the key
+the code actually binds.</li>
+<li>The compiler table's regular expressions are legal expressions, and
+every compiler section defines its settings.</li>
+<li>Conversion entries name scripts that exist.</li>
+<li>The spell checking interfaces match the layouts Windows publishes,
+slot for slot.</li>
+<li>No public method exposes a type declared private in the same
+file.</li>
+<li>Types from namespaces the file does not import are written in
+full.</li>
+<li>Microsoft Office is reached only by the named fallbacks.</li>
+</ul>
+<p>The build runs it before compiling. Run it by hand when a build dies
+without writing a log — a script that will not parse never gets far
+enough to log anything.</p>
+<h2 id="how-the-program-is-put-together">How the Program Is Put
+Together</h2>
+<p><strong>EdSharp.cs</strong> holds most of the program: the window,
+the commands, the conversion and compile machinery. It is one large
+file, which is deliberate: its author navigates by search and by
+structure rather than by file, and splitting it would cost more than it
+saved.</p>
+<p><strong>Lbc.cs</strong> is the dialog toolkit — Layout by Code.
+Dialogs are built by adding labelled fields in order rather than by a
+visual designer, which keeps the reading order, the tab order and the
+visual order identical. Every dialog gets Control+Enter to accept,
+Escape to cancel and F1 to describe its fields.</p>
+<p><strong>Say.cs</strong> speaks. It tries JAWS through its automation
+interface, then NVDA through its controller library, then a system
+notification that Narrator reads, and stops at the first that answers,
+so a message is never delivered twice.</p>
+<p><strong>Inix.cs</strong> reads the settings files.
+<strong>KeyMap.cs</strong> maps keys to commands.
+<strong>Web.cs</strong> fetches web pages.</p>
+<p><strong>EdSharp.js</strong> is compiled by the JScript compiler into
+EdSharp.dll and loaded by reflection, never by a compile-time reference
+— the executable and the library share a base name, and a compile-time
+reference would make loading ambiguous. It runs snippets and hosts the
+JScript console.</p>
+<h2 id="settings">Settings</h2>
+<p>Three files, in increasing order of authority:</p>
+<ul>
+<li><strong>EdSharp.inix</strong> in the program folder holds what
+EdSharp ships with: the conversion table, the compiler definitions, the
+defaults. Upgrades replace it, so nothing personal belongs here.</li>
+<li><strong>EdSharp.inix</strong> in the data folder holds personal
+overrides in the same format. Upgrades never touch it.</li>
+<li><strong>EdSharp.ini</strong> in the data folder holds settings
+changed through Configuration Options.</li>
+</ul>
+<p>A compiler is a section named Compiler followed by its name, with one
+named key per setting: the compile command, the pattern locating an
+error, the output to abbreviate away, the pattern marking the start of a
+part, the comment prefix, the default extension, the indentation the
+language uses, and the interactive shell to open. Adding a compiler
+needs no code.</p>
+<h2 id="coding-style">Coding Style</h2>
+<p>EdSharp uses Camel Type: Hungarian prefixes on names — s for string,
+i for integer, b for boolean, l for list, a for array, o for other
+objects — and lower camel case wherever the language allows it.
+Functions rather than subprocedures. Simple conditions on one line.
+Declarations grouped at the top.</p>
+<p>The style optimizes for hearing code rather than seeing it: a prefix
+tells you the type as the name is spoken, and one-line conditions spare
+a reader two extra lines of arrow-keying for a two-word test.</p>
+<p>The Samples folder holds the same program written several ways in
+this style, which is the quickest way to absorb it.</p>
+<h2 id="documentation">Documentation</h2>
+<p>Every Markdown file in the project root that git tracks has a
+matching .htm, regenerated by the build whenever the Markdown is newer.
+Write the Markdown; never edit the .htm.</p>
+<p>Hotkeys.md is generated from the description table inside EdSharp.cs,
+which is also what Key Describer and the Alternate Menu read. Changing a
+description means changing that table, not the file.</p>
+<h2 id="releasing">Releasing</h2>
+<p>Build, test, then <strong>tagRelease</strong>, which tags the version
+the build wrote into the installer script and pushes it. Releases before
+v5.0.20 include executables that cannot start and should not be
+installed.</p>
+<p>Jamal Mazrui</p>
+</body>
+</html>

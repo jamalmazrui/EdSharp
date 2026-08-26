@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>FAQ</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="edsharp-questions-and-answers">EdSharp Questions and
+Answers</h1>
+<h2 id="getting-started">Getting Started</h2>
+<h3 id="how-do-i-start-edsharp">How do I start EdSharp?</h3>
+<p>Press Alt+Control+E from anywhere in Windows. If EdSharp is already
+running, that key brings it forward rather than starting a second
+copy.</p>
+<h3 id="what-do-i-press-first">What do I press first?</h3>
+<p>Control+F1 turns on Key Describer. Press any key and EdSharp says
+what it does without doing it; press Control+F1 again to leave. Alt+F10
+lists every command alphabetically with its key, and Alt+Shift+H shows
+the whole table in a window you can search.</p>
+<h3 id="do-i-need-anything-else-installed">Do I need anything else
+installed?</h3>
+<p>No. EdSharp runs on the .NET Framework built into every modern
+Windows. The optional pieces offered by the installer add features but
+nothing essential.</p>
+<h3 id="which-boxes-should-i-tick-in-the-installer">Which boxes should I
+tick in the installer?</h3>
+<p>Python and the document tools are ticked already, and they are the
+ones that make EdSharp itself better: rich PDF conversion and the
+thesaurus, about a hundred and fifty megabytes together. Tick Ollama if
+you want the AI features, and its two extra models if you want better
+translation and code help. Leave Git and Node unless you already know
+you want them.</p>
+<h2 id="documents">Documents</h2>
+<h3 id="can-edsharp-open-a-word-document-or-a-pdf">Can EdSharp open a
+Word document or a PDF?</h3>
+<p>Yes. Control+Shift+O, Open Other Format, converts it to text you can
+read and search. A PDF keeps its headings, lists and tables, so you can
+navigate it by block with Control+B rather than wading through a wall of
+text.</p>
+<h3 id="why-does-a-pdf-sometimes-come-out-empty">Why does a PDF
+sometimes come out empty?</h3>
+<p>Because it is a scan of images rather than text. No converter can
+help with that; it needs optical character recognition first. EdSharp
+says so rather than handing you an empty file.</p>
+<h3 id="how-do-i-save-as-something-else">How do I save as something
+else?</h3>
+<p>Alt+Shift+E, Export Format, writes the document out as a Word
+document, a web page, a slide deck, plain text, and more. Control+T
+converts the document in place.</p>
+<h3 id="can-i-make-powerpoint-slides">Can I make PowerPoint slides?</h3>
+<p>Yes. Write the talk in Markdown and export as pptx. Each second level
+heading starts a slide, three hyphens on their own line start an
+untitled one, and a notes section holds speaker notes that appear in
+Presenter View but not on the slide. The slide presenter tutorial has
+the details.</p>
+<h2 id="writing">Writing</h2>
+<h3 id="f7-says-no-spell-checker-could-be-started-what-now">F7 says no
+spell checker could be started. What now?</h3>
+<p>The message names the file it looked for. The dictionary lives in the
+Dictionaries folder beside EdSharp, and the installer puts it there;
+reinstalling restores it. If you have Microsoft Word and would rather
+use its checker, set the SpellChecker option to Word with Configuration
+Options, Alt+Shift+C.</p>
+<h3 id="does-the-spell-checker-learn-words">Does the spell checker learn
+words?</h3>
+<p>Yes. Add to Dictionary in the spell check dialog puts the word in a
+plain file in your settings folder, which you can also edit by hand, and
+teaches Windows' own dictionary at the same time.</p>
+<h3 id="why-does-the-thesaurus-give-definitions">Why does the thesaurus
+give definitions?</h3>
+<p>Because a thesaurus without them is guesswork. The words are grouped
+by meaning, so synonyms for light as in weight never mix with words
+about illumination.</p>
+<h2 id="code">Code</h2>
+<h3 id="how-do-i-run-the-file-i-am-editing">How do I run the file I am
+editing?</h3>
+<p>Control+F5. If nothing happens, press Control+Shift+F5 first and
+choose the compiler for your language: that one choice sets the command
+to run, the way errors are read, the indentation, the comment prefix and
+the interactive shell.</p>
+<h3 id="the-cursor-lands-on-the-wrong-error">The cursor lands on the
+wrong error.</h3>
+<p>It lands on the earliest error in the file, which is often not the
+first one the compiler printed — compilers group warnings and errors as
+they please. Fix it and press Control+F5 again.</p>
+<h3 id="what-is-the-snippet-console">What is the snippet console?</h3>
+<p>Control+Shift+G opens a prompt where the editor window is in scope as
+frm and its text box as rtb. Type an expression to see its value, or a
+statement to change the document. Whatever works there works in a
+snippet, which is the point. There are two, JScript and C#, chosen by
+which compiler you have picked.</p>
+<h3
+id="why-does-python-indent-with-four-spaces-when-edsharp-prefers-a-tab">Why
+does Python indent with four spaces when EdSharp prefers a tab?</h3>
+<p>Because a Python file is usually shared, and four spaces is what
+collaborators expect. EdSharp's own default is one tab, and a file that
+already has indentation of its own keeps it — the compiler setting only
+governs a file with none.</p>
+<h2 id="the-ai-features">The AI Features</h2>
+<h3 id="does-anything-leave-my-computer">Does anything leave my
+computer?</h3>
+<p>No. The models run on your own machine through Ollama. There is no
+account, no key and no limit, and no document is sent anywhere.</p>
+<h3 id="do-i-need-a-graphics-card">Do I need a graphics card?</h3>
+<p>Not for the small model, which answers promptly on any machine. The
+larger translation and coding models are noticeably faster with one.</p>
+<h3 id="f12-sometimes-sends-my-document-and-sometimes-does-not">F12
+sometimes sends my document and sometimes does not.</h3>
+<p>It reads your wording. "Summarize this" plainly refers to the
+document, so the document travels; "when is Thanksgiving this year" does
+not, so it goes alone and answers in seconds. The status line says which
+happened. Shift+F12 always sends the document.</p>
+<h3 id="how-good-is-the-translation">How good is the translation?</h3>
+<p>Good between the widely written languages — Spanish, French, German,
+Portuguese, Italian — and weaker for languages with less material behind
+them. The larger model, a checkbox in the installer, is better at all of
+them.</p>
+<h2 id="screen-readers">Screen Readers</h2>
+<h3 id="which-screen-readers-work-with-edsharp">Which screen readers
+work with EdSharp?</h3>
+<p>JAWS, NVDA and Narrator. EdSharp speaks through whichever is running,
+and the installer offers to install JAWS scripts and an NVDA add-on that
+add EdSharp specific behavior.</p>
+<h3 id="why-is-edsharp-quieter-than-it-used-to-be">Why is EdSharp
+quieter than it used to be?</h3>
+<p>Because your screen reader already announces window titles and the
+name and value of whatever has focus, and hearing both was tiring.
+EdSharp now speaks only what it alone knows: a count, a level, the text
+a command reached. If somewhere feels too quiet, say so and it can be
+added back deliberately.</p>
+<h3 id="can-i-turn-its-speech-off-entirely">Can I turn its speech off
+entirely?</h3>
+<p>Yes, with Extra Speech in the Miscellaneous menu. The messages still
+go to the status bar and to a log you can read.</p>
+<h2 id="problems">Problems</h2>
+<h3 id="something-went-wrong-what-should-i-send">Something went wrong.
+What should I send?</h3>
+<p>Press Control+F12. That copies this session's log to the clipboard as
+a file, ready to attach to a message. Add a sentence about what you were
+doing.</p>
+<h3 id="where-does-edsharp-keep-its-files">Where does EdSharp keep its
+files?</h3>
+<p>Settings are in an EdSharp folder under your roaming application
+data; logs are in an EdSharp logs folder under your local application
+data. The program itself is in Program Files, and nothing personal is
+kept there.</p>
+<h3
+id="an-installer-checkbox-says-reinstall-when-i-have-not-installed-it">An
+installer checkbox says Reinstall when I have not installed it.</h3>
+<p>It means the tool is already on your computer, perhaps from another
+program. Reinstall entries are never ticked by default, because there is
+nothing to gain.</p>
+<p>Jamal Mazrui</p>
+</body>
+</html>
