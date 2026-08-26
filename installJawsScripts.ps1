@@ -18,10 +18,16 @@
 # The installer runs this AS THE ORIGINAL USER (runasoriginaluser), because
 # JAWS keeps its settings in the user's own profile and the installer itself
 # is elevated. That also means the installer cannot read this user's log
-# folder afterward -- so the last act here is writing a two-line result file
-# to C:\temp\EdSharp_jaws.result: the exit code, then the log folder path.
-# The Results box reads it to report the outcome and to place the setup log
-# beside this one.
+# folder afterward -- so the last act here is writing a two-line result file:
+# the exit code, then the log folder path. The Results box reads it to report
+# the outcome and to place the setup log beside this one.
+#
+# That file belongs with the logs, not loose in C:\temp where an earlier
+# version left it. It is written to the EdSharp logs folder, and only if
+# that cannot be reached -- the rare case of the installer and this script
+# running as different Windows accounts -- to a shared folder under the
+# shared program data folder, which the installer also checks. Any leftover from the
+# old C:\temp location is deleted on the way past.
 #
 # Arguments (none are required):
 #   -bQuiet        say nothing on the console; the log gets everything anyway.
@@ -30,9 +36,7 @@
 #                  the uninstaller passes a temporary-folder path, because
 #                  the EdSharp logs folder does not survive an uninstall.
 
-param([switch]$bQuiet, [switch]$bUninstall, [string]$pathLogFile = "")
-
-$c_sResultFile = "C:\temp\EdSharp_jaws.result"
+param([switch]$bQuiet, [switch]$bUninstall, [string]$pathLogFile = "", [string]$pathResultFile = "")
 
 $sScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sLogDir = Join-Path $env:LOCALAPPDATA "EdSharp\logs"
@@ -56,12 +60,30 @@ function writeLog($sMessage) {
 
 function writeResult($iCode) {
   # The two-line handshake the Results box reads: exit code, then log folder.
-  try {
-    New-Item -ItemType Directory -Force -Path "C:\temp" | Out-Null
-    Set-Content -LiteralPath $c_sResultFile -Value @("$iCode", "$sLogDir") -Encoding ASCII
-  } catch {
-    writeLog "WARNING: the result file could not be written: $($_.Exception.Message)"
+  # First choice is the path the installer asked for, then this user's own
+  # logs folder, then a shared folder under the public profile for the rare
+  # case of two different accounts. Whichever succeeds first wins.
+  $lCandidates = @()
+  if ($pathResultFile -ne "") { $lCandidates += $pathResultFile }
+  $lCandidates += (Join-Path $sLogDir "EdSharp_jaws.result")
+  $lCandidates += (Join-Path $env:ProgramData "EdSharp\logs\EdSharp_jaws.result")
+  $bWritten = $false
+  foreach ($sCandidate in $lCandidates) {
+    try {
+      New-Item -ItemType Directory -Force -Path (Split-Path -Parent $sCandidate) | Out-Null
+      Set-Content -LiteralPath $sCandidate -Value @("$iCode", "$sLogDir") -Encoding ASCII
+      writeLog "Result file: $sCandidate"
+      $bWritten = $true
+      break
+    } catch {
+      continue
+    }
   }
+  if (-not $bWritten) { writeLog "WARNING: no result file could be written; the Results box will report the step as not run." }
+  # Tidy away the loose file older versions left in C:\temp.
+  try {
+    if (Test-Path -LiteralPath "C:\temp\EdSharp_jaws.result") { Remove-Item -LiteralPath "C:\temp\EdSharp_jaws.result" -Force -ErrorAction SilentlyContinue }
+  } catch { }
 }
 
 $iExit = 1

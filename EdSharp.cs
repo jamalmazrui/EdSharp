@@ -142,7 +142,20 @@ Application.SetCompatibleTextRenderingDefault(false);
 Application.OleRequired();
 
 Shell = new App();
+// The session's own bracket. Every log line is appended as it happens --
+// nothing waits in memory for a tidy moment that a crash may never grant
+// -- and this last line marks a clean finish, so a log without it says
+// the program ended some other way, which is worth knowing when reading
+// one after a problem.
+try {
 Shell.Run(cmdLineArgs);
+Util.Log("EdSharp closed normally.");
+}
+catch (Exception ex) {
+Util.Log("EdSharp ended with an error: " + ex.Message);
+Util.Log(ex.ToString());
+throw;
+}
 } // Main method
 
 public App() {
@@ -5753,7 +5766,12 @@ catch (Exception) {}
 if (iEarliestLine > 0) {
 // A tool that gives no column marks the spot with carets under an echo
 // of the source line instead; read that when the column is still 1.
-if (iEarliestColumn <= 1) {
+// An indentation error is about the whitespace at the START of the line,
+// whatever the tool's marker points at -- Python puts its caret at the
+// end of the line, which is the least useful place to land when the fix
+// is at the beginning. The cursor goes to column 1, ready for the edit.
+if (sOutput.IndexOf("IndentationError", StringComparison.OrdinalIgnoreCase) >= 0 || sOutput.IndexOf("TabError", StringComparison.OrdinalIgnoreCase) >= 0) iEarliestColumn = 1;
+else if (iEarliestColumn <= 1) {
 string sDocLine = "";
 try { if (iEarliestLine >= 1 && iEarliestLine <= rtb.Lines.Length) sDocLine = rtb.GetRowText(iEarliestLine - 1); }
 catch (Exception) {}
@@ -12804,7 +12822,16 @@ int iCaret = aLines[i].IndexOf('^');
 if (iCaret < 0) continue;
 int iDocIndent = 0;
 if (sDocLine != null && sDocLine.Trim().Length > 0 && sDocLine.Trim() == sEcho.Trim()) iDocIndent = sDocLine.Length - sDocLine.TrimStart().Length;
+// A marker that underlines the WHOLE line -- Python does this for an
+// indentation error, where the fault is the line's position rather than
+// any character in it -- says nothing useful about a column, so the
+// cursor goes to the line's first real character instead.
+if (sTrim.Length >= sEcho.Trim().Length && sEcho.Trim().Length > 0) return (sDocLine != null && sDocLine.Trim().Length > 0) ? iDocIndent + 1 : iEchoIndent + 1;
 int iColumn = iCaret - iEchoIndent + iDocIndent + 1;
+// Python marks a MISSING character -- the colon it wanted -- by pointing
+// just past the end of the line. Landing there is right, but never
+// further than one position past the last character.
+if (sDocLine != null && sDocLine.Length > 0 && iColumn > sDocLine.Length + 1) iColumn = sDocLine.Length + 1;
 return (iColumn > 0) ? iColumn : 0;
 }
 return 0;

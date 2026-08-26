@@ -228,8 +228,18 @@ editors. EdSharp then adds many beneficial features. Optional scripts
 for some screen readers provide further fine tuning of the speech
 interface for those users.</p>
 <h2 id="installation">Installation</h2>
-<p>The installation program for EdSharp is called EdSharp_Setup.exe.
-When executed, it prompts for a program folder, the default being<br />
+<p>The last page of the installer offers optional installs as
+checkboxes: Git with the GitHub command line, Node.js, Python, the free
+document tools for rich PDF conversion and the thesaurus, and Ollama
+with a chat model. Each label says whether that tool is missing, out of
+date, or already current, with version numbers. They run after you press
+Finish, and a summary then reports each one by name, saying what is
+installed and which version, or what to run later for anything that is
+not. The summary is saved as EdSharp_setup_summary.txt in the logs
+folder under your local application data, and you can see it again at
+any time by running summarizeSetup.cmd from the program folder. The
+installation program for EdSharp is called EdSharp_Setup.exe. When
+executed, it prompts for a program folder, the default being<br />
 <code>C:\Program Files\EdSharp</code> The installer also creates a
 program group for EdSharp on the Windows start menu, containing choices
 to launch EdSharp, read Documentation, or uninstall. Additional choices
@@ -1253,14 +1263,19 @@ time stamp, in the logs folder under your local application data, beside
 the setup log. It records the version, the environment, and every
 outside command EdSharp runs with its exit code, so a failed conversion
 or compile can be diagnosed from the log rather than guessed at. The
-newest thirty session logs are kept. Press Control+F12, Copy Log, to put
-the current log's path on the clipboard as both a file and text, ready
-to paste as a mail attachment. Extra speech messages may be toggled off
--- or reactivated -- with Control+Shift+X. When off, such messages are
-redirected to a text file in the EdSharp data directory called
-Speech.log, which may be examined in an editing window with Alt+Shift+X.
-This file is initialized when EdSharp starts, and the Extra Speech
-setting is remembered from the previous session.</p>
+newest thirty session logs are kept. Everything EdSharp records goes in
+this one folder: the setup log, the session logs, the setup summary, and
+the small files the installer and its helper scripts use to talk to each
+other. Each line is written the moment it happens rather than held in
+memory, so a log is complete even when the thing being logged is what
+went wrong. Press Control+F12, Copy Log, to put the current log's path
+on the clipboard as both a file and text, ready to paste as a mail
+attachment. Extra speech messages may be toggled off -- or reactivated
+-- with Control+Shift+X. When off, such messages are redirected to a
+text file in the EdSharp data directory called Speech.log, which may be
+examined in an editing window with Alt+Shift+X. This file is initialized
+when EdSharp starts, and the Extra Speech setting is remembered from the
+previous session.</p>
 <p>With the optional JAWS scripts, you can toggle a speech setting of
 reading all or no punctuation using JAWSKey plus the grave accent at the
 top left of the main keypad (U.S. keyboard). All punctuation is useful

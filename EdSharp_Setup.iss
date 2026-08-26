@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.32
-AppVerName=EdSharp 5.0.32
-VersionInfoVersion=5.0.32
+AppVersion=5.0.33
+AppVerName=EdSharp 5.0.33
+VersionInfoVersion=5.0.33
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -146,6 +146,7 @@ Source: "installPandoc.cmd";  DestDir: "{app}"; Flags: ignoreversion
 ; fresh clone that has not fetched them yet.
 Source: "installGitHub.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "installPdfTools.cmd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "summarizeSetup.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dropLatexJawsKeys.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dropLatexJawsKeys.py"; DestDir: "{app}"; Flags: ignoreversion
 Source: "installNode.cmd"; DestDir: "{app}"; Flags: ignoreversion
@@ -195,6 +196,9 @@ Name: "{userappdata}\EdSharp";
 Name: "{userappdata}\EdSharp\Temp";
 
 [InstallDelete]
+; The loose handshake file older versions left in C:\temp; the logs
+; folder is its home now.
+Type: files; Name: "C:\temp\EdSharp_jaws.result"
 ; Clear out any pre-existing EdSharp desktop shortcut before the [Icons] section
 ; recreates the single hot-key shortcut below.  This matters because EdSharp --
 ; unlike DbDo, which is a brand-new app -- has a legacy installer that placed an
@@ -232,11 +236,11 @@ Name: "{autodesktop}\EdSharp"; Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}
 ; under the user's own roaming application data, and this installer runs
 ; elevated; without the flag the scripts would go into the administrator's
 ; profile and the user would see nothing at all.
-Filename: "{app}\installJawsScripts.cmd"; Parameters: "-bQuiet"; WorkingDir: "{app}"; Description: "Install JAWS scripts for EdSharp (recommended)"; Flags: postinstall skipifsilent runasoriginaluser waituntilterminated runhidden; Check: haveJaws
+Filename: "{app}\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; Description: "Install JAWS scripts for EdSharp (recommended)"; Flags: postinstall skipifsilent runasoriginaluser waituntilterminated runhidden; Check: haveJaws
 ; The same step again for a silent installation, which skips every
 ; postinstall entry: without this twin, /SILENT would copy the files, report
 ; success, and install no JAWS scripts at all.
-Filename: "{app}\installJawsScripts.cmd"; Parameters: "-bQuiet"; WorkingDir: "{app}"; Flags: runhidden runasoriginaluser waituntilterminated; Check: jawsAndSilent
+Filename: "{app}\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; Flags: runhidden runasoriginaluser waituntilterminated; Check: jawsAndSilent
 ; Install the NVDA add-on by shell-executing the .nvda-addon file (NVDA
 ; registers itself as the handler). Unchecked by default; checking it opens
 ; NVDA's add-on install dialog. NVDA must be running, and be restarted after.
@@ -296,6 +300,17 @@ Filename: "{cmd}"; \
   Description: "{code:descOllama}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked
 
+; The summary, last of all. The Results box appears before these
+; checkboxes run, so it cannot know how they fared; this reports what is
+; actually on the computer afterwards, tool by tool, with what to run
+; later for anything missing. It is checked by default because a person
+; who ticked boxes deserves to hear what became of them.
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\summarizeSetup.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "Show a summary of what was installed"; \
+  Flags: postinstall skipifsilent runascurrentuser
+
 Filename: "{code:ngenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: isAdminNgen
 Filename: "{code:ngenExe}"; Parameters: "install ""{app}\EdSharp.exe"" /AppBase:""{app}"" /nologo /silent"; Flags: runhidden; Check: isAdminNgen
 
@@ -333,18 +348,51 @@ Root: HKA; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\EdSharp.
 var
   gDescCache: array[0..3] of string;
 
+{ Append one line to the consolidated setup log, straight away. Buffering
+  would be tidier, but a log that is still in memory when something goes
+  wrong is a log nobody can read: the value of these lines is precisely
+  that they survive whatever happens next. }
+procedure logLine(sLogDir: string; sText: string);
+var
+  lsLine: TArrayOfString;
+begin
+  try
+    SetArrayLength(lsLine, 1);
+    lsLine[0] := sText;
+    SaveStringsToFile(sLogDir + '\EdSharp_setup.log', lsLine, True);
+  except
+  end;
+end;
+
 function probeLines(sCommand: string; var lsLines: TArrayOfString): boolean;
 var
-  sTempFile: string;
-  iResult: integer;
+  sCaptureFile, sLogDir: string;
+  iResult, i: integer;
 begin
-  sTempFile := ExpandConstant('{tmp}\wingetProbe.txt');
+  // The capture goes to the EdSharp logs folder like everything else this
+  // installer writes -- nothing loose in a temporary directory. It is a
+  // scratch file rather than a record, so it is deleted as soon as its
+  // lines are in memory; what MATTERS from it, the command and what winget
+  // answered, is appended to the consolidated log first, so a crash between
+  // here and the finish page still leaves the evidence on disk.
+  sLogDir := ExpandConstant('{localappdata}\EdSharp\logs');
+  ForceDirectories(sLogDir);
+  sCaptureFile := sLogDir + '\EdSharp_probe.tmp';
   // The probes run 64-bit like everything else here: the installer itself is
   // marked x64, so {cmd} is the 64-bit shell and winget reports the machine's
   // real 64-bit packages rather than a WOW64 view.
-  result := Exec(ExpandConstant('{cmd}'), '/c ' + sCommand + ' > "' + sTempFile + '" 2>&1', '', SW_HIDE, ewWaitUntilTerminated, iResult);
+  result := Exec(ExpandConstant('{cmd}'), '/c ' + sCommand + ' > "' + sCaptureFile + '" 2>&1', '', SW_HIDE, ewWaitUntilTerminated, iResult);
   if result then
-    result := LoadStringsFromFile(sTempFile, lsLines);
+    result := LoadStringsFromFile(sCaptureFile, lsLines);
+  logLine(sLogDir, '[probe] ' + sCommand);
+  if result then
+    for i := 0 to GetArrayLength(lsLines) - 1 do
+      if Trim(lsLines[i]) <> '' then
+        logLine(sLogDir, '[probe]   ' + lsLines[i])
+  else
+    logLine(sLogDir, '[probe]   the command could not be run');
+  if FileExists(sCaptureFile) then
+    DeleteFile(sCaptureFile);
 end;
 
 function wingetInfo(sId: string; var sInstalled, sAvailable: string): boolean;
@@ -603,16 +651,28 @@ end;
 function jawsResult(var sLogFolder: string): integer;
 var
   lResult: TArrayOfString;
+  sFile: string;
 begin
   result := -1;
   sLogFolder := '';
-  if LoadStringsFromFile('C:\temp\EdSharp_jaws.result', lResult) then
+  // The logs folder first, where the file now belongs; then the shared
+  // public folder used when the installer and the script run as different
+  // accounts; then the loose C:\temp path older versions used, which is
+  // deleted once read so nothing is left lying about.
+  sFile := ExpandConstant('{localappdata}\EdSharp\logs\EdSharp_jaws.result');
+  if not FileExists(sFile) then
+    sFile := ExpandConstant('{commonappdata}\EdSharp\logs\EdSharp_jaws.result');
+  if not FileExists(sFile) then
+    sFile := 'C:\temp\EdSharp_jaws.result';
+  if LoadStringsFromFile(sFile, lResult) then
   begin
     if GetArrayLength(lResult) > 0 then
       result := StrToIntDef(Trim(lResult[0]), 1);
     if GetArrayLength(lResult) > 1 then
       sLogFolder := Trim(lResult[1]);
   end;
+  if FileExists('C:\temp\EdSharp_jaws.result') then
+    DeleteFile('C:\temp\EdSharp_jaws.result');
 end;
 
 function nvdaIsRunning(): boolean;
@@ -743,7 +803,14 @@ begin
   else
     sMessage := sMessage + '  pandoc: not present. To add it later, run installPandoc.cmd from the program folder as an administrator.' + sBreak;
 
+  // The optional installs -- Git, Node, Python, the document tools,
+  // Ollama -- run from the finish page AFTER this box is shown, so their
+  // outcome cannot be reported here. The summary that runs last says how
+  // each one fared; this box points at it rather than staying silent.
   sMessage := sMessage + sBreak
+    + 'Anything you ticked on the next page -- Git, Node, Python, the document tools, Ollama -- installs after you press Finish.' + sBreak
+    + 'A summary then reports each one by name, and is saved as:' + sBreak
+    + '  ' + sLogDir + '\EdSharp_setup_summary.txt' + sBreak + sBreak
     + 'The whole installation is in one log:' + sBreak + '  ' + sLogDir + '\EdSharp_setup.log' + sBreak + sBreak
     + 'To start EdSharp, press Alt+Control+E.';
 
