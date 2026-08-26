@@ -1025,6 +1025,43 @@ changed, skipped, and added.</p>
 "en-US" unless you change it. SpellChecker chooses the checker:
 "Windows" by default, or "Word" to use the Microsoft Word dialog as
 older versions of EdSharp did, which needs Word installed.</p>
+<h3 id="asking-about-code">Asking About Code</h3>
+<p>When the window holds a source file, F12 sends your question to a
+model trained on code rather than the general chat model, in the same
+way Compile picks a compiler by the kind of file you are editing. The
+installer offers qwen2.5-coder:7b as a checkbox, about five gigabytes,
+beside the Ollama box; tick it and the change happens by itself.</p>
+<p>What it is good at is anything about the file in front of you:
+explain this error message, what does this method do, write a function
+that does such and such, review this for mistakes, convert this loop to
+the other style, add comments. That is work where the whole subject fits
+in the question, which is where a model this size does well. What it
+cannot do is reason about a program spread over many files, because it
+sees only what you send it, and a large file may not fit at once; a
+method or a class is the practical unit.</p>
+<p>Say which framework you are targeting when it matters. Most C#
+written today targets .NET rather than the .NET Framework that EdSharp
+itself uses, so a question that does not say so may come back with code
+that will not compile here. The CodeModel option names a different model
+if you prefer one.</p>
+<h3 id="translating">Translating</h3>
+<p>Press Alt+Shift+F7 to translate the selection, or the whole document
+when nothing is selected. Choose the language you are translating from
+and the one you are translating to, and the translation opens in a new
+window, leaving the original untouched. Your last pair of languages is
+remembered.</p>
+<p>The work is done by the same AI model on your computer that Chat with
+AI uses, so nothing is sent over the internet, there is no account, and
+there are no limits on how much you translate. Quality is good between
+the widely written languages, Spanish, French, German, Portuguese and
+Italian among them, and useful but less reliable for languages with less
+material behind them.</p>
+<p>A larger model translates better, at the cost of disk space and time.
+The installer offers qwen2.5:7b as a checkbox, about five gigabytes,
+beside the Ollama box; tick it and translation uses it automatically,
+while Chat with AI keeps llama3.2, the smaller and quicker model.
+Nothing needs setting. If you prefer a different model, name it in the
+TranslateModel option with Configuration Options, Alt+Shift+C.</p>
 <h3 id="chat-with-ai">Chat with AI</h3>
 <p>Press F12 to talk with an AI model running on your own computer.
 Whatever is selected, or the whole document when nothing is selected, is
@@ -1050,22 +1087,38 @@ JScript .NET, and HTML Tidy for checking web pages, plus Default for
 plain editing. Each compiler is defined by a section named Compiler
 followed by its name in EdSharp.inix, with one clearly named key per
 setting: CompileCommand, JumpPosition, AbbreviateOutput, NavigatePart,
-QuotePrefix, ExtensionDefault, and GoToEnvironment. Values are kept
-exactly as written and may span multiple lines, so regular expressions
-are easy to read and edit. Every expression in the shipped set was
-checked against the tool's real message format, so Compile, Control+F5,
-jumps to the true error line and column. Two things make that practical
-to work with. Noise is removed before you hear anything, so the
-announcement starts with an error rather than with your own file path,
-which Python and most compilers repeat in every message. And when a tool
-reports several problems, EdSharp goes to the one earliest in the file,
-whatever order the tool printed them in, and begins speaking there: fix
-it, press Control+F5 again, and the next problem is waiting, so you work
-down the file from the top. The full output, including anything skipped,
-is always available with Review Output. Older compilers that no longer
-earn a place, such as Perl, Ruby, and PowerBASIC, were retired from the
-shipped list; any of them can return as a private section, and old-style
-packed entries still work for compilers that have no section.</p>
+QuotePrefix, ExtensionDefault, IndentUnit, and GoToEnvironment. Picking
+a compiler brings all of them, so choosing Python also brings four space
+indentation and Python's own prompt, while choosing JavaScript brings
+two spaces and Node's shell; a document that already has indentation of
+its own still governs itself. Control+Shift+G opens that shell: Python's
+interpreter with your file already run, Node's read-evaluate-print
+shell, or PowerShell left open after running the file. Two of them are
+built into EdSharp, for the languages Windows gives no interpreter: a
+JScript console for writing snippets and a C# console, both opening with
+the editor window in scope as frm and its text box as rtb, so a line
+tried at the prompt does to your document exactly what the same line
+does in a snippet. The C# one compiles each line with the compiler named
+in the compiler settings and loads it into EdSharp, which is why it can
+reach the live document; a line ending in a semicolon is kept for the
+rest of the session, and anything else is printed. A language with no
+such shell, JAWS script for one, says so rather than starting something
+unrelated. Values are kept exactly as written and may span multiple
+lines, so regular expressions are easy to read and edit. Every
+expression in the shipped set was checked against the tool's real
+message format, so Compile, Control+F5, jumps to the true error line and
+column. Two things make that practical to work with. Noise is removed
+before you hear anything, so the announcement starts with an error
+rather than with your own file path, which Python and most compilers
+repeat in every message. And when a tool reports several problems,
+EdSharp goes to the one earliest in the file, whatever order the tool
+printed them in, and begins speaking there: fix it, press Control+F5
+again, and the next problem is waiting, so you work down the file from
+the top. The full output, including anything skipped, is always
+available with Review Output. Older compilers that no longer earn a
+place, such as Perl, Ruby, and PowerBASIC, were retired from the shipped
+list; any of them can return as a private section, and old-style packed
+entries still work for compilers that have no section.</p>
 <p>EdSharp aims to be the most friendly and productive editor for screen
 reader users writing Python. The pieces working together: the PyBrace
 command, Alt+Shift+LeftBracket, converts indented Python to a flat form

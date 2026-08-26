@@ -31,6 +31,11 @@ function say($sText) {
 }
 
 function runBounded($sExe, $lArguments, $iSeconds) {
+  $lQuoted = @()
+  foreach ($sArgument in $lArguments) {
+    if ($sArgument -match "\s") { $lQuoted += ('"' + $sArgument + '"') } else { $lQuoted += $sArgument }
+  }
+  $lArguments = $lQuoted
   # Run a command, wait no longer than $iSeconds, and return its first
   # line of output. A tool that hangs -- some report versions over the
   # network -- must never hold up the installation.
@@ -56,6 +61,11 @@ function runBounded($sExe, $lArguments, $iSeconds) {
 }
 
 function runBoundedAll($sExe, $lArguments, $iSeconds) {
+  $lQuoted = @()
+  foreach ($sArgument in $lArguments) {
+    if ($sArgument -match "\s") { $lQuoted += ('"' + $sArgument + '"') } else { $lQuoted += $sArgument }
+  }
+  $lArguments = $lQuoted
   # The same, but returning everything the command printed rather than its
   # first line -- for answers that are lists.
   $sOutFile = Join-Path $sLogDir ("EdSharp_probe_" + [guid]::NewGuid().ToString("N") + ".tmp")
@@ -77,6 +87,16 @@ function runBoundedAll($sExe, $lArguments, $iSeconds) {
 }
 
 function runExit($sExe, $lArguments, $iSeconds) {
+  # Quote any argument containing a space. Start-Process joins the list
+  # with spaces and quotes nothing, so python -c "import pymupdf4llm"
+  # arrived as -c import pymupdf4llm: Python read "import" as the whole
+  # program, failed, and a package that was installed was reported
+  # missing. This one line was the whole fault.
+  $lQuoted = @()
+  foreach ($sArgument in $lArguments) {
+    if ($sArgument -match "\s") { $lQuoted += ('"' + $sArgument + '"') } else { $lQuoted += $sArgument }
+  }
+  $lArguments = $lQuoted
   # The exit code of a bounded run: 0 for success, anything else for
   # failure, and -1 when the command could not be run or outstayed its
   # welcome. Output is ignored on purpose -- a library that prints a
@@ -216,8 +236,24 @@ function reportModel() {
   # double the wait on a cold service.
   $sList = runBoundedAll $sOllama @("list") 20
   if ($sList -eq "") { say "Chat model llama3.2: could not be checked just now. Press F12 in EdSharp; it offers to fetch the model if it is missing." ; return }
-  if ($sList -match "llama3\.2") { say "Chat model llama3.2: ready. Press F12 in EdSharp to chat." }
+  if ($sList -match "llama3\.2") { say "Chat model llama3.2: installed. Press F12 to chat." }
   else { say "Chat model llama3.2: not downloaded. Press F12 in EdSharp and answer Yes when it offers to fetch it." }
+}
+
+function reportTranslationModel() {
+  $sOllama = findExe "ollama"
+  if ($sOllama -eq "") { return }
+  $sList = runBoundedAll $sOllama @("list") 20
+  if ($sList -match "qwen2\.5:7b") { say "Translation model qwen2.5:7b: installed. Alt+Shift+F7 will use it." }
+  else { say "Translation model qwen2.5:7b: not installed. Alt+Shift+F7 uses llama3.2, quicker but less accurate." }
+}
+
+function reportCodeModel() {
+  $sOllama = findExe "ollama"
+  if ($sOllama -eq "") { return }
+  $sList = runBoundedAll $sOllama @("list") 20
+  if ($sList -match "qwen2\.5-coder") { say "Coding model qwen2.5-coder:7b: installed. F12 will use it for source files." }
+  else { say "Coding model qwen2.5-coder:7b: not installed. F12 uses llama3.2 for source files too." }
 }
 
 function main() {
@@ -250,6 +286,8 @@ function main() {
   reportTool "Node.js" "node" "run installNode.cmd in the EdSharp folder"
   reportTool "Ollama" "ollama" "run installOllama.cmd in the EdSharp folder"
   reportModel
+  reportTranslationModel
+  reportCodeModel
   # Pandoc is installed automatically and is reported in the lines above,
   # so it is not repeated here.
 

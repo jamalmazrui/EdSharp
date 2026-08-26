@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.35
-AppVerName=EdSharp 5.0.35
-VersionInfoVersion=5.0.35
+AppVersion=5.0.36
+AppVerName=EdSharp 5.0.36
+VersionInfoVersion=5.0.36
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -146,6 +146,8 @@ Source: "installPandoc.cmd";  DestDir: "{app}"; Flags: ignoreversion
 ; fresh clone that has not fetched them yet.
 Source: "installGitHub.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "installPdfTools.cmd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "installTranslateModel.cmd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "installCodeModel.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "summarizeSetup.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "summarizeSetup.ps1"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dropLatexJawsKeys.cmd"; DestDir: "{app}"; Flags: ignoreversion
@@ -175,6 +177,8 @@ Source: "Hotkeys.ini";        DestDir: "{app}"; Flags: onlyifdoesntexist
 ; Documentation.
 Source: "EdSharp.md";         DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp.htm";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "Tutorials.md";       DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "Tutorials.htm";      DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "Tutorial.md";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "Tutorial.htm";       DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "Announce.md";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
@@ -218,7 +222,7 @@ Type: files; Name: "{commondesktop}\EdSharp.lnk"
 [Icons]
 Name: "{group}\Launch EdSharp";   Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}"
 Name: "{group}\EdSharp Manual";   Filename: "{app}\EdSharp.htm"
-Name: "{group}\EdSharp Tutorial"; Filename: "{app}\Tutorial.htm"
+Name: "{group}\EdSharp Tutorials"; Filename: "{app}\Tutorials.htm"
 Name: "{group}\EdSharp Announcement"; Filename: "{app}\Announce.htm"
 Name: "{group}\Uninstall EdSharp"; Filename: "{uninstallexe}"
 ; Single hot-key shortcut, following the DbDo model: the one shortcut that owns
@@ -324,6 +328,26 @@ Filename: "{cmd}"; \
   WorkingDir: "{app}"; \
   Description: "{code:descOllama}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaNeedsInstall
+
+; The larger translation model, offered next to Ollama itself because it
+; is useless without it. Unticked: five gigabytes is a real decision, and
+; the small chat model translates well enough to try the feature first.
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installTranslateModel.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descTranslateModel}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked
+
+; The coding model, likewise useless without Ollama and likewise
+; unticked. It answers questions about the file in the window -- explain
+; this error, write this function, review this method -- which is work a
+; model of this size does well, since the whole subject fits in front of
+; it.
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installCodeModel.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descCodeModel}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked
 
 ; ---- Update: installed, but a newer version is available ----
 
@@ -507,6 +531,41 @@ begin
     logLine(sLogDir, '[probe]   the command could not be run');
   if FileExists(sCaptureFile) then
     DeleteFile(sCaptureFile);
+end;
+
+{ The exit code of a command, with its output discarded. Some questions
+  are answered by success or failure rather than by what was printed. }
+function probeExitCode(sCommand: string): integer;
+var
+  iResult: integer;
+begin
+  result := 1;
+  if Exec(ExpandConstant('{cmd}'), '/c ' + sCommand, '', SW_HIDE, ewWaitUntilTerminated, iResult) then
+    result := iResult;
+end;
+
+{ Ollama's model list, read once. Three labels ask about it, and each
+  reading costs a second or more. }
+var
+  gModelList: string;
+  gModelListKnown: boolean;
+
+function ollamaModelList(): string;
+var
+  lsLines: TArrayOfString;
+  i: integer;
+begin
+  if gModelListKnown then
+  begin
+    result := gModelList;
+    exit;
+  end;
+  gModelListKnown := True;
+  gModelList := '';
+  if probeLines('ollama list', lsLines) then
+    for i := 0 to GetArrayLength(lsLines) - 1 do
+      gModelList := gModelList + lsLines[i] + Chr(10);
+  result := gModelList;
 end;
 
 function wingetInfo(sId: string; var sInstalled, sAvailable: string): boolean;
@@ -795,17 +854,17 @@ end;
 { The document tools are Python packages rather than winget packages, so
   they are either there or not; pip keeps them current when asked. }
 function docToolsPresent(): boolean;
-var
-  lsLines: TArrayOfString;
 begin
   if gStateKnown[4] then
   begin
     result := (gStateCache[4] = 2);
     exit;
   end;
-  result := probeLines(pythonExeForProbe() + ' -c "import pymupdf4llm"', lsLines);
-  if result then
-    result := (GetArrayLength(lsLines) = 0) or (Trim(lsLines[0]) = '');
+  // By exit code, not by output: a successful import prints nothing, and
+  // an empty capture file made the old test decide the package was
+  // missing -- which is why these tools kept being offered as an install
+  // however often they were installed.
+  result := probeExitCode(pythonExeForProbe() + ' -c "import pymupdf4llm"') = 0;
   if result then gStateCache[4] := 2 else gStateCache[4] := 0;
   gStateKnown[4] := True;
 end;
@@ -843,6 +902,28 @@ begin
   result := devToolDesc(2, 'Python.Python.3.14;Python.Python.3.13;Python.Python.3.12', 'python', 'Python', 'Install the latest official Python for Windows, for the Python compiler and helper scripts');
 end;
 
+{ The translation model is an Ollama model rather than a winget package,
+  so its label says what it costs and whether it is already there. }
+function descTranslateModel(sParam: string): string;
+begin
+  // Name the model. "A stronger model" tells nobody what they are getting
+  // or what to look for in Ollama afterwards.
+  if Pos('qwen2.5:7b', ollamaModelList()) > 0 then
+    result := 'Reinstall qwen2.5:7b, the translation model (installed)'
+  else
+    result := 'Install qwen2.5:7b for translation, better than the chat model (about 5 GB; needs Ollama)';
+end;
+
+{ The coding model, like the translation one, is an Ollama model rather
+  than a winget package. }
+function descCodeModel(sParam: string): string;
+begin
+  if Pos('qwen2.5-coder', ollamaModelList()) > 0 then
+    result := 'Reinstall qwen2.5-coder:7b, the coding model (installed)'
+  else
+    result := 'Install qwen2.5-coder:7b for questions about code (about 5 GB; needs Ollama)';
+end;
+
 function descOllama(sParam: string): string;
 var
   sUserCopy: string;
@@ -851,9 +932,9 @@ begin
   // in the profile still answers for a version.
   sUserCopy := ExpandConstant('{localappdata}\Programs\Ollama\ollama.exe');
   if FileExists(sUserCopy) then
-    result := devToolDesc(3, 'Ollama.Ollama', '"' + sUserCopy + '"', 'Ollama', 'Install Ollama and a chat model, for the Chat with AI command (about 2 GB, shared with other apps)')
+    result := devToolDesc(3, 'Ollama.Ollama', '"' + sUserCopy + '"', 'Ollama', 'Install Ollama with the llama3.2 chat model, for Chat with AI (about 2 GB, shared with other apps)')
   else
-    result := devToolDesc(3, 'Ollama.Ollama', 'ollama', 'Ollama', 'Install Ollama and a chat model, for the Chat with AI command (about 2 GB, shared with other apps)');
+    result := devToolDesc(3, 'Ollama.Ollama', 'ollama', 'Ollama', 'Install Ollama with the llama3.2 chat model, for Chat with AI (about 2 GB, shared with other apps)');
 end;
 
 function ngenExe(sParam: string): string;
@@ -1037,13 +1118,54 @@ begin
   end;
 end;
 
+{ Ask every question the finish page will ask, while the progress bar is
+  still on screen and can say what is happening. Each winget or ollama
+  query takes a second or two, and there are nine of them; asked when the
+  finish page is being built, they add up to a silent wait with nothing
+  to read. Asked here, the answers are cached, the page appears at once,
+  and no extra screen is added -- the existing status line does the
+  talking. }
+procedure warmComponentProbes();
+var
+  sInstalled, sAvailable: string;
+begin
+  try
+    WizardForm.StatusLabel.Caption := 'Checking which components are installed ...';
+    WizardForm.ProgressGauge.Style := npbstMarquee;
+    WizardForm.Refresh();
+
+    WizardForm.StatusLabel.Caption := 'Checking Git ...';
+    devToolState(0, 'Git.Git', 'git');
+    WizardForm.StatusLabel.Caption := 'Checking Node.js ...';
+    devToolState(1, 'OpenJS.NodeJS.LTS;OpenJS.NodeJS', 'node');
+    WizardForm.StatusLabel.Caption := 'Checking Python ...';
+    devToolState(2, 'Python.Python.3.14;Python.Python.3.13;Python.Python.3.12', 'python');
+    WizardForm.StatusLabel.Caption := 'Checking Ollama ...';
+    devToolState(3, 'Ollama.Ollama', 'ollama');
+    WizardForm.StatusLabel.Caption := 'Checking the document tools ...';
+    docToolsPresent();
+    WizardForm.StatusLabel.Caption := 'Checking the AI models ...';
+    ollamaModelList();
+    // The labels themselves, so the page has nothing left to compute.
+    descGitHub(''); descNode(''); descPython(''); descOllama('');
+    descDocTools(''); descTranslateModel(''); descCodeModel('');
+
+    WizardForm.ProgressGauge.Style := npbstNormal;
+    WizardForm.StatusLabel.Caption := '';
+  except
+  end;
+end;
+
 procedure CurStepChanged(iCurStep: TSetupStep);
 begin
   // DeinitializeSetup runs whenever Setup exits, INCLUDING WHEN THE USER
   // CANCELS.  Announcing success to somebody who has just backed out would be
   // a plain lie, so the summary is shown only if the files were copied.
   if iCurStep = ssPostInstall then
+  begin
     gbInstalled := True;
+    warmComponentProbes();
+  end;
 end;
 
 procedure DeinitializeSetup();

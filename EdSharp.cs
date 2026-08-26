@@ -1162,7 +1162,7 @@ menuWindow.DropDownItems.AddRange(new ToolStripMenuItem[] {menuWindowNext, menuW
 menuHelp = CreateMenu("&Help");
 menuHelpAbout = CreateMenuItem("&About ...", "Alt+F1", menuItem_Click, "frame silent");
 menuHelpDocumentation = CreateMenuItem("Documentation", "F1", menuItem_Click, "frame speak");
-menuHelpTutorial = CreateMenuItem("Tutorial", "Control+Shift+F1", menuItem_Click, "frame speak");
+menuHelpTutorial = CreateMenuItem("Tutorials", "Control+Shift+F1", menuItem_Click, "frame speak");
 menuHelpHistoryOfChanges = CreateMenuItem("History of Changes", "Shift+F1", menuItem_Click, "frame speak");
 menuHelpSamplePrograms = CreateMenuItem("Sample Programs ...", "Control+Shift+F2", menuItem_Click, "frame speak");
 menuHelpCopyLog = CreateMenuItem("Copy Log", "Control+F12", menuItem_Click, "frame speak");
@@ -2090,7 +2090,7 @@ static readonly string[] c_aCommandSummaries = new string[] {
 "Spell Check\tF7, Spell check all or selected text",
 "Thesaurus\tShift+F7, Look up synonyms for word at cursor",
 "Lookup Term\tAlt+F7, Look up information from dictionary.com, thesaurus.com, and wikipedia.org",
-"Translate Language\tAlt+Shift+F7, Translate all or selected text from one natural language to another",
+"Translate Language\tAlt+Shift+F7, Translate the selection, or the whole document, between two languages using the AI model on this computer; the translation opens in a new window",
 "Say Path\tAlt+P, Say full path of current file",
 "Path to Clipboard\tAlt+Shift+P, Copy full path of current file to clipboard",
 "Path List\tControl+Shift+P, Generate a list of files in a new editing window",
@@ -2210,7 +2210,7 @@ static readonly string[] c_aCommandSummaries = new string[] {
 "Run Code Blocks\tAlt+Shift+F9, Run this document's sql and jscript code blocks and put each block's results below it",
 "Chat with AI\tF12, Ask an AI model on this computer a question; the answer opens in a new window, and the document travels with the question when your wording refers to it",
 "Chat about Document\tShift+F12, Ask an AI model on this computer about the open text: the selection when text is selected, the whole document when it is not",
-"Tutorial\tControl+Shift+F1, Open the EdSharp tutorial in your web browser",
+"Tutorials\tControl+Shift+F1, Open the role-based quick-start tutorials in your web browser: Python, NVDA add-ons, JAWS scripts, web development, C#, translation, article writing, slides, summarizing, and batch conversion",
 "Sample Programs\tControl+Shift+F2, List the sample programs that ship with EdSharp and open one",
 "Copy Log\tControl+F12, Copy this session's log path to the clipboard, as a file for pasting into a mail message and as text"
 }; // c_aCommandSummaries
@@ -3505,45 +3505,54 @@ rtb.Text = sText;
 }
 
 if (menuItem == menuMiscTranslateLanguage) {
-if (rtb.SelectionLength == 0) {
-iStart = 0;
-iEnd = rtb.TextLength;
-}
-else {
-iStart = rtb.SelectionStart;
-iEnd = iStart + rtb.SelectionLength;
-}
+// Translation now runs on the AI model already installed for Chat with
+// AI, on this computer, with no web service to depend on and no rate
+// limit to fight. The old command called TranLang.exe, a wrapper around
+// a free Google interface that was withdrawn years ago; the model that
+// arrived with Ollama does the same work offline.
+//
+// The selection travels when there is one, the whole document
+// otherwise, and the translation opens in a new window, so the original
+// is never overwritten. The languages are chosen by name from a list,
+// and the pair is remembered for next time.
+if (rtb.SelectionLength == 0) { iStart = 0; iEnd = rtb.TextLength; AddMessage("All"); }
+else { iStart = rtb.SelectionStart; iEnd = iStart + rtb.SelectionLength; AddMessage("Selected"); }
 sText = rtb.GetRange(iStart, iEnd);
+if (sText.Trim().Length == 0) { AddMessage("No text!"); return; }
 
-string[] aLanguageNames, aLanguageAbbreviations;
-Util.GetGoogleLanguages(out aLanguageNames, out aLanguageAbbreviations);
-string sSourceLanguage = Dialog.Pick("Source Language", aLanguageAbbreviations, aLanguageNames, false, 0);
-if (sSourceLanguage.Length == 0) return;
+// One dialog rather than two: both languages are the same question
+// asked twice, and a person choosing a pair should see the pair.
+string[] aLanguages = new string[] {"Arabic", "Chinese", "Dutch", "English", "French", "German", "Hindi", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Spanish", "Swedish", "Turkish", "Ukrainian", "Vietnamese"};
+string[] aChosen = Dialog.PickLanguagePair(aLanguages, App.ReadData("TranslateFrom", "English"), App.ReadData("TranslateTo", "Spanish"));
+if (aChosen == null) return;
+string sFromLanguage = aChosen[0];
+string sToLanguage = aChosen[1];
+App.WriteData("TranslateFrom", sFromLanguage);
+App.WriteData("TranslateTo", sToLanguage);
 
-string sTargetLanguage = Dialog.Pick("Target Language", aLanguageAbbreviations, aLanguageNames, false, 0);
-if (sTargetLanguage.Length == 0) return;
+// The instruction is written so the model returns the translation and
+// nothing else: no preamble, no explanation, no restatement of the
+// original, and the document's own structure kept intact.
+string sPrompt = "Translate the following text from " + sFromLanguage + " into " + sToLanguage + "."
++ " Reply with the translation only: no preamble, no notes, no quotation marks around it."
++ " Keep the original line breaks, headings, lists and formatting exactly as they are."
++ " Translate names of people and places only where a standard form exists in " + sToLanguage + ".\n\n" + sText;
 
-string sExe = App.ProgramDir + @"\Convert\TranLang.exe";
-string sSourceFile = App.TempFile;
-Encoding en = Encoding.UTF8;
-en = null;
-Util.String2File(sText, sSourceFile, ref en);
-string sTargetFile = sSourceFile;
-string sCommand = Util.Quote(sExe) + " " + sSourceLanguage + " " + Util.Quote(sSourceFile) + " " + sTargetLanguage + " " + Util.Quote(sTargetFile);
-Util.RunHideWait(sCommand);
-en = Encoding.UTF8;
-// en = null;
-sText = Util.File2String(sTargetFile, ref en);
-File.Delete(sSourceFile);
-File.Delete(sTargetFile);
+// The stronger model when it is there, the chat model otherwise. The
+// installer offers the larger one as a component; ticking it is all a
+// person has to do, and the TranslateModel setting overrides both for
+// anyone who prefers a different one.
+string sModel = App.ReadOption("TranslateModel", "").Trim();
+if (sModel.Length == 0) sModel = bestTranslationModel();
+AddMessage("Translating with " + sModel);
+string sTranslation = askOllamaWithProgress(sPrompt, sModel);
+if (sTranslation.Length == 0) return;
 
-if (!IsEmptyWindow()) new MdiChild(this);
-child = this.Child;
-// child.Text = sResult + ".txt";
-child.File = child.Text;
-rtb = child.RTB;
-rtb.Text = sText;
-
+child = new MdiChild(this);
+this.Child.RTB.Text = sTranslation.Replace("\r\n", "\n").Replace("\n", "\r\n");
+this.Child.RTB.Modified = false;
+this.Child.RTB.Index = 0;
+AddMessage(sToLanguage + " ready");
 }
 
 if (menuItem == menuMiscGuardDocument) {
@@ -5467,35 +5476,16 @@ if (rtb.SelectionLength > 0) { sContext = rtb.SelectedText; AddMessage("With sel
 else if (menuItem == menuMiscChatWithDocument) { sContext = rtb.Text; AddMessage("With document"); }
 else if (rtb.Text.Trim().Length > 0 && instructionWantsDocument(sInstruction)) { sContext = rtb.Text; AddMessage("With document"); }
 else AddMessage("Question only");
-string sModel = App.ReadOption("OllamaModel", "llama3.2");
+// Which model answers depends on what is open, exactly as Compile
+// decides which compiler to run: a question about a source file goes to
+// the coding model when one is installed, everything else to the chat
+// model. The whole subject here is the file in the window, which is work
+// a model of this size does well.
+string sModel = modelForDocument(child);
 AddMessage("Asking " + sModel);
 string sPrompt = sInstruction;
 if (sContext.Trim().Length > 0) sPrompt += "\n\n" + sContext;
-// A local model can think for minutes on a long document, and a silent
-// wait is indistinguishable from a hang. The request runs on a worker
-// thread while this loop keeps the interface alive and speaks a
-// succinct count every fifteen seconds, directly to the running screen
-// reader, until the answer lands.
-string sAnswer = "";
-bool bAnswerDone = false;
-System.Threading.Thread threadAsk = new System.Threading.Thread(delegate() {
-try { sAnswer = askOllama(sPrompt, sModel); }
-catch (Exception) { sAnswer = ""; }
-bAnswerDone = true;
-});
-threadAsk.IsBackground = true;
-threadAsk.Start();
-int iWaited = 0;
-int iSpoken = 0;
-while (!bAnswerDone) {
-System.Threading.Thread.Sleep(100);
-Application.DoEvents();
-iWaited += 100;
-if (iWaited - iSpoken >= 15000) {
-iSpoken = iWaited;
-Util.Say((iWaited / 1000) + " seconds");
-}
-}
+string sAnswer = askOllamaWithProgress(sPrompt, sModel);
 if (sAnswer.Length == 0) return;
 Util.Say("Answer ready");
 // The answer opens in a plain new window that EdSharp titles itself,
@@ -5879,7 +5869,11 @@ Directory.SetCurrentDirectory(s);
 // only for entries that have no section, so private legacy compiler
 // lines keep working unchanged.
 string sSection = "Compiler " + sResult;
-string[] aKeys = new string[] {"CompileCommand", "JumpPosition", "AbbreviateOutput", "NavigatePart", "QuotePrefix", "ExtensionDefault", "GoToEnvironment"};
+// IndentUnit joins the list: a compiler now carries the indentation its
+// language uses, so picking Python gives four spaces and picking
+// JavaScript gives two, while a document's own indentation still
+// overrides both when it has any.
+string[] aKeys = new string[] {"CompileCommand", "JumpPosition", "AbbreviateOutput", "NavigatePart", "QuotePrefix", "ExtensionDefault", "IndentUnit", "GoToEnvironment"};
 bool bSectionDefined = false;
 foreach (string sKey in aKeys) {
 if (Ini.ReadValue(App.IniFile, sSection, sKey, "\0") != "\0") { bSectionDefined = true; break; }
@@ -5902,8 +5896,25 @@ if (sVal != "\0") Ini.WriteQuote(App.IniFile, "Options", sKey, sVal);
 }
 
 if (menuItem == menuMiscGoToEnvironment) {
-string sCommand = @"%ProgDir%\ijs.exe";
-sCommand = App.ReadOption("GoToEnvironment", sCommand);
+// The interactive shell for the language in use: Python's own prompt
+// with the file already run, Node's read-evaluate-print shell,
+// PowerShell left open after running the file. A compiler with no such
+// shell -- JAWS script, for one -- leaves the setting empty, and saying
+// so is better than starting something unrelated.
+string sCommand = App.ReadOption("GoToEnvironment", "").Trim();
+if (sCommand.Length == 0) {
+AddMessage("No interactive environment for this compiler");
+return;
+}
+// The built-in one: a JScript console with EdSharp's own objects in
+// scope, for writing snippets. Named rather than pathed, because it is
+// inside EdSharp rather than a program on disk.
+bool bCSharpConsole = sCommand.Equals("%CSharp%", StringComparison.OrdinalIgnoreCase);
+if (bCSharpConsole || sCommand.Equals("%Snippet%", StringComparison.OrdinalIgnoreCase) || sCommand.ToLower().EndsWith("ijs.exe") || sCommand.ToLower().EndsWith("ijs.exe\"")) {
+AddMessage(bCSharpConsole ? "C# console" : "Snippet console");
+if (!Script.runConsole(bCSharpConsole)) Dialog.Show("Go to Environment", "The console could not be started.\n\nThe run log has the detail:\n" + App.LogFile);
+return;
+}
 if (this.Child == null) sFile = "temp.txt";
 else sFile = child.File;
 if (!sFile.Contains(@"\")) sFile = Path.Combine(Directory.GetCurrentDirectory(), sFile);
@@ -6515,8 +6526,13 @@ Process.Start(sFile);
 }
 
 if (menuItem == menuHelpTutorial) {
-// Open the tutorial in the default browser associated with the .htm extension.
-sFile = Path.Combine(App.ProgramDir, "Tutorial.htm");
+// Tutorials.htm holds the role-based quick starts -- Python, JAWS
+// script, translation, article writing, slides, batch conversion. The
+// older single Tutorial.htm is opened instead when an installation
+// still has that and not this.
+sFile = Path.Combine(App.ProgramDir, "Tutorials.htm");
+if (!File.Exists(sFile)) sFile = Path.Combine(App.ProgramDir, "Tutorial.htm");
+if (!File.Exists(sFile)) { AddMessage("No tutorials are installed"); return; }
 Process.Start(sFile);
 }
 if (menuItem == menuHelpHistoryOfChanges) {
@@ -6712,6 +6728,97 @@ catch (Exception) {}
 thread.IsBackground = true;
 thread.Start();
 } // pullOllamaModel method
+
+// Ask the model and wait without seeming to hang. A local model can
+// think for minutes on a long document, and silence is indistinguishable
+// from a crash, so the request runs on a worker thread while this keeps
+// the window alive and speaks a count every fifteen seconds. Shared by
+// Chat with AI and by translation, which can take longer still.
+// Which model to translate with: the larger one installed for the
+// purpose if Ollama reports it, otherwise whatever Chat with AI uses.
+// The answer is remembered for the session, since asking Ollama takes a
+// moment and the set of models rarely changes while EdSharp is running.
+static string sTranslationModel = null;
+
+// The model to answer about this document. A source file gets the coding
+// model when it is installed; anything else gets the chat model. The
+// CodeModel option names a different one for anyone who prefers it.
+static string sCodingModel = null;
+
+public string modelForDocument(MdiChild childAsked) {
+string sChatModel = App.ReadOption("OllamaModel", "llama3.2");
+string sFile = (childAsked == null || childAsked.File == null) ? "" : childAsked.File;
+string sExt = Path.GetExtension(sFile).ToLower().TrimStart('.');
+string[] aCodeExtensions = new string[] {"cs", "py", "pyw", "js", "mjs", "cjs", "jsx", "ts", "ps1", "psm1", "vbs", "jss", "jsh", "c", "cc", "cpp", "h", "hpp", "java", "sql", "css", "json", "xml", "cmd", "bat", "sh", "rb", "go", "rs", "php", "pl", "lua", "ini", "inix", "yaml", "yml"};
+bool bCode = false;
+foreach (string sCode in aCodeExtensions) if (sExt == sCode) { bCode = true; break; }
+if (!bCode) return sChatModel;
+string sNamed = App.ReadOption("CodeModel", "").Trim();
+if (sNamed.Length > 0) return sNamed;
+if (sCodingModel != null) return sCodingModel;
+sCodingModel = sChatModel;
+try {
+string sList = Util.GetProgramOutput(ollamaExePath(), "list");
+if (sList != null) {
+foreach (string sPreferred in new string[] {"qwen2.5-coder:7b", "qwen2.5-coder", "deepseek-coder-v2", "qwen3-coder"}) {
+if (sList.IndexOf(sPreferred, StringComparison.OrdinalIgnoreCase) >= 0) { sCodingModel = sPreferred; break; }
+}
+}
+}
+catch (Exception) {}
+Util.Log("coding model: " + sCodingModel);
+return sCodingModel;
+} // modelForDocument method
+
+// Ollama's own program, by its per-user path when the name is not yet on
+// this process's path.
+public static string ollamaExePath() {
+string sUserCopy = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Programs\Ollama\ollama.exe");
+return File.Exists(sUserCopy) ? sUserCopy : "ollama";
+} // ollamaExePath method
+
+public string bestTranslationModel() {
+if (sTranslationModel != null) return sTranslationModel;
+string sChatModel = App.ReadOption("OllamaModel", "llama3.2");
+sTranslationModel = sChatModel;
+try {
+string sList = Util.GetProgramOutput(ollamaExePath(), "list");
+if (sList != null) {
+foreach (string sPreferred in new string[] {"qwen2.5:7b", "qwen2.5", "gemma2:9b", "llama3.1:8b"}) {
+if (sList.IndexOf(sPreferred, StringComparison.OrdinalIgnoreCase) >= 0) {
+sTranslationModel = sPreferred;
+break;
+}
+}
+}
+}
+catch (Exception) {}
+Util.Log("translation model: " + sTranslationModel);
+return sTranslationModel;
+} // bestTranslationModel method
+
+public string askOllamaWithProgress(string sPrompt, string sModel) {
+string sAnswer = "";
+bool bDone = false;
+System.Threading.Thread threadAsk = new System.Threading.Thread(delegate() {
+try { sAnswer = askOllama(sPrompt, sModel); }
+catch (Exception) { sAnswer = ""; }
+bDone = true;
+});
+threadAsk.IsBackground = true;
+threadAsk.Start();
+int iWaited = 0, iSpoken = 0;
+while (!bDone) {
+System.Threading.Thread.Sleep(100);
+Application.DoEvents();
+iWaited += 100;
+if (iWaited - iSpoken >= 15000) {
+iSpoken = iWaited;
+Util.Say((iWaited / 1000) + " seconds");
+}
+}
+return sAnswer;
+} // askOllamaWithProgress method
 
 public string askOllama(string sPrompt, string sModel) {
 string sUrl = App.ReadOption("OllamaUrl", "http://localhost:11434").TrimEnd('/') + "/api/generate";
@@ -10189,6 +10296,27 @@ COM.InvokeVerb(sPath, "Properties");
 // sentence it sits in, one editable combo box of suggestions, and four
 // plainly named buttons. Returns the button clicked and the text in the
 // combo box. Escape returns Cancel.
+// The language pair, in one dialog built the Lbc way: a label above
+// each list, a tip on each explaining what it does, both lists showing
+// the same languages, and the buttons left to runWithButtons so OK,
+// Cancel and Help behave as they do everywhere else -- Control+Enter
+// accepts from anywhere, Escape cancels, F1 describes the fields.
+// Returns the two languages, or null when cancelled.
+public static string[] PickLanguagePair(string[] aLanguages, string sFrom, string sTo) {
+List<string> lsLanguages = new List<string>(aLanguages);
+LbcDialog dlg = new LbcDialog("Translate", App.Frame);
+ListBox lstFrom = dlg.addPickBox("Translate &from", lsLanguages, sFrom, "The language the text is written in now");
+ListBox lstTo = dlg.addPickBox("Translate &to", lsLanguages, sTo, "The language to translate it into");
+if (lstFrom.SelectedIndex < 0) lstFrom.SelectedIndex = 0;
+if (lstTo.SelectedIndex < 0) lstTo.SelectedIndex = 0;
+string sClicked = dlg.runWithButtons(new string[] {"OK", "Cancel"});
+string[] aResult = null;
+if (sClicked != null && sClicked.Replace("&", "") == "OK" && lstFrom.SelectedItem != null && lstTo.SelectedItem != null)
+aResult = new string[] {lstFrom.SelectedItem.ToString(), lstTo.SelectedItem.ToString()};
+dlg.Dispose();
+return aResult;
+} // PickLanguagePair method
+
 // A multiline prompt: a labelled box that keeps its lines, with OK and
 // Cancel after it in the tab order. Enter inside the box inserts a line
 // break rather than submitting, which is what a person typing several
@@ -10915,6 +11043,229 @@ Type typeJs = asmHost.GetType("EdSharp.JS");
 miRun = typeJs.GetMethod("runScript", new Type[] {typeof(string), typeof(object), typeof(object)});
 return miRun;
 } // GetRunMethod method
+
+[DllImport("kernel32.dll", SetLastError = true)]
+static extern bool AllocConsole();
+
+[DllImport("kernel32.dll", SetLastError = true)]
+static extern bool FreeConsole();
+
+[DllImport("kernel32.dll")]
+static extern IntPtr GetConsoleWindow();
+
+[DllImport("user32.dll")]
+static extern bool SetForegroundWindow(IntPtr hWnd);
+
+// The interactive console for writing snippets. EdSharp is a windowed
+// program with no console of its own, so one is created for the
+// occasion and released when the person types quit. The loop itself
+// lives in EdSharp.dll, where the snippet language lives, and it is
+// handed the same two objects a snippet gets: the window and its text
+// box, both live, so a line tried here does exactly what the same line
+// will do in the snippet.
+//
+// It runs on its own thread: reading from a console blocks, and
+// blocking the interface would freeze the editor the console is meant
+// to be experimenting on. Only one at a time, since a process has only
+// one console.
+static System.Threading.Thread threadConsole = null;
+
+public static bool runConsole() {
+return runConsole(false);
+} // runConsole method
+
+public static bool runConsole(bool bCSharp) {
+if (threadConsole != null && threadConsole.IsAlive) {
+IntPtr hConsole = GetConsoleWindow();
+if (hConsole != IntPtr.Zero) SetForegroundWindow(hConsole);
+return true;
+}
+// The C# loop lives here; the JScript one lives in EdSharp.dll, where
+// the JScript language is.
+MethodInfo miConsole = null;
+if (!bCSharp) {
+try {
+string sDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+Assembly asmHost = Assembly.LoadFrom(Path.Combine(sDir, "EdSharp.dll"));
+Type typeJs = asmHost.GetType("EdSharp.JS");
+miConsole = typeJs.GetMethod("runConsole", new Type[] {typeof(object), typeof(object)});
+if (miConsole == null) { Util.Log("console: EdSharp.dll has no runConsole"); return false; }
+}
+catch (Exception ex) {
+Util.Log("console: EdSharp.dll could not be loaded: " + ex.Message);
+return false;
+}
+}
+object frm = (App.Frame != null) ? App.Frame.Child : null;
+object rtb = (App.Frame != null && App.Frame.Child != null) ? (object) App.Frame.Child.RTB : null;
+threadConsole = new System.Threading.Thread(delegate() {
+try {
+AllocConsole();
+Console.Title = bCSharp ? "EdSharp C# Console" : "EdSharp Snippet Console";
+// The streams are rebound because they were captured when the
+// program started, before any console existed.
+StreamWriter writerOut = new StreamWriter(Console.OpenStandardOutput());
+writerOut.AutoFlush = true;
+Console.SetOut(writerOut);
+Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+IntPtr hNew = GetConsoleWindow();
+if (hNew != IntPtr.Zero) SetForegroundWindow(hNew);
+if (bCSharp) csharpConsoleLoop(frm, rtb);
+else miConsole.Invoke(null, new object[] {frm, rtb});
+}
+catch (Exception ex) { Util.Log("console ended with an error: " + ex.ToString()); }
+finally { try { FreeConsole(); } catch (Exception) {} }
+});
+threadConsole.IsBackground = true;
+threadConsole.SetApartmentState(System.Threading.ApartmentState.STA);
+threadConsole.Start();
+Util.Log("snippet console opened");
+return true;
+} // runConsole method
+
+// ===== The C# console =====================================================
+//
+// The same idea as the JScript one, in C#. There is no C# interpreter in
+// Windows, so each line is COMPILED -- by the very compiler Control+F5
+// uses -- into a small assembly which is then loaded into this process
+// and run. That last part is the point: loaded here, the code holds the
+// real editor window, so "rtb.Text = rtb.Text.ToUpper()" changes the
+// document in front of you, exactly as a snippet would.
+//
+// Why not Roslyn's scripting package, which offers this directly? It
+// would be the elegant answer on a modern framework. On .NET Framework
+// 4.8 it arrives with a dozen support assemblies, several declared in
+// terms of types this framework lacks -- the trap that broke the
+// spelling library twice this week. Compiling with csc costs a second a
+// line and brings nothing new to ship, and the console is for trying a
+// line at a time, where a second is not felt.
+//
+// State persists the way a session should: every statement entered so
+// far is compiled again with the new one, so variables declared earlier
+// are still there. The cost grows with the session and stays small.
+static List<string> lsCSharpSession = new List<string>();
+
+static string csharpSource(string sLast, bool bExpression) {
+StringBuilder sb = new StringBuilder();
+sb.AppendLine("using System;");
+sb.AppendLine("using System.Collections.Generic;");
+sb.AppendLine("using System.IO;");
+sb.AppendLine("using System.Linq;");
+sb.AppendLine("using System.Text;");
+sb.AppendLine("using System.Text.RegularExpressions;");
+sb.AppendLine("using System.Windows.Forms;");
+sb.AppendLine("public class EdSharpConsoleEntry {");
+sb.AppendLine("public static object run(dynamic frm, dynamic rtb) {");
+foreach (string sStatement in lsCSharpSession) sb.AppendLine(sStatement);
+if (bExpression) sb.AppendLine("return " + sLast + ";");
+else { sb.AppendLine(sLast); sb.AppendLine("return null;"); }
+sb.AppendLine("}");
+sb.AppendLine("}");
+return sb.ToString();
+} // csharpSource method
+
+// Compile one submission and run it. Returns the value to print, or
+// sets sError to what the compiler or the code complained about.
+static object runCSharpEntry(string sLast, bool bExpression, object frm, object rtb, out string sError) {
+sError = "";
+string sCsc = Util.FindCscPath();
+if (sCsc.Length == 0) { sError = "No C# compiler was found on this computer."; return null; }
+string sDir = Path.Combine(Path.GetTempPath(), "EdSharpConsole");
+try { Directory.CreateDirectory(sDir); } catch (Exception) {}
+string sSourceFile = Path.Combine(sDir, "entry.cs");
+string sDllFile = Path.Combine(sDir, "entry_" + Guid.NewGuid().ToString("N") + ".dll");
+try { File.WriteAllText(sSourceFile, csharpSource(sLast, bExpression)); }
+catch (Exception ex) { sError = ex.Message; return null; }
+
+string sArguments = "/nologo /target:library /platform:x64 /out:\"" + sDllFile + "\""
++ " /r:System.dll /r:System.Core.dll /r:System.Drawing.dll /r:System.Windows.Forms.dll /r:Microsoft.CSharp.dll"
++ " \"" + sSourceFile + "\"";
+string sOutput = Util.GetProgramOutput(sCsc, sArguments);
+if (!File.Exists(sDllFile)) {
+sError = (sOutput == null || sOutput.Trim().Length == 0) ? "The compiler produced nothing." : sOutput.Trim();
+return null;
+}
+try {
+Assembly asmEntry = Assembly.LoadFrom(sDllFile);
+Type typeEntry = asmEntry.GetType("EdSharpConsoleEntry");
+MethodInfo miRun = typeEntry.GetMethod("run");
+return miRun.Invoke(null, new object[] {frm, rtb});
+}
+catch (TargetInvocationException ex) {
+sError = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message;
+return null;
+}
+catch (Exception ex) { sError = ex.Message; return null; }
+} // runCSharpEntry method
+
+static void sayCSharpHelp() {
+Console.WriteLine("Interactive C# for EdSharp snippets.");
+Console.WriteLine();
+Console.WriteLine("Already in scope:");
+Console.WriteLine("  frm   the editor window you came from");
+Console.WriteLine("  rtb   its text box: rtb.Text, rtb.SelectedText, rtb.Lines");
+Console.WriteLine();
+Console.WriteLine("Both are dynamic, so members resolve as you type them.");
+Console.WriteLine("A line ending in a semicolon is a statement; anything else");
+Console.WriteLine("is an expression and its value is printed.");
+Console.WriteLine();
+Console.WriteLine("  rtb.SelectedText.ToUpper()");
+Console.WriteLine("  rtb.SelectedText = rtb.SelectedText.ToUpper();");
+Console.WriteLine("  var words = rtb.Text.Split(' ').Length;");
+Console.WriteLine();
+Console.WriteLine("Commands:");
+Console.WriteLine("  help              this reminder");
+Console.WriteLine("  quit              close the console and return to EdSharp");
+Console.WriteLine("  cls               clear the screen");
+Console.WriteLine("  list              show the statements kept so far");
+Console.WriteLine("  reset             forget them and start again");
+Console.WriteLine("  save FileName     write them to a file");
+Console.WriteLine();
+Console.WriteLine("Each line is compiled, so expect about a second per line.");
+} // sayCSharpHelp method
+
+public static void csharpConsoleLoop(object frm, object rtb) {
+sayCSharpHelp();
+Console.WriteLine();
+while (true) {
+Console.Write("cs> ");
+string sInput = Console.ReadLine();
+if (sInput == null) return;
+sInput = sInput.Trim();
+if (sInput.Length == 0) continue;
+string sWord = sInput.Split(' ')[0].ToLower();
+string sRest = (sInput.Length > sWord.Length) ? sInput.Substring(sWord.Length).Trim() : "";
+
+if (sWord == "quit") return;
+if (sWord == "help") { sayCSharpHelp(); continue; }
+if (sWord == "cls") { try { Console.Clear(); } catch (Exception) {} continue; }
+if (sWord == "list") {
+if (lsCSharpSession.Count == 0) Console.WriteLine("Nothing kept yet.");
+else foreach (string sStatement in lsCSharpSession) Console.WriteLine("  " + sStatement);
+continue;
+}
+if (sWord == "reset") { lsCSharpSession.Clear(); Console.WriteLine("Session cleared."); continue; }
+if (sWord == "save") {
+try {
+File.WriteAllLines(sRest, lsCSharpSession.ToArray());
+Console.WriteLine("Wrote " + lsCSharpSession.Count + " lines to " + sRest);
+}
+catch (Exception ex) { Console.WriteLine("Could not write: " + ex.Message); }
+continue;
+}
+
+// A semicolon at the end means a statement, which is kept for the
+// rest of the session; anything else is an expression to evaluate
+// and print, and is not kept, since printing it again on every
+// later line would be noise.
+bool bExpression = !sInput.EndsWith(";");
+string sError;
+object oValue = runCSharpEntry(sInput, bExpression, frm, rtb, out sError);
+if (sError.Length > 0) { Console.WriteLine(sError); continue; }
+if (bExpression) Console.WriteLine((oValue == null) ? "null" : oValue.ToString());
+else lsCSharpSession.Add(sInput);
+}
+} // csharpConsoleLoop method
 
 // run: evaluate sCode with the active editor window as frm and its
 // RichTextBox as rtb, both visible to the snippet. Either may be null

@@ -237,138 +237,160 @@ tt2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f t2t -t plain -o %Ta
 ; [Options]
 ; YieldEncoding=
 ; ViewLevels="brl:1 brf:1 docx:0"
-; [Compiler C#]
-; CompileCommand="csc.exe" /nologo "%SourceLong%" 2>&1
-; JumpPosition=\(\d+,\d+\)
+; [Compiler Python]
+; CompileCommand="py -3 "%Source%" 2>&1"
+; IndentUnit="\t"
 
-[Compilers]
-; Empty by design. Every shipped compiler is defined by a [Compiler <name>]
-; section below, with one named key per setting. The tilde-packed form is
-; still read for any private entry a person adds here. The MinGW C++ and
-; PowerBASIC lines that lived here were removed on 25 August 2026 with the
-; compilers themselves; the audit script noticed they still pointed at
-; retired scripts.
-
-; ===== Compiler definitions (24 August 2026) ================================
+; ===== Compiler definitions ================================================
 ; One section per compiler, one named key per setting, values verbatim.
-; This replaces the tilde-packed [Compilers] values. Keys:
+; Reviewed 26 August 2026 against what a default, machine-wide install of
+; each language actually provides. Keys:
 ;   CompileCommand    the command Control+F5 runs; %Source%, %SourceLong%,
 ;                     %SourceDir%, %SourceRoot%, %ProgDir%, %NetDir% expand
-;   JumpPosition      regular expression locating the error position in the
-;                     output; the first number in the match is the line, the
-;                     next number, when present, the column
-;   AbbreviateOutput  regular expression for output text to condense before
-;                     speaking
+;   JumpPosition      regular expression locating the error position; the
+;                     first number in the match is the line, the next the
+;                     column
+;   AbbreviateOutput  regular expression for output to remove before
+;                     speaking -- typically the tool's echo of your own path
 ;   NavigatePart      regular expression for the starts of parts, used by
-;                     Alt+PageUp and Alt+PageDown and Go to Part
-;   QuotePrefix       the comment prefix, used to skip comments in
-;                     indentation navigation and announcements
+;                     Go to Part and by Alt+PageUp and Alt+PageDown
+;   QuotePrefix       the comment prefix, used to skip comments when moving
+;                     by indentation
 ;   ExtensionDefault  default file extension for the compiler
-;   GoToEnvironment   the interactive environment Control+Shift+G opens
-; Every regular expression below was traced against the tool's real
-; message format, noted beside it.
+;   IndentUnit        the indentation this language uses -- four spaces, two
+;                     spaces, or \t -- applied to a document that has none of
+;                     its own to detect
+;   GoToEnvironment   the interactive shell Control+Shift+G opens; the
+;                     special values %Snippet% and %CSharp% open EdSharp's
+;                     own JScript and C# consoles, and an empty value means
+;                     the language has no shell
+; Every expression was traced against the tool's real message format.
+;
+; RETIRED 26 August 2026: VBScript. Microsoft has deprecated it and is
+; removing it from Windows, so an entry promising to run it would stop
+; working on machines as they update. Earlier retirements, on 24 August:
+; Boo, Java, LaTeX, MinGW C++, Perl, PHP, PowerBASIC, Ruby, VB.NET --
+; each either unmaintained or impossible to verify from here. Anyone who
+; still uses one can add a [Compiler <name>] section to the EdSharp.inix
+; in their DATA folder, which upgrades never overwrite.
 
 [Compiler C#]
-; csc: "Program.cs(12,34): error CS1002: ; expected". The old jump
-; pattern lacked the parentheses, so any "12,34" in program output
-; could hijack the jump; anchored now.
+; csc reports "Program.cs(12,34): error CS1002: ; expected". The jump
+; pattern is anchored on the parentheses so a "12,34" in the program's
+; own output cannot hijack it. %NetDir% is the running .NET Framework
+; directory, which every Windows carries, so no install is assumed.
+; GoToEnvironment: %CSharp% opens EdSharp's own C# console, where the
+; editor window and its text box are already in scope. Windows ships no
+; C# interpreter, so each line is compiled by the same csc named above
+; and loaded into EdSharp itself, which is what lets the code touch the
+; live document. Anyone with the .NET SDK can point this at
+; "dotnet-script" or at "csi.exe" from Visual Studio's Roslyn folder
+; instead; %Snippet% opens the JScript console.
+; IndentUnit: four spaces, the Microsoft C# convention.
 CompileCommand="%NetDir%\csc.exe /nologo /platform:x64 "%Source%" 2>&1"
 JumpPosition="\(\d+,\d+\)"
 AbbreviateOutput="^.*?\.cs"
 NavigatePart="^( |\t)*(public|private|protected|internal|static|class|namespace|void)\b"
 QuotePrefix="//"
 ExtensionDefault="cs"
-GoToEnvironment="%ProgDir%\ijs.exe"
+IndentUnit="    "
+GoToEnvironment="%CSharp%"
 
 [Compiler Python]
 ; Traceback: File "prog.py", line 12, in main -- and syntax errors use
-; the same "line 12" form. NavigatePart includes async def.
-; AbbreviateOutput drops the File "path" prefix from every frame and the
-; traceback banner, so the announcement starts at the line number and
-; reaches the message without reading your own path aloud first.
+; the same "line 12" form. AbbreviateOutput drops the File "path" prefix
+; from every frame and the traceback banner, so the announcement starts
+; at the line number rather than reading your own path aloud.
+; GoToEnvironment: "python -i" opens the interpreter with the file
+; already run, so its functions and variables are there to try; the bare
+; name finds the official python.org build on the machine path.
+; IndentUnit: four spaces, as PEP 8 asks -- EdSharp's own default is one
+; tab, but a Python file shared with others should follow the language's
+; convention, and the document's own indentation still wins over both.
 CompileCommand="python "%Source%" 2>&1"
 JumpPosition="line \d+"
 AbbreviateOutput="(^[ \t]*File ".*?", )|(^Traceback \(most recent call last\):[ \t]*\r?\n)"
 NavigatePart="^( |\t)*(async +)?(def|class) +\w+"
 QuotePrefix="#"
 ExtensionDefault="py"
-GoToEnvironment="python.exe"
+IndentUnit="    "
+GoToEnvironment="python.exe -i "%SourceLong%""
 
 [Compiler JavaScript]
 ; node prints the failing location as path:line for syntax errors and
-; path:line:column inside stack frames; the pattern matches both, so
-; the jump lands on line and column when the column is given.
+; path:line:column inside stack frames; the pattern matches both.
 ; AbbreviateOutput drops Node's frames inside its own internals and the
-; file:/// path prefix, leaving the script name, line and column.
+; path prefixes, leaving the script name, line and column.
+; GoToEnvironment: "node -i" is Node's own read-evaluate-print shell,
+; installed with Node itself.
+; IndentUnit: two spaces, the prevailing JavaScript convention.
 CompileCommand="node "%SourceLong%" 2>&1"
 JumpPosition=":\d+(:\d+)?"
 AbbreviateOutput="(^[ \t]*at .*node:(internal|diagnostics_channel).*$)|(file:///.*/)|(^[A-Za-z]:\\.*\\)"
 NavigatePart="^( |\t)*((async +)?function|class) +\w+"
 QuotePrefix="//"
 ExtensionDefault="js"
-GoToEnvironment="node.exe"
+IndentUnit="  "
+GoToEnvironment="node.exe -i"
 
 [Compiler PowerShell]
-; Errors report "At C:\path\script.ps1:12 char:5". The old command
-; interpolated an undefined %file_name% variable; fixed to
-; %SourceLong%, with profile loading and execution policy handled.
-; AbbreviateOutput removes the "At <path>" prefix from each error
-; position, leaving the script name, line and character.
+; Errors report "At C:\path\script.ps1:12 char:5", and AbbreviateOutput
+; removes the path prefix, leaving the script name, line and character.
+; -NoProfile keeps a personal profile from changing the result, and
+; -ExecutionPolicy Bypass runs the file without altering machine policy.
+; GoToEnvironment: powershell.exe with -NoExit runs the file and then
+; leaves the console open, so the functions it defined can be called.
+; Windows PowerShell 5.1 is used rather than pwsh because it is the one
+; that ships with every Windows.
+; IndentUnit: four spaces, the PowerShell style guide's choice.
 CompileCommand="powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%SourceLong%" 2>&1"
 JumpPosition=":\d+ char:\d+"
 AbbreviateOutput="^At .*\\"
 NavigatePart="^( |\t)*(function|class) +[\w-]+"
 QuotePrefix="#"
 ExtensionDefault="ps1"
-GoToEnvironment="powershell.exe"
+IndentUnit="    "
+GoToEnvironment="powershell.exe -NoExit -ExecutionPolicy Bypass -File "%SourceLong%""
 
 [Compiler JAWS Script]
-; scompile reports "line 12, column 5". The old entry hardcoded the
-; JAWS 12 installation path; EdSharp already puts the running JAWS
-; folder on PATH at startup, so the bare name finds the compiler for
-; whatever JAWS version is installed.
+; scompile reports "line 12, column 5". The bare name finds the compiler
+; because EdSharp puts the running JAWS folder on the path at startup,
+; so it works for whatever JAWS version is installed.
+; GoToEnvironment: JAWS script has no console interpreter, so this is
+; left unset and the command reports that there is none.
+; IndentUnit: one tab, as the JAWS script files themselves use.
 CompileCommand="scompile.exe "%Source%" 2>&1"
 JumpPosition="line \d+, column \d+"
 AbbreviateOutput="((^Compiling .*?\.js.)|(file .*?,))"
 NavigatePart="^( |\t)*(Function|Script) +\w+"
 QuotePrefix=";"
 ExtensionDefault="jss"
-
-[Compiler VBScript]
-; cscript reports "script.vbs(12, 5) Microsoft VBScript ...". The old
-; jump pattern \(\d+.*?\) also matched parenthesized program output;
-; it now requires the line, comma, column shape.
-CompileCommand="cscript.exe //nologo "%Source%" 2>&1"
-JumpPosition="\(\d+, *\d+\)"
-AbbreviateOutput="((^.*?\.vbs)|(Microsoft VBScript compilation error))"
-NavigatePart="^( |\t)*(Function|Sub|Class) +\w+"
-QuotePrefix="'"
-ExtensionDefault="vbs"
-GoToEnvironment="%ProgDir%\ijs.exe"
+IndentUnit="\t"
 
 [Compiler JScript .NET]
-; jsc reports "prog.js(12,3) : error JS1002". The old NavigatePart
-; expression had an unbalanced parenthesis -- three closers after
-; (function) -- so Go to Part threw an invalid-pattern exception the
-; moment it was used with this compiler.
+; jsc reports "prog.js(12,3) : error JS1002". This is the compiler that
+; builds EdSharp.dll, so the references below are the ones EdSharp's own
+; scripts expect.
+; GoToEnvironment: %Snippet%, the JScript console built into EdSharp,
+; where frm is the editor window and rtb its text box -- the same two
+; objects a snippet receives, so a line tried there is a line that
+; works in a snippet.
+; IndentUnit: two spaces, as for JavaScript.
 CompileCommand="%NetDir%\jsc.exe /nologo /r:%ProgDir%\EdSharp.dll;System.dll;System.Windows.Forms.dll;System.Drawing.dll;Accessibility.dll;Microsoft.VisualBasic.dll "%Source%" 2>&1"
 JumpPosition="\(\d+,\d+\)"
 AbbreviateOutput="^.*?\.js"
 NavigatePart="^( |\t)*(function|class) +\w+"
 QuotePrefix="//"
 ExtensionDefault="js"
-GoToEnvironment="%ProgDir%\ijs.exe"
-
-[Compiler HTML Tidy]
-; tidy reports "line 12 column 5 - Warning: ...".
-CompileCommand="%ProgDir%\Convert\Tidy\tidy.exe -config %ProgDir%\Convert\Tidy\tidy.cfg -f %TempFile% %Source%"
-JumpPosition="line \d+ column \d+"
-AbbreviateOutput="\r"
-NavigatePart="\n\n"
-QuotePrefix="#"
-ExtensionDefault="htm"
+IndentUnit="  "
+GoToEnvironment="%Snippet%"
 
 [Compiler Default]
+; No compiler: plain writing and editing. The quote prefix is the one
+; email uses, the extension is rich text, and the indentation is
+; EdSharp's own single tab -- one keystroke to a level, one character to
+; arrow across, and the level count is the character count.
 QuotePrefix="> "
 ExtensionDefault="rtf"
-GoToEnvironment="%ProgDir%\ijs.exe"
+IndentUnit="\t"
+GoToEnvironment="%Snippet%"

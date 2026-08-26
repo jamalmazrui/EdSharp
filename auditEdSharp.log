@@ -1,24 +1,25 @@
-EdSharp audit 2026-08-26 08:33:24
+EdSharp audit 2026-08-26 10:35:57
 Folder: C:\EdSharp
 Python: 3.14.3
 
 PASS  EdSharp.cs braces balance: depth at end of file is 0
 PASS  Command shortcuts are unique: 218 shortcuts checked
-PASS  Dialog buttons have distinct access keys: 10 button sets checked, 4 with run-time labels skipped
-PASS  Microsoft Office is used only by named fallbacks: MailWord (line 7672); SpellCheckWord (line 8250); ThesaurusWord (line 8394); WordFile2String (line 11320); WordSource2TargetFormat (line 11499)
+PASS  Dialog buttons have distinct access keys: 11 button sets checked, 4 with run-time labels skipped
+PASS  Microsoft Office is used only by named fallbacks: MailWord (line 7779); SpellCheckWord (line 8357); ThesaurusWord (line 8501); WordFile2String (line 11671); WordSource2TargetFormat (line 11850)
 PASS  Spell check interfaces match Windows' own layout: 3 interfaces checked
 PASS  Public methods do not expose private interfaces: 5 interfaces checked
+PASS  Types from unimported namespaces are qualified: 7 names checked
 PASS  Every command has a description in the program: 222 commands checked
 PASS  Descriptions name the right key: keys agree with the bindings
 PASS  Inix.cs braces balance: depth at end of file is 0
 PASS  BuildEdSharp.ps1 brackets balance: braces, parentheses and brackets all balance
 PASS  summarizeSetup.ps1 brackets balance: braces, parentheses and brackets all balance
 PASS  installJawsScripts.ps1 brackets balance: braces, parentheses and brackets all balance
-PASS  Compiler table patterns compile: 24 patterns checked
+PASS  Compiler table patterns compile: 18 patterns checked
+PASS  Compiler sections define their settings: 7 compilers checked
 PASS  Conversion scripts named in the table exist: 6 scripts checked
-NOTE  fetched tools not present in this folder (the build or installer supplies them): tidy.exe
 NOTE  options not mentioned in the guide: BraceMatch, DateFormat, FontDefault, GoToEnVironment, KeepBackup, MaximizeWindow, PromptCommand, RecentFiles, WordWrap
-PASS  Shipped options were checked against the guide: 33 options checked, 9 not yet in the guide
+PASS  Shipped options were checked against the guide: 35 options checked, 9 not yet in the guide
 
 All checks passed.
 Log: C:\EdSharp\auditEdSharp.log

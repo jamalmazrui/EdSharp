@@ -103,8 +103,13 @@ def checkAccessKeysUnique(sCode):
         # Help is added automatically by the dialog and claims H.
         lAll = list(lLabels) + ["&Help"]
         if not any(l.replace("&", "").lower() == "cancel" for l in lLabels):
-            lAll.append("&Cancel")
+            lAll.append("Cancel")
         for sLabel in lAll:
+            # OK and Cancel carry no access key by design: Control+Enter
+            # and Escape are their keys, and claiming a letter for them
+            # would take one another button may need.
+            if sLabel.replace("&", "").lower() in ("ok", "cancel"):
+                continue
             iAmp = sLabel.find("&")
             if iAmp < 0 or iAmp + 1 >= len(sLabel):
                 lProblems.append(sLabel + " has no access key")
@@ -132,6 +137,26 @@ def checkRegexesCompile(sInix):
                 lProblems.append(sKey + " " + sPattern + " (" + str(oError) + ")")
     report("Compiler table patterns compile", not lProblems,
            "; ".join(lProblems) if lProblems else plural(iChecked, "pattern") + " checked")
+
+
+def checkCompilerSectionsComplete(sInix):
+    """Each shipped compiler should define the settings that make it work.
+
+    A section missing QuotePrefix leaves indentation navigation unable to
+    skip comments; one missing IndentUnit leaves a new file indented by
+    whatever the last compiler used. Neither fails loudly, so they are
+    checked here. CompileCommand and GoToEnvironment are allowed to be
+    absent: Default compiles nothing, and some languages have no
+    interactive shell."""
+    lRequired = ["QuotePrefix", "ExtensionDefault", "IndentUnit"]
+    lProblems = []
+    lSections = re.findall(r"^\[Compiler ([^\]]+)\]\n(.*?)(?=^\[|\Z)", sInix, re.M | re.S)
+    for sName, sBody in lSections:
+        for sKey in lRequired:
+            if not re.search(r"^" + sKey + r"=", sBody, re.M):
+                lProblems.append(sName + " has no " + sKey)
+    report("Compiler sections define their settings", not lProblems,
+           "; ".join(lProblems) if lProblems else plural(len(lSections), "compiler") + " checked")
 
 
 def checkConversionScriptsExist(sInix):
@@ -431,6 +456,40 @@ def checkInterfaceAccessibility(sCode):
            "; ".join(lProblems) if lProblems else plural(len(lPrivateTypes), "interface") + " checked")
 
 
+def checkUnimportedTypes(sCode):
+    """Types from namespaces the file does not import must be qualified.
+
+    EdSharp.cs imports a fixed set of namespaces and names everything
+    else in full. A type used bare from an unimported namespace compiles
+    nowhere and fails the build -- which "Thread" did on 26 August 2026.
+    The names below are the ones most easily written bare by habit."""
+    lImported = re.findall(r"^using ([\w.]+);", sCode, re.M)
+    dRisky = {
+        "Thread": "System.Threading",
+        "ThreadStart": "System.Threading",
+        "ApartmentState": "System.Threading",
+        "Mutex": "System.Threading",
+        "Timer": "System.Threading",
+        "HttpClient": "System.Net.Http",
+        "JavaScriptSerializer": "System.Web.Script.Serialization",
+    }
+    lProblems = []
+    for sType, sNamespace in dRisky.items():
+        if sNamespace in lImported:
+            continue
+        # Bare use: the name not preceded by a dot, and not part of a
+        # longer identifier.
+        for oMatch in re.finditer(r"(?<![\w.])" + sType + r"(?![\w])", sCode):
+            iLine = sCode.count("\n", 0, oMatch.start()) + 1
+            sLine = sCode.split("\n")[iLine - 1]
+            if sLine.strip().startswith("//") or sLine.strip().startswith("*"):
+                continue
+            lProblems.append(sType + " at line " + str(iLine) + " needs " + sNamespace)
+            break
+    report("Types from unimported namespaces are qualified", not lProblems,
+           "; ".join(lProblems) if lProblems else plural(len(dRisky), "name") + " checked")
+
+
 def checkOfficeDependencies(sCode):
     """Report which features still reach for Microsoft Office, by name."""
     lUses = []
@@ -489,6 +548,7 @@ def main():
         checkOfficeDependencies(sCode)
         checkSpellCheckInterfaces(sCode)
         checkInterfaceAccessibility(sCode)
+        checkUnimportedTypes(sCode)
         sHotkeys = readFile("Hotkeys.ini")
         if sHotkeys is None:
             report("Hotkeys.ini is present", False, "not found in " + pathRoot)
@@ -502,6 +562,7 @@ def main():
             checkPowerShellBalance(sScript, sScriptName)
     if sInix is not None:
         checkRegexesCompile(sInix)
+        checkCompilerSectionsComplete(sInix)
         checkConversionScriptsExist(sInix)
     else:
         report("EdSharp.inix is present", False, "not found")
