@@ -180,6 +180,82 @@
 <p>A human-readable record of fixes and enhancements, newest first. Each
 entry says what changed and why, so a future reader -- or a future
 maintainer -- can judge the decision, not just observe it.</p>
+<h2 id="26-august-2026----version-50-out-of-beta">26 August 2026 --
+version 5.0, out of beta</h2>
+<p>The beta released earlier this year invited people to try EdSharp
+again after a decade. What they reported, and what testing found, shaped
+everything below. Each entry says what changed and why.</p>
+<p><strong>Documents convert, and keep their shape.</strong> Plain text,
+Markdown and HTML are supported as both input and output, alongside
+Word, PowerPoint, spreadsheets, rich text and web pages. PDF was
+rebuilt: it now goes through a free reader that keeps headings, lists
+and tables, so a converted PDF can be navigated by block rather than
+read as a wall. The route that depended on Microsoft Word's PDF reflow
+is gone.</p>
+<p><strong>Spell check and thesaurus without Microsoft Office.</strong>
+F7 uses Hunspell, with a dictionary that ships in the box, and walks the
+document one misspelling at a time the way Compile walks errors -- word
+spoken and spelled, position in the pass announced, suggestions in an
+editable box. Shift+F7 uses WordNet, grouped by meaning. The Windows
+spell checking service is a fallback, and Word remains an option;
+neither is needed. Along the way the Windows interfaces were got right
+by asking the object which ones it supports and using whichever it
+accepts, after three rounds of failures that no error message
+explained.</p>
+<p><strong>Compilers arrive configured.</strong> Picking a compiler now
+brings its compile command, its error pattern, the output to abbreviate,
+its comment prefix, its indentation and its interactive shell. Python,
+JavaScript through Node, C# with the compiler inside Windows,
+PowerShell, JAWS script and JScript .NET ship configured; nine
+unmaintained or unverifiable entries were retired, and VBScript joined
+them when Microsoft began removing it from Windows. Compile speech
+starts at the earliest error in the file rather than the first one
+printed, with the caret placed by reading the tool's own marker.</p>
+<p><strong>A console for writing snippets.</strong> Control+Shift+G
+opens a prompt with the editor window and its text box already in scope.
+The JScript one is the Interactive JScript program of 2010, recovered
+from a damaged archive, rewritten in Camel Type and given the editor it
+never had. The C# one compiles each line with the compiler Compile uses
+and loads it into the running editor, which is what lets it touch the
+live document.</p>
+<p><strong>AI on the machine, not on a server.</strong> F12 asks a
+question, sending the document when the wording refers to it and not
+when it does not; Shift+F12 always sends it. A source file goes to a
+coding model when one is installed. Alt+Shift+F7 translates between
+eighteen languages, using a better model when one is installed. The old
+translation command, which called a web service withdrawn years ago, is
+rebuilt on this.</p>
+<p><strong>Gathering and batch work.</strong> Append from Clipboard
+turns a window into a collector for research from several sources. File
+Find builds a list of paths you can edit; Transform Files applies search
+and replace tasks to every file in it. Regular expressions run through
+find, replace and the two commands that extract matching text into a new
+document.</p>
+<p><strong>Tutorials by role</strong>, opened with Control+Shift+F1:
+twelve of them, from Python developer to web researcher, each naming the
+settings and keys that matter for that work rather than describing the
+program in the abstract.</p>
+<p><strong>Speech that does not repeat itself.</strong> A screen reader
+already announces window titles and the focused control; EdSharp now
+leaves those alone and speaks only what it alone knows. Messages go to
+one voice, never two. Key Describer was finished: every command has a
+description, checked automatically against the real bindings, and Alt+F4
+leaves the mode and closes the program rather than describing
+itself.</p>
+<p><strong>A source audit runs before every build</strong>, checking
+what a compiler cannot: duplicate keys, access key collisions,
+undescribed commands, illegal patterns in the compiler table, missing
+conversion scripts, unbalanced braces in the C# and PowerShell sources,
+interface layouts that must match what Windows publishes, public methods
+exposing private types, and bare type names from namespaces the file
+does not import. Each check exists because something once broke, and
+each now fails in a second rather than in a tester's hands.</p>
+<p><strong>The installer explains itself.</strong> Optional pieces are
+checkboxes that say what they will do and how large they are, grouped by
+whether they install, update or reinstall, alphabetical within each
+group, with the versions probed behind the progress bar so the page
+appears at once. Nothing pauses for a keypress, and one Results box at
+the very end reports every item by name.</p>
 <h2
 id="23-august-2026----audit-follow-up-applied-on-standing-authority">23
 August 2026 -- audit follow-up, applied on standing authority</h2>

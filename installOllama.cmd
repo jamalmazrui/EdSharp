@@ -24,14 +24,14 @@ rem program that was already there. Probe the install location too.
 if exist "%LOCALAPPDATA%\Programs\Ollama\ollama.exe" set "PATH=%LOCALAPPDATA%\Programs\Ollama;%PATH%"
 where ollama >nul 2>&1
 if errorlevel 1 goto install_ollama
-echo Updating Ollama ...
+echo Updating Ollama
 echo [installOllama] winget upgrade Ollama.Ollama >> "%logFile%"
 winget upgrade --id Ollama.Ollama -e --architecture x64 --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installOllama] winget upgrade exit %errorlevel% >> "%logFile%"
 if errorlevel 1 (echo Already current.) else (echo Updated.)
 goto pull_model
 :install_ollama
-echo Installing Ollama ...
+echo Installing Ollama
 echo [installOllama] winget install Ollama.Ollama >> "%logFile%"
 winget install --id Ollama.Ollama -e --architecture x64 --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installOllama] winget install exit %errorlevel% >> "%logFile%"
@@ -40,7 +40,7 @@ where ollama >nul 2>&1
 if errorlevel 1 goto fail_ollama
 
 :pull_model
-echo Fetching the %modelName% model, about 2 GB ...
+echo Fetching the %modelName% model, about 2 GB
 echo [installOllama] ollama pull %modelName% >> "%logFile%"
 ollama pull %modelName% >> "%logFile%" 2>&1
 echo [installOllama] ollama pull exit %errorlevel% >> "%logFile%"

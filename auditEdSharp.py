@@ -159,6 +159,51 @@ def checkCompilerSectionsComplete(sInix):
            "; ".join(lProblems) if lProblems else plural(len(lSections), "compiler") + " checked")
 
 
+def checkInstallerSourcesExist():
+    """Every file the installer copies should be here to copy.
+
+    A missing Source that is not marked skipifsourcedoesntexist stops the
+    installer build outright; one that IS so marked ships an installer
+    quietly lacking a file, which is worse. Both are worth knowing before
+    a release."""
+    sIss = readFile("EdSharp_Setup.iss")
+    if sIss is None:
+        return
+    lMissingRequired = []
+    lMissingOptional = []
+    for oLine in re.finditer(r'^Source: "([^"]+)"([^\n]*)$', sIss, re.M):
+        sName, sRest = oLine.group(1), oLine.group(2)
+        if "*" in sName:
+            continue
+        sPath = os.path.join(pathRoot, sName.replace("\\", os.sep))
+        if os.path.exists(sPath):
+            continue
+        # Programs and libraries are made or fetched by the build, which
+        # has not run yet when this check does; their absence is normal
+        # in a fresh clone and is only worth a note.
+        if sName.lower().endswith((".exe", ".dll", ".config")):
+            lMissingOptional.append(sName)
+            continue
+        if "skipifsourcedoesntexist" in sRest:
+            lMissingOptional.append(sName)
+        else:
+            lMissingRequired.append(sName)
+    report("Files the installer copies are present", not lMissingRequired,
+           "; ".join(lMissingRequired) if lMissingRequired else "every required source found")
+    if lMissingOptional:
+        say("NOTE  optional installer sources absent (the build makes some of these): "
+            + ", ".join(lMissingOptional))
+
+
+def checkDocumentationSet():
+    """The documentation a release promises should exist."""
+    lWanted = ["ReadMe.md", "EdSharp.md", "Tutorials.md", "Hotkeys.md", "FAQ.md",
+               "History.md", "Development.md", "Announce.md"]
+    lMissing = [s for s in lWanted if not os.path.isfile(os.path.join(pathRoot, s))]
+    report("The documentation set is complete", not lMissing,
+           "; ".join(lMissing) if lMissing else plural(len(lWanted), "document") + " checked")
+
+
 def checkConversionScriptsExist(sInix):
     """Every conversion command must name a script that is present.
 
@@ -568,6 +613,9 @@ def main():
         report("EdSharp.inix is present", False, "not found")
     if sIni is not None and sDoc is not None:
         checkOptionsDocumented(sIni, sDoc)
+
+    checkInstallerSourcesExist()
+    checkDocumentationSet()
 
     say()
     if lFailures:

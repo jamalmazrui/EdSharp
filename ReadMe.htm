@@ -173,537 +173,101 @@
       vertical-align: middle;
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
-    /* CSS for syntax highlighting */
-    html { -webkit-text-size-adjust: 100%; }
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { color: #008000; } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { color: #008000; font-weight: bold; } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
 </head>
 <body>
-<h1 id="audiovault-metadata-enrichment">AudioVault Metadata
-Enrichment</h1>
-<h2 id="purpose">Purpose</h2>
-<p>This package contains the latest assets for building a
-screen-reader-friendly AudioVault directory and enriching it with IMDb,
-Wikidata, and Wikipedia metadata.</p>
-<p>The final Markdown is intended for optional conversion to HTML with
-Pandoc.</p>
-<h2 id="version-6-resume-after-a-reboot-or-forced-stop">Version 6:
-Resume After a Reboot or Forced Stop</h2>
-<p>Version 6 adds automatic <strong>log bootstrapping</strong>
-specifically for interrupted older runs that had a cache and detailed
-log but did not yet have
-<code>AudioVault_Wikimedia_Results.json</code>.</p>
-<p>The latest analyzed run reached 548 fully completed unique
-productions and had begun title 549 when the computer rebooted. Its log
-contained 352 <code>MATCH</code> decisions and 196 <code>NO MATCH</code>
-decisions. The version-6 parser was tested against that complete
-uploaded log and recovered all 548 decisions.</p>
-<p>When you run <code>Resume_AudioVault_Wikimedia.cmd</code>, the
-program now does the following before making new Internet requests:</p>
-<ol type="1">
-<li>Reads the existing
-<code>AudioVault_Wikimedia_Enrichment.log</code>.</li>
-<li>Pairs each prior <code>TITLE START</code> with its final
-<code>MATCH</code> or <code>NO MATCH</code> line.</li>
-<li>Reconstructs the exact title/year/Movies-or-TV state key.</li>
-<li>For prior matches, obtains the selected Wikidata Q-ID and Wikipedia
-article name from the log.</li>
-<li>Rebuilds metadata from the existing Wikimedia cache in
-<strong>cache-only mode</strong>, so bootstrapping itself never
-generates new network traffic.</li>
-<li>Immediately saves recovered records into
-<code>AudioVault_Wikimedia_Results.json</code>.</li>
-<li>Defers any prior match whose required cached data is missing; that
-title is safely handled through the normal online path later.</li>
-<li>Skips every title now marked complete in the state file.</li>
-</ol>
-<p>This means a reboot should no longer cause hundreds of completed
-titles to be replayed. After the first version-6 resume,
-<code>AudioVault_Wikimedia_Results.json</code> becomes the primary
-per-title checkpoint file and is updated after each completed
-production.</p>
-<p>The resume command is:</p>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Resume_AudioVault_Wikimedia<span class="op">.</span><span class="fu">cmd</span></span></code></pre></div>
-<p>Equivalent manual command:</p>
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>py enrich_audiovault<span class="op">.</span><span class="fu">py</span> AudioVault_Directory_IMDb<span class="op">.</span><span class="fu">md</span> AudioVault_Directory_Enriched<span class="op">.</span><span class="fu">md</span> <span class="op">--</span>wikimedia-delay <span class="dv">7.5</span> <span class="op">--</span>cache AudioVault_Wikimedia_Cache<span class="op">.</span><span class="fu">json</span> <span class="op">--</span>state AudioVault_Wikimedia_Results<span class="op">.</span><span class="fu">json</span> <span class="op">--</span>log AudioVault_Wikimedia_Enrichment<span class="op">.</span><span class="fu">log</span> <span class="op">--</span>bootstrap-log AudioVault_Wikimedia_Enrichment<span class="op">.</span><span class="fu">log</span></span></code></pre></div>
-<p>Normally you do not need to specify <code>--bootstrap-log</code>:
-unless <code>--no-log-bootstrap</code> is used, the program
-automatically uses the current <code>--log</code> file as its bootstrap
-source. The explicit option is included in the resume launcher so its
-purpose is obvious.</p>
-<h3 id="files-to-preserve-between-runs">Files to preserve between
-runs</h3>
-<p>Do not delete these files while enrichment is unfinished:</p>
+<h1 id="edsharp">EdSharp</h1>
+<p>A text and code editor for Windows, built for people who work by
+keyboard and screen reader. Free and open source.</p>
 <ul>
-<li><code>AudioVault_Directory_IMDb.md</code></li>
-<li><code>AudioVault_Wikimedia_Cache.json</code></li>
-<li><code>AudioVault_Wikimedia_Results.json</code></li>
-<li><code>AudioVault_Wikimedia_Enrichment.log</code></li>
-<li><code>AudioVault_Directory_Enriched.partial.md</code>, when
-present</li>
+<li><a href="https://github.com/JamalMazrui/EdSharp">EdSharp project
+page on GitHub</a></li>
+<li><a
+href="https://github.com/JamalMazrui/EdSharp/releases/latest/download/EdSharp_setup.exe">EdSharp
+installer for Windows</a></li>
 </ul>
-<p>The cache and state files use atomic temporary-file replacement to
-reduce the chance that a sudden reboot leaves a half-written JSON
-file.</p>
-<h2 id="package-contents">Package Contents</h2>
-<h3
-id="audiovault_directorymd"><code>AudioVault_Directory.md</code></h3>
-<p>The current screen-reader-friendly AudioVault directory.</p>
-<h3
-id="enrich_audiovault_imdbpy"><code>enrich_audiovault_imdb.py</code></h3>
-<p>The first enrichment pass. It downloads IMDb's official
-non-commercial datasets and locally adds metadata such as:</p>
+<p>EdSharp edits plain text, Markdown, HTML, rich text and source code;
+opens Word documents, PDF files, slide decks and spreadsheets as text
+you can read and search; compiles and runs programs, landing the cursor
+on the error; checks spelling without Microsoft Word; and talks to an AI
+model running on your own computer for translation, summarizing and
+questions about code.</p>
+<h2 id="installing">Installing</h2>
+<p>Run the installer and accept the defaults. On its last page you are
+offered optional pieces as checkboxes, each saying what it will do and
+how much space it needs:</p>
 <ul>
-<li>End year</li>
-<li>Genres</li>
-<li>IMDb</li>
-<li>IMDb rating</li>
-<li>IMDb rating votes</li>
-<li>Running time</li>
-<li>Type</li>
+<li><strong>Python</strong> and the <strong>document tools</strong> are
+ticked. Together they cost about a hundred and fifty megabytes and give
+rich PDF conversion and the thesaurus.</li>
+<li><strong>Git</strong>, <strong>Node.js</strong> and
+<strong>Ollama</strong> with its AI models are not ticked. Each backs a
+real feature, but each serves some people and not others, and the models
+are large.</li>
 </ul>
-<p>This pass uses IMDb's bulk data locally after download, so it does
-not make thousands of per-title IMDb web requests.</p>
-<h3 id="enrich_audiovaultpy"><code>enrich_audiovault.py</code></h3>
-<p>The second enrichment pass. It queries Wikidata and English Wikipedia
-for metadata not already available from the IMDb pass, including:</p>
+<p>Whatever you tick installs after you press Finish, and one summary
+then reports each item by name. That summary is saved in the logs folder
+under your local application data, and you can see it again by running
+summarizeSetup.cmd from the program folder.</p>
+<p>EdSharp needs nothing else. It runs on the .NET Framework built into
+every modern Windows, and it is a 64-bit program.</p>
+<h2 id="quick-start">Quick Start</h2>
+<p>Start EdSharp with Alt+Control+E from anywhere in Windows.</p>
+<p>Type something, then try these:</p>
 <ul>
-<li>Country</li>
-<li>Creator</li>
-<li>Description</li>
-<li>Director</li>
-<li>Wikipedia</li>
+<li><strong>F1</strong> opens this guide's larger companion, the user
+guide.</li>
+<li><strong>Control+F1</strong> turns on Key Describer: press any key to
+hear what it does without doing it, and press Control+F1 again to
+leave.</li>
+<li><strong>Alt+F10</strong> lists every command alphabetically, with
+its key.</li>
+<li><strong>Control+O</strong> opens a file;
+<strong>Control+Shift+O</strong> opens one in another format, converting
+it to text you can read.</li>
+<li><strong>F7</strong> checks spelling. <strong>Shift+F7</strong> gives
+synonyms for the word at the cursor.</li>
+<li><strong>Control+F5</strong> compiles or runs the file you are
+editing and takes you to the first error.
+<strong>Control+Shift+F5</strong> chooses which compiler to use.</li>
+<li><strong>F12</strong> asks an AI model on your computer a question.
+<strong>Alt+Shift+F7</strong> translates the document or the
+selection.</li>
+<li><strong>Alt+Shift+E</strong> writes the document out as something
+else: a Word document, a web page, a slide deck, plain text.</li>
 </ul>
-<p>It preserves existing metadata, keeps fields alphabetized, caches web
-responses, and can be interrupted and resumed.</p>
-<h3
-id="run_audiovault_enrichmentcmd"><code>Run_AudioVault_Enrichment.cmd</code></h3>
-<p>Windows Command Prompt launcher that runs both passes.</p>
-<h3
-id="run_audiovault_enrichmentps1"><code>Run_AudioVault_Enrichment.ps1</code></h3>
-<p>PowerShell launcher that runs both passes.</p>
-<h2 id="what-has-been-done">What Has Been Done</h2>
-<ol type="1">
-<li>Consolidated the captured AudioVault HTML pages.</li>
-<li>Removed navigation, filters, repeated page blocks, footers, and
-other non-content material.</li>
-<li>Separated Movies and TV Shows under level-two headings.</li>
-<li>Made each AudioVault entry a level-three heading with its title
-linked directly to the audio download.</li>
-<li>Kept the release year at the end of every heading in
-parentheses.</li>
-<li>Sorted entries alphabetically while ignoring an initial A, An, or
-The.</li>
-<li>Removed entries explicitly labeled as non-English.</li>
-<li>Preserved useful AudioVault-specific metadata.</li>
-<li>Added an IMDb bulk-data enrichment pass.</li>
-<li>Added a Wikidata/Wikipedia enrichment pass.</li>
-<li>Added persistent caching and detailed diagnostic logging.</li>
-<li>Revised Wikimedia throttling after analysis of an actual 5,409-line
-rate-limit log.</li>
-</ol>
-<h2 id="what-the-rate-limit-log-showed">What the Rate-Limit Log
-Showed</h2>
-<p>The earlier Wikimedia defaults were too aggressive.</p>
-<p>The log showed:</p>
+<p>Nothing here needs a mouse, and every command has a name, a key and a
+description you can hear.</p>
+<h2 id="the-documentation">The Documentation</h2>
 <ul>
-<li>1,255 Wikidata requests.</li>
-<li>140 Wikidata HTTP 429 responses.</li>
-<li>309 Wikipedia requests.</li>
-<li>24 Wikipedia HTTP 429 responses.</li>
-<li>Wikidata rejections typically occurred after only 8 to 10 Wikidata
-requests.</li>
-<li>The server then commonly required about 43 to 48 seconds of
-backoff.</li>
-<li>Wikidata and Wikipedia were sometimes rate-limited at essentially
-the same time.</li>
+<li><strong>EdSharp.md</strong> — the user guide: every command, every
+setting, and how the parts fit together.</li>
+<li><strong>Tutorials.md</strong> — quick starts by role: Python
+developer, NVDA add-on developer, JAWS script developer, web developer,
+C# developer, translator, magazine writer, journal author, slide
+presenter, document summarizer, web researcher, batch conversion
+operator. Control+Shift+F1 opens it.</li>
+<li><strong>Hotkeys.md</strong> — every command with its key, listed by
+command and by key. Generated from the program itself, so it cannot fall
+behind.</li>
+<li><strong>FAQ.md</strong> — the questions people actually ask.</li>
+<li><strong>History.md</strong> — what changed and why, newest
+first.</li>
+<li><strong>Development.md</strong> — how to build EdSharp and how it is
+put together.</li>
+<li><strong>Announce.md</strong> — what is new in this release.</li>
 </ul>
-<p>This behavior is consistent with a shared Wikimedia-side throttle
-affecting both domains for this client. Treating Wikidata and Wikipedia
-as independent servers therefore did not help; overlapping them could
-make the combined burst worse.</p>
-<h2 id="new-wikimedia-throttling-strategy">New Wikimedia Throttling
-Strategy</h2>
-<p>Version 6 of <code>enrich_audiovault.py</code> replaces independent
-host throttles with a single shared Wikimedia scheduler.</p>
-<h3 id="initial-pacing">Initial pacing</h3>
-<p>The default is now:</p>
-<pre class="text"><code>7.5 seconds between all uncached Wikimedia requests</code></pre>
-<p>This is intentionally conservative. It corresponds to about eight
-requests per minute before considering response time.</p>
-<p>Use:</p>
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">--</span>wikimedia-delay <span class="dv">7.5</span></span></code></pre></div>
-<h3 id="adaptive-rate-control">Adaptive rate control</h3>
-<p>The program now adjusts itself when the server signals overload.</p>
-<p>After an HTTP 429 it:</p>
-<ol type="1">
-<li>Honors the server's <code>Retry-After</code> value when
-present.</li>
-<li>Examines how many Wikimedia requests were made during the previous
-rolling 60 seconds.</li>
-<li>Increases the shared delay by at least 25 percent.</li>
-<li>Calculates an additional safe interval from the observed
-rolling-minute request count.</li>
-<li>Adds a small random margin to the cooldown.</li>
-<li>Does not relax the delay until 40 consecutive uncached requests have
-succeeded.</li>
-<li>When relaxing, reduces the interval by only 0.5 seconds at a time
-and never below the configured base delay.</li>
-</ol>
-<p>The log records every throttle increase and relaxation.</p>
-<h3 id="why-multithreading-was-removed-from-the-wikimedia-pass">Why
-multithreading was removed from the Wikimedia pass</h3>
-<p>The previous design used one Wikidata thread and one Wikipedia
-thread. That was reasonable if the services had independent limits.</p>
-<p>The uploaded log showed that they can be rejected together. Therefore
-the current version deliberately does <strong>not</strong> overlap
-Wikidata and Wikipedia requests.</p>
-<p>Concurrency is useful only when the remote systems are genuinely
-independent. Here, one shared Wikimedia scheduler is both more polite
-and more efficient because it avoids synchronized 429s and long forced
-pauses.</p>
-<p>The IMDb pass still gains its speed from bulk datasets and local
-processing rather than repeated remote lookups.</p>
-<h2 id="more-efficient-wikidata-caching">More Efficient Wikidata
-Caching</h2>
-<p>The earlier cache stored whole request URLs. That meant a common
-Wikidata entity such as the United States, a film type, or a common
-genre could be downloaded repeatedly whenever it appeared in a different
-entity batch.</p>
-<p>Version 6 retains the second cache indexed by individual Wikidata
-Q-ID.</p>
-<p>For example, once <code>Q30</code> has been downloaded, it can be
-reused regardless of which later title references it.</p>
-<p>This should greatly reduce:</p>
-<ul>
-<li>Total Wikidata requests</li>
-<li>Multi-megabyte responses</li>
-<li>Repeated downloads of common countries, genres, and production
-types</li>
-<li>Time spent waiting between requests</li>
-</ul>
-<p>Existing version-1 cache files are upgraded automatically. Their
-already downloaded URL responses are preserved.</p>
-<h2 id="avoiding-redundant-metadata-requests">Avoiding Redundant
-Metadata Requests</h2>
-<p>The Wikimedia pass now inspects metadata already present from the
-IMDb pass.</p>
-<p>If IMDb has already supplied fields such as:</p>
-<ul>
-<li>Genres</li>
-<li>IMDb</li>
-<li>Running time</li>
-<li>Type</li>
-</ul>
-<p>the Wikimedia pass does not perform extra label lookups merely to
-reconstruct those same fields.</p>
-<p>It concentrates on metadata still missing, especially Country,
-Creator, Director, Description, and Wikipedia.</p>
-<h2 id="diagnostic-log">Diagnostic Log</h2>
-<p>The Wikimedia pass writes:</p>
-<pre class="text"><code>AudioVault_Wikimedia_Enrichment.log</code></pre>
-<p>The log is append-only and records:</p>
-<ul>
-<li>Python version</li>
-<li>Input and output paths</li>
-<li>Cache loading and upgrades</li>
-<li>URL cache hits</li>
-<li>Individual Wikidata entity-cache hits</li>
-<li>Each uncached request</li>
-<li>Current adaptive delay</li>
-<li>Response status, duration, and byte count</li>
-<li>HTTP 429 and temporary server errors</li>
-<li>Retry-After values and backoff</li>
-<li>Rolling-minute throttle calculations</li>
-<li>Throttle increases and relaxations</li>
-<li>Match scores</li>
-<li>Wikipedia descriptions</li>
-<li>Progress counts</li>
-<li>Cached entity counts</li>
-<li>Final totals</li>
-<li>Exception tracebacks</li>
-</ul>
-<p>For future debugging, upload these together when possible:</p>
-<ol type="1">
-<li><code>AudioVault_Wikimedia_Enrichment.log</code></li>
-<li><code>AudioVault_Wikimedia_Cache.json</code></li>
-</ol>
-<p>The cache is especially useful because it shows what work was already
-completed and lets a corrected program resume without throwing that work
-away.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li>Windows 11 or another current Windows version</li>
-<li>Python 3 available through the <code>py</code> launcher</li>
-<li>Internet connection</li>
-<li>No third-party Python packages are required</li>
-</ul>
-<p>Check Python with:</p>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>py <span class="op">--</span>version</span></code></pre></div>
-<h2 id="simplest-way-to-run-everything">Simplest Way to Run
-Everything</h2>
-<p>Extract all files into one folder and double-click:</p>
-<pre class="text"><code>Run_AudioVault_Enrichment.cmd</code></pre>
-<p>The process creates:</p>
-<pre class="text"><code>AudioVault_Directory_IMDb.md
-AudioVault_Directory_Enriched.md
-AudioVault_Wikimedia_Cache.json
-AudioVault_Wikimedia_Enrichment.log
-IMDb_Data\</code></pre>
-<h2 id="run-the-imdb-pass-manually">Run the IMDb Pass Manually</h2>
-<div class="sourceCode" id="cb9"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>py enrich_audiovault_imdb<span class="op">.</span><span class="fu">py</span> AudioVault_Directory<span class="op">.</span><span class="fu">md</span> AudioVault_Directory_IMDb<span class="op">.</span><span class="fu">md</span></span></code></pre></div>
-<p>To use a different data folder:</p>
-<div class="sourceCode" id="cb10"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>py enrich_audiovault_imdb<span class="op">.</span><span class="fu">py</span> AudioVault_Directory<span class="op">.</span><span class="fu">md</span> AudioVault_Directory_IMDb<span class="op">.</span><span class="fu">md</span> <span class="op">--</span>data-dir MyIMDbData</span></code></pre></div>
-<h2 id="run-the-wikimedia-pass-manually">Run the Wikimedia Pass
-Manually</h2>
-<p>Recommended command:</p>
-<div class="sourceCode" id="cb11"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>py enrich_audiovault<span class="op">.</span><span class="fu">py</span> AudioVault_Directory_IMDb<span class="op">.</span><span class="fu">md</span> AudioVault_Directory_Enriched<span class="op">.</span><span class="fu">md</span> <span class="op">--</span>wikimedia-delay <span class="dv">7.5</span> <span class="op">--</span>cache AudioVault_Wikimedia_Cache<span class="op">.</span><span class="fu">json</span> <span class="op">--</span>log AudioVault_Wikimedia_Enrichment<span class="op">.</span><span class="fu">log</span></span></code></pre></div>
-<p>The shorter command uses the same 7.5-second default:</p>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>py enrich_audiovault<span class="op">.</span><span class="fu">py</span> AudioVault_Directory_IMDb<span class="op">.</span><span class="fu">md</span> AudioVault_Directory_Enriched<span class="op">.</span><span class="fu">md</span></span></code></pre></div>
-<h3 id="wikimedia-options">Wikimedia options</h3>
-<p><code>--bootstrap-log</code></p>
-<p>Reads an older enrichment log and reconstructs missing per-title
-resume records from completed <code>MATCH</code> and
-<code>NO MATCH</code> decisions. Reconstructed metadata is taken from
-the existing cache without making Internet requests during
-bootstrapping.</p>
-<p><code>--no-log-bootstrap</code></p>
-<p>Disables automatic log reconstruction. This is mainly a
-troubleshooting option.</p>
-<p><code>--state</code></p>
-<p>Sets the small per-title resume file. Default:
-<code>AudioVault_Wikimedia_Results.json</code>. It is updated after
-every completed unique production.</p>
-<p><code>--wikimedia-delay</code></p>
-<p>Sets the starting global delay between all uncached Wikidata and
-Wikipedia requests. Default: 7.5 seconds.</p>
-<p><code>--cache</code></p>
-<p>Sets the persistent cache file.</p>
-<p><code>--log</code></p>
-<p>Sets the detailed append-only log file.</p>
-<p><code>--timeout</code></p>
-<p>Sets the network timeout in seconds. Default: 45.</p>
-<p><code>--retries</code></p>
-<p>Sets the maximum number of attempts for retryable requests. Default:
-8.</p>
-<p><code>--verbose</code></p>
-<p>Prints detailed request and throttle messages to the console in
-addition to writing them to the log.</p>
-<p>The older options <code>--wikidata-delay</code>,
-<code>--wikipedia-delay</code>, and <code>--delay</code> remain accepted
-for compatibility, but they can only make the shared delay more
-conservative. The program no longer gives Wikidata and Wikipedia
-independent request clocks.</p>
-<h2 id="stopping-and-resuming">Stopping and Resuming</h2>
-<p>It is safe to stop the Wikimedia pass with Ctrl+C.</p>
-<p>The program saves:</p>
-<pre class="text"><code>AudioVault_Wikimedia_Cache.json</code></pre>
-<p>Run the same command again to resume. Cached URL responses and cached
-individual Wikidata entities are reused.</p>
-<p>Do not delete the cache unless you intentionally want to start
-external lookups from scratch.</p>
-<h2 id="if-rate-limiting-happens-again">If Rate Limiting Happens
-Again</h2>
-<p>Do not immediately delete the cache or restart from scratch.</p>
-<p>Upload:</p>
-<pre class="text"><code>AudioVault_Wikimedia_Enrichment.log
-AudioVault_Wikimedia_Cache.json</code></pre>
-<p>The new log lines beginning with:</p>
-<pre class="text"><code>THROTTLE INCREASE
-THROTTLE RELAX
-GLOBAL POLITE WAIT
-ENTITY CACHE HIT</code></pre>
-<p>make it possible to see whether the adaptive scheduler is converging
-on a stable interval.</p>
-<p>If necessary, start more conservatively:</p>
-<div class="sourceCode" id="cb16"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>py enrich_audiovault<span class="op">.</span><span class="fu">py</span> AudioVault_Directory_IMDb<span class="op">.</span><span class="fu">md</span> AudioVault_Directory_Enriched<span class="op">.</span><span class="fu">md</span> <span class="op">--</span>wikimedia-delay <span class="dv">10</span></span></code></pre></div>
-<p>or:</p>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>py enrich_audiovault<span class="op">.</span><span class="fu">py</span> AudioVault_Directory_IMDb<span class="op">.</span><span class="fu">md</span> AudioVault_Directory_Enriched<span class="op">.</span><span class="fu">md</span> <span class="op">--</span>wikimedia-delay <span class="dv">12</span></span></code></pre></div>
-<p>Because of the adaptive logic, a 429 will also raise the interval
-automatically.</p>
-<h2 id="converting-the-final-markdown-with-pandoc">Converting the Final
-Markdown with Pandoc</h2>
-<p>To preserve the manually constructed table of contents:</p>
-<div class="sourceCode" id="cb18"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pandoc AudioVault_Directory_Enriched<span class="op">.</span><span class="fu">md</span> <span class="op">--</span>standalone <span class="op">--</span>output AudioVault_Directory<span class="op">.</span><span class="fu">htm</span></span></code></pre></div>
-<p>Using Pandoc's <code>--toc</code> switch may create a second table of
-contents because the Markdown already contains one.</p>
-<h2 id="matching-philosophy">Matching Philosophy</h2>
-<p>The scripts prefer missing metadata over a false match.</p>
-<p>Matching considers:</p>
-<ul>
-<li>Normalized title</li>
-<li>Release year</li>
-<li>Movies versus TV Shows</li>
-<li>Wikidata production type</li>
-<li>Candidate-title similarity</li>
-</ul>
-<p>Separate AudioVault variants such as UK, US, and TTS remain separate
-entries but reuse metadata for the same underlying production.</p>
-<h2 id="suggested-debugging-workflow">Suggested Debugging Workflow</h2>
-<p>If the program behaves unexpectedly:</p>
-<ol type="1">
-<li>Stop with Ctrl+C.</li>
-<li>Keep the cache.</li>
-<li>Keep the log.</li>
-<li>Upload both files.</li>
-<li>Also upload <code>AudioVault_Directory_IMDb.md</code> if the issue
-appears to involve title matching rather than networking.</li>
-</ol>
-<p>That combination provides enough information to diagnose throttling,
-matching, caching, and output-generation problems without repeating
-already completed network work.</p>
-<h2 id="update-after-the-august-6-completed-run-diagnostic">Update after
-the August 6 completed-run diagnostic</h2>
-<p>The later uploaded log showed that the new shared 7.5-second
-Wikimedia scheduler solved the earlier rate-limit problem: the analyzed
-run made 334 logged HTTP requests without a single logged HTTP 429 or
-throttle increase. However, the run did <strong>not</strong> reach
-normal completion. It stopped after starting production 115 of 2,703
-(<code>54</code> (1998)); the last log record was a global polite wait
-before the next Wikidata request. There was no <code>COMPLETE</code>
-record and no logged exception.</p>
-<p>Because the prior program only wrote the final Markdown after all
-2,703 productions were processed, a process termination at that point
-could leave no newly completed final output even though substantial
-cache work had been done. Version 5 addresses that failure mode.</p>
-<h3 id="version-5-resilience-changes">Version 5 resilience changes</h3>
-<ul>
-<li>Adds <code>AudioVault_Wikimedia_Results.json</code>, a small
-per-production resume-state file. Every successfully matched or
-definitively unmatched production is saved immediately. On restart, a
-<code>RESULT CACHE HIT</code> skips that production completely without
-redoing Wikimedia matching.</li>
-<li>Writes <code>AudioVault_Directory_Enriched.partial.md</code> every
-100 processed productions and whenever the program catches an
-interruption or ordinary fatal exception. The partial file contains all
-metadata completed so far plus the original/IMDb metadata for titles not
-yet processed.</li>
-<li>Logs <code>FATAL ERROR</code> / <code>UNHANDLED FATAL ERROR</code>
-for ordinary unexpected exceptions. This makes future debugging much
-more informative than a log that simply ends.</li>
-<li>Keeps the existing shared Wikimedia scheduler and 7.5-second default
-because the completed-run log showed zero 429 responses at that
-setting.</li>
-<li>Migrates the old cache to version 3. Full <code>wbgetentities</code>
-responses are converted to slim per-QID records and the duplicate giant
-response blobs are discarded. In testing, the uploaded 156 MB cache
-shrank to about 1.7 MB while retaining the fields needed by this
-program.</li>
-<li>Related entity names (country, director, creator, etc.) are now
-fetched with <code>props=labels</code> rather than downloading all
-claims and references for those entities.</li>
-<li>Full entity API responses are no longer stored twice in both the
-URL-response cache and Q-ID cache.</li>
-<li>The large network cache is saved less frequently because the small
-resume-state file now protects completed production work after every
-title.</li>
-</ul>
-<h3 id="recommended-resume-procedure">Recommended resume procedure</h3>
-<p>Keep these files together in the same folder:</p>
-<ul>
-<li><code>AudioVault_Directory_IMDb.md</code></li>
-<li><code>AudioVault_Wikimedia_Cache.json</code> — use the cache from
-the previous run; version 5 will migrate and shrink it
-automatically.</li>
-<li><code>enrich_audiovault.py</code></li>
-<li><code>Resume_AudioVault_Wikimedia.cmd</code> (or the PowerShell
-equivalent)</li>
-</ul>
-<p>Then double-click <code>Resume_AudioVault_Wikimedia.cmd</code>, or
-run:</p>
-<div class="sourceCode" id="cb19"><pre
-class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>py enrich_audiovault<span class="op">.</span><span class="fu">py</span> AudioVault_Directory_IMDb<span class="op">.</span><span class="fu">md</span> AudioVault_Directory_Enriched<span class="op">.</span><span class="fu">md</span> <span class="op">--</span>wikimedia-delay <span class="dv">7.5</span> <span class="op">--</span>cache AudioVault_Wikimedia_Cache<span class="op">.</span><span class="fu">json</span> <span class="op">--</span>state AudioVault_Wikimedia_Results<span class="op">.</span><span class="fu">json</span> <span class="op">--</span>log AudioVault_Wikimedia_Enrichment<span class="op">.</span><span class="fu">log</span></span></code></pre></div>
-<p>On the first version-5 run, the existing network cache is migrated.
-The first titles should then pass quickly using cached
-search/entity/Wikipedia responses. New network requests resume where the
-cache no longer contains the needed data. From that point forward,
-<code>AudioVault_Wikimedia_Results.json</code> provides direct
-title-level resumption.</p>
-<h3 id="files-to-upload-for-future-debugging">Files to upload for future
-debugging</h3>
-<p>If a later run stops unexpectedly, upload these three files:</p>
-<ol type="1">
-<li><code>AudioVault_Wikimedia_Enrichment.log</code></li>
-<li><code>AudioVault_Wikimedia_Results.json</code></li>
-<li><code>AudioVault_Wikimedia_Cache.json</code></li>
-</ol>
-<p>Also upload <code>AudioVault_Directory_Enriched.partial.md</code> if
-you want the partial generated directory evaluated. The most important
-diagnostic marker for a fully successful run is a final log line
-beginning with <code>COMPLETE output=</code> and reporting
-<code>stateCompleted=2703</code>.</p>
+<p>Each is also here as a web page with the same name and an .htm
+extension, which is what the Help menu opens.</p>
+<h2 id="reporting-a-problem">Reporting a Problem</h2>
+<p>EdSharp writes a log for every session, in the logs folder under your
+local application data. <strong>Control+F12</strong> copies that log's
+path to the clipboard as a file, ready to attach to a message. Sending
+it with a description of what you were doing is the fastest way to a
+fix.</p>
+<h2 id="license">License</h2>
+<p>EdSharp is free software, released under the GNU Lesser General
+Public License. See the license file in the project for the terms.</p>
+<p>Jamal Mazrui</p>
 </body>
 </html>

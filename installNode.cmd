@@ -18,14 +18,14 @@ echo.
 
 where node >nul 2>&1
 if errorlevel 1 goto install_node
-echo Updating Node.js ...
+echo Updating Node.js
 echo [installNode.cmd] winget upgrade OpenJS.NodeJS.LTS >> "%logFile%"
 winget upgrade --id OpenJS.NodeJS.LTS -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installNode.cmd] winget upgrade OpenJS.NodeJS.LTS exit %errorlevel% >> "%logFile%"
 if errorlevel 1 (echo Already current.) else (echo Updated.)
 goto after_node
 :install_node
-echo Installing Node.js ...
+echo Installing Node.js
 echo [installNode.cmd] winget install OpenJS.NodeJS.LTS >> "%logFile%"
 winget install --id OpenJS.NodeJS.LTS -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installNode.cmd] winget install OpenJS.NodeJS.LTS exit %errorlevel% >> "%logFile%"

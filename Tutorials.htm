@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Tutorials</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="edsharp-tutorials">EdSharp Tutorials</h1>
+<p>Short, practical starts for the kinds of work people do in EdSharp.
+Each one names the settings worth changing, the commands worth learning,
+and the keys that invoke them. Read the one that matches what you are
+doing; they do not depend on each other.</p>
+<p>Two things are worth knowing before any of them.</p>
+<p>Settings live in Configuration Options, Alt+Shift+C. Anything named
+below in capitals, such as IndentUnit, is a setting you will find
+there.</p>
+<p>Every command has a name and a key. Press Control+F1 to turn on Key
+Describer, then press any key to hear what it does without doing it;
+press Control+F1 again to leave. Alt+F10 lists every command
+alphabetically, and Alt+Shift+H shows the whole table of names, keys and
+descriptions in a window you can search.</p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#python-developer">Python Developer</a></li>
+<li><a href="#nvda-add-on-developer">NVDA Add-on Developer</a></li>
+<li><a href="#jaws-script-developer">JAWS Script Developer</a></li>
+<li><a href="#nodejs-and-web-developer">Node.js and Web
+Developer</a></li>
+<li><a href="#c-developer">C# Developer</a></li>
+<li><a href="#language-translator">Language Translator</a></li>
+<li><a href="#magazine-article-author">Magazine Article Author</a></li>
+<li><a href="#journal-article-author">Journal Article Author</a></li>
+<li><a href="#slide-presenter">Slide Presenter</a></li>
+<li><a href="#document-summarizer">Document Summarizer</a></li>
+<li><a href="#web-researcher">Web Researcher</a></li>
+<li><a href="#batch-conversion-operator">Batch Conversion
+Operator</a></li>
+</ul>
+<h2 id="python-developer">Python Developer</h2>
+<p>Python is the language EdSharp supports most fully, because Python's
+whitespace is the hardest thing about writing code with a screen reader
+and EdSharp answers it from several directions at once.</p>
+<h3 id="setup">Setup</h3>
+<p>Press Control+Shift+F5, Pick Compiler, and choose Python. That one
+choice brings a working set of settings: Control+F5 runs your file with
+the official Python from python.org and jumps to the line and column of
+any error; Control+Shift+G opens Python's own prompt with your file
+already run, so the functions you just wrote are there to call;
+IndentUnit becomes four spaces, which is what PEP 8 asks and what
+collaborators expect; and the comment prefix becomes the number sign, so
+indentation commands know to skip comments.</p>
+<p>Your own indentation still wins. EdSharp reads the indentation a file
+already uses and follows it, so a file written with tabs stays tabbed no
+matter what the compiler setting says. The setting only governs a file
+with no indentation yet.</p>
+<p>For wxPython, install the library once from a command prompt:</p>
+<pre><code>python -m pip install wxPython</code></pre>
+<p>Then open Samples\fruitBasket.py from the EdSharp program folder,
+which is a complete wxPython program written in the Camel Type style,
+and press Control+F5 to run it. Control+Shift+F2, Sample Programs, lists
+it and the others.</p>
+<h3 id="working-with-indentation">Working with Indentation</h3>
+<p>Four commands make Python's structure audible.</p>
+<p>PyBrace, Alt+Shift+LeftBracket, rewrites the open document into a
+flat form where structure is spoken text rather than counted spaces: a
+compound statement ends with a brace, and every block closes with a line
+naming the keyword it closes, such as "brace end def". Edit in that form
+if you find it easier. PyDent, Alt+LeftBracket, turns it back into
+indented Python, rebuilding the indentation and leaving a comment at the
+end of each block so the ends of functions and loops stay audible while
+you read. Dictionary literals, docstrings and line continuations survive
+the round trip untouched.</p>
+<p>Indent Mode, Alt+Shift+I, announces each change in indentation as you
+arrow through code: "in 1" when a line is one level deeper than the
+last, "out 2" when it is two levels shallower. It also swaps what Enter
+and Shift+Enter do, so Enter keeps the current indentation.</p>
+<p>Indentation, Alt+I, in the Query menu, says how many levels deep the
+current line is. Press it twice and it reads the whole chain of
+enclosing blocks, outermost first, such as "class Greeter, def greet, if
+loud, for i in range 3" -- which is the answer to "where am I?" that
+sighted readers get from the layout at a glance.</p>
+<p>Next Indent and Prior Indent, Control+I and Control+Shift+I, move to
+the next and previous change of indentation. Next Block and Prior Block,
+Control+B and Control+Shift+B, move by whole blocks.</p>
+<p>Two more commands round it out. Format Code, Alt+F8, normalizes a
+Python file's indentation to the unit in force. Infer Indent,
+Alt+RightBracket, captures the indentation of the file in front of you
+into the setting.</p>
+<h3 id="key-reminders">Key Reminders</h3>
+<ul>
+<li>Control+Shift+F5 Pick Compiler, Control+F5 Compile, Control+Shift+G
+Go to Environment</li>
+<li>Alt+Shift+LeftBracket PyBrace, Alt+LeftBracket PyDent</li>
+<li>Alt+Shift+I Indent Mode, Alt+I Indentation (press twice for the
+chain)</li>
+<li>Control+I and Control+Shift+I by indentation, Control+B and
+Control+Shift+B by block</li>
+<li>F12 Chat with AI: with a source file open, questions go to the
+coding model when it is installed</li>
+</ul>
+<h2 id="nvda-add-on-developer">NVDA Add-on Developer</h2>
+<p>An NVDA add-on is Python, so everything in the Python tutorial
+applies. What differs is the shape of the project and the testing
+loop.</p>
+<h3 id="setup-1">Setup</h3>
+<p>Pick the Python compiler as above. NVDA's own code follows PEP 8 with
+four space indentation, so leave IndentUnit as the compiler sets it.</p>
+<p>An add-on is a folder of Python files plus a manifest, packaged as a
+zip with the .nvda-addon extension. EdSharp edits the parts; NVDA
+installs the whole. Keep a build script in the project and run it with
+Prompt Command, Alt+F5, which runs any command line and shows its output
+the same way Compile does, jumping to errors.</p>
+<p>Set GoToEnvironment to NVDA's own Python console if you use it, or
+leave it as the compiler's prompt for testing plain functions.</p>
+<p>EdSharp itself ships an add-on, EdSharp.nvda-addon in the program
+folder, which is a working example of the layout.</p>
+<h3 id="key-reminders-1">Key Reminders</h3>
+<ul>
+<li>Alt+F5 Prompt Command for the build script; Control+F5 Compile for a
+single file</li>
+<li>Alt+Shift+F9 Run Code Blocks if your notes hold snippets to try</li>
+<li>Control+F12 Copy Log when reporting a problem: it puts this
+session's log on the clipboard as a file, ready to attach to a
+message</li>
+</ul>
+<h2 id="jaws-script-developer">JAWS Script Developer</h2>
+<h3 id="setup-2">Setup</h3>
+<p>Press Control+Shift+F5 and choose JAWS Script. Control+F5 then
+compiles the open script with scompile.exe, the compiler that comes with
+JAWS; EdSharp puts the running JAWS folder on the path at startup, so
+whatever version you have is the one used. Errors report a line and
+column and the cursor lands there. The comment prefix becomes the
+semicolon and IndentUnit becomes one tab, which is what the JAWS script
+files themselves use.</p>
+<p>JAWS script has no interactive prompt, so Control+Shift+G says so
+rather than opening something unrelated.</p>
+<p>Snippets help here more than anywhere. Alt+S saves the selection as a
+snippet under the current compiler, so a script skeleton or a common
+call is a keystroke away; Alt+V inserts one. EdSharp ships two, InputBox
+and SayString, which appear in the list marked as shipped.</p>
+<h3 id="key-reminders-2">Key Reminders</h3>
+<ul>
+<li>Control+Shift+F5 Pick Compiler, Control+F5 Compile</li>
+<li>Alt+S Save Snippet, Alt+V Invoke Snippet</li>
+<li>Alt+PageDown and Alt+PageUp move between scripts and functions</li>
+<li>Control+Shift+G opens the snippet console when the JScript .NET
+compiler is chosen: a JScript prompt with the editor window as frm and
+its text box as rtb, so a line that works there works in a snippet</li>
+</ul>
+<h2 id="nodejs-and-web-developer">Node.js and Web Developer</h2>
+<h3 id="setup-3">Setup</h3>
+<p>Press Control+Shift+F5 and choose JavaScript. Control+F5 then runs
+the open file with Node, and the error jump understands both forms Node
+reports: the plain line for a syntax error and the line with column
+inside a stack frame. Node's own frames are removed from what is spoken,
+so you hear your error rather than Node's internals. Control+Shift+G
+opens Node's read-evaluate-print shell. IndentUnit becomes two spaces,
+the prevailing JavaScript convention, and the comment prefix becomes two
+slashes.</p>
+<p>For web pages, Preview Markdown in Web Browser and the HTML commands
+matter more than the compiler. Control+H formats HTML; Control+F9
+previews the current Markdown in a window, and the browser preview draws
+Mermaid diagrams properly. Check Markdown, Alt+F9, reports images
+without alternative text, heading jumps and bare web addresses --
+accessibility faults you would otherwise ship.</p>
+<p>Samples\Web in the program folder holds the fruit basket program
+written four ways for the browser, with a Node script that serves
+them:</p>
+<pre><code>node serveFruitBasket.js</code></pre>
+<h3 id="key-reminders-3">Key Reminders</h3>
+<ul>
+<li>Control+Shift+F5 Pick Compiler, Control+F5 Compile, Control+Shift+G
+Node shell</li>
+<li>Alt+F9 Check Markdown, Control+F9 Preview Markdown</li>
+<li>Control+Shift+F2 Sample Programs lists the web samples</li>
+</ul>
+<h2 id="c-developer">C# Developer</h2>
+<h3 id="setup-4">Setup</h3>
+<p>Press Control+Shift+F5 and choose C#. Control+F5 then compiles the
+open file with the C# compiler that ships inside Windows itself -- no
+Visual Studio, no SDK -- producing a 64-bit program, and jumps to the
+exact line and column of the first error in the file. IndentUnit becomes
+four spaces, the Microsoft convention, and the comment prefix two
+slashes. Windows ships no C# console, so Control+Shift+G opens EdSharp's
+own JScript interpreter for trying expressions.</p>
+<p>Two things are worth knowing when writing Windows Forms code. First,
+Samples\fruitBasket.cs is a complete Windows Forms program in Camel Type
+with a build line in its comments; open it with Control+Shift+F2 and
+press Control+F5. Second, when you ask F12 for help with C#, say
+"targeting .NET Framework 4.8" in your question. Most C# written today
+targets the newer .NET, and a model that assumes it will hand you code
+that does not compile here.</p>
+<h3 id="key-reminders-4">Key Reminders</h3>
+<ul>
+<li>Control+Shift+F5 Pick Compiler, Control+F5 Compile</li>
+<li>Compile jumps to the earliest error in the file, not the first one
+the compiler printed; fix it and press Control+F5 again</li>
+<li>Alt+F8 Format Code runs the C family through astyle</li>
+<li>Control+Shift+G opens the C# console: a prompt where frm is the
+editor window and rtb its text box, so "rtb.SelectedText.ToUpper()"
+prints the answer and "rtb.SelectedText = rtb.SelectedText.ToUpper();"
+changes the document. Each line is compiled, so expect about a second
+per line; a line ending in a semicolon is kept for the rest of the
+session</li>
+<li>F12 Chat with AI uses the coding model for .cs files when it is
+installed</li>
+</ul>
+<h2 id="language-translator">Language Translator</h2>
+<h3 id="setup-5">Setup</h3>
+<p>Translation needs Ollama and a model, both offered as checkboxes on
+the last page of the installer. Tick Ollama, which brings llama3.2, and
+tick qwen2.5:7b, the translation model; translation then uses the better
+one by itself. Everything runs on your computer, so there is no account,
+no limit and no document leaving the machine.</p>
+<p>Translate Language, Alt+Shift+F7, translates the selection, or the
+whole document when nothing is selected. One dialog asks both languages,
+with your last pair already selected, and the translation opens in a new
+window so the original is untouched.</p>
+<p>Quality is good between the widely written languages -- Spanish,
+French, German, Portuguese, Italian -- and weaker for languages with
+less material behind them. A long document takes minutes, and EdSharp
+speaks a count every fifteen seconds so you know it is working.</p>
+<p>TranslateModel names a different model if you install one.</p>
+<h3 id="key-reminders-5">Key Reminders</h3>
+<ul>
+<li>Alt+Shift+F7 Translate Language</li>
+<li>Select first to translate a passage; select nothing for the whole
+document</li>
+<li>F12 Chat with AI answers questions about a translation, such as
+asking for a more formal wording</li>
+</ul>
+<h2 id="magazine-article-author">Magazine Article Author</h2>
+<h3 id="setup-6">Setup</h3>
+<p>Write in Markdown. Set the default extension for new documents to md
+if you write mostly articles, and leave word wrap on with Control+W.</p>
+<p>Three commands carry an article from draft to delivery. Check
+Markdown, Alt+F9, reports the faults an editor will send back: headings
+that skip a level, images without alternative text, bare web addresses,
+unclosed code fences. Preview Markdown, Control+F9, shows it formatted;
+Control+Shift+F9 opens it in your browser. Export Format, Alt+Shift+E,
+writes the article as a Word document, HTML, or whatever the magazine
+wants, using Pandoc.</p>
+<p>For style work, F12 Chat with AI is the strongest tool in the
+program. Ask it to tighten a paragraph, to rewrite at a ninth grade
+reading level, or to suggest a title; the answer opens in its own window
+so you can compare. Press F7 to spell check before sending, and Shift+F7
+on a word for synonyms grouped by meaning.</p>
+<h3 id="key-reminders-6">Key Reminders</h3>
+<ul>
+<li>Alt+F9 Check Markdown, Control+F9 Preview, Alt+Shift+E Export
+Format</li>
+<li>F7 Spell Check, Shift+F7 Thesaurus</li>
+<li>F12 Chat with AI on a selection: "make this tighter", "ninth grade
+reading level"</li>
+</ul>
+<h2 id="journal-article-author">Journal Article Author</h2>
+<h3 id="setup-7">Setup</h3>
+<p>A journal article is a magazine article with citations and a required
+format, so start from the section above and add three things.</p>
+<p>Keep your references in a .bib file beside the article and name it in
+the document's own metadata block at the top:</p>
+<pre><code>---
+title: Your Title
+author: Your Name
+bibliography: references.bib
+csl: apa.csl
+---</code></pre>
+<p>Cite in the text with a key in square brackets, such as [@smith2020].
+When you export with Alt+Shift+E, Pandoc formats the citations and
+builds the reference list in the style the .csl file names. Download the
+style your journal requires from the Zotero style repository and keep it
+beside the article.</p>
+<p>Tables and figures deserve attention, since they are where
+accessibility is usually lost. Give every figure alternative text in the
+Markdown, and give every table a caption; Check Markdown, Alt+F9,
+reports missing alternative text before a reviewer does.</p>
+<p>If the journal supplies a Word template, name it as the reference
+document so your export matches their layout.</p>
+<h3 id="key-reminders-7">Key Reminders</h3>
+<ul>
+<li>Alt+Shift+E Export Format for the submission file</li>
+<li>Alt+F9 Check Markdown before every submission</li>
+<li>Control+Shift+O Open Other Format converts a colleague's Word
+document or a PDF into Markdown you can edit, keeping headings, lists
+and tables</li>
+</ul>
+<h2 id="slide-presenter">Slide Presenter</h2>
+<p>Pandoc turns Markdown into a PowerPoint file, speaker notes included,
+so a talk can be written as text and never touched with a mouse.</p>
+<h3 id="setup-8">Setup</h3>
+<p>Write the talk in Markdown. The heading level that begins a slide is
+called the slide level: with the usual arrangement, each second level
+heading starts a slide and first level headings become section dividers.
+A horizontal rule, three hyphens on their own line, starts a slide
+without a title.</p>
+<p>Speaker notes go in a div marked as notes, which PowerPoint shows in
+Presenter View and in handouts but never on the slide:</p>
+<pre><code>## What EdSharp Does
+
+- Edits any text
+- Converts documents
+- Talks to a local AI
+
+::: notes
+Mention that everything runs offline. Ask how many people use JAWS.
+:::</code></pre>
+<p>Export with Alt+Shift+E and choose pptx. To match a house style, make
+a copy of your organization's template and name it as the reference
+document; Pandoc uses its theme, its fonts and its layouts, choosing a
+layout per slide by what the slide contains -- a title slide, a section
+header, a two-content slide when you use columns, and a plain title and
+content slide otherwise.</p>
+<p>Two accessibility points worth minding, since they are yours to get
+right and nobody else's: give every slide a unique title, because screen
+readers and PowerPoint's own outline use titles to navigate, and give
+every image alternative text in the Markdown.</p>
+<p>You can also go the other way. Control+Shift+O opens an existing
+PowerPoint file as Markdown, which is the quickest way to read a deck
+somebody sent you: the titles become headings and the bullets become
+lists.</p>
+<h3 id="key-reminders-8">Key Reminders</h3>
+<ul>
+<li>Alt+Shift+E Export Format, choosing pptx</li>
+<li>Control+Shift+O Open Other Format to read a deck as Markdown</li>
+<li>Second level headings start slides; three hyphens start an untitled
+one; a notes div holds speaker notes</li>
+</ul>
+<h2 id="document-summarizer">Document Summarizer</h2>
+<h3 id="setup-9">Setup</h3>
+<p>Tick Ollama on the installer's last page so F12 has a model to talk
+to.</p>
+<p>The loop is short. Open the document -- Control+Shift+O converts a
+PDF, Word file, slide deck or spreadsheet into Markdown with its
+headings and tables intact. Press F12, Chat with AI, and type an
+instruction such as "summarize in five bullet points" or "list the
+recommendations only". The summary opens in a new window, leaving the
+original untouched.</p>
+<p>Two details make it work better. Select a section first if you want
+that section summarized; with nothing selected the whole document
+travels. And ask for a number of bullet points or paragraphs rather than
+a number of words, because a model counts words poorly and structure
+well.</p>
+<p>When the instruction is a general question rather than a request
+about the document, F12 notices and sends the question alone, which
+answers in seconds. Shift+F12, Chat about Document, forces the document
+to travel whatever the wording.</p>
+<h3 id="key-reminders-9">Key Reminders</h3>
+<ul>
+<li>Control+Shift+O Open Other Format, F12 Chat with AI, Shift+F12 Chat
+about Document</li>
+<li>The status line says which context was used: with selection, with
+document, or question only</li>
+<li>A long document takes minutes; a count is spoken every fifteen
+seconds</li>
+</ul>
+<h2 id="web-researcher">Web Researcher</h2>
+<h3 id="setup-10">Setup</h3>
+<p>Research is gathering, and EdSharp is built for gathering: fetch a
+page, read a PDF as text, and collect fragments from several sources
+into one document without ever leaving the keyboard.</p>
+<p>Web Download, Alt+Shift+W, picks files to download from a web page or
+from the addresses in the current document. Fetch an article as HTML and
+press Control+Shift+O, Open Other Format, to read it as Markdown with
+its headings and lists intact -- far quieter than a browser, and
+searchable with Control+F.</p>
+<p>PDFs are the usual currency of research, and they open the same way:
+Control+Shift+O converts a PDF into Markdown with headings, lists and
+tables preserved, so Control+B walks it by block and Alt+F9 reports
+anything malformed. Tick the document tools on the installer's last page
+so PDF conversion is available.</p>
+<p>The gathering itself is the clipboard. Alt+7, Append from Clipboard,
+turns the current window into a collector: everything you copy is added
+to it, so you can read three sources, copy a paragraph from each, and
+find them stacked in one document in order. EdSharp says "Append from
+clipboard" whenever focus returns to such a window, so the mode is never
+a surprise. Copy Line and Append to Clipboard, in the Edit menu, add a
+single line without leaving what you are reading.</p>
+<p>When the reading is done, F12, Chat with AI, summarizes what you
+collected, and Shift+F12 asks about the whole document. Alt+Shift+F7
+translates a source that arrived in another language.</p>
+<h3 id="key-reminders-10">Key Reminders</h3>
+<ul>
+<li>Alt+Shift+W Web Download to fetch, Control+Shift+O Open Other Format
+to read it as Markdown</li>
+<li>Alt+7 Append from Clipboard to collect fragments into one
+window</li>
+<li>Control+F Forward Find within a source; Control+B and
+Control+Shift+B by block</li>
+<li>F12 Chat with AI to summarize what you gathered</li>
+</ul>
+<h2 id="batch-conversion-operator">Batch Conversion Operator</h2>
+<h3 id="setup-11">Setup</h3>
+<p>Two commands do bulk work, and they pair.</p>
+<p>File Find, Alt+Shift+F, searches folders and puts the matching file
+paths into a window, one per line. That list is the input to everything
+below, and you can edit it by hand -- delete the lines you do not want
+converted.</p>
+<p>Transform Files, Alt+Equals, applies a set of search and replace
+tasks to every file named in the current window. Write the tasks first,
+run them against a copy of the files first, and keep the task list as a
+document you can reuse.</p>
+<p>For format conversion in bulk, put the conversions in a script and
+run it with Prompt Command, Alt+F5, whose output appears the same way a
+compiler's does. EdSharp's own Convert folder holds the scripts it uses,
+which are worth reading as models: each takes a source and a target and
+reports what happened.</p>
+<p>Text Convert, Control+T, converts the open document between formats
+one at a time, and Export Format, Alt+Shift+E, writes it out as
+something else. Control+Shift+O converts on the way in.</p>
+<p>Every job leaves a record. The session log in the logs folder under
+your local application data names every command EdSharp ran and its exit
+code, and Control+F12 copies its path to the clipboard.</p>
+<h3 id="key-reminders-11">Key Reminders</h3>
+<ul>
+<li>Alt+Shift+F File Find to build the list, Alt+Equals Transform Files
+to work through it</li>
+<li>Alt+F5 Prompt Command for a script, Control+F5 Compile for a single
+file</li>
+<li>Control+F12 Copy Log when something needs explaining</li>
+</ul>
+</body>
+</html>

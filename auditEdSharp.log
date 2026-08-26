@@ -1,4 +1,4 @@
-EdSharp audit 2026-08-26 10:35:57
+EdSharp audit 2026-08-26 11:25:48
 Folder: C:\EdSharp
 Python: 3.14.3
 
@@ -20,6 +20,9 @@ PASS  Compiler sections define their settings: 7 compilers checked
 PASS  Conversion scripts named in the table exist: 6 scripts checked
 NOTE  options not mentioned in the guide: BraceMatch, DateFormat, FontDefault, GoToEnVironment, KeepBackup, MaximizeWindow, PromptCommand, RecentFiles, WordWrap
 PASS  Shipped options were checked against the guide: 35 options checked, 9 not yet in the guide
+PASS  Files the installer copies are present: every required source found
+NOTE  optional installer sources absent (the build makes some of these): EdSharp.exe, FAQ.htm, Development.htm, Hotkeys.htm, Tutorials.htm
+PASS  The documentation set is complete: 8 documents checked
 
 All checks passed.
 Log: C:\EdSharp\auditEdSharp.log

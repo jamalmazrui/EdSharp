@@ -41,7 +41,7 @@ if not errorlevel 1 (
   echo [installPython.cmd] Store alias found on PATH; installing python.org build >> "%logFile%"
 )
 
-echo Installing Python ...
+echo Installing Python
 echo [installPython.cmd] winget install Python.Python.3.13 >> "%logFile%"
 winget install --id Python.Python.3.13 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installPython.cmd] winget install exit %errorlevel% >> "%logFile%"
@@ -52,7 +52,7 @@ echo [installPython.cmd] installed at %pythonExe% >> "%logFile%"
 goto done_python
 
 :upgrade_python
-echo Updating Python ...
+echo Updating Python
 echo [installPython.cmd] winget upgrade Python.Python.3.13 >> "%logFile%"
 winget upgrade --id Python.Python.3.13 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installPython.cmd] winget upgrade exit %errorlevel% >> "%logFile%"

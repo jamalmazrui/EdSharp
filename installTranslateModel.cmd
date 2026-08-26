@@ -21,7 +21,7 @@ if not errorlevel 1 (
   exit /b 0
 )
 
-echo Fetching the %modelName% model, about 5 GB ...
+echo Fetching the %modelName% model, about 5 GB
 echo [installTranslateModel] ollama pull %modelName% >> "%logFile%"
 ollama pull %modelName% >> "%logFile%" 2>&1
 echo [installTranslateModel] pull exit %errorlevel% >> "%logFile%"

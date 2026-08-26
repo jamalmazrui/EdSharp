@@ -30,6 +30,34 @@ function say($sText) {
   try { if ($sText.Trim() -ne "") { Add-Content -LiteralPath $sLogFile -Value "[summary] $sText" -Encoding UTF8 } } catch { }
 }
 
+function startHidden($sExe, $lArguments, $sOutFile, $sErrFile) {
+  # A process with NO WINDOW. Start-Process cannot manage this once
+  # output is redirected: it ignores -WindowStyle Hidden, and a console
+  # appears -- which is how an Ollama window came to open during setup.
+  # The .NET process object honours CreateNoWindow.
+  $oInfo = New-Object System.Diagnostics.ProcessStartInfo
+  $oInfo.FileName = $sExe
+  $oInfo.Arguments = ($lArguments -join " ")
+  $oInfo.UseShellExecute = $false
+  $oInfo.CreateNoWindow = $true
+  if ($sOutFile -ne "") {
+    $oInfo.RedirectStandardOutput = $true
+    $oInfo.RedirectStandardError = $true
+  }
+  $oProcess = New-Object System.Diagnostics.Process
+  $oProcess.StartInfo = $oInfo
+  [void]$oProcess.Start()
+  if ($sOutFile -ne "") {
+    # Both streams are read before waiting: a full pipe buffer would
+    # otherwise deadlock the wait that follows.
+    $sOut = $oProcess.StandardOutput.ReadToEnd()
+    $sErr = $oProcess.StandardError.ReadToEnd()
+    try { Set-Content -LiteralPath $sOutFile -Value $sOut -Encoding UTF8 } catch { }
+    if ($sErrFile -ne "") { try { Set-Content -LiteralPath $sErrFile -Value $sErr -Encoding UTF8 } catch { } }
+  }
+  return $oProcess
+}
+
 function runBounded($sExe, $lArguments, $iSeconds) {
   $lQuoted = @()
   foreach ($sArgument in $lArguments) {
@@ -41,7 +69,7 @@ function runBounded($sExe, $lArguments, $iSeconds) {
   # network -- must never hold up the installation.
   $sOutFile = Join-Path $sLogDir ("EdSharp_probe_" + [guid]::NewGuid().ToString("N") + ".tmp")
   try {
-    $oProcess = Start-Process -FilePath $sExe -ArgumentList $lArguments -RedirectStandardOutput $sOutFile -RedirectStandardError ($sOutFile + ".err") -WindowStyle Hidden -PassThru
+    $oProcess = startHidden $sExe $lArguments $sOutFile ($sOutFile + ".err")
     if (-not $oProcess.WaitForExit($iSeconds * 1000)) {
       try { $oProcess.Kill() } catch { }
       return ""
@@ -70,7 +98,7 @@ function runBoundedAll($sExe, $lArguments, $iSeconds) {
   # first line -- for answers that are lists.
   $sOutFile = Join-Path $sLogDir ("EdSharp_probe_" + [guid]::NewGuid().ToString("N") + ".tmp")
   try {
-    $oProcess = Start-Process -FilePath $sExe -ArgumentList $lArguments -RedirectStandardOutput $sOutFile -RedirectStandardError ($sOutFile + ".err") -WindowStyle Hidden -PassThru
+    $oProcess = startHidden $sExe $lArguments $sOutFile ($sOutFile + ".err")
     if (-not $oProcess.WaitForExit($iSeconds * 1000)) {
       try { $oProcess.Kill() } catch { }
       return ""
@@ -102,7 +130,7 @@ function runExit($sExe, $lArguments, $iSeconds) {
   # welcome. Output is ignored on purpose -- a library that prints a
   # warning while importing perfectly well must not be called broken.
   try {
-    $oProcess = Start-Process -FilePath $sExe -ArgumentList $lArguments -WindowStyle Hidden -PassThru
+    $oProcess = startHidden $sExe $lArguments "" ""
     if (-not $oProcess.WaitForExit($iSeconds * 1000)) {
       try { $oProcess.Kill() } catch { }
       return -1

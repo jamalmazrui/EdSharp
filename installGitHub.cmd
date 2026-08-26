@@ -18,14 +18,14 @@ echo.
 
 where git >nul 2>&1
 if errorlevel 1 goto install_git
-echo Updating Git ...
+echo Updating Git
 echo [installGitHub.cmd] winget upgrade Git.Git >> "%logFile%"
 winget upgrade --id Git.Git -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installGitHub.cmd] winget upgrade Git.Git exit %errorlevel% >> "%logFile%"
 if errorlevel 1 (echo Already current.) else (echo Updated.)
 goto after_git
 :install_git
-echo Installing Git ...
+echo Installing Git
 echo [installGitHub.cmd] winget install Git.Git >> "%logFile%"
 winget install --id Git.Git -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installGitHub.cmd] winget install Git.Git exit %errorlevel% >> "%logFile%"
@@ -40,14 +40,14 @@ exit /b 3
 
 where gh >nul 2>&1
 if errorlevel 1 goto install_gh
-echo Updating the GitHub command line ...
+echo Updating the GitHub command line
 echo [installGitHub.cmd] winget upgrade GitHub.cli >> "%logFile%"
 winget upgrade --id GitHub.cli -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installGitHub.cmd] winget upgrade GitHub.cli exit %errorlevel% >> "%logFile%"
 if errorlevel 1 (echo Already current.) else (echo Updated.)
 goto after_gh
 :install_gh
-echo Installing the GitHub command line ...
+echo Installing the GitHub command line
 echo [installGitHub.cmd] winget install GitHub.cli >> "%logFile%"
 winget install --id GitHub.cli -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
 echo [installGitHub.cmd] winget install GitHub.cli exit %errorlevel% >> "%logFile%"

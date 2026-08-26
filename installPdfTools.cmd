@@ -19,14 +19,14 @@ if not defined pythonExe goto no_python
 echo [installPdfTools] python: %pythonExe% >> "%logFile%"
 "%pythonExe%" -c "import pymupdf4llm" >nul 2>&1
 if errorlevel 1 goto install_reader
-echo Updating the PDF reader ...
+echo Updating the PDF reader
 echo [installPdfTools] pip install --upgrade pymupdf4llm >> "%logFile%"
 "%pythonExe%" -m pip install --upgrade pymupdf4llm >> "%logFile%" 2>&1
 echo [installPdfTools] upgrade exit %errorlevel% >> "%logFile%"
 goto done
 
 :install_reader
-echo Installing the PDF reader ...
+echo Installing the PDF reader
 echo [installPdfTools] pip install pymupdf4llm >> "%logFile%"
 "%pythonExe%" -m pip install pymupdf4llm >> "%logFile%" 2>&1
 echo [installPdfTools] install exit %errorlevel% >> "%logFile%"
@@ -48,7 +48,7 @@ rem The free thesaurus: WordNet, Princeton's lexical database, read through
 rem the nltk package. Roughly 30 megabytes with its data, and it gives
 rem synonyms grouped by meaning with a definition for each sense.
 echo.
-echo Installing the thesaurus ...
+echo Installing the thesaurus
 echo [installPdfTools] pip install nltk >> "%logFile%"
 "%pythonExe%" -m pip install --upgrade nltk >> "%logFile%" 2>&1
 echo [installPdfTools] nltk exit %errorlevel% >> "%logFile%"

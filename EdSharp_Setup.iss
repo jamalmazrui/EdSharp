@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.36
-AppVerName=EdSharp 5.0.36
-VersionInfoVersion=5.0.36
+AppVersion=5.0.37
+AppVerName=EdSharp 5.0.37
+VersionInfoVersion=5.0.37
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -178,6 +178,18 @@ Source: "Hotkeys.ini";        DestDir: "{app}"; Flags: onlyifdoesntexist
 Source: "EdSharp.md";         DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp.htm";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "Tutorials.md";       DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "ReadMe.md";            DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "ReadMe.htm";           DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "FAQ.md";               DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "FAQ.htm";              DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "Development.md";       DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "Development.htm";      DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "Hotkeys.md";           DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "Hotkeys.htm";          DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "Announce.md";          DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "Announce.htm";         DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "History.md";           DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "History.htm";          DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "Tutorials.htm";      DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "Tutorial.md";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "Tutorial.htm";       DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
@@ -300,10 +312,10 @@ Filename: "{app}\installPandoc.cmd"; WorkingDir: "{app}"; Flags: runhidden waitu
 ; ---- Install: not on this computer yet ----
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installPython.cmd""""";  \
+  Parameters: "/c """"{app}\installCodeModel.cmd""""";  \
   WorkingDir: "{app}"; \
-  Description: "{code:descPython}"; \
-  Flags: postinstall skipifsilent runascurrentuser; Check: pythonNeedsInstall
+  Description: "{code:descCodeModel}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: codeModelNeedsInstall
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\installPdfTools.cmd""""";  \
@@ -332,30 +344,26 @@ Filename: "{cmd}"; \
 ; The larger translation model, offered next to Ollama itself because it
 ; is useless without it. Unticked: five gigabytes is a real decision, and
 ; the small chat model translates well enough to try the feature first.
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installPython.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descPython}"; \
+  Flags: postinstall skipifsilent runascurrentuser; Check: pythonNeedsInstall
+
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\installTranslateModel.cmd""""";  \
   WorkingDir: "{app}"; \
   Description: "{code:descTranslateModel}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: translateModelNeedsInstall
 
 ; The coding model, likewise useless without Ollama and likewise
 ; unticked. It answers questions about the file in the window -- explain
 ; this error, write this function, review this method -- which is work a
 ; model of this size does well, since the whole subject fits in front of
 ; it.
-Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installCodeModel.cmd""""";  \
-  WorkingDir: "{app}"; \
-  Description: "{code:descCodeModel}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked
 
 ; ---- Update: installed, but a newer version is available ----
-
-Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installPython.cmd""""";  \
-  WorkingDir: "{app}"; \
-  Description: "{code:descPython}"; \
-  Flags: postinstall skipifsilent runascurrentuser; Check: pythonNeedsUpdate
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\installGitHub.cmd""""";  \
@@ -375,13 +383,19 @@ Filename: "{cmd}"; \
   Description: "{code:descOllama}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaNeedsUpdate
 
-; ---- Reinstall: already current, offered only for repair ----
-
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\installPython.cmd""""";  \
   WorkingDir: "{app}"; \
   Description: "{code:descPython}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: pythonIsCurrent
+  Flags: postinstall skipifsilent runascurrentuser; Check: pythonNeedsUpdate
+
+; ---- Reinstall: already current, offered only for repair ----
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installCodeModel.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descCodeModel}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: codeModelIsCurrent
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\installPdfTools.cmd""""";  \
@@ -408,6 +422,35 @@ Filename: "{cmd}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaIsCurrent
 
 ; The summary, last of all. The Results box appears before these
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installPython.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descPython}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: pythonIsCurrent
+
+Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\installTranslateModel.cmd""""";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descTranslateModel}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: translateModelIsCurrent
+
+; ---- After the components: what to do now ----
+; Two ordinary things a person may want the moment setup ends, offered
+; last because they are not installations. Both unticked: somebody
+; reinstalling to fix one component does not want the editor opening
+; over their work. runasoriginaluser matters -- setup is elevated, and
+; an editor started from here would otherwise run as the administrator,
+; writing its settings into the wrong profile.
+Filename: "{app}\EdSharp.exe"; \
+  WorkingDir: "{app}"; \
+  Description: "Launch EdSharp (Alt+Control+E starts it any time)"; \
+  Flags: postinstall skipifsilent nowait runasoriginaluser unchecked
+
+Filename: "{app}\EdSharp.htm"; \
+  Description: "Open the user guide (F1 opens it inside EdSharp)"; \
+  Flags: postinstall skipifsilent shellexec nowait runasoriginaluser unchecked
+
 ; The results summary is NOT listed here. It is not an option -- it always
 ; runs, and it must run last of all -- so it is started from code at the
 ; ssDone step, once every entry above has finished. See CurStepChanged.
@@ -540,7 +583,12 @@ var
   iResult: integer;
 begin
   result := 1;
-  if Exec(ExpandConstant('{cmd}'), '/c ' + sCommand, '', SW_HIDE, ewWaitUntilTerminated, iResult) then
+  // The whole command is wrapped in one more pair of quotes. cmd strips
+  // the first and last quote of what follows /c, so a command with two
+  // quoted parts -- a quoted program and a quoted argument -- loses the
+  // wrong ones and fails. That is why the document tools kept being
+  // offered as an install after they were installed.
+  if Exec(ExpandConstant('{cmd}'), '/c ""' + sCommand + '""', '', SW_HIDE, ewWaitUntilTerminated, iResult) then
     result := iResult;
 end;
 
@@ -904,6 +952,30 @@ end;
 
 { The translation model is an Ollama model rather than a winget package,
   so its label says what it costs and whether it is already there. }
+{ The two extra models are Ollama models rather than winget packages, so
+  "installed" means their name appears in Ollama's own list. Without
+  these, both were offered as an install however often they were
+  installed -- the same fault the document tools had. }
+function translateModelIsCurrent(): boolean;
+begin
+  result := Pos('qwen2.5:7b', ollamaModelList()) > 0;
+end;
+
+function translateModelNeedsInstall(): boolean;
+begin
+  result := not translateModelIsCurrent();
+end;
+
+function codeModelIsCurrent(): boolean;
+begin
+  result := Pos('qwen2.5-coder', ollamaModelList()) > 0;
+end;
+
+function codeModelNeedsInstall(): boolean;
+begin
+  result := not codeModelIsCurrent();
+end;
+
 function descTranslateModel(sParam: string): string;
 begin
   // Name the model. "A stronger model" tells nobody what they are getting
