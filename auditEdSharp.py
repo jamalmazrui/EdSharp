@@ -317,7 +317,7 @@ def checkScriptSourcesPresent():
 def checkDocumentationSet():
     """The documentation a release promises should exist."""
     lWanted = ["ReadMe.md", "EdSharp.md", "Tutorials.md", "Hotkeys.md", "FAQ.md",
-               "History.md", "Development.md", "Announce.md"]
+               "History.md", "Development.md", "Announce.md", "License.md"]
     lMissing = [s for s in lWanted if not os.path.isfile(os.path.join(pathRoot, s))]
     report("The documentation set is complete", not lMissing,
            "; ".join(lMissing) if lMissing else plural(len(lWanted), "document") + " checked")

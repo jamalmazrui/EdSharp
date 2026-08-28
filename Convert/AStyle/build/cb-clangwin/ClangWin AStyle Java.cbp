@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ClangWin AStyle Java" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/AStyle32jd" prefix_auto="1" extension_auto="1" />
+				<Option object_output="objJava/Debug/" />
+				<Option type="3" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="-Weverything" />
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-std=c++14" />
+					<Add option="-fno-rtti" />
+					<Add option="-fno-exceptions" />
+					<Add option="-Xclang -flto-visibility-public-std" />
+					<Add option="-Wno-c++98-compat" />
+					<Add option="-Wno-c++98-compat-pedantic" />
+					<Add option="-Wno-exit-time-destructors" />
+					<Add option="-Wno-format-nonliteral" />
+					<Add option="-Wno-global-constructors" />
+					<Add option="-Wno-language-extension-token" />
+					<Add option="-Wno-missing-variable-declarations" />
+					<Add option="-Wno-old-style-cast" />
+					<Add option="-Wno-reserved-id-macro" />
+					<Add option="-Wno-sign-conversion" />
+					<Add option="-DASTYLE_JNI" />
+					<Add directory="$(JAVA_HOME)/include" />
+					<Add directory="$(JAVA_HOME)/include/win32" />
+				</Compiler>
+				<Linker>
+					<Add library="shell32.lib" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/AStyle32j" prefix_auto="1" extension_auto="1" />
+				<Option object_output="objJava/Release/" />
+				<Option type="3" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-Weverything" />
+					<Add option="-Wall" />
+					<Add option="-std=c++14" />
+					<Add option="-fno-rtti" />
+					<Add option="-fno-exceptions" />
+					<Add option="-Xclang -flto-visibility-public-std" />
+					<Add option="-Wno-c++98-compat" />
+					<Add option="-Wno-c++98-compat-pedantic" />
+					<Add option="-Wno-exit-time-destructors" />
+					<Add option="-Wno-format-nonliteral" />
+					<Add option="-Wno-global-constructors" />
+					<Add option="-Wno-language-extension-token" />
+					<Add option="-Wno-missing-variable-declarations" />
+					<Add option="-Wno-old-style-cast" />
+					<Add option="-Wno-reserved-id-macro" />
+					<Add option="-Wno-sign-conversion" />
+					<Add option="-DASTYLE_JNI" />
+					<Add option="-DNDEBUG" />
+					<Add directory="$(JAVA_HOME)/include" />
+					<Add directory="$(JAVA_HOME)/include/win32" />
+				</Compiler>
+				<Linker>
+					<Add library="shell32.lib" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../../src/ASBeautifier.cpp" />
+		<Unit filename="../../src/ASEnhancer.cpp" />
+		<Unit filename="../../src/ASFormatter.cpp" />
+		<Unit filename="../../src/ASLocalizer.cpp" />
+		<Unit filename="../../src/ASLocalizer.h" />
+		<Unit filename="../../src/ASResource.cpp" />
+		<Unit filename="../../src/astyle.h" />
+		<Unit filename="../../src/astyle_main.cpp" />
+		<Unit filename="../../src/astyle_main.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

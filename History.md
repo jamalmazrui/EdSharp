@@ -4,6 +4,39 @@ A human-readable record of fixes and enhancements, newest first. Each entry
 says what changed and why, so a future reader -- or a future maintainer --
 can judge the decision, not just observe it.
 
+## 28 August 2026 -- version 5.0.40
+
+**EdSharp is now under the MIT License.** It was released under the GNU
+Lesser General Public License from 2007 through version 5.0. The MIT terms
+ask less of anyone who wants to build on the code: use it, change it, ship it
+in something of your own, including something you sell, as long as the
+copyright notice goes with it. The full terms are in License.md, which also
+names the parts of EdSharp that other people wrote and that keep their own
+licenses -- the Ude encoding detector under the LGPL, the 2htm extractor in
+the Convert folder, and the libraries and tools EdSharp fetches rather than
+carries. Earlier releases stay under the terms they were published with.
+
+**The working folder and the repository were separated properly.** What the
+repository carries is now decided in one place, repoPolicy.py, read by both
+the tidy script and the audit so they cannot disagree: a file belongs because
+EdSharp_Setup.iss names it or because repoPolicy names it as a build file,
+never because of what its name looks like. A pattern that admitted any
+markdown or web page at the top of the folder had been quietly keeping saved
+web pages, old mailing list messages and abandoned drafts in the repository
+while every report said it was clean. Reference material now lives in a notes
+folder that git ignores wholesale, the audit fails the build when anything
+unnecessary is tracked, and a new restoreMissing script brings back any
+needed file that has gone missing from the folder and the current commit
+alike.
+
+**The JAWS scripts are in the repository at last.** An ignore entry naming
+the scripts folder, matched with regard to case where Windows does not, had
+kept them out for years, so a fresh clone built an EdSharp that offered JAWS
+users nothing. Two new audit checks guard the arrangement: the script sources
+must be present to ship, and no compiled .jsb may be shipped, since a
+compiled script belongs to the JAWS version that compiled it and each
+installed version compiles its own.
+
 ## 26 August 2026 -- version 5.0, out of beta
 
 The beta released earlier this year invited people to try EdSharp again after

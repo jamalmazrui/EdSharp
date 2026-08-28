@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28516.95
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AStyle Java", "AStyle Java\AStyle Java.vcxproj", "{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+		Static|x64 = Static|x64
+		Static|x86 = Static|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}.Debug|x64.ActiveCfg = Debug|x64
+		{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}.Debug|x64.Build.0 = Debug|x64
+		{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}.Debug|x86.ActiveCfg = Debug|Win32
+		{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}.Debug|x86.Build.0 = Debug|Win32
+		{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}.Release|x64.ActiveCfg = Release|x64
+		{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}.Release|x64.Build.0 = Release|x64
+		{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}.Release|x86.ActiveCfg = Release|Win32
+		{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}.Release|x86.Build.0 = Release|Win32
+		{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}.Static|x64.ActiveCfg = Static|x64
+		{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}.Static|x64.Build.0 = Static|x64
+		{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}.Static|x86.ActiveCfg = Static|Win32
+		{4EDD4F9E-2088-4FE1-BDED-9357F05305CB}.Static|x86.Build.0 = Static|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A4619C60-3409-478F-B944-70443175BDEB}
+	EndGlobalSection
+EndGlobal

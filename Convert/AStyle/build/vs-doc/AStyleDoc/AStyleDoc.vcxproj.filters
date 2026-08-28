@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Html Files">
+      <UniqueIdentifier>{b1fa9200-07ec-4101-b482-0d6a13f234d4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\doc\astyle.html">
+      <Filter>Html Files</Filter>
+    </None>
+    <None Include="..\..\..\doc\index.html">
+      <Filter>Html Files</Filter>
+    </None>
+    <None Include="..\..\..\doc\install.html">
+      <Filter>Html Files</Filter>
+    </None>
+    <None Include="..\..\..\doc\links.html">
+      <Filter>Html Files</Filter>
+    </None>
+    <None Include="..\..\..\doc\news.html">
+      <Filter>Html Files</Filter>
+    </None>
+    <None Include="..\..\..\doc\newsArchives.html">
+      <Filter>Html Files</Filter>
+    </None>
+    <None Include="..\..\..\doc\notes.html">
+      <Filter>Html Files</Filter>
+    </None>
+    <None Include="..\..\..\doc\notesArchives.html">
+      <Filter>Html Files</Filter>
+    </None>
+    <None Include="..\..\..\doc\scripts.html">
+      <Filter>Html Files</Filter>
+    </None>
+    <None Include="..\..\..\doc\styles.css">
+      <Filter>Html Files</Filter>
+    </None>
+    <None Include="..\..\..\doc\subversion.html">
+      <Filter>Html Files</Filter>
+    </None>
+    <None Include="..\..\..\doc\vsinstall.html">
+      <Filter>Html Files</Filter>
+    </None>
+    <None Include="..\..\..\doc\xtra.html">
+      <Filter>Html Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

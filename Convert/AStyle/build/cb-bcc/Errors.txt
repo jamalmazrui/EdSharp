@@ -1,0 +1,20 @@
+Errors.txt
+
+The information displayed at the start of the console program for x64 has been
+fixed in a following compiler release.
+http://qc.embarcadero.com/wc/qcmain.aspx?d=124475
+
+
+In "Windows 64bit" build with static RTL, calling the std::strftime() function with
+certain specifiers causes the following debug information to appear on stdout:
+----------
+getinfo1.c
+size: 374
+offset of DateSeparator: 0
+offset of TimeSeparator: 8
+offset of PM 30
+offset of Order 38
+offset of MonthLeadZeros 44
+offset of DayName1: 46
+offset of AbrvDayName7 ae
+----------

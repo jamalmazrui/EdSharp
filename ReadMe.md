@@ -1,4 +1,4 @@
-# EdSharp
+﻿# EdSharp
 
 A text and code editor for Windows, built for people who work by keyboard and
 screen reader. Free and open source.
@@ -71,6 +71,8 @@ description you can hear.
 - **History.md** — what changed and why, newest first.
 - **Development.md** — how to build EdSharp and how it is put together.
 - **Announce.md** — what is new in this release.
+- **License.md** — the MIT License, and the licenses of the parts that came
+  from elsewhere.
 
 Each is also here as a web page with the same name and an .htm extension,
 which is what the Help menu opens.
@@ -84,7 +86,12 @@ were doing is the fastest way to a fix.
 
 ## License
 
-EdSharp is free software, released under the GNU Lesser General Public
-License. See the license file in the project for the terms.
+EdSharp is free software under the MIT License: use it, copy it, change it,
+and pass it on, including in something you sell, as long as the copyright
+notice travels with it. The full terms are in License.md, and in License.htm
+beside it.
+
+Some parts of EdSharp were written by other people and keep their own
+licenses. License.md names each one.
 
 Jamal Mazrui

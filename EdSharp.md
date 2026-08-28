@@ -4,7 +4,7 @@ EdSharp\
 Version 5.0 beta\
 June 2026\
 Copyright 2007 - 2026 by Jamal Mazrui\
-GNU Lesser General Public License (LGPL)\
+MIT License\
 
 ## Contents
 
