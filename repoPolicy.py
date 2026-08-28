@@ -65,6 +65,8 @@ c_lDevelopmentFiles = [
     "auditEdSharp.cmd",
     "auditEdSharp.py",
     "inixVert.cs",
+    "moveNotes.cmd",
+    "moveNotes.py",
     "prepareAuditFixes.cmd",
     "repoPolicy.py",
     "sqlean.version",

@@ -673,13 +673,28 @@ def checkOptionsDocumented(sIni, sDoc):
            plural(len(lChecked), "option") + " checked, " + str(len(lUndocumented)) + " not yet in the guide")
 
 
-def main():
+def startLog():
+    """Open the log and record the environment, before anything can fail.
+
+    Every setting that could explain a surprising result belongs here: which
+    copy of the script ran, which Python, from where, and with what on the
+    command line. A log that begins with only a date leaves the reader
+    guessing at all four.
+    """
     global fileLog
     fileLog = open(pathLog, "w", encoding="utf-8")
     say("EdSharp audit " + datetime.datetime.now().isoformat(" ", "seconds"))
-    say("Folder: " + pathRoot)
-    say("Python: " + sys.version.split()[0])
+    say("  script:            " + os.path.abspath(__file__))
+    say("  Python:            " + sys.version.split()[0])
+    say("  platform:          " + sys.platform)
+    say("  working directory: " + os.getcwd())
+    say("  command line:      " + " ".join([os.path.basename(sys.argv[0])] + sys.argv[1:]))
+    say("  folder audited:    " + pathRoot)
     say()
+
+
+def main():
+    startLog()
 
     sCode = readFile("EdSharp.cs")
     sInix = readFile("EdSharp.inix")
@@ -728,9 +743,27 @@ def main():
     else:
         say("All checks passed.")
     say("Log: " + pathLog)
-    fileLog.close()
+    # The close is left to the finally clause below, so that a failure and a
+    # clean finish both end with the log flushed and shut exactly once.
     return 1 if lFailures else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # An unexpected failure must reach the log too. Without this the script
+    # prints a traceback to a console that scrolls away and writes nothing,
+    # which is the one outcome a log exists to prevent.
+    try:
+        sys.exit(main())
+    except SystemExit:
+        raise
+    except Exception:
+        import traceback
+        say("")
+        say("The audit stopped on an unexpected error:")
+        for sLine in traceback.format_exc().splitlines():
+            say("  " + sLine)
+        say("Log: " + pathLog)
+        sys.exit(1)
+    finally:
+        if fileLog:
+            fileLog.close()

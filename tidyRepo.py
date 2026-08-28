@@ -22,8 +22,10 @@ The cause was not the fixes. It was that nothing looked at everything before
 acting. So this surveys first and completely: what is tracked that should not
 be, what is in the history that should not be, what is on disk that belongs
 nowhere, what the remote has, and what state the working tree is in. It prints
-the entire plan. Only then, and only with --do-it, does it act, and it does
+the entire plan. Only then does it act, and it does
 every part in one pass so there is no second round to discover anything in.
+Acting is the default: no flag has to be remembered to make the script do
+its job. --survey is the flag, and it is the one that holds back.
 
 WHAT IT LOOKS FOR
 
@@ -197,13 +199,36 @@ def tidyIgnoreFile(pathIgnore):
     nothing. Order is preserved and no entry is ever removed, only its later
     duplicates.
 
-    Returns how many lines were dropped.
+    One kind of entry IS removed: one naming a development source from
+    repoPolicy. That happens when a file is ignored before it is named --
+    moveNotes.py was ignored on the run that introduced it, because
+    repoPolicy did not list it yet -- and it is a contradiction, since an
+    ignored file cannot be added without a fight.
+
+    Only those, and only the sources among them. The installer also names
+    Markdig.dll and its fellows, and those are ignored on purpose because
+    the build fetches them; logs likewise. An entry is removed when the
+    project tracks the file, never merely when the project mentions it.
+
+    Returns how many repeated lines were dropped and how many contradicting
+    entries were removed.
     """
     if not os.path.exists(pathIgnore):
-        return 0
+        return 0, 0
     with open(pathIgnore, encoding="utf-8", errors="replace") as fileIgnore:
         lLines = fileIgnore.read().splitlines()
+
+    def unescapeIgnore(sEntry):
+        # The reverse of escapeIgnore below, so a written entry can be
+        # compared with a plain path.
+        return (sEntry.replace("\\[", "[").replace("\\]", "]")
+                .replace("\\*", "*").replace("\\?", "?"))
+
+    # The development sources, and nothing generated or fetched.
+    setTracked = set(s for s in repoPolicy.c_lDevelopmentFiles
+                     if not s.lower().endswith((".log", ".dll", ".exe")))
     lKept, setSeen, bLastBlank = [], set(), False
+    iContradicting = 0
     for sLine in lLines:
         sText = sLine.rstrip()
         if not sText:
@@ -215,13 +240,18 @@ def tidyIgnoreFile(pathIgnore):
         bLastBlank = False
         if sText in setSeen:
             continue
+        if (not sText.startswith("#")
+                and unescapeIgnore(sText) in setTracked):
+            say(f"  removed from .gitignore, because the project needs it: {sText}")
+            iContradicting += 1
+            continue
         setSeen.add(sText)
         lKept.append(sText)
-    iDropped = len(lLines) - len(lKept)
-    if iDropped > 0:
+    iDropped = len(lLines) - len(lKept) - iContradicting
+    if iDropped > 0 or iContradicting > 0:
         with open(pathIgnore, "w", encoding="utf-8", newline="\n") as fileIgnore:
             fileIgnore.write("\n".join(lKept) + "\n")
-    return iDropped
+    return iDropped, iContradicting
 
 
 def neededFiles():
@@ -547,12 +577,15 @@ def main():
         say("   that arrived through git add -A.")
         say("")
         for sPath in sorted(lStray):
-            iSize = 0
+            # A file moved away a moment ago -- by moveNotes, say -- is still
+            # in the index under its old path until the pending deletion is
+            # committed. Reporting it as "0 bytes" reads like a damaged file,
+            # so say what has actually happened to it.
             try:
                 iSize = os.path.getsize(os.path.join(pathRoot, sPath))
+                say(f"     {sPath}  ({iSize:,} bytes)")
             except OSError:
-                pass
-            say(f"     {sPath}  ({iSize:,} bytes)")
+                say(f"     {sPath}  (already moved or deleted; git still holds the old path)")
         say("")
         say("   They will be untracked, NOT deleted from disk, and added to")
         say("   .gitignore so they do not come back.")
@@ -801,9 +834,23 @@ def main():
         say("")
 
     if lStray:
-        say(f"Untracking {len(lStray)} files.")
-        for sPath in lStray:
-            run(["git", "rm", "--cached", "-q", "--", sPath])
+        # The list was worked out during the survey, before the outstanding
+        # changes were committed. That commit can itself remove a path from
+        # the index -- when moveNotes has just moved a file, the pending
+        # deletion covers it -- and asking git to untrack a path it no longer
+        # holds prints "fatal" and worries the reader for nothing. So the
+        # index is read again here, and only what is still in it is removed.
+        # --ignore-unmatch covers the remainder in any case.
+        setStillTracked = set(s for s in gitOut(["ls-files"]).splitlines() if s.strip())
+        lToRemove = [s for s in lStray if s in setStillTracked]
+        iAlreadyGone = len(lStray) - len(lToRemove)
+        say(f"Untracking {len(lToRemove)} files.")
+        if iAlreadyGone:
+            sFiles = "file was" if iAlreadyGone == 1 else "files were"
+            say(f"  {iAlreadyGone} other {sFiles} already out of the index, "
+                "removed by the commit above.")
+        for sPath in lToRemove:
+            run(["git", "rm", "--cached", "-q", "--ignore-unmatch", "--", sPath])
         say("")
 
     if lUnwantedDisk:
@@ -917,10 +964,14 @@ def main():
             fileIgnore.write("# Exact entries for names the patterns above cannot match.\n")
             for sPath in sorted(set(lUnmatched)):
                 fileIgnore.write(escapeIgnore(sPath) + "\n")
-    iDropped = tidyIgnoreFile(pathIgnore)
+    iDropped, iContradicting = tidyIgnoreFile(pathIgnore)
     if iDropped:
         sLines = "line" if iDropped == 1 else "lines"
         say(f"Tidied .gitignore: {iDropped} repeated {sLines} removed, no entry lost.")
+    if iContradicting:
+        sEntries = "entry" if iContradicting == 1 else "entries"
+        say(f"Removed {iContradicting} .gitignore {sEntries} that named a file the "
+            "project needs.")
     run(["git", "add", ".gitignore"])
     say("")
 
