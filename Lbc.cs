@@ -944,6 +944,17 @@ public class LbcDialog : IDisposable
     // screen readers announce the checked state -- the accessible multi-
     // selection primitive the single-select addListBox does not provide.
     // lsChecked holds indices to pre-check; pass null for none.
+    // addCheckListBox(label, items, checked, tip): the labelled form. A
+    // check list is a tab stop, so under the Homer guidelines it carries
+    // a trigger letter of its own, which lives in its label.
+    public CheckedListBox addCheckListBox(string sLabel, IList<string> lsNames, IList<int> lsChecked, string sTip)
+    {
+        addFieldLabel(sLabel);
+        CheckedListBox clb = addCheckListBox(lsNames, lsChecked, sTip);
+        clb.AccessibleName = cleanLabel(sLabel);
+        return clb;
+    }
+
     public CheckedListBox addCheckListBox(IList<string> lsNames, IList<int> lsChecked, string sTip)
     {
         CheckedListBox clb = new CheckedListBox();
@@ -1352,6 +1363,44 @@ public class LbcDialog : IDisposable
             if (bNoAccessKey) btn.Text = sPlain;
             else if (sLabel.IndexOf('&') >= 0) btn.Text = sLabel;
             else btn.Text = "&" + sPlain;
+            // A label built at run time -- the name of the current
+            // compiler, say -- can land on a letter another button
+            // already claims, and two buttons answering one key is worse
+            // than a button with none. The clash is resolved by moving
+            // to the label's next unused letter, and if every letter is
+            // taken the access key is dropped rather than duplicated.
+            int iAmp = btn.Text.IndexOf('&');
+            if (iAmp >= 0 && iAmp + 1 < btn.Text.Length)
+            {
+                string sTaken = "";
+                foreach (Control ctlDone in pnlButtonRow.Controls)
+                {
+                    int iOther = ctlDone.Text.IndexOf('&');
+                    if (iOther >= 0 && iOther + 1 < ctlDone.Text.Length) sTaken += Char.ToUpper(ctlDone.Text[iOther + 1]);
+                }
+                if (sTaken.IndexOf(Char.ToUpper(btn.Text[iAmp + 1])) >= 0)
+                {
+                    // The next free WORD INITIAL, never a letter from
+                    // inside a word: "Save As" may offer S or A and
+                    // nothing else. With every initial taken the button
+                    // goes without a trigger letter, which is honest;
+                    // the answer then is to rename the control.
+                    string sBare = btn.Text.Replace("&", "");
+                    btn.Text = sBare;
+                    bool bAtWordStart = true;
+                    for (int iLetter = 0; iLetter < sBare.Length; iLetter++)
+                    {
+                        char cHere = sBare[iLetter];
+                        if (!Char.IsLetterOrDigit(cHere)) { bAtWordStart = true; continue; }
+                        if (bAtWordStart && sTaken.IndexOf(Char.ToUpper(cHere)) < 0)
+                        {
+                            btn.Text = sBare.Substring(0, iLetter) + "&" + sBare.Substring(iLetter);
+                            break;
+                        }
+                        bAtWordStart = false;
+                    }
+                }
+            }
             btn.AccessibleName = sPlain;
             btn.Size = new Size(DefaultButtonWidth, DefaultButtonHeight);
             btn.TabIndex = aTabIndexes[i];

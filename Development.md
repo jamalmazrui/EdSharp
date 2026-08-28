@@ -65,6 +65,16 @@ labelled fields in order rather than by a visual designer, which keeps the
 reading order, the tab order and the visual order identical. Every dialog gets
 Control+Enter to accept, Escape to cancel and F1 to describe its fields.
 
+Its forms follow the Homer guidelines. Every control -- every tab stop, with a
+label and its field counting as one -- carries a trigger letter marked by an
+ampersand, so Alt and that letter reach it from anywhere in the form. The
+letter must begin a word: the first word's initial by preference, the second
+word's when that clashes, and a letter from inside a word almost never, the
+rare exception being a strong mnemonic such as X for Export. When two controls
+want the same letter, rename one. OK and Cancel take no letter, since
+Control+Enter and Escape are their keys, and Help is added by the toolkit
+holding H. The audit checks every one of these.
+
 **Say.cs** speaks. It tries JAWS through its automation interface, then NVDA
 through its controller library, then a system notification that Narrator
 reads, and stops at the first that answers, so a message is never delivered

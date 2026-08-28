@@ -535,6 +535,53 @@ def checkUnimportedTypes(sCode):
            "; ".join(lProblems) if lProblems else plural(len(dRisky), "name") + " checked")
 
 
+def checkDialogControls(sCode):
+    """The Homer rules for a form: every control has its own trigger letter.
+
+    A control is a tab stop -- a labelled field, a list, a button -- and
+    its letter must be the initial of a word in its name, marked with an
+    ampersand, unique within the dialog. OK and Cancel are the exceptions,
+    answering Control+Enter and Escape instead, and Help is added by the
+    toolkit with H."""
+    lProblems = []
+    iDialogs = 0
+    for oDialog in re.finditer(r"LbcDialog (\w+) = new LbcDialog\(", sCode):
+        iStart = oDialog.start()
+        iEnd = sCode.find("dlg.Dispose()", iStart)
+        if iEnd < 0:
+            iEnd = iStart + 3000
+        sBlock = sCode[iStart:iEnd]
+        iLine = sCode.count("\n", 0, iStart) + 1
+        lLabels = [sLabel for sKind, sLabel in
+                   re.findall(r'dlg\.add(\w+)\(\s*"([^"]*)"', sBlock)
+                   if sKind not in ("Label",)]
+        lButtons = []
+        for sInside in re.findall(r'runWithButtons\(new string\[\]\s*\{([^}]*)\}', sBlock):
+            lButtons += re.findall(r'"([^"]*)"', sInside)
+        if not lLabels and not lButtons:
+            continue
+        iDialogs += 1
+        dTaken = {}
+        for sName in lLabels + lButtons + ["&Help"]:
+            sPlain = sName.replace("&", "")
+            if sPlain.lower() in ("ok", "cancel", ""):
+                continue
+            iAmp = sName.find("&")
+            if iAmp < 0:
+                lProblems.append("line " + str(iLine) + ": " + sPlain + " has no trigger letter")
+                continue
+            # The letter must begin a word.
+            if iAmp > 0 and sName[iAmp - 1].isalnum():
+                lProblems.append("line " + str(iLine) + ": " + sPlain + "'s letter is inside a word")
+                continue
+            sLetter = sName[iAmp + 1].upper()
+            if sLetter in dTaken:
+                lProblems.append("line " + str(iLine) + ": " + sLetter + " shared by " + dTaken[sLetter] + " and " + sPlain)
+            dTaken[sLetter] = sPlain
+    report("Dialog controls follow the Homer trigger-letter rules", not lProblems,
+           "; ".join(lProblems) if lProblems else plural(iDialogs, "dialog") + " checked")
+
+
 def checkOfficeDependencies(sCode):
     """Report which features still reach for Microsoft Office, by name."""
     lUses = []
@@ -590,6 +637,7 @@ def main():
         checkBracesBalance(sCode, "EdSharp.cs")
         checkShortcutsUnique(sCode)
         checkAccessKeysUnique(sCode)
+        checkDialogControls(sCode)
         checkOfficeDependencies(sCode)
         checkSpellCheckInterfaces(sCode)
         checkInterfaceAccessibility(sCode)

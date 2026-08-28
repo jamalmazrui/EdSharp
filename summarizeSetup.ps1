@@ -257,12 +257,25 @@ function reportWordNet($sPython) {
   say "Thesaurus database: not installed. To add it later, run installPdfTools.cmd in the EdSharp folder."
 }
 
+function ollamaModels() {
+  # Ollama's own web interface, which answers without starting anything.
+  # Running the command line client instead can start the server in a
+  # console of its own, and that window on screen during setup looks like
+  # a fault.
+  try {
+    $oTags = Invoke-RestMethod -Uri "http://localhost:11434/api/tags" -TimeoutSec 10
+    return (($oTags.models | ForEach-Object { $_.name }) -join " ")
+  } catch {
+    return ""
+  }
+}
+
 function reportModel() {
   $sOllama = findExe "ollama"
   if ($sOllama -eq "") { return }
   # One probe, read whole: the listing is short, and asking twice would
   # double the wait on a cold service.
-  $sList = runBoundedAll $sOllama @("list") 20
+  $sList = ollamaModels
   if ($sList -eq "") { say "Chat model llama3.2: could not be checked just now. Press F12 in EdSharp; it offers to fetch the model if it is missing." ; return }
   if ($sList -match "llama3\.2") { say "Chat model llama3.2: installed. Press F12 to chat." }
   else { say "Chat model llama3.2: not downloaded. Press F12 in EdSharp and answer Yes when it offers to fetch it." }
@@ -271,7 +284,7 @@ function reportModel() {
 function reportTranslationModel() {
   $sOllama = findExe "ollama"
   if ($sOllama -eq "") { return }
-  $sList = runBoundedAll $sOllama @("list") 20
+  $sList = ollamaModels
   if ($sList -match "qwen2\.5:7b") { say "Translation model qwen2.5:7b: installed. Alt+Shift+F7 will use it." }
   else { say "Translation model qwen2.5:7b: not installed. Alt+Shift+F7 uses llama3.2, quicker but less accurate." }
 }
@@ -279,7 +292,7 @@ function reportTranslationModel() {
 function reportCodeModel() {
   $sOllama = findExe "ollama"
   if ($sOllama -eq "") { return }
-  $sList = runBoundedAll $sOllama @("list") 20
+  $sList = ollamaModels
   if ($sList -match "qwen2\.5-coder") { say "Coding model qwen2.5-coder:7b: installed. F12 will use it for source files." }
   else { say "Coding model qwen2.5-coder:7b: not installed. F12 uses llama3.2 for source files too." }
 }

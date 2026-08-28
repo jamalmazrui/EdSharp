@@ -47,9 +47,9 @@
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.38
-AppVerName=EdSharp 5.0.38
-VersionInfoVersion=5.0.38
+AppVersion=5.0.39
+AppVerName=EdSharp 5.0.39
+VersionInfoVersion=5.0.39
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -578,17 +578,19 @@ end;
 
 { The exit code of a command, with its output discarded. Some questions
   are answered by success or failure rather than by what was printed. }
-function probeExitCode(sCommand: string): integer;
+{ The exit code of a program run directly, with no command interpreter
+  in the way. Going through cmd meant quoting a program path and an
+  argument inside one string, and cmd's rule for stripping those quotes
+  defeated two attempts at it -- which is why the document tools kept
+  being offered as an install however often they were installed. Exec
+  takes the program and its arguments separately, so there is no quoting
+  rule left to get wrong. }
+function probeExitCode(sExe: string; sArguments: string): integer;
 var
   iResult: integer;
 begin
   result := 1;
-  // The whole command is wrapped in one more pair of quotes. cmd strips
-  // the first and last quote of what follows /c, so a command with two
-  // quoted parts -- a quoted program and a quoted argument -- loses the
-  // wrong ones and fails. That is why the document tools kept being
-  // offered as an install after they were installed.
-  if Exec(ExpandConstant('{cmd}'), '/c ""' + sCommand + '""', '', SW_HIDE, ewWaitUntilTerminated, iResult) then
+  if Exec(sExe, sArguments, '', SW_HIDE, ewWaitUntilTerminated, iResult) then
     result := iResult;
 end;
 
@@ -610,7 +612,11 @@ begin
   end;
   gModelListKnown := True;
   gModelList := '';
-  if probeLines('ollama list', lsLines) then
+  // Asked over Ollama's web interface rather than by running its command
+  // line client, which starts the server in a console of its own when it
+  // is not already running -- a window on screen during setup that looks
+  // like a fault. This opens nothing.
+  if probeLines('powershell -NoProfile -Command "try { (Invoke-RestMethod -Uri http://localhost:11434/api/tags -TimeoutSec 10).models.name -join '' '' } catch { '''' }"', lsLines) then
     for i := 0 to GetArrayLength(lsLines) - 1 do
       gModelList := gModelList + lsLines[i] + Chr(10);
   result := gModelList;
@@ -818,6 +824,29 @@ end;
   Python -- this developer's has 3.14 in C:\Python314 and 3.13 under the
   profile. The common locations are tried newest first, and the plain name
   last. }
+{ The same search, returning the bare path for Exec, which needs the
+  program and its arguments apart rather than one quoted string. }
+function pythonPathForProbe(): string;
+var
+  lsCandidates: TArrayOfString;
+  i: integer;
+begin
+  SetArrayLength(lsCandidates, 6);
+  lsCandidates[0] := 'C:\Python314\python.exe';
+  lsCandidates[1] := 'C:\Python313\python.exe';
+  lsCandidates[2] := ExpandConstant('{commonpf}\Python314\python.exe');
+  lsCandidates[3] := ExpandConstant('{commonpf}\Python313\python.exe');
+  lsCandidates[4] := ExpandConstant('{localappdata}\Programs\Python\Python314\python.exe');
+  lsCandidates[5] := ExpandConstant('{localappdata}\Programs\Python\Python313\python.exe');
+  for i := 0 to GetArrayLength(lsCandidates) - 1 do
+    if FileExists(lsCandidates[i]) then
+    begin
+      result := lsCandidates[i];
+      exit;
+    end;
+  result := 'python.exe';
+end;
+
 function pythonExeForProbe(): string;
 var
   lsCandidates: TArrayOfString;
@@ -912,7 +941,7 @@ begin
   // an empty capture file made the old test decide the package was
   // missing -- which is why these tools kept being offered as an install
   // however often they were installed.
-  result := probeExitCode(pythonExeForProbe() + ' -c "import pymupdf4llm"') = 0;
+  result := probeExitCode(pythonPathForProbe(), '-c "import pymupdf4llm"') = 0;
   if result then gStateCache[4] := 2 else gStateCache[4] := 0;
   gStateKnown[4] := True;
 end;

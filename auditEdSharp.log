@@ -1,11 +1,12 @@
-EdSharp audit 2026-08-26 11:37:08
+EdSharp audit 2026-08-27 18:55:47
 Folder: C:\EdSharp
 Python: 3.14.3
 
 PASS  EdSharp.cs braces balance: depth at end of file is 0
 PASS  Command shortcuts are unique: 218 shortcuts checked
 PASS  Dialog buttons have distinct access keys: 11 button sets checked, 4 with run-time labels skipped
-PASS  Microsoft Office is used only by named fallbacks: MailWord (line 7779); SpellCheckWord (line 8357); ThesaurusWord (line 8501); WordFile2String (line 11671); WordSource2TargetFormat (line 11850)
+PASS  Dialog controls follow the Homer trigger-letter rules: 7 dialogs checked
+PASS  Microsoft Office is used only by named fallbacks: MailWord (line 7779); SpellCheckWord (line 8357); ThesaurusWord (line 8501); WordFile2String (line 11689); WordSource2TargetFormat (line 11868)
 PASS  Spell check interfaces match Windows' own layout: 3 interfaces checked
 PASS  Public methods do not expose private interfaces: 5 interfaces checked
 PASS  Types from unimported namespaces are qualified: 7 names checked
@@ -21,7 +22,7 @@ PASS  Conversion scripts named in the table exist: 6 scripts checked
 NOTE  options not mentioned in the guide: BraceMatch, DateFormat, FontDefault, GoToEnVironment, KeepBackup, MaximizeWindow, PromptCommand, RecentFiles, WordWrap
 PASS  Shipped options were checked against the guide: 35 options checked, 9 not yet in the guide
 PASS  Files the installer copies are present: every required source found
-NOTE  optional installer sources absent (the build makes some of these): EdSharp.exe, FAQ.htm, Development.htm, Hotkeys.htm
+NOTE  optional installer sources absent (the build makes some of these): EdSharp.exe
 PASS  The documentation set is complete: 8 documents checked
 
 All checks passed.

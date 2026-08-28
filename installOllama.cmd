@@ -40,11 +40,20 @@ where ollama >nul 2>&1
 if errorlevel 1 goto fail_ollama
 
 :pull_model
+call :ollamaModels
+echo %modelList% | find /i "%modelName%" >nul 2>&1
+if not errorlevel 1 (
+  echo The %modelName% model is already installed.
+  echo [installOllama] model already present >> "%logFile%"
+  goto done_model
+)
 echo Fetching the %modelName% model, about 2 GB
 echo [installOllama] ollama pull %modelName% >> "%logFile%"
-ollama pull %modelName% >> "%logFile%" 2>&1
+call :ollamaPullHidden %modelName%
 echo [installOllama] ollama pull exit %errorlevel% >> "%logFile%"
 if errorlevel 1 goto fail_model
+
+:done_model
 echo Done.
 echo [installOllama] done >> "%logFile%"
 exit /b 0
@@ -57,6 +66,26 @@ exit /b 3
 
 :fail_model
 echo The model download did not finish. Run this script again later, or
-echo run: ollama pull %modelName%
+echo run this at a command prompt: ollama pull %modelName%
 echo [installOllama] model pull failed >> "%logFile%"
 exit /b 4
+
+rem ---- Talking to Ollama without opening a window ----------------------
+rem The ollama command starts its server in a console of its own when the
+rem server is not already running, and that window stays on screen looking
+rem like something has gone wrong. Ollama also answers over a local web
+rem interface, which opens nothing, so presence and model lists are asked
+rem that way; only a download needs the command, and that runs hidden.
+
+:ollamaModels
+rem Sets modelList to the names Ollama reports, or leaves it empty.
+set "modelList="
+for /f "delims=" %%m in ('powershell -NoProfile -Command "try { (Invoke-RestMethod -Uri http://localhost:11434/api/tags -TimeoutSec 10).models.name -join \" \" } catch { \"\" }" 2^>nul') do set "modelList=%%m"
+exit /b 0
+
+:ollamaPullHidden
+rem Downloads %1 with no window of any kind. The command writes its
+rem progress to the log rather than to a console nobody should have to
+rem look at.
+powershell -NoProfile -Command "$p = Start-Process -FilePath 'ollama' -ArgumentList 'pull','%~1' -WindowStyle Hidden -PassThru -Wait; exit $p.ExitCode" >> "%logFile%" 2>&1
+exit /b %errorlevel%

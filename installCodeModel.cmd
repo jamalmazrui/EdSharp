@@ -13,7 +13,8 @@ if exist "%LOCALAPPDATA%\Programs\Ollama" set "PATH=%LOCALAPPDATA%\Programs\Olla
 where ollama >nul 2>&1
 if errorlevel 1 goto no_ollama
 
-ollama list 2>nul | find /i "%modelName%" >nul 2>&1
+call :ollamaModels
+echo %modelList% | find /i "%modelName%" >nul 2>&1
 if not errorlevel 1 (
   echo The %modelName% model is already installed.
   echo [installCodeModel] already present >> "%logFile%"
@@ -22,7 +23,7 @@ if not errorlevel 1 (
 
 echo Fetching the %modelName% model, about 5 GB
 echo [installCodeModel] ollama pull %modelName% >> "%logFile%"
-ollama pull %modelName% >> "%logFile%" 2>&1
+call :ollamaPullHidden %modelName%
 echo [installCodeModel] pull exit %errorlevel% >> "%logFile%"
 if errorlevel 1 goto failed
 echo Done.

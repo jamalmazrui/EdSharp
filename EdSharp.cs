@@ -5469,7 +5469,7 @@ string sContext = "";
 // a list of things to change -- so the box is a proper multiline one:
 // Enter starts a new line, Tab reaches OK and then Cancel, and
 // Control+Enter submits from anywhere in the dialog.
-string sInstruction = Dialog.Prompt("AI Chat", "Prompt", App.ReadData("ChatInstruction", "")).Trim();
+string sInstruction = Dialog.Prompt("AI Chat", "&Prompt", App.ReadData("ChatInstruction", "")).Trim();
 if (sInstruction.Length == 0) return;
 App.WriteData("ChatInstruction", sInstruction);
 if (rtb.SelectionLength > 0) { sContext = rtb.SelectedText; AddMessage("With selection"); }
@@ -10202,7 +10202,7 @@ List<int> lChecked = new List<int>();
 foreach (string sVal in lSelectedValues) { int idx = Array.IndexOf(aItems, sVal); if (idx >= 0) lChecked.Add(idx); }
 List<string> lNames = new List<string>(aItems);
 LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
-CheckedListBox clb = dlg.addCheckListBox(lNames, lChecked, "");
+CheckedListBox clb = dlg.addCheckListBox("&Choices", lNames, lChecked, "");
 List<string> lReturn = new List<string>();
 if (dlg.runOkCancel()) foreach (int i in clb.CheckedIndices) lReturn.Add(aItems[i]);
 dlg.Dispose();
@@ -10225,7 +10225,7 @@ List<int> lChecked = new List<int>();
 if (aSelect != null) foreach (int i in aSelect) if (i >= 0 && i < aValues.Length) { int idx = Array.IndexOf(aVal, aValues[i]); if (idx >= 0) lChecked.Add(idx); }
 List<string> lNames = new List<string>(aDisp);
 LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
-CheckedListBox clb = dlg.addCheckListBox(lNames, lChecked, "");
+CheckedListBox clb = dlg.addCheckListBox("&Choices", lNames, lChecked, "");
 List<string> lReturn = new List<string>();
 if (dlg.runOkCancel()) foreach (int i in clb.CheckedIndices) if (i >= 0 && i < aVal.Length) lReturn.Add(aVal[i]);
 dlg.Dispose();
@@ -10246,7 +10246,11 @@ else Array.Sort(aDisp, aVal);
 }
 List<string> lNames = new List<string>(aDisp);
 LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
-ListBox lst = dlg.addListBox(lNames, "", "");
+// A list is a tab stop, so it takes a trigger letter like any other
+// control. "Choices" is used rather than the dialog's own subject
+// because these two dialogs serve many commands, and C is free -- Cancel
+// carries no letter under the Homer guidelines.
+ListBox lst = dlg.addPickBox("&Choices", lNames, "", "");
 if (iIndex >= 0 && iIndex < lNames.Count) lst.SelectedIndex = iIndex;
 string sReturn = "";
 if (dlg.runOkCancel()) {
@@ -10325,7 +10329,10 @@ return aResult;
 public static string Prompt(string sTitle, string sLabel, string sValue) {
 LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
 TextBox tbPrompt = dlg.addMemoBox(sLabel, sValue, "Enter starts a new line; Control+Enter submits");
-string sClicked = dlg.runWithButtons(new string[] {"&OK", "&Cancel"});
+// OK and Cancel take no access key: Control+Enter accepts and Escape
+// cancels, and the letters stay free for buttons that need them. Help is
+// added by the toolkit and sits after them.
+string sClicked = dlg.runWithButtons(new string[] {"OK", "Cancel"});
 string sText = (tbPrompt == null) ? "" : tbPrompt.Text;
 dlg.Dispose();
 if (sClicked == null || sClicked.Replace("&", "") != "OK") return "";
@@ -10335,14 +10342,21 @@ return sText;
 public static object[] SpellChoice(string sTitle, string sPrompt, string sContext, List<string> lsSuggestions) {
 LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
 dlg.addLabel(sPrompt);
-if (sContext.Length > 0) dlg.addTextLine("Context", sContext);
-ComboBox cbSuggestions = dlg.addComboHistoryBox("Replace with", lsSuggestions, (lsSuggestions.Count > 0) ? lsSuggestions[0] : "", "Down and Up walk the suggestions; type to correct the word yourself");
+// Named "In context" rather than "Sentence": S belongs to the Skip
+// button, and a trigger letter must begin a word, so the control is
+// renamed rather than given a letter from the middle of one.
+if (sContext.Length > 0) dlg.addTextLine("&In context", sContext);
+// Named Correction rather than "Replace with": its trigger letter must
+// be the initial of a word, and R belongs to the Replace button. Renaming
+// the control is the Homer answer to a clash, not a letter from the
+// middle of a word.
+ComboBox cbSuggestions = dlg.addComboHistoryBox("&Correction", lsSuggestions, (lsSuggestions.Count > 0) ? lsSuggestions[0] : "", "Down and Up walk the suggestions; type to correct the word yourself");
 // Homer Tools rule: every button has its OWN access key, preferably the
 // initial letter of its first word. Change and Cancel would both claim
 // C, so the action is named Replace instead -- as familiar a word for
 // this and equally plain -- giving R, S, A, C, and the dialog's own
 // Help on H, all distinct.
-string sClicked = dlg.runWithButtons(new string[] {"&Replace", "&Skip", "&Add to Dictionary", "&Cancel"});
+string sClicked = dlg.runWithButtons(new string[] {"&Replace", "&Skip", "&Add to Dictionary", "Cancel"});
 string sReplacement = (cbSuggestions == null) ? "" : cbSuggestions.Text;
 dlg.Dispose();
 string sButton;
@@ -10377,7 +10391,11 @@ else aDisp = (string[]) aDisplay.Clone();
 if (bSort) Array.Sort(aDisp, aVal);
 List<string> lNames = new List<string>(aDisp);
 LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
-ListBox lst = dlg.addListBox(lNames, "", "");
+// A list is a tab stop, so it takes a trigger letter like any other
+// control. "Choices" is used rather than the dialog's own subject
+// because these two dialogs serve many commands, and C is free -- Cancel
+// carries no letter under the Homer guidelines.
+ListBox lst = dlg.addPickBox("&Choices", lNames, "", "");
 if (iIndex >= 0 && iIndex < lNames.Count) lst.SelectedIndex = iIndex;
 else if (lNames.Count > 0) lst.SelectedIndex = 0;
 List<string> lButtons = new List<string>(aButton);
