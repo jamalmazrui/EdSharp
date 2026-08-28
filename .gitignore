@@ -774,24 +774,12 @@ xl/
 xpdf/
 z.extensionmethods.2.0.10.nupkg
 
-# Untracked by tidyRepo: files that reached the repository
-# through git add -A, plus the names that must never return.
-# A folder pattern covers a stray folder with nothing the
-# project needs inside it.
 EdSharp.cs.startuplog.bak
 temp.txt
 
-# Untracked by tidyRepo: files that reached the repository
-# through git add -A, plus the names that must never return.
-# A folder pattern covers a stray folder with nothing the
-# project needs inside it.
 adoptRemote.cmd
 adoptRemote.py
 
-# Untracked by tidyRepo: files that reached the repository
-# through git add -A, plus the names that must never return.
-# A folder pattern covers a stray folder with nothing the
-# project needs inside it.
 AudioVault_Directory.md
 Captivating_Numbers.md
 Catalogue.md
@@ -816,10 +804,6 @@ VoiceVista.md
 WordPress.md
 Zotero.md
 
-# Untracked by tidyRepo: files that reached the repository
-# through git add -A, plus the names that must never return.
-# A folder pattern covers a stray folder with nothing the
-# project needs inside it.
 _ﾚ/
 _ﾟ/
 # Exact entries for names the patterns above cannot match.
@@ -857,3 +841,48 @@ Usage \[Universal Encoding Detector\].txt
 # Development reference material: saved pages, saved messages
 # and old drafts. Kept on disk, never part of the project.
 notes/
+
+Accessible_Charts_Sample.htm
+Accessible_Charts_Sample.md
+BITS-Development Thoughts on EdSharp.htm
+BUILD_NOTES.htm
+BUILD_NOTES.md
+ComboBox Class (System.Windows.Forms).htm
+ComboBox.AutoCompleteCustomSource Property (System.Windows.Forms).htm
+ComboBox.AutoCompleteMode Property (System.Windows.Forms).htm
+ComboBox.AutoCompleteSource Property (System.Windows.Forms).htm
+ComboBoxStyle Enumeration (System.Windows.Forms).htm
+Developer.htm
+Developer.md
+EdSharp To The Rescue On Days 1 and 2 And a Small Enhancement Request.htm
+FreeLists _ EdSharp Users.htm
+How do I use AutoComplete feature for a ComboBox and a TextBox.htm
+How to Show System Environment Variables using VBScript-JScript under Window Scripting Host  Computing & Technology.htm
+Markdig.fetched
+Mermaid_Sample.htm
+Mermaid_Sample.md
+Pandoc_Office_Guide.htm
+Pandoc_Office_Guide.md
+RE BITS-Development EdSharp is back. Releasing 5.0 beta.htm
+RE EdSharp is back. Releasing 5.0 beta.htm
+TransitionBrief.htm
+TransitionBrief.md
+WeCantSpell.Hunspell.fetched
+auditEdSharp.log
+c# - Reading_writing an INI file - Stack Overflow.htm
+doc_code_audit.htm
+doc_code_audit.md
+htm2md_EdSharp.htm
+htm2md_EdSharp.md
+journal_article.bib
+journal_article.htm
+journal_article.md
+moveNotes.cmd
+moveNotes.log
+moveNotes.py
+net - Creating an empty file in C# - Stack Overflow.htm
+old_EdSharp.htm
+old_EdSharp.md
+tagRelease.log
+white paper on voting.htm
+winforms - AutoComplete ComboBox C# - Stack Overflow.htm
