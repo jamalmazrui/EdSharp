@@ -71,6 +71,8 @@ c_lDevelopmentFiles = [
     "moveNotes.py",
     "prepareAuditFixes.cmd",
     "repoPolicy.py",
+    "restoreMissing.cmd",
+    "restoreMissing.py",
     "sqlean.version",
     "tagRelease.cmd",
     "tagRelease.ps1",
@@ -129,13 +131,54 @@ def installedFiles(pathRoot):
     return setExact, lFolders
 
 
+def wholesaleFolders(pathRoot):
+    """Folders the installer ships entirely, with nothing held back.
+
+    A Source line with an Excludes clause does not qualify: Convert\\* ships
+    the tree but leaves out sources, project files and archives, so a file
+    found under it is not automatically wanted. Scripts, Snippets, Samples
+    and Dictionaries have no Excludes, so everything in them is shipped and
+    everything in them belongs in the repository.
+    """
+    pathIss = os.path.join(pathRoot, "EdSharp_Setup.iss")
+    if not os.path.isfile(pathIss):
+        return set()
+    with open(pathIss, encoding="utf-8-sig", errors="replace") as fileIss:
+        sIss = fileIss.read()
+    setFolders = set()
+    for oMatch in re.finditer(r'^Source:\s*"([^"]+)"([^\n]*)$', sIss, re.M):
+        sPath, sRest = oMatch.group(1), oMatch.group(2)
+        if "*" not in sPath:
+            continue
+        if "excludes:" in sRest.lower():
+            continue
+        sFolder = sPath.replace("\\", "/").rstrip("*").rstrip("/")
+        if sFolder:
+            setFolders.add(sFolder.lower())
+    return setFolders
+
+
+def isUnderWholesaleFolder(sPath, setWholesale):
+    """Whether a path sits inside a folder the installer ships entirely."""
+    sLower = sPath.replace("\\", "/").lower()
+    return any(sLower.startswith(s + "/") for s in setWholesale)
+
+
 def isNamedByInstaller(sPath, setExact, lFolders):
-    """Whether the setup script ships this exact path, by name or by folder."""
+    """Whether the setup script ships this exact path, by name or by folder.
+
+    Folder matching ignores case, because Windows does. The setup script says
+    Scripts\\*; the folder on disk is called scripts; and a case-sensitive test
+    called every JAWS script a stray, which is why they were ignored and have
+    been absent from the repository. File names are still matched exactly, so
+    that git's own view of a name is never contradicted.
+    """
     sPath = sPath.replace("\\", "/")
     if sPath in setExact:
         return True
+    sLower = sPath.lower()
     for sFolder in lFolders:
-        if sPath.startswith(sFolder):
+        if sLower.startswith(sFolder.lower()):
             return True
     return False
 

@@ -65,6 +65,7 @@ import argparse
 import datetime
 import hashlib
 import os
+import stat
 import shutil
 import sys
 
@@ -209,6 +210,30 @@ def entriesToMove():
     return lFiles, lFolders
 
 
+def removeFile(pathFile):
+    """Delete a file, clearing the read-only attribute if that is the obstacle.
+
+    Old Subversion working folders mark everything read-only, and eleven
+    empty files under notes\\brltex refused to go for that reason alone. A
+    read-only flag is not a reason to keep an empty file; it is a leftover of
+    how the file arrived.
+
+    Returns an error message, or an empty string on success.
+    """
+    try:
+        os.remove(pathFile)
+        return ""
+    except PermissionError:
+        try:
+            os.chmod(pathFile, stat.S_IWRITE)
+            os.remove(pathFile)
+            return ""
+        except OSError as oError:
+            return str(oError)
+    except OSError as oError:
+        return str(oError)
+
+
 def isEmpty(pathFile):
     """Whether a file holds nothing at all."""
     try:
@@ -264,10 +289,9 @@ def deleteEmptyFiles(lPaths):
     for pathFile in lPaths:
         if not isEmpty(pathFile):
             continue
-        try:
-            os.remove(pathFile)
-        except OSError as oError:
-            say(f"  COULD NOT DELETE the empty file {pathFile}: {oError}")
+        sError = removeFile(pathFile)
+        if sError:
+            say(f"  COULD NOT DELETE the empty file {pathFile}: {sError}")
             continue
         say("  deleted, empty: " + os.path.relpath(pathFile, pathRoot))
         iDeleted += 1
@@ -340,10 +364,9 @@ def moveFile(sName, dDigests):
     sDigest = digestOf(pathFrom)
     if sDigest and sDigest in dDigests:
         sKept = dDigests[sDigest]
-        try:
-            os.remove(pathFrom)
-        except OSError as oError:
-            say(f"  COULD NOT DELETE the duplicate {sName}: {oError}")
+        sError = removeFile(pathFrom)
+        if sError:
+            say(f"  COULD NOT DELETE the duplicate {sName}: {sError}")
             return "failed"
         if sKept.lower() == sName.lower():
             say(f"  duplicate deleted: {sName} (the copy in notes is identical)")
@@ -412,10 +435,9 @@ def dropDuplicatesInNotes():
             dFirst[sDigest] = sName
     iDropped = 0
     for sName, sKept in lDelete:
-        try:
-            os.remove(os.path.join(pathNotes, sName))
-        except OSError as oError:
-            say(f"  COULD NOT DELETE {sName}: {oError}")
+        sError = removeFile(os.path.join(pathNotes, sName))
+        if sError:
+            say(f"  COULD NOT DELETE {sName}: {sError}")
             continue
         say(f"  deleted {sName}, identical to {sKept}")
         iDropped += 1

@@ -251,6 +251,69 @@ def checkTrackedFiles():
         say("        " + sPath)
 
 
+def checkNoCompiledScripts():
+    """No compiled JAWS script should be shipped, tracked, or in Scripts.
+
+    A .jsb is compiled output, and its format belongs to the JAWS version
+    that compiled it. The Homer pattern is to ship the .jss and .jkm sources
+    and let each installed JAWS version's own scompile.exe build the .jsb
+    where JAWS will load it, which installJawsScripts.ps1 does. Handing a
+    machine a .jsb built elsewhere is the mismatch that arrangement exists to
+    prevent.
+
+    HomerView ships one as a fallback for a machine whose scompile refuses
+    the source. EdSharp does not, and this check is here so it never starts
+    by accident -- through a stray build artefact left in Scripts, a Source
+    line added in haste, or a git add that swept one in.
+    """
+    lFound = []
+    pathScripts = os.path.join(pathRoot, "Scripts")
+    if os.path.isdir(pathScripts):
+        for sDirectory, lDirectories, lFiles in os.walk(pathScripts):
+            for sName in sorted(lFiles, key=str.lower):
+                if sName.lower().endswith(".jsb"):
+                    sWhere = os.path.relpath(os.path.join(sDirectory, sName), pathRoot)
+                    lFound.append(sWhere + " (on disk)")
+    sIss = readFile("EdSharp_Setup.iss")
+    if sIss:
+        for oLine in re.finditer(r'^Source: "([^"]+)"', sIss, re.M):
+            if oLine.group(1).lower().endswith(".jsb"):
+                lFound.append(oLine.group(1) + " (named by the installer)")
+    lTracked = gitTrackedFiles()
+    if lTracked:
+        for sPath in lTracked:
+            if sPath.lower().endswith(".jsb"):
+                lFound.append(sPath + " (tracked)")
+    report("No compiled JAWS scripts are shipped", not lFound,
+           "; ".join(lFound) if lFound
+           else "the .jss and .jkm sources are compiled by each JAWS version's own scompile")
+    if lFound:
+        say("      A .jsb belongs to the JAWS version that compiled it.")
+        say("      installJawsScripts.ps1 builds one per installed version.")
+
+
+def checkScriptSourcesPresent():
+    r"""The JAWS script sources the installer ships should be here to ship.
+
+    Scripts\* carries skipifsourcedoesntexist, so an empty or absent folder
+    builds an installer that quietly offers JAWS users nothing. That went
+    unnoticed for a long time because .gitignore held a scripts/ line and the
+    folder was never in the repository at all.
+    """
+    pathScripts = os.path.join(pathRoot, "Scripts")
+    if not os.path.isdir(pathScripts):
+        say("NOTE  no Scripts folder here, so the installer will ship no JAWS scripts.")
+        return
+    lSources = []
+    for sDirectory, lDirectories, lFiles in os.walk(pathScripts):
+        for sName in lFiles:
+            if sName.lower().endswith((".jss", ".jkm", ".jsm", ".jsd")):
+                lSources.append(sName)
+    report("JAWS script sources are present to ship", bool(lSources),
+           plural(len(lSources), "source file") + " in Scripts" if lSources
+           else "the Scripts folder holds no .jss or .jkm files")
+
+
 def checkDocumentationSet():
     """The documentation a release promises should exist."""
     lWanted = ["ReadMe.md", "EdSharp.md", "Tutorials.md", "Hotkeys.md", "FAQ.md",
@@ -735,6 +798,8 @@ def main():
 
     checkInstallerSourcesExist()
     checkTrackedFiles()
+    checkNoCompiledScripts()
+    checkScriptSourcesPresent()
     checkDocumentationSet()
 
     say()

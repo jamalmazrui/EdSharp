@@ -227,6 +227,13 @@ def tidyIgnoreFile(pathIgnore):
     # The development sources, and nothing generated or fetched.
     setTracked = set(s for s in repoPolicy.c_lDevelopmentFiles
                      if not s.lower().endswith((".log", ".dll", ".exe")))
+    # Folders the installer ships wholesale. An entry ignoring one of these is
+    # a contradiction: Scripts\* is shipped, so a line saying scripts/ keeps
+    # the JAWS scripts out of the repository the installer promises them from.
+    oInstalled = repoPolicy.installedFiles(pathRoot)
+    setClaimedFolders = set()
+    if oInstalled is not None:
+        setClaimedFolders = set(s.rstrip("/").lower() for s in oInstalled[1])
     # Entries worth keeping whether or not the named thing is here today,
     # because it comes back: the build makes it, fetches it, or logs to it.
     setCanonical = set(s.lower() for s in (
@@ -234,7 +241,11 @@ def tidyIgnoreFile(pathIgnore):
         "EdSharp_setup.exe", "ReverseMarkdown.dll", "HtmlAgilityPack.dll",
         "Markdig.dll", "sqlean.dll", "Version.cs", "BuildVersion.cs",
         "notes/", "BuildEdSharp.log", "tidyRepo.log", "auditEdSharp.log",
-        "moveNotes.log", "tagRelease.log"))
+        "moveNotes.log", "tagRelease.log", "restoreMissing.log",
+        # Preventive entries, kept whether or not the thing has ever appeared.
+        # That is the point of them: Thumbs.db is worth ignoring before
+        # Windows writes one, not after.
+        "Thumbs.db", "desktop.ini", "InPy.exe"))
     lKept, setSeen, bLastBlank = [], set(), False
     iContradicting, iStale = 0, 0
     for sLine in lLines:
@@ -249,7 +260,8 @@ def tidyIgnoreFile(pathIgnore):
         if sText in setSeen:
             continue
         if (not sText.startswith("#")
-                and unescapeIgnore(sText) in setTracked):
+                and (unescapeIgnore(sText) in setTracked
+                     or unescapeIgnore(sText).rstrip("/").lower() in setClaimedFolders)):
             say(f"  removed from .gitignore, because the project needs it: {sText}")
             iContradicting += 1
             continue
@@ -306,8 +318,12 @@ def isNeeded(sPath, setNeeded):
     if sPath in setNeeded:
         return True
     # A folder the setup script takes wholesale covers everything under it.
+    # Compared without regard to case, as Windows does: the script says
+    # Scripts and the folder is called scripts, and a case-sensitive test
+    # called every JAWS script unnecessary the moment it was added.
+    sLower = sPath.lower()
     for sNeeded in setNeeded:
-        if sNeeded and sPath.startswith(sNeeded.rstrip("/") + "/"):
+        if sNeeded and sLower.startswith(sNeeded.rstrip("/").lower() + "/"):
             return True
     # And that is the whole test. There was once a rule here admitting any
     # root .md or .htm file, meant to spare the documentation set; since the
@@ -329,7 +345,14 @@ def isNeededExactly(sPath, setNeeded):
     sPath = sPath.replace("\\", "/")
     if unwantedKind(sPath):
         return False
-    return sPath in setNeeded
+    if sPath in setNeeded:
+        return True
+    # A folder the installer ships with nothing held back is different from a
+    # pattern that merely allows: everything inside Scripts, Snippets, Samples
+    # and Dictionaries is shipped, so an untracked file there is one the
+    # repository lacks. Convert is excluded from this, because its Source line
+    # holds sources and archives back.
+    return repoPolicy.isUnderWholesaleFolder(sPath, repoPolicy.wholesaleFolders(pathRoot))
 
 
 def surveyTracked(setNeeded, setRemoteTree=None):
@@ -682,7 +705,7 @@ def main():
         if len(lNotOurs) > 12:
             say(f"     and {len(lNotOurs) - 12} more")
         say("")
-        say("   cleanDir.cmd is what moves those out.")
+        say("   moveNotes.cmd is what moves those out.")
     say("")
 
     # --- The named unwanted files: pandoc and the web client utilities. ---
