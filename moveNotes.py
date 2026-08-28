@@ -173,6 +173,12 @@ def isKeptFile(sName, setFiles):
     sLower = sName.lower()
     if sLower in setFiles:
         return True
+    # The libraries the build fetches. repoPolicy deliberately does not claim
+    # them, because the repository must not carry them -- but the build needs
+    # them here, so they are kept without being claimed. Sweeping them into
+    # notes would leave the next compile without its references.
+    if sLower in set(s.lower() for s in repoPolicy.c_lFetchedFiles):
+        return True
     if sLower in c_lBuildProducts:
         return True
     if sLower in set(s.lower() for s in c_lKeepAtRoot):

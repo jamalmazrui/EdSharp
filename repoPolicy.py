@@ -32,7 +32,9 @@ named:
   1. The installer names it. EdSharp_Setup.iss is the list of what EdSharp
      ships, and a file on that list is part of the project by definition.
      A folder-wide Source line, such as Convert\\*, covers everything under
-     that folder.
+     that folder. The exception is c_lFetchedFiles below: libraries the
+     installer ships but the build downloads, which a clone fetches rather
+     than carries.
   2. This file names it, in c_lDevelopmentFiles below. These are the files
      that build, audit and release EdSharp. They are not installed on a
      user's machine, but a clone without them cannot build EdSharp, so they
@@ -77,6 +79,28 @@ c_lDevelopmentFiles = [
 ]
 
 
+# Named by the installer, but fetched by the build rather than kept in the
+# repository. The distinction matters: the installer must ship them, so they
+# have Source lines, yet a clone should download them rather than carry them.
+#
+# This list exists because all four were committed on 28 August. .gitignore
+# held their names, which kept them out; .gitignore was lost, and with the
+# only thing standing between them and the repository gone, tidyRepo read
+# their Source lines, saw them untracked, and added them. Naming them here
+# puts the answer where the policy is, so no missing file can change it.
+c_lFetchedFiles = [
+    "HtmlAgilityPack.dll",
+    "Markdig.dll",
+    "ReverseMarkdown.dll",
+    "sqlean.dll",
+]
+
+
+def isFetched(sPath):
+    """Whether the build downloads this rather than the repository holding it."""
+    return sPath.replace("\\", "/") in c_lFetchedFiles
+
+
 def installedFiles(pathRoot):
     """What EdSharp_Setup.iss says the project ships.
 
@@ -98,7 +122,10 @@ def installedFiles(pathRoot):
             if sFolder:
                 lFolders.append(sFolder + "/")
             continue
-        setExact.add(sPath)
+        # A fetched library is shipped but never tracked, so it is not part
+        # of what the repository claims.
+        if not isFetched(sPath):
+            setExact.add(sPath)
     return setExact, lFolders
 
 

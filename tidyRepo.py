@@ -214,7 +214,7 @@ def tidyIgnoreFile(pathIgnore):
     entries were removed.
     """
     if not os.path.exists(pathIgnore):
-        return 0, 0
+        return 0, 0, 0
     with open(pathIgnore, encoding="utf-8", errors="replace") as fileIgnore:
         lLines = fileIgnore.read().splitlines()
 
@@ -227,8 +227,16 @@ def tidyIgnoreFile(pathIgnore):
     # The development sources, and nothing generated or fetched.
     setTracked = set(s for s in repoPolicy.c_lDevelopmentFiles
                      if not s.lower().endswith((".log", ".dll", ".exe")))
+    # Entries worth keeping whether or not the named thing is here today,
+    # because it comes back: the build makes it, fetches it, or logs to it.
+    setCanonical = set(s.lower() for s in (
+        "pandoc.exe", "Convert/Pandoc/", "InPy.exe", "EdSharp_Setup.exe",
+        "EdSharp_setup.exe", "ReverseMarkdown.dll", "HtmlAgilityPack.dll",
+        "Markdig.dll", "sqlean.dll", "Version.cs", "BuildVersion.cs",
+        "notes/", "BuildEdSharp.log", "tidyRepo.log", "auditEdSharp.log",
+        "moveNotes.log", "tagRelease.log"))
     lKept, setSeen, bLastBlank = [], set(), False
-    iContradicting = 0
+    iContradicting, iStale = 0, 0
     for sLine in lLines:
         sText = sLine.rstrip()
         if not sText:
@@ -245,13 +253,25 @@ def tidyIgnoreFile(pathIgnore):
             say(f"  removed from .gitignore, because the project needs it: {sText}")
             iContradicting += 1
             continue
+        if (not sText.startswith("#") and not sText.startswith("!")
+                and "*" not in sText and "?" not in sText
+                and sText.lower() not in setCanonical):
+            # An entry naming something that is no longer on disk protects
+            # nothing. After a sweep into notes, more than a thousand such
+            # entries were left naming files that had moved, which is a
+            # thousand lines to read past for no effect. If one ever comes
+            # back, this script sees it and writes the entry again.
+            sPlain = unescapeIgnore(sText).rstrip("/").replace("/", os.sep)
+            if sPlain and not os.path.exists(os.path.join(pathRoot, sPlain)):
+                iStale += 1
+                continue
         setSeen.add(sText)
         lKept.append(sText)
-    iDropped = len(lLines) - len(lKept) - iContradicting
-    if iDropped > 0 or iContradicting > 0:
+    iDropped = len(lLines) - len(lKept) - iContradicting - iStale
+    if iDropped > 0 or iContradicting > 0 or iStale > 0:
         with open(pathIgnore, "w", encoding="utf-8", newline="\n") as fileIgnore:
             fileIgnore.write("\n".join(lKept) + "\n")
-    return iDropped, iContradicting
+    return iDropped, iContradicting, iStale
 
 
 def neededFiles():
@@ -397,6 +417,36 @@ def surveyWorkingTree(setNeeded):
             bBelongs = False
         (lBelong if bBelongs else lNot).append(sPath)
     return lBelong, lNot
+
+
+def restoreMissingClaimed(setNeeded):
+    """Put back any file the project needs that has vanished from disk.
+
+    This exists because .gitignore disappeared from C:\\EdSharp twice, and
+    both times this script dutifully committed its deletion before writing a
+    new one. Committing the removal of a file the project needs is never what
+    anybody wanted: git is holding a good copy, so the answer is to restore
+    it, not to record the loss. The same would have happened to
+    BuildEdSharp.ps1, which went missing the same way.
+
+    Only files the project claims are restored. A legacy file that has just
+    been moved into notes is meant to be gone, and its deletion is committed
+    as usual.
+
+    Returns the names restored.
+    """
+    sDeleted = gitOut(["ls-files", "--deleted"])
+    lRestored = []
+    for sPath in [s.strip() for s in sDeleted.splitlines() if s.strip()]:
+        if not isNeeded(sPath.replace("\\", "/"), setNeeded):
+            continue
+        result = run(["git", "checkout", "--", sPath])
+        if result and result.returncode == 0:
+            lRestored.append(sPath)
+        else:
+            say(f"  COULD NOT RESTORE {sPath}; it is missing and git would not "
+                "give it back")
+    return lRestored
 
 
 def readVersionMessage():
@@ -790,6 +840,14 @@ def main():
                 return 1
             say("  stashed. Recover them afterwards with: git stash pop")
         else:
+            lRestored = restoreMissingClaimed(setNeeded)
+            if lRestored:
+                sFiles = "file" if len(lRestored) == 1 else "files"
+                say(f"Restored {len(lRestored)} missing {sFiles} the project needs, "
+                    "rather than committing the loss:")
+                for sPath in lRestored:
+                    say("  " + sPath)
+                say("")
             say("Committing the outstanding changes.")
             sMessage = dArguments.message or readVersionMessage()
             # Tracked files only. An earlier version used add -A, which swept
@@ -964,7 +1022,7 @@ def main():
             fileIgnore.write("# Exact entries for names the patterns above cannot match.\n")
             for sPath in sorted(set(lUnmatched)):
                 fileIgnore.write(escapeIgnore(sPath) + "\n")
-    iDropped, iContradicting = tidyIgnoreFile(pathIgnore)
+    iDropped, iContradicting, iStale = tidyIgnoreFile(pathIgnore)
     if iDropped:
         sLines = "line" if iDropped == 1 else "lines"
         say(f"Tidied .gitignore: {iDropped} repeated {sLines} removed, no entry lost.")
@@ -972,6 +1030,10 @@ def main():
         sEntries = "entry" if iContradicting == 1 else "entries"
         say(f"Removed {iContradicting} .gitignore {sEntries} that named a file the "
             "project needs.")
+    if iStale:
+        sEntries = "entry" if iStale == 1 else "entries"
+        say(f"Removed {iStale} .gitignore {sEntries} naming something no longer "
+            "on disk; each returns if the file does.")
     run(["git", "add", ".gitignore"])
     say("")
 
