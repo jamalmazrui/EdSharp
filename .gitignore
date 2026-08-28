@@ -853,3 +853,7 @@ Usage \[Universal Encoding Detector\].txt
 \[program-l\] Re  Saving massive amounts of  files from many links.txt
 \[program-l\] Re  Web development in linux.eml
 \[program-l\] Re  beginning python.eml
+
+# Development reference material: saved pages, saved messages
+# and old drafts. Kept on disk, never part of the project.
+notes/

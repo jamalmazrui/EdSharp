@@ -197,7 +197,9 @@ Source: "Announce.md";        DestDir: "{app}"; Flags: ignoreversion skipifsourc
 Source: "Announce.htm";       DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "Transform_Example.inix"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "CamelType_JAWSScript.md"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "CamelType_JAWSScript.htm"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "CamelType_CSharp.md"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "CamelType_CSharp.htm"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "EdSharp.inix"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "history.txt";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "lgpl.txt";           DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
