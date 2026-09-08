@@ -1,4 +1,4 @@
-# EdSharp Hotkeys
+﻿# EdSharp Hotkeys
 
 Every command in EdSharp, with the key that runs it and what it does.
 This file is generated from the program itself, so it cannot fall behind

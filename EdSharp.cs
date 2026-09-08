@@ -1830,6 +1830,10 @@ foreach (InixCodec.Section section in lsTasks) {
 string sFind = section.get("Find");
 if (sFind == null || sFind.Length == 0) continue;
 string sReplace = section.get("Replace");
+// Regex.Unescape and nothing else: \n, \t, \x20 and the rest are .NET's
+// own, and inventing a further escape here would mean a job file that only
+// EdSharp could read. A leading or trailing space is expressed by quoting
+// the value, Replace=" x", which the settings format already provides.
 sReplace = Regex.Unescape(sReplace == null ? "" : sReplace);
 RegexOptions options = Util.RegexOptionsFromString(section.get("Options"));
 bool bExtract = Util.ToBool(section.get("Extract"));
@@ -2206,7 +2210,7 @@ static readonly string[] c_aCommandSummaries = new string[] {
 "HTML to Plain Text\t, Convert the HTML in this window to plain text, keeping paragraphs and lists",
 "Preview Markdown\tControl+F9, Show this Markdown as a formatted page in a preview window",
 "Preview Markdown in Web Browser\t, Show this Markdown as a formatted page in your web browser, where diagrams are drawn",
-"Check Markdown\tAlt+F9, Report problems in this Markdown: heading jumps, images without alt text, bare web addresses, unclosed code fences, mismatched table rows, and link references defined but never used",
+"Check Markdown\tAlt+F9, Report problems in this Markdown: heading jumps, images without alt text, bare web addresses, unclosed code fences, mismatched table rows, link references defined but never used, and mermaid diagrams missing an accessible name or description",
 "Run Code Blocks\tAlt+Shift+F9, Run this document's sql and jscript code blocks and put each block's results below it",
 "Chat with AI\tF12, Ask an AI model on this computer a question; the answer opens in a new window, and the document travels with the question when your wording refers to it",
 "Chat about Document\tShift+F12, Ask an AI model on this computer about the open text: the selection when text is selected, the whole document when it is not",
@@ -3523,7 +3527,7 @@ if (sText.Trim().Length == 0) { AddMessage("No text!"); return; }
 // One dialog rather than two: both languages are the same question
 // asked twice, and a person choosing a pair should see the pair.
 string[] aLanguages = new string[] {"Arabic", "Chinese", "Dutch", "English", "French", "German", "Hindi", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Spanish", "Swedish", "Turkish", "Ukrainian", "Vietnamese"};
-string[] aChosen = Dialog.PickLanguagePair(aLanguages, App.ReadData("TranslateFrom", "English"), App.ReadData("TranslateTo", "Spanish"));
+string[] aChosen = Dialog.PickLanguagePair(aLanguages, App.ReadData("TranslateFrom", Dialog.c_sDetectLanguage), App.ReadData("TranslateTo", "English"));
 if (aChosen == null) return;
 string sFromLanguage = aChosen[0];
 string sToLanguage = aChosen[1];
@@ -3533,7 +3537,14 @@ App.WriteData("TranslateTo", sToLanguage);
 // The instruction is written so the model returns the translation and
 // nothing else: no preamble, no explanation, no restatement of the
 // original, and the document's own structure kept intact.
-string sPrompt = "Translate the following text from " + sFromLanguage + " into " + sToLanguage + "."
+// With Detect chosen the source is not named at all, so the model reads
+// the text and decides. Naming a source that is wrong is worse than
+// naming none: it tells the model the text is already in the target
+// language, and the reply comes back untranslated.
+bool bDetect = Util.Equiv(sFromLanguage, Dialog.c_sDetectLanguage);
+string sPrompt = (bDetect
+? "Translate the following text into " + sToLanguage + ", whatever language it is written in."
+: "Translate the following text from " + sFromLanguage + " into " + sToLanguage + ".")
 + " Reply with the translation only: no preamble, no notes, no quotation marks around it."
 + " Keep the original line breaks, headings, lists and formatting exactly as they are."
 + " Translate names of people and places only where a standard form exists in " + sToLanguage + ".\n\n" + sText;
@@ -3548,11 +3559,24 @@ AddMessage("Translating with " + sModel);
 string sTranslation = askOllamaWithProgress(sPrompt, sModel);
 if (sTranslation.Length == 0) return;
 
+// A translation that comes back as the text that went in is the sign
+// that the direction was wrong or the model declined the work. Saying
+// so is the whole point: a new window of unchanged text looks exactly
+// like a successful translation until you read it.
+bool bUnchanged = Util.Equiv(Regex.Replace(sTranslation, "\\s+", " ").Trim(),
+Regex.Replace(sText, "\\s+", " ").Trim());
+
 child = new MdiChild(this);
 this.Child.RTB.Text = sTranslation.Replace("\r\n", "\n").Replace("\n", "\r\n");
 this.Child.RTB.Modified = false;
 this.Child.RTB.Index = 0;
-AddMessage(sToLanguage + " ready");
+if (bUnchanged) {
+Dialog.Show("Translate", "The reply is the same as the text that went in, so nothing was translated."
++ "\r\n\r\nThe usual cause is the wrong source language: choose Detect for the language to translate FROM."
++ "\r\n\r\nIt can also mean the model declined a long document. Try a selection.");
+AddMessage("Unchanged");
+}
+else AddMessage(sToLanguage + " ready");
 }
 
 if (menuItem == menuMiscGuardDocument) {
@@ -5889,10 +5913,7 @@ if (a.Length > 4) Ini.WriteQuote(App.IniFile, "Options", "QuotePrefix", a[4]);
 if (a.Length > 5) Ini.WriteQuote(App.IniFile, "Options", "ExtensionDefault", a[5]);
 if (a.Length > 6) Ini.WriteQuote(App.IniFile, "Options", "GoToEnvironment", a[6]);
 }
-foreach (string sKey in aKeys) {
-string sVal = Ini.ReadValue(App.IniFile, sSection, sKey, "\0");
-if (sVal != "\0") Ini.WriteQuote(App.IniFile, "Options", sKey, sVal);
-}
+ApplyCompilerSettings(sResult);
 }
 
 if (menuItem == menuMiscGoToEnvironment) {
@@ -6146,8 +6167,15 @@ if (Path.GetExtension(sFile).Length == 0) sFile += ".txt";
 sFile = Dialog.SaveFile("", sFile);
 if (sFile.Length == 0) return;
 
-if (rtb.SelectionLength == 0) child.SaveTextOrRtfFile(sFile);
-else Util.String2File(sText, sFile);
+// A snippet is a file EdSharp writes for itself, so it takes the Homer
+// standard rather than the document's own encoding: UTF-8 with a byte-order
+// mark and CRLF endings, which is what the snippet reader detects most
+// reliably. String2File would have saved plain ASCII text as ANSI with no
+// mark at all. Rich text still goes through the document writer, since a
+// .rtf file is not plain text.
+if (Path.GetExtension(sFile).ToLower() == ".rtf") child.SaveTextOrRtfFile(sFile);
+else if (rtb.SelectionLength == 0) Util.String2FileHomer(rtb.Text, sFile);
+else Util.String2FileHomer(sText, sFile);
 AddMessage("Done");
 }
 
@@ -7038,6 +7066,57 @@ if (sResult == null || sResult.Length == 0) return "(no result)";
 return sResult;
 } // runJscriptBlock method
 
+public List<string> checkMermaidDiagram(List<string> lsBlock, int iStartLine, bool bDocumentTitle, bool bHeadingSince, int iDiagramNumber) {
+// Judge one fenced mermaid block against the accessibility checklist
+// published by Princeton University Library (Chortaria, Sinha, Heberlein and
+// Sandberg, March 2023). Returns the findings, which may be none.
+//
+// Why these rules and not others: mermaid does not tell assistive technology
+// about the connections between its nodes, so the rendered diagram is never a
+// substitute for a description. The block's own source text remains the
+// accessible view, which is why EdSharp shows it rather than hiding it.
+const int c_iShortDescription = 40;
+List<string> lsFindings = new List<string>();
+string sBlock = String.Join("\n", lsBlock.ToArray());
+Regex rexAccTitle = new Regex(@"^\s*accTitle\s*[:{]", RegexOptions.Multiline);
+Regex rexAccDescr = new Regex(@"^\s*accDescr\s*[:{]", RegexOptions.Multiline);
+Regex rexInitTheme = new Regex(@"%%\{[^}]*\btheme\b['""]?\s*:", RegexOptions.Singleline);
+Regex rexThemeVariables = new Regex(@"\bthemeVariables\b");
+bool bAccTitle = rexAccTitle.IsMatch(sBlock);
+bool bAccDescr = rexAccDescr.IsMatch(sBlock);
+
+if (!bAccTitle && !bDocumentTitle) {
+lsFindings.Add("Line " + iStartLine + ": mermaid diagram has no accessible name. Put a title in the document's front matter, which works for every diagram type and shows to sighted readers too, or add an accTitle line inside the diagram.");
+}
+if (!bAccDescr) {
+lsFindings.Add("Line " + iStartLine + ": mermaid diagram has no description. Add an accDescr line, because a screen reader is not told how the shapes connect.");
+}
+else {
+string sDescription = "";
+foreach (string sLine in lsBlock) {
+string sTrim = sLine.Trim();
+if (sTrim.StartsWith("accDescr")) {
+int iColon = sTrim.IndexOf(':');
+if (iColon >= 0) sDescription = sTrim.Substring(iColon + 1).Trim();
+}
+else if (sDescription.Length > 0 && !sTrim.StartsWith("}") && sTrim.Length > 0 && sDescription.Length < c_iShortDescription) sDescription += " " + sTrim;
+}
+if (sDescription.Length > 0 && sDescription.Length < c_iShortDescription) {
+lsFindings.Add("Line " + iStartLine + ": the diagram's description is only " + Util.Pluralize(sDescription.Length, "character") + " long. The checklist asks for a detailed one, since it replaces the picture rather than labelling it.");
+}
+}
+if (rexInitTheme.IsMatch(sBlock)) {
+lsFindings.Add("Line " + iStartLine + ": the diagram sets a theme in its init block. That overrides the automatic dark-mode handling on GitHub and usually renders unreadably in dark mode.");
+}
+if (rexThemeVariables.IsMatch(sBlock)) {
+lsFindings.Add("Line " + iStartLine + ": the diagram sets themeVariables. Check the contrast with dark mode on, with it off, and with Windows High Contrast; every mermaid theme has known contrast problems.");
+}
+if (iDiagramNumber > 1 && !bHeadingSince) {
+lsFindings.Add("Line " + iStartLine + ": this is diagram " + iDiagramNumber + " with no heading since the one before it. Several diagrams on a page want a heading structure so each can be reached.");
+}
+return lsFindings;
+} // checkMermaidDiagram method
+
 public string checkMarkdown(string sText) {
 List<string> lsFindings = new List<string>();
 string[] aLines = sText.Replace("\r\n", "\n").Split('\n');
@@ -7048,6 +7127,21 @@ Dictionary<string, int> dRefsUsed = new Dictionary<string, int>();
 bool bInFence = false;
 string sFenceMark = "";
 int iFenceLine = 0;
+bool bMermaidFence = false;
+int iMermaidLine = 0;
+int iDiagramCount = 0;
+bool bHeadingSinceDiagram = true;
+List<string> lsMermaidBlock = new List<string>();
+// A title in the document's front matter names every diagram in it,
+// which is the method the checklist prefers: it works for every diagram
+// type and shows to sighted readers as well.
+bool bDocumentTitle = false;
+if (aLines.Length > 0 && aLines[0].Trim() == "---") {
+for (int i = 1; i < aLines.Length; i++) {
+if (aLines[i].Trim() == "---") break;
+if (aLines[i].TrimStart().StartsWith("title:")) { bDocumentTitle = true; break; }
+}
+}
 int iTableHeaderCells = 0;
 int iTableHeaderLine = 0;
 Regex rexHeading = new Regex(@"^(#{1,6})\s+(.*)$");
@@ -7064,11 +7158,29 @@ int iLineNumber = i + 1;
 // Fences first: findings inside a code block would be false alarms.
 if (sTrim.StartsWith("```") || sTrim.StartsWith("~~~")) {
 string sMark = sTrim.Substring(0, 3);
-if (!bInFence) { bInFence = true; sFenceMark = sMark; iFenceLine = iLineNumber; }
-else if (sMark == sFenceMark) bInFence = false;
+if (!bInFence) {
+bInFence = true; sFenceMark = sMark; iFenceLine = iLineNumber;
+// The one fence whose contents are inspected rather than skipped: a
+// mermaid diagram is content, not code, and the checklist applies to it.
+bMermaidFence = sTrim.Substring(3).Trim().ToLowerInvariant().StartsWith("mermaid");
+iMermaidLine = iLineNumber;
+lsMermaidBlock.Clear();
+}
+else if (sMark == sFenceMark) {
+bInFence = false;
+if (bMermaidFence) {
+iDiagramCount++;
+lsFindings.AddRange(checkMermaidDiagram(lsMermaidBlock, iMermaidLine, bDocumentTitle, bHeadingSinceDiagram, iDiagramCount));
+bHeadingSinceDiagram = false;
+bMermaidFence = false;
+}
+}
 continue;
 }
-if (bInFence) continue;
+if (bInFence) {
+if (bMermaidFence) lsMermaidBlock.Add(sLine);
+continue;
+}
 
 // Pipe tables: a row whose cell count differs from its header will
 // not convert as intended.
@@ -7090,6 +7202,7 @@ if (iPriorHeadingLevel > 0 && iLevel > iPriorHeadingLevel + 1) {
 lsFindings.Add("Line " + iLineNumber + ": heading level jumps from " + iPriorHeadingLevel + " to " + iLevel + "; screen reader heading navigation works best when levels step by one.");
 }
 iPriorHeadingLevel = iLevel;
+bHeadingSinceDiagram = true;
 string sHeadingText = matchHeading.Groups[2].Value.Trim().ToLowerInvariant();
 if (dHeadings.ContainsKey(sHeadingText)) {
 lsFindings.Add("Line " + iLineNumber + ": duplicate heading; the same text is a heading on line " + dHeadings[sHeadingText] + ", which makes links to it ambiguous.");
@@ -7130,7 +7243,7 @@ if (!dRefsUsed.ContainsKey(pairDefined.Key)) lsFindings.Add("Line " + pairDefine
 StringBuilder sbReport = new StringBuilder();
 sbReport.Append("Check Markdown: " + Util.Pluralize(lsFindings.Count, "finding") + "\r\n\r\n");
 foreach (string sFinding in lsFindings) sbReport.Append(sFinding + "\r\n");
-if (lsFindings.Count == 0) sbReport.Append("No problems found by the rules: heading level jumps, missing image alt text, bare web addresses, duplicate headings, unclosed code fences, uneven table rows, and undefined or unused reference links.\r\n");
+if (lsFindings.Count == 0) sbReport.Append("No problems found by the rules: heading level jumps, missing image alt text, bare web addresses, duplicate headings, unclosed code fences, uneven table rows, undefined or unused reference links, and, for mermaid diagrams, a missing accessible name or description, a theme set in the init block, themeVariables without a contrast check, and several diagrams with no heading between them.\r\n");
 return sbReport.ToString();
 } // checkMarkdown method
 
@@ -7176,6 +7289,94 @@ else sText = rtb.GetRange(iStart, iEnd);
 sText = sText.TrimEnd();
 return new object[] {iStart, sText};
 } // GetChunk method
+
+public string FillSnippetForm(string sText) {
+// A snippet may describe its dialog rather than merely name its blanks.
+// Where the body opens with a block between [[form]] and [[end]], that
+// block is an .inix form definition -- the IniForm arrangement, one
+// section per control -- and it is put up through LbcInixForm. Each
+// answer then replaces %Name% in the rest of the snippet, where Name is
+// the control's section name.
+//
+// This is what %Label=Value% cannot do. That syntax asks for text and
+// nothing else, so a snippet wanting a yes or no, one of six choices, a
+// number in a range, or several lines has to ask for it as typing and
+// hope. A definition block gives it a check box, a list, a spin control
+// or a memo, all from Lbc, all obeying the same form rules as every
+// other EdSharp dialog.
+//
+// Returns the text with the answers in place, the text unchanged when
+// there is no block, or null when the form was cancelled.
+const string c_sFormOpen = "[[form]]";
+const string c_sFormEnd = "[[end]]";
+int iOpen = sText.IndexOf(c_sFormOpen);
+if (iOpen < 0) return sText;
+int iEnd = sText.IndexOf(c_sFormEnd, iOpen);
+if (iEnd < 0) return sText;
+string sDefinition = sText.Substring(iOpen + c_sFormOpen.Length, iEnd - iOpen - c_sFormOpen.Length);
+string sRest = sText.Substring(iEnd + c_sFormEnd.Length).TrimStart('\r', '\n');
+List<Homer.InixCodec.Section> lsSections = Homer.InixCodec.parseLines(sDefinition.Replace("\r\n", "\n").Split('\n'));
+Homer.LbcInixForm frmSnippet = new Homer.LbcInixForm(lsSections);
+if (frmSnippet.run(App.Frame).Length == 0) return null;
+foreach (KeyValuePair<string, string> pairAnswer in frmSnippet.Results) {
+sRest = sRest.Replace("%" + pairAnswer.Key + "%", pairAnswer.Value);
+}
+return sRest;
+} // FillSnippetForm method
+
+public string FillSnippetVariables(string sText) {
+// Ask for every %Label=Value% variable in a snippet and put the answers
+// back. Returns the filled text, or null when the dialog was cancelled.
+//
+// The pattern used to be \%\w+\=.*?\% . Since \w matches no space, a label
+// of more than one word was invisible to it: "%First participant=User%"
+// never became a prompt and stayed in the finished document as literal
+// text. All three shipped Mermaid snippets were affected, which is how it
+// came to light. A label may now hold anything but a percent sign, an
+// equals sign or a line break.
+//
+// A value containing vertical bars is a LIST OF CHOICES rather than a
+// default, so %Direction=TD|LR|BT|RL% offers those four with TD selected.
+// That is the one addition to the syntax, and it earns its place by
+// turning a field the user must type correctly into one they pick from.
+//
+// The same label used twice is one question, and the answer fills every
+// place it appears. That was the old behaviour too, by way of a list
+// reversed twice to work around a bug in its own removal; here it falls
+// out of looking each label up as the text is rewritten.
+Regex rexVariable = new Regex(@"%([^%=\r\n]+)=([^%\r\n]*)%");
+MatchCollection matches = rexVariable.Matches(sText);
+if (matches.Count == 0) return sText;
+List<string> lsLabels = new List<string>();
+List<string> lsValues = new List<string>();
+List<string> lsTips = new List<string>();
+List<string[]> laChoices = new List<string[]>();
+foreach (Match match in matches) {
+string sLabel = match.Groups[1].Value.Trim();
+string sValue = match.Groups[2].Value;
+if (lsLabels.Contains(sLabel)) continue;
+lsLabels.Add(sLabel);
+if (sValue.IndexOf('|') >= 0) {
+string[] aChoice = sValue.Split('|');
+laChoices.Add(aChoice);
+lsValues.Add(aChoice[0]);
+lsTips.Add("Choose the " + sLabel.ToLower() + ". It replaces this variable everywhere the snippet uses it.");
+}
+else {
+laChoices.Add(null);
+lsValues.Add(sValue);
+lsTips.Add("Type the " + sLabel.ToLower() + ". It replaces this variable everywhere the snippet uses it.");
+}
+}
+string[] aAnswers = Dialog.MultiInput("Variables", lsLabels.ToArray(), lsValues.ToArray(), laChoices.ToArray(), lsTips.ToArray());
+if (aAnswers.Length == 0) return null;
+Dictionary<string, string> dAnswers = new Dictionary<string, string>();
+for (int i = 0; i < lsLabels.Count && i < aAnswers.Length; i++) dAnswers[lsLabels[i]] = aAnswers[i];
+return rexVariable.Replace(sText, delegate(Match match) {
+string sLabel = match.Groups[1].Value.Trim();
+return dAnswers.ContainsKey(sLabel) ? dAnswers[sLabel] : match.Value;
+});
+} // FillSnippetVariables method
 
 public void InvokeSnippet(string sSnippet, string sText, int iStart, int iEnd) {
 string[] aLabels, aValues, aResults;
@@ -7225,17 +7426,19 @@ string[] a = sLine.Split('=');
 sLabel = a[0];
 sValue = "";
 if (a.Length > 1) sValue = a[1];
-listLabels.Add("&" + sLabel);
+listLabels.Add(sLabel);
 listValues.Add(sValue);
 }
 
 aLabels = listLabels.ToArray();
 aValues = listValues.ToArray();
-aResults = Dialog.MultiInput("Attributes", aLabels, aValues);
+// Letters by Lbc's shared rule: an attribute name is a run-time label, and
+// "class" beside "colspan" would otherwise give two fields the same C.
+aResults = Dialog.MultiInput("Attributes", aLabels, aValues, null, null);
 if (aResults.Length == 0) return;
 
 for (int i = 0; i < aResults.Length; i++) {
-sLabel = aLabels[i].Substring(1);
+sLabel = aLabels[i];
 sValue = aResults[i];
 sValue = Util.Literalize(sValue);
 if (sValue.Length == 0) continue;
@@ -7264,43 +7467,13 @@ string[] aNames = (sUserName + " ").Split(' ');
 sText = sText.Replace("%UserFirstName%", aNames[0]);
 sText = sText.Replace("%UserLastName%", aNames[1]);
 
-sMatch = @"\%\w+\=.*?\%";
-string[] aVars = Util.RegExpExtractCase(sText, sMatch);
-if (aVars.Length > 0) {
-List<string> listLabels = new List<string>();
-List<string> listValues = new List<string>();
-List<string> listVars = new List<string>(aVars);
-foreach (string sVar in aVars) {
-string[] aParts = sVar.Split('=');
-sLabel = aParts[0];
-sLabel = "&" + sLabel.Substring(1, sLabel.Length - 1);
-sValue = aParts[1];
-sValue = sValue.Substring(0, sValue.Length - 1);
-if (listLabels.Contains(sLabel)) {
-// Stop reverse bug
-listVars.Reverse();
-listVars.Remove(sVar);
-listVars.Reverse();
-continue;
-}
-
-listLabels.Add(sLabel);
-listValues.Add(sValue);
-}
-aLabels = listLabels.ToArray();
-aValues = listValues.ToArray();
-aResults = Dialog.MultiInput("Variables", aLabels, aValues);
-if (aResults.Length == 0) return;
-
-aVars = listVars.ToArray();
-for (int i = 0; i < aVars.Length; i++) {
-string sVar = aVars[i];
-// Dialog.Show("sVar=" + sVar, "result=" + aResults[i]);
-sText = sText.Replace(sVar, aResults[i]);
-sVar = sVar.Split('=')[0] + "=%";
-sText = sText.Replace(sVar, aResults[i]);
-}
-}
+// A form definition first, when the snippet carries one, then the plain
+// %Label=Value% blanks, so a snippet may use either or both.
+string sFilled = FillSnippetForm(sText);
+if (sFilled == null) return;
+sFilled = FillSnippetVariables(sFilled);
+if (sFilled == null) return;
+sText = sFilled;
 
 sText = ReplaceTokens(sText);
 }
@@ -8748,6 +8921,81 @@ string sDir = Dialog.Pick("Go to Special Folder", aPaths, aNames, true, 0);
 return sDir;
 } // PickSpecialFolder method
 
+public static string[] CompilerSettingKeys() {
+// The settings a compiler section carries, and therefore the settings
+// that must be copied into [Options] when one is chosen. [Options] is
+// what the program actually reads, so a compiler that is named but not
+// copied changes nothing at all.
+return new string[] {"CompileCommand", "JumpPosition", "AbbreviateOutput",
+"NavigatePart", "QuotePrefix", "ExtensionDefault", "IndentUnit", "GoToEnvironment"};
+} // CompilerSettingKeys method
+
+public static void ApplyCompilerSettings(string sName) {
+// Copy a compiler section's settings into [Options], which is where
+// every command looks for them.
+//
+// This was inline in Pick Compiler, and leaving it there was a real
+// fault: the automatic switch by file extension wrote the compiler's
+// NAME and stopped, so the name said Python while the compile command,
+// the part expression, the comment prefix and the indent unit were all
+// still the previous language's. Named in one place now, called by both.
+string sSection = "Compiler " + sName;
+foreach (string sKey in CompilerSettingKeys()) {
+string sValue = Ini.ReadValue(App.IniFile, sSection, sKey, "\0");
+if (sValue != "\0") Ini.WriteQuote(App.IniFile, "Options", sKey, sValue);
+}
+} // ApplyCompilerSettings method
+
+public string CompilerForFile(string sFile) {
+// Which compiler section owns a file, judged by its extension. Returns ""
+// when no section claims it, which leaves the current choice alone.
+//
+// Every [Compiler X] section names an ExtensionDefault, and may now name
+// an Extensions list as well: the other extensions the same language
+// writes. A .py file finds Python, a .pyw file finds it too.
+string sExtension = Path.GetExtension(sFile ?? "").TrimStart('.').ToLower();
+if (sExtension.Length == 0) return "";
+// One lookup in [CompilerExtensions], where the extension is the key and
+// the compiler is the value. A settings section rather than a scan, so
+// a person can claim an extension for a language in their own .inix
+// without touching the program -- "pyw=Python", say, or "vue=HTML".
+string sCompiler = App.ReadValue("CompilerExtensions", sExtension, "").Trim();
+if (sCompiler.Length == 0) return "";
+// A name with no section behind it would leave every setting at whatever
+// the last compiler used, which is worse than not switching at all.
+if (App.ReadValue("Compiler " + sCompiler, "ExtensionDefault", "").Length == 0) return "";
+return sCompiler;
+} // CompilerForFile method
+
+public bool FollowCompilerForFile(string sFile) {
+// Make the current compiler the one that owns this file.
+//
+// Why this exists: the compiler was one setting for the whole program,
+// changed only by Pick Compiler, Control+Shift+F5. Everything that
+// depends on it therefore described whatever file you happened to pick
+// it for -- so with C# chosen, a Python file compiled with csc, Alt+Page
+// Down navigated by C# parts, comments were quoted with two slashes,
+// indentation was four spaces, and Alt+V offered C# snippets. All four
+// were wrong at once, and the only cure was to remember to change the
+// setting by hand at every switch of file.
+//
+// Now the setting follows the document. A file whose extension no
+// section claims changes nothing, so a text file leaves the last choice
+// in place, and Pick Compiler still overrides for the odd file that
+// wants another language's treatment.
+//
+// Set FollowDocument to 0 in [Options] to keep the old behaviour.
+if (!Util.Equiv(App.ReadOption("FollowDocument", "1"), "1")) return false;
+string sWanted = CompilerForFile(sFile);
+if (sWanted.Length == 0) return false;
+string sCurrent = App.ReadData("Compiler", "Default");
+if (Util.Equiv(sCurrent, sWanted)) return false;
+App.WriteData("Compiler", sWanted);
+ApplyCompilerSettings(sWanted);
+AddMessage("Compiler " + sWanted);
+return true;
+} // FollowCompilerForFile method
+
 public void OpenOrActivateWindow(string sFile) {
 int iConvert = 0;
 OpenOrActivateWindow(sFile, iConvert);
@@ -8775,6 +9023,7 @@ foreach (MdiChild child in children) {
 if (Util.Equiv(child.File, sFile)) {
 Util.Say("returning");
 child.Activate();
+FollowCompilerForFile(sFile);
 SetCursorPosition(child.RTB, sLine, sColumn);
 return;
 }
@@ -8804,6 +9053,7 @@ if (iConvert <= 0) {
 this.Child.LoadTextOrRtfFile(sFile, (iConvert == 0 ? true : false));
 //Dialog.Show(sFile);
 ApplyFileOptions(sFile);
+FollowCompilerForFile(sFile);
 
 if (sFile == App.IniFile) return;
 }
@@ -10122,6 +10372,35 @@ if (aReturn != null && aReturn.Length > 0) sReturn = aReturn[0];
 return sReturn;
 } // Input method
 
+public static string[] MultiInput(string sTitle, string[] aLabel, string[] aValue, string[][] aaChoice, string[] aTip) {
+// MultiInput where a field may offer a list of choices rather than free
+// text. Built from Lbc primitives so it inherits what they do: reading
+// order matching tab order, the automatic Help button, F1 describing every
+// field, Control+Enter and Escape.
+//
+// Two Homer form rules are honoured here that the plain overload could not:
+// every field gets a trigger letter that BEGINS A WORD and that no other
+// field holds, by Lbc's shared rule rather than an ampersand pushed in
+// front of whatever the label happens to be; and every field gets a focus
+// tip, since F1 has nothing to describe without one.
+List<string> lsLabels = new List<string>();
+foreach (string sLabel in aLabel) lsLabels.Add(sLabel);
+List<string> lsMarked = Homer.LbcDialog.markTriggerLetters(lsLabels);
+LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
+List<Control> lBoxes = new List<Control>();
+for (int i = 0; i < aLabel.Length; i++) {
+string sVal = (aValue != null && i < aValue.Length && aValue[i] != null) ? aValue[i] : "";
+string sTip = (aTip != null && i < aTip.Length && aTip[i] != null) ? aTip[i] : "";
+string[] aChoice = (aaChoice != null && i < aaChoice.Length) ? aaChoice[i] : null;
+if (aChoice != null && aChoice.Length > 0) lBoxes.Add(dlg.addComboPickBox(lsMarked[i], aChoice, sVal, sTip));
+else lBoxes.Add(dlg.addInputBox(lsMarked[i], sVal, sTip));
+}
+List<string> lReturn = new List<string>();
+if (dlg.runOkCancel()) foreach (Control ctl in lBoxes) lReturn.Add(ctl.Text);
+dlg.Dispose();
+return lReturn.ToArray();
+} // MultiInput method (choices overload)
+
 public static string[] MultiInput(string sTitle, string[] aLabel, string[] aValue) {
 LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
 List<TextBox> lBoxes = new List<TextBox>();
@@ -10306,10 +10585,25 @@ COM.InvokeVerb(sPath, "Properties");
 // Cancel and Help behave as they do everywhere else -- Control+Enter
 // accepts from anywhere, Escape cancels, F1 describes the fields.
 // Returns the two languages, or null when cancelled.
+public const string c_sDetectLanguage = "Detect";
+
 public static string[] PickLanguagePair(string[] aLanguages, string sFrom, string sTo) {
+// The "from" list begins with Detect, and Detect is what a first use
+// offers, because getting the direction backwards is the easiest
+// mistake to make here and the hardest to see afterwards.
+//
+// A beta tester reported translating a Spanish document to English and
+// getting Spanish back. The model was not at fault: the remembered pair
+// said English to Spanish, so it was told to translate English text
+// into Spanish, was handed Spanish, and sensibly returned it much as it
+// found it. Asking the model to work out the source removes the whole
+// class of error, and it is what every translation tool does by default.
+List<string> lsFrom = new List<string>();
+lsFrom.Add(c_sDetectLanguage);
+lsFrom.AddRange(aLanguages);
 List<string> lsLanguages = new List<string>(aLanguages);
 LbcDialog dlg = new LbcDialog("Translate", App.Frame);
-ListBox lstFrom = dlg.addPickBox("Translate &from", lsLanguages, sFrom, "The language the text is written in now");
+ListBox lstFrom = dlg.addPickBox("Translate &from", lsFrom, sFrom, "The language the text is written in now, or Detect to let the model work it out");
 ListBox lstTo = dlg.addPickBox("Translate &to", lsLanguages, sTo, "The language to translate it into");
 if (lstFrom.SelectedIndex < 0) lstFrom.SelectedIndex = 0;
 if (lstTo.SelectedIndex < 0) lstTo.SelectedIndex = 0;
@@ -13229,6 +13523,38 @@ string sBody = textReader.ReadToEnd();
 textReader.Close();
 return sBody;
 } // OldFile2String method
+
+public static Encoding HomerEncoding(string sFile) {
+// The Homer standard for a text file EdSharp itself writes: UTF-8 with a
+// byte-order mark, so the encoding is stated rather than guessed at by the
+// next program to open it.
+//
+// Two exceptions, both of the same kind: a program that reads the first
+// line as data rather than as text.
+//
+// A .cmd or .bat file beginning with a byte-order mark has those three
+// bytes read as part of its first command, which fails in a way the error
+// message does not explain.
+//
+// git does the same with .gitignore and .gitattributes: the mark becomes
+// part of the FIRST PATTERN, so that one line silently stops working while
+// every other line is fine. Tested on 28 August 2026 -- a .gitignore whose
+// first line was "notes/" left the notes folder untracked and unignored,
+// which would have put every note back in the repository.
+//
+// The line endings are CRLF in every case.
+string sExtension = Path.GetExtension(sFile).ToLower();
+string sName = Path.GetFileName(sFile).ToLower();
+if (sExtension == ".cmd" || sExtension == ".bat") return new UTF8Encoding(false);
+if (sName == ".gitignore" || sName == ".gitattributes") return new UTF8Encoding(false);
+return new UTF8Encoding(true);
+} // HomerEncoding method
+
+public static void String2FileHomer(string sBody, string sFile) {
+// Write a text file the Homer way: CRLF line endings, UTF-8, with a
+// byte-order mark unless the file is one the command interpreter runs.
+System.IO.File.WriteAllText(sFile, Util.Convert2WinLineBreak(sBody), HomerEncoding(sFile));
+} // String2FileHomer method
 
 public static void String2FileU(string sBody, string sFile) {
 // bool bAppend = false;

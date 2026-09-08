@@ -1,6 +1,8 @@
-text form caret
+﻿text form caret
 ```mermaid
-flowchart TD
+flowchart %Direction=TD|LR|BT|RL%
+    accTitle: %Diagram name=Release decision%
+    accDescr: %Description=Work begins at Start, reaches a decision on whether it is ready, and either ships or goes back for fixing before trying again.%
     A[%Start step=Start%] --> B{%Decision=Is it ready?%}
     B -->|Yes| C[%Yes outcome=Ship it%]
     B -->|No| D[%No outcome=Fix it%]

@@ -278,9 +278,95 @@ text under a screen reader. When you convert or preview such a document
 as HTML, EdSharp includes the mermaid script, so a real web browser
 draws the diagram for sighted readers. The embedded preview window uses
 the older browser engine inside Windows, which cannot run current
-mermaid; there the block appears as its source text. Shipped snippets
-named Mermaid Flowchart, Mermaid Sequence Diagram, and Mermaid Pie Chart
-insert ready skeletons: press Alt+V, pick one, and answer the prompts.
+mermaid; there the block appears as its source text. Ten shipped
+snippets insert ready skeletons -- flowchart, sequence diagram, pie
+chart, class diagram, state diagram, entity relationship diagram, Gantt
+chart, mindmap, timeline and XY chart. Press Alt+V, pick one, and answer
+the prompts.
+
+### Variables in a Snippet
+
+A snippet asks you for the parts that change. Write a variable as a label
+and a default between percent signs:
+
+    A[%Start step=Start%]
+
+When the snippet is inserted, a dialog asks for the Start step and offers
+Start as the answer. The label may be several words. The same label used
+more than once is asked about once, and your answer fills every place it
+appears.
+
+When the value holds vertical bars, it is a list to choose from rather
+than a default, and the field becomes a list box with the first item
+selected:
+
+    flowchart %Direction=TD|LR|BT|RL%
+
+Every field takes its Alt letter from the start of a word in its label,
+and no two fields in one dialog share a letter. Press F1 in the dialog to
+hear what each field is for.
+
+A few variables need no answer because EdSharp knows them: %Date%, %Time%,
+%UserName%, %UserFirstName% and %UserLastName%. Two carets, ^^, mark where
+the cursor should land after the snippet is inserted.
+
+### A Snippet That Describes Its Own Dialog
+
+Variables ask for text. When a snippet needs a yes or no, one of six
+choices, a number within a range, or several lines, it can describe the
+dialog instead. Open the snippet with a block between `[[form]]` and
+`[[end]]`, written in the same format as the sample forms in the
+Samples\Forms folder: one section per control.
+
+    [[form]]
+    [Heading]
+    control=combo
+    range=
+      Note
+      Warning
+      Caution
+    [Wrap in a box]
+    control=check
+    value=1
+    [[end]]
+    > **%Heading%**
+    >
+    > ^^
+
+Each answer replaces the control's name between percent signs in the rest
+of the snippet, so `%Heading%` above becomes whatever was chosen. The
+dialog is a real Lbc dialog: a trigger letter per field, a focus tip, F1
+to hear them all, Control+Enter and Escape.
+
+Both kinds may appear in one snippet. The form is asked first, then the
+plain variables.
+
+That the source text is the accessible view is not a convenience; it is
+the reason for the care below. Mermaid does not tell a screen reader how
+its nodes connect to one another, so a finished diagram may be announced
+as a heap of labels in no useful order. Five things make a diagram
+usable, and Check Markdown, Alt+F9, reports the first four.
+
+- **Give it a name.** A title in the document's front matter names every
+  diagram in the file, works for every diagram type, and shows to sighted
+  readers as well. An accTitle line inside the diagram also names it, but
+  does not display.
+- **Describe it in full.** An accDescr line should say what the diagram
+  shows, written as though the picture were missing. "A flowchart" is not
+  a description.
+- **Do not set a theme.** A theme in an init block overrides the automatic
+  dark-mode handling that GitHub and other sites apply, and the result is
+  usually unreadable in dark mode.
+- **Check any colours three ways.** If you set themeVariables, look at the
+  result with dark mode on, with it off, and with Windows High Contrast.
+  Every mermaid theme has known contrast problems.
+- **Give several diagrams a heading each**, so a reader can reach the one
+  they want.
+
+The snippets already follow all of this: each prompts for the name and the
+description before anything else, so the accessible version is the one
+that costs nothing extra. The Samples\Mermaid folder holds a short example
+of each diagram type and a page explaining the five rules.
 
 ## Word Processing
 EdSharp supports several aspects of Rich Text Format (.rtf) as well as plain text (with optional structure).  In certain situations, EdSharp behaves differently if a file has a .rtf extension rather than any other one.  Specifically, the Open Other Format command, Control+Shift+O, imports a .rtf file with its formatting rather than converting it to plain text.  The Save, Save As, and Save Copy commands, Control+S, Control+Shift+S, and Alt+S, save a .rtf file with formatting preserved.  The Print command, Control+P, prints a .rtf file using the associated program for this operation in the Windows registry (typically Microsoft Word or WordPad).  Use the Copy Rich Text command, Control+Shift+C, to copy selected text with formatting to the clipboard.
@@ -302,9 +388,73 @@ or [Axiom](<http://Axiom.SourceForge.net>).
 ### LaTex
 EdSharp includes support for the LaTeX language (pronounced La Tech).  This is a common language used for typesetting, especially for scientific publications.  About 30 sample LaTeX snippets, ending in a .tex extension, are distributed with EdSharp.  You can convert from LaTeX to RTF and vice versa.  To fully work with LaTeX, install the open source [MiKTeX](<http://www.miktex.org>) package for Windows.
 
-With that installation, EdSharp's LaTeX compiler option lets you check and correct syntax.  You can then export to PDF or XML -- in this case, XHTML containing embedded MathML (math markup language for the web).  If the resulting .xml file is opened in Internet Explorer with a screen reader, sophisticated mathematical statements will be intelligible when the free MathPlayer add-in has been installed from the [MathPlayer download page](<http://www.dessci.com/en/products/mathplayer/download.htm>).
+With that installation, EdSharp's LaTeX compiler option lets you check and correct syntax.  You can then export to PDF or to XHTML containing embedded MathML, the standard for mathematics on the web.
+
+### Math That Reads Aloud
+
+Mathematics written the LaTeX way, between dollar signs, becomes real math in a web page rather than a picture of math or a row of symbols.  Convert a Markdown document to HTML with the Convert command, and Pandoc turns the mathematics into MathML.  A screen reader then reads the expression and lets you walk through it a piece at a time, instead of announcing it as one flat string.
+
+Nothing needs to be installed for this.  Every major browser has drawn MathML itself since 2023.  NVDA reads it from version 2025.1, and from 2026.1 it carries MathCAT, the speech and braille engine for math, with no add-on to fetch.  JAWS reads it from its 2026 releases.
+
+Older advice, including older editions of this guide, told you to install MathPlayer and open the page in Internet Explorer.  Both are gone -- MathPlayer has not been developed since 2017 and Internet Explorer is retired -- and neither is needed now.
+
+Until 30 August 2026 EdSharp's conversion asked Pandoc for MathJax instead, which fetched a large script from the internet each time a page opened, so the mathematics did not read at all without a connection.  The conversion now asks for MathML, which is part of the page itself.
 
 ## Programming
+
+### The Settings Follow the File
+
+Open a Python file and EdSharp becomes a Python editor: F5 runs it through
+Python, Alt+PageDown steps definition to definition, a quoted line begins
+with a number sign, indentation is four spaces, and Alt+V offers the Python
+snippets. Open an XML file in the next window and all five change again.
+
+Until August 2026 they did not. The compiler was one setting for the whole
+program, changed only by the Pick Compiler command, Control+Shift+F5. With
+C# chosen, a Python file compiled with the C# compiler, part navigation
+looked for C# declarations, and comments were quoted with two slashes. The
+only cure was to remember to change it at every switch of file.
+
+Nineteen languages are set up: C#, Python, JavaScript, PowerShell, JAWS
+Script, JScript .NET, Visual Basic .NET, VBScript, XML, JSON, HTML,
+Markdown, Inix, Batch, SQL, LaTeX, Perl, PHP and Ruby. Sixty file
+extensions are shared out between them.
+
+A file whose extension no language claims changes nothing, so a plain text
+document leaves the last choice in place. Pick Compiler still overrides for
+the file that wants another language's treatment. To turn the whole
+arrangement off, set FollowDocument to 0 in the Options section of your
+settings.
+
+To claim an extension yourself, add a line to the CompilerExtensions
+section of your own EdSharp.inix, such as `pyw=Python` or `vue=HTML`.
+
+### Checking Without Running
+
+F5 reports what is wrong before anything runs, where the language allows
+it. Seven languages use a compiler that is already on a Windows machine or
+comes with the program: C#, Visual Basic .NET and JScript .NET through the
+.NET Framework, PowerShell through itself, and XML and JSON through the
+readers Windows already carries. Six more use the checker their language
+ships with, when it is installed: Python, JavaScript through node, Perl,
+PHP and Ruby through their own syntax-only switches, and LaTeX through
+MiKTeX. Markdown has its own command instead, Check Markdown, Alt+F9.
+
+Three have no check, and it is worth knowing why rather than wondering.
+The Windows command interpreter offers none. VBScript has none that does
+not also run the program, and running a script to find out whether it
+parses is not a check. HTML has none worth having, because a browser
+accepts almost anything.
+
+### Moving by Blocks
+
+Alt+PageDown goes to the next meaningful block and Alt+PageUp to the
+previous one, and what counts as a block depends on the language. In C# it
+is a declaration, in Python a def or class, in HTML a heading or a landmark,
+in Markdown a heading, in a settings file a section, in a batch file a
+label, in SQL a statement, in LaTeX a sectioning command. All nineteen
+languages have one.
+
 Press Tab to indent the current line of text, or Shift+Tab to outdent it.  If multiple lines of text are selected, these commands are applied to all of them.  The Trim Blanks command, Control+Shift+Enter, removes all indentation and trailing spaces at once, as well as removing more than two consecutive blank lines (when multiple lines are selected).
 
 Press Alt+I to hear the number of indentation levels of the current line.  Press it twice to hear the whole chain of enclosing blocks, outermost first: in Python, the class, the function, and each nested statement the cursor sits inside; in a brace language, each enclosing opener.  Alt+Shift+I toggles a mode in which you are alerted to changes in indentation level, such as when using the up and down arrow keys.  EdSharp will say how many levels in or out the indentation has changed, speaking directly to whichever screen reader is running: JAWS, NVDA, or Narrator.  No screen reader script is needed for these announcements.  This mode also reverses the roles of the Enter and Shift+Enter keys.  A hyphen anywhere in the ExtraSpeech setting silences the announcements for anyone who prefers quiet.

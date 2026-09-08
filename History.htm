@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
@@ -171,6 +171,199 @@ entry says what changed and why, so a future reader -- or a future
 maintainer -- can judge the decision, not just observe it.</p>
 <h2 id="28-august-2026----version-5040">28 August 2026 -- version
 5.0.40</h2>
+<p><strong>Three reports from a beta tester, addressed.</strong></p>
+<p><em>A document translated to English came back in Spanish.</em> The
+model was not at fault. The language pair is remembered between uses and
+started at English to Spanish, so the model was told to translate
+English into Spanish, handed Spanish, and sensibly returned it much as
+it found it. The source language now offers Detect, which is what a
+first use gets, and with Detect chosen the prompt names no source at all
+-- naming the wrong one is worse than naming none. A translation that
+comes back the same as the text that went in now says so rather than
+opening a window that looks translated until you read it.</p>
+<p><em>A replacement of a space and an x produced only the x.</em> A
+settings value on one line is trimmed, so the space was gone before the
+job ran. Quoting the value keeps it -- Replace=" x" -- and that already
+worked, but nothing said so. Two things made it hard to find: \s, which
+is what a person reaches for, means nothing in a replacement and is
+silently handed back as the letter s by the .NET unescaper; and an older
+build did not yet strip the quotation marks, so quoting appeared not to
+work either. No new escape was invented for this -- a job file should
+stay readable as ordinary .NET regular expressions -- and the quoting is
+now documented instead.</p>
+<p><em>Numbering passages that share an ending</em> turned out to need
+no new feature. $# in a Replace value is the number of the match,
+counting from one, and has been there all along without being written
+down anywhere.</p>
+<p>A new Samples\Jobs folder holds three worked jobs -- numbering
+passages, turning a braille-ready file into readable text, and gathering
+headings to the clipboard -- with a page explaining the format and the
+three things easiest to miss.</p>
+<p><strong>The language settings follow the file you are in.</strong>
+The compiler was one setting for the whole program, changed only by Pick
+Compiler. Everything resting on it therefore described whatever file you
+last picked it for: with C# chosen, a Python file compiled with csc,
+Alt+PageDown navigated by C# declarations, comments were quoted with two
+slashes, indentation was four spaces and Alt+V offered C# snippets. Five
+things wrong at once, and the only cure was to remember.</p>
+<p>A new CompilerExtensions section maps sixty file extensions to
+nineteen languages, and EdSharp consults it when a document is opened or
+activated. An extension nobody claims changes nothing, so a plain text
+file leaves the last choice alone; Pick Compiler still overrides; and
+FollowDocument set to 0 turns it off.</p>
+<p><strong>Twelve languages were added to the table</strong>, chosen so
+that each gains something real rather than an entry. Visual Basic .NET
+compiles with the vbc.exe that sits beside csc.exe on every Windows
+machine. XML and JSON are checked by the readers Windows already
+carries, through two small batch files in Convert so the quoting is
+settled in one place rather than fought with in a settings value. Perl,
+PHP and Ruby use their own syntax-only switches. LaTeX returns to the
+table, having been retired six days earlier as no longer relevant: it
+earns its place back because LaTeX is how accessible mathematics is
+written, and Pandoc now turns that into MathML. VBScript, HTML,
+Markdown, Inix, Batch and SQL have no checker worth having and say so,
+but all six gained block navigation.</p>
+<p>Fifteen of the nineteen can now report what is wrong before anything
+runs, and all nineteen move by blocks that mean something in that
+language -- a declaration in C#, a heading or landmark in HTML, a
+section in a settings file, a label in a batch file, a sectioning
+command in LaTeX.</p>
+<p>A new audit check holds the map to its sections, so an extension can
+never point at a language that does not exist or be claimed by two.</p>
+<p><strong>Mathematics now converts to MathML rather than
+MathJax.</strong> The Markdown to HTML conversions asked Pandoc for
+MathJax, which fetched a large script from the internet every time a
+page opened, so the mathematics did not read at all without a
+connection. They now ask for MathML, which is part of the page.</p>
+<p>The reason to change is that the ground moved. Every major browser
+has drawn MathML itself since MathML Core reached Chromium in 2023. NVDA
+reads it from 2025.1, and from 2026.1 it carries MathCAT, the math
+speech and braille engine, built in with no add-on to fetch. JAWS reads
+it from its 2026 releases. Meanwhile MathJax version 4 turned off the
+hidden MathML that screen readers had been relying on, preferring speech
+of its own. Native MathML is smaller, works offline, and is read by the
+screen reader itself.</p>
+<p>The guide's mathematics section was rewritten with it. It had been
+telling readers to install MathPlayer and open the page in Internet
+Explorer, advice that was sound around 2010 and has been wrong for
+years: MathPlayer has not been developed since 2017 and Internet
+Explorer is retired.</p>
+<p><strong>Lbc can build a dialog from a file, which is IniForm brought
+forward.</strong> IniForm, written in PowerBASIC between 2005 and 2015,
+turned a settings file into a real Windows dialog and wrote the answers
+to a second file, so a program in any language could put up an
+accessible form. The new LbcInixForm class does the same from .inix, and
+being an ordinary Lbc dialog it is 64-bit like the program hosting it,
+where the original built Windows dialog templates by hand and could only
+ever be 32-bit.</p>
+<p>The definition is .inix, so a list of items spans lines instead of
+being crammed onto one separated by vertical bars, and the companion
+.txt file that existed only to get round that limit is gone: an .inix
+value holds as many lines as it needs. The bars still work, so every old
+definition still runs. Four control types are added to the original nine
+-- combo, spin, heading and separator -- and password, which was an
+attribute, is a type as well.</p>
+<p><strong>The names come from IniForm, spelled in Camel Type.</strong>
+The three passes keep their own names -- dialogGroupControls,
+dialogSizeControls, dialogPositionControls -- in their own order, the
+DialogBand record keeps its fields, and the COM server's runForm,
+showResults and getResult are on LbcInixForm under those names, so a
+caller written against IniForm needs nothing new learnt. Only the
+spelling changes: lower camel case for methods and properties, a
+Hungarian prefix on every variable, so i_borderPad becomes iBorderPad
+and a_dlgBand becomes ldBands.</p>
+<p><strong>A combo box now means what it has always meant.</strong> The
+<code>combo</code> type is a box you may type in, with a list beside it
+of the values already known, sorted alphabetically with upper and lower
+case treated alike; the starting value need not be one of them. The
+drop-down that allows only its listed values is <code>droplist</code>.
+Lbc gained addComboEditBox for the first, beside the addComboPickBox it
+already had for the second and addComboHistoryBox for a list of what was
+typed before.</p>
+<p><strong>Both layouts are kept, named in parallel.</strong>
+LbcInixForm's Layout property chooses between them, and the methods pair
+off: buildStack and buildBand, runStack and runBand. Stack is Lbc's own,
+one control to a row, which is what guarantees that reading order, tab
+order and visual order are one order, and it stays the default. Band is
+IniForm's arithmetic, transcribed whole into LbcBandLayout and checked
+against the layout IniForm itself recorded for the Customer Information
+sample: all eighteen positions and sizes, and the form size of 421 by
+286, come out identical. Two details had to be right for that -- the
+even-spacing division rounds half to even, as PowerBASIC did when
+assigning to a Long, and dialog units become pixels through base units
+measured from the form's own font rather than the 8 point figures
+IniForm could assume. One slip is not carried forward: a band's shared
+button width was written to the band but read from an array indexed by
+control, so a band took its last control's width rather than its widest.
+The documented intent was plain, and the intent is what is
+implemented.</p>
+<p>A multi-line .inix value is read verbatim, from the start of its
+first line to the end of its last, with nothing trimmed at either end at
+read or at write. What to do with it afterwards belongs to the program
+reading it: a range trims each item, because surrounding space there
+could only be an accident of layout, while a memo trims nothing, because
+every space in it is content. So a memo whose text should not be
+indented is written flush left, or between fences, which also lets it
+hold lines that would otherwise look like keys.</p>
+<p><strong>A snippet can now describe its own dialog.</strong> A block
+between [[form]] and [[end]] is a form definition in that same format,
+and each answer replaces the control's name between percent signs in the
+rest of the snippet. The %Label=Value% syntax asks for text and nothing
+else; this gives a snippet check boxes, lists, memos and spin controls,
+all obeying the same form rules as every other EdSharp dialog. Sample
+definitions are in Samples\Forms.</p>
+<p><strong>The audit now checks every C# source for balanced
+braces.</strong> It checked EdSharp.cs and Inix.cs alone, which was
+enough until Lbc grew a class of its own. Lbc.cs, Say.cs, KeyMap.cs and
+Web.cs are checked too.</p>
+<p><strong>Snippet variables with more than one word in the label now
+work.</strong> They never had. The pattern that found them required the
+label to be a single run of word characters, and a space is not one, so
+"%First participant=User%" was invisible: no question was asked and the
+raw text was left in the finished document. Of the eleven snippets that
+use variables, the three Mermaid ones were affected, every variable in
+them but one. A label may now hold anything except a percent sign, an
+equals sign or a line break.</p>
+<p><strong>A value with vertical bars in it is now a list to choose
+from.</strong> Writing <code>flowchart %Direction=TD|LR|BT|RL%</code>
+gives a list box with TD selected instead of a box to type into. This is
+the only addition to the syntax. Mustache and Jinja braces were
+considered and set aside: they collide with the shell, PowerShell and
+LaTeX snippets EdSharp already ships, and a template engine would be a
+large dependency for a feature whose whole job is to ask a few
+questions.</p>
+<p><strong>Snippet dialogs follow the Homer form rules.</strong> Every
+field now takes its Alt letter from the start of a word, and no two
+fields in one dialog share a letter; previously an ampersand was pushed
+in front of whatever the label happened to be, so two fields starting
+with the same letter both answered the same key. The rule moved into
+Lbc, where the button row already kept it, so buttons and fields cannot
+come to different conclusions. Every field also carries a focus tip,
+which is what F1 reads out.</p>
+<p><strong>Snippets are saved to the Homer standard.</strong> Save
+Snippet wrote plain ASCII text as ANSI with no byte-order mark; it now
+writes UTF-8 with one and CRLF endings, which is what the reader detects
+most reliably. Reading was already correct, through the Ude detector.
+Two kinds of file take no mark: those the command interpreter runs, and
+.gitignore and .gitattributes, where git reads the mark as part of the
+first pattern so that line silently stops working.</p>
+<p><strong>Mermaid diagrams are checked for accessibility.</strong>
+Check Markdown, Alt+F9, now looks inside a fenced mermaid block rather
+than skipping it, and applies the checklist published by Princeton
+University Library: a diagram wants an accessible name and a detailed
+description, should not set a theme in its init block, should have its
+colours checked three ways if it sets any, and should have a heading
+before it when a page holds several. The reason these matter is that
+Mermaid does not tell assistive technology how its nodes connect, so the
+description is not a caption for the picture -- for some readers it is
+the picture.</p>
+<p>The ten shipped snippets prompt for the name and the description
+first, so the accessible version is the one that costs nothing extra,
+and seven new ones cover class, state, entity relationship, Gantt,
+mindmap, timeline and XY chart diagrams. A new Samples\Mermaid folder
+holds one short example of each alongside a page explaining the five
+rules. Every snippet and every example was checked against the new rules
+and reports nothing.</p>
 <p><strong>EdSharp is now under the MIT License.</strong> It was
 released under the GNU Lesser General Public License from 2007 through
 version 5.0. The MIT terms ask less of anyone who wants to build on the

@@ -1,4 +1,4 @@
-# summarizeSetup.ps1 -- the single Results box, shown after everything.
+﻿# summarizeSetup.ps1 -- the single Results box, shown after everything.
 #
 # WHY POWERSHELL RATHER THAN A BATCH FILE
 #

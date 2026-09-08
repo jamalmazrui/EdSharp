@@ -1,4 +1,4 @@
-r"""dropLatexJawsKeys.py -- remove the obsolete Process LaTeX feature from
+﻿r"""dropLatexJawsKeys.py -- remove the obsolete Process LaTeX feature from
 the installed JAWS scripts for EdSharp, freeing F12 for Chat with AI.
 
 Run it from C:\EdSharp with no arguments, or use dropLatexJawsKeys.cmd:

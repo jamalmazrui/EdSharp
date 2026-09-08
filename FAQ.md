@@ -1,4 +1,4 @@
-# EdSharp Questions and Answers
+﻿# EdSharp Questions and Answers
 
 ## Getting Started
 
@@ -75,6 +75,18 @@ own dictionary at the same time.
 Because a thesaurus without them is guesswork. The words are grouped by
 meaning, so synonyms for light as in weight never mix with words about
 illumination.
+
+### Does Check Markdown tell me which words to use?
+
+No. It reports things that are mechanically wrong or that get in a reader's
+way: a heading level that skips a step, an image with no alt text, a code
+fence left open, a table row with the wrong number of cells, a bare web
+address, a diagram with no description. It does not keep a list of words to
+avoid, and it will not tell you that a word you chose is the wrong one.
+
+That is a deliberate decision rather than something not got round to yet.
+Checking whether a document is put together correctly is one job. Deciding
+which words a writer may use is a different one, and EdSharp does not do it.
 
 ## Code
 

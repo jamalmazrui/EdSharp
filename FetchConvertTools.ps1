@@ -1,4 +1,4 @@
-# FetchConvertTools.ps1
+﻿# FetchConvertTools.ps1
 # Best-effort downloader for the THIRD-PARTY utilities under .\Convert, driven
 # by the Tools.inix manifest. For each tool it resolves the LATEST version and
 # (re)installs it only when the installed version differs or the tool is

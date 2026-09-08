@@ -1,4 +1,4 @@
-# EdSharp License
+﻿# EdSharp License
 
 EdSharp is free software under the MIT License. You may use it, copy it,
 change it, and pass it on, including in something you sell. The only

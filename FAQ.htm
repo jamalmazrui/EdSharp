@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc 3.10" />
+  <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>FAQ</title>
   <style>
-    /* Default styles provided by pandoc.
-    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-    */
     html {
       color: #1a1a1a;
       background-color: #fdfdfd;
@@ -63,10 +60,6 @@
     img {
       max-width: 100%;
     }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
     h1, h2, h3, h4, h5, h6 {
       margin-top: 1.4em;
     }
@@ -91,7 +84,6 @@
       color: #606060;
     }
     code {
-      white-space: pre-wrap;
       font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
@@ -111,8 +103,8 @@
      overflow: visible;
     }
     hr {
+      background-color: #1a1a1a;
       border: none;
-      border-top: 1px solid #1a1a1a;
       height: 1px;
       margin: 1em 0;
     }
@@ -155,13 +147,10 @@
     #TOC a:not(:hover) {
       text-decoration: none;
     }
+    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: 1.5em;}
-    div.column{flex: auto;}
-    @media screen {
-    div.columns{gap: min(4vw, 1.5em);}
-    div.column{overflow-x: auto;}
-    }
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     /* The extra [class] is a hack that increases specificity enough to
        override a similar rule in reveal.js */
@@ -242,6 +231,18 @@ give definitions?</h3>
 <p>Because a thesaurus without them is guesswork. The words are grouped
 by meaning, so synonyms for light as in weight never mix with words
 about illumination.</p>
+<h3 id="does-check-markdown-tell-me-which-words-to-use">Does Check
+Markdown tell me which words to use?</h3>
+<p>No. It reports things that are mechanically wrong or that get in a
+reader's way: a heading level that skips a step, an image with no alt
+text, a code fence left open, a table row with the wrong number of
+cells, a bare web address, a diagram with no description. It does not
+keep a list of words to avoid, and it will not tell you that a word you
+chose is the wrong one.</p>
+<p>That is a deliberate decision rather than something not got round to
+yet. Checking whether a document is put together correctly is one job.
+Deciding which words a writer may use is a different one, and EdSharp
+does not do it.</p>
 <h2 id="code">Code</h2>
 <h3 id="how-do-i-run-the-file-i-am-editing">How do I run the file I am
 editing?</h3>

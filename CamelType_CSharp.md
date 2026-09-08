@@ -1,4 +1,4 @@
-# Camel Type: C# Coding Guidelines
+﻿# Camel Type: C# Coding Guidelines
 
 Camel Type is a coding style designed for systematic readability, optimized for
 efficient navigation and review, especially by screen-reader users. It carries

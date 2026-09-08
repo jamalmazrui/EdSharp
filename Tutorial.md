@@ -1,4 +1,4 @@
-# Using EdSharp
+﻿# Using EdSharp
 
 A hands-on tutorial for getting started with the EdSharp text editor.
 

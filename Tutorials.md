@@ -1,4 +1,4 @@
-# EdSharp Tutorials
+﻿# EdSharp Tutorials
 
 Short, practical starts for the kinds of work people do in EdSharp. Each
 one names the settings worth changing, the commands worth learning, and

@@ -1,6 +1,8 @@
-text form caret
+﻿text form caret
 ```mermaid
 pie title %Chart title=Share by category%
+    accTitle: %Diagram name=Share by category%
+    accDescr: %Description=First takes 45 percent, Second 30 percent, and Third the remaining 25 percent.%
     "%First label=First%" : %First value=45%
     "%Second label=Second%" : %Second value=30%
     "%Third label=Third%" : %Third value=25%

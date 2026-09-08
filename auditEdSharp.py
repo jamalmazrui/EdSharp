@@ -163,6 +163,42 @@ def checkCompilerSectionsComplete(sInix):
            "; ".join(lProblems) if lProblems else plural(len(lSections), "compiler") + " checked")
 
 
+def checkCompilerExtensionMap(sInix):
+    """Every extension in [CompilerExtensions] should name a real section.
+
+    The map is what makes the compiler follow the document: open a .py file
+    and the Python section becomes the current one. An extension pointing at
+    a name with no section behind it would leave every setting at whatever
+    the last file used -- the compile command, the part navigation, the
+    comment prefix, the indent unit and the snippet folder all describing
+    some other language, silently.
+
+    Also reports an extension claimed twice, which would make the owner
+    depend on the order of the file rather than on a decision.
+    """
+    oMap = re.search(r"^\[CompilerExtensions\]\n(.*?)(?=^\[|\Z)", sInix, re.M | re.S)
+    if oMap is None:
+        say("NOTE  no [CompilerExtensions] section, so the compiler cannot follow the document.")
+        return
+    lSections = re.findall(r"^\[Compiler ([^\]]+)\]", sInix, re.M)
+    setSections = set(s.strip() for s in lSections)
+    lProblems = []
+    dSeen = {}
+    iCount = 0
+    for oLine in re.finditer(r'^([A-Za-z0-9_]+)="([^"]*)"', oMap.group(1), re.M):
+        sExtension, sCompiler = oLine.group(1).lower(), oLine.group(2).strip()
+        iCount += 1
+        if sCompiler not in setSections:
+            lProblems.append(sExtension + " names " + sCompiler + ", which has no section")
+        if sExtension in dSeen:
+            lProblems.append(sExtension + " is claimed twice")
+        dSeen[sExtension] = sCompiler
+    report("Extensions map to compiler sections that exist", not lProblems,
+           "; ".join(lProblems) if lProblems
+           else plural(iCount, "extension") + " mapped to "
+                + plural(len(set(dSeen.values())), "language"))
+
+
 def checkInstallerSourcesExist():
     """Every file the installer copies should be here to copy.
 
@@ -783,6 +819,14 @@ def main():
             checkCommandsDescribed(sCode, sHotkeys)
     if sInix2 is not None:
         checkBracesBalance(sInix2, "Inix.cs")
+    # Every other C# source the build compiles. Lbc.cs, Say.cs and KeyMap.cs
+    # were never checked, which mattered the moment Lbc grew a class of its
+    # own: a source that will not parse is exactly what this check exists to
+    # catch before the compiler is reached.
+    for sSourceName in ("Lbc.cs", "Say.cs", "KeyMap.cs", "Web.cs"):
+        sSource = readFile(sSourceName)
+        if sSource is not None:
+            checkBracesBalance(sSource, sSourceName)
     for sScriptName in ("BuildEdSharp.ps1", "summarizeSetup.ps1", "installJawsScripts.ps1"):
         sScript = readFile(sScriptName)
         if sScript is not None:
@@ -790,6 +834,7 @@ def main():
     if sInix is not None:
         checkRegexesCompile(sInix)
         checkCompilerSectionsComplete(sInix)
+        checkCompilerExtensionMap(sInix)
         checkConversionScriptsExist(sInix)
     else:
         report("EdSharp.inix is present", False, "not found")

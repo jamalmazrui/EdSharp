@@ -1,4 +1,4 @@
-# Camel Type: JAWS Script Coding Guidelines
+﻿# Camel Type: JAWS Script Coding Guidelines
 
 Camel Type is a coding style optimized for screen reader productivity and
 systematic readability. This document adapts the Camel Type rules to the JAWS

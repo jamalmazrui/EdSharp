@@ -1,4 +1,4 @@
-# EdSharp Handover
+﻿# EdSharp Handover
 
 Written 26 August 2026, at the end of the chat that took EdSharp 5.0 out of
 beta. It exists so the next conversation starts where this one ended: it says
@@ -49,6 +49,58 @@ anchored on `[Compiler C#]` matches the example first and damages the wrong
 place. Anchor with a line-start match.
 
 ## Decisions That Should Not Be Relitigated
+
+**A Projects feature was considered and declined, 31 August 2026.** The
+proposal was deliberately small: a project is a folder holding a Project.inix,
+found by walking up from the file you opened; its [Options] section becomes a
+fourth, innermost settings layer; a [Project] section names build, run and
+test command lines that reuse the existing compile machinery; and a pick list
+navigates the folder minus an Ignore list. Nothing else -- no file list, no
+tree view, no session restore, no dependency analysis.
+
+Jamal read a worked Python example and was not convinced the case was strong
+enough. Nothing was built. Do not revive it without a clearer benefit than
+that example showed: per-project settings such as a virtual environment's
+interpreter, one keystroke to build and test, and a shorter file picker. Those
+are real but modest, and the risk is drifting from an editor toward an IDE.
+
+The design work was not wasted, because it turned up the [Options] bug
+recorded below.
+
+**Homer Tools check writing, not word choice.** A checker may report what is
+mechanically wrong or measurably hard to read: a heading level that jumps, an
+image with no alt text, a code fence left open, a sentence long enough to
+lose the reader, a reading level above the one the document is aiming at,
+spelling, grammar, and plain-language alternatives to jargon. It does not
+report that a word is the wrong word to have chosen. No list of terms to
+avoid, no substitution of one acceptable word for another, no flagging of
+language as insensitive or exclusionary.
+
+The line is between form and opinion. "This sentence is 48 words" is a
+measurement. "Do not use that word" is a judgement about the writer, and a
+tool that makes it is doing something its author did not ask for. Jamal has
+asked plainly that Homer Tools not do it.
+
+This matters practically when adding a checker. Vale, the prose linter, is
+worth having for its readability metrics and plain-language packages, and
+its styles are opt-in one by one in .vale.ini -- so take the readability and
+plain-language ones and leave the accessibility, inclusive-language and
+alex-style packages out. The Microsoft and Google style packages carry
+term-policing rules mixed in with useful ones; if either is ever used, the
+offending rules have to be disabled by name rather than the package taken
+whole.
+
+**A compiler's settings live in [Options], not in its section.** Choosing a
+compiler copies eight keys -- CompileCommand, JumpPosition, AbbreviateOutput,
+NavigatePart, QuotePrefix, ExtensionDefault, IndentUnit, GoToEnvironment --
+from [Compiler <name>] into [Options], and [Options] is what every command
+reads. A compiler that is named but not copied changes nothing.
+
+This bit once: the automatic switch by file extension wrote the name and
+stopped, so opening a Python file announced Python while the compile command
+and the part expression were still the previous language's. Announcing a
+change that did not happen is worse than not switching. The copy is now
+ApplyCompilerSettings, called by both the picker and the automatic switch.
 
 **Spell check runs on Hunspell, not the Windows API.** The Windows Spell
 Checking API works, but on the developer's machine the object it returns

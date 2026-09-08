@@ -1,4 +1,4 @@
-; Tools.inix -- third-party Convert utilities for the EdSharp build script.
+﻿; Tools.inix -- third-party Convert utilities for the EdSharp build script.
 ;
 ; Read by FetchConvertTools.ps1 to ensure the LATEST version of each tool is
 ; present under .\Convert\<dir>. This is BUILD-TIME data: it records where each

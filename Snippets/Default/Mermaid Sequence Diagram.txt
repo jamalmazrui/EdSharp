@@ -1,6 +1,8 @@
-text form caret
+﻿text form caret
 ```mermaid
 sequenceDiagram
+    accTitle: %Diagram name=Request and response%
+    accDescr: %Description=The user sends a request to the program, and the program sends a response back.%
     participant A as %First participant=User%
     participant B as %Second participant=Program%
     A->>B: %First message=Request%

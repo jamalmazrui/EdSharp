@@ -1,4 +1,4 @@
----
+﻿---
 title: What's New in EdSharp
 subtitle: A text and code editor rebuilt for the way screen reader users actually work
 author: Jamal Mazrui

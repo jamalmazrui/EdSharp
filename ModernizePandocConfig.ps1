@@ -1,4 +1,4 @@
-param([string]$Root = (Split-Path -Parent $MyInvocation.MyCommand.Path))
+﻿param([string]$Root = (Split-Path -Parent $MyInvocation.MyCommand.Path))
 
 # ModernizePandocConfig.ps1
 # Brings the Pandoc command lines in EdSharp.ini (and EdSharp.inix, if present)

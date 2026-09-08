@@ -1,4 +1,4 @@
-# EdSharp Development
+﻿# EdSharp Development
 
 How EdSharp is built, how it is put together, and the conventions it follows.
 For using EdSharp, see the user guide; for learning it by role, the tutorials.

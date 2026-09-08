@@ -721,6 +721,63 @@ public class LbcDialog : IDisposable
 
     // addLabel: standalone explanatory text. Not focusable, so
     // tip is not applicable.
+    // ===== Trigger letters, shared =========================================
+    // The Homer rule for a control's Alt letter, in one place so buttons and
+    // fields cannot come to different conclusions: the letter must BEGIN A
+    // WORD -- the first word's initial by preference, a later word's initial
+    // when that is taken -- and no two controls in a dialog may share one.
+    // A letter from the middle of a word is not an acceptable fallback; when
+    // every initial is taken the control goes without a letter, which is
+    // honest, and the answer is to rename it.
+    //
+    // Lifted out of the button row, which had this reasoning inline, so the
+    // field labels built at run time -- a snippet's variable names, say --
+    // obey the same rule instead of blindly taking an ampersand in front.
+    public static string markTriggerLetter(string sLabel, string sTaken)
+    {
+        string sBare = (sLabel ?? "").Replace("&", "");
+        if (sBare.Length == 0) return sBare;
+        bool bAtWordStart = true;
+        for (int iLetter = 0; iLetter < sBare.Length; iLetter++)
+        {
+            char cHere = sBare[iLetter];
+            if (!Char.IsLetterOrDigit(cHere)) { bAtWordStart = true; continue; }
+            if (bAtWordStart && sTaken.IndexOf(Char.ToUpper(cHere)) < 0)
+            {
+                return sBare.Substring(0, iLetter) + "&" + sBare.Substring(iLetter);
+            }
+            bAtWordStart = false;
+        }
+        return sBare;
+    } // markTriggerLetter method
+
+    // Every label in a dialog, each given a letter no other one holds.
+    // A label that already carries an ampersand keeps it, so a caller can
+    // still decide for itself.
+    public static List<string> markTriggerLetters(IList<string> lsLabels)
+    {
+        List<string> lsMarked = new List<string>();
+        string sTaken = "";
+        if (lsLabels == null) return lsMarked;
+        foreach (string sLabel in lsLabels)
+        {
+            string sText = sLabel ?? "";
+            int iAmp = sText.IndexOf('&');
+            if (iAmp >= 0 && iAmp + 1 < sText.Length
+                && sTaken.IndexOf(Char.ToUpper(sText[iAmp + 1])) < 0)
+            {
+                sTaken += Char.ToUpper(sText[iAmp + 1]);
+                lsMarked.Add(sText);
+                continue;
+            }
+            string sMarked = markTriggerLetter(sText, sTaken);
+            int iMark = sMarked.IndexOf('&');
+            if (iMark >= 0 && iMark + 1 < sMarked.Length) sTaken += Char.ToUpper(sMarked[iMark + 1]);
+            lsMarked.Add(sMarked);
+        }
+        return lsMarked;
+    } // markTriggerLetters method
+
     public Label addLabel(string sText)
     {
         Label lbl = new Label();
@@ -1145,6 +1202,51 @@ public class LbcDialog : IDisposable
         return cb;
     }
 
+    // addComboEditBox: a combo box in the older and fuller sense -- a box
+    // you may TYPE in, with a list beside it of the values already known.
+    // The value starts at sValue whether or not that value is in the list,
+    // so a caller may offer a default nobody has used before.
+    //
+    // The list is sorted alphabetically without regard to case, so Apple,
+    // banana and Cherry fall in that order rather than in the order that
+    // puts every capital letter first. That ordering is the one a person
+    // scanning a list expects, and the one the shell's own lists use.
+    //
+    // Distinct from addComboPickBox, which allows only the listed values,
+    // and from addComboHistoryBox, whose list is what was typed before
+    // rather than what is allowed.
+    public ComboBox addComboEditBox(string sLabel, IList<string> lsNames, string sValue, string sTip)
+    {
+        addFieldLabel(sLabel);
+        ComboBox cb = new ComboBox();
+        cb.DropDownStyle = ComboBoxStyle.DropDown;
+        cb.Size = new Size(innerWidth(), DefaultLineHeight);
+        cb.TabIndex = iTabIndex++;
+        cb.Margin = new Padding(0, 0, 0, DefaultRowGap);
+        cb.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+        cb.AutoCompleteSource = AutoCompleteSource.ListItems;
+        foreach (string sOne in sortedIgnoringCase(lsNames)) cb.Items.Add(sOne);
+        cb.Text = sValue ?? "";
+        cb.AccessibleName = cleanLabel(sLabel);
+        cb.GotFocus += handleGotFocus;
+        registerWidget(cb, "ComboBox", cb.AccessibleName);
+        if (!string.IsNullOrEmpty(sTip)) dFocusTips[cb] = sTip;
+        pnlStack.Controls.Add(cb);
+        if (ctlFirstFocusable == null) ctlFirstFocusable = cb;
+        return cb;
+    }
+
+    // sortedIgnoringCase: a copy of the list in alphabetical order with
+    // upper and lower case treated alike. Shared so the stacked and banded
+    // paths sort the same way.
+    public static List<string> sortedIgnoringCase(IList<string> lsNames)
+    {
+        List<string> lsSorted = new List<string>();
+        if (lsNames != null) foreach (string sOne in lsNames) lsSorted.Add(sOne);
+        lsSorted.Sort(StringComparer.CurrentCultureIgnoreCase);
+        return lsSorted;
+    }
+
     // addComboPickBox: labeled drop-down pick-one. Equivalent
     // to AddComboPickBox in Homer LbC.
     public ComboBox addComboPickBox(string sLabel, IList<string> lsNames, string sSelected, string sTip)
@@ -1380,25 +1482,8 @@ public class LbcDialog : IDisposable
                 }
                 if (sTaken.IndexOf(Char.ToUpper(btn.Text[iAmp + 1])) >= 0)
                 {
-                    // The next free WORD INITIAL, never a letter from
-                    // inside a word: "Save As" may offer S or A and
-                    // nothing else. With every initial taken the button
-                    // goes without a trigger letter, which is honest;
-                    // the answer then is to rename the control.
-                    string sBare = btn.Text.Replace("&", "");
-                    btn.Text = sBare;
-                    bool bAtWordStart = true;
-                    for (int iLetter = 0; iLetter < sBare.Length; iLetter++)
-                    {
-                        char cHere = sBare[iLetter];
-                        if (!Char.IsLetterOrDigit(cHere)) { bAtWordStart = true; continue; }
-                        if (bAtWordStart && sTaken.IndexOf(Char.ToUpper(cHere)) < 0)
-                        {
-                            btn.Text = sBare.Substring(0, iLetter) + "&" + sBare.Substring(iLetter);
-                            break;
-                        }
-                        bAtWordStart = false;
-                    }
+                    // The next free word initial, by the shared rule above.
+                    btn.Text = markTriggerLetter(btn.Text, sTaken);
                 }
             }
             btn.AccessibleName = sPlain;
@@ -2189,6 +2274,1112 @@ public class LbcDialog : IDisposable
         return iTotal + 8;
     }
 }
+
+// =====================================================================
+// LbcBandLayout: IniForm's layout arithmetic, kept.
+//
+// IniForm arranged controls into horizontal BANDS and worked out every
+// position itself, in Windows dialog units. LbcDialog instead gives each
+// control a row of its own. Both are wanted, so both are here, and the
+// two are named in parallel: LbcInixForm's Layout property chooses
+// between buildStack and buildBand, runStack and runBand.
+//
+// NAMES. The names come from the PowerBASIC original wherever it had
+// one, so a reader with IniForm.bas open recognises what is happening:
+// dialogGroupControls, dialogSizeControls and dialogPositionControls are
+// its three passes, in its order; the DialogBand record's fields keep
+// their meanings; i_borderPad, i_labelPad, xSpace and the rest keep
+// theirs. What changes is only the spelling, into Camel Type: lower
+// camel case for methods and properties, and a Hungarian prefix on every
+// variable, so i_borderPad becomes iBorderPad and a_dlgBand becomes
+// laBands.
+//
+// VERIFIED. Run against the Customer Information sample, this reproduces
+// all eighteen positions and sizes that IniForm itself recorded in its
+// output.ini, and the form size of 421 by 286, exactly.
+//
+// Two details were needed for that, and both are easy to lose:
+//
+//   * The even-spacing division rounds in PowerBASIC, which ROUNDS HALF
+//     TO EVEN when it assigns to a Long. Truncating puts the buttons one
+//     or two units left of where IniForm put them; rounding half up puts
+//     a lone control one unit right. Only banker's rounding matches.
+//
+//   * A band's shared width -- the width every button in a band takes so
+//     that they match -- was written to the band but READ from an array
+//     indexed by CONTROL, so the maximum was taken against an unrelated
+//     slot that was almost always zero. A band therefore took its LAST
+//     control's width rather than its widest. With OK before Cancel that
+//     is the same answer by luck; with Cancel before OK it clips the
+//     wider caption. The documented intent is plain, so the intent is
+//     what is implemented, and the slip is not carried forward.
+// =====================================================================
+public class LbcBandLayout
+{
+    // One control, as the layout needs to see it. The caller fills the
+    // first group; the three passes fill the rest, in dialog units.
+    public class Item
+    {
+        public string sAlign = "";        // r or d, worked out when empty
+        public string sCaption = "";
+        public string sKind = "edit";
+        public string sTip = "";
+        public bool bNoLabel = false;
+        public int iMask = 0;             // a width in characters, when given
+        public List<string> lsRange = new List<string>();
+
+        public int iBand, iLeft, iTop, iWidth, iHeight;
+        public int iLabelLeft, iLabelTop, iLabelWidth, iLabelHeight;
+        public bool bHasLabel = false;
+    }
+
+    // IniForm's DialogBand record, field for field.
+    public class DialogBand
+    {
+        public int iBottom, iButtonWidth, iCheckWidth, iCount, iCtlWidth;
+        public int iDlgWidth, iHeight, iRadioWidth, iTop, iXSpace;
+    }
+
+    // IniForm's defaults, in dialog units, with its own names.
+    public int iBorderPad = 7;
+    public int iButtonHeight = 14;
+    public int iCheckHeight = 14;
+    public int iEditHeight = 12;
+    public int iEditWidth = 100;
+    public int iLabelHeight = 8;
+    public int iLabelPad = 4;
+    public int iLabelWidth = 40;          // grows to the widest caption plus 4
+    public int iListHeight = 50;
+    public int iListWidth = 100;
+    public int iMemoHeight = 50;
+    public int iMemoWidth = 100;
+    public int iMultiHeight = 50;
+    public int iMultiWidth = 100;
+    public int iRadioHeight = 14;
+    public int iStatusHeight = 12;
+    public bool bWantStatus = true;
+
+    public int iBandCount, iDlgHeight, iDlgWidth, iStatusWidth;
+
+    private Dictionary<int, DialogBand> ldBands = new Dictionary<int, DialogBand>();
+    private List<Item> lsItems = new List<Item>();
+    private Item itemStatus = null;
+
+    // captionWidth: IniForm's estimate, four units a character plus four.
+    // Deliberately not a font measurement: the whole layout is built on
+    // this figure, and measuring instead would move everything.
+    public static int captionWidth(string sCaption)
+    {
+        return 4 * ((sCaption ?? "").Length) + 4;
+    } // captionWidth method
+
+    // roundHalfToEven: divide the way PowerBASIC did when it put a
+    // fraction into a Long -- round, and send an exact half to the even
+    // side. This is what places every control where IniForm placed it.
+    public static int roundHalfToEven(int iNumerator, int iDenominator)
+    {
+        if (iDenominator == 0) return 0;
+        int iFloor = (int) Math.Floor((double) iNumerator / iDenominator);
+        double dRemainder = (double) iNumerator / iDenominator - iFloor;
+        if (Math.Abs(dRemainder - 0.5) < 0.000000001)
+            return (iFloor % 2 == 0) ? iFloor : iFloor + 1;
+        return (int) Math.Round((double) iNumerator / iDenominator, MidpointRounding.AwayFromZero);
+    } // roundHalfToEven method
+
+    // isFieldControl: the four that get a label made for them, because
+    // they carry no caption of their own.
+    public static bool isFieldControl(string sKind)
+    {
+        return sKind == "list" || sKind == "multi" || sKind == "edit" || sKind == "memo";
+    } // isFieldControl method
+
+    // dialogGroupControls: IniForm's first pass. Decide which band each
+    // control belongs to, and the widths a band shares among its buttons,
+    // check boxes or radio buttons.
+    public int dialogGroupControls()
+    {
+        ldBands.Clear();
+        int iBand = 1;
+        iStatusWidth = 0;
+        string sPrevControl = "";
+        for (int iCtl = 0; iCtl < lsItems.Count; iCtl++)
+        {
+            Item item = lsItems[iCtl];
+            string sAlign = (item.sAlign ?? "").Trim().ToLower();
+            if (sAlign != "r" && sAlign != "d")
+                sAlign = (item.sKind == sPrevControl && !isFieldControl(item.sKind)) ? "r" : "d";
+            item.sAlign = sAlign;
+            if (iCtl > 0 && sAlign == "d") iBand++;
+            if (!ldBands.ContainsKey(iBand)) ldBands[iBand] = new DialogBand();
+            DialogBand band = ldBands[iBand];
+            band.iCount++;
+            item.iBand = iBand;
+            int iWidth = captionWidth(item.sCaption);
+            iStatusWidth = Math.Max(iStatusWidth, (item.sTip ?? "").Length + 8);
+            // Read from the BAND, which is the correction described above.
+            if (item.sKind == "button") band.iButtonWidth = Math.Max(band.iButtonWidth, iWidth);
+            else if (item.sKind == "check") band.iCheckWidth = Math.Max(band.iCheckWidth, iWidth);
+            else if (item.sKind == "radio") band.iRadioWidth = Math.Max(band.iRadioWidth, iWidth);
+            else if (isFieldControl(item.sKind)) iLabelWidth = Math.Max(iLabelWidth, iWidth + 4);
+            sPrevControl = item.sKind;
+        }
+        itemStatus = null;
+        if (bWantStatus)
+        {
+            iBand++;
+            itemStatus = new Item();
+            itemStatus.sKind = "status";
+            itemStatus.sCaption = "status";
+            itemStatus.sAlign = "d";
+            itemStatus.iBand = iBand;
+            lsItems.Add(itemStatus);
+            ldBands[iBand] = new DialogBand();
+            ldBands[iBand].iCount = 1;
+        }
+        iBandCount = iBand;
+        return iBandCount;
+    } // dialogGroupControls method
+
+    // dialogSizeControls: IniForm's second pass. Size every control, and
+    // the band that holds it, and so the dialog.
+    public int dialogSizeControls()
+    {
+        iDlgWidth = 0;
+        foreach (Item item in lsItems)
+        {
+            DialogBand band = ldBands[item.iBand];
+            switch (item.sKind)
+            {
+                case "button": item.iWidth = band.iButtonWidth; item.iHeight = iButtonHeight; break;
+                case "check":  item.iWidth = band.iCheckWidth;  item.iHeight = iCheckHeight;  break;
+                case "radio":  item.iWidth = band.iRadioWidth;  item.iHeight = iRadioHeight;  break;
+                case "label":  item.iWidth = captionWidth(item.sCaption); item.iHeight = iLabelHeight; break;
+                case "status": item.iWidth = iStatusWidth; item.iHeight = iStatusHeight; break;
+                default:
+                    if (!item.bNoLabel)
+                    {
+                        // labelSet, in IniForm: the label made for a control
+                        // that has no caption of its own. Ten units tall
+                        // against a list, twelve against a box, which are its
+                        // figures.
+                        item.bHasLabel = true;
+                        item.iLabelWidth = iLabelWidth;
+                        item.iLabelHeight = (item.sKind == "list" || item.sKind == "multi") ? 10 : 12;
+                        band.iCtlWidth += iLabelWidth + iLabelPad;
+                        band.iDlgWidth += iLabelWidth + iLabelPad;
+                    }
+                    if (item.sKind == "list" || item.sKind == "multi")
+                    {
+                        if (item.lsRange == null || item.lsRange.Count == 0)
+                            item.iWidth = (item.sKind == "list") ? iListWidth : iMultiWidth;
+                        else
+                        {
+                            int iWidest = 0;
+                            foreach (string sOne in item.lsRange)
+                                iWidest = Math.Max(iWidest, 8 + 4 * sOne.Length);
+                            item.iWidth = iWidest;
+                        }
+                        item.iHeight = (item.sKind == "list") ? iListHeight : iMultiHeight;
+                    }
+                    else
+                    {
+                        item.iWidth = (item.iMask > 0) ? 4 * item.iMask + 4
+                                    : ((item.sKind == "memo") ? iMemoWidth : iEditWidth);
+                        item.iHeight = (item.sKind == "memo") ? iMemoHeight : iEditHeight;
+                    }
+                    break;
+            }
+            band.iHeight = Math.Max(band.iHeight, item.iHeight);
+            band.iCtlWidth += item.iWidth;
+            band.iDlgWidth += item.iWidth + iBorderPad;
+            iDlgWidth = Math.Max(iDlgWidth, band.iDlgWidth);
+        }
+        iDlgWidth += iBorderPad;
+        if (itemStatus != null) itemStatus.iWidth = iDlgWidth;
+        return iDlgWidth;
+    } // dialogSizeControls method
+
+    // dialogPositionControls: IniForm's third pass. Place each band down
+    // the form, and spread the controls of a band evenly across it -- the
+    // same gap between neighbours as between the outer ones and the
+    // borders, which is what xSpace holds.
+    public int dialogPositionControls()
+    {
+        int iBottomPrev = 0;
+        iDlgHeight = 0;
+        for (int iBand = 1; iBand <= iBandCount; iBand++)
+        {
+            DialogBand band = ldBands[iBand];
+            bool bStatusBand = (iBand == iBandCount && itemStatus != null);
+            band.iTop = iBottomPrev + (bStatusBand ? 2 * iBorderPad : iBorderPad);
+            band.iBottom = band.iTop + band.iHeight;
+            iBottomPrev = band.iBottom;
+            iDlgHeight = band.iBottom;
+            band.iXSpace = roundHalfToEven(iDlgWidth - band.iCtlWidth, band.iCount + 1);
+            int iX = band.iXSpace;
+            foreach (Item item in lsItems)
+            {
+                if (item.iBand != iBand) continue;
+                if (item.bHasLabel)
+                {
+                    item.iLabelLeft = iX;
+                    item.iLabelTop = band.iTop;
+                    iX += item.iLabelWidth + iLabelPad;
+                }
+                item.iLeft = iX;
+                item.iTop = band.iTop;
+                iX += item.iWidth + band.iXSpace;
+            }
+        }
+        iDlgHeight += iBorderPad;
+        if (itemStatus != null) itemStatus.iLeft = 0;
+        return iDlgHeight;
+    } // dialogPositionControls method
+
+    // measure: the three passes, in IniForm's order. Kept as one call
+    // because that is how a caller wants it; the passes stay separate and
+    // public because that is how they can be checked.
+    public List<Item> measure(List<Item> lsGiven)
+    {
+        lsItems = (lsGiven != null) ? lsGiven : new List<Item>();
+        dialogGroupControls();
+        dialogSizeControls();
+        dialogPositionControls();
+        return lsItems;
+    } // measure method
+} // class LbcBandLayout
+
+// =====================================================================
+// LbcBandDialog: a dialog laid out in bands, the counterpart to
+// LbcDialog's stack.
+//
+// The two are deliberately parallel. LbcDialog adds a control per row and
+// lets a FlowLayoutPanel place it; LbcBandDialog asks LbcBandLayout where
+// everything goes and places it there. The add methods carry the same
+// names and the same arguments, so a caller can be pointed at either --
+// which is what LbcInixForm's Layout property does.
+//
+// What each keeps that the other cannot:
+//
+//   * The stack guarantees that reading order, tab order and visual order
+//     are one order. It cannot put two controls side by side.
+//   * The band arrangement can, and can line up the colons of a column of
+//     labels, which is what IniForm's equal label widths were for. In
+//     return the eye and the tab key may take different paths across a
+//     band, which is why the stack remains the default.
+//
+// Everything the two share stays shared: the trigger-letter rule, the
+// focus tips in a status bar, F1 describing every field, Control+Enter
+// and Escape, and OK and Cancel without access keys of their own.
+//
+// Dialog units become pixels through the Windows base units, measured
+// from the form's own font at run time rather than assumed. IniForm could
+// assume 8 point MS Sans Serif; a dialog now may be at any scaling, and
+// measuring is what keeps the proportions the arithmetic was written for.
+// =====================================================================
+public class LbcBandDialog : IDisposable
+{
+    private Form frm;
+    private IWin32Window owner;
+    private Label lblStatusBar;
+    private List<LbcBandLayout.Item> lsItems = new List<LbcBandLayout.Item>();
+    private List<Control> lsControls = new List<Control>();
+    private List<Label> lsLabels = new List<Label>();
+    private Dictionary<Control, string> dFocusTips = new Dictionary<Control, string>();
+    private LbcBandLayout layout = new LbcBandLayout();
+    private string sTitle;
+    private string sPressed = "";
+    private double dUnitX = 1.5, dUnitY = 1.625;
+
+    public LbcBandLayout Layout { get { return layout; } }
+
+    public LbcBandDialog(string sFormTitle, IWin32Window ownerWindow)
+    {
+        sTitle = sFormTitle ?? "";
+        owner = ownerWindow;
+    } // constructor
+
+    // A control and the description the layout needs of it, added
+    // together. The caller names the kind, as the .inix definition does.
+    public LbcBandLayout.Item addItem(string sKind, string sCaption, Control ctl,
+                                      string sTip, List<string> lsRange, bool bNoLabel)
+    {
+        LbcBandLayout.Item item = new LbcBandLayout.Item();
+        item.sKind = sKind;
+        item.sCaption = (sCaption ?? "").Replace("&", "");
+        item.sTip = sTip ?? "";
+        item.bNoLabel = bNoLabel;
+        if (lsRange != null) item.lsRange = lsRange;
+        lsItems.Add(item);
+        lsControls.Add(ctl);
+        if (ctl != null)
+        {
+            ctl.AccessibleName = item.sCaption;
+            if (!string.IsNullOrEmpty(item.sTip)) dFocusTips[ctl] = item.sTip;
+        }
+        return item;
+    } // addItem method
+
+    // Windows base units for the form's font, which is how a dialog unit
+    // becomes a pixel. The documented method: measure the 52 letters and
+    // divide, rather than assume the 8 point figures IniForm could rely on.
+    private void measureBaseUnits(Control ctlReference)
+    {
+        try
+        {
+            Size sz = TextRenderer.MeasureText(
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                ctlReference.Font);
+            int iBaseX = (sz.Width / 26 + 1) / 2;
+            int iBaseY = sz.Height;
+            if (iBaseX > 0) dUnitX = iBaseX / 4.0;
+            if (iBaseY > 0) dUnitY = iBaseY / 8.0;
+        }
+        catch (Exception) { }
+    } // measureBaseUnits method
+
+    private int toPixelsX(int iUnits) { return (int) Math.Round(iUnits * dUnitX); }
+    private int toPixelsY(int iUnits) { return (int) Math.Round(iUnits * dUnitY); }
+
+    // run: measure, place, show. Returns the caption of the button
+    // pressed, or "" when the form was cancelled.
+    public string run(string[] aButtonLabels)
+    {
+        frm = new Form();
+        frm.Text = sTitle;
+        frm.FormBorderStyle = FormBorderStyle.FixedDialog;
+        frm.MaximizeBox = false;
+        frm.MinimizeBox = false;
+        frm.StartPosition = FormStartPosition.CenterScreen;
+        frm.KeyPreview = true;
+        frm.AutoScaleMode = AutoScaleMode.Font;
+
+        // Buttons are controls of the layout too, exactly as they were in
+        // IniForm -- a band of their own at the foot of the form.
+        List<Button> lsButtons = new List<Button>();
+        if (aButtonLabels != null)
+        {
+            List<string> lsMarked = LbcDialog.markTriggerLetters(new List<string>(aButtonLabels));
+            for (int i = 0; i < aButtonLabels.Length; i++)
+            {
+                string sPlain = (aButtonLabels[i] ?? "").Replace("&", "");
+                Button btn = new Button();
+                bool bNoKey = string.Equals(sPlain, "OK", StringComparison.OrdinalIgnoreCase)
+                           || string.Equals(sPlain, "Cancel", StringComparison.OrdinalIgnoreCase);
+                btn.Text = bNoKey ? sPlain : lsMarked[i];
+                btn.AccessibleName = sPlain;
+                btn.Tag = sPlain;
+                btn.Click += handleButtonClick;
+                lsButtons.Add(btn);
+                addItem("button", sPlain, btn, "", null, true);
+                if (string.Equals(sPlain, "OK", StringComparison.OrdinalIgnoreCase)) frm.AcceptButton = btn;
+                if (string.Equals(sPlain, "Cancel", StringComparison.OrdinalIgnoreCase)) frm.CancelButton = btn;
+            }
+        }
+
+        measureBaseUnits(frm);
+        layout.measure(lsItems);
+
+        // Place everything the arithmetic decided. The status item is the
+        // last one when the layout asked for it; it becomes the status bar
+        // rather than an ordinary control.
+        for (int i = 0; i < lsItems.Count; i++)
+        {
+            LbcBandLayout.Item item = lsItems[i];
+            Control ctl = (i < lsControls.Count) ? lsControls[i] : null;
+            if (item.sKind == "status")
+            {
+                lblStatusBar = new Label();
+                lblStatusBar.AccessibleRole = AccessibleRole.StatusBar;
+                lblStatusBar.AccessibleName = "Status";
+                lblStatusBar.BorderStyle = BorderStyle.Fixed3D;
+                lblStatusBar.TextAlign = ContentAlignment.MiddleLeft;
+                lblStatusBar.Location = new Point(toPixelsX(item.iLeft), toPixelsY(item.iTop));
+                lblStatusBar.Size = new Size(toPixelsX(item.iWidth), toPixelsY(item.iHeight) + 6);
+                frm.Controls.Add(lblStatusBar);
+                continue;
+            }
+            if (ctl == null) continue;
+            if (item.bHasLabel)
+            {
+                Label lbl = new Label();
+                lbl.Text = item.sCaption + ":";
+                // Right-aligned within its own width, which is what put the
+                // colons of a column of labels under one another.
+                lbl.TextAlign = ContentAlignment.MiddleRight;
+                lbl.Location = new Point(toPixelsX(item.iLabelLeft), toPixelsY(item.iLabelTop));
+                lbl.Size = new Size(toPixelsX(item.iLabelWidth), toPixelsY(item.iLabelHeight) + 4);
+                frm.Controls.Add(lbl);
+                lsLabels.Add(lbl);
+            }
+            ctl.Location = new Point(toPixelsX(item.iLeft), toPixelsY(item.iTop));
+            ctl.Size = new Size(toPixelsX(item.iWidth), toPixelsY(item.iHeight));
+            ctl.GotFocus += handleGotFocus;
+            frm.Controls.Add(ctl);
+        }
+
+        frm.ClientSize = new Size(toPixelsX(layout.iDlgWidth), toPixelsY(layout.iDlgHeight) + 8);
+        frm.KeyDown += handleKeyDown;
+        sPressed = "";
+        frm.ShowDialog(owner);
+        return sPressed;
+    } // run method
+
+    private void handleButtonClick(object sender, EventArgs e)
+    {
+        Button btn = sender as Button;
+        sPressed = (btn != null && btn.Tag != null) ? Convert.ToString(btn.Tag) : "";
+        if (frm != null) frm.Close();
+    } // handleButtonClick method
+
+    private void handleGotFocus(object sender, EventArgs e)
+    {
+        Control ctl = sender as Control;
+        if (lblStatusBar == null || ctl == null) return;
+        lblStatusBar.Text = dFocusTips.ContainsKey(ctl) ? dFocusTips[ctl] : "";
+    } // handleGotFocus method
+
+    private void handleKeyDown(object sender, KeyEventArgs e)
+    {
+        // The same two keys the stacked dialog uses, so a person moving
+        // between the two forms of dialog is never asked to learn a second
+        // pair.
+        if (e.KeyCode == Keys.Escape) { sPressed = ""; if (frm != null) frm.Close(); }
+        else if (e.KeyCode == Keys.Enter && e.Control && frm != null && frm.AcceptButton != null)
+            ((Button) frm.AcceptButton).PerformClick();
+        else if (e.KeyCode == Keys.F1) showFieldHelp();
+    } // handleKeyDown method
+
+    private void showFieldHelp()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < lsItems.Count; i++)
+        {
+            LbcBandLayout.Item item = lsItems[i];
+            if (item.sKind == "status" || item.sKind == "button") continue;
+            sb.Append(item.sCaption);
+            if (item.sTip.Length > 0) sb.Append(": " + item.sTip);
+            sb.Append("\r\n");
+        }
+        MessageBox.Show(frm, sb.ToString(), sTitle + " fields");
+    } // showFieldHelp method
+
+    public void Dispose()
+    {
+        if (frm != null) { frm.Dispose(); frm = null; }
+    } // Dispose method
+} // class LbcBandDialog
+
+// =====================================================================
+// LbcInixForm: a dialog described by a file rather than by code.
+//
+// This is IniForm brought forward. IniForm (Jamal Mazrui, 2005-2015,
+// PowerBASIC) took a .ini file naming a handful of controls and built a
+// real Windows dialog from it, then wrote what the user chose to a second
+// .ini file -- so any language that could write a text file could put up
+// an accessible form. Nothing else quite like it existed.
+//
+// What changes here, and why:
+//
+//   * .inix rather than .ini. The list of items in a list box no longer
+//     has to be crammed onto one line separated by vertical bars, and no
+//     longer needs a companion .txt file when the text is long or
+//     contains a bar. An .inix value may span lines, so a range or a memo
+//     is written as it reads. The bar is still accepted, so every
+//     IniForm definition still works.
+//
+//   * WinForms rather than raw dialog templates. IniForm computed Win32
+//     dialog units and built a template by hand, which is why it was
+//     32-bit only. Every control here is an ordinary WinForms control
+//     placed by LbcDialog, so the form is whatever the host program is,
+//     and on a modern build that is 64-bit.
+//
+//   * Layout is LbcDialog's, not IniForm's. IniForm arranged controls
+//     into horizontal bands, with align=r putting a control beside the
+//     previous one. Lbc deliberately gives each control its own row, so
+//     that reading order, tab order and visual order are the same order.
+//     That guarantee is worth more than the horizontal packing, so
+//     align=r is accepted and recorded but does not move a control
+//     beside another. Buttons are the exception, and they were already
+//     the exception: LbcDialog puts the whole button row on one line.
+//
+//   * More control types, same syntax. IniForm had nine: label, button,
+//     check, radio, list, multi, edit, memo, status. Added here are
+//     combo (a drop-down list, which suits a long list of choices better
+//     than a list box), spin (a number with a range), heading and
+//     separator (for grouping), and password, which was a Misc value in
+//     IniForm and is a control type here as well.
+//
+// The spacing rules IniForm published are kept, translated out of dialog
+// units into the pixels LbcDialog uses: a border of one padding unit
+// around the form, one row gap between controls, and every control
+// stretched to a common width so that labels line up. The rules that
+// only made sense for hand-placed controls -- right-aligned label text,
+// equal widths within a band -- go with the bands.
+// =====================================================================
+public class LbcInixForm
+{
+    // What a control section can say. Alphabetical, as Homer files are.
+    // caption  -- the displayed name, when it differs from the section name
+    // control  -- the type; edit when not given, as in IniForm
+    // help     -- longer text, read by F1 when there is no tip
+    // max      -- the largest value a spin control accepts
+    // min      -- the smallest value a spin control accepts
+    // misc     -- password, readonly, or sort, separated by vertical bars
+    // range    -- the items of a list, combo or multi
+    // selection-- which items of the range start selected
+    // step     -- how much a spin control moves by
+    // tip      -- the line shown in the status bar when the control has focus
+    // value    -- what the control holds to begin with
+
+    // Which arithmetic lays the form out. The two paths are named in
+    // parallel throughout: buildStack and buildBand, runStack and runBand,
+    // with build and run choosing between them by this property.
+    //
+    // Stack is the default because it is the one that guarantees reading
+    // order, tab order and visual order are the same order. Band is
+    // IniForm's, kept whole: it can put controls side by side and line up
+    // a column of label colons, and a definition written for IniForm
+    // laid out this way looks as it did.
+    public enum FormLayout { Stack, Band }
+    public FormLayout Layout = FormLayout.Stack;
+
+    public string Title = "Form";
+    public List<string> ButtonLabels = new List<string>();
+    public Dictionary<string, string> Results =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public string ButtonPressed = "";
+
+    private List<InixCodec.Section> lsSections;
+    private List<string> lsFieldNames = new List<string>();
+    private Dictionary<string, Control> dFields =
+        new Dictionary<string, Control>(StringComparer.OrdinalIgnoreCase);
+    private Dictionary<string, string> dKinds =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+    public LbcInixForm(List<InixCodec.Section> lsDefinition)
+    {
+        lsSections = (lsDefinition != null) ? lsDefinition : new List<InixCodec.Section>();
+    }
+
+    // items: the range or selection of a control, however it was written.
+    // An .inix value spanning lines gives one item per line, which is the
+    // readable way; IniForm's vertical bars still work, which is the
+    // compatible way; and a single line with commas is read as a list too,
+    // because that is what InixCodec.getArray already does everywhere else.
+    public static List<string> items(string sValue)
+    {
+        List<string> lsItems = new List<string>();
+        if (string.IsNullOrEmpty(sValue)) return lsItems;
+        string sNorm = sValue.Replace("\r\n", "\n").Replace("\r", "\n");
+        string[] aParts;
+        if (sNorm.IndexOf('\n') >= 0)     aParts = sNorm.Split('\n');
+        else if (sNorm.IndexOf('|') >= 0) aParts = sNorm.Split('|');
+        else if (sNorm.IndexOf(',') >= 0) aParts = sNorm.Split(',');
+        else                              aParts = new string[] { sNorm };
+        foreach (string sPart in aParts)
+        {
+            string sItem = (sPart == null ? "" : sPart).Trim();
+            if (sItem.Length > 0) lsItems.Add(sItem);
+        }
+        return lsItems;
+    } // items method
+
+    // text: a multi-line value for a memo.
+    //
+    // The .inix rule is that a multi-line value is read VERBATIM, from the
+    // start of its first line to the end of its last. Nothing is trimmed,
+    // left or right, at read or at write. Any trimming is the using
+    // program's own decision, made afterwards and on purpose.
+    //
+    // This method makes exactly one such decision, and it is IniForm's:
+    // a SINGLE-line value containing vertical bars is a value with line
+    // breaks written the old way, so the bars become line breaks. A value
+    // that already spans lines is left completely alone, because it has
+    // said what it means. Its leading spaces are content, which is why a
+    // memo whose text should not be indented is written flush left or
+    // between fences.
+    //
+    // A range is different and trims each item, which is items() below:
+    // that IS the using program deciding, for a list of choices where
+    // surrounding space could only be an accident of layout.
+    public static string text(string sValue)
+    {
+        if (string.IsNullOrEmpty(sValue)) return "";
+        string sNorm = sValue.Replace("\r\n", "\n").Replace("\r", "\n");
+        if (sNorm.IndexOf('\n') < 0 && sNorm.IndexOf('|') >= 0) sNorm = sNorm.Replace("|", "\n");
+        return sNorm.Replace("\n", "\r\n");
+    } // text method
+
+    private static bool has(string sMisc, string sWord)
+    {
+        if (string.IsNullOrEmpty(sMisc)) return false;
+        foreach (string s in sMisc.Split('|', ','))
+            if (string.Equals(s.Trim(), sWord, StringComparison.OrdinalIgnoreCase)) return true;
+        return false;
+    } // has method
+
+    // Which items of a range start selected. IniForm accepted positions
+    // (1-based) or the item text itself, and both are accepted here.
+    private static List<string> chosen(List<string> lsRange, string sSelection)
+    {
+        List<string> lsChosen = new List<string>();
+        foreach (string sOne in items(sSelection))
+        {
+            int iPosition;
+            if (int.TryParse(sOne, out iPosition) && iPosition >= 1 && iPosition <= lsRange.Count)
+                lsChosen.Add(lsRange[iPosition - 1]);
+            else if (lsRange.Contains(sOne)) lsChosen.Add(sOne);
+        }
+        return lsChosen;
+    } // chosen method
+
+    private static int number(string sValue, int iFallback)
+    {
+        int i;
+        return int.TryParse((sValue ?? "").Trim(), out i) ? i : iFallback;
+    } // number method
+
+    // build: turn the definition into a dialog. Returns the dialog, ready
+    // to run, so a caller that wants to add something of its own still can.
+    public LbcDialog buildStack(IWin32Window owner)
+    {
+        ButtonLabels.Clear();
+        lsFieldNames.Clear();
+        dFields.Clear();
+        dKinds.Clear();
+
+        // The first section describes the form itself, as in IniForm, and
+        // is recognised by control=form or simply by being first.
+        int iFirstControl = 0;
+        if (lsSections.Count > 0)
+        {
+            InixCodec.Section secForm = lsSections[0];
+            string sKind = (secForm.get("control") ?? "").Trim().ToLower();
+            bool bIsForm = (sKind == "form") || (secForm.get("control") == null && secForm.Pairs.Count == 0)
+                        || (sKind == "" && secForm.get("value") == null && secForm.get("range") == null);
+            if (bIsForm) { Title = secForm.Name; iFirstControl = 1; }
+        }
+
+        LbcDialog dlg = new LbcDialog(Title, owner);
+
+        // Every label is gathered first so the trigger letters can be
+        // decided together: a letter must begin a word and no two controls
+        // may share one, which cannot be judged one control at a time.
+        List<string> lsLabels = new List<string>();
+        List<InixCodec.Section> lsControls = new List<InixCodec.Section>();
+        for (int i = iFirstControl; i < lsSections.Count; i++)
+        {
+            InixCodec.Section sec = lsSections[i];
+            string sKind = (sec.get("control") ?? "edit").Trim().ToLower();
+            if (sKind == "form" || sKind == "status") continue;
+            string sCaption = sec.get("caption");
+            if (string.IsNullOrEmpty(sCaption)) sCaption = sec.Name;
+            if (sKind == "button") { ButtonLabels.Add(sCaption); continue; }
+            lsControls.Add(sec);
+            lsLabels.Add(sCaption);
+        }
+        List<string> lsMarked = LbcDialog.markTriggerLetters(lsLabels);
+
+        for (int i = 0; i < lsControls.Count; i++)
+        {
+            InixCodec.Section sec = lsControls[i];
+            string sName = sec.Name;
+            string sKind = (sec.get("control") ?? "edit").Trim().ToLower();
+            string sLabel = lsMarked[i];
+            string sValue = sec.get("value") ?? "";
+            string sMisc = sec.get("misc") ?? "";
+            string sTip = sec.get("tip") ?? "";
+            if (sTip.Length == 0) sTip = (sec.get("help") ?? "").Replace("|", " ");
+            List<string> lsRange = items(sec.get("range"));
+            if (has(sMisc, "sort")) lsRange.Sort(StringComparer.CurrentCultureIgnoreCase);
+            // NoLabel, from IniForm, for a control that fills the form and
+            // whose section name would only repeat the title. The visible
+            // label is dropped, but the control is still NAMED for a screen
+            // reader, which IniForm could not promise -- an unlabelled
+            // control that announces nothing is not a saving.
+            bool bNoLabel = has(sMisc, "nolabel");
+            Control ctl = null;
+
+            switch (sKind)
+            {
+                case "label":
+                    dlg.addLabel(sLabel.Replace("&", ""));
+                    continue;
+                case "heading":
+                    dlg.addSeparator();
+                    dlg.addLabel(sLabel.Replace("&", ""));
+                    continue;
+                case "separator":
+                    dlg.addSeparator();
+                    continue;
+                case "check":
+                    ctl = dlg.addCheckBox(sLabel, number(sValue, 0) != 0, sTip);
+                    break;
+                case "radio":
+                    ctl = dlg.addRadioButton(sLabel, number(sValue, 0) != 0, sTip);
+                    break;
+                case "list":
+                    ctl = dlg.addPickBox(sLabel, lsRange, firstOf(chosen(lsRange, sec.get("selection")), sValue), sTip);
+                    break;
+                case "combo":
+                    // A box you may type in, with the known values beside it,
+                    // sorted without regard to case. The starting value need
+                    // not be one of them.
+                    ctl = dlg.addComboEditBox(sLabel, lsRange,
+                        firstOf(chosen(lsRange, sec.get("selection")), sValue), sTip);
+                    break;
+                case "droplist":
+                    // Pick one of the listed values and nothing else.
+                    ctl = dlg.addComboPickBox(sLabel, LbcDialog.sortedIgnoringCase(lsRange),
+                        firstOf(chosen(lsRange, sec.get("selection")), sValue), sTip);
+                    break;
+                case "multi":
+                    List<int> lsChecked = new List<int>();
+                    List<string> lsPicked = chosen(lsRange, sec.get("selection"));
+                    for (int j = 0; j < lsRange.Count; j++)
+                        if (lsPicked.Contains(lsRange[j])) lsChecked.Add(j);
+                    ctl = bNoLabel ? (Control) dlg.addCheckListBox(lsRange, lsChecked, sTip)
+                                   : (Control) dlg.addCheckListBox(sLabel, lsRange, lsChecked, sTip);
+                    break;
+                case "memo":
+                    ctl = bNoLabel ? (Control) dlg.addMemo(text(sValue), sTip)
+                                   : (Control) dlg.addMemoBox(sLabel, text(sValue), sTip);
+                    break;
+                case "spin":
+                    // Lbc's numeric control has no step of its own, so a
+                    // step key in the definition is honoured on the control
+                    // after it is made rather than silently ignored.
+                    NumericUpDown nud = dlg.addNumericUpDown(sLabel, number(sValue, 0),
+                        number(sec.get("min"), 0), number(sec.get("max"), 100), sTip);
+                    nud.Increment = number(sec.get("step"), 1);
+                    ctl = nud;
+                    break;
+                case "password":
+                default:
+                    TextBox txt = dlg.addInputBox(sLabel, sValue, sTip);
+                    // Password was a Misc value in IniForm and is a control
+                    // type here as well, since that is how people think of it.
+                    if (sKind == "password" || has(sMisc, "password")) txt.UseSystemPasswordChar = true;
+                    if (has(sMisc, "readonly")) txt.ReadOnly = true;
+                    ctl = txt;
+                    break;
+            }
+            if (ctl == null) continue;
+            if (bNoLabel || string.IsNullOrEmpty(ctl.AccessibleName)) ctl.AccessibleName = sName;
+            lsFieldNames.Add(sName);
+            dFields[sName] = ctl;
+            dKinds[sName] = (sKind == "password") ? "edit" : sKind;
+        }
+        return dlg;
+    } // build method
+
+    // buildBand: the same definition, laid out IniForm's way. It makes the
+    // controls itself rather than through LbcDialog's add methods, because
+    // those place as they add and here the placing comes afterwards, once
+    // the whole form has been measured. The controls are the same ones.
+    public void buildBand(LbcBandDialog dlg)
+    {
+        ButtonLabels.Clear();
+        lsFieldNames.Clear();
+        dFields.Clear();
+        dKinds.Clear();
+
+        int iFirstControl = firstControlIndex();
+        List<InixCodec.Section> lsControls = new List<InixCodec.Section>();
+        List<string> lsLabels = new List<string>();
+        for (int i = iFirstControl; i < lsSections.Count; i++)
+        {
+            InixCodec.Section sec = lsSections[i];
+            string sKind = (sec.get("control") ?? "edit").Trim().ToLower();
+            if (sKind == "form" || sKind == "status") continue;
+            string sCaption = sec.get("caption");
+            if (string.IsNullOrEmpty(sCaption)) sCaption = sec.Name;
+            if (sKind == "button") { ButtonLabels.Add(sCaption); continue; }
+            lsControls.Add(sec);
+            lsLabels.Add(sCaption);
+        }
+        List<string> lsMarked = LbcDialog.markTriggerLetters(lsLabels);
+
+        for (int i = 0; i < lsControls.Count; i++)
+        {
+            InixCodec.Section sec = lsControls[i];
+            string sName = sec.Name;
+            string sKind = (sec.get("control") ?? "edit").Trim().ToLower();
+            string sLabel = lsMarked[i];
+            string sCaption = lsLabels[i];
+            string sValue = sec.get("value") ?? "";
+            string sMisc = sec.get("misc") ?? "";
+            string sTip = sec.get("tip") ?? "";
+            if (sTip.Length == 0) sTip = (sec.get("help") ?? "").Replace("|", " ");
+            List<string> lsRange = items(sec.get("range"));
+            if (has(sMisc, "sort")) lsRange.Sort(StringComparer.CurrentCultureIgnoreCase);
+            bool bNoLabel = has(sMisc, "nolabel");
+            List<string> lsPicked = chosen(lsRange, sec.get("selection"));
+            Control ctl = null;
+            string sLayoutKind = sKind;
+
+            switch (sKind)
+            {
+                case "label":
+                case "heading":
+                case "separator":
+                    Label lbl = new Label();
+                    lbl.Text = (sKind == "separator") ? "" : sCaption;
+                    ctl = lbl;
+                    sLayoutKind = "label";
+                    bNoLabel = true;
+                    break;
+                case "check":
+                    CheckBox chk = new CheckBox();
+                    chk.Text = sLabel;
+                    chk.Checked = number(sValue, 0) != 0;
+                    ctl = chk;
+                    bNoLabel = true;
+                    break;
+                case "radio":
+                    RadioButton rad = new RadioButton();
+                    rad.Text = sLabel;
+                    rad.Checked = number(sValue, 0) != 0;
+                    ctl = rad;
+                    bNoLabel = true;
+                    break;
+                case "list":
+                    ListBox lst = new ListBox();
+                    foreach (string sOne in lsRange) lst.Items.Add(sOne);
+                    if (lsPicked.Count > 0) lst.SelectedItem = lsPicked[0];
+                    else if (sValue.Length > 0 && lsRange.Contains(sValue)) lst.SelectedItem = sValue;
+                    ctl = lst;
+                    break;
+                case "combo":
+                case "droplist":
+                    ComboBox cbo = new ComboBox();
+                    cbo.DropDownStyle = (sKind == "combo")
+                        ? ComboBoxStyle.DropDown : ComboBoxStyle.DropDownList;
+                    if (sKind == "combo")
+                    {
+                        cbo.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                        cbo.AutoCompleteSource = AutoCompleteSource.ListItems;
+                    }
+                    foreach (string sOne in LbcDialog.sortedIgnoringCase(lsRange)) cbo.Items.Add(sOne);
+                    if (lsPicked.Count > 0) cbo.SelectedItem = lsPicked[0];
+                    else if (sValue.Length > 0 && lsRange.Contains(sValue)) cbo.SelectedItem = sValue;
+                    else if (sKind == "combo") cbo.Text = sValue;
+                    ctl = cbo;
+                    sLayoutKind = "list";
+                    break;
+                case "multi":
+                    CheckedListBox clb = new CheckedListBox();
+                    clb.CheckOnClick = true;
+                    foreach (string sOne in lsRange)
+                        clb.Items.Add(sOne, lsPicked.Contains(sOne));
+                    ctl = clb;
+                    sLayoutKind = "multi";
+                    break;
+                case "memo":
+                    TextBox mem = new TextBox();
+                    mem.Multiline = true;
+                    mem.ScrollBars = ScrollBars.Vertical;
+                    mem.AcceptsReturn = true;
+                    mem.Text = text(sValue);
+                    if (has(sMisc, "readonly")) mem.ReadOnly = true;
+                    ctl = mem;
+                    break;
+                case "spin":
+                    NumericUpDown nud = new NumericUpDown();
+                    nud.Minimum = number(sec.get("min"), 0);
+                    nud.Maximum = number(sec.get("max"), 100);
+                    nud.Increment = number(sec.get("step"), 1);
+                    nud.Value = Math.Max(nud.Minimum, Math.Min(nud.Maximum, number(sValue, 0)));
+                    ctl = nud;
+                    sLayoutKind = "edit";
+                    break;
+                case "password":
+                default:
+                    TextBox txt = new TextBox();
+                    txt.Text = sValue;
+                    if (sKind == "password" || has(sMisc, "password")) txt.UseSystemPasswordChar = true;
+                    if (has(sMisc, "readonly")) txt.ReadOnly = true;
+                    ctl = txt;
+                    sLayoutKind = "edit";
+                    break;
+            }
+            if (ctl == null) continue;
+            dlg.addItem(sLayoutKind, sCaption, ctl, sTip, lsRange, bNoLabel);
+            if (sKind == "label" || sKind == "heading" || sKind == "separator") continue;
+            lsFieldNames.Add(sName);
+            dFields[sName] = ctl;
+            dKinds[sName] = (sKind == "password") ? "edit" : sKind;
+        }
+    } // buildBand method
+
+    // firstControlIndex: whether the first section describes the form
+    // itself, as IniForm's did, or is already a control.
+    private int firstControlIndex()
+    {
+        if (lsSections.Count == 0) return 0;
+        InixCodec.Section secForm = lsSections[0];
+        string sKind = (secForm.get("control") ?? "").Trim().ToLower();
+        bool bIsForm = (sKind == "form") || (secForm.get("control") == null && secForm.Pairs.Count == 0)
+                    || (sKind == "" && secForm.get("value") == null && secForm.get("range") == null);
+        if (!bIsForm) return 0;
+        Title = secForm.Name;
+        return 1;
+    } // firstControlIndex method
+
+    // gatherResults: read every field, whichever layout put it on screen.
+    // Shared so the two paths cannot answer differently.
+    private void gatherResults()
+    {
+        foreach (string sName in lsFieldNames)
+        {
+            Control ctl = dFields[sName];
+            RadioButton rad = ctl as RadioButton;
+            CheckBox chk = ctl as CheckBox;
+            CheckedListBox clb = ctl as CheckedListBox;
+            if (rad != null) { Results[sName] = rad.Checked ? "1" : "0"; continue; }
+            if (chk != null) { Results[sName] = chk.Checked ? "1" : "0"; continue; }
+            if (clb != null)
+            {
+                List<string> lsTicked = new List<string>();
+                foreach (object oItem in clb.CheckedItems) lsTicked.Add(Convert.ToString(oItem));
+                Results[sName] = string.Join("\n", lsTicked.ToArray());
+                continue;
+            }
+            Results[sName] = ctl.Text;
+        }
+    } // gatherResults method
+
+    private static string firstOf(List<string> lsChosen, string sFallback)
+    {
+        return (lsChosen != null && lsChosen.Count > 0) ? lsChosen[0] : (sFallback ?? "");
+    } // firstOf method
+
+    // run: build the dialog, show it, and gather what the user chose.
+    // Returns the button pressed, or "" when the form was cancelled.
+    public string run(IWin32Window owner)
+    {
+        return (Layout == FormLayout.Band) ? runBand(owner) : runStack(owner);
+    } // run method
+
+    // runBand: IniForm's arrangement, through LbcBandLayout. The controls
+    // are the same controls; only who decides where they go differs.
+    public string runBand(IWin32Window owner)
+    {
+        LbcBandDialog dlg = new LbcBandDialog(Title, owner);
+        buildBand(dlg);
+        string sPressedBand = dlg.run(ButtonLabels.ToArray());
+        ButtonPressed = (sPressedBand ?? "").Replace("&", "");
+        Results.Clear();
+        if (ButtonPressed.Length == 0
+            || string.Equals(ButtonPressed, "Cancel", StringComparison.OrdinalIgnoreCase))
+        {
+            dlg.Dispose();
+            return ButtonPressed;
+        }
+        gatherResults();
+        Results[ButtonPressed] = "1";
+        dlg.Dispose();
+        return ButtonPressed;
+    } // runBand method
+
+    public string runStack(IWin32Window owner)
+    {
+        LbcDialog dlg = buildStack(owner);
+        string sPressed;
+        if (ButtonLabels.Count > 0) sPressed = dlg.runWithButtons(ButtonLabels.ToArray());
+        else sPressed = dlg.runOkCancel() ? "OK" : "";
+        ButtonPressed = (sPressed ?? "").Replace("&", "");
+        Results.Clear();
+        if (ButtonPressed.Length == 0 || string.Equals(ButtonPressed, "Cancel", StringComparison.OrdinalIgnoreCase))
+        {
+            dlg.Dispose();
+            return ButtonPressed;
+        }
+        gatherResults();
+        Results[ButtonPressed] = "1";
+        dlg.Dispose();
+        return ButtonPressed;
+    } // runStack method
+
+    // resultsSection: what the user chose, ready to be written as .inix.
+    // One section named Results, as IniForm produced, with a key per
+    // control. A multi-selection answer spans lines, which .inix allows
+    // and .ini did not.
+    public InixCodec.Section resultsSection()
+    {
+        InixCodec.Section sec = new InixCodec.Section("Results");
+        foreach (string sName in lsFieldNames)
+            sec.Pairs.Add(new InixCodec.Pair(sName, Results.ContainsKey(sName) ? Results[sName] : ""));
+        if (ButtonPressed.Length > 0) sec.Pairs.Add(new InixCodec.Pair(ButtonPressed, "1"));
+        return sec;
+    } // resultsSection method
+
+    // The three methods IniForm's COM server published, under their own
+    // names, so a caller written against it needs nothing new learnt:
+    // runForm shows a form from a file and returns whether it was
+    // completed, showResults displays what came back, and getResult
+    // fetches one answer by the control's name.
+    public bool runForm(string sSource, IWin32Window owner)
+    {
+        return runFile(sSource, owner).Length > 0;
+    } // runForm method
+
+    public void showResults(IWin32Window owner)
+    {
+        StringBuilder sb = new StringBuilder();
+        foreach (string sName in lsFieldNames)
+            sb.Append(sName + " = " + (Results.ContainsKey(sName) ? Results[sName] : "") + "\r\n");
+        MessageBox.Show(owner as IWin32Window, sb.ToString(), Title + " results");
+    } // showResults method
+
+    public string getResult(string sKey)
+    {
+        return Results.ContainsKey(sKey) ? Results[sKey] : "";
+    } // getResult method
+
+    // runFile: the whole of IniForm's command line behaviour, in one call.
+    // Give it the path of a definition and it shows the form and writes the
+    // answers beside it, replacing "_input" with "_output" in the name, or
+    // adding "_output" when the name says nothing.
+    //
+    // Returns the button pressed, or "" when the form was cancelled, in
+    // which case no output file is written -- a cancelled form should leave
+    // no answers lying about to be mistaken for real ones.
+    // runFile on an instance: the same work, but this object keeps the
+    // answers so getResult and showResults can be asked afterwards.
+    public string runFile(string sInputPath, IWin32Window owner)
+    {
+        lsSections = InixCodec.read(sInputPath);
+        string sPressed = run(owner);
+        if (sPressed.Length == 0) return "";
+        writeResults(sInputPath);
+        return sPressed;
+    } // runFile method (instance)
+
+    // writeResults: the answers, beside the definition, with _input in the
+    // name changed to _output, or _output added when the name says nothing.
+    public void writeResults(string sInputPath)
+    {
+        string sDir = Path.GetDirectoryName(sInputPath);
+        string sStem = Path.GetFileNameWithoutExtension(sInputPath);
+        string sExtension = Path.GetExtension(sInputPath);
+        if (sStem.EndsWith("_input", StringComparison.OrdinalIgnoreCase))
+            sStem = sStem.Substring(0, sStem.Length - "_input".Length) + "_output";
+        else sStem += "_output";
+        List<InixCodec.Section> lsOut = new List<InixCodec.Section>();
+        lsOut.Add(resultsSection());
+        InixCodec.writeAsConfig(Path.Combine(sDir, sStem + sExtension), lsOut);
+    } // writeResults method
+
+    // runFileOnce: the same thing without keeping an object, for a caller
+    // that wants only the button and will read the output file itself.
+    public static string runFileOnce(string sInputPath, IWin32Window owner)
+    {
+        LbcInixForm frm = new LbcInixForm(InixCodec.read(sInputPath));
+        return frm.runFile(sInputPath, owner);
+    } // runFileOnce method
+} // class LbcInixForm
 
 // =====================================================================
 // LbcListView: the Lbc-enhanced ListView that embodies DbDo's

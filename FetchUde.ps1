@@ -1,4 +1,4 @@
-# FetchUde.ps1 -- best-effort download of the UDE.CSharp encoding-detection
+﻿# FetchUde.ps1 -- best-effort download of the UDE.CSharp encoding-detection
 # library (Ude.dll) used by EdSharp's content-based charset autodetection.
 #
 # UDE.CSharp 1.1.0 is the Mozilla Universal Charset Detector port. It targets

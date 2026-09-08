@@ -1,4 +1,4 @@
-; Example Transform Files job (Regexer .inix format).
+﻿; Example Transform Files job (Regexer .inix format).
 ; Open a document containing one file path per line, press Alt+Equals,
 ; choose this job, then pick Test, Run, or Verbose.
 

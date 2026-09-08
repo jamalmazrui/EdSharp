@@ -41,9 +41,19 @@
 ;     mdx2htm and mdx2docx chain it with pandoc. A block's optional
 ;     [Global] section may set caption and fields; with no Global,
 ;     every field appears in first-seen order.
-;   * The md2htm and md2html EXPORTS carry --mathjax (24 August 2026,
-;     from the AROW accessible-authoring lesson): TeX math in Markdown
+;   * The md2htm and md2html EXPORTS carry --mathml (was --mathjax from
+;     24 August 2026, changed 30 August 2026): TeX math in Markdown
 ;     reaches the browser as real, screen-reader-accessible math.
+;     MathML is now the better of the two and needs no script at all.
+;     Every major browser has rendered MathML natively since MathML Core
+;     reached Chromium in 2023; NVDA reads it from 2025.1 and has MathCAT
+;     built in from 2026.1, needing no add-on, and JAWS reads it from its
+;     2026 releases. MathJax meant fetching a large script from a content
+;     network every time a page opened -- so no math offline -- and its
+;     version 4 turned off the hidden MathML that screen readers had been
+;     relying on, in favour of speech of its own. Native MathML is
+;     smaller, works with no network, and is read by the screen reader
+;     itself rather than by a script.
 ;   * New: HTML and Markdown targets for doc, pdf, ppt, and pptx via
 ;     any2htm.cmd (2htm reads the source and makes HTML; EdSharp's
 ;     built-in ReverseMarkdown converter then makes the Markdown --
@@ -193,8 +203,8 @@ mdx2htm=%ProgDir%\Convert\mdx2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLon
 mdx2md=%ProgDir%\Convert\inixVert.exe "%SourceLong%" %Target% /quiet
 md2epub=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t epub -o %Target%
 md2epub3=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t epub3 -o %Target%
-md2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t html -s --mathjax -o %Target%
-md2html=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t html -s --mathjax -o %Target%
+md2htm=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t html -s --mathml -o %Target%
+md2html=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t html -s --mathml -o %Target%
 md2mw=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t mediawiki -o %Target%
 md2pdf=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -o %Target%
 md2rst=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f gfm -t rst -o %Target%
@@ -274,6 +284,92 @@ tt2txt=%ProgDir%\Convert\Pandoc\pandoc.exe "%SourceLong%" -f t2t -t plain -o %Ta
 ; still uses one can add a [Compiler <name>] section to the EdSharp.inix
 ; in their DATA folder, which upgrades never overwrite.
 
+[CompilerExtensions]
+; Which compiler section owns a file, by its extension. EdSharp reads
+; this when a document is opened or activated and makes that section the
+; current one, so the compile command, the part navigation, the comment
+; prefix, the indent unit and the snippet folder all describe the file
+; you are actually in.
+;
+; Before 30 August 2026 the compiler was one setting for the whole
+; program, changed only by Pick Compiler, Control+Shift+F5. With C#
+; chosen, a Python file compiled with csc, Alt+PageDown navigated by C#
+; parts, comments were quoted with two slashes and Alt+V offered C#
+; snippets -- four things wrong at once, and the cure was to remember.
+;
+; An extension named here must have a [Compiler <name>] section behind
+; it or nothing changes. An extension not named here changes nothing
+; either, so a plain text file leaves the last choice alone. Pick
+; Compiler still overrides, and setting FollowDocument to 0 in [Options]
+; turns the whole arrangement off.
+;
+; js goes to JavaScript rather than JScript .NET, since node runs a .js
+; file and jsc compiles one only when asked to.
+;
+; Add your own: pyw=Python claims another Python extension, and
+; vue=HTML hands a framework file to the HTML settings.
+
+atom="XML"
+bas="Visual Basic .NET"
+bat="Batch"
+bib="LaTeX"
+cjs="JavaScript"
+cls="LaTeX"
+cmd="Batch"
+config="XML"
+cs="C#"
+csx="C#"
+gemspec="Ruby"
+geojson="JSON"
+htm="HTML"
+html="HTML"
+inf="Inix"
+ini="Inix"
+inix="Inix"
+jkm="JAWS Script"
+js="JavaScript"
+jsh="JAWS Script"
+jsm="JAWS Script"
+json="JSON"
+jsonc="JSON"
+jss="JAWS Script"
+ltx="LaTeX"
+markdown="Markdown"
+md="Markdown"
+mdown="Markdown"
+mjs="JavaScript"
+mkd="Markdown"
+php="PHP"
+php5="PHP"
+phtml="PHP"
+pl="Perl"
+plx="Perl"
+pm="Perl"
+ps1="PowerShell"
+psd1="PowerShell"
+psm1="PowerShell"
+py="Python"
+pyi="Python"
+pyw="Python"
+rake="Ruby"
+rb="Ruby"
+rbw="Ruby"
+resx="XML"
+rss="XML"
+sql="SQL"
+sty="LaTeX"
+svg="XML"
+tex="LaTeX"
+vb="Visual Basic .NET"
+vbe="VBScript"
+vbs="VBScript"
+wsf="VBScript"
+xhtml="HTML"
+xml="XML"
+xsd="XML"
+xsl="XML"
+xslt="XML"
+
 [Compiler C#]
 ; csc reports "Program.cs(12,34): error CS1002: ; expected". The jump
 ; pattern is anchored on the parentheses so a "12,34" in the program's
@@ -293,6 +389,7 @@ AbbreviateOutput="^.*?\.cs"
 NavigatePart="^( |\t)*(public|private|protected|internal|static|class|namespace|void)\b"
 QuotePrefix="//"
 ExtensionDefault="cs"
+Extensions="csx"
 IndentUnit="    "
 GoToEnvironment="%CSharp%"
 
@@ -313,6 +410,7 @@ AbbreviateOutput="(^[ \t]*File ".*?", )|(^Traceback \(most recent call last\):[ 
 NavigatePart="^( |\t)*(async +)?(def|class) +\w+"
 QuotePrefix="#"
 ExtensionDefault="py"
+Extensions="pyw pyi"
 IndentUnit="    "
 GoToEnvironment="python.exe -i "%SourceLong%""
 
@@ -330,6 +428,7 @@ AbbreviateOutput="(^[ \t]*at .*node:(internal|diagnostics_channel).*$)|(file:///
 NavigatePart="^( |\t)*((async +)?function|class) +\w+"
 QuotePrefix="//"
 ExtensionDefault="js"
+Extensions="mjs cjs"
 IndentUnit="  "
 GoToEnvironment="node.exe -i"
 
@@ -349,6 +448,7 @@ AbbreviateOutput="^At .*\\"
 NavigatePart="^( |\t)*(function|class) +[\w-]+"
 QuotePrefix="#"
 ExtensionDefault="ps1"
+Extensions="psm1 psd1"
 IndentUnit="    "
 GoToEnvironment="powershell.exe -NoExit -ExecutionPolicy Bypass -File "%SourceLong%""
 
@@ -365,6 +465,7 @@ AbbreviateOutput="((^Compiling .*?\.js.)|(file .*?,))"
 NavigatePart="^( |\t)*(Function|Script) +\w+"
 QuotePrefix=";"
 ExtensionDefault="jss"
+Extensions="jsm jsh jkm"
 IndentUnit="\t"
 
 [Compiler JScript .NET]
@@ -384,6 +485,157 @@ QuotePrefix="//"
 ExtensionDefault="js"
 IndentUnit="  "
 GoToEnvironment="%Snippet%"
+
+[Compiler Visual Basic .NET]
+; vbc.exe sits beside csc.exe in every Windows .NET Framework folder, so
+; this needs nothing installed. Its errors read the same way csc's do,
+; "Program.vb(12) : error BC30201: Expression expected", so the jump
+; pattern is the parenthesised line number.
+; IndentUnit: four spaces, the Visual Basic convention.
+CompileCommand="%NetDir%\vbc.exe /nologo "%Source%" 2>&1"
+JumpPosition="\(\d+\)"
+AbbreviateOutput="^.*?\.vb"
+NavigatePart="^( |\t)*(Public |Private |Protected |Friend )?(Partial )?(Sub|Function|Class|Module|Structure|Property|Enum|Interface) +\w+"
+QuotePrefix="'"
+ExtensionDefault="vb"
+Extensions="bas"
+IndentUnit="    "
+
+[Compiler VBScript]
+; Windows still runs VBScript through cscript, but there is no syntax
+; check that does not also run the program, and running a script to find
+; out whether it parses is not a check. So no compile command -- the
+; value here is navigation and the right comment character.
+; Separate from Visual Basic .NET on purpose: vbc.exe compiles .vb and
+; cannot compile a .vbs, so one section could not serve both.
+NavigatePart="^( |\t)*(Public |Private )?(Sub|Function|Class) +\w+"
+QuotePrefix="'"
+ExtensionDefault="vbs"
+Extensions="wsf vbe"
+IndentUnit="    "
+
+[Compiler XML]
+; Well-formedness by the XML reader Windows already has, through a small
+; batch file in Convert so the quoting is settled in one place rather than
+; fought with here. The reader reports the line and position of the first
+; fault, which is what the jump pattern finds.
+; NavigatePart steps element by element, at any depth.
+CompileCommand=""%ProgDir%\Convert\checkXml.cmd" "%Source%" 2>&1"
+JumpPosition="line \d+"
+NavigatePart="^( |\t)*<[A-Za-z_]"
+QuotePrefix="<!-- "
+ExtensionDefault="xml"
+Extensions="xsl xslt xsd rss atom svg config resx"
+IndentUnit="  "
+
+[Compiler JSON]
+; Parsed by the same PowerShell every Windows carries, again through a
+; batch file in Convert. A JSON fault has no reliable line number in the
+; message, so no jump pattern is offered rather than one that misleads.
+; NavigatePart finds the keys at the top level of an object.
+CompileCommand=""%ProgDir%\Convert\checkJson.cmd" "%Source%" 2>&1"
+NavigatePart="^  ?\"[^\"]+\" *:"
+QuotePrefix="// "
+ExtensionDefault="json"
+Extensions="jsonc geojson"
+IndentUnit="  "
+
+[Compiler HTML]
+; No compiler: a browser accepts almost anything, so there is nothing
+; useful to report as an error. What there is instead is navigation --
+; Alt+PageDown steps heading to heading and landmark to landmark, which
+; is how a page is read rather than how it is written.
+NavigatePart="<(h[1-6]|main|nav|header|footer|aside|section|article|form|table)\b"
+QuotePrefix="<!-- "
+ExtensionDefault="htm"
+Extensions="html xhtml"
+IndentUnit="  "
+
+[Compiler Markdown]
+; The checker for Markdown is the Check Markdown command, Alt+F9, which
+; reports heading jumps, missing alt text, bare addresses, unclosed
+; fences, uneven tables and diagram problems. So no compile command.
+; NavigatePart steps heading to heading.
+NavigatePart="^#{1,6} +\S"
+QuotePrefix="> "
+ExtensionDefault="md"
+Extensions="markdown mdown mkd"
+IndentUnit="  "
+
+[Compiler Inix]
+; Settings files, EdSharp's own format among them. Nothing to compile;
+; the value is stepping section to section in a long file.
+NavigatePart="^\["
+QuotePrefix="; "
+ExtensionDefault="inix"
+Extensions="ini inf"
+IndentUnit="  "
+
+[Compiler Batch]
+; The Windows command interpreter has no syntax check -- the only way to
+; find out is to run it, which is not a check. NavigatePart steps label
+; to label, which is how a batch file is structured.
+NavigatePart="^:[A-Za-z_]"
+QuotePrefix="rem "
+ExtensionDefault="cmd"
+Extensions="bat"
+IndentUnit="  "
+
+[Compiler SQL]
+; No checker without a database to check against. NavigatePart steps
+; statement to statement.
+NavigatePart="^( |\t)*(SELECT|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP|WITH|BEGIN|COMMIT)\b"
+QuotePrefix="-- "
+ExtensionDefault="sql"
+IndentUnit="  "
+
+[Compiler LaTeX]
+; Returned to the shipped table on 30 August 2026, having been retired on
+; 24 August as not realistically relevant. It earns its place back for
+; one reason: LaTeX is how accessible mathematics is written, and Pandoc
+; now converts that mathematics to MathML, which a screen reader reads.
+; The compile command needs MiKTeX; without it the command simply is not
+; found, and the navigation and comment settings still work.
+CompileCommand="pdflatex -halt-on-error -draftmode -interaction=nonstopmode "%Source%" 2>&1"
+JumpPosition="line \d+"
+NavigatePart="^\\(chapter|section|subsection|subsubsection|paragraph|begin\{(document|abstract|figure|table|equation)\})"
+QuotePrefix="% "
+ExtensionDefault="tex"
+Extensions="ltx sty cls bib"
+IndentUnit="  "
+
+[Compiler Perl]
+; perl -c checks syntax without running the program, which is the whole
+; of what is wanted here. Needs Perl on the path; without it the command
+; is not found and the other settings still work.
+CompileCommand="perl -c "%Source%" 2>&1"
+JumpPosition="line \d+"
+NavigatePart="^( |\t)*(sub|package) +\w+"
+QuotePrefix="#"
+ExtensionDefault="pl"
+Extensions="pm plx"
+IndentUnit="    "
+
+[Compiler PHP]
+; php -l is the lint mode: syntax only, nothing run.
+CompileCommand="php -l "%Source%" 2>&1"
+JumpPosition="line \d+"
+NavigatePart="^( |\t)*(abstract +|final +)?(public +|private +|protected +)?(static +)?(function|class|interface|trait) +\w+"
+QuotePrefix="//"
+ExtensionDefault="php"
+Extensions="php5 phtml"
+IndentUnit="    "
+
+[Compiler Ruby]
+; ruby -c checks syntax and prints "Syntax OK" when there is nothing to
+; report.
+CompileCommand="ruby -c "%Source%" 2>&1"
+JumpPosition="line \d+"
+NavigatePart="^( |\t)*(def|class|module) +\w+"
+QuotePrefix="#"
+ExtensionDefault="rb"
+Extensions="rbw rake gemspec"
+IndentUnit="  "
 
 [Compiler Default]
 ; No compiler: plain writing and editing. The quote prefix is the one
