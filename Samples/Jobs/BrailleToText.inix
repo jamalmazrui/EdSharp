@@ -1,0 +1,23 @@
+﻿; Turn a braille-ready file into something to read.
+;
+; From a tester working on .brf files. Two things worth copying:
+;
+; The print page indicator becomes a space and an x and the page number, so
+; a print page can still be found. The Replace value is QUOTED, which is how
+; a leading or trailing space survives -- a value on one line is trimmed
+; otherwise, and the space would be lost.
+;
+; Order matters: the page indicators are handled before the blank lines they
+; leave behind are tidied away.
+
+[print page numbers]
+Find="\n-{5,}\s*(\d+)"
+Replace=" x$1"
+
+[form feeds]
+Find="\f"
+Replace=""
+
+[runs of blank lines]
+Find="\n{3,}"
+Replace="\n\n"

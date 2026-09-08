@@ -1,0 +1,12 @@
+﻿text form caret
+```mermaid
+gantt
+    title %Chart title=Project schedule%
+    accTitle: %Diagram name=Project schedule%
+    accDescr: %Description=Two tasks in one section, the second beginning after the first finishes.%
+    dateFormat YYYY-MM-DD
+    section %Section=Planning%
+    %First task=Draft the plan% :a1, %Start date=2026-09-01%, %First length=7d%
+    %Second task=Review the plan% :after a1, %Second length=5d%
+^^
+```

@@ -1,0 +1,9 @@
+﻿text form caret
+```mermaid
+erDiagram
+    accTitle: %Diagram name=Customers and orders%
+    accDescr: %Description=One customer places many orders, and each order contains many items.%
+    %First entity=CUSTOMER% ||--o{ %Second entity=ORDER% : %First relationship=places%
+    %Second entity=ORDER% ||--|{ %Third entity=ITEM% : %Second relationship=contains%
+^^
+```

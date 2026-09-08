@@ -5,7 +5,6 @@
 # releases it. This file does not decide that and cannot: git ignores nothing
 # that is already tracked. Its only job is to keep the working folder's own
 # leavings from being swept in by a careless "git add -A".
-#
 # Keep it short. The previous copy reached 1,226 lines by recording every
 # stray file the folder had ever held, which is a page of noise to read past
 # and protects nothing that the policy does not already cover.
@@ -47,3 +46,23 @@ desktop.ini
 
 # Names that must never return.
 InPy.exe
+
+# Untracked by tidyRepo: files that reached the repository
+# through git add -A, plus the names that must never return.
+# A folder pattern covers a stray folder with nothing the
+# project needs inside it.
+Accessible_Charts_Sample.htm
+Accessible_Charts_Sample.md
+BuildEdSharp.log
+Convert/checkJson.cmd
+Convert/checkXml.cmd
+EdSharp_setup.exe
+Handover.md
+Mermaid_Sample.htm
+Mermaid_Sample.md
+Pandoc_Office_Guide.htm
+Pandoc_Office_Guide.md
+journal_article.bib
+journal_article.htm
+journal_article.md
+tidyRepo.log

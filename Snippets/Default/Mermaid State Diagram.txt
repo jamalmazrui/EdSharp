@@ -1,0 +1,12 @@
+﻿text form caret
+```mermaid
+stateDiagram-v2
+    accTitle: %Diagram name=Order states%
+    accDescr: %Description=An order starts as a draft, is submitted for review, and is then either approved or returned to draft.%
+    [*] --> %First state=Draft%
+    %First state=Draft% --> %Second state=Submitted%
+    %Second state=Submitted% --> %Third state=Approved%
+    %Second state=Submitted% --> %First state=Draft%
+    %Third state=Approved% --> [*]
+^^
+```

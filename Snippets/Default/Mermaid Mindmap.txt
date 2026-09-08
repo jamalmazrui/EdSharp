@@ -1,0 +1,14 @@
+﻿text form caret
+```mermaid
+mindmap
+    accTitle: %Diagram name=Topic map%
+    accDescr: %Description=A central topic with two branches, each holding two smaller ideas.%
+    root((%Centre=Topic%))
+        %First branch=First branch%
+            %First idea=One idea%
+            %Second idea=Another idea%
+        %Second branch=Second branch%
+            %Third idea=A third idea%
+            %Fourth idea=A fourth idea%
+^^
+```

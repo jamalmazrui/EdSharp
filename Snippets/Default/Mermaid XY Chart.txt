@@ -1,0 +1,11 @@
+﻿text form caret
+```mermaid
+xychart-beta
+    title "%Chart title=Sales by quarter%"
+    accTitle: %Diagram name=Sales by quarter%
+    accDescr: %Description=A line rising across four quarters, from the lowest value in the first to the highest in the fourth.%
+    x-axis [%First label=Q1%, %Second label=Q2%, %Third label=Q3%, %Fourth label=Q4%]
+    y-axis "%Y axis name=Sales%" 0 --> %Top of scale=100%
+    line [%First value=20%, %Second value=45%, %Third value=60%, %Fourth value=85%]
+^^
+```

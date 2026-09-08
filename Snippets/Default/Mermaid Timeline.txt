@@ -1,0 +1,11 @@
+﻿text form caret
+```mermaid
+timeline
+    title %Chart title=How it happened%
+    accTitle: %Diagram name=How it happened%
+    accDescr: %Description=Three periods in order, each with what happened in it.%
+    %First period=2024% : %First event=It began%
+    %Second period=2025% : %Second event=It grew%
+    %Third period=2026% : %Third event=It finished%
+^^
+```

@@ -1,0 +1,15 @@
+﻿text form caret
+```mermaid
+classDiagram
+    accTitle: %Diagram name=Document classes%
+    accDescr: %Description=A base class with one field and one method, and a derived class that adds a second method.%
+    class %Base class=Document% {
+        +string %Field=title%
+        +%Method=open%()
+    }
+    class %Derived class=Report% {
+        +%Second method=publish%()
+    }
+    %Base class=Document% <|-- %Derived class=Report%
+^^
+```
