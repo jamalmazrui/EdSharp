@@ -14,7 +14,7 @@ follows has nothing to find.
 
 WHICH FILES: the ones RepoFiles.txt names (a folder named there means its
 text files), because those are the project's own. A stray file in the folder
-is homerTidy's business, not this tool's, and is left as it is. Without a
+is tidy's business, not this tool's, and is left as it is. Without a
 RepoFiles.txt the tool does nothing and says so.
 
 Run it in the project folder or its scripts folder; both mean the project.

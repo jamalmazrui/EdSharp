@@ -2,16 +2,16 @@
 setlocal enabledelayedexpansion
 set "sScript=%~n0"
 set "sCallerDir=%~dp0"
-if not exist "%~dp0homerInstall.cmd" (
+if not exist "%~dp0installCommon.cmd" (
   echo(
-  echo homerInstall.cmd is missing from %~dp0
+  echo installCommon.cmd is missing from %~dp0
   echo That file is part of this program. Reinstall, or copy it from the
   echo program's zip into this folder, and run this again.
   echo(
   if not defined noPause pause
   exit /b 1
 )
-call "%~dp0homerInstall.cmd" setup "%~f0" %*
+call "%~dp0installCommon.cmd" setup "%~f0" %*
 rem installNode.cmd -- part of EdSharp setup, Homer Tools pattern: probe first,
 rem update when present, install when absent, pause on failure so the
 rem reason is logged. NOTHING PAUSES: a console waiting for a keypress

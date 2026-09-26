@@ -2,16 +2,16 @@
 setlocal enabledelayedexpansion
 set "sScript=%~n0"
 set "sCallerDir=%~dp0"
-if not exist "%~dp0homerInstall.cmd" (
+if not exist "%~dp0installCommon.cmd" (
   echo(
-  echo homerInstall.cmd is missing from %~dp0
+  echo installCommon.cmd is missing from %~dp0
   echo That file is part of this program. Reinstall, or copy it from the
   echo program's zip into this folder, and run this again.
   echo(
   if not defined noPause pause
   exit /b 1
 )
-call "%~dp0homerInstall.cmd" setup "%~f0" %*
+call "%~dp0installCommon.cmd" setup "%~f0" %*
 rem installTranslateModel.cmd -- install the larger AI model EdSharp uses for
 rem translation when it is present. The small chat model translates
 rem passably; this one translates well, at about 5 gigabytes.

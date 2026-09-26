@@ -1,4 +1,4 @@
-# EdSharp Conversion Scripts -- Audit and Notes
+﻿# EdSharp Conversion Scripts -- Audit and Notes
 
 This documents the conversion batch files, how EdSharp runs them, what was wrong
 with the old ones, and the new `.cmd` replacements. New files in this drop:

@@ -1,4 +1,4 @@
-### Coding Styles
+﻿### Coding Styles
 
 Coding style, or programming style, is a set of rules or guidelines 
 used when writing the source code. It is often claimed that following 

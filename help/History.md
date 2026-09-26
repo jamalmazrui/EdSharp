@@ -4,6 +4,14 @@ A human-readable record of fixes and enhancements, newest first. Each entry
 says what changed and why, so a future reader -- or a future maintainer --
 can judge the decision, not just observe it.
 
+## 26 September 2026 -- brought up to HomerDev 1.43.10
+
+- **The installer is written to the top of the project**, where the kit's release script looks for it. The release that day stopped with "EdSharp_Setup.exe not found" because the installer was in exec. The file keeps its name, EdSharp_Setup.exe: it is the asset every installed EdSharp downloads with F11.
+- **The kit's scripts under their plain names.** The build refreshes check, push, release, tidy, unpushed, finish and installCommon into scripts and deletes the old checkHomerApp, gitPush, gitUnpushed, homerFinish, homerInstall, homerTidy and tagRelease copies. EdSharp's own install scripts and the installer use installCommon.cmd, the shared half of every install script.
+- **The table conversions find inixVert.exe.** The build wrote it to Convert, the layout-before-the-kit's folder; the Import and Export tables run it from configs\convert, which is where it goes now.
+- **The documents are converted again.** The build looked for pandoc in Convert\Pandoc, which the Homer layout no longer has, so no .htm had been regenerated since the move. It uses the pandoc on the PATH, as the conversions do, and now converts the documents in help as well as the ReadMe and License.
+- **Tidier repository.** The copies of the kit's classes and the root tagRelease pair are removed from the top of the project; git records buildEdSharp.cmd, buildEdSharp.ps1 and EdSharp_setup.iss under their current capitals; and `.gitattributes` keeps the Homer CRLF line endings as they are, rather than converting them.
+
 ## 26 September 2026 -- moved to the Homer Development Kit
 
 **Two reports from a beta tester, both taken.** A file opened by pressing

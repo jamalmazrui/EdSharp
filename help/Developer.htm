@@ -181,20 +181,20 @@ the compiler.</p>
 <li><strong>buildEdSharp</strong> -- steps version.txt, writes
 Version.cs, refreshes the kit's tools into scripts, puts the files into
 the Homer encoding, speaks any tutorial with no audio yet, then compiles
-and builds the installer into exec.</li>
+into exec and builds EdSharp_Setup.exe at the top of the project.</li>
 <li><strong>exec\EdSharp.exe</strong> -- the quick test.</li>
-<li><strong>scripts\checkHomerApp --build</strong> -- the checks that
-decide whether a release may happen.</li>
-<li><strong>scripts\gitPush "a message"</strong> -- rewrites the ignore
+<li><strong>scripts\check --build</strong> -- the checks that decide
+whether a release may happen.</li>
+<li><strong>scripts\push "a message"</strong> -- rewrites the ignore
 whitelist from RepoFiles.txt, commits and pushes.</li>
-<li><strong>scripts\tagRelease</strong> -- tags the pushed commit with
-the version stamped in exec\EdSharp_setup.exe and publishes the
-installer.</li>
+<li><strong>scripts\release</strong> -- runs scripts\check, then tags
+the pushed commit with the version stamped in EdSharp_Setup.exe and
+publishes the installer.</li>
 </ol>
 <p><code>buildEdSharp nobump</code> keeps the current number.
-<code>scripts\homerTidy --do-it</code> is the periodic clean, and
-<code>scripts\gitUnpushed</code> undoes a local commit that should not
-go up.</p>
+<code>scripts\tidy</code> is the periodic clean, and
+<code>scripts\unpushed</code> undoes a local commit that should not go
+up.</p>
 <h3 id="where-things-are">Where things are</h3>
 <p>The development folder mirrors the installed one, and every standard
 folder starts with a different letter so the list can be walked by
@@ -222,7 +222,7 @@ folder". Nothing binary is named, and version.txt never leaves this
 machine.</p>
 <h3 id="the-version">The version</h3>
 <p>version.txt holds it, the build steps it and writes Version.cs from
-it, the installer reads it, and tagRelease reads it back out of the
+it, the installer reads it, and scripts\release reads it back out of the
 built installer's version resource. It used to live as AppVersion in the
 .iss and be derived from the release tags on the remote.</p>
 <p>How EdSharp is built, how it is put together, and the conventions it
@@ -351,10 +351,10 @@ Write the Markdown; never edit the .htm.</p>
 which is also what Key Describer and the Alternate Menu read. Changing a
 description means changing that table, not the file.</p>
 <h2 id="releasing">Releasing</h2>
-<p>Build, test, then <strong>tagRelease</strong>, which tags the version
-the build wrote into the installer script and pushes it. Releases before
-v5.0.20 include executables that cannot start and should not be
-installed.</p>
+<p>Build, test, push, then <strong>scripts\release</strong>, which tags
+the version the build wrote into the installer and publishes it.
+Releases before v5.0.20 include executables that cannot start and should
+not be installed.</p>
 <p>Jamal Mazrui</p>
 </body>
 </html>

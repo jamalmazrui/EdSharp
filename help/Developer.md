@@ -17,18 +17,18 @@ Then, in C:\EdSharp:
 
 1. **buildEdSharp** -- steps version.txt, writes Version.cs, refreshes the
    kit's tools into scripts, puts the files into the Homer encoding, speaks
-   any tutorial with no audio yet, then compiles and builds the installer
-   into exec.
+   any tutorial with no audio yet, then compiles into exec and builds
+   EdSharp_Setup.exe at the top of the project.
 2. **exec\EdSharp.exe** -- the quick test.
-3. **scripts\checkHomerApp --build** -- the checks that decide whether a
+3. **scripts\check --build** -- the checks that decide whether a
    release may happen.
-4. **scripts\gitPush "a message"** -- rewrites the ignore whitelist from
+4. **scripts\push "a message"** -- rewrites the ignore whitelist from
    RepoFiles.txt, commits and pushes.
-5. **scripts\tagRelease** -- tags the pushed commit with the version stamped
-   in exec\EdSharp_setup.exe and publishes the installer.
+5. **scripts\release** -- runs scripts\check, then tags the pushed commit with
+   the version stamped in EdSharp_Setup.exe and publishes the installer.
 
-`buildEdSharp nobump` keeps the current number. `scripts\homerTidy --do-it`
-is the periodic clean, and `scripts\gitUnpushed` undoes a local commit that
+`buildEdSharp nobump` keeps the current number. `scripts\tidy` is the
+periodic clean, and `scripts\unpushed` undoes a local commit that
 should not go up.
 
 ### Where things are
@@ -57,7 +57,7 @@ binary is named, and version.txt never leaves this machine.
 ### The version
 
 version.txt holds it, the build steps it and writes Version.cs from it, the
-installer reads it, and tagRelease reads it back out of the built
+installer reads it, and scripts\release reads it back out of the built
 installer's version resource. It used to live as AppVersion in the .iss and
 be derived from the release tags on the remote.
 
@@ -194,8 +194,8 @@ means changing that table, not the file.
 
 ## Releasing
 
-Build, test, then **tagRelease**, which tags the version the build wrote into
-the installer script and pushes it. Releases before v5.0.20 include
+Build, test, push, then **scripts\release**, which tags the version the build
+wrote into the installer and publishes it. Releases before v5.0.20 include
 executables that cannot start and should not be installed.
 
 Jamal Mazrui

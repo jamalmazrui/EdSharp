@@ -25,16 +25,16 @@ set "sCallerDir=%~dp0"
 rem IF THE SHARED HALF IS MISSING, SAY SO. It was left out of the installer
 rem once, and every script that calls it died at this line -- no message, no
 rem log folder, nothing to diagnose from. A missing file must announce itself.
-if not exist "%~dp0homerInstall.cmd" (
+if not exist "%~dp0installCommon.cmd" (
   echo(
-  echo homerInstall.cmd is missing from %~dp0
+  echo installCommon.cmd is missing from %~dp0
   echo That file is part of this program. Reinstall, or copy it from the
   echo program's zip into this folder, and run this again.
   echo(
   if not defined noPause pause
   exit /b 1
 )
-call "%~dp0homerInstall.cmd" setup "%~f0" %*
+call "%~dp0installCommon.cmd" setup "%~f0" %*
 
 
 
@@ -86,7 +86,7 @@ echo downloaded and installed now: about 1 GB, and a few minutes. Nothing is
 echo asked of you while it runs.
 winget upgrade --id Ollama.Ollama --exact --silent --accept-source-agreements --accept-package-agreements >> "%log%" 2>&1
 set "iUp=%ERRORLEVEL%"
-call "%~dp0homerInstall.cmd" log "winget upgrade exit code %iUp%"
+call "%~dp0installCommon.cmd" log "winget upgrade exit code %iUp%"
 if "%iUp%"=="0" echo Ollama was updated.
 if not "%iUp%"=="0" echo Ollama is already the newest winget offers.
 call :findOllama

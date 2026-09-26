@@ -1,0 +1,3 @@
+@echo off
+rem unpushed.cmd -- undo the commits not yet pushed, keeping every file. Run in the project folder.
+python "%~dp0unpushed.py" %*
