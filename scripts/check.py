@@ -183,12 +183,19 @@ def appName():
 
 
 def sourceFiles():
+    """The project's own .cs and .py files: those RepoFiles.txt names, when it
+    exists. A leftover in the folder -- EdSharp's pre-kit Samples folder, its
+    fruitBasket.cs still on disk though no longer tracked -- is tidy's
+    business, as it is for the encoding check (1.43.11)."""
+    lsNamed = namedByProject()
     lsFiles = []
     for sDirPath, lsDirs, lsNames in os.walk(sRoot):
         lsDirs[:] = [s for s in lsDirs if s.lower() not in c_lsSkipFolders]
         for sName in sorted(lsNames):
             if sName.lower().endswith((".cs", ".py")):
-                lsFiles.append(os.path.join(sDirPath, sName))
+                sPath = os.path.join(sDirPath, sName)
+                if lsNamed is not None and not isNamed(os.path.relpath(sPath, sRoot), lsNamed): continue
+                lsFiles.append(sPath)
     return lsFiles
 
 
@@ -272,6 +279,14 @@ def checkEncoding():
     # the folder is tidy's business; 54 of the 72 faults that refused a
     # release on 25 Sep 2026 were strays the project never named.
     lsNamed = namedByProject()
+    # KeepEncoding.txt names other people's files, which keep the encoding
+    # they came with; fixEncoding leaves them alone, so the check does too.
+    lsKeep = []
+    sKeepPath = os.path.join(sRoot, "KeepEncoding.txt")
+    if os.path.isfile(sKeepPath):
+        for sLine in readText(sKeepPath).splitlines():
+            sLine = sLine.strip()
+            if sLine and not sLine.startswith(("#", ";")): lsKeep.append(sLine.replace("\\", "/").lower().lstrip("/"))
     lsWrong = []
     iChecked = 0
     for sDirPath, lsDirs, lsNames in os.walk(sRoot):
@@ -281,6 +296,7 @@ def checkEncoding():
             if not sName.lower().endswith(c_lsTextExt): continue
             sPath = os.path.join(sDirPath, sName)
             if lsNamed is not None and not isNamed(os.path.relpath(sPath, sRoot), lsNamed): continue
+            if lsKeep and isNamed(os.path.relpath(sPath, sRoot), lsKeep): continue
             sShown = os.path.relpath(sPath, sRoot).replace(os.sep, "/")
             try:
                 binData = open(sPath, "rb").read()

@@ -170,7 +170,7 @@ c_lsStandingNames = [
     r"^install[a-z0-9_]*\.(cmd|ps1)$", r"^get[a-z0-9_]*\.(cmd|ps1)$",
     # A project's own script logs are rewritten on every run and are already
     # ignored by git, so they stay where the script that writes them expects.
-    r"^localfiles\.txt$", r"^self\.(md|htm)$",
+    r"^localfiles\.txt$", r"^keepencoding\.txt$", r"^self\.(md|htm)$",
     r"^(homertidy|tagrelease|summarizesetup)\.log$",
     r"^(build|create|new|clean|tidy)[a-z0-9_]*\.log$",
     r"^[a-z0-9_+-]+\.(cs|py|js|iss|ico|inix|manifest|config|lua)$",
@@ -294,6 +294,17 @@ def placementFor(sRelative, lsNamed):
     if sNorm.lower().endswith(".log") and not sNorm.lower().startswith("logs/"):
         return "logs"
     if "/" in sNorm: return ""
+    # WHERE THE PROJECT SAYS A FILE LIVES, IT STAYS (1.43.11). EdSharp keeps
+    # Tektosyne.dll and nvdaControllerClient.dll at the top, named there in
+    # RepoFiles.txt, and the libraries its build fetches there too, under a
+    # *.dll line in LocalFiles.txt; its installer ships them from exec, where
+    # the build copies them. Seeing the installer's exec\ names, tidy "put
+    # them in place" -- found exec already held the build's copy -- and moved
+    # every one into notes, and git recorded the two carried libraries as
+    # deleted. A file RepoFiles.txt or LocalFiles.txt names where it is is in
+    # its place.
+    if matchesAny(sNorm, exactNames(namedByRepoFiles())) or matchesAny(sNorm, namedByLocalFiles()):
+        return ""
     for sNamed in lsNamed:
         sNamedNorm = sNamed.replace("\\", "/")
         if "/" not in sNamedNorm or "*" in sNamedNorm: continue
@@ -440,7 +451,7 @@ def matchesAny(sRelative, lsNames):
 # 26 September found "0 files tracked that the project does not name" while
 # all four were tracked and RepoFiles.txt names none of them. A tracked file
 # now stays only when RepoFiles.txt names it and LocalFiles.txt does not.
-c_lsAlwaysTracked = [".gitattributes", ".gitignore", "LocalFiles.txt", "RepoFiles.txt"]
+c_lsAlwaysTracked = [".gitattributes", ".gitignore", "KeepEncoding.txt", "LocalFiles.txt", "RepoFiles.txt"]
 
 
 def exactNames(lsNames):
@@ -572,6 +583,7 @@ def writeWhitelistGitignore():
     # .gitattributes, which keeps the Homer CRLF line endings, is put back
     # whether or not RepoFiles.txt names it, as .gitignore is.
     lsLines.append("!/.gitattributes")
+    lsLines.append("!/KeepEncoding.txt")
     lsLines.append("")
     lsLocal = namedByLocalFiles()
     if lsLocal:

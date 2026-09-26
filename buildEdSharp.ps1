@@ -486,6 +486,14 @@ try {
 
   # ---- 4. NVDA controller client (optional) ----
   $sNvdaDllFile = Join-Path $sScriptDir "nvdaControllerClient.dll"
+  # CARRIED BY THE REPOSITORY, SO RESTORED LIKE TEKTOSYNE. A tidy before kit
+  # 1.43.11 moved it from the top of the project into notes; the copy the
+  # build left in exec is taken back rather than fetching from an address
+  # that dies with each NVDA release.
+  if (-not (Test-Path -LiteralPath $sNvdaDllFile)) {
+    $sNvdaKept = Join-Path $sExecDir "nvdaControllerClient.dll"
+    if (Test-Path -LiteralPath $sNvdaKept) { Copy-Item -LiteralPath $sNvdaKept -Destination $sNvdaDllFile -Force; writeLog "nvdaControllerClient.dll restored from $sNvdaKept" }
+  }
   if (Test-Path -LiteralPath $sNvdaDllFile) { writeLog "nvdaControllerClient.dll already present; fetch skipped." }
   else {
     try {

@@ -25,6 +25,7 @@
 !/EdSharp.manifest
 !/EdSharp_setup.iss
 !/help/
+!/KeepEncoding.txt
 !/License.htm
 !/License.md
 !/LocalFiles.txt
@@ -39,6 +40,7 @@
 !/templates/
 !/.gitignore
 !/.gitattributes
+!/KeepEncoding.txt
 
 # On this disk only, from LocalFiles.txt.
 version.txt

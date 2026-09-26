@@ -12,6 +12,13 @@ a release was refused because eighteen delivered .htm files had never been
 put right. Every Homer build runs this over its own files, so the check that
 follows has nothing to find.
 
+OTHER PEOPLE'S FILES KEEP THEIR ENCODING (1.43.11). A project may carry
+third-party tools, dictionaries, or files that demonstrate another encoding;
+a byte order mark on a Lua filter or a tool's config file is read as part of
+its first line. KeepEncoding.txt, beside RepoFiles.txt and in the same form --
+a folder ending in /, a file, or a pattern with * -- names what this tool and
+check leave exactly as it is.
+
 WHICH FILES: the ones RepoFiles.txt names (a folder named there means its
 text files), because those are the project's own. A stray file in the folder
 is tidy's business, not this tool's, and is left as it is. Without a
@@ -61,8 +68,33 @@ def readNamed(sRoot):
     return lsNamed
 
 
+def readKeep(sRoot):
+    """The entries of KeepEncoding.txt, lower case with forward slashes."""
+    sPath = os.path.join(sRoot, "KeepEncoding.txt")
+    if not os.path.isfile(sPath): return []
+    lsKeep = []
+    with io.open(sPath, encoding="utf-8-sig") as oFile:
+        for sLine in oFile:
+            sLine = sLine.strip()
+            if not sLine or sLine.startswith("#") or sLine.startswith(";"): continue
+            lsKeep.append(sLine.replace("\\", "/").lower().lstrip("/"))
+    return lsKeep
+
+
+def isKept(sRoot, sPath, lsKeep):
+    """Does KeepEncoding.txt name this file, its folder, or a pattern it fits?"""
+    sRel = os.path.relpath(sPath, sRoot).replace(os.sep, "/").lower()
+    for sKeep in lsKeep:
+        if sKeep == sRel: return True
+        if sKeep.endswith("/") and sRel.startswith(sKeep): return True
+        if "*" in sKeep and re.match("^" + re.escape(sKeep).replace(r"\*", ".*") + "$", sRel): return True
+    return False
+
+
 def ownFiles(sRoot, lsNamed):
-    """Every text file the whitelist covers, as absolute paths."""
+    """Every text file the whitelist covers, as absolute paths, less what
+    KeepEncoding.txt keeps as it is."""
+    lsKeep = readKeep(sRoot)
     lsFiles = []
     for sNamed in lsNamed:
         if sNamed.endswith("/"):
@@ -77,6 +109,7 @@ def ownFiles(sRoot, lsNamed):
         else:
             sPath = os.path.join(sRoot, sNamed.replace("/", os.sep))
             if os.path.isfile(sPath) and sPath.lower().endswith(c_lsTextExt): lsFiles.append(sPath)
+    lsFiles = [sPath for sPath in lsFiles if not isKept(sRoot, sPath, lsKeep)]
     lsSeen = []
     for sPath in lsFiles:
         sKey = os.path.normcase(os.path.abspath(sPath))

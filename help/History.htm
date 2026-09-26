@@ -165,6 +165,9 @@
   </style>
 </head>
 <body>
+<header id="title-block-header">
+<h1 class="title">History</h1>
+</header>
 <h1 id="edsharp-history">EdSharp History</h1>
 <p>A human-readable record of fixes and enhancements, newest first. Each
 entry says what changed and why, so a future reader -- or a future
@@ -192,6 +195,20 @@ for pandoc in Convert\Pandoc, which the Homer layout no longer has, so
 no .htm had been regenerated since the move. It uses the pandoc on the
 PATH, as the conversions do, and now converts the documents in help as
 well as the ReadMe and License.</li>
+<li><strong>The two carried libraries come back.</strong> A tidy on 26
+September moved Tektosyne.dll and nvdaControllerClient.dll from the top
+of the project into notes, and git recorded them as deleted; kit 1.43.11
+leaves them where they are. The build restores each from exec when the
+top copy is missing, so the next push carries them again.</li>
+<li><strong>Other people's files keep their encoding.</strong>
+KeepEncoding.txt names configs\convert, data\dictionaries and
+templates\snippets\LaTeX, which fixEncoding and the kit's check now
+leave as they came -- a byte order mark on a Lua filter or a tool's
+config is read as part of its first line.</li>
+<li><strong>The fruit basket sample names its fields once.</strong> It
+set an accessible name repeating each label, so a screen reader said
+"Fruit" twice; the labels now come just before their fields in tab
+order, which names them.</li>
 <li><strong>Tidier repository.</strong> The copies of the kit's classes
 and the root tagRelease pair are removed from the top of the project;
 git records buildEdSharp.cmd, buildEdSharp.ps1 and EdSharp_setup.iss

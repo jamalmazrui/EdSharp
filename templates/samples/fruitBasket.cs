@@ -49,14 +49,19 @@ lblFruit = new Label();
 lblFruit.Text = "&Fruit:";
 lblFruit.AutoSize = true;
 lblFruit.Anchor = AnchorStyles.Left;
+// The label comes just before its field in tab order, which is how WinForms
+// names the field; an AccessibleName saying the same words again would make
+// a screen reader say them twice.
+lblFruit.TabIndex = 0;
 
 txtFruit = new TextBox();
 txtFruit.Dock = DockStyle.Fill;
-txtFruit.AccessibleName = "Fruit";
+txtFruit.TabIndex = 1;
 
 btnAdd = new Button();
 btnAdd.Text = "&Add";
 btnAdd.AutoSize = true;
+btnAdd.TabIndex = 2;
 btnAdd.Click += new EventHandler(this.addClick);
 this.AcceptButton = btnAdd;
 
@@ -64,15 +69,17 @@ lblBasket = new Label();
 lblBasket.Text = "&Basket:";
 lblBasket.AutoSize = true;
 lblBasket.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+lblBasket.TabIndex = 3;
 
 lbBasket = new ListBox();
 lbBasket.Dock = DockStyle.Fill;
-lbBasket.AccessibleName = "Basket";
+lbBasket.TabIndex = 4;
 lbBasket.KeyDown += new KeyEventHandler(this.basketKeyDown);
 
 btnDelete = new Button();
 btnDelete.Text = "&Delete";
 btnDelete.AutoSize = true;
+btnDelete.TabIndex = 5;
 btnDelete.Anchor = AnchorStyles.Top;
 btnDelete.Click += new EventHandler(this.deleteClick);
 

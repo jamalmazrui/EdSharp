@@ -35,6 +35,10 @@ nvdaControllerClient.dll
 ; How git keeps the Homer CRLF line endings
 .gitattributes
 
+; Other people's files -- the conversion tools, the dictionaries, the LaTeX
+; encoding examples -- which fixEncoding and check leave as they came
+KeepEncoding.txt
+
 ; Build and release
 buildEdSharp.cmd
 buildEdSharp.ps1
