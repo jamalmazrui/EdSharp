@@ -373,7 +373,15 @@ def checkKeys():
         if isLibrary(sPath, sText): continue
         sText = codeLines(sText)
         sBase = os.path.basename(sPath)
+        # ALT+CONTROL IS FOR DESKTOP SHORTCUTS -- with one family excepted (25 Sep
+        # 2026): the navigation keys. Alt+Control with an arrow, Home, End, Page
+        # Up or Page Down moves a cursor inside a window and takes nothing from
+        # the desktop, which uses letters. A desktop shortcut's own letter --
+        # Alt+Control+D opens DbDo -- is the sanctioned use and is not in source.
+        c_lsNavigation = ("arrow", "arrows", "up", "down", "left", "right", "home", "end",
+                          "pageup", "pagedown", "uparrow", "downarrow", "leftarrow", "rightarrow")
         for sKey in re.findall(r"\b(?:Alt\+Control|Control\+Alt)\+\w+", sText):
+            if sKey.rsplit("+", 1)[1].lower() in c_lsNavigation: continue
             lsBad.append("%s: %s is reserved for Windows desktop shortcuts" % (sBase, sKey))
         # ACCESS LETTERS COMPETE ONLY WHERE THEY ARE PRESSED.
         #
@@ -392,8 +400,17 @@ def checkKeys():
         for sLine in sText.splitlines():
             oDef = re.match(r"\s{0,8}(?:public |private |internal |protected |static |override |virtual |async )+[\w<>\[\],\s\.]+?\s(\w+)\s*\(", sLine)
             if oDef: sMethod = oDef.group(1)
-            for oHit in re.finditer(r'(?:\b\w+\(\s*(\w+)\s*,\s*)?"&([A-Za-z])', sLine):
-                sOwner = oHit.group(1) or sMethod
+            # A CAPTION IS SHORT. An ampersand inside a sentence of help text is
+            # prose that happens to hold the character; a control's caption is
+            # a few words. Only strings of forty characters or fewer are read
+            # as captions, so prose stops being counted as trigger letters.
+            for oHit in re.finditer(r'(?:\b\w+\(\s*(\w+)\s*,\s*)?"(?=[^"]{0,40}")[^"&]*&([A-Za-z])', sLine):
+                # The first argument names a menu only when it looks like one --
+                # miFile, menuMain. A title or a prompt passed first, such as
+                # promptText(sTitle, "&Question"), is not a container, and two
+                # dialogs that both take sTitle are two dialogs.
+                sArg = oHit.group(1) or ""
+                sOwner = sArg if re.match(r"(mi|menu|m)[A-Z]", sArg) or sArg.lower().startswith("menu") else sMethod
                 dByOwner.setdefault(sOwner, {})
                 dByOwner[sOwner][oHit.group(2).lower()] = dByOwner[sOwner].get(oHit.group(2).lower(), 0) + 1
         for sOwner in sorted(dByOwner):
