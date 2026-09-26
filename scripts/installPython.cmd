@@ -1,4 +1,17 @@
 @echo off
+setlocal enabledelayedexpansion
+set "sScript=%~n0"
+set "sCallerDir=%~dp0"
+if not exist "%~dp0homerInstall.cmd" (
+  echo(
+  echo homerInstall.cmd is missing from %~dp0
+  echo That file is part of this program. Reinstall, or copy it from the
+  echo program's zip into this folder, and run this again.
+  echo(
+  if not defined noPause pause
+  exit /b 1
+)
+call "%~dp0homerInstall.cmd" setup "%~f0" %*
 rem installPython.cmd -- part of EdSharp setup, Homer Tools pattern: probe first,
 rem update when present, install when absent, pause on failure so the
 rem reason is logged. NOTHING PAUSES: a console waiting for a keypress
@@ -23,10 +36,6 @@ rem should not have to debug. The check below also REJECTS the Microsoft
 rem "app execution alias" -- the stub Windows puts on the path at
 rem %LOCALAPPDATA%\Microsoft\WindowsApps\python.exe, which answers `where
 rem python` and then advertises the Store instead of running anything.
-setlocal
-set "logFile=%LOCALAPPDATA%\EdSharp\logs\EdSharp_setup.log"
-if not exist "%LOCALAPPDATA%\EdSharp\logs" mkdir "%LOCALAPPDATA%\EdSharp\logs" >nul 2>&1
-echo [installPython.cmd] started %date% %time% >> "%logFile%"
 echo If Windows asks permission during an install or update, a User Account
 echo Control prompt appears on a separate screen; press Alt+Y to allow it.
 echo A large download can also run quietly for several minutes.
@@ -38,24 +47,24 @@ where python >nul 2>&1
 if not errorlevel 1 (
   echo The python on this computer is only a Microsoft Store stub.
   echo Installing the official Python ...
-  echo [installPython.cmd] Store alias found on PATH; installing python.org build >> "%logFile%"
+  echo [installPython.cmd] Store alias found on PATH; installing python.org build >> "%log%"
 )
 
 echo Installing Python
-echo [installPython.cmd] winget install Python.Python.3.13 >> "%logFile%"
-winget install --id Python.Python.3.13 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
-echo [installPython.cmd] winget install exit %errorlevel% >> "%logFile%"
+echo [installPython.cmd] winget install Python.Python.3.13 >> "%log%"
+winget install --id Python.Python.3.13 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
+echo [installPython.cmd] winget install exit %errorlevel% >> "%log%"
 call :findPython
 if not defined pythonExe goto fail_python
 echo Installed at %pythonExe%
-echo [installPython.cmd] installed at %pythonExe% >> "%logFile%"
+echo [installPython.cmd] installed at %pythonExe% >> "%log%"
 goto done_python
 
 :upgrade_python
 echo Updating Python
-echo [installPython.cmd] winget upgrade Python.Python.3.13 >> "%logFile%"
-winget upgrade --id Python.Python.3.13 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
-echo [installPython.cmd] winget upgrade exit %errorlevel% >> "%logFile%"
+echo [installPython.cmd] winget upgrade Python.Python.3.13 >> "%log%"
+winget upgrade --id Python.Python.3.13 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
+echo [installPython.cmd] winget upgrade exit %errorlevel% >> "%log%"
 if errorlevel 1 (echo Already current.) else (echo Updated.)
 goto done_python
 
@@ -70,14 +79,14 @@ echo stub that pretends to be Python: Settings, Apps, Advanced app
 echo settings, App execution aliases, then switch off both Python entries.
 echo.
 echo The log is:
-echo %logFile%
-echo [installPython.cmd] FAILED: no real Python after install >> "%logFile%"
+echo %log%
+echo [installPython.cmd] FAILED: no real Python after install >> "%log%"
 exit /b 3
 
 :done_python
 
 echo Done.
-echo [installPython.cmd] done >> "%logFile%"
+echo [installPython.cmd] done >> "%log%"
 exit /b 0
 
 :findPython

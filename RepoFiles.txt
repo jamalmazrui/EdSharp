@@ -22,6 +22,16 @@ EdSharp.exe.config
 ; fetched is the exception the rule allows. homerTidy carried it off once.
 Tektosyne.dll
 
+; THE SECOND BINARY, for a different reason. nvdaControllerClient.dll is
+; published by NV Access beside each NVDA release, at an address that
+; carries the release number -- so the address the build fetched from dies
+; every few months, and on 25 September it returned 404 for the third
+; build in a row. The library itself has not changed since NVDA 2024.1,
+; it is about 260 KB, and EdSharp's speech to NVDA users depends on it.
+; Carrying it is safer than a fetch that fails on a fresh clone. The
+; build still tries to refresh it, and says so quietly when it cannot.
+nvdaControllerClient.dll
+
 ; Build and release
 buildEdSharp.cmd
 buildEdSharp.ps1

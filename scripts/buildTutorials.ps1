@@ -638,6 +638,38 @@ if ($bLive) {
 # 0 leaves the pitch alone.
 $dNarratorScale = 0.80
 $dNarratorPitch = -2
+
+# THE READER HAS VOICE CONTEXTS, BECAUSE A SCREEN READER DOES.
+#
+# JAWS speaks through named voice contexts -- PC cursor, JAWS cursor, keyboard,
+# tutor and message, menu and dialog, screen -- and its scripts route each
+# kind of speech to one of them: a control's name, role, value and state go to
+# the PC cursor voice; a tutor message and a program's own message to the tutor
+# and message voice; a menu item or a dialog's title to the menu and dialog
+# voice; an echoed keystroke to the keyboard voice. Each context has its own
+# rate, pitch and volume in Voice Adjustment.
+#
+# Out of the box all six sound the same, apart from two things every JAWS does:
+# a capital letter is spoken 20 percent higher in pitch, and spelling runs 20
+# percent slower. What varies between listeners is the tutor-and-message voice,
+# which many people raise a little so a message or a hint stands apart from
+# what is on the screen. The walk does the same, and each context's offset is
+# a [global] setting in semitones:
+#
+#   ReaderPitchMessage   tutor messages and the program's own announcements
+#   ReaderPitchMenu      menu items and dialog titles
+#   ReaderPitchKeyboard  a single echoed character
+#   (the PC cursor voice is the reader's own, unshifted)
+#
+# Each Hear line is placed in a context by its shape, the way a listener places
+# it by ear: "To activate press Spacebar" is a hint; "DbDo ready" and the other
+# lines the program says are messages; "Open Database..., Control+O, O" is a
+# menu item; "Filter Records dialog" is a dialog; a lone letter is the keyboard.
+# Everything else is the PC cursor reading a control. A walk can force a
+# context by starting a Hear line with @cursor:, @message:, @menu: or @key:.
+$dReaderPitchMessage = 2
+$dReaderPitchMenu = 0
+$dReaderPitchKeyboard = 0
 # READER SLOWER THAN IT WAS (25 Sep 2026). A beta tester asked for "a bit
 # slower"; 0.56 was brisk even for a practised listener. 0.64 keeps the reader
 # faster than the narrator, which is what tells them apart, and can be set per
@@ -730,6 +762,9 @@ function applyGlobal($dGlobal) {
       "ReaderVoice"    { $sFound = resolveVoice $sValue; if ($sFound -ne "") { $script:sReaderVoice = $sFound } }
       "NarratorScale"  { $script:dNarratorScale = [double] $sValue }
       "NarratorPitch"  { $script:dNarratorPitch = [double] $sValue }
+      "ReaderPitchMessage"  { $script:dReaderPitchMessage = [double] $sValue }
+      "ReaderPitchMenu"     { $script:dReaderPitchMenu = [double] $sValue }
+      "ReaderPitchKeyboard" { $script:dReaderPitchKeyboard = [double] $sValue }
       "ReaderScale"    { $script:dReaderScale = [double] $sValue }
       "ReaderFlatness" { $script:dReaderNoise = [double] $sValue }
       "LeadIn"         { $script:dLeadIn = [double] $sValue }
@@ -885,7 +920,51 @@ function buildOne([string] $sScript) {
     note ("narrator: " + $sText)
   }
 
-  function speakReader([string] $sText) {
+  # readerContext: which of the reader's voices a line belongs to. Returns
+  # cursor, message, menu or key. A leading @cursor:, @message:, @menu: or
+  # @key: decides outright and is removed from what is spoken.
+  function readerContext([string] $sText, [ref] $sSpoken) {
+    $sSpoken.Value = $sText
+    if ($sText -match '^@(cursor|message|menu|key):\s*(.*)$') {
+      $sSpoken.Value = $Matches[2]
+      return $Matches[1]
+    }
+    $sT = $sText.Trim()
+    if ($sT.Length -eq 1) { return "key" }
+    if ($sT -match '^(To |Press |Type in|Use the |Contains text)') { return "message" }
+    if ($sT -match '^(Leaving menus|Menu bar)$') { return "message" }
+    if ($sT -match '(dialog|sub menu|menu bar|context menu)\s*$') { return "menu" }
+    if ($sT -match ',\s*(Control|Alt|Shift|F\d{1,2}|Insert)[^,]*,\s*[A-Za-z]\s*$') { return "menu" }
+    if ($sT -match ',\s*[A-Za-z]\s*$' -and $sT -notmatch '\d+ of \d+') { return "menu" }
+    if ($sT -match '^(DbDo ready|Marked|Unmarked|Copied|Saved|Filtered|Sorted|Row copied|Key Describer|No )') { return "message" }
+    if ($sT -match '^[a-z_]+:\s') { return "message" }
+    return "cursor"
+  }
+
+  # shiftPitch: raise or lower a piece by semitones without changing its
+  # length -- the same asetrate-then-atempo pair the narrator uses.
+  function shiftPitch([string] $sFile, [double] $dSemitones) {
+    if ($dSemitones -eq 0 -or -not (Test-Path -LiteralPath $sFile)) { return }
+    $dRatio = [Math]::Pow(2.0, $dSemitones / 12.0)
+    $sInv = [System.Globalization.CultureInfo]::InvariantCulture
+    $sRate = [string]::Format($sInv, "{0:0}", 22050 * $dRatio)
+    $sTempo = [string]::Format($sInv, "{0:0.0000}", 1.0 / $dRatio)
+    $sShifted = $sFile + ".shift.wav"
+    runVoice $sFfmpeg @("-y", "-loglevel", "error", "-i", $sFile,
+                        "-af", ("asetrate=" + $sRate + ",aresample=22050,atempo=" + $sTempo),
+                        $sShifted) $null "ffmpeg-pitch" | Out-Null
+    if (Test-Path -LiteralPath $sShifted) { Move-Item -LiteralPath $sShifted -Destination $sFile -Force }
+  }
+
+  function speakReader([string] $sTextIn) {
+    $sText = ""
+    $sContext = readerContext $sTextIn ([ref] $sText)
+    $dShift = 0
+    switch ($sContext) {
+      "message" { $dShift = $dReaderPitchMessage }
+      "menu"    { $dShift = $dReaderPitchMenu }
+      "key"     { $dShift = $dReaderPitchKeyboard }
+    }
     if ($bLive) {
       $oJaws.SayString($sText, $true) | Out-Null
       Start-Sleep -Milliseconds ([Math]::Max(400, $sText.Length * 38))
@@ -938,10 +1017,11 @@ function buildOne([string] $sScript) {
       $oSpeaker.Speak($sText)
       $oSpeaker.SetOutputToNull()
     }
+    shiftPitch $sFile $dShift
     evenOut $sFile $dReaderGain
     if (Test-Path -LiteralPath $sFile) { $script:lsPieces.Add($sFile) }
     else { note ("no audio made for: " + $sText) }
-    note ("reader: " + $sText)
+    note ("reader (" + $sContext + "): " + $sText)
   }
 
   function gap([double] $dSeconds) {

@@ -1,4 +1,17 @@
 @echo off
+setlocal enabledelayedexpansion
+set "sScript=%~n0"
+set "sCallerDir=%~dp0"
+if not exist "%~dp0homerInstall.cmd" (
+  echo(
+  echo homerInstall.cmd is missing from %~dp0
+  echo That file is part of this program. Reinstall, or copy it from the
+  echo program's zip into this folder, and run this again.
+  echo(
+  if not defined noPause pause
+  exit /b 1
+)
+call "%~dp0homerInstall.cmd" setup "%~f0" %*
 rem installNode.cmd -- part of EdSharp setup, Homer Tools pattern: probe first,
 rem update when present, install when absent, pause on failure so the
 rem reason is logged. NOTHING PAUSES: a console waiting for a keypress
@@ -10,34 +23,30 @@ rem package offers a machine-wide install it is taken, so components land in
 rem the default Windows places -- Program Files, and the PATH every program
 rem inherits -- rather than in a per-user corner EdSharp would have to hunt
 rem for.
-setlocal
-set "logFile=%LOCALAPPDATA%\EdSharp\logs\EdSharp_setup.log"
-if not exist "%LOCALAPPDATA%\EdSharp\logs" mkdir "%LOCALAPPDATA%\EdSharp\logs" >nul 2>&1
-echo [installNode.cmd] started %date% %time% >> "%logFile%"
 echo.
 
 where node >nul 2>&1
 if errorlevel 1 goto install_node
 echo Updating Node.js
-echo [installNode.cmd] winget upgrade OpenJS.NodeJS.LTS >> "%logFile%"
-winget upgrade --id OpenJS.NodeJS.LTS -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
-echo [installNode.cmd] winget upgrade OpenJS.NodeJS.LTS exit %errorlevel% >> "%logFile%"
+echo [installNode.cmd] winget upgrade OpenJS.NodeJS.LTS >> "%log%"
+winget upgrade --id OpenJS.NodeJS.LTS -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
+echo [installNode.cmd] winget upgrade OpenJS.NodeJS.LTS exit %errorlevel% >> "%log%"
 if errorlevel 1 (echo Already current.) else (echo Updated.)
 goto after_node
 :install_node
 echo Installing Node.js
-echo [installNode.cmd] winget install OpenJS.NodeJS.LTS >> "%logFile%"
-winget install --id OpenJS.NodeJS.LTS -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
-echo [installNode.cmd] winget install OpenJS.NodeJS.LTS exit %errorlevel% >> "%logFile%"
+echo [installNode.cmd] winget install OpenJS.NodeJS.LTS >> "%log%"
+winget install --id OpenJS.NodeJS.LTS -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
+echo [installNode.cmd] winget install OpenJS.NodeJS.LTS exit %errorlevel% >> "%log%"
 if errorlevel 1 goto fail_node
 goto after_node
 :fail_node
 echo The Node.js LTS install did not finish. The log is:
-echo %logFile%
-echo [installNode.cmd] FAILED: OpenJS.NodeJS.LTS >> "%logFile%"
+echo %log%
+echo [installNode.cmd] FAILED: OpenJS.NodeJS.LTS >> "%log%"
 exit /b 3
 :after_node
 
 echo Done.
-echo [installNode.cmd] done >> "%logFile%"
+echo [installNode.cmd] done >> "%log%"
 exit /b 0

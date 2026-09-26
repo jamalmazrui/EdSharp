@@ -1,4 +1,4 @@
-﻿r"""pdfRich.py -- convert a PDF to RICH Markdown for EdSharp's Import.
+r"""pdfRich.py -- convert a PDF to RICH Markdown for EdSharp's Import.
 
     python pdfRich.py "source.pdf" "target.md"
 

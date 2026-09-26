@@ -1,4 +1,4 @@
-﻿r"""wordNet.py -- synonyms for one word, from WordNet, for EdSharp.
+r"""wordNet.py -- synonyms for one word, from WordNet, for EdSharp.
 
     python wordNet.py word
 

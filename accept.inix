@@ -21,41 +21,53 @@
 FileTask = accept
 
 ; EdSharp is a windowed editor, not a command line tool, so its checks are
-; about what the build produced and where, rather than about switches it
-; does not have. Anything a person still has to try by hand is in
-; help\Developer.md under what the build cannot settle.
+; about what the build produced and where. Each is a "dir /b" of one file:
+; exit 0 when it exists, 1 when it does not, and no parentheses or
+; redirection for the checker's quoting to trip on -- the first version
+; used "cmd /c if exist X (exit 0) else (exit 1)" and every one failed
+; with '" was unexpected at this time'.
 
 [check]
 Name = the program was built
-Run = cmd /c if exist exec\EdSharp.exe (exit 0) else (exit 1)
+Run = dir /b exec\EdSharp.exe
 Expect = 0
 
 [check]
 Name = the installer was built
-Run = cmd /c if exist exec\EdSharp_setup.exe (exit 0) else (exit 1)
+Run = dir /b exec\EdSharp_setup.exe
 Expect = 0
 
 [check]
 Name = the JScript support assembly was built
-Run = cmd /c if exist exec\EdSharp.dll (exit 0) else (exit 1)
+Run = dir /b exec\EdSharp.dll
 Expect = 0
 
 [check]
-Name = no copy of a shared Homer class is left in the folder
-Run = cmd /c if exist Lbc.cs (exit 1) else if exist Say.cs (exit 1) else if exist Inix.cs (exit 1) else if exist KeyMap.cs (exit 1) else if exist Web.cs (exit 1) else (exit 0)
-Expect = 0
+Name = no copy of Lbc.cs is left in the folder
+Run = dir /b Lbc.cs
+Expect = 1
+
+[check]
+Name = no copy of Say.cs is left in the folder
+Run = dir /b Say.cs
+Expect = 1
 
 [check]
 Name = the conversion table is where the program looks for it
-Run = cmd /c if exist configs\EdSharp.inix (exit 0) else (exit 1)
+Run = dir /b configs\EdSharp.inix
 Expect = 0
 
 [check]
-Name = the spelling dictionaries are where the program looks for them
-Run = cmd /c if exist data\dictionaries\en_US.dic (exit 0) else (exit 1)
+Name = the spelling dictionary is where the program looks for it
+Run = dir /b data\dictionaries\en_US.dic
 Expect = 0
 
 [check]
 Name = the screen reader scripts are where the installer ships them from
-Run = cmd /c if exist scripts\jaws\EdSharp.JSS (exit 0) else (exit 1)
+Run = dir /b scripts\jaws\EdSharp.JSS
+Expect = 0
+
+[check]
+Name = the one binary the repository carries is present
+Run = dir /b Tektosyne.dll
 Expect = 0

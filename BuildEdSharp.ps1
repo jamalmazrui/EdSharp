@@ -502,7 +502,7 @@ try {
       Remove-Item -LiteralPath $sNvdaZipFile -Force -ErrorAction SilentlyContinue
       Remove-Item -LiteralPath $sNvdaUnpackDir -Recurse -Force -ErrorAction SilentlyContinue
     } catch {
-      writeLog "WARNING: NVDA controller client fetch failed ($($_.Exception.Message)); continuing, since the installer treats it as optional."
+      writeLog "NOTE: the NVDA controller client could not be refreshed (the address carries the NVDA release number and moves with it); the copy in the repository ships ($($_.Exception.Message)); continuing, since the installer treats it as optional."
     }
   }
 

@@ -171,6 +171,53 @@ entry says what changed and why, so a future reader -- or a future
 maintainer -- can judge the decision, not just observe it.</p>
 <h2 id="26-september-2026----moved-to-the-homer-development-kit">26
 September 2026 -- moved to the Homer Development Kit</h2>
+<p><strong>Two reports from a beta tester, both taken.</strong> A file
+opened by pressing Enter on it in Explorer, or by Open With, did not
+move the remembered folder: only the Open dialog did. The call that
+remembers the folder had been commented out in the path every other kind
+of open goes through. It runs there now, after the load, so the next
+Open starts where you are working.</p>
+<p>And EdSharp kept a private copy of Pandoc inside its own folder, and
+its installer copied an existing Pandoc in if it found one, so a tester
+who had it through Chocolatey ended up with two. That broke the Homer
+rule that a shared component installs machine-wide to its own folder,
+where every Homer program shares one copy and an app upgrade cannot
+destroy it. Every conversion now asks for pandoc by name and takes the
+one on the PATH; the installer offers Pandoc only when no pandoc answers
+anywhere; and the install script installs it machine-wide with winget
+rather than copying it anywhere.</p>
+<p><strong>The NVDA controller client is carried by the
+repository.</strong> NV Access publishes it beside each NVDA release at
+an address that carries the release number, so the address the build
+fetched from returned 404 for three builds running once 2026.1.1
+replaced 2026.1. The library has not changed since NVDA 2024.1, and
+every word EdSharp speaks to an NVDA user goes through it, so a fetch
+that fails on a fresh clone is the wrong side of the trade. It joins
+Tektosyne as a named binary; the build still tries to refresh it and
+says quietly when it cannot.</p>
+<p><strong>The install scripts log through the kit.</strong> Each
+install script carried its own forty lines of log setup, all writing one
+shared EdSharp_setup.log with no timestamp, so a second run wrote over
+the first. They now call the kit's homerInstall.cmd first, which gives
+each run its own stamped log in %LOCALAPPDATA%\EdSharp\logs and works
+out the quiet flag in one place. The installer ships homerInstall.cmd
+beside them -- without it every script would stop on its first line --
+and passes noPause to each, since Inno runs them with no console to read
+from. EdSharp's own installOllama.cmd is gone; the kit's is refreshed
+into scripts by every build. Eighteen script invocations inside the
+installer's Parameters strings were also still naming the top of the
+folder rather than scripts, missed by the earlier repoint; all
+moved.</p>
+<p><strong>The finish page stays as it is, on purpose.</strong> The
+kit's HomerComponents.iss describes itself as a faithful port of what
+EdSharp and FileDir already had right. EdSharp's installer is the
+original that file was ported from, so it already behaves exactly as the
+include does. Replacing working Pascal with its own port, with no Inno
+Setup on hand to compile the result, would be risk without gain. If the
+kit's copy ever moves ahead, that is the time.</p>
+<p><strong>The acceptance checks are rewritten</strong> without
+parentheses, as one dir of one file each. The first form failed nine out
+of nine on a quoting error.</p>
 <p><strong>What the first build after the move found.</strong> Six
 things, all of them the migration only half done.</p>
 <p>On the third attempt the build succeeded end to end: the program, the

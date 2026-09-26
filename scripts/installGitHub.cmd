@@ -1,4 +1,17 @@
 @echo off
+setlocal enabledelayedexpansion
+set "sScript=%~n0"
+set "sCallerDir=%~dp0"
+if not exist "%~dp0homerInstall.cmd" (
+  echo(
+  echo homerInstall.cmd is missing from %~dp0
+  echo That file is part of this program. Reinstall, or copy it from the
+  echo program's zip into this folder, and run this again.
+  echo(
+  if not defined noPause pause
+  exit /b 1
+)
+call "%~dp0homerInstall.cmd" setup "%~f0" %*
 rem installGitHub.cmd -- part of EdSharp setup, Homer Tools pattern: probe first,
 rem update when present, install when absent, pause on failure so the
 rem reason is logged. NOTHING PAUSES: a console waiting for a keypress
@@ -10,56 +23,52 @@ rem package offers a machine-wide install it is taken, so components land in
 rem the default Windows places -- Program Files, and the PATH every program
 rem inherits -- rather than in a per-user corner EdSharp would have to hunt
 rem for.
-setlocal
-set "logFile=%LOCALAPPDATA%\EdSharp\logs\EdSharp_setup.log"
-if not exist "%LOCALAPPDATA%\EdSharp\logs" mkdir "%LOCALAPPDATA%\EdSharp\logs" >nul 2>&1
-echo [installGitHub.cmd] started %date% %time% >> "%logFile%"
 echo.
 
 where git >nul 2>&1
 if errorlevel 1 goto install_git
 echo Updating Git
-echo [installGitHub.cmd] winget upgrade Git.Git >> "%logFile%"
-winget upgrade --id Git.Git -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
-echo [installGitHub.cmd] winget upgrade Git.Git exit %errorlevel% >> "%logFile%"
+echo [installGitHub.cmd] winget upgrade Git.Git >> "%log%"
+winget upgrade --id Git.Git -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
+echo [installGitHub.cmd] winget upgrade Git.Git exit %errorlevel% >> "%log%"
 if errorlevel 1 (echo Already current.) else (echo Updated.)
 goto after_git
 :install_git
 echo Installing Git
-echo [installGitHub.cmd] winget install Git.Git >> "%logFile%"
-winget install --id Git.Git -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
-echo [installGitHub.cmd] winget install Git.Git exit %errorlevel% >> "%logFile%"
+echo [installGitHub.cmd] winget install Git.Git >> "%log%"
+winget install --id Git.Git -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
+echo [installGitHub.cmd] winget install Git.Git exit %errorlevel% >> "%log%"
 if errorlevel 1 goto fail_git
 goto after_git
 :fail_git
 echo The Git install did not finish. The log is:
-echo %logFile%
-echo [installGitHub.cmd] FAILED: Git.Git >> "%logFile%"
+echo %log%
+echo [installGitHub.cmd] FAILED: Git.Git >> "%log%"
 exit /b 3
 :after_git
 
 where gh >nul 2>&1
 if errorlevel 1 goto install_gh
 echo Updating the GitHub command line
-echo [installGitHub.cmd] winget upgrade GitHub.cli >> "%logFile%"
-winget upgrade --id GitHub.cli -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
-echo [installGitHub.cmd] winget upgrade GitHub.cli exit %errorlevel% >> "%logFile%"
+echo [installGitHub.cmd] winget upgrade GitHub.cli >> "%log%"
+winget upgrade --id GitHub.cli -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
+echo [installGitHub.cmd] winget upgrade GitHub.cli exit %errorlevel% >> "%log%"
 if errorlevel 1 (echo Already current.) else (echo Updated.)
 goto after_gh
 :install_gh
 echo Installing the GitHub command line
-echo [installGitHub.cmd] winget install GitHub.cli >> "%logFile%"
-winget install --id GitHub.cli -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%logFile%" 2>&1
-echo [installGitHub.cmd] winget install GitHub.cli exit %errorlevel% >> "%logFile%"
+echo [installGitHub.cmd] winget install GitHub.cli >> "%log%"
+winget install --id GitHub.cli -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
+echo [installGitHub.cmd] winget install GitHub.cli exit %errorlevel% >> "%log%"
 if errorlevel 1 goto fail_gh
 goto after_gh
 :fail_gh
 echo The The GitHub command line install did not finish. The log is:
-echo %logFile%
-echo [installGitHub.cmd] FAILED: GitHub.cli >> "%logFile%"
+echo %log%
+echo [installGitHub.cmd] FAILED: GitHub.cli >> "%log%"
 exit /b 3
 :after_gh
 
 echo Done.
-echo [installGitHub.cmd] done >> "%logFile%"
+echo [installGitHub.cmd] done >> "%log%"
 exit /b 0

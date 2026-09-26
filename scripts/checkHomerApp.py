@@ -144,8 +144,26 @@ def runCommand(lsArgs, sShell=""):
     logLine("RUN: " + (sShell or " ".join(lsArgs)))
     try:
         if sShell:
-            oResult = subprocess.run(sShell, shell=True, cwd=sRoot,
-                                     capture_output=True, text=True, timeout=900)
+            # A LINE THAT BEGINS "cmd /c" IS NOT WRAPPED IN A SECOND cmd /c.
+            #
+            # shell=True already runs the line through cmd /c. A line that
+            # itself begins with "cmd /c if exist X (exit 0) else (exit 1)" was
+            # therefore parsed twice, and the parentheses and the else came
+            # apart on the second pass: the answer was 1 whatever was true.
+            # EdSharp's seven acceptance checks and DbDo's nine all failed that
+            # way on 25 September, on lines that were correct.
+            #
+            # So such a line is handed to cmd once, with /s so that the outer
+            # quotes are stripped and nothing inside is re-parsed, and with
+            # shell=False so Python does not add a wrapper of its own.
+            import re as _re
+            oCmd = _re.match(r"\s*cmd(?:\.exe)?\s+/c\s+(.*)$", sShell, _re.I | _re.S)
+            if oCmd and os.name == "nt":
+                oResult = subprocess.run('cmd /s /c "' + oCmd.group(1).strip() + '"', shell=False, cwd=sRoot,
+                                         capture_output=True, text=True, timeout=900)
+            else:
+                oResult = subprocess.run(sShell, shell=True, cwd=sRoot,
+                                         capture_output=True, text=True, timeout=900)
         else:
             oResult = subprocess.run(lsArgs, cwd=sRoot,
                                      capture_output=True, text=True, timeout=900)
@@ -373,6 +391,11 @@ def checkKeys():
         if isLibrary(sPath, sText): continue
         sText = codeLines(sText)
         sBase = os.path.basename(sPath)
+        # An ampersand in Python is not an access key unless the file builds
+        # WinForms controls (through pythonnet). An NVDA add-on's "&" is prose
+        # or an operator, and HomerView's eight source files were being read
+        # for trigger letters they cannot have.
+        bCaptions = sPath.lower().endswith(".cs") or "System.Windows.Forms" in sText
         # ALT+CONTROL IS FOR DESKTOP SHORTCUTS -- with one family excepted (25 Sep
         # 2026): the navigation keys. Alt+Control with an arrow, Home, End, Page
         # Up or Page Down moves a cursor inside a window and takes nothing from
@@ -397,6 +420,7 @@ def checkKeys():
         # compete, because a person never sees them at once.
         dByOwner = {}
         sMethod = "(file)"
+        if not bCaptions: sText = ""
         for sLine in sText.splitlines():
             oDef = re.match(r"\s{0,8}(?:public |private |internal |protected |static |override |virtual |async )+[\w<>\[\],\s\.]+?\s(\w+)\s*\(", sLine)
             if oDef: sMethod = oDef.group(1)

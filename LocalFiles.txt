@@ -17,5 +17,7 @@ packages/
 
 ; Fetched beside the sources by the build, copied into exec, never pushed.
 *.dll
+; Two named libraries are carried by the repository instead; RepoFiles.txt
+; says why. A name in RepoFiles.txt outranks a pattern here.
 sqlean.exe
 EdSharp.nvda-addon

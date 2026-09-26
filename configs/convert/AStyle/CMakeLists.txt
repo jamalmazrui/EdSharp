@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.8)
 
 if(CMAKE_VERSION VERSION_GREATER "3.19.0")
   cmake_policy(SET CMP0112 OLD)

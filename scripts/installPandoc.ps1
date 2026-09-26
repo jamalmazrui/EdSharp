@@ -1,160 +1,91 @@
-﻿# installPandoc.ps1 -- fetch pandoc.exe into EdSharp's Convert folder.
+﻿# installPandoc.ps1 -- make sure Pandoc is on this machine, once.
 #
-# pandoc is not packaged inside EdSharp_Setup.exe. It is roughly 200 megabytes,
-# GitHub warns about it on every push, and not every EdSharp user converts
-# documents. So the installer offers this script on its Finish page instead,
-# and the script also works by hand at any later time:
-#   installPandoc.cmd   (from the EdSharp installation folder)
+# Run by the EdSharp installer's finish page, and by hand from an
+# administrator prompt. installPandoc.cmd is the wrapper.
 #
-# What it does, in order:
-#   1. If Convert\Pandoc\pandoc.exe already exists under this script's folder, report and stop.
-#   2. If a pandoc.exe is already on this machine (on PATH, or in the usual
-#      pandoc install folders), copy that one rather than downloading.
-#   3. Otherwise download the newest Windows pandoc from the official GitHub
-#      releases and place pandoc.exe into the Convert folder.
+# WHAT CHANGED ON 26 SEPTEMBER 2026, AND WHY. This script used to keep a
+# private pandoc.exe inside EdSharp's own folder, and when it found one
+# already on the machine it COPIED it in. A beta tester who had Pandoc
+# through Chocolatey therefore got a second copy, and said so. The Homer
+# rule is the opposite: a shared component -- Pandoc, Python, Node, Ollama
+# -- installs machine-wide to its own default folder, so every Homer
+# program shares one copy and an app upgrade, which replaces the app's
+# folder, cannot destroy it. EdSharp's conversions now ask for "pandoc" by
+# name and take whatever the PATH gives.
 #
-# The Convert folder lives under Program Files, so writing to it needs an
-# elevated process. The installer runs this step elevated. When run by hand,
-# run it from an administrator command prompt; the script checks first and
-# says so plainly if it cannot write.
+# So the whole job is:
+#   1. If pandoc answers on the PATH, or sits in a place Windows will put on
+#      the PATH, report which one and stop. Nothing is copied anywhere.
+#   2. Otherwise install it machine-wide with winget, saying "Downloading"
+#      first, because the download takes a while and silence looks like a
+#      hang.
 #
-# Logging: EdSharp is installed under Program Files, so the log cannot sit
-# beside the script; it goes to %LOCALAPPDATA%\EdSharp\logs, one timestamped
-# file per run, recording the environment, every setting, every action with
-# its result, and any error in full.
+# Logging: EdSharp is installed under Program Files, so the log goes to
+# %LOCALAPPDATA%\EdSharp\logs, one stamped file per run, with the
+# environment, every check, every command and its exit code.
 #
-# Exit codes: 0 pandoc is in place (fetched now, copied, or already present);
-# 1 something prevented that, and the log says what.
+# Exit codes: 0 Pandoc is available; 1 it is not and could not be installed.
 
-$c_sApiUrl = "https://api.github.com/repos/jgm/pandoc/releases/latest"
-$c_sAppName = "EdSharp"
-$c_sAssetSuffix = "windows-x86_64.zip"
+param([switch]$bQuiet)
 
-$sConvertDir = ""
-$sLogDir = ""
-$sLogFile = ""
-$sScriptDir = ""
-$sTargetFile = ""
+$c_sWingetId = "JohnMacFarlane.Pandoc"
 
-$sScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-# Pandoc lives in the Pandoc subfolder of Convert -- the installer's own
-# file list proved the path; a first draft wrongly used Convert directly.
-$sConvertDir = Join-Path $sScriptDir "Convert\Pandoc"
-$sTargetFile = Join-Path $sConvertDir "pandoc.exe"
-$sLogDir = Join-Path $env:LOCALAPPDATA "$c_sAppName\logs"
-# One consolidated log for the whole installation: this script, the JAWS
-# script, and Inno Setup's own record all append to EdSharp_setup.log under
-# dated banners, so there is one file to read and one file to send.
-$sLogFile = Join-Path $sLogDir "EdSharp_setup.log"
+$sLogDir = Join-Path $env:LOCALAPPDATA "EdSharp\logs"
+if (-not (Test-Path -LiteralPath $sLogDir)) { New-Item -ItemType Directory -Path $sLogDir -Force | Out-Null }
+$sLogFile = Join-Path $sLogDir ("EdSharp-installPandoc-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
 
 function writeLog($sText) {
-  $sStamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-  $sLine = "$sStamp  $sText"
+  $sLine = (Get-Date -Format "yyyy-MM-dd HH:mm:ss") + "  " + $sText
   Add-Content -LiteralPath $sLogFile -Value $sLine -Encoding UTF8
-  Write-Host $sText
+  if (-not $bQuiet) { Write-Host $sText }
 }
 
-function findExistingPandoc() {
-  # The first hit wins. PATH is checked before the usual folders because a
-  # copy on PATH is the one the user has chosen to live with.
-  $lCandidates = @()
+function findPandoc() {
+  # On the PATH first, which is where a person's own copy answers -- winget,
+  # Chocolatey, the official installer and Scoop all put it there.
   $oCommand = Get-Command "pandoc.exe" -ErrorAction SilentlyContinue
-  if ($null -ne $oCommand) { $lCandidates += $oCommand.Source }
-  $lCandidates += (Join-Path $env:LOCALAPPDATA "Pandoc\pandoc.exe")
-  $lCandidates += (Join-Path $env:ProgramFiles "Pandoc\pandoc.exe")
-  if ($null -ne ${env:ProgramFiles(x86)}) { $lCandidates += (Join-Path ${env:ProgramFiles(x86)} "Pandoc\pandoc.exe") }
-  foreach ($sCandidate in $lCandidates) {
-    if (Test-Path -LiteralPath $sCandidate) { return $sCandidate }
+  if ($oCommand) { return $oCommand.Source }
+  # Then the places an installer puts it that this process's PATH may not
+  # yet show, because the PATH was changed after this process started.
+  $lPlaces = @(
+    (Join-Path $env:ProgramFiles "Pandoc\pandoc.exe"),
+    (Join-Path $env:LOCALAPPDATA "Pandoc\pandoc.exe"),
+    (Join-Path $env:ProgramData "chocolatey\bin\pandoc.exe"),
+    (Join-Path $env:LOCALAPPDATA "Microsoft\WinGet\Links\pandoc.exe")
+  )
+  foreach ($sPlace in $lPlaces) {
+    if (Test-Path -LiteralPath $sPlace) { return $sPlace }
   }
   return ""
 }
 
-function reportVersion($sExeFile) {
-  # First line of pandoc --version, e.g. "pandoc 3.6.3", so the log names the
-  # build that ended up installed.
-  try {
-    $sVersion = (& $sExeFile --version 2>$null | Select-Object -First 1)
-    if ($null -ne $sVersion) { writeLog "Installed: $sVersion" }
-  } catch {
-    writeLog "Version check failed (pandoc is in place; this is informational only): $($_.Exception.Message)"
-  }
+writeLog "installPandoc started"
+writeLog "Script: $($MyInvocation.MyCommand.Path)"
+writeLog "PowerShell: $($PSVersionTable.PSVersion), user: $env:USERNAME, quiet: $bQuiet"
+
+$sFound = findPandoc
+if ($sFound -ne "") {
+  writeLog "Pandoc is already on this machine: $sFound. Nothing to do."
+  $sVersion = (& $sFound --version 2>&1 | Select-Object -First 1)
+  writeLog "Version: $sVersion"
+  exit 0
 }
 
-New-Item -ItemType Directory -Path $sLogDir -Force | Out-Null
-Add-Content -LiteralPath $sLogFile -Value "" -Encoding UTF8
-Add-Content -LiteralPath $sLogFile -Value ("==== installPandoc  " + (Get-Date -Format "yyyy-MM-dd HH:mm:ss") + " ====") -Encoding UTF8
-
-try {
-  # -- Environment, for debugging. ------------------------------------------
-  writeLog "installPandoc starting."
-  writeLog "Script: $($MyInvocation.MyCommand.Path)"
-  writeLog "Command line: $($MyInvocation.Line)"
-  writeLog "PowerShell: $($PSVersionTable.PSVersion), platform: $([System.Environment]::OSVersion.VersionString)"
-  writeLog "Working directory: $(Get-Location)"
-  writeLog "Settings: target=$sTargetFile, api=$c_sApiUrl, asset suffix=$c_sAssetSuffix, log=$sLogFile"
-
-  # -- 1. Already in place? -------------------------------------------------
-  if (Test-Path -LiteralPath $sTargetFile) {
-    writeLog "pandoc.exe is already present at $sTargetFile. Nothing to do."
-    reportVersion $sTargetFile
-    exit 0
-  }
-
-  # -- Can this process write to the Convert folder? ------------------------
-  New-Item -ItemType Directory -Path $sConvertDir -Force -ErrorAction Stop | Out-Null
-  $sProbeFile = Join-Path $sConvertDir "installPandoc.probe"
-  try {
-    Set-Content -LiteralPath $sProbeFile -Value "probe" -ErrorAction Stop
-    Remove-Item -LiteralPath $sProbeFile -ErrorAction SilentlyContinue
-  } catch {
-    writeLog "Cannot write to $sConvertDir. This folder is under Program Files, so the script must run elevated. Run installPandoc.cmd from an administrator command prompt, or rerun the EdSharp installer and check the pandoc box."
-    exit 1
-  }
-
-  # -- 2. A copy already on this machine? -----------------------------------
-  $sExistingFile = findExistingPandoc
-  if ($sExistingFile -ne "") {
-    writeLog "Found an existing pandoc at $sExistingFile. Copying it instead of downloading."
-    Copy-Item -LiteralPath $sExistingFile -Destination $sTargetFile -Force -ErrorAction Stop
-    writeLog "Copied to $sTargetFile."
-    reportVersion $sTargetFile
-    exit 0
-  }
-
-  # -- 3. Download the newest release. --------------------------------------
-  writeLog "No existing pandoc found. Asking GitHub for the newest release."
-  [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-  $oRelease = Invoke-RestMethod -Uri $c_sApiUrl -Headers @{ "User-Agent" = "EdSharp-installPandoc" } -ErrorAction Stop
-  writeLog "Newest release: $($oRelease.tag_name)"
-  $oAsset = $oRelease.assets | Where-Object { $_.name -like "*$c_sAssetSuffix" } | Select-Object -First 1
-  if ($null -eq $oAsset) { writeLog "No asset ending in $c_sAssetSuffix was found in release $($oRelease.tag_name). The release layout may have changed; report this."; exit 1 }
-  $nSizeMb = [Math]::Round($oAsset.size / 1MB, 1)
-  writeLog "Downloading $($oAsset.name) ($nSizeMb MB). This may take a few minutes."
-
-  $sZipFile = Join-Path $env:TEMP $oAsset.name
-  $sUnpackDir = Join-Path $env:TEMP "installPandoc_unpack"
-  Invoke-WebRequest -Uri $oAsset.browser_download_url -OutFile $sZipFile -ErrorAction Stop
-  writeLog "Download finished: $sZipFile ($([Math]::Round((Get-Item -LiteralPath $sZipFile).Length / 1MB, 1)) MB on disk)."
-
-  if (Test-Path -LiteralPath $sUnpackDir) { Remove-Item -LiteralPath $sUnpackDir -Recurse -Force }
-  Expand-Archive -LiteralPath $sZipFile -DestinationPath $sUnpackDir -Force -ErrorAction Stop
-  writeLog "Archive unpacked to $sUnpackDir."
-
-  $fPandoc = Get-ChildItem -LiteralPath $sUnpackDir -Recurse -Filter "pandoc.exe" | Select-Object -First 1
-  if ($null -eq $fPandoc) { writeLog "pandoc.exe was not inside the downloaded archive. The release layout may have changed; report this."; exit 1 }
-  Copy-Item -LiteralPath $fPandoc.FullName -Destination $sTargetFile -Force -ErrorAction Stop
-  writeLog "pandoc.exe placed at $sTargetFile."
-
-  Remove-Item -LiteralPath $sZipFile -Force -ErrorAction SilentlyContinue
-  Remove-Item -LiteralPath $sUnpackDir -Recurse -Force -ErrorAction SilentlyContinue
-  writeLog "Temporary download files removed."
-
-  reportVersion $sTargetFile
-  writeLog "installPandoc finished successfully."
-  exit 0
-} catch {
-  writeLog "FAILED: $($_.Exception.Message)"
-  writeLog "Details: $($_ | Out-String)"
-  writeLog "The log above is at: $sLogFile"
+writeLog "Pandoc is not on this machine. Downloading and installing it machine-wide with winget."
+Write-Host "Downloading Pandoc. This can take a minute."
+$sWinget = Get-Command "winget.exe" -ErrorAction SilentlyContinue
+if (-not $sWinget) {
+  writeLog "ERROR: winget is not available, so Pandoc could not be installed. Install it from pandoc.org and run EdSharp again."
   exit 1
 }
+$lOutput = & winget install --id $c_sWingetId --scope machine --silent --accept-source-agreements --accept-package-agreements 2>&1
+foreach ($sLine in $lOutput) { writeLog "  winget | $sLine" }
+writeLog "winget exit code: $LASTEXITCODE"
+
+$sFound = findPandoc
+if ($sFound -ne "") {
+  writeLog "Pandoc installed: $sFound"
+  exit 0
+}
+writeLog "ERROR: winget reported $LASTEXITCODE and no pandoc.exe can be found afterwards."
+exit 1

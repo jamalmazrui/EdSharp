@@ -158,6 +158,11 @@ Source: "summarizeSetup.ps1"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dropLatexJawsKeys.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dropLatexJawsKeys.py"; DestDir: "{app}"; Flags: ignoreversion
 Source: "scripts\installNode.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
+; THE COMMON HALF OF EVERY INSTALL SCRIPT. Each install<Component>.cmd calls
+; this first, for its log in %LOCALAPPDATA%\EdSharp\logs and its quiet flag.
+; Without it every script stops on its first line. Refreshed from the kit by
+; every build, so this is always the kit's current edition.
+Source: "scripts\homerInstall.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
 Source: "scripts\installPython.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
 Source: "scripts\installOllama.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
 Source: "exec\sqlean.exe";  DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
@@ -315,31 +320,31 @@ Filename: "{app}\scripts\installPandoc.cmd"; WorkingDir: "{app}"; Flags: runhidd
 ; ---- Install: not on this computer yet ----
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installCodeModel.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installCodeModel.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descCodeModel}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: codeModelNeedsInstall
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installPdfTools.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installPdfTools.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descDocTools}"; \
   Flags: postinstall skipifsilent runascurrentuser; Check: docToolsNeedInstall
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installGitHub.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installGitHub.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descGitHub}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: gitNeedsInstall
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installNode.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installNode.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descNode}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeNeedsInstall
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installOllama.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descOllama}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaNeedsInstall
@@ -349,13 +354,13 @@ Filename: "{cmd}"; \
 ; the small chat model translates well enough to try the feature first.
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installPython.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installPython.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descPython}"; \
   Flags: postinstall skipifsilent runascurrentuser; Check: pythonNeedsInstall
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installTranslateModel.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installTranslateModel.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descTranslateModel}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: translateModelNeedsInstall
@@ -369,25 +374,25 @@ Filename: "{cmd}"; \
 ; ---- Update: installed, but a newer version is available ----
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installGitHub.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installGitHub.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descGitHub}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: gitNeedsUpdate
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installNode.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installNode.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descNode}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeNeedsUpdate
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installOllama.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descOllama}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaNeedsUpdate
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installPython.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installPython.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descPython}"; \
   Flags: postinstall skipifsilent runascurrentuser; Check: pythonNeedsUpdate
@@ -395,31 +400,31 @@ Filename: "{cmd}"; \
 ; ---- Reinstall: already current, offered only for repair ----
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installCodeModel.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installCodeModel.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descCodeModel}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: codeModelIsCurrent
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installPdfTools.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installPdfTools.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descDocTools}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: docToolsAreCurrent
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installGitHub.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installGitHub.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descGitHub}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: gitIsCurrent
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installNode.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installNode.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descNode}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeIsCurrent
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installOllama.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descOllama}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaIsCurrent
@@ -427,13 +432,13 @@ Filename: "{cmd}"; \
 ; The summary, last of all. The Results box appears before these
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installPython.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installPython.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descPython}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: pythonIsCurrent
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\installTranslateModel.cmd""""";  \
+  Parameters: "/c """"{app}\scripts\installTranslateModel.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descTranslateModel}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: translateModelIsCurrent
@@ -1055,12 +1060,22 @@ begin
 end;
 
 function needPandoc(): boolean;
+var
+  iResult: Integer;
 begin
-  // pandoc is fetched by installPandoc.cmd rather than packaged, and it lives
-  // in the Pandoc subfolder of Convert (the installer's own file list proved
-  // the path).  The offer is hidden once a copy is in place, so a reinstall
-  // over a working installation never even shows the checkbox.
-  result := not FileExists(ExpandConstant('{app}\configs\convert\Pandoc\pandoc.exe'));
+  // Pandoc is a SHARED component: it lives machine-wide, in its own folder,
+  // and EdSharp finds it on the PATH. The box is offered only when no
+  // pandoc answers anywhere -- not on the PATH, and not in the places an
+  // installer puts it. A beta tester who already had Pandoc through
+  // Chocolatey was given a second copy inside EdSharp's folder because
+  // this used to look only there; that is what the PATH probe ends.
+  result := True;
+  if FileExists(ExpandConstant('{pf}\Pandoc\pandoc.exe')) then result := False;
+  if FileExists(ExpandConstant('{localappdata}\Pandoc\pandoc.exe')) then result := False;
+  if FileExists(ExpandConstant('{commonappdata}\chocolatey\bin\pandoc.exe')) then result := False;
+  if result then
+    if Exec(ExpandConstant('{cmd}'), '/c where pandoc >nul 2>&1', '', SW_HIDE, ewWaitUntilTerminated, iResult) then
+      if iResult = 0 then result := False;
 end;
 
 { ---------------------------------------------------------------------------

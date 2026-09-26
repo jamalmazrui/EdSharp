@@ -9028,6 +9028,7 @@ if (Util.Equiv(child.File, sFile)) {
 Util.Say("returning");
 child.Activate();
 FollowCompilerForFile(sFile);
+SetRecent(sFile);
 SetCursorPosition(child.RTB, sLine, sColumn);
 return;
 }
@@ -9058,6 +9059,14 @@ this.Child.LoadTextOrRtfFile(sFile, (iConvert == 0 ? true : false));
 //Dialog.Show(sFile);
 ApplyFileOptions(sFile);
 FollowCompilerForFile(sFile);
+// A file opened this way -- Enter on it in Explorer, Open With, a recent
+// files pick, a name on the command line -- counts as much as one chosen
+// in the Open dialog: it joins the recent list and its folder becomes the
+// remembered one, so the next Open starts where you are working. This
+// call had been commented out here, and a beta tester noticed that only
+// the dialog moved the folder. It runs after the load, when this window
+// is the current one, which is what the earlier placement lacked.
+SetRecent(sFile);
 
 if (sFile == App.IniFile) return;
 }
