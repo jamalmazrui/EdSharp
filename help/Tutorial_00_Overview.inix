@@ -1,0 +1,113 @@
+﻿; Tutorial_00_Overview.inix -- the first walk through EdSharp.
+;
+; The format is in the kit's help\Tutorials.md. Four beats per key: say the
+; key with the word it comes from, press it, hear the reader word for word,
+; say what that meant. Name silence. Name no screen reader.
+;
+; Run scripts\checkTutorial over this before the build speaks it.
+
+[feed]
+Title=EdSharp Walkthroughs
+Description=Short simulated walks through EdSharp, the accessible text editor. Each one is about three minutes, with something to try at the end.
+Author=Jamal Mazrui
+Email=jamal.mazrui@outlook.com
+Base=
+
+[about]
+Title=00 - Overview and Table of Contents
+Intro=A simulated walk through EdSharp: a person working, and a screen reader answering.
+Setup=Nothing to prepare. This one is a few minutes on what EdSharp is and where the rest of the walks go.
+Homework=Open a file you already have and press F1. Then come back and pick the walk that matches what you want to do today.
+
+[step]
+Say=EdSharp is a text editor built for people who listen to their screen rather than look at it. It opens plain text, Markdown, HTML and program source, and it converts between about forty formats without leaving the keyboard.
+Pause=1
+
+[step]
+Say=Everything here is a key. There are no toolbars to hunt for and no panes to get lost in. Where a key has a letter in it, the letter is the first letter of a word in the command's name, so the key is something you work out rather than something you memorise.
+Pause=1
+
+[step]
+Say=Let us start the program and hear what it says. The editor opens with one empty document.
+Key=Alt+Control+E
+Hear=EdSharp
+Hear=Untitled, edit, multiline, blank
+Say=The window title first, then the edit box you are typing in. Blank means the document is empty, which it is, because nothing has been opened yet.
+
+[step]
+Say=Press F1 for Help. F1 is Help everywhere in Windows, and in EdSharp it opens the user guide.
+Key=F1
+Hear=EdSharp User Guide, document
+Say=The guide opened in your browser. It is a single page with headings, so the heading keys move you through it.
+
+[step]
+Say=Come back to the editor with Alt plus Tab, then let us hear where we are. Insert plus T, Tango, says the window title.
+Key=Insert+T
+Hear=EdSharp
+Say=Just the program name, because nothing is open yet. After every change of focus, Insert plus T tells you where you have landed.
+
+[step]
+Say=If you miss what was said, Insert plus Up Arrow says the current line again. That key is worth learning first, because it turns every other key in these walks into something you can replay.
+Key=Insert+UpArrow
+Hear=Untitled, edit, multiline, blank
+Say=The same line again, on demand.
+
+[step]
+Say=Now the command space. Alt plus F10 opens the Alternate Menu, which lists every command EdSharp has, with its key beside it.
+Key=Alt+F10
+Hear=Alternate Menu
+Hear=Command, list box, 1 of 222
+Say=Two hundred and twenty two commands, in one list you can type into. You do not have to know a key to find a command; you type part of its name and the list narrows.
+
+[step]
+Say=Type the word convert and listen.
+Key=c o n v e r t
+Hear=Convert File Format, Control plus Shift plus V, 1 of 9
+Say=Nine commands with convert in the name, and the first one gives you its key. That is how a key is learned here: you find the command by name, and the list tells you the key for next time.
+
+[step]
+Say=Escape closes the menu without running anything.
+Key=Escape
+Hear=Untitled, edit, multiline, blank
+Say=Back in the document, exactly where you were.
+
+[step]
+Say=One more key before the tour of the other walks. F11 is Elevate Version. Elevate sounds like eleven, which is how the key was chosen.
+Key=F11
+Hear=Elevate Version, dialog
+Hear=EdSharp 5.0 is the newest version. Yes button.
+Say=EdSharp asked the web whether a newer release exists, and this one is current. When a newer one does exist, the same key offers to fetch it and run the installer, so you never have to visit a web page to update.
+
+[step]
+Key=Escape
+Hear=Untitled, edit, multiline, blank
+Say=Nothing was changed.
+Pause=1
+
+[step]
+Say=That is the shape of it. The other walks each take one thing and go through it slowly.
+Note=The walks below are the planned set. Each becomes its own Tutorial_NN file.
+
+[step]
+Say=Walk one is opening, editing and saving, including the encoding of a file and what to do when it opens as nonsense.
+Pause=1
+
+[step]
+Say=Walk two is moving around a long document by headings, by blocks that mean something in the language you are in, and by bookmarks.
+Pause=1
+
+[step]
+Say=Walk three is converting between formats: Markdown to a web page, a web page to text, a PDF to something you can read.
+Pause=1
+
+[step]
+Say=Walk four is writing code: checking the syntax without running it, stepping definition to definition, and the snippets that fill in the parts that change.
+Pause=1
+
+[step]
+Say=Walk five is the local AI: chatting about the document in front of you, and translating it, with no web service involved.
+Pause=1
+
+[step]
+Say=Pick the one that matches what you want to do today. Each is about three minutes, and each ends with something to try.
+Pause=1

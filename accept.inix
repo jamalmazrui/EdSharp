@@ -1,0 +1,61 @@
+﻿; accept.inix -- what "done" means for _APP_, written down before the code is.
+;
+; MODULE 1 OF THE METHOD IS "SPECIFY BEFORE YOU GENERATE", and this file is
+; where that specification lands. Each [check] is one thing that must be true
+; for the program to be finished, stated so a script can settle it rather than
+; a person having to remember.
+;
+;   Name    what the check is for, in a few words
+;   Run     a command, run in this folder
+;   Expect  the exit code it must return; 0 unless you mean otherwise
+;   Wants   optional: a string its output must contain
+;
+; That is the whole language, on purpose. A criterion nobody can read is a
+; criterion nobody writes.
+;
+; checkHomerApp runs every one of these and records the command, the exit code
+; and the verdict in the evidence report. A criterion that cannot be written
+; this way is still worth writing -- put it in self.md under what a person has
+; to check by hand, so it is not quietly forgotten.
+
+FileTask = accept
+
+; EdSharp is a windowed editor, not a command line tool, so its checks are
+; about what the build produced and where, rather than about switches it
+; does not have. Anything a person still has to try by hand is in
+; help\Developer.md under what the build cannot settle.
+
+[check]
+Name = the program was built
+Run = cmd /c if exist exec\EdSharp.exe (exit 0) else (exit 1)
+Expect = 0
+
+[check]
+Name = the installer was built
+Run = cmd /c if exist exec\EdSharp_setup.exe (exit 0) else (exit 1)
+Expect = 0
+
+[check]
+Name = the JScript support assembly was built
+Run = cmd /c if exist exec\EdSharp.dll (exit 0) else (exit 1)
+Expect = 0
+
+[check]
+Name = no copy of a shared Homer class is left in the folder
+Run = cmd /c if exist Lbc.cs (exit 1) else if exist Say.cs (exit 1) else if exist Inix.cs (exit 1) else if exist KeyMap.cs (exit 1) else if exist Web.cs (exit 1) else (exit 0)
+Expect = 0
+
+[check]
+Name = the conversion table is where the program looks for it
+Run = cmd /c if exist configs\EdSharp.inix (exit 0) else (exit 1)
+Expect = 0
+
+[check]
+Name = the spelling dictionaries are where the program looks for them
+Run = cmd /c if exist data\dictionaries\en_US.dic (exit 0) else (exit 1)
+Expect = 0
+
+[check]
+Name = the screen reader scripts are where the installer ships them from
+Run = cmd /c if exist scripts\jaws\EdSharp.JSS (exit 0) else (exit 1)
+Expect = 0

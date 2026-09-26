@@ -1,0 +1,71 @@
+﻿; A form described in .inix, run by Lbc's LbcInixForm class.
+; This is the IniForm sample from 2015, carried forward unchanged in shape.
+; The first section names the form; every section after it is one control.
+
+[Customer Information]
+control=form
+
+[First Name]
+value=John
+
+[Last Name]
+value=Doe
+
+[Receive newsletter]
+control=check
+value=1
+tip=Space toggles this
+
+[Receive advertising]
+control=check
+
+[Standard shipping]
+control=radio
+value=1
+tip=Arrow keys choose one
+
+[2 day ground]
+control=radio
+
+[Overnight express]
+control=radio
+
+[Address Type]
+control=list
+range=
+  home
+  work
+  vacation
+  other
+selection=2
+tip=Choose one
+
+[Recreational Interests]
+control=multi
+misc=sort
+range=
+  fishing
+  tennis
+  skiing
+  baseball
+  running
+  soccer
+  basketball
+  football
+  golf
+selection=basketball|football|running
+tip=Space selects one or more
+
+[Comments]
+control=memo
+value=`
+These are miscellaneous notes.
+This is a new line.
+`
+tip=Type as many lines as you like
+
+[OK]
+control=button
+
+[Cancel]
+control=button

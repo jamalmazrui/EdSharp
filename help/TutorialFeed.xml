@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>EdSharp Walkthroughs</title>
+    <link>Tutorials.htm</link>
+    <description>Short simulated walks through EdSharp, the accessible text editor. Each one is about three minutes, with something to try at the end.</description>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 26 Sep 2026 01:49:04 +0000</lastBuildDate>
+    <itunes:author>Jamal Mazrui</itunes:author>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:category text="Technology"/>
+    <itunes:owner><itunes:name>Jamal Mazrui</itunes:name><itunes:email>jamal.mazrui@outlook.com</itunes:email></itunes:owner>
+    <item>
+      <title>00 - Overview and Table of Contents</title>
+      <description>Nothing to prepare. This one is a few minutes on what EdSharp is and where the rest of the walks go. Full transcript: Tutorials.htm#0-00-overview-and-table-of-contents</description>
+      <link>Tutorials.htm#0-00-overview-and-table-of-contents</link>
+      <guid isPermaLink="false">homer-tutorial_00_overview</guid>
+      <enclosure url="tutorials/Tutorial_00_Overview.mp3" length="1267121" type="audio/mpeg"/>
+      <itunes:duration>00:03:00</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+  </channel>
+</rss>

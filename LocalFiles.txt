@@ -1,0 +1,21 @@
+﻿; LocalFiles.txt -- what stays on this machine and is never pushed.
+;
+; version.txt is here on purpose: the number lives only on the developer's
+; machine, the build steps it and writes Version.cs from it, and tagRelease
+; reads it back out of the built installer's version resource. A copy in the
+; repository could only disagree.
+
+version.txt
+Version.cs
+exec/
+logs/
+notes/
+work/
+packages/
+*.fetched
+*.log
+
+; Fetched beside the sources by the build, copied into exec, never pushed.
+*.dll
+sqlean.exe
+EdSharp.nvda-addon

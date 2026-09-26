@@ -39,7 +39,15 @@
 #
 # Exit codes: 0 build succeeded; 1 build failed (see BuildEdSharp.log).
 
-param([string]$sMode = "")
+param(
+  [string]$sMode = "",
+  # Passed by buildEdSharp.cmd, which owns the kit contract: where the
+  # Homer Development Kit is, the version it has already settled, and the
+  # log it has already opened. Defaults keep this runnable on its own.
+  [string]$HomerDev = "",
+  [string]$Version = "",
+  [string]$LogFile = ""
+)
 
 # "buildEdSharp console" makes a TEMPORARY DEBUGGING BUILD: the exe becomes a
 # console program, so the class of failure that kills a windowed EdSharp in
@@ -81,7 +89,14 @@ $c_sHunspellVersion = "7.0.1"
 
 # The support sources; since the name-collision lesson they compile INTO
 # EdSharp.exe rather than into a separate EdSharp.dll.
-$c_lDllSources = @("Lbc.cs", "Say.cs", "Inix.cs", "KeyMap.cs", "Web.cs")
+# THE SHARED CLASSES COME FROM THE KIT, NOT FROM THIS FOLDER.
+# EdSharp used to carry its own copies of these, and every one of them had
+# drifted from the kit's. They are named here by file name and resolved
+# against $HomerDev\CSharp below, so there is one copy on the machine and a
+# fix in the kit reaches EdSharp on its next build.
+# Elevate.cs travels with Lbc.cs: Lbc's Help box carries the version section
+# and the F11 update offer through it.
+$c_lDllSources = @("Elevate.cs", "Inix.cs", "KeyMap.cs", "KeyName.cs", "Lbc.cs", "Log.cs", "Mdi.cs", "Paths.cs", "Say.cs", "Util.cs", "Web.cs")
 $c_lExeReferences = @("System.dll", "System.Core.dll", "System.Data.dll", "System.Drawing.dll", "System.IO.Compression.dll", "System.Web.dll", "System.Windows.Forms.dll", "System.Xml.dll", "Microsoft.VisualBasic.dll")
 # UI Automation, which the support sources use (System.Windows.Automation and
 # the provider interfaces such as IRawElementProviderSimple). On a machine
@@ -93,7 +108,17 @@ $c_lLibTargetPreference = @("net48", "net472", "net462", "net461", "net46", "net
 
 # ---- paths and log ----------------------------------------------------------
 $sScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sLogFile = Join-Path $sScriptDir "BuildEdSharp.log"
+# THE LOG GOES IN logs\, named as every Homer log is. It used to be
+# BuildEdSharp.log at the top of the folder, which is why a failed build on
+# 25 September left nothing in logs\ to send: the evidence was sitting in a
+# file nobody thought to look at. buildEdSharp.cmd passes the log it already
+# opened, so the two halves of the build write one story.
+if ($LogFile -ne "") { $sLogFile = $LogFile }
+else {
+  $sLogDir = Join-Path $sScriptDir "logs"
+  if (-not (Test-Path -LiteralPath $sLogDir)) { New-Item -ItemType Directory -Path $sLogDir -Force | Out-Null }
+  $sLogFile = Join-Path $sLogDir ("EdSharp-build-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
+}
 Set-Content -LiteralPath $sLogFile -Value "" -Encoding UTF8
 
 $bFailed = $false
@@ -103,6 +128,26 @@ function writeLog($sText) {
   Add-Content -LiteralPath $sLogFile -Value "$sStamp  $sText" -Encoding UTF8
   Write-Host $sText
 }
+# ---- the Homer Development Kit ----------------------------------------------
+# After the log exists, so a kit that cannot be found is recorded rather than
+# printed to a console that scrolls away.
+if ($HomerDev -eq "") {
+  if ($env:HomerDev -and (Test-Path -LiteralPath (Join-Path $env:HomerDev "CSharp\Lbc.cs"))) { $HomerDev = $env:HomerDev }
+  elseif (Test-Path -LiteralPath "C:\HomerDev\CSharp\Lbc.cs") { $HomerDev = "C:\HomerDev" }
+  elseif (Test-Path -LiteralPath (Join-Path $sScriptDir "CSharp\Lbc.cs")) { $HomerDev = $sScriptDir }
+}
+if ($HomerDev -eq "" -or -not (Test-Path -LiteralPath (Join-Path $HomerDev "CSharp\Lbc.cs"))) {
+  writeLog "ERROR: the Homer Development Kit was not found."
+  throw "EdSharp needs the Homer Development Kit. Unzip HomerDev.zip into C:\HomerDev, or set the HomerDev environment variable."
+}
+$sHomerCSharp = Join-Path $HomerDev "CSharp"
+writeLog "Kit: $HomerDev"
+# Where the build writes: the program, its libraries and the installer, and
+# nothing else. Named in LocalFiles.txt, so none of it reaches the repository.
+$sExecDir = Join-Path $sScriptDir "exec"
+if (-not (Test-Path -LiteralPath $sExecDir)) { New-Item -ItemType Directory -Path $sExecDir -Force | Out-Null }
+writeLog "Output folder: $sExecDir"
+
 
 function runTool($sExeFile, $lArguments, $sPurpose) {
   # Runs one external command, logging the verbatim command line, every line
@@ -272,46 +317,25 @@ try {
   # increment the last dotted part, step over any number that already
   # carries a v-tag on origin, and rewrite the version lines in the iss.
   # Run "buildEdSharp nobump" to keep the current number.
-  $sIssFile = Join-Path $sScriptDir "EdSharp_Setup.iss"
-  if (-not (Test-Path -LiteralPath $sIssFile)) { throw "EdSharp_Setup.iss was not found beside the build script." }
-  $sIss = [System.IO.File]::ReadAllText($sIssFile)
-  $matchVersion = [regex]::Match($sIss, "(?m)^AppVersion=(.+)$")
-  if (-not $matchVersion.Success) { throw "No AppVersion= line was found in EdSharp_Setup.iss." }
-  $sOldVersion = $matchVersion.Groups[1].Value.Trim()
-  if ($sMode -ieq "nobump" -or $bConsole) {
-    writeLog "Version: $sOldVersion (nobump: keeping the current number)"
+  # THE VERSION IS SETTLED BEFORE THIS SCRIPT RUNS. buildEdSharp.cmd steps
+  # version.txt, writes Version.cs from it and passes the number here; the
+  # installer script reads version.txt directly; tagRelease reads it back
+  # out of the built setup's own version resource. One source of truth.
+  #
+  # What was here instead: the number was read from AppVersion in the .iss,
+  # compared with the release tags on the remote, incremented and written
+  # back into the .iss. Two systems minting numbers -- version.txt said
+  # 5.0.1 while this said 5.0.43 -- and on 25 September this one read the
+  # literal "{#MyAppVersion}" as a version, because the .iss now computes
+  # AppVersion from version.txt rather than stating it.
+  if ($Version -ne "") {
+    $sNewVersion = $Version
+    writeLog "Version: $sNewVersion (from version.txt, by way of buildEdSharp.cmd)"
   } else {
-    $dReleased = @{}
-    $sRemoteTags = (& git ls-remote --tags origin "v*" 2>&1 | Out-String)
-    if ($LASTEXITCODE -eq 0) {
-      foreach ($sLine in $sRemoteTags -split "`n") {
-        if ($sLine -match "refs/tags/v([^\^\s]+)\s*$") { $dReleased[$Matches[1]] = $true }
-      }
-      writeLog "Released versions on origin: $($dReleased.Count)"
-    } else {
-      writeLog "WARNING: the released tags could not be read, so the next number is taken blindly. tagRelease remains the final check."
-    }
-    # Start from the HIGHEST released version or the iss version, whichever
-    # is greater, then increment. Plain step-over would fill gaps: the real
-    # tag list skips v5.0.3, and minting 5.0.3 after v5.0.10 exists would
-    # put a "new" release below an old one.
-    $sBase = $sOldVersion
-    foreach ($sReleased in $dReleased.Keys) {
-      if ((compareVersions $sReleased $sBase) -gt 0) { $sBase = $sReleased }
-    }
-    if ($sBase -ne $sOldVersion) { writeLog "Highest released version is v$sBase, above the iss's $sOldVersion; counting from there." }
-    $sNewVersion = nextVersion $sBase
-    $iGuard = 0
-    while ($dReleased.ContainsKey($sNewVersion) -and $iGuard -lt 200) {
-      writeLog "Version v$sNewVersion is already released; stepping over it."
-      $sNewVersion = nextVersion $sNewVersion
-      $iGuard = $iGuard + 1
-    }
-    $sIss = [regex]::Replace($sIss, "(?m)^AppVersion=.*$", "AppVersion=$sNewVersion")
-    $sIss = [regex]::Replace($sIss, "(?m)^VersionInfoVersion=.*$", "VersionInfoVersion=$sNewVersion")
-    $sIss = [regex]::Replace($sIss, "(?m)^(AppVerName=.*?)" + [regex]::Escape($sOldVersion) + "(.*)$", "`${1}$sNewVersion`${2}")
-    [System.IO.File]::WriteAllText($sIssFile, $sIss, (New-Object System.Text.UTF8Encoding($true)))
-    writeLog "Version: $sOldVersion -> $sNewVersion (written to EdSharp_Setup.iss; tagRelease will tag v$sNewVersion)"
+    $sVersionFile = Join-Path $sScriptDir "version.txt"
+    if (-not (Test-Path -LiteralPath $sVersionFile)) { throw "version.txt was not found. Run buildEdSharp.cmd, which owns the version." }
+    $sNewVersion = ([System.IO.File]::ReadAllText($sVersionFile)).Trim()
+    writeLog "Version: $sNewVersion (read from version.txt)"
   }
 
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
@@ -382,19 +406,19 @@ try {
   # brace balance, and which features still reach for Microsoft Office.
   # Each of these has broken EdSharp at least once. A failure stops the
   # build here, where it costs a second, rather than in a tester's hands.
-  $sAuditScript = Join-Path $sScriptDir "auditEdSharp.py"
-  if (Test-Path -LiteralPath $sAuditScript) {
-    $sPython = (Get-Command python -ErrorAction SilentlyContinue)
-    if ($sPython) {
-      writeLog "RUN (source audit): python auditEdSharp.py"
-      $lAuditOutput = & python $sAuditScript -pathRoot $sScriptDir 2>&1
-      foreach ($sLine in $lAuditOutput) { writeLog "  $sLine" }
-      if ($LASTEXITCODE -ne 0) { throw "The source audit failed; the lines above name each failing check." }
-      writeLog "Source audit passed."
-    } else {
-      writeLog "Python was not found, so the source audit was skipped."
-    }
-  }
+  # THE SOURCE AUDIT IS THE KIT'S JOB NOW. auditEdSharp.py and the
+  # repoPolicy behind it were EdSharp's own earlier edition of what
+  # scripts\checkHomerApp does, and they know nothing of the folder layout
+  # this app moved to -- which is exactly how the first build after the
+  # migration failed, on 25 September, with "Tracked files are ones the
+  # project needs". The kit's check runs from tagRelease, and by hand as
+  # scripts\checkHomerApp --build, where a failure stops a release rather
+  # than a build.
+  #
+  # EdSharp's own invariants that the kit does not cover -- duplicate
+  # shortcuts, access keys, the compiler table, which features reach for
+  # Office -- are worth keeping. They belong in the kit's check or in
+  # accept.inix, not in a script the migration retired.
 
   # ---- 3. NuGet dependencies ----
   # PRESENT is not the same as RIGHT. A stray wrong-version Markdig once sat
@@ -544,7 +568,7 @@ try {
   writeLog "JScript compiler: $sJscFile"
   $sEvaluatorFile = Join-Path $sScriptDir "EdSharp.dll"
   if (Test-Path -LiteralPath $sEvaluatorFile) { Remove-Item -LiteralPath $sEvaluatorFile -Force }
-  if ((runTool $sJscFile @("/nologo", "/target:library", "/out:EdSharp.dll", "EdSharp.js") "compile EdSharp.dll from EdSharp.js") -ne 0) { throw "The evaluator build failed; the jsc output above names the reason." }
+  if ((runTool $sJscFile @("/nologo", "/target:library", "/out:exec\\EdSharp.dll", "EdSharp.js") "compile EdSharp.dll from EdSharp.js") -ne 0) { throw "The evaluator build failed; the jsc output above names the reason." }
 
   # ---- 6b. EdSharp.exe (assumptions A2, A3) ----
   if (-not (Test-Path -LiteralPath (Join-Path $sScriptDir "EdSharp.cs"))) { throw "EdSharp.cs was not found beside the build script; nothing to compile." }
@@ -558,14 +582,11 @@ try {
   # EdSharp.cs is organized. The cleanup that removed the fetched dlls
   # evidently removed the generated Version.cs too, which is why the compile
   # suddenly could not find a name that had "always been there".
-  $sVersion = "5.0"
-  $sIssFile = Join-Path $sScriptDir "EdSharp_Setup.iss"
-  if (Test-Path -LiteralPath $sIssFile) {
-    foreach ($sLine in Get-Content -LiteralPath $sIssFile) {
-      if ($sLine -match "^AppVersion=(.+)$") { $sVersion = $Matches[1].Trim(); break }
-    }
-    writeLog "Version read from EdSharp_Setup.iss: $sVersion"
-  } else { writeLog "EdSharp_Setup.iss not found; BuildVersion falls back to $sVersion." }
+  # The number settled at the top of this script, which came from
+  # version.txt. It is written here as well as by buildEdSharp.cmd so that
+  # this script still produces a correct Version.cs when run on its own.
+  $sVersion = $sNewVersion
+  writeLog "Version for BuildVersion.Version: $sVersion (version.txt)"
   $sStaleFile = Join-Path $sScriptDir "BuildVersion.cs"
   if (Test-Path -LiteralPath $sStaleFile) { Remove-Item -LiteralPath $sStaleFile -Force; writeLog "Removed stale BuildVersion.cs from an earlier build revision." }
   $sBreak = [char]13 + [char]10
@@ -585,7 +606,7 @@ try {
     $sTarget = "/target:exe"
     writeLog "CONSOLE MODE: compiling EdSharp.exe as a console program so startup errors print. NOT for release."
   }
-  $lArguments = @("/nologo", $sTarget, "/out:EdSharp.exe", "/platform:anycpu", "/optimize+", $sLibSearch)
+  $lArguments = @("/nologo", $sTarget, "/out:exec\\EdSharp.exe", "/platform:anycpu", "/optimize+", $sLibSearch)
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "EdSharp.ico")) { $lArguments += "/win32icon:EdSharp.ico" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "EdSharp.manifest")) { $lArguments += "/win32manifest:EdSharp.manifest" }
   foreach ($sReference in $c_lExeReferences) { $lArguments += "/r:$sReference" }
@@ -609,11 +630,34 @@ try {
   # version, all inside EdSharp.exe.
   $lArguments += @("EdSharp.cs")
   foreach ($sSourceFile in $c_lDllSources) {
-    if (Test-Path -LiteralPath (Join-Path $sScriptDir $sSourceFile)) { $lArguments += $sSourceFile }
-    else { writeLog "Support source $sSourceFile not found; skipped." }
+    # From the kit, by full path. A copy left in this folder is ignored on
+    # purpose: the drifted copies are what this migration removed.
+    $sKitSource = Join-Path $sHomerCSharp $sSourceFile
+    if (Test-Path -LiteralPath $sKitSource) { $lArguments += $sKitSource }
+    else { throw "The kit is missing $sSourceFile. Run buildHomerDev in $HomerDev, then build again." }
   }
   $lArguments += @("Version.cs")
   if ((runTool $sCscFile $lArguments "compile EdSharp.exe") -ne 0) { throw "EdSharp.exe compilation failed; the compiler output above names the lines." }
+
+  # ---- 6b1. The libraries beside the program, in exec ----
+  # THE PROGRAM LIVES IN exec NOW, AND SO MUST EVERYTHING IT LOADS. The
+  # NuGet fetches above land beside this script, where the compiler finds
+  # them by a relative /r: -- but a program in exec cannot load a library
+  # from the folder above it, and the installer ships from exec. So every
+  # library the program needs is copied in after the compile. The first
+  # build after the migration on 25 September compiled cleanly and then
+  # stopped in Inno Setup on "exec\EdSharp.exe does not exist"; fixing that
+  # alone would have shipped a program with no libraries beside it.
+  $lLibraries = @("HtmlAgilityPack.dll", "Markdig.dll", "ReverseMarkdown.dll", "Tektosyne.dll",
+                  "Ude.dll", "WeCantSpell.Hunspell.dll", "nvdaControllerClient.dll",
+                  "sqlean.dll", "sqlean.exe", "EdSharp.nvda-addon")
+  foreach ($sLibrary in $lLibraries) {
+    $sFrom = Join-Path $sScriptDir $sLibrary
+    if (Test-Path -LiteralPath $sFrom) {
+      Copy-Item -LiteralPath $sFrom -Destination (Join-Path $sExecDir $sLibrary) -Force
+      writeLog "Copied $sLibrary into exec."
+    }
+  }
 
   # ---- 5b. sqlean.dll: keep the SQLite extension bundle current ----
   # sqlean ships as TWO files in {app} (iss decision of 24 August 2026):
@@ -664,10 +708,10 @@ try {
   # Compiled from the thin wrapper plus the shared Inix.cs, so the Import
   # and Export tables can move data between .inix, .csv, .tsv, .md, and
   # .xlsx with no Office and no ACE provider (added 24 August 2026).
-  if (Test-Path -LiteralPath (Join-Path $sScriptDir "inixVert.cs")) {
+  if (Test-Path -LiteralPath (Join-Path $sHomerCSharp "inixVert.cs")) {
     $lArguments = @("/nologo", "/target:exe", "/out:Convert\inixVert.exe", "/platform:anycpu", "/optimize+", $sLibSearch)
     foreach ($sReference in @("System.dll", "System.Core.dll", "System.IO.Compression.dll", "System.Xml.dll")) { $lArguments += "/r:$sReference" }
-    $lArguments += @("inixVert.cs", "Inix.cs")
+    $lArguments += @((Join-Path $sHomerCSharp "inixVert.cs"), (Join-Path $sHomerCSharp "Inix.cs"))
     if ((runTool $sCscFile $lArguments "compile Convert\inixVert.exe") -ne 0) { throw "The inixVert build failed; the compiler output above names the lines." }
   } else {
     writeLog "inixVert.cs is not present, so Convert\inixVert.exe is left as it is."

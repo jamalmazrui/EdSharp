@@ -1,0 +1,51 @@
+﻿; RepoFiles.txt -- what the EdSharp repository carries.
+;
+; One path per line. A trailing slash names a folder wholesale. homerTidy
+; writes .gitignore from this as a WHITELIST -- everything ignored, then
+; exactly these allowed -- and gitPush rewrites it before every push, so
+; "git add -A" means "add what the project has named", never "everything in
+; the folder".
+;
+; Nothing binary is named here. The program, its libraries and the installer
+; are built into exec\ and named in LocalFiles.txt.
+
+; The program and the things compiled with it
+EdSharp.cs
+EdSharp.js
+EdSharp.ico
+EdSharp.manifest
+EdSharp.exe.config
+
+; Build and release
+buildEdSharp.cmd
+buildEdSharp.ps1
+migrateEdSharp.cmd
+migrateEdSharp.py
+EdSharp_setup.iss
+RepoFiles.txt
+LocalFiles.txt
+accept.inix
+
+; The two documents that stay at the top
+ReadMe.md
+ReadMe.htm
+License.md
+License.htm
+
+; Everything else that is written
+help/
+
+; Settings, data, starters.
+; configs\convert and data\dictionaries hold OTHER PEOPLE'S files -- the
+; conversion tools and the spelling dictionaries. They keep the encoding
+; they came with: a byte order mark on a Lua filter or a tool's config
+; file is read as part of the first line. fixEncoding should skip them.
+configs/
+data/
+; templates\snippets\LaTeX holds files that DEMONSTRATE other encodings --
+; koi8, cp866, latin2 and the rest. Putting them into UTF-8 would destroy
+; the very thing they are examples of. fixEncoding should skip them too.
+templates/
+
+; The kit's tools, EdSharp's install scripts, and the screen reader scripts
+scripts/

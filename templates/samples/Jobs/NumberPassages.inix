@@ -1,0 +1,12 @@
+﻿; Number passages that all end the same way.
+;
+; A tester had documents made of passages of different lengths sharing an
+; identical ending, and wanted them numbered in order. That is what $# is
+; for: in a Replace value it becomes the number of this match, counting from
+; one, so the first ending becomes 1, the second 2, and so on.
+;
+; Change the Find to whatever your passages actually end with.
+
+[number each ending]
+Find="\r?\n---END---"
+Replace="\n[$#]"

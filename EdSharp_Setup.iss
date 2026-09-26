@@ -29,7 +29,7 @@
 ;    user converts documents. installPandoc.cmd and installPandoc.ps1 are
 ;    installed into {app}; a Finish-page checkbox (hidden when pandoc is
 ;    already in place) runs them elevated so they can write pandoc.exe into
-;    {app}\Convert; and the same scripts can be run by hand later. Remember to
+;    {app}\configs\convert; and the same scripts can be run by hand later. Remember to
 ;    also take pandoc.exe out of the Git repository:
 ;      git rm --cached Convert/pandoc.exe
 ;    and add it to .gitignore, or the push warning will continue regardless of
@@ -44,12 +44,17 @@
 ; running it (file Properties dialog, Unblock checkbox on the General page, or
 ; in PowerShell: unblock-file EdSharp_Setup.exe).
 
+#define MyAppVersion Trim(FileRead(FileOpen("version.txt")))
+; The version comes from version.txt, which the build steps. Nothing
+; here states a number, so the installer cannot disagree with the
+; program or with the release tag.
+
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
 AppName=EdSharp
-AppVersion=5.0.42
-AppVerName=EdSharp 5.0.42
-VersionInfoVersion=5.0.42
+AppVersion={#MyAppVersion}
+AppVerName=EdSharp {#MyAppVersion}
+VersionInfoVersion={#MyAppVersion}
 VersionInfoCompany=NonvisualDevelopment.org
 VersionInfoProductName=EdSharp
 VersionInfoDescription=EdSharp Setup
@@ -70,7 +75,7 @@ MinVersion=10.0
 Compression=lzma2/max
 SolidCompression=yes
 OutputBaseFilename=EdSharp_Setup
-OutputDir=C:\EdSharp
+OutputDir=exec
 SourceDir=C:\EdSharp
 ; Standard all-users install: elevation via UAC, no extra screens, default
 ; destination C:\Program Files\EdSharp.  The commandline value adds no UI; it
@@ -97,7 +102,7 @@ SetupLogging=yes
 
 [Files]
 ; Built artifacts (present after BuildEdSharp.cmd).
-Source: "EdSharp.exe";        DestDir: "{app}"; Flags: ignoreversion
+Source: "exec\EdSharp.exe";        DestDir: "{app}"; Flags: ignoreversion
 ; Runtime configuration for EdSharp.exe -- carries the startup tuning (disables
 ; Authenticode publisher-evidence/CRL checks, enables concurrent GC).  It must
 ; sit next to EdSharp.exe, and ignoreversion ensures it is always refreshed so
@@ -108,10 +113,10 @@ Source: "EdSharp.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 ; failure before any window appears -- perfect silence. They live beside
 ; the exe in the development folder, which is why running from C:\EdSharp
 ; never showed the problem.
-Source: "ReverseMarkdown.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HtmlAgilityPack.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "Markdig.dll";        DestDir: "{app}"; Flags: ignoreversion
-Source: "nvdaControllerClient.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "exec\ReverseMarkdown.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "exec\HtmlAgilityPack.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "exec\Markdig.dll";        DestDir: "{app}"; Flags: ignoreversion
+Source: "exec\nvdaControllerClient.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 ; Source and build inputs (shipped so users can recompile, EdSharp-style).
 Source: "EdSharp.cs";         DestDir: "{app}"; Flags: ignoreversion
 Source: "Lbc.cs";             DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
@@ -123,14 +128,14 @@ Source: "EdSharp.ico";        DestDir: "{app}"; Flags: ignoreversion skipifsourc
 ; The runtime evaluator: EdSharp.dll is JScript .NET, compiled from
 ; EdSharp.js by the build, loaded by reflection at run time. It is NOT a
 ; C# support library -- those sources compile into EdSharp.exe itself.
-Source: "EdSharp.dll";        DestDir: "{app}"; Flags: ignoreversion
+Source: "exec\EdSharp.dll";        DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp.js";         DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp.manifest";   DestDir: "{app}"; Flags: ignoreversion
 Source: "BuildEdSharp.cmd";   DestDir: "{app}"; Flags: ignoreversion
 Source: "FetchConvertTools.ps1";   DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "FetchUde.ps1";            DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "ModernizePandocConfig.ps1"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Tools.inix";              DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "configs\Tools.inix";              DestDir: "{app}\configs"; Flags: ignoreversion skipifsourcedoesntexist
 ; pandoc fetch scripts, installed so the Finish-page checkbox below can run
 ; them and so a user can run installPandoc.cmd by hand at any later time.
 Source: "installPandoc.cmd";  DestDir: "{app}"; Flags: ignoreversion
@@ -144,19 +149,19 @@ Source: "installPandoc.cmd";  DestDir: "{app}"; Flags: ignoreversion
 ; BuildEdSharp refreshes the DLL from the sqlean releases; the EXE ships as
 ; the copy kept in the source folder. skipifsourcedoesntexist protects a
 ; fresh clone that has not fetched them yet.
-Source: "installGitHub.cmd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "installPdfTools.cmd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "installTranslateModel.cmd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "installCodeModel.cmd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "scripts\installGitHub.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
+Source: "scripts\installPdfTools.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
+Source: "scripts\installTranslateModel.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
+Source: "scripts\installCodeModel.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
 Source: "summarizeSetup.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "summarizeSetup.ps1"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dropLatexJawsKeys.cmd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dropLatexJawsKeys.py"; DestDir: "{app}"; Flags: ignoreversion
-Source: "installNode.cmd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "installPython.cmd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "installOllama.cmd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "sqlean.exe";  DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "sqlean.dll";  DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "scripts\installNode.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
+Source: "scripts\installPython.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
+Source: "scripts\installOllama.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
+Source: "exec\sqlean.exe";  DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "exec\sqlean.dll";  DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "installPandoc.ps1";  DestDir: "{app}"; Flags: ignoreversion
 ; JAWS script installer, the HomerView way: the installer's job, not the
 ; editor's. Run by the Finish page as the ORIGINAL user; can be run by hand
@@ -164,56 +169,50 @@ Source: "installPandoc.ps1";  DestDir: "{app}"; Flags: ignoreversion
 Source: "installJawsScripts.cmd";  DestDir: "{app}"; Flags: ignoreversion
 Source: "installJawsScripts.ps1";  DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp_Setup.iss";  DestDir: "{app}"; Flags: ignoreversion
-Source: "Tektosyne.dll";      DestDir: "{app}"; Flags: ignoreversion
-Source: "Ude.dll";            DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "exec\Tektosyne.dll";      DestDir: "{app}"; Flags: ignoreversion
+Source: "exec\Ude.dll";            DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 ; JAWS settings family (compiled into each installed JAWS version by the
 ; Code section).
-Source: "Scripts\*";        DestDir: "{app}\Scripts"; Flags: ignoreversion recursesubdirs skipifsourcedoesntexist
+Source: "Scripts\*";        DestDir: "{app}\scripts\jaws"; Flags: ignoreversion recursesubdirs skipifsourcedoesntexist
 ; NVDA add-on (installed on the Finish page via [Run]).
-Source: "EdSharp.nvda-addon"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "exec\EdSharp.nvda-addon"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 ; Configuration: do not clobber a user's existing settings on upgrade.
-Source: "EdSharp.ini";        DestDir: "{app}"; Flags: onlyifdoesntexist
-Source: "Hotkeys.ini";        DestDir: "{app}"; Flags: onlyifdoesntexist
+Source: "configs\EdSharp.ini";        DestDir: "{app}\configs"; Flags: onlyifdoesntexist
+Source: "configs\Hotkeys.ini";        DestDir: "{app}\configs"; Flags: onlyifdoesntexist
 ; Documentation.
-Source: "EdSharp.md";         DestDir: "{app}"; Flags: ignoreversion
-Source: "EdSharp.htm";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Tutorials.md";       DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\EdSharp.md";         DestDir: "{app}\help"; Flags: ignoreversion
+Source: "help\EdSharp.htm";        DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\Tutorials.md";       DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "ReadMe.md";            DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "ReadMe.htm";           DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "FAQ.md";               DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "FAQ.htm";              DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Development.md";       DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Development.htm";      DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Hotkeys.md";           DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Hotkeys.htm";          DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Announce.md";          DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Announce.htm";         DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "History.md";           DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "History.htm";          DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Tutorials.htm";      DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Tutorial.md";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Tutorial.htm";       DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Announce.md";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Announce.htm";       DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\FAQ.md";               DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\FAQ.htm";              DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\Developer.md";       DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\Developer.htm";      DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\Hotkeys.md";           DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\Hotkeys.htm";          DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\Announce.md";          DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\Announce.htm";         DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\History.md";           DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\History.htm";          DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\Tutorials.htm";      DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\Announce.md";        DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\Announce.htm";       DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "License.md";         DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "License.htm";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "Transform_Example.inix"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "CamelType_JAWSScript.md"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "CamelType_JAWSScript.htm"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "CamelType_CSharp.md"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "CamelType_CSharp.htm"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "EdSharp.inix"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "history.txt";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "lgpl.txt";           DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "templates\Transform_Example.inix"; DestDir: "{app}\templates"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "configs\EdSharp.inix"; DestDir: "{app}\configs"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\history.txt";        DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\lgpl.txt";           DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
 ; Data trees.  pandoc.exe is excluded from Convert even if a copy is sitting
 ; there at compile time: the Run section below fetches it on the user's
 ; machine instead, so the installer stays small enough for GitHub.
-Source: "Snippets\*"; DestDir: "{app}\Snippets"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
-Source: "Convert\*";  DestDir: "{app}\Convert";  Excludes: "pandoc.exe,*.sln,*.vcproj,*.vcxproj,*.vcxproj.filters,*.suo,*.user,*.c,*.asm,*.cs,*.obj,*.zip,temp.htm,temp.txt"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
-Source: "Samples\*"; DestDir: "{app}\Samples"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
+Source: "templates\snippets\*"; DestDir: "{app}\templates\snippets"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
+Source: "configs\convert\*";  DestDir: "{app}\configs\convert";  Excludes: "pandoc.exe,*.sln,*.vcproj,*.vcxproj,*.vcxproj.filters,*.suo,*.user,*.c,*.asm,*.cs,*.obj,*.zip,temp.htm,temp.txt"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
+Source: "templates\samples\*"; DestDir: "{app}\templates\samples"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
 ; The spelling dictionary: two plain files the spell checker reads.
-Source: "Dictionaries\*"; DestDir: "{app}\Dictionaries"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "WeCantSpell.Hunspell.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "data\dictionaries\*"; DestDir: "{app}\data\dictionaries"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "exec\WeCantSpell.Hunspell.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 
 [Dirs]
 Name: "{userappdata}\EdSharp";
@@ -237,9 +236,9 @@ Type: files; Name: "{commondesktop}\EdSharp.lnk"
 
 [Icons]
 Name: "{group}\Launch EdSharp";   Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}"
-Name: "{group}\EdSharp Manual";   Filename: "{app}\EdSharp.htm"
-Name: "{group}\EdSharp Tutorials"; Filename: "{app}\Tutorials.htm"
-Name: "{group}\EdSharp Announcement"; Filename: "{app}\Announce.htm"
+Name: "{group}\EdSharp Manual";   Filename: "{app}\help\EdSharp.htm"
+Name: "{group}\EdSharp Tutorials"; Filename: "{app}\help\Tutorials.htm"
+Name: "{group}\EdSharp Announcement"; Filename: "{app}\help\Announce.htm"
 Name: "{group}\Uninstall EdSharp"; Filename: "{uninstallexe}"
 ; Single hot-key shortcut, following the DbDo model: the one shortcut that owns
 ; Alt+Ctrl+E is created with {autodesktop} (the user desktop for a per-user
@@ -260,22 +259,22 @@ Name: "{autodesktop}\EdSharp"; Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}
 ; under the user's own roaming application data, and this installer runs
 ; elevated; without the flag the scripts would go into the administrator's
 ; profile and the user would see nothing at all.
-Filename: "{app}\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; Description: "Install JAWS scripts for EdSharp (recommended)"; Flags: postinstall skipifsilent runasoriginaluser waituntilterminated runhidden; Check: haveJaws
+Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; Description: "Install JAWS scripts for EdSharp (recommended)"; Flags: postinstall skipifsilent runasoriginaluser waituntilterminated runhidden; Check: haveJaws
 ; The same step again for a silent installation, which skips every
 ; postinstall entry: without this twin, /SILENT would copy the files, report
 ; success, and install no JAWS scripts at all.
-Filename: "{app}\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; Flags: runhidden runasoriginaluser waituntilterminated; Check: jawsAndSilent
+Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; Flags: runhidden runasoriginaluser waituntilterminated; Check: jawsAndSilent
 ; Install the NVDA add-on by shell-executing the .nvda-addon file (NVDA
 ; registers itself as the handler). Unchecked by default; checking it opens
 ; NVDA's add-on install dialog. NVDA must be running, and be restarted after.
 Filename: "{app}\EdSharp.nvda-addon"; Description: "Install NVDA add-on (NVDA must be running; restart NVDA afterward)"; Flags: postinstall shellexec skipifdoesntexist unchecked
 ; pandoc is CENTRAL to EdSharp (decision of 24 August 2026), so it is no
-; longer an optional checkbox: whenever {app}\Convert\Pandoc\pandoc.exe is
+; longer an optional checkbox: whenever {app}\configs\convert\Pandoc\pandoc.exe is
 ; absent, the fetch runs automatically, in silent installs too. Elevated on
 ; purpose -- no runasoriginaluser -- because the destination is under
 ; Program Files. The script writes its detailed log into the consolidated
 ; setup log in the user's local application data, EdSharp\logs.
-Filename: "{app}\installPandoc.cmd"; WorkingDir: "{app}"; Flags: runhidden waituntilterminated; Check: needPandoc
+Filename: "{app}\scripts\installPandoc.cmd"; WorkingDir: "{app}"; Flags: runhidden waituntilterminated; Check: needPandoc
 ; Optional developer tools, unchecked by default, installed through winget
 ; with each one's standard stable Windows release (Git plus the GitHub
 ; command line; Node.js LTS; Python 3). Each entry runs only when its
@@ -451,7 +450,7 @@ Filename: "{app}\EdSharp.exe"; \
   Description: "Launch EdSharp (Alt+Control+E starts it any time)"; \
   Flags: postinstall skipifsilent nowait runasoriginaluser unchecked
 
-Filename: "{app}\EdSharp.htm"; \
+Filename: "{app}\help\EdSharp.htm"; \
   Description: "Open the user guide (F1 opens it inside EdSharp)"; \
   Flags: postinstall skipifsilent shellexec nowait runasoriginaluser unchecked
 
@@ -467,7 +466,7 @@ Filename: "{code:ngenExe}"; Parameters: "install ""{app}\EdSharp.exe"" /AppBase:
 ; The log goes to the temporary folder, because the EdSharp logs folder does
 ; not survive the uninstall. No runasoriginaluser here: that is a [Run] flag
 ; and [UninstallRun] rejects it.
-Filename: "{app}\installJawsScripts.cmd"; Parameters: "-bUninstall -pathLogFile ""{%TEMP}\EdSharpUninstall.log"""; WorkingDir: "{app}"; Flags: runhidden waituntilterminated skipifdoesntexist; RunOnceId: "RemoveJawsScripts"
+Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bUninstall -pathLogFile ""{%TEMP}\EdSharpUninstall.log"""; WorkingDir: "{app}"; Flags: runhidden waituntilterminated skipifdoesntexist; RunOnceId: "RemoveJawsScripts"
 Filename: "{code:ngenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Flags: runhidden; Check: isAdminNgen; RunOnceId: "NgenUninstall"
 
 [UninstallDelete]
@@ -476,7 +475,7 @@ Type: files; Name: "{app}\EdSharp.dll"
 Type: files; Name: "{app}\BuildEdSharp.log"
 ; pandoc.exe was placed by installPandoc, not by this installer, so Inno does
 ; not know to remove it; named here so an uninstall leaves no 200 MB orphan.
-Type: files; Name: "{app}\Convert\Pandoc\pandoc.exe"
+Type: files; Name: "{app}\configs\convert\Pandoc\pandoc.exe"
 
 [Registry]
 ; HKA maps to HKLM in an elevated (all-users) install and to HKCU in a
@@ -1061,7 +1060,7 @@ begin
   // in the Pandoc subfolder of Convert (the installer's own file list proved
   // the path).  The offer is hidden once a copy is in place, so a reinstall
   // over a working installation never even shows the checkbox.
-  result := not FileExists(ExpandConstant('{app}\Convert\Pandoc\pandoc.exe'));
+  result := not FileExists(ExpandConstant('{app}\configs\convert\Pandoc\pandoc.exe'));
 end;
 
 { ---------------------------------------------------------------------------
@@ -1321,7 +1320,7 @@ begin
   else
     sMessage := sMessage + '  NVDA add-on: not installed. Open EdSharp.nvda-addon in the program folder to install it.' + sBreak;
 
-  if FileExists(ExpandConstant('{app}\Convert\Pandoc\pandoc.exe')) then
+  if FileExists(ExpandConstant('{app}\configs\convert\Pandoc\pandoc.exe')) then
     sMessage := sMessage + '  pandoc: present. Document conversion will work.' + sBreak
   else
     sMessage := sMessage + '  pandoc: not present. To add it later, run installPandoc.cmd from the program folder as an administrator.' + sBreak;

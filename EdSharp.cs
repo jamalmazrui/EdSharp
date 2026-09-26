@@ -84,6 +84,10 @@ public static Dictionary<string, int> BomDictionary = null;
 
 [STAThread]
 public static void Main(string[] cmdLineArgs) {
+// The kit's updater, configured once. After this, Lbc's Help box carries a
+// Version section and offers to fetch and run the newer setup, and F11
+// (elevate sounds like eleven) asks the same question directly.
+Elevate.configure("JamalMazrui", "EdSharp", BuildVersion.Version);
 // Installer Finish-page option: "EdSharp.exe --install-jaws-settings" copies
 // EdSharp's JAWS settings family into every installed JAWS version and
 // compiles them there, then reports and exits without launching the editor.
@@ -93,7 +97,7 @@ foreach (string sArg in cmdLineArgs) {
 if (sArg.Equals("--install-jaws-settings", StringComparison.OrdinalIgnoreCase)
  || sArg.Equals("/install-jaws-settings", StringComparison.OrdinalIgnoreCase)) {
 int iCopied, iCompiled;
-string sScriptsDir = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Scripts");
+string sScriptsDir = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "scripts\\jaws");
 string sReport = JawsScripts.install(sScriptsDir, out iCopied, out iCompiled);
 MessageBox.Show(sReport, "EdSharp JAWS scripts: " + iCopied + " copied, " + iCompiled + " compiled");
 return;
@@ -1679,7 +1683,7 @@ return "";
 } // describeSample method
 
 public string[] GetSnippetFiles(out string[] aValues) {
-string sBaseDir = @"Snippets\" + App.ReadData("Compiler", "Default");
+string sBaseDir = @"templates\snippets\" + App.ReadData("Compiler", "Default");
 string sDir = Path.Combine(App.DataDir, sBaseDir);
 if (!Directory.Exists(sDir)) Directory.CreateDirectory(sDir);
 string[] aResults = Directory.GetFiles(sDir);
@@ -1688,7 +1692,7 @@ List<string> listResults = new List<string>(aResults);
 List<string> listFiles = new List<string>();
 foreach (string s in aResults) listFiles.Add(Path.GetFileName(s).ToLower());
 
-sBaseDir = @"Snippets\Default";
+sBaseDir = @"templates\snippets\Default";
 sDir = Path.Combine(App.DataDir, sBaseDir);
 if (!Directory.Exists(sDir)) Directory.CreateDirectory(sDir);
 aResults = Directory.GetFiles(sDir);
@@ -1699,7 +1703,7 @@ foreach (string s in aResults) if (!listFiles.Contains(Path.GetFileName(s).ToLow
 // snippet in the data directory always wins: the user's copy overrides
 // the shipped one, and shipped snippets appear without any copying.
 foreach (string s in listResults) if (!listFiles.Contains(Path.GetFileName(s).ToLower())) listFiles.Add(Path.GetFileName(s).ToLower());
-string[] aProgramDirs = new string[] {Path.Combine(App.ProgramDir, @"Snippets\" + App.ReadData("Compiler", "Default")), Path.Combine(App.ProgramDir, @"Snippets\Default")};
+string[] aProgramDirs = new string[] {Path.Combine(App.ProgramDir, @"templates\snippets\" + App.ReadData("Compiler", "Default")), Path.Combine(App.ProgramDir, @"templates\snippets\Default")};
 foreach (string sProgramDir in aProgramDirs) {
 if (!Directory.Exists(sProgramDir)) continue;
 foreach (string s in Directory.GetFiles(sProgramDir)) {
@@ -1718,7 +1722,7 @@ aResults = listResults.ToArray();
 // easier to keep in order than a flat one -- while the name itself
 // still leads, so typing to match a snippet works exactly as before.
 aValues = new string[aResults.Length];
-string sProgramSnippets = Path.Combine(App.ProgramDir, "Snippets").ToLower();
+string sProgramSnippets = Path.Combine(App.ProgramDir, "templates\\snippets").ToLower();
 for (int i = 0; i < aResults.Length; i++) {
 string sName = Path.GetFileName(aResults[i]);
 string sFolder = Path.GetFileName(Path.GetDirectoryName(aResults[i]));
@@ -1905,7 +1909,7 @@ App.CaptureOutput = false;
 } // TransForm files method
 
 public static string GetSnippetDir() {
-string sBaseDir = @"Snippets\" + App.ReadData("Compiler", "Default");
+string sBaseDir = @"templates\snippets\" + App.ReadData("Compiler", "Default");
 string sDir = Path.Combine(App.DataDir, sBaseDir);
 if (!Directory.Exists(sDir)) Directory.CreateDirectory(sDir);
 return sDir;
@@ -3700,7 +3704,7 @@ string sExt = Path.GetExtension(sFile).ToLower().TrimStart('.');
 string sCommand = "";
 sText = "";
 if (sExt == "htm" || sExt == "html" || sExt == "xhtml" || sExt == "xml") {
-sCommand = "%ProgDir%\\Convert\\Tidy\\tidy.exe -config %ProgDir%\\Convert\\Tidy\\tidy.cfg -m \"%SourceLong%\"";
+sCommand = "%ProgDir%\\configs\\convert\\Tidy\\tidy.exe -config %ProgDir%\\configs\\convert\\Tidy\\tidy.cfg -m \"%SourceLong%\"";
 sCommand = Util.ExpandCommandLine(sCommand, sFile, sFile);
 Util.RunHideWait(sCommand);
 sText = File.ReadAllText(sFile);
@@ -3709,7 +3713,7 @@ else if (sExt == "py" || sExt == "pyw") {
 sText = PyBrace2Dent(PyDent2Brace(App.Frame.Child.RTB.Text));
 }
 else if (sExt == "c" || sExt == "cc" || sExt == "cpp" || sExt == "h" || sExt == "hpp" || sExt == "cs" || sExt == "java" || sExt == "m") {
-String sExe = Path.Combine(App.ProgramDir, @"Convert\astyle\astyle.exe");
+String sExe = Path.Combine(App.ProgramDir, @"configs\convert\astyle\astyle.exe");
 sExe = Win32.GetShortPath(sExe);
 string sSourceFile = Path.GetTempFileName();
 sSourceFile = Path.ChangeExtension(sSourceFile, Path.GetExtension(App.Frame.Child.File));
@@ -6158,7 +6162,7 @@ iEnd = iStart + rtb.SelectionLength;
 }
 sText = rtb.GetRange(iStart, iEnd);
 
-string sDir = @"Snippets\" + App.ReadData("Compiler", "Default");
+string sDir = @"templates\snippets\" + App.ReadData("Compiler", "Default");
 sDir = Path.Combine(App.DataDir, sDir);
 if (!Directory.Exists(sDir)) Directory.CreateDirectory(sDir);
 sFile = Path.Combine(sDir, Path.GetFileName(child.File));
@@ -6581,7 +6585,7 @@ if (menuItem == menuHelpSamplePrograms) {
 // row reads as its file name followed by the first sentence of what it
 // is, taken from the ReadMe beside it when there is one, so the list
 // explains itself rather than demanding the ReadMe be opened first.
-string sSamplesDir = Path.Combine(App.ProgramDir, "Samples");
+string sSamplesDir = Path.Combine(App.ProgramDir, "templates\\samples");
 if (!Directory.Exists(sSamplesDir)) {
 Dialog.Show("Sample Programs", "The Samples folder was not found at:\n" + sSamplesDir);
 return;
@@ -7382,7 +7386,7 @@ public void InvokeSnippet(string sSnippet, string sText, int iStart, int iEnd) {
 string[] aLabels, aValues, aResults;
 int iIndex;
 HomerRichTextBox rtb = this.Child.RTB;
-string sLabel, sValue, sMatch;
+string sLabel, sValue;
 string sExt = Path.GetExtension(sSnippet).ToLower().TrimStart('.');
 string sBody = Util.File2String(sSnippet);
 sBody = Util.Convert2UnixLineBreak(sBody);
@@ -8152,7 +8156,7 @@ static object hunspellDictionary(string sLanguage) {
 if (bHunspellTried) return wordListHunspell;
 bHunspellTried = true;
 try {
-string sDir = Path.Combine(App.ProgramDir, "Dictionaries");
+string sDir = Path.Combine(App.ProgramDir, "data\\dictionaries");
 string sBase = (sLanguage.Length > 0) ? sLanguage.Replace("-", "_") : "en_US";
 string sAff = Path.Combine(sDir, sBase + ".aff");
 string sDic = Path.Combine(sDir, sBase + ".dic");
@@ -8416,7 +8420,7 @@ List<SpellingProblem> lsProblems = null;
 if (sEngine != "windows") lsProblems = findSpellingProblemsHunspell(sText, sLanguage);
 if (lsProblems == null) lsProblems = findSpellingProblems(sText, sLanguage);
 if (lsProblems == null) {
-Dialog.Show("Spell Check", "No spell checker could be started.\n\nThe dictionary should be here:\n" + Path.Combine(App.ProgramDir, @"Dictionaries\en_US.dic") + "\n\nThe Windows checker also refused: \n\n" + App.SpellCheckError + "\n\nThe run log has the detail:\n" + App.LogFile + "\n\nIf Microsoft Word is installed, set the SpellChecker option to Word with Configuration Options, Alt+Shift+C.");
+Dialog.Show("Spell Check", "No spell checker could be started.\n\nThe dictionary should be here:\n" + Path.Combine(App.ProgramDir, @"data\dictionaries\en_US.dic") + "\n\nThe Windows checker also refused: \n\n" + App.SpellCheckError + "\n\nThe run log has the detail:\n" + App.LogFile + "\n\nIf Microsoft Word is installed, set the SpellChecker option to Word with Configuration Options, Alt+Shift+C.");
 return;
 }
 if (lsProblems.Count == 0) { AddMessage("No spelling problems"); return; }
@@ -8598,7 +8602,7 @@ iLength = sWord.Length;
 if (sWord.Length == 0 || !Char.IsLetter(sWord[0])) { AddMessage("No word!"); return; }
 
 AddMessage("Looking up " + sWord);
-string sHelper = Path.Combine(App.ProgramDir, @"Convert\wordNet.py");
+string sHelper = Path.Combine(App.ProgramDir, @"configs\convert\wordNet.py");
 if (!File.Exists(sHelper)) { Dialog.Show("Thesaurus", "The thesaurus helper was not found at:\n" + sHelper); return; }
 string sOutput = Util.GetProgramOutput("python", "\"" + sHelper + "\" \"" + sWord + "\"");
 if (sOutput == null) sOutput = "";

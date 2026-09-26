@@ -1,0 +1,47 @@
+﻿; The control types Lbc adds beyond IniForm's nine.
+
+[What Lbc Adds]
+control=form
+
+[Choices]
+control=heading
+
+[Colour]
+control=combo
+value=teal
+range=
+  red
+  green
+  blue
+  black
+tip=Type a colour or pick one from the list
+
+[Size]
+control=droplist
+range=
+  small
+  medium
+  large
+selection=medium
+tip=One of these three, and nothing else
+
+[Copies]
+control=spin
+value=1
+min=1
+max=99
+step=1
+tip=Up and down arrows change the number
+
+[Notes]
+control=heading
+
+[Comment]
+control=memo
+tip=Several lines, if you want them
+
+[Print]
+control=button
+
+[Cancel]
+control=button

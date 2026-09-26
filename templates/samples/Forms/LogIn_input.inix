@@ -1,0 +1,17 @@
+﻿; The smallest useful form: two fields and two buttons.
+; A section with no control key is an edit box, as in IniForm.
+
+[Log In]
+control=form
+
+[User Name]
+
+[Password]
+control=password
+tip=The characters are hidden as you type
+
+[OK]
+control=button
+
+[Cancel]
+control=button

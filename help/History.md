@@ -1,0 +1,470 @@
+﻿# EdSharp History
+
+A human-readable record of fixes and enhancements, newest first. Each entry
+says what changed and why, so a future reader -- or a future maintainer --
+can judge the decision, not just observe it.
+
+## 26 September 2026 -- moved to the Homer Development Kit
+
+**What the first build after the move found.** Five things, all of them
+the migration only half done.
+
+On the second attempt the program compiled against the kit's classes with
+one warning and no errors -- the first proof that EdSharp and the kit's
+newer Lbc, Say and Inix agree. The build then stopped in Inno Setup, which
+was told to ship EdSharp.exe from the top of the folder when the build now
+writes it to exec. The installer's binary lines were half repointed: the
+ones with aligned columns had been missed, the same slip that caught the
+documents a day earlier. And fixing that alone would have shipped a program
+with no libraries beside it, since the fetched libraries land beside the
+sources for the compiler and a program in exec cannot load from the folder
+above. The build now copies every library it loads into exec after the
+compile.
+
+
+The build still ran EdSharp's own auditEdSharp.py, whose repoPolicy knows
+nothing of the new folders, so it failed on "Tracked files are ones the
+project needs" -- a check about a layout that no longer exists. The kit's
+scripts\checkHomerApp does that job now, from tagRelease and by hand; the
+build no longer calls the retired one. EdSharp's own invariants that the kit
+does not cover, such as duplicate shortcuts and the compiler table, are
+worth moving into the kit's check or into accept.inix rather than losing.
+
+The build also still worked the version out from the release tags on the
+remote and wrote it into the installer script. With version.txt saying 5.0.1
+and this saying 5.0.43, two systems were minting numbers, and the second one
+read the literal "{#MyAppVersion}" as a version because the installer now
+computes it from version.txt. The version comes from version.txt alone.
+
+And a failed build left no evidence: the PowerShell half logged to
+BuildEdSharp.log at the top of the folder rather than into logs\, and the
+build script did not capture its output. Both halves now write one stamped
+log in logs\.
+
+**EdSharp now shares one copy of the Homer classes with every other Homer
+program.** It carried its own Inix, KeyMap, Lbc, Say, Web and inixVert, and
+all six had drifted from the kit's. They are gone; the build compiles the
+kit's, by path, out of C:\HomerDev, so a fix there reaches EdSharp on its
+next build. Elevate came with them, which is what gives the Help box its
+version section and F11 its update offer.
+
+**The folder is laid out the way every Homer program is.** Sources, build
+files, ReadMe and License at the top; configs, data, exec, help, logs,
+scripts and templates below, each starting with a different letter so the
+list can be walked by initial. Convert became configs\convert, Dictionaries
+became data\dictionaries, Samples and Snippets became templates\samples and
+templates\snippets, the documents moved into help, the JAWS scripts into
+scripts\jaws, and the built program and installer into exec. The installed
+tree mirrors it, so every path the program uses moved with it.
+
+**The version lives in version.txt.** It was AppVersion in the installer
+script, worked out from the release tags on the remote. Now the build steps
+version.txt, writes Version.cs from it, the installer reads it, and
+tagRelease reads it back out of what was actually built, so the program, the
+installer and the tag cannot disagree.
+
+**Nine of EdSharp's own tools were retired**, each an earlier edition of
+something the kit now does: tidyRepo, repoPolicy, moveNotes, restoreMissing,
+prepareAuditFixes, applyConvertPolicy, dropLatexJawsKeys, auditEdSharp and
+summarizeSetup, along with the root tagRelease and the old BuildEdSharp
+pair. The kit's homerTidy, checkHomerApp, gitPush, gitUnpushed, fixEncoding,
+buildTutorials and tagRelease take their place, refreshed into scripts on
+every build.
+
+**Two documents were merged and one renamed.** Tutorial and Tutorials were
+two documents covering the same ground and are now one; Development became
+Developer, which is what the kit's check looks for. The CamelType documents
+are the kit's now, so EdSharp's copies went.
+
+**A first spoken walk** is in help\Tutorial_00_Overview.inix, which the
+build speaks into an .mp3.
+
+## 28 August 2026 -- version 5.0.40
+
+**Three reports from a beta tester, addressed.**
+
+*A document translated to English came back in Spanish.* The model was not
+at fault. The language pair is remembered between uses and started at
+English to Spanish, so the model was told to translate English into Spanish,
+handed Spanish, and sensibly returned it much as it found it. The source
+language now offers Detect, which is what a first use gets, and with Detect
+chosen the prompt names no source at all -- naming the wrong one is worse
+than naming none. A translation that comes back the same as the text that
+went in now says so rather than opening a window that looks translated until
+you read it.
+
+*A replacement of a space and an x produced only the x.* A settings value on
+one line is trimmed, so the space was gone before the job ran. Quoting the
+value keeps it -- Replace=" x" -- and that already worked, but nothing said
+so. Two things made it hard to find: \s, which is what a person reaches
+for, means nothing in a replacement and is silently handed back as the
+letter s by the .NET unescaper; and an older build did not yet strip the
+quotation marks, so quoting appeared not to work either. No new escape was
+invented for this -- a job file should stay readable as ordinary .NET
+regular expressions -- and the quoting is now documented instead.
+
+*Numbering passages that share an ending* turned out to need no new feature.
+$# in a Replace value is the number of the match, counting from one, and has
+been there all along without being written down anywhere.
+
+A new Samples\\Jobs folder holds three worked jobs -- numbering passages,
+turning a braille-ready file into readable text, and gathering headings to
+the clipboard -- with a page explaining the format and the three things
+easiest to miss.
+
+**The language settings follow the file you are in.** The compiler was one
+setting for the whole program, changed only by Pick Compiler. Everything
+resting on it therefore described whatever file you last picked it for: with
+C# chosen, a Python file compiled with csc, Alt+PageDown navigated by C#
+declarations, comments were quoted with two slashes, indentation was four
+spaces and Alt+V offered C# snippets. Five things wrong at once, and the
+only cure was to remember.
+
+A new CompilerExtensions section maps sixty file extensions to nineteen
+languages, and EdSharp consults it when a document is opened or activated.
+An extension nobody claims changes nothing, so a plain text file leaves the
+last choice alone; Pick Compiler still overrides; and FollowDocument set to
+0 turns it off.
+
+**Twelve languages were added to the table**, chosen so that each gains
+something real rather than an entry. Visual Basic .NET compiles with the
+vbc.exe that sits beside csc.exe on every Windows machine. XML and JSON are
+checked by the readers Windows already carries, through two small batch
+files in Convert so the quoting is settled in one place rather than fought
+with in a settings value. Perl, PHP and Ruby use their own syntax-only
+switches. LaTeX returns to the table, having been retired six days earlier
+as no longer relevant: it earns its place back because LaTeX is how
+accessible mathematics is written, and Pandoc now turns that into MathML.
+VBScript, HTML, Markdown, Inix, Batch and SQL have no checker worth having
+and say so, but all six gained block navigation.
+
+Fifteen of the nineteen can now report what is wrong before anything runs,
+and all nineteen move by blocks that mean something in that language -- a
+declaration in C#, a heading or landmark in HTML, a section in a settings
+file, a label in a batch file, a sectioning command in LaTeX.
+
+A new audit check holds the map to its sections, so an extension can never
+point at a language that does not exist or be claimed by two.
+
+**Mathematics now converts to MathML rather than MathJax.** The Markdown to
+HTML conversions asked Pandoc for MathJax, which fetched a large script from
+the internet every time a page opened, so the mathematics did not read at all
+without a connection. They now ask for MathML, which is part of the page.
+
+The reason to change is that the ground moved. Every major browser has drawn
+MathML itself since MathML Core reached Chromium in 2023. NVDA reads it from
+2025.1, and from 2026.1 it carries MathCAT, the math speech and braille
+engine, built in with no add-on to fetch. JAWS reads it from its 2026
+releases. Meanwhile MathJax version 4 turned off the hidden MathML that
+screen readers had been relying on, preferring speech of its own. Native
+MathML is smaller, works offline, and is read by the screen reader itself.
+
+The guide's mathematics section was rewritten with it. It had been telling
+readers to install MathPlayer and open the page in Internet Explorer, advice
+that was sound around 2010 and has been wrong for years: MathPlayer has not
+been developed since 2017 and Internet Explorer is retired.
+
+**Lbc can build a dialog from a file, which is IniForm brought forward.**
+IniForm, written in PowerBASIC between 2005 and 2015, turned a settings file
+into a real Windows dialog and wrote the answers to a second file, so a
+program in any language could put up an accessible form. The new
+LbcInixForm class does the same from .inix, and being an ordinary Lbc dialog
+it is 64-bit like the program hosting it, where the original built Windows
+dialog templates by hand and could only ever be 32-bit.
+
+The definition is .inix, so a list of items spans lines instead of being
+crammed onto one separated by vertical bars, and the companion .txt file that
+existed only to get round that limit is gone: an .inix value holds as many
+lines as it needs. The bars still work, so every old definition still runs.
+Four control types are added to the original nine -- combo, spin, heading and
+separator -- and password, which was an attribute, is a type as well.
+
+**The names come from IniForm, spelled in Camel Type.** The three passes
+keep their own names -- dialogGroupControls, dialogSizeControls,
+dialogPositionControls -- in their own order, the DialogBand record keeps its
+fields, and the COM server's runForm, showResults and getResult are on
+LbcInixForm under those names, so a caller written against IniForm needs
+nothing new learnt. Only the spelling changes: lower camel case for methods
+and properties, a Hungarian prefix on every variable, so i_borderPad becomes
+iBorderPad and a_dlgBand becomes ldBands.
+
+**A combo box now means what it has always meant.** The `combo` type is a box
+you may type in, with a list beside it of the values already known, sorted
+alphabetically with upper and lower case treated alike; the starting value
+need not be one of them. The drop-down that allows only its listed values is
+`droplist`. Lbc gained addComboEditBox for the first, beside the
+addComboPickBox it already had for the second and addComboHistoryBox for a
+list of what was typed before.
+
+**Both layouts are kept, named in parallel.** LbcInixForm's Layout property
+chooses between them, and the methods pair off: buildStack and buildBand,
+runStack and runBand. Stack is Lbc's own, one control to a row, which is
+what guarantees that reading order, tab order and visual order are one
+order, and it stays the default. Band is IniForm's arithmetic, transcribed
+whole into LbcBandLayout and checked against the layout IniForm itself
+recorded for the Customer Information sample: all eighteen positions and
+sizes, and the form size of 421 by 286, come out identical. Two details had
+to be right for that -- the even-spacing division rounds half to even, as
+PowerBASIC did when assigning to a Long, and dialog units become pixels
+through base units measured from the form's own font rather than the 8 point
+figures IniForm could assume. One slip is not carried forward: a band's
+shared button width was written to the band but read from an array indexed
+by control, so a band took its last control's width rather than its widest.
+The documented intent was plain, and the intent is what is implemented.
+
+A multi-line .inix value is read verbatim, from the start of its first line
+to the end of its last, with nothing trimmed at either end at read or at
+write. What to do with it afterwards belongs to the program reading it: a
+range trims each item, because surrounding space there could only be an
+accident of layout, while a memo trims nothing, because every space in it is
+content. So a memo whose text should not be indented is written flush left,
+or between fences, which also lets it hold lines that would otherwise look
+like keys.
+
+**A snippet can now describe its own dialog.** A block between [[form]] and
+[[end]] is a form definition in that same format, and each answer replaces
+the control's name between percent signs in the rest of the snippet. The
+%Label=Value% syntax asks for text and nothing else; this gives a snippet
+check boxes, lists, memos and spin controls, all obeying the same form rules
+as every other EdSharp dialog. Sample definitions are in Samples\\Forms.
+
+**The audit now checks every C# source for balanced braces.** It checked
+EdSharp.cs and Inix.cs alone, which was enough until Lbc grew a class of its
+own. Lbc.cs, Say.cs, KeyMap.cs and Web.cs are checked too.
+
+**Snippet variables with more than one word in the label now work.** They
+never had. The pattern that found them required the label to be a single run
+of word characters, and a space is not one, so "%First participant=User%" was
+invisible: no question was asked and the raw text was left in the finished
+document. Of the eleven snippets that use variables, the three Mermaid ones
+were affected, every variable in them but one. A label may now hold anything
+except a percent sign, an equals sign or a line break.
+
+**A value with vertical bars in it is now a list to choose from.** Writing
+`flowchart %Direction=TD|LR|BT|RL%` gives a list box with TD selected instead
+of a box to type into. This is the only addition to the syntax. Mustache and
+Jinja braces were considered and set aside: they collide with the shell,
+PowerShell and LaTeX snippets EdSharp already ships, and a template engine
+would be a large dependency for a feature whose whole job is to ask a few
+questions.
+
+**Snippet dialogs follow the Homer form rules.** Every field now takes its
+Alt letter from the start of a word, and no two fields in one dialog share a
+letter; previously an ampersand was pushed in front of whatever the label
+happened to be, so two fields starting with the same letter both answered the
+same key. The rule moved into Lbc, where the button row already kept it, so
+buttons and fields cannot come to different conclusions. Every field also
+carries a focus tip, which is what F1 reads out.
+
+**Snippets are saved to the Homer standard.** Save Snippet wrote plain ASCII
+text as ANSI with no byte-order mark; it now writes UTF-8 with one and CRLF
+endings, which is what the reader detects most reliably. Reading was already
+correct, through the Ude detector. Two kinds of file take no mark: those the
+command interpreter runs, and .gitignore and .gitattributes, where git reads
+the mark as part of the first pattern so that line silently stops working.
+
+**Mermaid diagrams are checked for accessibility.** Check Markdown, Alt+F9,
+now looks inside a fenced mermaid block rather than skipping it, and applies
+the checklist published by Princeton University Library: a diagram wants an
+accessible name and a detailed description, should not set a theme in its
+init block, should have its colours checked three ways if it sets any, and
+should have a heading before it when a page holds several. The reason these
+matter is that Mermaid does not tell assistive technology how its nodes
+connect, so the description is not a caption for the picture -- for some
+readers it is the picture.
+
+The ten shipped snippets prompt for the name and the description first, so
+the accessible version is the one that costs nothing extra, and seven new
+ones cover class, state, entity relationship, Gantt, mindmap, timeline and XY
+chart diagrams. A new Samples\\Mermaid folder holds one short example of each
+alongside a page explaining the five rules. Every snippet and every example
+was checked against the new rules and reports nothing.
+
+**EdSharp is now under the MIT License.** It was released under the GNU
+Lesser General Public License from 2007 through version 5.0. The MIT terms
+ask less of anyone who wants to build on the code: use it, change it, ship it
+in something of your own, including something you sell, as long as the
+copyright notice goes with it. The full terms are in License.md, which also
+names the parts of EdSharp that other people wrote and that keep their own
+licenses -- the Ude encoding detector under the LGPL, the 2htm extractor in
+the Convert folder, and the libraries and tools EdSharp fetches rather than
+carries. Earlier releases stay under the terms they were published with.
+
+**The working folder and the repository were separated properly.** What the
+repository carries is now decided in one place, repoPolicy.py, read by both
+the tidy script and the audit so they cannot disagree: a file belongs because
+EdSharp_Setup.iss names it or because repoPolicy names it as a build file,
+never because of what its name looks like. A pattern that admitted any
+markdown or web page at the top of the folder had been quietly keeping saved
+web pages, old mailing list messages and abandoned drafts in the repository
+while every report said it was clean. Reference material now lives in a notes
+folder that git ignores wholesale, the audit fails the build when anything
+unnecessary is tracked, and a new restoreMissing script brings back any
+needed file that has gone missing from the folder and the current commit
+alike.
+
+**The JAWS scripts are in the repository at last.** An ignore entry naming
+the scripts folder, matched with regard to case where Windows does not, had
+kept them out for years, so a fresh clone built an EdSharp that offered JAWS
+users nothing. Two new audit checks guard the arrangement: the script sources
+must be present to ship, and no compiled .jsb may be shipped, since a
+compiled script belongs to the JAWS version that compiled it and each
+installed version compiles its own.
+
+## 26 August 2026 -- version 5.0, out of beta
+
+The beta released earlier this year invited people to try EdSharp again after
+a decade. What they reported, and what testing found, shaped everything below.
+Each entry says what changed and why.
+
+**Documents convert, and keep their shape.** Plain text, Markdown and HTML are
+supported as both input and output, alongside Word, PowerPoint, spreadsheets,
+rich text and web pages. PDF was rebuilt: it now goes through a free reader
+that keeps headings, lists and tables, so a converted PDF can be navigated by
+block rather than read as a wall. The route that depended on Microsoft Word's
+PDF reflow is gone.
+
+**Spell check and thesaurus without Microsoft Office.** F7 uses Hunspell, with
+a dictionary that ships in the box, and walks the document one misspelling at
+a time the way Compile walks errors -- word spoken and spelled, position in
+the pass announced, suggestions in an editable box. Shift+F7 uses WordNet,
+grouped by meaning. The Windows spell checking service is a fallback, and Word
+remains an option; neither is needed. Along the way the Windows interfaces
+were got right by asking the object which ones it supports and using whichever
+it accepts, after three rounds of failures that no error message explained.
+
+**Compilers arrive configured.** Picking a compiler now brings its compile
+command, its error pattern, the output to abbreviate, its comment prefix, its
+indentation and its interactive shell. Python, JavaScript through Node, C#
+with the compiler inside Windows, PowerShell, JAWS script and JScript .NET
+ship configured; nine unmaintained or unverifiable entries were retired, and
+VBScript joined them when Microsoft began removing it from Windows. Compile
+speech starts at the earliest error in the file rather than the first one
+printed, with the caret placed by reading the tool's own marker.
+
+**A console for writing snippets.** Control+Shift+G opens a prompt with the
+editor window and its text box already in scope. The JScript one is the
+Interactive JScript program of 2010, recovered from a damaged archive,
+rewritten in Camel Type and given the editor it never had. The C# one compiles
+each line with the compiler Compile uses and loads it into the running editor,
+which is what lets it touch the live document.
+
+**AI on the machine, not on a server.** F12 asks a question, sending the
+document when the wording refers to it and not when it does not; Shift+F12
+always sends it. A source file goes to a coding model when one is installed.
+Alt+Shift+F7 translates between eighteen languages, using a better model when
+one is installed. The old translation command, which called a web service
+withdrawn years ago, is rebuilt on this.
+
+**Gathering and batch work.** Append from Clipboard turns a window into a
+collector for research from several sources. File Find builds a list of paths
+you can edit; Transform Files applies search and replace tasks to every file
+in it. Regular expressions run through find, replace and the two commands that
+extract matching text into a new document.
+
+**Tutorials by role**, opened with Control+Shift+F1: twelve of them, from
+Python developer to web researcher, each naming the settings and keys that
+matter for that work rather than describing the program in the abstract.
+
+**Speech that does not repeat itself.** A screen reader already announces
+window titles and the focused control; EdSharp now leaves those alone and
+speaks only what it alone knows. Messages go to one voice, never two. Key
+Describer was finished: every command has a description, checked automatically
+against the real bindings, and Alt+F4 leaves the mode and closes the program
+rather than describing itself.
+
+**A source audit runs before every build**, checking what a compiler cannot:
+duplicate keys, access key collisions, undescribed commands, illegal patterns
+in the compiler table, missing conversion scripts, unbalanced braces in the C#
+and PowerShell sources, interface layouts that must match what Windows
+publishes, public methods exposing private types, and bare type names from
+namespaces the file does not import. Each check exists because something once
+broke, and each now fails in a second rather than in a tester's hands.
+
+**The installer explains itself.** Optional pieces are checkboxes that say
+what they will do and how large they are, grouped by whether they install,
+update or reinstall, alphabetical within each group, with the versions probed
+behind the progress bar so the page appears at once. Nothing pauses for a
+keypress, and one Results box at the very end reports every item by name.
+
+## 23 August 2026 -- audit follow-up, applied on standing authority
+
+Jamal authorized best-judgment implementation of the remaining items from
+the 22 August documentation-and-code audit, with alternatives weighed and
+the reasoning recorded. Before any of this is committed, the
+prepareAuditFixes script marks the last released commit as the branch
+snapshotBeforeAuditFixes_20260823, so one command reverts everything:
+checking out that branch (or restoring single files from it) brings back
+the exact pre-change code.
+
+What changed, and the judgment behind each piece:
+
+- Open Other Format's duplicate picker row is gone (EdSharp.cs,
+  ConvertFile2String). When a real to-text converter exists for a format,
+  the bare keep-the-extension entry -- which displayed as "txt" but opened
+  the file raw -- no longer appears. The alternative considered was
+  relabeling the bare row as its own extension; removal won because two
+  rows meaning "convert to text" and "show raw source" under one label
+  was the confusion, and raw opening already belongs to the ordinary Open
+  command. When no converter exists, the bare row stays, and its raw-read
+  fallback is exactly what its offer means.
+
+- A blocked converter can no longer freeze EdSharp (EdSharp.cs,
+  runShell). The hidden converter process now gets two minutes, and one
+  still running after that is ended, letting the existing error dialog
+  show the command line. The alternative -- moving conversion to a
+  background thread -- was rejected for now as a larger rewrite with new
+  failure modes; a bounded wait fixes the harm with eight lines.
+
+- The conversion tables live in EdSharp.inix alone, under the policy:
+  Pandoc directly wherever Pandoc reads the format; 2htm or the
+  OfficeConvert utilities where it cannot (old Word, PDF through Word's
+  PDF Reflow, PowerPoint, Excel); .cmd batch files only, never .bat.
+  Entries whose tools were removed from Convert (braille through
+  liblouis, HTML Tidy, WinHelp and WordPerfect through GetText) are
+  tombstoned -- an empty value hides them everywhere, including stale
+  copies in a user's old EdSharp.ini. Excel to Markdown goes through a
+  CSV made by OfficeConvert, because Pandoc has no Excel reader. New
+  routes: doc, pdf, ppt, and pptx to HTML and Markdown via 2htm, and rtf
+  to HTML, Markdown, and text via Pandoc's RTF reader.
+
+- The user guide matches the program again (EdSharp.md): two commands
+  that no longer exist are out of the catalog, three malformed catalog
+  lines are repaired, ten commands are newly documented (Preview
+  Markdown and its browser twin, the three menu-only conversion
+  commands, Say Braces, Hotkey Summary, Lookup Term, Translate Language,
+  and Tutorial), and the braille back-translation promise is replaced by
+  the truth: braille files always open raw, their converters having been
+  retired with their tools.
+
+- The build keeps the documentation pairs fresh (BuildEdSharp.ps1). Every
+  git-tracked root Markdown file regenerates its .htm through Pandoc when
+  the Markdown is newer or the .htm is missing. Tracked-only is the
+  judgment: personal notes living in the same folder must never sprout
+  .htm files. The alternative -- a separate regeneration script -- was
+  rejected because a manual step is a step someone forgets, which is how
+  the shipped EdSharp.htm drifted behind EdSharp.md in the first place.
+
+- The JAWS scripts join the repository (prepareAuditFixes runs
+  git add -f Scripts). A fresh clone previously built an installer with
+  no JAWS scripts at all, because the folder existed only on the
+  development machine and the repository's ignore rules -- which treat
+  installer wildcards as permission, not desire -- would never add it.
+  The forced add was chosen over editing .gitignore because it is one
+  action, leaves the protective ignore rules intact for future strays,
+  and is permanent: files already tracked stay tracked.
+
+Reverting: git checkout snapshotBeforeAuditFixes_20260823 restores the
+whole pre-change state; git checkout snapshotBeforeAuditFixes_20260823 --
+EdSharp.cs (or any single path) restores one file.
+
+## Earlier in August 2026
+
+- v5.0.20 restored a working EdSharp after the assembly-name collision
+  era: the C# sources compile into one EdSharp.exe, and EdSharp.dll is
+  the JScript .NET evaluator built from EdSharp.js, loaded by reflection.
+  Menu items may deliberately have no hotkey; a blank key means
+  menu-only. The installer gained a single consolidated setup log, a
+  script-based JAWS install running as the original user, and a Results
+  box reporting observed facts. Releases v5.0.11 through v5.0.19 ship
+  executables that cannot start and should not be installed.

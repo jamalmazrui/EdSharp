@@ -1,3 +1,0 @@
-text form
-Name %Name=%
-OutFile %ExecutableFile=%
