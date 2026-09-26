@@ -16,6 +16,12 @@ EdSharp.ico
 EdSharp.manifest
 EdSharp.exe.config
 
+; THE ONE BINARY. Tektosyne.dll cannot be fetched -- no NuGet package, no
+; download -- so the repository has to carry it. The rule against binaries
+; here exists to keep fetched things out of git; a thing that cannot be
+; fetched is the exception the rule allows. homerTidy carried it off once.
+Tektosyne.dll
+
 ; Build and release
 buildEdSharp.cmd
 buildEdSharp.ps1

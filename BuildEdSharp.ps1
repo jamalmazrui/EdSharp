@@ -615,7 +615,28 @@ try {
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "ReverseMarkdown.dll")) { $lArguments += "/r:ReverseMarkdown.dll" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "HtmlAgilityPack.dll")) { $lArguments += "/r:HtmlAgilityPack.dll" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "Markdig.dll")) { $lArguments += "/r:Markdig.dll" }
-  if (Test-Path -LiteralPath (Join-Path $sScriptDir "Tektosyne.dll")) { $lArguments += "/r:Tektosyne.dll" }
+  # TEKTOSYNE CANNOT BE FETCHED. It is a 2007-era library with no NuGet
+  # package and no download, which makes it the one library the repository
+  # must carry -- RepoFiles.txt names it, and the reason the "nothing
+  # binary" rule exists (fetched things bloating git) does not apply to a
+  # thing that cannot be fetched. On 25 September homerTidy carried it into
+  # notes\other because nothing named it, and the next build failed with
+  # CS0246 on every "using Tektosyne". This looks in the places a tidy
+  # might have put it and brings it home before the compile.
+  $sTektosyne = Join-Path $sScriptDir "Tektosyne.dll"
+  if (-not (Test-Path -LiteralPath $sTektosyne)) {
+    foreach ($sCandidate in @((Join-Path $sExecDir "Tektosyne.dll"),
+                              (Join-Path $sScriptDir "notes\other\Tektosyne.dll"),
+                              (Join-Path $sScriptDir "notes\Tektosyne.dll"))) {
+      if (Test-Path -LiteralPath $sCandidate) {
+        Copy-Item -LiteralPath $sCandidate -Destination $sTektosyne -Force
+        writeLog "Tektosyne.dll restored from $sCandidate"
+        break
+      }
+    }
+  }
+  if (Test-Path -LiteralPath $sTektosyne) { $lArguments += "/r:Tektosyne.dll" }
+  else { throw "Tektosyne.dll is missing and cannot be fetched. It should be in the repository; look for it in notes\other and put it beside EdSharp.cs." }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "Ude.dll")) { $lArguments += "/r:Ude.dll" }
   # Hunspell is referenced only when present, and the spell checking code
   # that uses it is compiled only then, so a build without the library

@@ -6,8 +6,18 @@ can judge the decision, not just observe it.
 
 ## 26 September 2026 -- moved to the Homer Development Kit
 
-**What the first build after the move found.** Five things, all of them
+**What the first build after the move found.** Six things, all of them
 the migration only half done.
+
+On the third attempt the build succeeded end to end: the program, the
+JScript support assembly and the installer, all in exec. The release then
+failed on its own rebuild, because homerTidy had carried Tektosyne.dll into
+notes\other -- nothing named it, and the build does not fetch it, because
+nothing can: it is a 2007-era library with no package and no download. It
+is now named in RepoFiles.txt as the repository's one binary, the exception
+the rule allows, and the build brings it home from notes if a tidy ever
+carries it off again.
+
 
 On the second attempt the program compiled against the kit's classes with
 one warning and no errors -- the first proof that EdSharp and the kit's
