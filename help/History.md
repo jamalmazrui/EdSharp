@@ -4,6 +4,10 @@ A human-readable record of fixes and enhancements, newest first. Each entry
 says what changed and why, so a future reader -- or a future maintainer --
 can judge the decision, not just observe it.
 
+## 27 September 2026 -- setup fixes
+
+- **Setup.** The Results box at the end of setup is titled "EdSharp Setup Results", and the finish page uses the Homer wording: the verb first, no "recommended", and "Launch EdSharp (desktop hotkey ...)". The JAWS scripts were never installed: the finish page ran scripts\installJawsScripts.cmd, which the installer had put at the top of the program folder, and "Scripts\*" copied the whole scripts folder into scripts\jaws. Both go where they belong now. The Results box said Pandoc was "not present" beside a working install, because it looked in configs\convert\Pandoc; it asks the same check as the finish page. Updating Python upgraded Python 3.13 whatever was installed, so with 3.14 it did nothing; it upgrades the release that is there. The boxes read "Install JAWS scripts" and "Install NVDA add-on (NVDA must be running)".
+
 ## 26 September 2026 -- built with HomerDev 1.43.19
 
 - **The kit's tools carry the day's fixes.** `scripts\tidy` keeps a file where the project says it lives, so the two carried libraries stay at the top; `scripts\check` reads keys and access letters without false alarms and never waits for a key; and `scripts\release` publishes a draft -- 5.0.15 was left as one by an earlier run -- and confirms the release is GitHub's latest before calling it published.

@@ -94,7 +94,8 @@ try {
   writeLog "Script: $($MyInvocation.MyCommand.Path)"
   writeLog "PowerShell: $($PSVersionTable.PSVersion), user: $env:USERNAME"
   writeLog "Arguments: bQuiet=$bQuiet bUninstall=$bUninstall pathLogFile=$pathLogFile"
-  $sIssFile = Join-Path $sScriptDir "EdSharp_Setup.iss"
+  # Installed in scripts: the installer script is one level up.
+  $sIssFile = Join-Path (Split-Path -Parent $sScriptDir) "EdSharp_setup.iss"
   if (Test-Path -LiteralPath $sIssFile) {
     $matchVersion = [regex]::Match([System.IO.File]::ReadAllText($sIssFile), "(?m)^AppVersion=(.+)$")
     if ($matchVersion.Success) { writeLog "EdSharp version: $($matchVersion.Groups[1].Value.Trim())" }
@@ -102,8 +103,10 @@ try {
 
   # The source layout drives everything: subfolders of Scripts map onto
   # Settings subfolders by name, and root files belong to enu.
-  $sScriptsDir = Join-Path $sScriptDir "Scripts"
-  if (-not (Test-Path -LiteralPath $sScriptsDir)) { throw "The Scripts folder was not found beside this script: $sScriptsDir" }
+  # The JAWS files are in scripts\jaws, beside this script (27 September
+  # 2026; the layout before kept them in a Scripts folder beside it).
+  $sScriptsDir = Join-Path $sScriptDir "jaws"
+  if (-not (Test-Path -LiteralPath $sScriptsDir)) { throw "The jaws folder was not found beside this script: $sScriptsDir" }
   $dBuckets = @{}
   $lRootFiles = @(Get-ChildItem -LiteralPath $sScriptsDir -File)
   if ($lRootFiles.Count -gt 0) { $dBuckets["enu"] = $lRootFiles }

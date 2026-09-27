@@ -22,10 +22,14 @@ rem
 rem NOTHING PAUSES. LOG: %LOCALAPPDATA%\<App>\logs\<App>_setup.log.
 setlocal EnableExtensions EnableDelayedExpansion
 
-rem The app name comes from the folder this script is installed into. That is
-rem exec in an installed copy, so climb one level when it is.
+rem The app name comes from the folder this script is installed into, climbing
+rem one level from exec or scripts. INSTALLERS PUT THIS SCRIPT IN SCRIPTS
+rem (1.43.20): with only exec climbed, the app was named "scripts", so FileDir's
+rem finish page looked for scripts_JAWS.zip, found nothing, logged to
+rem %LOCALAPPDATA%\scripts\logs, and installed no JAWS scripts at all.
 for %%d in ("%~dp0.") do set "sApp=%%~nxd"
 if /i "%sApp%"=="exec" for %%d in ("%~dp0..") do set "sApp=%%~nxd"
+if /i "%sApp%"=="scripts" for %%d in ("%~dp0..") do set "sApp=%%~nxd"
 set "sLogDir=%LOCALAPPDATA%\%sApp%\logs"
 set "sLog=%sLogDir%\%sApp%_setup.log"
 if not exist "%sLogDir%" mkdir "%sLogDir%" >nul 2>&1
@@ -35,6 +39,18 @@ call :logLine "Script: %~f0"
 call :logLine "App: %sApp%"
 
 set "iInstalled=0"
+
+rem ONE READER AT A TIME, WHEN ASKED (1.43.20). An installer gives the JAWS
+rem scripts and the NVDA add-on a box each, so each box runs this with "jaws"
+rem or "nvda"; with neither, both are installed, as before.
+set "bJaws=1"
+set "bNvda=1"
+for %%a in (%*) do (
+  if /i "%%~a"=="jaws" set "bNvda=0"
+  if /i "%%~a"=="nvda" set "bJaws=0"
+)
+call :logLine "JAWS: %bJaws%  NVDA: %bNvda%"
+if "%bJaws%"=="0" goto :nvda
 
 rem ---- JAWS ----------------------------------------------------------------
 if not exist "%~dp0%sApp%_JAWS.zip" goto :nvda
@@ -58,6 +74,7 @@ for /d %%v in ("%sJawsRoot%\*") do (
 
 :nvda
 rem ---- NVDA ----------------------------------------------------------------
+if "%bNvda%"=="0" goto :done
 if not exist "%~dp0%sApp%.nvda-addon" goto :done
 call :logLine "Found %sApp%.nvda-addon"
 where nvda >nul 2>&1

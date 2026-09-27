@@ -27,7 +27,7 @@ rem machine asks for the all-users install under Program Files instead, so
 rem python.exe sits on the machine PATH where Compile finds it.
 rem
 rem THE OFFICIAL PYTHON, FROM PYTHON.ORG, NOT THE MICROSOFT STORE. The
-rem winget package asked for below, Python.Python.3.13, IS the python.org
+rem winget package asked for below, Python.Python.3.14, IS the python.org
 rem installer; the Store edition is a different package entirely and is
 rem never requested here. The Store edition installs into a sandboxed
 rem folder, keeps its own copy of site-packages, and refuses some ordinary
@@ -51,8 +51,8 @@ if not errorlevel 1 (
 )
 
 echo Installing Python
-echo [installPython.cmd] winget install Python.Python.3.13 >> "%log%"
-winget install --id Python.Python.3.13 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
+echo [installPython.cmd] winget install Python.Python.3.14 >> "%log%"
+winget install --id Python.Python.3.14 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
 echo [installPython.cmd] winget install exit %errorlevel% >> "%log%"
 call :findPython
 if not defined pythonExe goto fail_python
@@ -62,10 +62,22 @@ goto done_python
 
 :upgrade_python
 echo Updating Python
-echo [installPython.cmd] winget upgrade Python.Python.3.13 >> "%log%"
-winget upgrade --id Python.Python.3.13 -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
-echo [installPython.cmd] winget upgrade exit %errorlevel% >> "%log%"
-if errorlevel 1 (echo Already current.) else (echo Updated.)
+rem THE PYTHON THAT IS INSTALLED IS THE ONE UPDATED (27 September 2026). This
+rem upgraded Python.Python.3.13 whatever was there; with 3.14 installed winget
+rem answered "No installed package found" and the update never happened,
+rem while the installer's own check had offered it. Each release line the
+rem installer checks is tried, and the ones winget lists are upgraded.
+set "bUpgraded="
+for %%I in (Python.Python.3.14 Python.Python.3.13 Python.Python.3.12) do (
+  winget list --id %%I -e --disable-interactivity >nul 2>&1
+  if not errorlevel 1 (
+    echo [installPython.cmd] winget upgrade %%I >> "%log%"
+    winget upgrade --id %%I -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
+    echo [installPython.cmd] winget upgrade %%I exit !errorlevel! >> "%log%"
+    set "bUpgraded=1"
+  )
+)
+if defined bUpgraded (echo Updated.) else (echo No winget-managed Python to update.)
 goto done_python
 
 :fail_python

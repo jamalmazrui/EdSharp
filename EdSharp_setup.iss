@@ -145,7 +145,7 @@ Source: "ModernizePandocConfig.ps1"; DestDir: "{app}"; Flags: ignoreversion skip
 Source: "configs\Tools.inix";              DestDir: "{app}\configs"; Flags: ignoreversion skipifsourcedoesntexist
 ; pandoc fetch scripts, installed so the Finish-page checkbox below can run
 ; them and so a user can run installPandoc.cmd by hand at any later time.
-Source: "installPandoc.cmd";  DestDir: "{app}"; Flags: ignoreversion
+Source: "scripts\installPandoc.cmd";  DestDir: "{app}\scripts"; Flags: ignoreversion
 ; sqlean: SQLite with the sqlean extension set (decision of 24 August 2026).
 ; TWO files, both needed for full functionality. sqlean.exe is the sqlean
 ; SHELL -- the SQLite command line with the extensions baked in -- from the
@@ -174,18 +174,25 @@ Source: "scripts\installPython.cmd"; DestDir: "{app}\scripts"; Flags: ignorevers
 Source: "scripts\installOllama.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
 Source: "exec\sqlean.exe";  DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "exec\sqlean.dll";  DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "installPandoc.ps1";  DestDir: "{app}"; Flags: ignoreversion
+Source: "scripts\installPandoc.ps1";  DestDir: "{app}\scripts"; Flags: ignoreversion
 ; JAWS script installer, the HomerView way: the installer's job, not the
 ; editor's. Run by the Finish page as the ORIGINAL user; can be run by hand
 ; after a JAWS upgrade.
-Source: "installJawsScripts.cmd";  DestDir: "{app}"; Flags: ignoreversion
-Source: "installJawsScripts.ps1";  DestDir: "{app}"; Flags: ignoreversion
+; In scripts, beside the JAWS files it installs from scripts\jaws -- where the
+; finish page runs it. Until 27 September 2026 these two went to the top of
+; the program folder, the finish page ran scripts\installJawsScripts.cmd,
+; which was not there, and the JAWS scripts were never installed.
+Source: "scripts\installJawsScripts.cmd";  DestDir: "{app}\scripts"; Flags: ignoreversion
+Source: "scripts\installJawsScripts.ps1";  DestDir: "{app}\scripts"; Flags: ignoreversion
 Source: "EdSharp_setup.iss";  DestDir: "{app}"; Flags: ignoreversion
 Source: "exec\Tektosyne.dll";      DestDir: "{app}"; Flags: ignoreversion
 Source: "exec\Ude.dll";            DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 ; JAWS settings family (compiled into each installed JAWS version by the
 ; Code section).
-Source: "Scripts\*";        DestDir: "{app}\scripts\jaws"; Flags: ignoreversion recursesubdirs skipifsourcedoesntexist
+; The JAWS files alone, from scripts\jaws. "Scripts\*" took the whole scripts
+; folder -- install scripts, kit tools, and scripts\jaws itself again -- into
+; scripts\jaws.
+Source: "scripts\jaws\*";   DestDir: "{app}\scripts\jaws"; Flags: ignoreversion skipifsourcedoesntexist
 ; NVDA add-on (installed on the Finish page via [Run]).
 Source: "exec\EdSharp.nvda-addon"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 ; Configuration: do not clobber a user's existing settings on upgrade.
@@ -271,7 +278,7 @@ Name: "{autodesktop}\EdSharp"; Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}
 ; under the user's own roaming application data, and this installer runs
 ; elevated; without the flag the scripts would go into the administrator's
 ; profile and the user would see nothing at all.
-Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; Description: "Install JAWS scripts for EdSharp (recommended)"; Flags: postinstall skipifsilent runasoriginaluser waituntilterminated runhidden; Check: haveJaws
+Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; Description: "Install JAWS scripts"; Flags: postinstall skipifsilent runasoriginaluser waituntilterminated runhidden; Check: haveJaws
 ; The same step again for a silent installation, which skips every
 ; postinstall entry: without this twin, /SILENT would copy the files, report
 ; success, and install no JAWS scripts at all.
@@ -279,7 +286,7 @@ Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResu
 ; Install the NVDA add-on by shell-executing the .nvda-addon file (NVDA
 ; registers itself as the handler). Unchecked by default; checking it opens
 ; NVDA's add-on install dialog. NVDA must be running, and be restarted after.
-Filename: "{app}\EdSharp.nvda-addon"; Description: "Install NVDA add-on (NVDA must be running; restart NVDA afterward)"; Flags: postinstall shellexec skipifdoesntexist unchecked
+Filename: "{app}\EdSharp.nvda-addon"; Description: "Install NVDA add-on (NVDA must be running)"; Flags: postinstall shellexec skipifdoesntexist unchecked
 ; pandoc is CENTRAL to EdSharp (decision of 24 August 2026), so it is no
 ; longer an optional checkbox: whenever {app}\configs\convert\Pandoc\pandoc.exe is
 ; absent, the fetch runs automatically, in silent installs too. Elevated on
@@ -459,11 +466,11 @@ Filename: "{cmd}"; \
 ; writing its settings into the wrong profile.
 Filename: "{app}\EdSharp.exe"; \
   WorkingDir: "{app}"; \
-  Description: "Launch EdSharp (Alt+Control+E starts it any time)"; \
+  Description: "Launch EdSharp (desktop hotkey Alt+Control+E)"; \
   Flags: postinstall skipifsilent nowait runasoriginaluser unchecked
 
 Filename: "{app}\help\EdSharp.htm"; \
-  Description: "Open the user guide (F1 opens it inside EdSharp)"; \
+  Description: "Open the user guide (F1 in EdSharp)"; \
   Flags: postinstall skipifsilent shellexec nowait runasoriginaluser unchecked
 
 ; The results summary is NOT listed here. It is not an option -- it always
@@ -762,20 +769,20 @@ begin
       if sAvailable <> '' then
         result := 'Update ' + sTool + ' from ' + sInstalled + ' to ' + sAvailable
       else if sInstalled <> '' then
-        result := 'Reinstall ' + sTool + ' ' + sInstalled + ' (current version)';
+        result := 'Reinstall ' + sTool + ' ' + sInstalled;
     end;
   end;
   if result = '' then
   begin
     sVersion := exeVersion(sExe);
     if sVersion <> '' then
-      result := 'Reinstall ' + sTool + ' ' + sVersion + ' (installed version)'
+      result := 'Reinstall ' + sTool + ' ' + sVersion
     else
     begin
       // All three labels start with the action the checkbox performs and
       // carry version numbers in parallel: "Install <tool> <latest>",
       // "Update <tool> from <old> to <new>", and "Reinstall <tool>
-      // <version> (current version)". When winget cannot say which
+      // <version>". When winget cannot say which
       // version is current (offline), the plain label still works.
       sVersion := wingetLatest(sFirstId);
       if sVersion <> '' then
@@ -974,24 +981,24 @@ end;
 function descDocTools(sParam: string): string;
 begin
   if docToolsPresent() then
-    result := 'Reinstall the document tools: rich PDF conversion and the thesaurus (installed)'
+    result := 'Reinstall document tools (PDF conversion and thesaurus)'
   else
-    result := 'Install the document tools: rich PDF conversion and the thesaurus, in place of Microsoft Office (about 55 MB, needs Python)';
+    result := 'Install document tools (PDF conversion and thesaurus, about 55 MB, needs Python)';
 end;
 
 function descGitHub(sParam: string): string;
 begin
-  result := devToolDesc(0, 'Git.Git', 'git', 'Git', 'Install Git and the GitHub command line, for version control');
+  result := devToolDesc(0, 'Git.Git', 'git', 'Git', 'Install Git and GitHub CLI (version control)');
 end;
 
 function descNode(sParam: string): string;
 begin
-  result := devToolDesc(1, 'OpenJS.NodeJS.LTS;OpenJS.NodeJS', 'node', 'Node.js', 'Install Node.js LTS, used by tools such as Mermaid image export');
+  result := devToolDesc(1, 'OpenJS.NodeJS.LTS;OpenJS.NodeJS', 'node', 'Node.js', 'Install Node.js LTS (runs tools such as Mermaid export)');
 end;
 
 function descPython(sParam: string): string;
 begin
-  result := devToolDesc(2, 'Python.Python.3.14;Python.Python.3.13;Python.Python.3.12', 'python', 'Python', 'Install the latest official Python for Windows, for the Python compiler and helper scripts');
+  result := devToolDesc(2, 'Python.Python.3.14;Python.Python.3.13;Python.Python.3.12', 'python', 'Python', 'Install Python (runs the compiler and helper scripts)');
 end;
 
 { The translation model is an Ollama model rather than a winget package,
@@ -1025,9 +1032,9 @@ begin
   // Name the model. "A stronger model" tells nobody what they are getting
   // or what to look for in Ollama afterwards.
   if Pos('qwen2.5:7b', ollamaModelList()) > 0 then
-    result := 'Reinstall qwen2.5:7b, the translation model (installed)'
+    result := 'Reinstall qwen2.5:7b (translates text)'
   else
-    result := 'Install qwen2.5:7b for translation, better than the chat model (about 5 GB; needs Ollama)';
+    result := 'Install qwen2.5:7b (translates text, about 4.7 GB, needs Ollama)';
 end;
 
 { The coding model, like the translation one, is an Ollama model rather
@@ -1035,9 +1042,9 @@ end;
 function descCodeModel(sParam: string): string;
 begin
   if Pos('qwen2.5-coder', ollamaModelList()) > 0 then
-    result := 'Reinstall qwen2.5-coder:7b, the coding model (installed)'
+    result := 'Reinstall qwen2.5-coder:7b (answers questions about code)'
   else
-    result := 'Install qwen2.5-coder:7b for questions about code (about 5 GB; needs Ollama)';
+    result := 'Install qwen2.5-coder:7b (answers questions about code, about 4.7 GB, needs Ollama)';
 end;
 
 function descOllama(sParam: string): string;
@@ -1048,9 +1055,9 @@ begin
   // in the profile still answers for a version.
   sUserCopy := ExpandConstant('{localappdata}\Programs\Ollama\ollama.exe');
   if FileExists(sUserCopy) then
-    result := devToolDesc(3, 'Ollama.Ollama', '"' + sUserCopy + '"', 'Ollama', 'Install Ollama with the llama3.2 chat model, for Chat with AI (about 2 GB, shared with other apps)')
+    result := devToolDesc(3, 'Ollama.Ollama', '"' + sUserCopy + '"', 'Ollama', 'Install Ollama and llama3.2 (chat with AI, about 2 GB)')
   else
-    result := devToolDesc(3, 'Ollama.Ollama', 'ollama', 'Ollama', 'Install Ollama with the llama3.2 chat model, for Chat with AI (about 2 GB, shared with other apps)');
+    result := devToolDesc(3, 'Ollama.Ollama', 'ollama', 'Ollama', 'Install Ollama and llama3.2 (chat with AI, about 2 GB)');
 end;
 
 function ngenExe(sParam: string): string;
@@ -1333,7 +1340,7 @@ begin
   else if not haveJaws() then
     sMessage := sMessage + '  JAWS scripts: not offered, because JAWS was not found on this computer.' + sBreak
   else
-    sMessage := sMessage + '  JAWS scripts: NOT installed (the step did not run). Reinstall and leave its box checked, or run installJawsScripts.cmd from the program folder.' + sBreak;
+    sMessage := sMessage + '  JAWS scripts: NOT installed (the step did not run). Reinstall and leave its box checked, or run scripts\installJawsScripts.cmd in the program folder.' + sBreak;
 
   if addonIsInstalled() then
     sMessage := sMessage + '  NVDA add-on: installed. Restart NVDA to use it.' + sBreak
@@ -1342,10 +1349,13 @@ begin
   else
     sMessage := sMessage + '  NVDA add-on: not installed. Open EdSharp.nvda-addon in the program folder to install it.' + sBreak;
 
-  if FileExists(ExpandConstant('{app}\configs\convert\Pandoc\pandoc.exe')) then
-    sMessage := sMessage + '  pandoc: present. Document conversion will work.' + sBreak
+  // Pandoc is found where the finish page looks for it -- machine-wide, on
+  // the PATH -- not in configs\convert\Pandoc, which the Homer layout gave up
+  // and where it was reported "not present" beside a working install.
+  if not needPandoc() then
+    sMessage := sMessage + '  Pandoc: installed.' + sBreak
   else
-    sMessage := sMessage + '  pandoc: not present. To add it later, run installPandoc.cmd from the program folder as an administrator.' + sBreak;
+    sMessage := sMessage + '  Pandoc: not installed. Run scripts\installPandoc.cmd as an administrator to add it.' + sBreak;
 
   // The optional installs -- Git, Node, Python, the document tools,
   // Ollama -- run from the finish page AFTER this box is shown, so their
