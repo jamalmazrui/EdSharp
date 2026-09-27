@@ -142,7 +142,11 @@ c_iLargeBytes = 10 * 1024 * 1024        # what counts as large in the history
 c_lsNeverPushed = [
     "*.exe", "*.log", "*.obj", "*.pdb", "Version.cs", "__pycache__/",
     ".venv/", "build/", "create*Repo.cmd", "create*Repo.ps1", "dist/", "notes/",
-    "exec/", "logs/", "self.htm", "self.md", "release.cmd", "release.ps1", "version.py",
+    # /version.py, AT THE TOP ONLY (1.43.16): it is the file a Python app's
+    # build generates beside its source. HomerView's NVDA add-on carries its
+    # own homer\version.py, which the add-on imports, and a bare version.py
+    # here untracked it.
+    "exec/", "logs/", "self.htm", "self.md", "release.cmd", "release.ps1", "/version.py",
 ]
 
 # Folders a build makes. The survey does not walk into them, because what is
@@ -434,8 +438,10 @@ def matchesAny(sRelative, lsNames):
     sLower = sRelative.replace("\\", "/").lower()
     sName = os.path.basename(sLower)
     for sNamed in lsNames:
+        # A leading / anchors a name to the top of the project, as in .gitignore.
+        bAnchored = sNamed.replace("\\", "/").startswith("/")
         sNamedLower = sNamed.replace("\\", "/").lower().lstrip("/")
-        if sNamedLower == sLower or sNamedLower == sName: return True
+        if sNamedLower == sLower or (not bAnchored and sNamedLower == sName): return True
         if "*" in sNamedLower:
             sRegex = "^" + re.escape(sNamedLower).replace(r"\*", ".*") + "$"
             if re.match(sRegex, sLower) or re.match(sRegex, sName): return True

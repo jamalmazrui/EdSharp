@@ -4,6 +4,11 @@ A human-readable record of fixes and enhancements, newest first. Each entry
 says what changed and why, so a future reader -- or a future maintainer --
 can judge the decision, not just observe it.
 
+## 26 September 2026 -- built with HomerDev 1.43.19
+
+- **The kit's tools carry the day's fixes.** `scripts\tidy` keeps a file where the project says it lives, so the two carried libraries stay at the top; `scripts\check` reads keys and access letters without false alarms and never waits for a key; and `scripts\release` publishes a draft -- 5.0.15 was left as one by an earlier run -- and confirms the release is GitHub's latest before calling it published.
+- **The grave accent convention is now the kit's.** EdSharp's arrangement -- Alt for volume, Control for rate, Shift reversing, and the screen reader key for punctuation -- is how every Homer app with speech commands uses the key.
+
 ## 26 September 2026 -- brought up to HomerDev 1.43.10
 
 - **The installer is written to the top of the project**, where the kit's release script looks for it. The release that day stopped with "EdSharp_Setup.exe not found" because the installer was in exec. The file keeps its name, EdSharp_Setup.exe: it is the asset every installed EdSharp downloads with F11.

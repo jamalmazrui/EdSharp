@@ -139,9 +139,27 @@ def finding(sName, sVerdict, sEvidence):
     return True
 
 
+def sayConsoleRunning(sCommand):
+    """One short console line for a command about to run."""
+    try:
+        print("  running: " + sCommand[:100], flush=True)
+    except Exception:
+        pass
+    return True
+
+
 def runCommand(lsArgs, sShell=""):
-    """Run a command, log it with its exit code, return (iCode, sOutput)."""
+    """Run a command, log it with its exit code, return (iCode, sOutput).
+
+    NOTHING IS WAITED FOR FROM THE KEYBOARD (1.43.17). A command's input is
+    empty, so a "pause" or a prompt in it returns at once rather than waiting
+    unseen: HomerView's checkHomerViewQuality.cmd ends with "Press any key",
+    its output was captured, and its release sat silent until it was stopped
+    by hand. The console names each command as it starts, so a long one is
+    seen to be running.
+    """
     logLine("RUN: " + (sShell or " ".join(lsArgs)))
+    sayConsoleRunning(sShell or " ".join(lsArgs))
     try:
         if sShell:
             # A LINE THAT BEGINS "cmd /c" IS NOT WRAPPED IN A SECOND cmd /c.
@@ -160,13 +178,16 @@ def runCommand(lsArgs, sShell=""):
             oCmd = _re.match(r"\s*cmd(?:\.exe)?\s+/c\s+(.*)$", sShell, _re.I | _re.S)
             if oCmd and os.name == "nt":
                 oResult = subprocess.run('cmd /s /c "' + oCmd.group(1).strip() + '"', shell=False, cwd=sRoot,
-                                         capture_output=True, text=True, timeout=900)
+                                         capture_output=True, text=True, timeout=900,
+                                         stdin=subprocess.DEVNULL)
             else:
                 oResult = subprocess.run(sShell, shell=True, cwd=sRoot,
-                                         capture_output=True, text=True, timeout=900)
+                                         capture_output=True, text=True, timeout=900,
+                                         stdin=subprocess.DEVNULL)
         else:
             oResult = subprocess.run(lsArgs, cwd=sRoot,
-                                     capture_output=True, text=True, timeout=900)
+                                     capture_output=True, text=True, timeout=900,
+                                         stdin=subprocess.DEVNULL)
     except Exception as oError:
         logLine("RUN FAILED: %s" % oError)
         return (1, str(oError))
@@ -399,10 +420,40 @@ def checkNaming():
     return finding("naming", "pass", "0 accessible names repeat a caption")
 
 
+def normalizeKey(sKey):
+    """A key combination as a comparable string: modifiers sorted, lower case,
+    Ctrl and Control alike -- "Ctrl+Alt+Shift+H" and "alt+control+shift+h"
+    both become "alt+control+shift+h"."""
+    lsParts = [s.strip().lower() for s in sKey.replace(" ", "").split("+") if s.strip()]
+    if not lsParts: return ""
+    lsParts = ["control" if s == "ctrl" else s for s in lsParts]
+    return "+".join(sorted(lsParts[:-1]) + [lsParts[-1]])
+
+
+def desktopShortcut():
+    """The app's own desktop shortcut from its installer -- a #define HotKey
+    or a HotKey: on an [Icons] line -- normalized; "" when there is none."""
+    for sIss in glob.glob(os.path.join(sRoot, "*_setup.iss")):
+        oMatch = re.search(r"(?im)(?:#define\s+s?HotKey\s+\"|\bHotKey\s*[:=]\s*\"?)((?:alt|ctrl|control|shift)(?:\+(?:alt|ctrl|control|shift))*\+\w+)", readText(sIss))
+        if oMatch: return normalizeKey(oMatch.group(1))
+    return ""
+
+
+# Words that can stand where a declaration's type does but begin a statement.
+c_lsNotTypes = ("await", "case", "catch", "else", "for", "foreach", "if", "lock", "new", "return",
+                "sizeof", "switch", "throw", "typeof", "using", "while", "yield")
+
+
 def checkKeys():
     """Alt+Control is reserved, and one dialog must not claim a letter twice."""
     lsBad = []
-    for sPath in sourceFiles() + glob.glob(os.path.join(sRoot, "*.inix")):
+    # The project's own .inix files only, as for the sources: FileDir's
+    # pre-kit Hotkeys.inix at the top, superseded by configs\Hotkeys.inix,
+    # still named keys the program no longer has (1.43.15).
+    lsNamedInix = namedByProject()
+    lsInix = [s for s in glob.glob(os.path.join(sRoot, "*.inix"))
+              if lsNamedInix is None or isNamed(os.path.relpath(s, sRoot), lsNamedInix)]
+    for sPath in sourceFiles() + lsInix:
         sText = readText(sPath)
         if isLibrary(sPath, sText): continue
         sText = codeLines(sText)
@@ -419,8 +470,24 @@ def checkKeys():
         # Alt+Control+D opens DbDo -- is the sanctioned use and is not in source.
         c_lsNavigation = ("arrow", "arrows", "up", "down", "left", "right", "home", "end",
                           "pageup", "pagedown", "uparrow", "downarrow", "leftarrow", "rightarrow")
-        for sKey in re.findall(r"\b(?:Alt\+Control|Control\+Alt)\+\w+", sText):
+        # THE WHOLE COMBINATION IS READ (1.43.18): Alt+Control+Shift+H, not
+        # "Alt+Control+Shift" with Shift taken for the key. And in Python the
+        # keys are the gestures NVDA binds -- "kb:alt+control+shift+h" --
+        # rather than every mention in a message or a docstring: HomerView
+        # tells its user "Press Alt+Control+Shift+H" in eight places, and a
+        # docstring still named a key the add-on no longer binds.
+        if sPath.lower().endswith(".py"):
+            lsCombos = ["+".join(p.capitalize() for p in s.split("+"))
+                        for s in re.findall(r"(?i)\bkb:((?:alt\+control|control\+alt)(?:\+shift)?\+[^\"'\s,\]]+)", sText)]
+        else:
+            lsCombos = re.findall(r"\b(?:Alt\+Control|Control\+Alt)(?:\+Shift)?\+\w+", sText)
+        for sKey in lsCombos:
             if sKey.rsplit("+", 1)[1].lower() in c_lsNavigation: continue
+            # The app's own desktop shortcut, as its installer declares it,
+            # is the sanctioned use: FileDir's Hotkeys.inix lists Alt+Control+F
+            # because that is how FileDir is opened, and HomerView's NVDA
+            # add-on binds Alt+Control+Shift+H, its own shortcut's key.
+            if normalizeKey(sKey) == desktopShortcut(): continue
             lsBad.append("%s: %s is reserved for Windows desktop shortcuts" % (sBase, sKey))
         # ACCESS LETTERS COMPETE ONLY WHERE THEY ARE PRESSED.
         #
@@ -444,6 +511,17 @@ def checkKeys():
             # inside the dialog being built, and its captions belong with it.
             # Without this, all of urlCheck.py's 7,000 lines were one owner.
             if not oDef: oDef = re.match(r"(?:async )?def (\w+)\s*\(", sLine)
+            # A METHOD WITH NO MODIFIER STARTS AN OWNER TOO (1.43.14). FileDir
+            # declares its handlers as "void menuEditRename_Click(object sender,
+            # EventArgs e) {" at the left margin, with no public or private, and
+            # none of them was seen: every caption after Delete_Recycle was
+            # counted as Delete_Recycle's, 39 false "claimed twice" in one file.
+            # A type and a name before "(", with no "=" ahead of it and not a
+            # statement keyword, is a declaration.
+            if not oDef:
+                oDecl = re.match(r"\s{0,8}([\w<>\[\],\.]+)\s+(\w+)\s*\(", sLine)
+                if oDecl and oDecl.group(1) not in c_lsNotTypes and "=" not in sLine[:oDecl.end()]:
+                    oDef = re.match(r"\s{0,8}[\w<>\[\],\.]+\s+(\w+)\s*\(", sLine)
             if oDef: sMethod = oDef.group(1)
             # A CAPTION IS SHORT. An ampersand inside a sentence of help text is
             # prose that happens to hold the character; a control's caption is
@@ -451,17 +529,35 @@ def checkKeys():
             # as captions, so prose stops being counted as trigger letters.
             # An HTML entity -- &amp; &lt; &nbsp; -- is not a trigger letter
             # (1.43.0): a program that writes HTML reports is full of them.
-            for oHit in re.finditer(r'(?:\b\w+\(\s*(\w+)\s*,\s*)?"(?=[^"]{0,40}")[^"&]*&(?![A-Za-z]+;|#\d+;)([A-Za-z])', sLine):
+            # A MENU ITEM'S VARIABLE NAMES ITS MENU (1.43.14). FileDir builds its
+            # whole menu bar in one constructor with menuEditTagAll =
+            # menu_Helper("Tag &All", ...) and menuHelpAbout =
+            # menu_Helper("&About", ...): Tag All and About are in different
+            # menus, and counting them in one owner made 16 false clashes. An
+            # assignment to menuEdit... or miEdit... puts the caption in the
+            # Edit menu; to menuEdit itself, on the menu bar.
+            sLineOwner = ""
+            oAssign = re.match(r"\s*(?:[\w<>\[\]]+\s+)?(?:this\.)?(menu|mi)([A-Z][a-z0-9]+)(\w*)\s*=", sLine)
+            if oAssign:
+                sLineOwner = "menu bar" if oAssign.group(3) == "" else "menu " + oAssign.group(2)
+            # THE SAME CAPTION TWICE IS ONE CLAIM (1.43.14). Code that shows
+            # ButtonDialog(..., {"&No", "&Yes"}) and then tests case "&No" or
+            # sChoice == "&User" names one button several times; only two
+            # DIFFERENT captions with one letter compete. Each letter keeps the
+            # set of captions that claim it.
+            for oHit in re.finditer(r'(?:\b\w+\(\s*(\w+)\s*,\s*)?"(?=([^"]{0,40})")[^"&]*&(?![A-Za-z]+;|#\d+;)([A-Za-z])', sLine):
                 # The first argument names a menu only when it looks like one --
                 # miFile, menuMain. A title or a prompt passed first, such as
                 # promptText(sTitle, "&Question"), is not a container, and two
                 # dialogs that both take sTitle are two dialogs.
                 sArg = oHit.group(1) or ""
-                sOwner = sArg if re.match(r"(mi|menu|m)[A-Z]", sArg) or sArg.lower().startswith("menu") else sMethod
-                dByOwner.setdefault(sOwner, {})
-                dByOwner[sOwner][oHit.group(2).lower()] = dByOwner[sOwner].get(oHit.group(2).lower(), 0) + 1
+                sOwner = sArg if re.match(r"(mi|menu|m)[A-Z]", sArg) or sArg.lower().startswith("menu") else (sLineOwner or sMethod)
+                sLetter = oHit.group(3).lower()
+                sCaption = oHit.group(2).replace("&", "").strip().lower()
+                dByOwner.setdefault(sOwner, {}).setdefault(sLetter, set()).add(sCaption)
         for sOwner in sorted(dByOwner):
-            for sLetter, iCount in sorted(dByOwner[sOwner].items()):
+            for sLetter, setCaptions in sorted(dByOwner[sOwner].items()):
+                iCount = len(setCaptions)
                 if iCount > 1:
                     lsBad.append("%s: the access key %s is claimed %d times in %s"
                                  % (sBase, sLetter, iCount, sOwner))
