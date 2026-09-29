@@ -693,6 +693,41 @@ try {
     }
   }
 
+  # ---- 6b2. The NVDA add-on carries EdSharp's version (29 September 2026) ----
+  # The installer tells Install, Update and Reinstall apart for the add-on by
+  # comparing the version in its manifest.ini with the installed add-on's. A
+  # ready-made EdSharp.nvda-addon whose version never changed would read as
+  # Reinstall after every EdSharp release, even when its contents had. So the
+  # copy in exec -- the one the installer ships -- has its version set to
+  # EdSharp's, and the log records the add-on's name and both versions.
+  $sAddonFile = Join-Path $sExecDir "EdSharp.nvda-addon"
+  if (Test-Path -LiteralPath $sAddonFile) {
+    Add-Type -AssemblyName System.IO.Compression
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $oArchive = [IO.Compression.ZipFile]::Open($sAddonFile, [IO.Compression.ZipArchiveMode]::Update)
+    try {
+      $oEntry = $oArchive.GetEntry("manifest.ini")
+      if (-not $oEntry) { throw "EdSharp.nvda-addon has no manifest.ini, so NVDA could not install it." }
+      $oReader = New-Object IO.StreamReader($oEntry.Open())
+      $sManifest = $oReader.ReadToEnd(); $oReader.Dispose()
+      $sName = ""; $sOld = ""
+      if ($sManifest -match '(?m)^\s*name\s*=\s*"?([^"\r\n]*)"?') { $sName = $Matches[1].Trim() }
+      if ($sManifest -match '(?m)^\s*version\s*=\s*"?([^"\r\n]*)"?') { $sOld = $Matches[1].Trim() }
+      if ($sName -eq "") { throw "EdSharp.nvda-addon's manifest.ini names no add-on, so it could not be recognized once installed." }
+      $sNewManifest = [regex]::Replace($sManifest, '(?m)^(\s*version\s*=\s*)"?[^"\r\n]*"?', ('${1}' + $sNewVersion))
+      if ($sOld -eq "") { $sNewManifest = $sNewManifest.TrimEnd() + "`r`nversion = $sNewVersion`r`n" }
+      $oEntry.Delete()
+      $oNew = $oArchive.CreateEntry("manifest.ini")
+      $oWriter = New-Object IO.StreamWriter($oNew.Open(), (New-Object Text.UTF8Encoding($false)))
+      $oWriter.Write($sNewManifest); $oWriter.Dispose()
+      writeLog "NVDA add-on: name=$sName version $(if ($sOld) { $sOld } else { '(none)' }) -> $sNewVersion, in exec\EdSharp.nvda-addon"
+    } finally {
+      $oArchive.Dispose()
+    }
+  } else {
+    writeLog "NVDA add-on: EdSharp.nvda-addon was not found beside the build script, so the installer will offer no NVDA add-on."
+  }
+
   # ---- 5b. sqlean.dll: keep the SQLite extension bundle current ----
   # sqlean ships as TWO files in {app} (iss decision of 24 August 2026):
   # sqlean.exe, the sqlean SHELL from the nalgeon/sqlite builds project,

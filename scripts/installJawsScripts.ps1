@@ -67,9 +67,34 @@ function readManifest([string] $sText) {
   }
   return $dValues
 }
+# NVDA'S OWN RECORD OF THE ADD-ON (29 September 2026). An installed NVDA logs
+# to %TEMP%\nvda.log, and keeps the previous session's log as nvda-old.log;
+# its add-on handler writes there when it installs, loads or refuses an
+# add-on. The lines naming this add-on, from both, go into EdSharp's own log,
+# so one log shows what the installer offered and what NVDA did with it.
+function nvdaLogLines([string] $sName) {
+  $lsOut = @()
+  foreach ($sLogName in @("nvda-old.log", "nvda.log")) {
+    $sNvdaLog = Join-Path $env:TEMP $sLogName
+    if (-not (Test-Path -LiteralPath $sNvdaLog)) { $lsOut += "  ${sLogName}: not found in $env:TEMP"; continue }
+    try {
+      # NVDA holds its log open while it runs, so it is read with sharing.
+      $oStream = New-Object IO.FileStream($sNvdaLog, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::ReadWrite)
+      $oReader = New-Object IO.StreamReader($oStream)
+      $lsHits = @(($oReader.ReadToEnd() -split "`r?`n") | Where-Object { $_ -match [regex]::Escape($sName) -or $_ -match "addonHandler" })
+      $oReader.Dispose()
+      $lsOut += "  ${sLogName}: $($lsHits.Count) line(s) about add-ons"
+      foreach ($sHit in @($lsHits | Select-Object -Last 15)) { $lsOut += "  | $sHit" }
+    } catch { $lsOut += "  ${sLogName}: could not be read: $($_.Exception.Message)" }
+  }
+  return $lsOut
+}
+
 if ($sState -ne "") {
-  # One word for the installer: none, install, update or reinstall.
+  # One word for the installer: none, install, update or reinstall; and the
+  # facts behind it in EdSharp's setup log, so a wrong word can be traced.
   $sAnswer = "none"
+  $lsFacts = @()
   try {
     if ($sState -eq "jaws") {
       $sRoot = Join-Path $env:APPDATA "Freedom Scientific\JAWS"
@@ -89,6 +114,7 @@ if ($sState -ne "") {
         if ($iOurs -eq 0) { $sAnswer = "install" }
         elseif ($iSame -eq $lsEnu.Count) { $sAnswer = "reinstall" }
         else { $sAnswer = "update" }
+        $lsFacts += "state jaws: fingerprint $sPrint; $($lsEnu.Count) JAWS version(s), $iOurs with EdSharp.jsb, $iSame current"
       }
     } elseif ($sState -eq "nvda") {
       $sAddon = Join-Path (Split-Path -Parent $sScriptDir) "EdSharp.nvda-addon"
@@ -107,14 +133,24 @@ if ($sState -ne "") {
         # until it restarts; that counts as installed.
         $sPending = Join-Path $env:APPDATA ("nvda\addons\" + $dShipped["name"] + ".pendingInstall\manifest.ini")
         if (-not (Test-Path -LiteralPath $sInstalled) -and (Test-Path -LiteralPath $sPending)) { $sInstalled = $sPending }
-        if (-not (Test-Path -LiteralPath $sInstalled)) { $sAnswer = "install" }
-        elseif ((readManifest ([IO.File]::ReadAllText($sInstalled)))["version"] -eq $dShipped["version"]) { $sAnswer = "reinstall" }
+        $sHave = "none"
+        if (Test-Path -LiteralPath $sInstalled) { $sHave = (readManifest ([IO.File]::ReadAllText($sInstalled)))["version"] }
+        if ($sHave -eq "none") { $sAnswer = "install" }
+        elseif ($sHave -eq $dShipped["version"]) { $sAnswer = "reinstall" }
         else { $sAnswer = "update" }
+        $lsFacts += "state nvda: add-on name=$($dShipped['name']) shipped version=$($dShipped['version']); installed version=$sHave (from $sInstalled)"
+        $lsFacts += (nvdaLogLines $dShipped["name"])
       }
     }
   } catch {
+    $lsFacts += "state ${sState}: ERROR $($_.Exception.Message); offered as Install"
     $sAnswer = "install"
   }
+  $lsFacts += "state ${sState}: $sAnswer"
+  try {
+    $sSetupLog = Join-Path $env:LOCALAPPDATA "EdSharp\logs\EdSharp_setup.log"
+    Add-Content -LiteralPath $sSetupLog -Value $lsFacts -Encoding UTF8
+  } catch { }
   Set-Content -LiteralPath $pathStateFile -Value $sAnswer -Encoding ASCII
   exit 0
 }

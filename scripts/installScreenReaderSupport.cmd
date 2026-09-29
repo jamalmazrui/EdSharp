@@ -233,7 +233,24 @@ if ($env:HS_MODE -eq "state") {
                     $dHave = readManifest ([IO.File]::ReadAllText($sInstalled))
                     $sState = if ($dHave["version"] -eq $dShipped["version"]) { "reinstall" } else { "update" }
                 }
-                logLine "state nvda: shipped $($dShipped['version']), $sState"
+                $sHave = if (Test-Path -LiteralPath $sInstalled) { (readManifest ([IO.File]::ReadAllText($sInstalled)))["version"] } else { "none" }
+                logLine "state nvda: add-on name=$($dShipped['name']) shipped version=$($dShipped['version']); installed version=$sHave; $sState"
+                # NVDA's own record: an installed NVDA logs to %TEMP%\nvda.log and
+                # keeps the previous session's as nvda-old.log; the lines about
+                # add-ons, from both, go into this log (read with sharing, since
+                # NVDA holds its log open).
+                foreach ($sLogName in @("nvda-old.log", "nvda.log")) {
+                    $sNvdaLog = Join-Path $env:TEMP $sLogName
+                    if (-not (Test-Path -LiteralPath $sNvdaLog)) { logLine "  ${sLogName}: not found in $env:TEMP"; continue }
+                    try {
+                        $oStream = New-Object IO.FileStream($sNvdaLog, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::ReadWrite)
+                        $oReader = New-Object IO.StreamReader($oStream)
+                        $lsHits = @(($oReader.ReadToEnd() -split "`r?`n") | Where-Object { $_ -match [regex]::Escape($dShipped["name"]) -or $_ -match "addonHandler" })
+                        $oReader.Dispose()
+                        logLine "  ${sLogName}: $($lsHits.Count) line(s) about add-ons"
+                        foreach ($sHit in @($lsHits | Select-Object -Last 15)) { logLine "  | $sHit" }
+                    } catch { logLine "  ${sLogName}: could not be read: $($_.Exception.Message)" }
+                }
             } else { logLine "state nvda: none (NVDA not found, or no $sApp.nvda-addon)" }
         }
     } catch {
