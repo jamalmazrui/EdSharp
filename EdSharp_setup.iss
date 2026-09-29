@@ -1236,6 +1236,39 @@ begin
   SaveStringsToFile(AddBackslash(sFolder) + 'EdSharp_setup.log', lSetupLines, True);
 end;
 
+{ THE RESULTS BOX REPORTS WHAT WAS TICKED (29 September 2026), as every
+  Homer installer's does: where EdSharp is and where the logs are, then one
+  line for each box ticked on the finish page, and nothing else. The captions
+  are written down when Finish is pressed -- before any of those steps run --
+  for summarizeSetup, which reports only on them. }
+var
+  gsTicked: string;
+
+function NextButtonClick(iCurPageID: Integer): Boolean;
+var
+  i: Integer;
+  lsLines: TArrayOfString;
+begin
+  Result := True;
+  if iCurPageID <> wpFinished then Exit;
+  gsTicked := '';
+  SetArrayLength(lsLines, 0);
+  for i := 0 to WizardForm.RunList.Items.Count - 1 do
+    if WizardForm.RunList.Checked[i] then
+    begin
+      gsTicked := gsTicked + WizardForm.RunList.ItemCaption[i] + #10;
+      SetArrayLength(lsLines, GetArrayLength(lsLines) + 1);
+      lsLines[GetArrayLength(lsLines) - 1] := WizardForm.RunList.ItemCaption[i];
+    end;
+  ForceDirectories(ExpandConstant('{localappdata}\EdSharp\logs'));
+  SaveStringsToFile(ExpandConstant('{localappdata}\EdSharp\logs\EdSharp_ticked.txt'), lsLines, False);
+end;
+
+function wasTicked(sWord: string): Boolean;
+begin
+  Result := Pos(Lowercase(sWord), Lowercase(gsTicked)) > 0;
+end;
+
 { The single Results box: always shown, always last. Inno reaches ssDone
   after the finish page's entries have run, which is the only moment at
   which the disposition of every checkbox is actually known. The script
@@ -1341,42 +1374,32 @@ begin
     sLogDir := sJawsLogDir;
   end;
 
-  sMessage := 'EdSharp is installed.' + sBreak + sBreak
-    + 'Program files:' + sBreak + '  ' + ExpandConstant('{app}') + sBreak + sBreak
-    + 'Results' + sBreak;
+  // Where it is, then one line for each ticked screen reader box; the other
+  // ticked boxes are reported by summarizeSetup, which runs after them.
+  sMessage := 'EdSharp {#MyAppVersion} is installed in ' + ExpandConstant('{app}') + '.' + sBreak + sBreak;
 
-  if iJaws = 0 then
-    sMessage := sMessage + '  JAWS scripts: installed.' + sBreak
-  else if iJaws = 2 then
-    sMessage := sMessage + '  JAWS scripts: NOT installed -- they did not compile, so nothing was left behind. The logs named below have the compiler''s words.' + sBreak
-  else if iJaws > 0 then
-    sMessage := sMessage + '  JAWS scripts: FAILED. Send the logs named below.' + sBreak
-  else if not haveJaws() then
-    sMessage := sMessage + '  JAWS scripts: not offered, because JAWS was not found on this computer.' + sBreak
-  else
-    sMessage := sMessage + '  JAWS scripts: NOT installed (the step did not run). Reinstall and leave its box checked, or run scripts\installJawsScripts.cmd in the program folder.' + sBreak;
+  if wasTicked('JAWS') then
+  begin
+    if iJaws = 0 then
+      sMessage := sMessage + '  JAWS scripts: installed and compiled.' + sBreak
+    else if iJaws = 2 then
+      sMessage := sMessage + '  JAWS scripts: NOT installed -- they did not compile, so nothing was left behind. The log has the compiler''s words.' + sBreak
+    else if iJaws > 0 then
+      sMessage := sMessage + '  JAWS scripts: FAILED. The log says why.' + sBreak
+    else
+      sMessage := sMessage + '  JAWS scripts: NOT installed (the step did not run).' + sBreak;
+  end;
 
-  if addonIsInstalled() then
-    sMessage := sMessage + '  NVDA add-on: installed. Restart NVDA to use it.' + sBreak
-  else if not nvdaIsRunning() then
-    sMessage := sMessage + '  NVDA add-on: not installed; NVDA was not running. Start NVDA, then open ' + ExpandConstant('{app}\EdSharp.nvda-addon') + sBreak
-  else
-    sMessage := sMessage + '  NVDA add-on: not installed. Open EdSharp.nvda-addon in the program folder to install it.' + sBreak;
+  if wasTicked('NVDA') then
+  begin
+    if addonIsInstalled() then
+      sMessage := sMessage + '  NVDA add-on: installed. Restart NVDA to use it.' + sBreak
+    else if not nvdaIsRunning() then
+      sMessage := sMessage + '  NVDA add-on: not installed, because NVDA was not running.' + sBreak
+    else
+      sMessage := sMessage + '  NVDA add-on: not installed.' + sBreak;
+  end;
 
-  // Pandoc is found where the finish page looks for it -- machine-wide, on
-  // the PATH -- not in configs\convert\Pandoc, which the Homer layout gave up
-  // and where it was reported "not present" beside a working install.
-  if not needPandoc() then
-    sMessage := sMessage + '  Pandoc: installed.' + sBreak
-  else
-    sMessage := sMessage + '  Pandoc: not installed. Run scripts\installPandoc.cmd as an administrator to add it.' + sBreak;
-
-  // The optional installs -- Git, Node, Python, the document tools,
-  // Ollama -- run from the finish page AFTER this box is shown, so their
-  // outcome cannot be reported here. The summary that runs last says how
-  // each one fared; this box points at it rather than staying silent.
-  // Succinct on purpose: the summary adds the file paths and the starting
-  // hint itself, so repeating them here would say everything twice.
 saveResultsForSummary(sLogDir, sMessage);
   // ... and the summary itself, which reads that file, reports every
   // optional install, and shows the one Results box. This is the last

@@ -41,6 +41,29 @@ call :logLine "installScreenReaderSupport started %DATE% %TIME%"
 call :logLine "Script: %~f0"
 call :logLine "App: %sApp%"
 
+rem STATE, FOR THE FINISH PAGE (1.43.43). "state jaws <file>" or "state nvda
+rem <file>" writes one word to <file>: none (that reader is not on this
+rem computer, or this app ships nothing for it), install (nothing of ours is
+rem there), update (what is there differs from what ships), or reinstall (what
+rem ships is what is there). The installer's box is worded from it, as every
+rem other component's is. JAWS: a fingerprint of the script sources in
+rem <App>_JAWS.zip, compared with the one written into each JAWS version's
+rem settings folder when its scripts last compiled there. NVDA: the add-on's
+rem version in <App>.nvda-addon, compared with the installed add-on's.
+if /i "%~1"=="state" (
+  set "HS_MODE=state"
+  set "HS_READER=%~2"
+  set "HS_STATE=%~3"
+  set "HS_APP=%sApp%"
+  set "HS_ZIP=%~dp0%sApp%_JAWS.zip"
+  set "HS_ADDON=%~dp0%sApp%.nvda-addon"
+  set "HS_LOG=%sLog%"
+  set "HS_RESULT=%sResult%"
+  powershell -NoProfile -ExecutionPolicy Bypass -Command "$s=[IO.File]::ReadAllText('%~f0'); iex $s.Substring($s.LastIndexOf('#<jawsScripts>') + 14)"
+  exit /b 0
+)
+set "HS_MODE=install"
+
 set "iInstalled=0"
 
 rem ONE READER AT A TIME, WHEN ASKED (1.43.20). An installer gives the JAWS
@@ -123,14 +146,107 @@ rem reaches it, since every path through this file ends before it.
 $sApp = $env:HS_APP; $sZip = $env:HS_ZIP; $sLog = $env:HS_LOG; $sResult = $env:HS_RESULT
 function logLine([string] $sText) { Add-Content -LiteralPath $sLog -Value $sText -Encoding UTF8 }
 function resultLine([string] $sText) { Add-Content -LiteralPath $sResult -Value $sText -Encoding UTF8 }
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+
+# The JAWS sources' fingerprint: every entry's name and bytes, in name order,
+# compiled files left out. A zip's own bytes change with every build; its
+# contents change only when a script does.
+function zipFingerprint([string] $sPath) {
+    $oArchive = [IO.Compression.ZipFile]::OpenRead($sPath)
+    try {
+        $oBuffer = New-Object IO.MemoryStream
+        foreach ($oEntry in @($oArchive.Entries | Where-Object { $_.Name -and $_.Name -notlike "*.jsb" } | Sort-Object FullName)) {
+            $aName = [Text.Encoding]::UTF8.GetBytes($oEntry.FullName.ToLowerInvariant())
+            $oBuffer.Write($aName, 0, $aName.Length)
+            $oStream = $oEntry.Open(); $oStream.CopyTo($oBuffer); $oStream.Dispose()
+        }
+        $oHash = [Security.Cryptography.SHA256]::Create()
+        return (($oHash.ComputeHash($oBuffer.ToArray()) | ForEach-Object { $_.ToString("x2") }) -join "")
+    } finally { $oArchive.Dispose() }
+}
+
+# An add-on's manifest, as name and value pairs.
+function readManifest([string] $sText) {
+    $dValues = @{}
+    foreach ($sLine in ($sText -split "`r?`n")) {
+        if ($sLine -match '^\s*(\w+)\s*=\s*"?(.*?)"?\s*$') { $dValues[$Matches[1]] = $Matches[2] }
+    }
+    return $dValues
+}
+
+function addonManifest([string] $sPath) {
+    $oArchive = [IO.Compression.ZipFile]::OpenRead($sPath)
+    try {
+        $oEntry = $oArchive.GetEntry("manifest.ini")
+        if (-not $oEntry) { return @{} }
+        $oReader = New-Object IO.StreamReader($oEntry.Open())
+        $sText = $oReader.ReadToEnd(); $oReader.Dispose()
+        return (readManifest $sText)
+    } finally { $oArchive.Dispose() }
+}
+
+$sMarkerName = "$sApp.scripts.fingerprint"
+
+if ($env:HS_MODE -eq "state") {
+    $sState = "none"
+    try {
+        if ($env:HS_READER -eq "jaws") {
+            $sRoot = Join-Path $env:APPDATA "Freedom Scientific\JAWS"
+            $lsSettings = @()
+            if ((Test-Path -LiteralPath $sZip) -and (Test-Path -LiteralPath $sRoot)) {
+                $lsSettings = @(Get-ChildItem -LiteralPath $sRoot -Directory | ForEach-Object { Join-Path $_.FullName "Settings\enu" } |
+                                Where-Object { Test-Path -LiteralPath $_ })
+            }
+            if ($lsSettings.Count -gt 0) {
+                $sPrint = zipFingerprint $sZip
+                $iSame = 0; $iAny = 0
+                foreach ($sSettings in $lsSettings) {
+                    $sMarker = Join-Path $sSettings $sMarkerName
+                    if (Test-Path -LiteralPath $sMarker) {
+                        $iAny += 1
+                        if (([IO.File]::ReadAllText($sMarker)).Trim() -eq $sPrint) { $iSame += 1 }
+                    } elseif (Test-Path -LiteralPath (Join-Path $sSettings "$sApp.jsb")) {
+                        # Our scripts from before fingerprints were kept: there,
+                        # but not known to be current.
+                        $iAny += 1
+                    }
+                }
+                if ($iAny -eq 0) { $sState = "install" }
+                elseif ($iSame -eq $lsSettings.Count) { $sState = "reinstall" }
+                else { $sState = "update" }
+                logLine "state jaws: $($lsSettings.Count) JAWS version(s), $iAny with our scripts, $iSame current; $sState"
+            } else { logLine "state jaws: none (no JAWS settings folder, or no $sApp`_JAWS.zip)" }
+        } elseif ($env:HS_READER -eq "nvda") {
+            $sAddon = $env:HS_ADDON
+            $bNvda = (Test-Path -LiteralPath (Join-Path $env:APPDATA "nvda")) -or
+                     (Test-Path -LiteralPath (Join-Path ${env:ProgramFiles(x86)} "NVDA\nvda.exe")) -or
+                     (Test-Path -LiteralPath (Join-Path $env:ProgramFiles "NVDA\nvda.exe"))
+            if ($bNvda -and (Test-Path -LiteralPath $sAddon)) {
+                $dShipped = addonManifest $sAddon
+                $sInstalled = Join-Path $env:APPDATA ("nvda\addons\" + $dShipped["name"] + "\manifest.ini")
+                if (-not $dShipped["name"] -or -not (Test-Path -LiteralPath $sInstalled)) { $sState = "install" }
+                else {
+                    $dHave = readManifest ([IO.File]::ReadAllText($sInstalled))
+                    $sState = if ($dHave["version"] -eq $dShipped["version"]) { "reinstall" } else { "update" }
+                }
+                logLine "state nvda: shipped $($dShipped['version']), $sState"
+            } else { logLine "state nvda: none (NVDA not found, or no $sApp.nvda-addon)" }
+        }
+    } catch {
+        logLine ("state $($env:HS_READER): ERROR " + $_.Exception.Message + "; offered as install")
+        $sState = "install"
+    }
+    Set-Content -LiteralPath $env:HS_STATE -Value $sState -Encoding ASCII
+    exit 0
+}
 $sRoot = Join-Path $env:APPDATA "Freedom Scientific\JAWS"
 if (-not (Test-Path -LiteralPath $sRoot)) {
     logLine "No JAWS settings folder at $sRoot"
     resultLine "JAWS scripts: not installed, because JAWS was not found"
     exit 0
 }
-Add-Type -AssemblyName System.IO.Compression.FileSystem
 $oZip = [IO.Compression.ZipFile]::OpenRead($sZip)
+$sPrint = zipFingerprint $sZip
 try {
     foreach ($oVersion in @(Get-ChildItem -LiteralPath $sRoot -Directory | Sort-Object Name)) {
         $sVersion = $oVersion.Name
@@ -146,7 +262,7 @@ try {
         }
         # Every file this run will write, including the .jsb compiled from each
         # .jss, so that a failure can undo exactly what was done.
-        $lsTargets = @()
+        $lsTargets = @((Join-Path $sSettings $sMarkerName))
         foreach ($oEntry in $oZip.Entries) {
             if (-not $oEntry.Name) { continue }
             $lsTargets += (Join-Path $sSettings $oEntry.FullName)
@@ -195,6 +311,9 @@ try {
             $sWhich = if ($lsFailed.Count) { " (" + ($lsFailed -join ", ") + ")" } else { "" }
             resultLine "JAWS $sVersion scripts: NOT installed -- they did not compile$sWhich; nothing was left behind, and the setup log has the compiler's words"
         } else {
+            # What makes the next installer's box say Reinstall rather than
+            # Update: the fingerprint of the sources compiled here.
+            Set-Content -LiteralPath (Join-Path $sSettings $sMarkerName) -Value $sPrint -Encoding ASCII
             logLine "JAWS ${sVersion}: scripts installed and compiled"
             resultLine "JAWS $sVersion scripts: installed and compiled"
         }
