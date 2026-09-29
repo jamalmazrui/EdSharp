@@ -124,23 +124,28 @@ Set-Content -LiteralPath $sLogFile -Value "" -Encoding UTF8
 $bFailed = $false
 
 function writeLog($sText) {
-  $sStamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-  Add-Content -LiteralPath $sLogFile -Value "$sStamp  $sText" -Encoding UTF8
+  # THE HOMER LOG LINE (HomerDev 1.43.21): an ISO 8601 time with milliseconds
+  # and UTC offset, a five-character level -- ERROR or WARN when the text says
+  # so -- then the text, as every Homer log writes it.
+  $sStamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffzzz"
+  $sLevel = "INFO "
+  if ($sText -match '\b(ERROR|FAIL|FAILED)\b') { $sLevel = "ERROR" } elseif ($sText -match '\bWARN(ING)?\b') { $sLevel = "WARN " }
+  Add-Content -LiteralPath $sLogFile -Value "$sStamp $sLevel $sText" -Encoding UTF8
   Write-Host $sText
 }
 # ---- the Homer Development Kit ----------------------------------------------
 # After the log exists, so a kit that cannot be found is recorded rather than
 # printed to a console that scrolls away.
 if ($HomerDev -eq "") {
-  if ($env:HomerDev -and (Test-Path -LiteralPath (Join-Path $env:HomerDev "CSharp\Lbc.cs"))) { $HomerDev = $env:HomerDev }
-  elseif (Test-Path -LiteralPath "C:\HomerDev\CSharp\Lbc.cs") { $HomerDev = "C:\HomerDev" }
-  elseif (Test-Path -LiteralPath (Join-Path $sScriptDir "CSharp\Lbc.cs")) { $HomerDev = $sScriptDir }
+  if ($env:HomerDev -and (Test-Path -LiteralPath (Join-Path $env:HomerDev "exec\CSharp\Lbc.cs"))) { $HomerDev = $env:HomerDev }
+  elseif (Test-Path -LiteralPath "C:\HomerDev\exec\CSharp\Lbc.cs") { $HomerDev = "C:\HomerDev" }
+  elseif (Test-Path -LiteralPath (Join-Path $sScriptDir "exec\CSharp\Lbc.cs")) { $HomerDev = $sScriptDir }
 }
-if ($HomerDev -eq "" -or -not (Test-Path -LiteralPath (Join-Path $HomerDev "CSharp\Lbc.cs"))) {
+if ($HomerDev -eq "" -or -not (Test-Path -LiteralPath (Join-Path $HomerDev "exec\CSharp\Lbc.cs"))) {
   writeLog "ERROR: the Homer Development Kit was not found."
   throw "EdSharp needs the Homer Development Kit. Unzip HomerDev.zip into C:\HomerDev, or set the HomerDev environment variable."
 }
-$sHomerCSharp = Join-Path $HomerDev "CSharp"
+$sHomerCSharp = Join-Path $HomerDev "exec\CSharp"
 writeLog "Kit: $HomerDev"
 # Where the build writes: the program, its libraries and the installer, and
 # nothing else. Named in LocalFiles.txt, so none of it reaches the repository.

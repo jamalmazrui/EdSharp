@@ -14,7 +14,7 @@ nothing to undo, and it says so. It never rewrites what has been pushed.
 Run it in the project folder. It logs to logs\\<App>-unpushed-yyyyMMdd-HHmmss.log.
 """
 
-import datetime, os, platform, subprocess, sys
+import datetime, os, platform, subprocess, sys, time
 
 oLog = None
 
@@ -33,10 +33,62 @@ sRoot = projectRoot(os.getcwd())
 
 
 def logLine(sText):
-    if oLog is not None:
-        oLog.write(sText + "\n")
-        oLog.flush()
+    """One event in the Homer log format (1.43.21), as log.py and Log.cs write:
+    an ISO 8601 time with milliseconds and UTC offset, a five-character level,
+    then the text; a line continuing the one above starts "| ", and no line is
+    blank or unstamped. The level is ERROR or WARN when the text says so."""
+    if oLog is None: return True
+    import datetime as _datetime
+    sText = (sText or "").replace("\r\n", "\n").rstrip("\n")
+    if not sText.strip(): return True
+    import re as _re
+    sLevel = ("ERROR" if _re.search(r"\b(ERROR|FAIL|FAILED)\b", sText)
+              else "WARN" if _re.search(r"\bWARN(ING)?\b", sText) else "INFO")
+    # A LEADING LEVEL WORD IS THE LEVEL (1.43.33): "WARN: x" is written
+    # "WARN  x", not "WARN  WARN: x".
+    oLead = _re.match(r"(ERROR|WARN|WARNING)\b:?\s*", sText)
+    if oLead: sText = sText[oLead.end():] or sText
+    sPrefix = "%s %-5s " % (_datetime.datetime.now().astimezone().isoformat(timespec="milliseconds"), sLevel)
+    lsOut = []
+    for iAt, sOne in enumerate(sText.split("\n")):
+        if iAt and not sOne.strip(): continue
+        lsOut.append(sPrefix + ("| " if iAt else "") + sOne.rstrip())
+    oLog.write("\n".join(lsOut) + "\n")
+    oLog.flush()
     return True
+
+def logValue(sValue):
+    """A value as the Homer log format writes it: bare when it can be, quoted
+    when it holds a space, a quote or an equals sign."""
+    import re as _re
+    s = "" if sValue is None else str(sValue)
+    if s and not _re.search(r'[\s"=]', s): return s
+    s = s.replace('"', '\\"')
+    if s.endswith("\\"): s += "\\"
+    return '"' + s + '"'
+
+
+def logFact(sKey, sValue):
+    """One environment fact: env key=value."""
+    return logLine("env %s=%s" % (sKey, logValue(sValue)))
+
+def logWindows():
+    """The Windows actually running, worded as Log.cs and log.py word it:
+    "Windows 11 25H2 (10.0.26200.9550)"."""
+    try:
+        import winreg as _winreg
+        with _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as oKey:
+            def read(sName):
+                try: return str(_winreg.QueryValueEx(oKey, sName)[0])
+                except OSError: return ""
+            sBuild, sUbr, sDisplay = read("CurrentBuild"), read("UBR"), read("DisplayVersion")
+        sName = "Windows 11" if sBuild.isdigit() and int(sBuild) >= 22000 else "Windows 10"
+        return ("%s %s" % (sName, sDisplay)).strip() + " (10.0.%s%s)" % (sBuild, "." + sUbr if sUbr else "")
+    except Exception:
+        import platform as _platform
+        return _platform.platform()
+
+
 
 
 def say(sText):
@@ -46,9 +98,11 @@ def say(sText):
 
 
 def runGit(lsArgs):
-    logLine("RUN: git " + " ".join(lsArgs))
+    sCmd = "git " + " ".join(lsArgs)
+    nStarted = time.time()
+    logLine("run start cmd=" + logValue(sCmd))
     oResult = subprocess.run(["git"] + lsArgs, cwd=sRoot, capture_output=True, text=True)
-    logLine("EXIT: %d" % oResult.returncode)
+    logLine("run exit=%d ms=%d cmd=%s" % (oResult.returncode, (time.time() - nStarted) * 1000, logValue(sCmd)))
     if oResult.stdout.strip(): logLine("STDOUT:\n" + oResult.stdout.rstrip())
     if oResult.stderr.strip(): logLine("STDERR:\n" + oResult.stderr.rstrip())
     return oResult.returncode, oResult.stdout.strip()
@@ -60,12 +114,12 @@ def main():
     os.makedirs(sLogDir, exist_ok=True)
     sLogPath = os.path.join(sLogDir, "%s-unpushed-%s.log" % (os.path.basename(sRoot), datetime.datetime.now().strftime("%Y%m%d-%H%M%S")))
     oLog = open(sLogPath, "w", encoding="utf-8")
-    logLine("unpushed started %s" % datetime.datetime.now().isoformat(" ", "seconds"))
-    logLine("Script: %s" % os.path.abspath(__file__))
-    logLine("Python: %s" % sys.version.replace("\n", " "))
-    logLine("Platform: %s" % platform.platform())
+    logLine("unpushed start pid=%d" % os.getpid())
+    logFact("script", os.path.abspath(__file__))
+    logFact("python", platform.python_version())
+    logFact("windows", logWindows())
     logLine("Working directory: %s" % sRoot)
-    logLine("Command line: %s" % " ".join(sys.argv))
+    logFact("arguments", " ".join(sys.argv[1:]))
     iCode, sOut = runGit(["rev-parse", "--is-inside-work-tree"])
     if iCode != 0:
         say("This folder is not a git repository.")
@@ -91,7 +145,7 @@ def main():
     say("Undone. Every file is as it was, nothing is staged, and %s is back at %s." % (sBranch, sUpstream))
     say("Run tidy to make the commit properly; it needs RepoFiles.txt.")
     say("Log: " + sLogPath)
-    logLine("Finished %s" % datetime.datetime.now().isoformat(" ", "seconds"))
+    logLine("unpushed end")
     return 0
 
 

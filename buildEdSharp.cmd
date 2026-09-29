@@ -22,7 +22,12 @@ set "app=EdSharp"
 for /f %%i in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd-HHmmss"') do set "sStamp=%%i"
 if not exist "%~dp0logs" mkdir "%~dp0logs"
 set "log=%~dp0logs\%app%-build-%sStamp%.log"
-echo %app% build started %DATE% %TIME%> "%log%"
+rem THE START AND END LINES CARRY AN ISO 8601 TIME (HomerDev 1.43.21), with
+rem the UTC offset, from PowerShell rather than %DATE% %TIME%, whose form
+rem follows the regional settings; and they name the event and its result as
+rem every Homer log does.
+for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.fffzzz'"`) do set "sIso=%%i"
+> "%log%" echo %sIso% INFO  build start app=%app%
 echo Script: %~f0>> "%log%"
 echo Folder: %CD%>> "%log%"
 echo Command line: %0 %*>> "%log%"
@@ -30,9 +35,9 @@ echo Build log: %log%
 
 rem ---- the Homer Development Kit -------------------------------------
 set "homerDev="
-if defined HomerDev if exist "%HomerDev%\CSharp\Lbc.cs" set "homerDev=%HomerDev%"
-if not defined homerDev if exist "C:\HomerDev\CSharp\Lbc.cs" set "homerDev=C:\HomerDev"
-if not defined homerDev if exist "%CD%\CSharp\Lbc.cs" set "homerDev=%CD%"
+if defined HomerDev if exist "%HomerDev%\exec\CSharp\Lbc.cs" set "homerDev=%HomerDev%"
+if not defined homerDev if exist "C:\HomerDev\exec\CSharp\Lbc.cs" set "homerDev=C:\HomerDev"
+if not defined homerDev if exist "%CD%\exec\CSharp\Lbc.cs" set "homerDev=%CD%"
 if not defined homerDev (
   echo EdSharp needs the Homer Development Kit and cannot find it.
   echo Unzip HomerDev.zip into C:\HomerDev, or set the HomerDev environment variable.
@@ -41,7 +46,7 @@ if not defined homerDev (
 )
 set "homerVer=0.0.0"
 if exist "!homerDev!\version.txt" set /p homerVer=<"!homerDev!\version.txt"
-set "kitNeeded=1.43.20"
+set "kitNeeded=1.43.29"
 powershell -NoProfile -Command "if ([version]'!homerVer!' -lt [version]'!kitNeeded!') { exit 1 } else { exit 0 }" >nul
 if errorlevel 1 (
   echo EdSharp needs HomerDev !kitNeeded! or later, and the kit is !homerVer!.
@@ -109,10 +114,10 @@ for %%F in (checkHomerApp.cmd checkHomerApp.py gitPush.cmd gitUnpushed.cmd gitUn
 echo Refreshed the kit's scripts into scripts\>> "%log%"
 
 rem ---- carried over to the Homer layout (September 2026) --------------
-rem THE KIT'S CLASSES ARE COMPILED FROM C:\HomerDev\CSharp, so a copy at the
+rem THE KIT'S CLASSES ARE COMPILED FROM C:\HomerDev\exec\CSharp, so a copy at the
 rem top of the project is a stale one waiting to be compiled by mistake.
 for %%F in (Elevate.cs Inix.cs KeyMap.cs KeyName.cs Lbc.cs Log.cs Mdi.cs Paths.cs Say.cs Util.cs Web.cs inixVert.cs) do (
-  if exist "%%F" if exist "!homerDev!\CSharp\%%F" del /q "%%F" && echo Removed the old top-level %%F; the kit's is compiled instead>> "%log%"
+  if exist "%%F" if exist "!homerDev!\exec\CSharp\%%F" del /q "%%F" && echo Removed the old top-level %%F; the kit's is compiled instead>> "%log%"
 )
 rem The root tagRelease pair is the release script's old home; scripts\release
 rem is its home now.
@@ -179,7 +184,8 @@ if not "!iCompile!"=="0" (
   goto :failed
 )
 
-echo Build succeeded %DATE% %TIME%>> "%log%"
+for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.fffzzz'"`) do set "sIso=%%i"
+>> "%log%" echo %sIso% INFO  build end result=succeeded
 echo(
 echo Built exec\EdSharp.exe and EdSharp_Setup.exe version !ver!.
 echo Quick test: exec\EdSharp.exe
@@ -188,7 +194,17 @@ endlocal
 exit /b 0
 
 :failed
-echo Build FAILED %DATE% %TIME%>> "%log%"
+rem A FAILED BUILD TAKES NO NUMBER (HomerDev 1.43.29). version.txt is stepped
+rem when a build begins; when it fails, the number goes back, so the next build
+rem takes it again and the release never finds an installer one version behind
+rem version.txt (HomerScribe, 28 September 2026: 1.0.260 stepped, the kit not
+rem found, the release refused).
+if defined verOld if not "!ver!"=="!verOld!" (
+  > version.txt echo !verOld!
+  >> "%log%" echo Version: restored to !verOld!; a failed build takes no number
+)
+for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.fffzzz'"`) do set "sIso=%%i"
+>> "%log%" echo %sIso% ERROR build end result=failed
 endlocal
 exit /b 1
 

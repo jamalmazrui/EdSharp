@@ -49,7 +49,8 @@ set "log=%CD%\logs\%sApp%-push-%sNow%.log"
 set "message=%~1"
 if "%message%"=="" set "message=Fix."
 
-> "%log%" echo push started %date% %time%
+for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.fffzzz'"`) do set "sIso=%%i"
+> "%log%" echo %sIso% INFO  push start
 >> "%log%" echo Script: %~f0
 >> "%log%" echo Folder: %CD%
 >> "%log%" echo Command line: %0 %*

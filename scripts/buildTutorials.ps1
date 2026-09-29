@@ -97,10 +97,10 @@ $sLog = Join-Path $sLogDir ((Split-Path -Leaf (Split-Path -Parent $sTool)) + "-t
 # place beside this script. A script's [global] VoiceFolder still overrides
 # all of it for that series.
 function findKit() {
-  if ($env:HomerDev -and (Test-Path -LiteralPath (Join-Path $env:HomerDev "CSharp\Lbc.cs"))) { return $env:HomerDev }
-  if (Test-Path -LiteralPath "C:\HomerDev\CSharp\Lbc.cs") { return "C:\HomerDev" }
+  if ($env:HomerDev -and (Test-Path -LiteralPath (Join-Path $env:HomerDev "exec\CSharp\Lbc.cs"))) { return $env:HomerDev }
+  if (Test-Path -LiteralPath "C:\HomerDev\exec\CSharp\Lbc.cs") { return "C:\HomerDev" }
   $sUp = Split-Path -Parent $sTool
-  if (Test-Path -LiteralPath (Join-Path $sUp "CSharp\Lbc.cs")) { return $sUp }
+  if (Test-Path -LiteralPath (Join-Path $sUp "exec\CSharp\Lbc.cs")) { return $sUp }
   return ""
 }
 $sTools = ""
