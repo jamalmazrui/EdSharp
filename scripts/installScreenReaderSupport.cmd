@@ -103,26 +103,21 @@ rem ---- NVDA ----------------------------------------------------------------
 if "%bNvda%"=="0" goto :done
 if not exist "%~dp0%sApp%.nvda-addon" goto :done
 call :logLine "Found %sApp%.nvda-addon"
-where nvda >nul 2>&1
-if errorlevel 1 (
-  if exist "%ProgramFiles(x86)%\NVDA\nvda.exe" (
-    set "sNvda=%ProgramFiles(x86)%\NVDA\nvda.exe"
-  ) else if exist "%ProgramFiles%\NVDA\nvda.exe" (
-    set "sNvda=%ProgramFiles%\NVDA\nvda.exe"
-  )
-) else (
-  set "sNvda=nvda"
-)
-if not defined sNvda (
-  echo NVDA was not found on this computer, so its add-on was skipped.
-  call :logLine "NVDA not found."
-  >> "%sResult%" echo NVDA add-on: not installed, because NVDA was not found
-  goto :done
-)
-echo Installing the NVDA add-on. NVDA will ask you to confirm.
-call :logLine "Handing the add-on to NVDA: !sNvda!"
-start "" "!sNvda!" --install-add-on="%~dp0%sApp%.nvda-addon"
->> "%sResult%" echo NVDA add-on: handed to NVDA to install, which asks you to confirm
+rem INSTALLED WITHOUT STARTING NVDA (HomerDev 1.43.46). Starting nvda.exe
+rem --install-add-on brought a second screen reader up talking over JAWS, and
+rem for EdSharp on 29 September stopped on an invalid command line parameter.
+rem NVDA's own installer unpacks the add-on into %APPDATA%\nvda\addons and, at
+rem its next start, moves it into place under its own name; an add-on already
+rem there under its name is simply loaded. The PowerShell part puts it there
+rem directly, moving any old copy aside to <name>.delete, which NVDA skips.
+echo Installing the NVDA add-on; NVDA loads it when it next starts.
+set "HS_MODE=nvda"
+set "HS_APP=%sApp%"
+set "HS_ADDON=%~dp0%sApp%.nvda-addon"
+set "HS_LOG=%sLog%"
+set "HS_RESULT=%sResult%"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$s=[IO.File]::ReadAllText('%~f0'); iex $s.Substring($s.LastIndexOf('#<jawsScripts>') + 14)"
+call :logLine "NVDA add-on step exit code: %ERRORLEVEL%"
 set /a iInstalled=iInstalled+1
 
 :done
@@ -186,6 +181,40 @@ function addonManifest([string] $sPath) {
 }
 
 $sMarkerName = "$sApp.scripts.fingerprint"
+
+if ($env:HS_MODE -eq "nvda") {
+    $sAddon = $env:HS_ADDON
+    try {
+        $sNvdaConfig = Join-Path $env:APPDATA "nvda"
+        if (-not (Test-Path -LiteralPath $sNvdaConfig)) { throw "NVDA's settings folder $sNvdaConfig was not found" }
+        $dManifest = addonManifest $sAddon
+        $sName = $dManifest["name"]
+        if (-not $sName) { throw "the add-on's manifest.ini names no add-on" }
+        logLine "NVDA add-on: name=$sName version=$($dManifest['version']) minimumNVDAVersion=$($dManifest['minimumNVDAVersion']) lastTestedNVDAVersion=$($dManifest['lastTestedNVDAVersion'])"
+        $oArchive = [IO.Compression.ZipFile]::OpenRead($sAddon)
+        try { if ($oArchive.GetEntry("installTasks.py")) { logLine "WARNING: the add-on has installTasks.py, whose onInstall step does not run in a direct install" } } finally { $oArchive.Dispose() }
+        $bRunning = [bool](Get-Process -Name nvda -ErrorAction SilentlyContinue)
+        logLine "NVDA running: $bRunning"
+        $sAddonsDir = Join-Path $sNvdaConfig "addons"
+        New-Item -ItemType Directory -Force -Path $sAddonsDir | Out-Null
+        $sTarget = Join-Path $sAddonsDir $sName
+        $sOld = Join-Path $sAddonsDir "$sName.delete"
+        $sUnpack = Join-Path $env:TEMP ("$sApp-nvda-" + (Get-Date -Format "yyyyMMddHHmmss"))
+        [IO.Compression.ZipFile]::ExtractToDirectory($sAddon, $sUnpack)
+        if (Test-Path -LiteralPath $sOld) { Remove-Item -LiteralPath $sOld -Recurse -Force -ErrorAction SilentlyContinue }
+        $bMovedOld = $false
+        if (Test-Path -LiteralPath $sTarget) { Move-Item -LiteralPath $sTarget -Destination $sOld; $bMovedOld = $true }
+        try { Move-Item -LiteralPath $sUnpack -Destination $sTarget }
+        catch { if ($bMovedOld) { Move-Item -LiteralPath $sOld -Destination $sTarget }; throw }
+        if ($bMovedOld) { Remove-Item -LiteralPath $sOld -Recurse -Force -ErrorAction SilentlyContinue }
+        logLine "NVDA add-on: installed at $sTarget"
+        resultLine $(if ($bRunning) { "NVDA add-on: installed. Restart NVDA to use it" } else { "NVDA add-on: installed. NVDA loads it when it next starts" })
+    } catch {
+        logLine ("NVDA add-on: ERROR " + $_.Exception.Message)
+        resultLine "NVDA add-on: NOT installed -- $($_.Exception.Message)"
+    }
+    exit 0
+}
 
 if ($env:HS_MODE -eq "state") {
     $sState = "none"

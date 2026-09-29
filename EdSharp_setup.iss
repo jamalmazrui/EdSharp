@@ -314,9 +314,9 @@ Filename: "{cmd}"; \
   Description: "{code:descNode}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeNeedsInstall
 
-Filename: "{code:nvdaExe}"; Parameters: "--install-add-on=""{app}\EdSharp.nvda-addon"""; \
+Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bNvda -bQuiet"; WorkingDir: "{app}"; \
   Description: "{code:labelNvda}"; \
-  Flags: postinstall shellexec nowait runasoriginaluser skipifdoesntexist; Check: isInstallNvda
+  Flags: postinstall skipifsilent runhidden runasoriginaluser waituntilterminated; Check: isInstallNvda
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
@@ -359,9 +359,9 @@ Filename: "{cmd}"; \
   Description: "{code:descNode}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeNeedsUpdate
 
-Filename: "{code:nvdaExe}"; Parameters: "--install-add-on=""{app}\EdSharp.nvda-addon"""; \
+Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bNvda -bQuiet"; WorkingDir: "{app}"; \
   Description: "{code:labelNvda}"; \
-  Flags: postinstall shellexec nowait runasoriginaluser skipifdoesntexist; Check: isUpdateNvda
+  Flags: postinstall skipifsilent runhidden runasoriginaluser waituntilterminated; Check: isUpdateNvda
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
@@ -398,9 +398,9 @@ Filename: "{cmd}"; \
   Description: "{code:descNode}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeIsCurrent
 
-Filename: "{code:nvdaExe}"; Parameters: "--install-add-on=""{app}\EdSharp.nvda-addon"""; \
+Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bNvda -bQuiet"; WorkingDir: "{app}"; \
   Description: "{code:labelNvda}"; \
-  Flags: postinstall shellexec nowait runasoriginaluser skipifdoesntexist unchecked; Check: isReinstallNvda
+  Flags: postinstall skipifsilent runhidden runasoriginaluser waituntilterminated unchecked; Check: isReinstallNvda
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
@@ -1153,19 +1153,11 @@ begin
     result := (iResult = 0);
 end;
 
-{ NVDA'S OWN INSTALLER FOR THE ADD-ON (29 September 2026). Opening the
-  .nvda-addon file did nothing unless NVDA was already running, so the ticked
-  box failed quietly on every install made with NVDA closed. nvda.exe
-  --install-add-on starts NVDA when it is not running and asks the person to
-  confirm, as NVDA always does. It is started by shellexec: nvda.exe is
-  marked for UI Access, which CreateProcess refuses with code 740, "The
-  requested operation requires elevation"; ShellExecute starts it. }
-function nvdaExe(sParam: string): string;
-begin
-  Result := ExpandConstant('{commonpf32}\NVDA\nvda.exe');
-  if not FileExists(Result) then Result := ExpandConstant('{commonpf64}\NVDA\nvda.exe');
-end;
-
+{ THE NVDA ADD-ON IS INSTALLED WITHOUT STARTING NVDA (29 September 2026).
+  installJawsScripts.cmd -bNvda unpacks it into NVDA's addons folder under
+  its own name, where NVDA loads it at its next start -- the same place NVDA's
+  own installer leaves it -- so no second screen reader starts talking over
+  JAWS. Its setup log names every step. }
 function addonIsInstalled(): boolean;
 var
   sAddons: string;
@@ -1428,12 +1420,12 @@ begin
 
   if wasTicked('NVDA') then
   begin
-    if addonIsInstalled() then
-      sMessage := sMessage + '  NVDA add-on: installed. Restart NVDA to use it.' + sBreak
+    if not addonIsInstalled() then
+      sMessage := sMessage + '  NVDA add-on: NOT installed. The log says why.' + sBreak
     else if nvdaIsRunning() then
-      sMessage := sMessage + '  NVDA add-on: handed to NVDA, which asks you to confirm.' + sBreak
+      sMessage := sMessage + '  NVDA add-on: installed. Restart NVDA to use it.' + sBreak
     else
-      sMessage := sMessage + '  NVDA add-on: NOT installed -- NVDA could not be started. The log says why.' + sBreak;
+      sMessage := sMessage + '  NVDA add-on: installed. NVDA loads it when it next starts.' + sBreak;
   end;
 
 saveResultsForSummary(sLogDir, sMessage);

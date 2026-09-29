@@ -37,7 +37,7 @@
 #                  the EdSharp logs folder does not survive an uninstall.
 
 param([switch]$bQuiet, [switch]$bUninstall, [string]$pathLogFile = "", [string]$pathResultFile = "",
-      [string]$sState = "", [string]$pathStateFile = "")
+      [string]$sState = "", [string]$pathStateFile = "", [switch]$bNvda)
 
 $sScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
@@ -89,6 +89,82 @@ function nvdaLogLines([string] $sName) {
   }
   return $lsOut
 }
+
+# ---- THE NVDA ADD-ON, INSTALLED WITHOUT STARTING NVDA (29 September 2026) ----
+# Starting nvda.exe --install-add-on to install the add-on brought a second
+# screen reader up talking over JAWS, and on 29 September stopped on an
+# invalid command line parameter without installing anything. What NVDA does
+# itself, in addonHandler.installAddonBundle, is to unpack the .nvda-addon
+# (a zip) into %APPDATA%\nvda\addons\<name>.pendingInstall and, at its next
+# start, move that folder to addons\<name>. An add-on folder already in place
+# under its own name is simply loaded at the next start. So this puts it
+# there directly: unpacked to a temporary folder, the old copy moved aside to
+# <name>.delete -- a suffix NVDA skips and cleans up -- and the new one moved
+# into place, with the old one put back if the move fails. NVDA is not
+# started; a running NVDA picks the add-on up when it next restarts. What an
+# add-on's installTasks.py would do on install does not run this way, so its
+# presence is logged.
+function nvdaInstallAddon() {
+  $sSetupLog = Join-Path $env:LOCALAPPDATA "EdSharp\logs\EdSharp_setup.log"
+  $lsLines = @("==== NVDA add-on, installed directly  " + (Get-Date -Format "yyyy-MM-dd HH:mm:ss") + " ====")
+  $iExit = 0
+  try {
+    $sAddon = Join-Path (Split-Path -Parent $sScriptDir) "EdSharp.nvda-addon"
+    $sNvdaConfig = Join-Path $env:APPDATA "nvda"
+    if (-not (Test-Path -LiteralPath $sAddon)) { throw "EdSharp.nvda-addon is not in the program folder." }
+    if (-not (Test-Path -LiteralPath $sNvdaConfig)) { throw "NVDA's settings folder $sNvdaConfig was not found; start NVDA once, then install again." }
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $oArchive = [IO.Compression.ZipFile]::OpenRead($sAddon)
+    try {
+      $oReader = New-Object IO.StreamReader($oArchive.GetEntry("manifest.ini").Open())
+      $dManifest = readManifest $oReader.ReadToEnd(); $oReader.Dispose()
+      $bTasks = [bool]($oArchive.GetEntry("installTasks.py"))
+    } finally { $oArchive.Dispose() }
+    $sName = $dManifest["name"]
+    if (-not $sName) { throw "the add-on's manifest.ini names no add-on." }
+    $lsLines += "add-on name=$sName version=$($dManifest['version']) minimumNVDAVersion=$($dManifest['minimumNVDAVersion']) lastTestedNVDAVersion=$($dManifest['lastTestedNVDAVersion'])"
+    foreach ($sExe in @((Join-Path ${env:ProgramFiles(x86)} "NVDA\nvda.exe"), (Join-Path $env:ProgramFiles "NVDA\nvda.exe"))) {
+      if (Test-Path -LiteralPath $sExe) { $lsLines += "NVDA $((Get-Item -LiteralPath $sExe).VersionInfo.ProductVersion) at $sExe"; break }
+    }
+    if ($bTasks) { $lsLines += "WARNING: the add-on has installTasks.py, whose onInstall step does not run in a direct install." }
+    $bRunning = [bool](Get-Process -Name nvda -ErrorAction SilentlyContinue)
+    $lsLines += "NVDA running: $bRunning"
+    $sAddonsDir = Join-Path $sNvdaConfig "addons"
+    New-Item -ItemType Directory -Force -Path $sAddonsDir | Out-Null
+    $sTarget = Join-Path $sAddonsDir $sName
+    $sOld = Join-Path $sAddonsDir "$sName.delete"
+    $sUnpack = Join-Path $env:TEMP ("EdSharp-nvda-" + (Get-Date -Format "yyyyMMddHHmmss"))
+    [IO.Compression.ZipFile]::ExtractToDirectory($sAddon, $sUnpack)
+    $lsLines += "unpacked into $sUnpack"
+    if (Test-Path -LiteralPath $sOld) { Remove-Item -LiteralPath $sOld -Recurse -Force -ErrorAction SilentlyContinue }
+    $bMovedOld = $false
+    if (Test-Path -LiteralPath $sTarget) { Move-Item -LiteralPath $sTarget -Destination $sOld; $bMovedOld = $true; $lsLines += "moved the installed copy aside to $sOld" }
+    try {
+      Move-Item -LiteralPath $sUnpack -Destination $sTarget
+    } catch {
+      if ($bMovedOld) { Move-Item -LiteralPath $sOld -Destination $sTarget; $lsLines += "put the earlier copy back" }
+      throw
+    }
+    $lsLines += "installed at $sTarget"
+    if ($bMovedOld) {
+      try { Remove-Item -LiteralPath $sOld -Recurse -Force; $lsLines += "removed the earlier copy" }
+      catch { $lsLines += "the earlier copy could not be removed now ($($_.Exception.Message)); NVDA skips a .delete folder" }
+    }
+    $sPending = Join-Path $sAddonsDir "$sName.pendingInstall"
+    if (Test-Path -LiteralPath $sPending) {
+      try { Remove-Item -LiteralPath $sPending -Recurse -Force; $lsLines += "removed $sPending, left by an earlier attempt" } catch { }
+    }
+    $lsLines += $(if ($bRunning) { "NVDA is running, so it loads the add-on when it next restarts." } else { "NVDA loads the add-on when it next starts." })
+  } catch {
+    $lsLines += "ERROR: the NVDA add-on was not installed: $($_.Exception.Message)"
+    $iExit = 1
+  }
+  $lsLines += (nvdaLogLines "edsharp")
+  try { Add-Content -LiteralPath $sSetupLog -Value $lsLines -Encoding UTF8 } catch { }
+  return $iExit
+}
+
+if ($bNvda) { exit (nvdaInstallAddon) }
 
 if ($sState -ne "") {
   # One word for the installer: none, install, update or reinstall; and the
