@@ -141,7 +141,9 @@ c_iLargeBytes = 10 * 1024 * 1024        # what counts as large in the history
 # Homer code is. Each is either private to the developer, regenerated on every
 # build, or a product rather than a source.
 c_lsNeverPushed = [
-    "*.exe", "*.log", "*.obj", "*.pdb", "Version.cs", "__pycache__/",
+    # *.jsb (1.43.38): a compiled JAWS script belongs to the JAWS version
+    # that built it; the installer compiles on the user's machine.
+    "*.exe", "*.jsb", "*.log", "*.obj", "*.pdb", "Version.cs", "__pycache__/",
     ".venv/", "build/", "create*Repo.cmd", "create*Repo.ps1", "dist/", "notes/",
     # /version.py, AT THE TOP ONLY (1.43.16): it is the file a Python app's
     # build generates beside its source. HomerView's NVDA add-on carries its

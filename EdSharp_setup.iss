@@ -192,7 +192,7 @@ Source: "exec\Ude.dll";            DestDir: "{app}"; Flags: ignoreversion skipif
 ; The JAWS files alone, from scripts\jaws. "Scripts\*" took the whole scripts
 ; folder -- install scripts, kit tools, and scripts\jaws itself again -- into
 ; scripts\jaws.
-Source: "scripts\jaws\*";   DestDir: "{app}\scripts\jaws"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "scripts\jaws\*"; Excludes: "*.jsb";   DestDir: "{app}\scripts\jaws"; Flags: ignoreversion skipifsourcedoesntexist
 ; NVDA add-on (installed on the Finish page via [Run]).
 Source: "exec\EdSharp.nvda-addon"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 ; Configuration: do not clobber a user's existing settings on upgrade.
@@ -1335,6 +1335,8 @@ begin
 
   if iJaws = 0 then
     sMessage := sMessage + '  JAWS scripts: installed.' + sBreak
+  else if iJaws = 2 then
+    sMessage := sMessage + '  JAWS scripts: NOT installed -- they did not compile, so nothing was left behind. The logs named below have the compiler''s words.' + sBreak
   else if iJaws > 0 then
     sMessage := sMessage + '  JAWS scripts: FAILED. Send the logs named below.' + sBreak
   else if not haveJaws() then

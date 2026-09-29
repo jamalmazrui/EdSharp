@@ -229,7 +229,10 @@ try {
         }
       }
       if ($sCompile -eq "") {
-        writeLog "JAWS $sVersion`: scompile.exe was not found in the program folder; the .jss files are copied but not compiled. JAWS compiles a script itself when it is next loaded from the script manager."
+        # NOT COMPILED IS NOT INSTALLED (29 September 2026): scripts left
+        # uncompiled are removed below with the rest.
+        writeLog "JAWS $sVersion`: ERROR scompile.exe was not found in the program folder, so the scripts cannot be compiled for this version."
+        $iFailed = $iFailed + 1
       } else {
         writeLog "JAWS $sVersion`: compiler $sCompile"
         $sEnuDir = Join-Path $sSettingsDir "enu"
@@ -253,6 +256,16 @@ try {
   } else {
     writeLog "EdSharp JAWS scripts: $iCopied copied, $iCompiled compiled$(if ($iFailed -gt 0) { ", $iFailed FAILED" })."
     $iExit = $(if ($iFailed -gt 0) { 2 } else { 0 })
+    # IF ANY SCRIPT DID NOT COMPILE, NOTHING IS LEFT INSTALLED (29 September
+    # 2026). This script's own removal -- the one the uninstaller runs -- takes
+    # out every file it copies and every .jsb compiled from them, in every JAWS
+    # version, so no version is left with scripts that half load. Exit code 2
+    # tells the Results box.
+    if ($iFailed -gt 0) {
+      writeLog "ERROR: not every script compiled, so none are left installed. Removing what this run placed."
+      & powershell -NoProfile -ExecutionPolicy Bypass -File $PSCommandPath -bUninstall -bQuiet -pathLogFile $pathLogFile 2>&1 | Out-Null
+      writeLog "run exit=$LASTEXITCODE cmd=""installJawsScripts -bUninstall"""
+    }
   }
 } catch {
   writeLog "FAILED: $($_.Exception.Message)"
