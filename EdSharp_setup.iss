@@ -238,6 +238,10 @@ Name: "{userappdata}\EdSharp";
 Name: "{userappdata}\EdSharp\Temp";
 
 [InstallDelete]
+; scripts\jaws is refilled from scratch each time (29 September 2026): an
+; installer of 26 September copied the whole scripts folder into it, and the
+; stray files stayed through every install after.
+Type: filesandordirs; Name: "{app}\scripts\jaws"
 ; The loose handshake file older versions left in C:\temp; the logs
 ; folder is its home now.
 Type: files; Name: "C:\temp\EdSharp_jaws.result"

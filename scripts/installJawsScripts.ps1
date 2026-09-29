@@ -51,7 +51,7 @@ $sMarkerName = "EdSharp.scripts.fingerprint"
 function sourcesFingerprint() {
   $oBuffer = New-Object IO.MemoryStream
   $sSourceDir = Join-Path $sScriptDir "jaws"
-  foreach ($oFile in @(Get-ChildItem -LiteralPath $sSourceDir -File | Where-Object { $_.Extension -ne ".jsb" -and $_.Extension -ne ".iss" } | Sort-Object { $_.Name.ToLowerInvariant() })) {
+  foreach ($oFile in @(Get-ChildItem -LiteralPath $sSourceDir -File | Where-Object { @(".jbs", ".jcf", ".jdf", ".jgf", ".jkm", ".jsd", ".jsh", ".jsm", ".jss", ".qs", ".qsm", ".sbl") -contains $_.Extension.ToLowerInvariant() } | Sort-Object { $_.Name.ToLowerInvariant() })) {
     $aName = [Text.Encoding]::UTF8.GetBytes($oFile.Name.ToLowerInvariant())
     $oBuffer.Write($aName, 0, $aName.Length)
     $aBytes = [IO.File]::ReadAllBytes($oFile.FullName)
@@ -183,7 +183,13 @@ try {
   $sScriptsDir = Join-Path $sScriptDir "jaws"
   if (-not (Test-Path -LiteralPath $sScriptsDir)) { throw "The jaws folder was not found beside this script: $sScriptsDir" }
   $dBuckets = @{}
-  $lRootFiles = @(Get-ChildItem -LiteralPath $sScriptsDir -File)
+  # JAWS FILES ONLY (29 September 2026). An installer of 26 September copied
+  # the whole scripts folder into scripts\jaws, and nothing ever removed those
+  # files, so every install since copied installPython.cmd, gitPush.cmd and
+  # the rest into each JAWS version's settings folder. Only a JAWS file type
+  # is copied now, and the strays are removed below.
+  $lsJawsTypes = @(".jbs", ".jcf", ".jdf", ".jgf", ".jkm", ".jsd", ".jsh", ".jsm", ".jss", ".qs", ".qsm", ".sbl")
+  $lRootFiles = @(Get-ChildItem -LiteralPath $sScriptsDir -File | Where-Object { $lsJawsTypes -contains $_.Extension.ToLowerInvariant() })
   if ($lRootFiles.Count -gt 0) { $dBuckets["enu"] = $lRootFiles }
   foreach ($folderSub in @(Get-ChildItem -LiteralPath $sScriptsDir -Directory)) {
     $lSubFiles = @(Get-ChildItem -LiteralPath $folderSub.FullName -File)
@@ -214,6 +220,17 @@ try {
     $sSettingsDir = Join-Path $folderVersion.FullName "Settings"
     foreach ($sBucket in ($dBuckets.Keys | Sort-Object)) {
       $sDestDir = Join-Path $sSettingsDir $sBucket
+      if ($sBucket -eq "enu" -and (Test-Path -LiteralPath $sDestDir)) {
+        # The strays from before: any file in this settings folder named like
+        # one of the program's own scripts, which no JAWS file is.
+        foreach ($fileOwn in @(Get-ChildItem -LiteralPath $sScriptDir -File)) {
+          $sStray = Join-Path $sDestDir $fileOwn.Name
+          if (Test-Path -LiteralPath $sStray) {
+            try { Remove-Item -LiteralPath $sStray -Force; writeLog "  removed stray $($fileOwn.Name), copied there by an earlier install" }
+            catch { writeLog "  WARNING: could not remove stray $($fileOwn.Name): $($_.Exception.Message)" }
+          }
+        }
+      }
       if ($bUninstall) {
         $iBucketRemoved = 0
         foreach ($fileSource in $dBuckets[$sBucket]) {

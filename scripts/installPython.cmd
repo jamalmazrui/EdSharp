@@ -73,7 +73,18 @@ for %%I in (Python.Python.3.14 Python.Python.3.13 Python.Python.3.12) do (
   if not errorlevel 1 (
     echo [installPython.cmd] winget upgrade %%I >> "%log%"
     winget upgrade --id %%I -e --architecture x64 --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
-    echo [installPython.cmd] winget upgrade %%I exit !errorlevel! >> "%log%"
+    set "iCode=!errorlevel!"
+    echo [installPython.cmd] winget upgrade %%I --scope machine exit !iCode! >> "%log%"
+    rem NOT FOUND WITH --scope machine: TRY WITHOUT IT (29 September 2026).
+    rem winget lists the Python the installer offered to update, but an
+    rem upgrade restricted to machine scope answered "No installed package
+    rem found" (-1978335212) every time, so the finish page offered the same
+    rem update at each install and nothing changed. winget's own record of
+    rem the scope decides, so the second try names none.
+    if "!iCode!"=="-1978335212" (
+      winget upgrade --id %%I -e --architecture x64 --silent --disable-interactivity --accept-package-agreements --accept-source-agreements >> "%log%" 2>&1
+      echo [installPython.cmd] winget upgrade %%I without a scope exit !errorlevel! >> "%log%"
+    )
     set "bUpgraded=1"
   )
 )
