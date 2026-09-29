@@ -103,6 +103,10 @@ if ($sState -ne "") {
           $dShipped = readManifest $oReader.ReadToEnd(); $oReader.Dispose()
         } finally { $oArchive.Dispose() }
         $sInstalled = Join-Path $env:APPDATA ("nvda\addons\" + $dShipped["name"] + "\manifest.ini")
+        # NVDA keeps an add-on it has just accepted as <name>.pendingInstall
+        # until it restarts; that counts as installed.
+        $sPending = Join-Path $env:APPDATA ("nvda\addons\" + $dShipped["name"] + ".pendingInstall\manifest.ini")
+        if (-not (Test-Path -LiteralPath $sInstalled) -and (Test-Path -LiteralPath $sPending)) { $sInstalled = $sPending }
         if (-not (Test-Path -LiteralPath $sInstalled)) { $sAnswer = "install" }
         elseif ((readManifest ([IO.File]::ReadAllText($sInstalled)))["version"] -eq $dShipped["version"]) { $sAnswer = "reinstall" }
         else { $sAnswer = "update" }

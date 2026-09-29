@@ -224,6 +224,10 @@ if ($env:HS_MODE -eq "state") {
             if ($bNvda -and (Test-Path -LiteralPath $sAddon)) {
                 $dShipped = addonManifest $sAddon
                 $sInstalled = Join-Path $env:APPDATA ("nvda\addons\" + $dShipped["name"] + "\manifest.ini")
+                # NVDA keeps an add-on it has just accepted as <name>.pendingInstall
+                # until it restarts; that counts as installed.
+                $sPending = Join-Path $env:APPDATA ("nvda\addons\" + $dShipped["name"] + ".pendingInstall\manifest.ini")
+                if (-not (Test-Path -LiteralPath $sInstalled) -and (Test-Path -LiteralPath $sPending)) { $sInstalled = $sPending }
                 if (-not $dShipped["name"] -or -not (Test-Path -LiteralPath $sInstalled)) { $sState = "install" }
                 else {
                     $dHave = readManifest ([IO.File]::ReadAllText($sInstalled))
