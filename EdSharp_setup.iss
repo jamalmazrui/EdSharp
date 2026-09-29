@@ -314,9 +314,9 @@ Filename: "{cmd}"; \
   Description: "{code:descNode}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeNeedsInstall
 
-Filename: "{app}\EdSharp.nvda-addon"; \
+Filename: "{code:nvdaExe}"; Parameters: "--install-add-on=""{app}\EdSharp.nvda-addon"""; \
   Description: "{code:labelNvda}"; \
-  Flags: postinstall shellexec skipifdoesntexist; Check: isInstallNvda
+  Flags: postinstall nowait runasoriginaluser skipifdoesntexist; Check: isInstallNvda
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
@@ -359,9 +359,9 @@ Filename: "{cmd}"; \
   Description: "{code:descNode}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeNeedsUpdate
 
-Filename: "{app}\EdSharp.nvda-addon"; \
+Filename: "{code:nvdaExe}"; Parameters: "--install-add-on=""{app}\EdSharp.nvda-addon"""; \
   Description: "{code:labelNvda}"; \
-  Flags: postinstall shellexec skipifdoesntexist; Check: isUpdateNvda
+  Flags: postinstall nowait runasoriginaluser skipifdoesntexist; Check: isUpdateNvda
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
@@ -398,9 +398,9 @@ Filename: "{cmd}"; \
   Description: "{code:descNode}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeIsCurrent
 
-Filename: "{app}\EdSharp.nvda-addon"; \
+Filename: "{code:nvdaExe}"; Parameters: "--install-add-on=""{app}\EdSharp.nvda-addon"""; \
   Description: "{code:labelNvda}"; \
-  Flags: postinstall shellexec skipifdoesntexist unchecked; Check: isReinstallNvda
+  Flags: postinstall nowait runasoriginaluser skipifdoesntexist unchecked; Check: isReinstallNvda
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
@@ -1153,6 +1153,17 @@ begin
     result := (iResult = 0);
 end;
 
+{ NVDA'S OWN INSTALLER FOR THE ADD-ON (29 September 2026). Opening the
+  .nvda-addon file did nothing unless NVDA was already running, so the ticked
+  box failed quietly on every install made with NVDA closed. nvda.exe
+  --install-add-on starts NVDA when it is not running and asks the person to
+  confirm, as NVDA always does. }
+function nvdaExe(sParam: string): string;
+begin
+  Result := ExpandConstant('{commonpf32}\NVDA\nvda.exe');
+  if not FileExists(Result) then Result := ExpandConstant('{commonpf64}\NVDA\nvda.exe');
+end;
+
 function addonIsInstalled(): boolean;
 var
   sAddons: string;
@@ -1255,7 +1266,7 @@ begin
   else Result := 'Install';
   end;
   if sReader = 'jaws' then Result := Result + ' JAWS scripts'
-  else Result := Result + ' NVDA add-on (NVDA must be running)';
+  else Result := Result + ' NVDA add-on';
 end;
 
 function labelJaws(sParam: string): string;  begin Result := readerLabel('jaws'); end;
@@ -1417,10 +1428,8 @@ begin
   begin
     if addonIsInstalled() then
       sMessage := sMessage + '  NVDA add-on: installed. Restart NVDA to use it.' + sBreak
-    else if not nvdaIsRunning() then
-      sMessage := sMessage + '  NVDA add-on: not installed, because NVDA was not running.' + sBreak
     else
-      sMessage := sMessage + '  NVDA add-on: not installed.' + sBreak;
+      sMessage := sMessage + '  NVDA add-on: handed to NVDA, which asks you to confirm.' + sBreak;
   end;
 
 saveResultsForSummary(sLogDir, sMessage);
