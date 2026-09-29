@@ -458,16 +458,16 @@ Filename: "{cmd}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: translateModelIsCurrent
 
 ; ---- After the components: what to do now ----
-; Two ordinary things a person may want the moment setup ends, offered
-; last because they are not installations. Both unticked: somebody
-; reinstalling to fix one component does not want the editor opening
-; over their work. runasoriginaluser matters -- setup is elevated, and
-; an editor started from here would otherwise run as the administrator,
-; writing its settings into the wrong profile.
-Filename: "{app}\EdSharp.exe"; \
-  WorkingDir: "{app}"; \
+; LAUNCH IS TICKED, AS IN EVERY HOMER INSTALLER (29 September 2026): Enter on
+; the finish page starts the app (help\FinishPage.md). It was unticked here,
+; so pressing Enter installed EdSharp and never opened it. The entry only
+; leaves a marker; EdSharp starts when the Results box is closed, so the box
+; is not hidden behind the editor, and it starts as the ordinary user, not
+; the elevated installer, so its settings go to the right profile.
+Filename: "{cmd}"; \
+  Parameters: "/c echo launch > ""{localappdata}\EdSharp\logs\EdSharp_launch.flag"""; \
   Description: "Launch EdSharp (desktop hotkey Alt+Control+E)"; \
-  Flags: postinstall skipifsilent nowait runasoriginaluser unchecked
+  Flags: postinstall skipifsilent runhidden runasoriginaluser
 
 Filename: "{app}\help\EdSharp.htm"; \
   Description: "Open the user guide (F1 in EdSharp)"; \
@@ -1244,9 +1244,21 @@ end;
 procedure showResultsSummary();
 var
   iResult: integer;
+  sFlag: string;
 begin
+  sFlag := ExpandConstant('{localappdata}\EdSharp\logs\EdSharp_launch.flag');
+  //  When the Launch box was ticked, setup waits for the Results box to be
+  //  closed and then starts EdSharp as the ordinary user; otherwise the box
+  //  is shown without waiting, as before.
   try
-    Exec(ExpandConstant('{cmd}'), '/c ""' + ExpandConstant('{app}\summarizeSetup.cmd') + '""', ExpandConstant('{app}'), SW_HIDE, ewNoWait, iResult);
+    if FileExists(sFlag) then
+    begin
+      Exec(ExpandConstant('{cmd}'), '/c ""' + ExpandConstant('{app}\summarizeSetup.cmd') + '""', ExpandConstant('{app}'), SW_HIDE, ewWaitUntilTerminated, iResult);
+      DeleteFile(sFlag);
+      ExecAsOriginalUser(ExpandConstant('{app}\EdSharp.exe'), '', ExpandConstant('{app}'), SW_SHOW, ewNoWait, iResult);
+    end
+    else
+      Exec(ExpandConstant('{cmd}'), '/c ""' + ExpandConstant('{app}\summarizeSetup.cmd') + '""', ExpandConstant('{app}'), SW_HIDE, ewNoWait, iResult);
   except
   end;
 end;
