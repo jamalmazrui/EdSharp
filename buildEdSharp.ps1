@@ -810,6 +810,15 @@ try {
     if (-not (Test-Path -LiteralPath (Join-Path $sScriptDir "EdSharp_setup.iss"))) { throw "EdSharp_setup.iss was not found beside the build script, so the installer cannot be compiled." }
     if ((runTool $sIsccFile @("EdSharp_setup.iss") "compile EdSharp_Setup.exe") -ne 0) { throw "The installer build failed; the Inno Setup output above names the reason." }
     writeLog "Built EdSharp_Setup.exe."
+    # ONE INSTALLER, AT THE TOP (29 September 2026). The installer is built at
+    # the top of the project (OutputDir=.), where the release takes it from. A
+    # copy left in exec from before is removed: EdSharp's acceptance check was
+    # passing on exec\EdSharp_setup.exe, an old installer, not the new one.
+    $sStale = Join-Path $sScriptDir "exec\EdSharp_setup.exe"
+    if (Test-Path -LiteralPath $sStale) {
+      Remove-Item -LiteralPath $sStale -Force
+      writeLog "Removed an old installer from exec: $sStale"
+    }
   }
 
     }

@@ -33,9 +33,14 @@ Run = dir /b exec\EdSharp.exe
 Expect = 0
 
 [check]
-Name = the installer was built
-Run = dir /b exec\EdSharp_setup.exe
+Name = the installer was built, at the top of the project
+Run = dir /b EdSharp_Setup.exe
 Expect = 0
+
+[check]
+Name = no old installer is left in exec
+Run = dir /b exec\EdSharp_setup.exe
+Expect = 1
 
 [check]
 Name = the JScript support assembly was built
