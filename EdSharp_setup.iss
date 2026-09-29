@@ -269,24 +269,10 @@ Name: "{group}\Uninstall EdSharp"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\EdSharp"; Filename: "{app}\EdSharp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\EdSharp.ico"; HotKey: Alt+Ctrl+E; Comment: "Launch or activate EdSharp (Alt+Control+E)"
 
 [Run]
-; Install EdSharp's JAWS scripts, the HomerView way: a script owned by the
-; installer, not a feature of the editor. No console window and no message
-; box -- everything goes to the log, and the Results box at the very end
-; reports the outcome through the result file the script writes.
-;
-; runasoriginaluser matters more here than anywhere. JAWS keeps its settings
-; under the user's own roaming application data, and this installer runs
-; elevated; without the flag the scripts would go into the administrator's
-; profile and the user would see nothing at all.
-Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; Description: "Install JAWS scripts"; Flags: postinstall skipifsilent runasoriginaluser waituntilterminated runhidden; Check: haveJaws
 ; The same step again for a silent installation, which skips every
 ; postinstall entry: without this twin, /SILENT would copy the files, report
 ; success, and install no JAWS scripts at all.
 Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; Flags: runhidden runasoriginaluser waituntilterminated; Check: jawsAndSilent
-; Install the NVDA add-on by shell-executing the .nvda-addon file (NVDA
-; registers itself as the handler). Unchecked by default; checking it opens
-; NVDA's add-on install dialog. NVDA must be running, and be restarted after.
-Filename: "{app}\EdSharp.nvda-addon"; Description: "Install NVDA add-on (NVDA must be running)"; Flags: postinstall shellexec skipifdoesntexist unchecked
 ; pandoc is CENTRAL to EdSharp (decision of 24 August 2026), so it is no
 ; longer an optional checkbox: whenever {app}\configs\convert\Pandoc\pandoc.exe is
 ; absent, the fetch runs automatically, in silent installs too. Elevated on
@@ -294,51 +280,14 @@ Filename: "{app}\EdSharp.nvda-addon"; Description: "Install NVDA add-on (NVDA mu
 ; Program Files. The script writes its detailed log into the consolidated
 ; setup log in the user's local application data, EdSharp\logs.
 Filename: "{app}\scripts\installPandoc.cmd"; WorkingDir: "{app}"; Flags: runhidden waituntilterminated; Check: needPandoc
-; Optional developer tools, unchecked by default, installed through winget
-; with each one's standard stable Windows release (Git plus the GitHub
-; command line; Node.js LTS; Python 3). Each entry runs only when its
-; checkbox is marked AND the tool is not already on the path, appending its
-; output to the consolidated setup log.
-; Pre-generate native images for faster startup (64-bit ngen).  ngen writes to
-; the machine-wide native image cache, so it needs an elevated install; the
-; isAdminNgen check skips it gracefully in a per-user install, where EdSharp
-; simply JIT-compiles on first launch.
-; ---- The Finish-page checkbox list, in the Homer Tools pattern ----
-;
-; No Tasks page: every optional install is a checkbox in this list at the
-; end, each running a probe-first script that reuses whatever is already
-; installed, logs to the consolidated setup log, and never pauses.
-; runascurrentuser matters: winget installs per user, into the profile of
-; whoever is signed in, while this installer runs elevated.
-;
-; WHICH BOXES ARE TICKED BY DEFAULT. The question is what an EdSharp user
-; gets for the download, not what a developer might enjoy:
-;   Python (about 100 MB) and the document tools (about 55 MB) are TICKED.
-;     They are what makes EdSharp itself better: rich PDF conversion with
-;     headings, lists and tables, and the thesaurus that replaces the one
-;     Microsoft Word used to provide. Together they cost less than a fifth
-;     of what Ollama alone costs, and every EdSharp user benefits.
-;   Git with the GitHub command line (about 350 MB), Node.js (about 80 MB)
-;     and Ollama with its chat model (about 3 GB) are NOT ticked. Each
-;     serves a real feature -- version control, static diagram images, the
-;     local AI chat -- but each serves some users and not others, and the
-;     largest of them costs more than everything else combined.
-;
-; WHY EACH TOOL APPEARS THREE TIMES BELOW. The label says what the box
-; will do, and the boxes are grouped so the ones that do something come
-; first: everything to be installed, then everything to be updated, then
-; anything already current, which is offered last and never ticked
-; because there is nothing to gain. Only one entry per tool is ever
-; shown; the other two are skipped by their Check function.
 
-; ---- Install: not on this computer yet ----
+; ---- THE FINISH PAGE'S COMPONENTS (29 September 2026; HomerDev FinishPage.md) --
+; Three groups, Install, Update, Reinstall; within each, alphabetical by the
+; component's name, ignoring case, with the JAWS scripts and the NVDA add-on
+; among the others and worded Install, Update or Reinstall by what is on the
+; computer (installJawsScripts.cmd -sState). Launch and the guide come last.
 
-Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\scripts\installCodeModel.cmd"""" noPause";  \
-  WorkingDir: "{app}"; \
-  Description: "{code:descCodeModel}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: codeModelNeedsInstall
-
+; ---- 1. Install -------------------------------------------------------------
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installPdfTools.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
@@ -351,21 +300,25 @@ Filename: "{cmd}"; \
   Description: "{code:descGitHub}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: gitNeedsInstall
 
+Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; \
+  Description: "{code:labelJaws}"; \
+  Flags: postinstall skipifsilent runasoriginaluser waituntilterminated; Check: isInstallJaws
+
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installNode.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descNode}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeNeedsInstall
 
+Filename: "{app}\EdSharp.nvda-addon"; \
+  Description: "{code:labelNvda}"; \
+  Flags: postinstall shellexec skipifdoesntexist; Check: isInstallNvda
+
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descOllama}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaNeedsInstall
-
-; The larger translation model, offered next to Ollama itself because it
-; is useless without it. Unticked: five gigabytes is a real decision, and
-; the small chat model translates well enough to try the feature first.
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installPython.cmd"""" noPause";  \
@@ -374,30 +327,37 @@ Filename: "{cmd}"; \
   Flags: postinstall skipifsilent runascurrentuser; Check: pythonNeedsInstall
 
 Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\scripts\installCodeModel.cmd"""" noPause";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descCodeModel}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: codeModelNeedsInstall
+
+Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installTranslateModel.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descTranslateModel}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: translateModelNeedsInstall
 
-; The coding model, likewise useless without Ollama and likewise
-; unticked. It answers questions about the file in the window -- explain
-; this error, write this function, review this method -- which is work a
-; model of this size does well, since the whole subject fits in front of
-; it.
-
-; ---- Update: installed, but a newer version is available ----
-
+; ---- 2. Update --------------------------------------------------------------
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installGitHub.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descGitHub}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: gitNeedsUpdate
 
+Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; \
+  Description: "{code:labelJaws}"; \
+  Flags: postinstall skipifsilent runasoriginaluser waituntilterminated; Check: isUpdateJaws
+
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installNode.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descNode}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeNeedsUpdate
+
+Filename: "{app}\EdSharp.nvda-addon"; \
+  Description: "{code:labelNvda}"; \
+  Flags: postinstall shellexec skipifdoesntexist; Check: isUpdateNvda
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
@@ -411,14 +371,7 @@ Filename: "{cmd}"; \
   Description: "{code:descPython}"; \
   Flags: postinstall skipifsilent runascurrentuser; Check: pythonNeedsUpdate
 
-; ---- Reinstall: already current, offered only for repair ----
-
-Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\scripts\installCodeModel.cmd"""" noPause";  \
-  WorkingDir: "{app}"; \
-  Description: "{code:descCodeModel}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: codeModelIsCurrent
-
+; ---- 3. Reinstall, unticked -------------------------------------------------
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installPdfTools.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
@@ -431,19 +384,25 @@ Filename: "{cmd}"; \
   Description: "{code:descGitHub}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: gitIsCurrent
 
+Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; \
+  Description: "{code:labelJaws}"; \
+  Flags: postinstall skipifsilent runasoriginaluser waituntilterminated unchecked; Check: isReinstallJaws
+
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installNode.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descNode}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeIsCurrent
 
+Filename: "{app}\EdSharp.nvda-addon"; \
+  Description: "{code:labelNvda}"; \
+  Flags: postinstall shellexec skipifdoesntexist unchecked; Check: isReinstallNvda
+
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descOllama}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaIsCurrent
-
-; The summary, last of all. The Results box appears before these
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installPython.cmd"""" noPause";  \
@@ -452,10 +411,17 @@ Filename: "{cmd}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: pythonIsCurrent
 
 Filename: "{cmd}"; \
+  Parameters: "/c """"{app}\scripts\installCodeModel.cmd"""" noPause";  \
+  WorkingDir: "{app}"; \
+  Description: "{code:descCodeModel}"; \
+  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: codeModelIsCurrent
+
+Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installTranslateModel.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descTranslateModel}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: translateModelIsCurrent
+
 
 ; ---- After the components: what to do now ----
 ; LAUNCH IS TICKED, AS IN EVERY HOMER INSTALLER (29 September 2026): Enter on
@@ -1243,6 +1209,59 @@ end;
   for summarizeSetup, which reports only on them. }
 var
   gsTicked: string;
+
+{ ---- JAWS scripts and NVDA add-on, judged like any component ----
+  installJawsScripts.cmd -sState jaws|nvda answers none, install, update or
+  reinstall: the script sources' fingerprint against the one kept in each JAWS
+  version's settings, and the add-on's version against the installed one's.
+  Asked once per reader; -1 hides every box for that reader. }
+var
+  giJawsState, giNvdaState: Integer;
+  gbJawsRead, gbNvdaRead: Boolean;
+
+function readerState(sReader: string): Integer;
+var
+  sFile: string;
+  sAnswer: AnsiString;
+  iCode: Integer;
+begin
+  if (sReader = 'jaws') and gbJawsRead then begin Result := giJawsState; Exit; end;
+  if (sReader = 'nvda') and gbNvdaRead then begin Result := giNvdaState; Exit; end;
+  Result := -1;
+  sFile := ExpandConstant('{tmp}\edsharpReader_') + sReader + '.txt';
+  if Exec(ExpandConstant('{cmd}'), '/c ""' + ExpandConstant('{app}\scripts\installJawsScripts.cmd') + '" -sState ' + sReader + ' -pathStateFile "' + sFile + '""',
+          ExpandConstant('{app}'), SW_HIDE, ewWaitUntilTerminated, iCode) then
+    if LoadStringFromFile(sFile, sAnswer) then
+    begin
+      sAnswer := Trim(sAnswer);
+      if sAnswer = 'install' then Result := 0
+      else if sAnswer = 'update' then Result := 1
+      else if sAnswer = 'reinstall' then Result := 2;
+    end;
+  Log('Component ' + sReader + ': state ' + IntToStr(Result) + ' (-1 not offered, 0 Install, 1 Update, 2 Reinstall)');
+  if sReader = 'jaws' then begin giJawsState := Result; gbJawsRead := True; end
+  else begin giNvdaState := Result; gbNvdaRead := True; end;
+end;
+
+function readerLabel(sReader: string): string;
+begin
+  case readerState(sReader) of
+    1: Result := 'Update';
+    2: Result := 'Reinstall';
+  else Result := 'Install';
+  end;
+  if sReader = 'jaws' then Result := Result + ' JAWS scripts'
+  else Result := Result + ' NVDA add-on (NVDA must be running)';
+end;
+
+function labelJaws(sParam: string): string;  begin Result := readerLabel('jaws'); end;
+function isInstallJaws(): Boolean;           begin Result := readerState('jaws') = 0; end;
+function isUpdateJaws(): Boolean;            begin Result := readerState('jaws') = 1; end;
+function isReinstallJaws(): Boolean;         begin Result := readerState('jaws') = 2; end;
+function labelNvda(sParam: string): string;  begin Result := readerLabel('nvda'); end;
+function isInstallNvda(): Boolean;           begin Result := readerState('nvda') = 0; end;
+function isUpdateNvda(): Boolean;            begin Result := readerState('nvda') = 1; end;
+function isReinstallNvda(): Boolean;         begin Result := readerState('nvda') = 2; end;
 
 function NextButtonClick(iCurPageID: Integer): Boolean;
 var

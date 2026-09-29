@@ -36,9 +36,84 @@
 #                  the uninstaller passes a temporary-folder path, because
 #                  the EdSharp logs folder does not survive an uninstall.
 
-param([switch]$bQuiet, [switch]$bUninstall, [string]$pathLogFile = "", [string]$pathResultFile = "")
+param([switch]$bQuiet, [switch]$bUninstall, [string]$pathLogFile = "", [string]$pathResultFile = "",
+      [string]$sState = "", [string]$pathStateFile = "")
 
 $sScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+# ---- the scripts' fingerprint, and what is installed (29 September 2026) ----
+# So the finish page can say Install, Update or Reinstall for the JAWS scripts
+# and the NVDA add-on, as it does for every component. The fingerprint is of
+# the script sources' names and contents -- never a compiled .jsb -- so it
+# changes only when a script does. A successful install writes it into each
+# JAWS version's Settings\enu as EdSharp.scripts.fingerprint.
+$sMarkerName = "EdSharp.scripts.fingerprint"
+function sourcesFingerprint() {
+  $oBuffer = New-Object IO.MemoryStream
+  $sSourceDir = Join-Path $sScriptDir "jaws"
+  foreach ($oFile in @(Get-ChildItem -LiteralPath $sSourceDir -File | Where-Object { $_.Extension -ne ".jsb" -and $_.Extension -ne ".iss" } | Sort-Object { $_.Name.ToLowerInvariant() })) {
+    $aName = [Text.Encoding]::UTF8.GetBytes($oFile.Name.ToLowerInvariant())
+    $oBuffer.Write($aName, 0, $aName.Length)
+    $aBytes = [IO.File]::ReadAllBytes($oFile.FullName)
+    $oBuffer.Write($aBytes, 0, $aBytes.Length)
+  }
+  $oHash = [Security.Cryptography.SHA256]::Create()
+  return (($oHash.ComputeHash($oBuffer.ToArray()) | ForEach-Object { $_.ToString("x2") }) -join "")
+}
+function readManifest([string] $sText) {
+  $dValues = @{}
+  foreach ($sLine in ($sText -split "`r?`n")) {
+    if ($sLine -match '^\s*(\w+)\s*=\s*"?(.*?)"?\s*$') { $dValues[$Matches[1]] = $Matches[2] }
+  }
+  return $dValues
+}
+if ($sState -ne "") {
+  # One word for the installer: none, install, update or reinstall.
+  $sAnswer = "none"
+  try {
+    if ($sState -eq "jaws") {
+      $sRoot = Join-Path $env:APPDATA "Freedom Scientific\JAWS"
+      $lsEnu = @()
+      if (Test-Path -LiteralPath $sRoot) {
+        $lsEnu = @(Get-ChildItem -LiteralPath $sRoot -Directory | ForEach-Object { Join-Path $_.FullName "Settings\enu" } | Where-Object { Test-Path -LiteralPath $_ })
+      }
+      if ($lsEnu.Count -gt 0) {
+        $sPrint = sourcesFingerprint
+        $iOurs = 0; $iSame = 0
+        foreach ($sEnu in $lsEnu) {
+          if (-not (Test-Path -LiteralPath (Join-Path $sEnu "EdSharp.jsb"))) { continue }
+          $iOurs += 1
+          $sMarker = Join-Path $sEnu $sMarkerName
+          if ((Test-Path -LiteralPath $sMarker) -and (([IO.File]::ReadAllText($sMarker)).Trim() -eq $sPrint)) { $iSame += 1 }
+        }
+        if ($iOurs -eq 0) { $sAnswer = "install" }
+        elseif ($iSame -eq $lsEnu.Count) { $sAnswer = "reinstall" }
+        else { $sAnswer = "update" }
+      }
+    } elseif ($sState -eq "nvda") {
+      $sAddon = Join-Path (Split-Path -Parent $sScriptDir) "EdSharp.nvda-addon"
+      $bNvda = (Test-Path -LiteralPath (Join-Path $env:APPDATA "nvda")) -or
+               (Test-Path -LiteralPath (Join-Path ${env:ProgramFiles(x86)} "NVDA\nvda.exe")) -or
+               (Test-Path -LiteralPath (Join-Path $env:ProgramFiles "NVDA\nvda.exe"))
+      if ($bNvda -and (Test-Path -LiteralPath $sAddon)) {
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        $oArchive = [IO.Compression.ZipFile]::OpenRead($sAddon)
+        try {
+          $oReader = New-Object IO.StreamReader($oArchive.GetEntry("manifest.ini").Open())
+          $dShipped = readManifest $oReader.ReadToEnd(); $oReader.Dispose()
+        } finally { $oArchive.Dispose() }
+        $sInstalled = Join-Path $env:APPDATA ("nvda\addons\" + $dShipped["name"] + "\manifest.ini")
+        if (-not (Test-Path -LiteralPath $sInstalled)) { $sAnswer = "install" }
+        elseif ((readManifest ([IO.File]::ReadAllText($sInstalled)))["version"] -eq $dShipped["version"]) { $sAnswer = "reinstall" }
+        else { $sAnswer = "update" }
+      }
+    }
+  } catch {
+    $sAnswer = "install"
+  }
+  Set-Content -LiteralPath $pathStateFile -Value $sAnswer -Encoding ASCII
+  exit 0
+}
 $sLogDir = Join-Path $env:LOCALAPPDATA "EdSharp\logs"
 if ($pathLogFile -eq "") {
   New-Item -ItemType Directory -Force -Path $sLogDir | Out-Null
@@ -256,6 +331,17 @@ try {
   } else {
     writeLog "EdSharp JAWS scripts: $iCopied copied, $iCompiled compiled$(if ($iFailed -gt 0) { ", $iFailed FAILED" })."
     $iExit = $(if ($iFailed -gt 0) { 2 } else { 0 })
+    if ($iFailed -eq 0) {
+      # What makes the next installer say Reinstall rather than Update.
+      $sPrint = sourcesFingerprint
+      foreach ($oVersion in @(Get-ChildItem -LiteralPath (Join-Path $env:APPDATA "Freedom Scientific\JAWS") -Directory -ErrorAction SilentlyContinue)) {
+        $sEnu = Join-Path $oVersion.FullName "Settings\enu"
+        if (Test-Path -LiteralPath (Join-Path $sEnu "EdSharp.jsb")) {
+          Set-Content -LiteralPath (Join-Path $sEnu $sMarkerName) -Value $sPrint -Encoding ASCII
+        }
+      }
+      writeLog "Fingerprint written for the next installer: $sPrint"
+    }
     # IF ANY SCRIPT DID NOT COMPILE, NOTHING IS LEFT INSTALLED (29 September
     # 2026). This script's own removal -- the one the uninstaller runs -- takes
     # out every file it copies and every .jsb compiled from them, in every JAWS
