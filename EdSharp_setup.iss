@@ -316,7 +316,7 @@ Filename: "{cmd}"; \
 
 Filename: "{code:nvdaExe}"; Parameters: "--install-add-on=""{app}\EdSharp.nvda-addon"""; \
   Description: "{code:labelNvda}"; \
-  Flags: postinstall nowait runasoriginaluser skipifdoesntexist; Check: isInstallNvda
+  Flags: postinstall shellexec nowait runasoriginaluser skipifdoesntexist; Check: isInstallNvda
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
@@ -361,7 +361,7 @@ Filename: "{cmd}"; \
 
 Filename: "{code:nvdaExe}"; Parameters: "--install-add-on=""{app}\EdSharp.nvda-addon"""; \
   Description: "{code:labelNvda}"; \
-  Flags: postinstall nowait runasoriginaluser skipifdoesntexist; Check: isUpdateNvda
+  Flags: postinstall shellexec nowait runasoriginaluser skipifdoesntexist; Check: isUpdateNvda
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
@@ -400,7 +400,7 @@ Filename: "{cmd}"; \
 
 Filename: "{code:nvdaExe}"; Parameters: "--install-add-on=""{app}\EdSharp.nvda-addon"""; \
   Description: "{code:labelNvda}"; \
-  Flags: postinstall nowait runasoriginaluser skipifdoesntexist unchecked; Check: isReinstallNvda
+  Flags: postinstall shellexec nowait runasoriginaluser skipifdoesntexist unchecked; Check: isReinstallNvda
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
@@ -1157,7 +1157,9 @@ end;
   .nvda-addon file did nothing unless NVDA was already running, so the ticked
   box failed quietly on every install made with NVDA closed. nvda.exe
   --install-add-on starts NVDA when it is not running and asks the person to
-  confirm, as NVDA always does. }
+  confirm, as NVDA always does. It is started by shellexec: nvda.exe is
+  marked for UI Access, which CreateProcess refuses with code 740, "The
+  requested operation requires elevation"; ShellExecute starts it. }
 function nvdaExe(sParam: string): string;
 begin
   Result := ExpandConstant('{commonpf32}\NVDA\nvda.exe');
@@ -1428,8 +1430,10 @@ begin
   begin
     if addonIsInstalled() then
       sMessage := sMessage + '  NVDA add-on: installed. Restart NVDA to use it.' + sBreak
+    else if nvdaIsRunning() then
+      sMessage := sMessage + '  NVDA add-on: handed to NVDA, which asks you to confirm.' + sBreak
     else
-      sMessage := sMessage + '  NVDA add-on: handed to NVDA, which asks you to confirm.' + sBreak;
+      sMessage := sMessage + '  NVDA add-on: NOT installed -- NVDA could not be started. The log says why.' + sBreak;
   end;
 
 saveResultsForSummary(sLogDir, sMessage);
