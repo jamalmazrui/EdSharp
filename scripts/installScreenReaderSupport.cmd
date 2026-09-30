@@ -182,6 +182,36 @@ function addonManifest([string] $sPath) {
 
 $sMarkerName = "$sApp.scripts.fingerprint"
 
+# THE FINGERPRINTS LIVE IN THE LOCAL TREE (30 September 2026). A Homer app keeps
+# nothing of its own under %APPDATA%, JAWS's folders included: the only files
+# it puts there are the scripts themselves, where JAWS reads them. Which JAWS
+# versions have current scripts is recorded in %LOCALAPPDATA%\<App>\
+# jawsScripts.inix, one "version = fingerprint" line each; a marker file an
+# earlier installer left in a JAWS settings folder is removed.
+$sPrintsFile = Join-Path $env:LOCALAPPDATA ($sApp + "\jawsScripts.inix")
+function readPrints() {
+    $dPrints = @{}
+    if (Test-Path -LiteralPath $sPrintsFile) {
+        foreach ($sLine in [IO.File]::ReadAllLines($sPrintsFile)) {
+            if ($sLine -match '^\s*([^=\[;]+?)\s*=\s*(\S+)\s*$') { $dPrints[$Matches[1]] = $Matches[2] }
+        }
+    }
+    return $dPrints
+}
+function writePrints($dPrints) {
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $sPrintsFile) | Out-Null
+    $lsLines = @("[fingerprints]")
+    foreach ($sKey in @($dPrints.Keys | Sort-Object)) { $lsLines += "$sKey = $($dPrints[$sKey])" }
+    [IO.File]::WriteAllText($sPrintsFile, (($lsLines -join "`r`n") + "`r`n"), (New-Object Text.UTF8Encoding($true)))
+}
+function versionOfSettings([string] $sSettings) {
+    return (Split-Path -Leaf (Split-Path -Parent (Split-Path -Parent $sSettings)))
+}
+function removeOldMarker([string] $sSettings) {
+    $sOld = Join-Path $sSettings $sMarkerName
+    if (Test-Path -LiteralPath $sOld) { try { Remove-Item -LiteralPath $sOld -Force } catch { } }
+}
+
 if ($env:HS_MODE -eq "nvda") {
     $sAddon = $env:HS_ADDON
     try {
@@ -230,10 +260,11 @@ if ($env:HS_MODE -eq "state") {
                 $sPrint = zipFingerprint $sZip
                 $iSame = 0; $iAny = 0
                 foreach ($sSettings in $lsSettings) {
-                    $sMarker = Join-Path $sSettings $sMarkerName
-                    if (Test-Path -LiteralPath $sMarker) {
+                    $dPrints = readPrints
+                    $sHave = $dPrints[(versionOfSettings $sSettings)]
+                    if ($sHave -and (Test-Path -LiteralPath (Join-Path $sSettings "$sApp.jsb"))) {
                         $iAny += 1
-                        if (([IO.File]::ReadAllText($sMarker)).Trim() -eq $sPrint) { $iSame += 1 }
+                        if ($sHave -eq $sPrint) { $iSame += 1 }
                     } elseif (Test-Path -LiteralPath (Join-Path $sSettings "$sApp.jsb")) {
                         # Our scripts from before fingerprints were kept: there,
                         # but not known to be current.
@@ -312,7 +343,8 @@ try {
         }
         # Every file this run will write, including the .jsb compiled from each
         # .jss, so that a failure can undo exactly what was done.
-        $lsTargets = @((Join-Path $sSettings $sMarkerName))
+        removeOldMarker $sSettings
+        $lsTargets = @()
         foreach ($oEntry in $oZip.Entries) {
             if (-not $oEntry.Name) { continue }
             $lsTargets += (Join-Path $sSettings $oEntry.FullName)
@@ -357,13 +389,14 @@ try {
                 if (Test-Path -LiteralPath $sTarget) { Remove-Item -LiteralPath $sTarget -Force }
                 if ($dReplaced.ContainsKey($sTarget)) { Copy-Item -LiteralPath $dReplaced[$sTarget] -Destination $sTarget -Force }
             }
+            $dPrints = readPrints; if ($dPrints.ContainsKey($sVersion)) { $dPrints.Remove($sVersion); writePrints $dPrints }
             logLine "JAWS ${sVersion}: ERROR the scripts did not compile; every file this run placed was removed and $($dReplaced.Count) earlier file(s) put back"
             $sWhich = if ($lsFailed.Count) { " (" + ($lsFailed -join ", ") + ")" } else { "" }
             resultLine "JAWS $sVersion scripts: NOT installed -- they did not compile$sWhich; nothing was left behind, and the setup log has the compiler's words"
         } else {
             # What makes the next installer's box say Reinstall rather than
             # Update: the fingerprint of the sources compiled here.
-            Set-Content -LiteralPath (Join-Path $sSettings $sMarkerName) -Value $sPrint -Encoding ASCII
+            $dPrints = readPrints; $dPrints[$sVersion] = $sPrint; writePrints $dPrints
             logLine "JAWS ${sVersion}: scripts installed and compiled"
             resultLine "JAWS $sVersion scripts: installed and compiled"
         }

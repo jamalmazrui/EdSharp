@@ -502,6 +502,37 @@ c_lsNotTypes = ("await", "case", "catch", "else", "for", "foreach", "if", "lock"
                 "sizeof", "switch", "throw", "typeof", "using", "while", "yield")
 
 
+def checkLocal():
+    r"""ONLY THE LOCAL TREE (1.43.49). A Homer app keeps its settings, data,
+    scripts and logs under %LOCALAPPDATA%\<App>, never under %APPDATA% (the
+    Roaming tree). Any use of the Roaming tree in the project's own code,
+    installer or scripts fails -- except where it names JAWS's or NVDA's own
+    folders, which live there and are theirs, not the app's. Comment-only lines
+    do not count."""
+    reRoaming = re.compile(r"SpecialFolder\.ApplicationData\b|\{userappdata\}|\$env:APPDATA\b|%APPDATA%|"
+                           r"environ(?:\.get)?\s*[\(\[]\s*[\"']APPDATA[\"']|getenv\s*\(\s*[\"']APPDATA[\"']", re.I)
+    reTheirs = re.compile(r"Freedom Scientific|\bJAWS\b|\bnvda\b", re.I)
+    lsNamed = namedByProject()
+    lsBad = []
+    for sDirPath, lsDirs, lsNames in os.walk(sRoot):
+        lsDirs[:] = [s for s in lsDirs if s.lower() not in c_lsSkipFolders]
+        for sName in sorted(lsNames):
+            if not sName.lower().endswith((".cs", ".py", ".iss", ".ps1", ".cmd", ".js")): continue
+            sPath = os.path.join(sDirPath, sName)
+            if lsNamed is not None and not isNamed(os.path.relpath(sPath, sRoot), lsNamed): continue
+            sText = readText(sPath)
+            if isLibrary(sPath, sText): continue
+            for iAt, sLine in enumerate(sText.splitlines(), 1):
+                if sLine.strip().startswith(("//", "#", ";", "rem ", "REM ", "'", "*", "(*", "{")): continue
+                if reRoaming.search(sLine) and not reTheirs.search(sLine):
+                    lsBad.append("%s line %d: %s" % (os.path.relpath(sPath, sRoot), iAt, sLine.strip()[:120]))
+    for sLine in lsBad: logLine("ROAMING: " + sLine)
+    if lsBad:
+        return finding("local", "fail", "%s use the Roaming tree (%%APPDATA%%); a Homer app keeps its files under %%LOCALAPPDATA%%" %
+                       countNoun(len(lsBad), "line"))
+    return finding("local", "pass", "0 lines use the Roaming tree")
+
+
 def checkKeys():
     """Alt+Control is reserved, and one dialog must not claim a letter twice."""
     lsBad = []
@@ -814,6 +845,7 @@ def main():
     checkPublish()
     checkLogging()
     checkNaming()
+    checkLocal()
     checkKeys()
     checkBuild(dArguments.build)
     checkSmoke(dArguments.build)
