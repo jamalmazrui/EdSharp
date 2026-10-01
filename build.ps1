@@ -1,13 +1,13 @@
-﻿# BuildEdSharp.ps1 -- build EdSharp 5.0 for .NET Framework 4.8, AnyCPU.
+﻿# Build.ps1 -- build EdSharp 5.0 for .NET Framework 4.8, AnyCPU.
 #
-# Replaces the earlier BuildEdSharp.cmd batch logic, which died silently inside
+# Replaces the earlier Build.cmd batch logic, which died silently inside
 # its ReverseMarkdown fetch (the log ended with no ERROR line -- the classic
 # signature of a cmd parse casualty in a caret-continued PowerShell block).
 # All logic now lives here in PowerShell, where every step runs inside
 # try/catch and CANNOT fail without the reason landing in the log.
 #
 # What it does, in order:
-#   1. Starts a fresh, detailed log: BuildEdSharp.log beside this script.
+#   1. Starts a fresh, detailed log: Build.log beside this script.
 #   2. Records the environment and every effective setting.
 #   3. Fetches NuGet dependencies that are not already present:
 #      ReverseMarkdown 4.7.1 (and HtmlAgilityPack, which ReverseMarkdown 4.x
@@ -37,11 +37,11 @@
 # If any assumption is wrong, the log will show exactly which compile step
 # failed and with what message; report that back and the fix is small.
 #
-# Exit codes: 0 build succeeded; 1 build failed (see BuildEdSharp.log).
+# Exit codes: 0 build succeeded; 1 build failed (see Build.log).
 
 param(
   [string]$sMode = "",
-  # Passed by buildEdSharp.cmd, which owns the kit contract: where the
+  # Passed by build.cmd, which owns the kit contract: where the
   # Homer Development Kit is, the version it has already settled, and the
   # log it has already opened. Defaults keep this runnable on its own.
   [string]$HomerDev = "",
@@ -49,12 +49,12 @@ param(
   [string]$LogFile = ""
 )
 
-# "buildEdSharp console" makes a TEMPORARY DEBUGGING BUILD: the exe becomes a
+# "build console" makes a TEMPORARY DEBUGGING BUILD: the exe becomes a
 # console program, so the class of failure that kills a windowed EdSharp in
 # silence -- a type initializer or assembly that fails before the first line
 # of Main -- prints itself to the command window instead. Console mode also
 # implies nobump (debug builds must not burn release numbers) and skips the
-# installer step (a console EdSharp must never ship). Run plain buildEdSharp
+# installer step (a console EdSharp must never ship). Run plain build
 # afterward to restore the real, windowed build.
 $bConsole = ($sMode -ieq "console")
 
@@ -109,9 +109,9 @@ $c_lLibTargetPreference = @("net48", "net472", "net462", "net461", "net46", "net
 # ---- paths and log ----------------------------------------------------------
 $sScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 # THE LOG GOES IN logs\, named as every Homer log is. It used to be
-# BuildEdSharp.log at the top of the folder, which is why a failed build on
+# Build.log at the top of the folder, which is why a failed build on
 # 25 September left nothing in logs\ to send: the evidence was sitting in a
-# file nobody thought to look at. buildEdSharp.cmd passes the log it already
+# file nobody thought to look at. build.cmd passes the log it already
 # opened, so the two halves of the build write one story.
 if ($LogFile -ne "") { $sLogFile = $LogFile }
 else {
@@ -119,7 +119,7 @@ else {
   if (-not (Test-Path -LiteralPath $sLogDir)) { New-Item -ItemType Directory -Path $sLogDir -Force | Out-Null }
   $sLogFile = Join-Path $sLogDir ("EdSharp-build-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
 }
-# APPEND, NEVER EMPTY (1 October 2026): buildEdSharp.cmd has already written
+# APPEND, NEVER EMPTY (1 October 2026): build.cmd has already written
 # the kit check and the version step to this log; emptying it lost them.
 if (-not (Test-Path -LiteralPath $sLogFile)) { Set-Content -LiteralPath $sLogFile -Value "" -Encoding UTF8 }
 
@@ -344,8 +344,8 @@ try {
   # version it must refuse. This is HomerScribe's takeNextVersion pattern:
   # increment the last dotted part, step over any number that already
   # carries a v-tag on origin, and rewrite the version lines in the iss.
-  # Run "buildEdSharp nobump" to keep the current number.
-  # THE VERSION IS SETTLED BEFORE THIS SCRIPT RUNS. buildEdSharp.cmd steps
+  # Run "build nobump" to keep the current number.
+  # THE VERSION IS SETTLED BEFORE THIS SCRIPT RUNS. build.cmd steps
   # version.txt, writes Version.cs from it and passes the number here; the
   # installer script reads version.txt directly; scripts\release reads it back
   # out of the built setup's own version resource. One source of truth.
@@ -358,10 +358,10 @@ try {
   # AppVersion from version.txt rather than stating it.
   if ($Version -ne "") {
     $sNewVersion = $Version
-    writeLog "Version: $sNewVersion (from version.txt, by way of buildEdSharp.cmd)"
+    writeLog "Version: $sNewVersion (from version.txt, by way of build.cmd)"
   } else {
     $sVersionFile = Join-Path $sScriptDir "version.txt"
-    if (-not (Test-Path -LiteralPath $sVersionFile)) { throw "version.txt was not found. Run buildEdSharp.cmd, which owns the version." }
+    if (-not (Test-Path -LiteralPath $sVersionFile)) { throw "version.txt was not found. Run build.cmd, which owns the version." }
     $sNewVersion = ([System.IO.File]::ReadAllText($sVersionFile)).Trim()
     writeLog "Version: $sNewVersion (read from version.txt)"
   }
@@ -592,7 +592,7 @@ try {
       $iWaited = $iWaited + 1
     }
     if (@(Get-Process -Name "EdSharp" -ErrorAction SilentlyContinue).Count -gt 0) {
-      throw "EdSharp is still running and holds the build outputs. Save your work, close EdSharp, and run buildEdSharp again."
+      throw "EdSharp is still running and holds the build outputs. Save your work, close EdSharp, and run build again."
     }
     writeLog "EdSharp closed; the build continues."
   }
@@ -619,14 +619,14 @@ try {
   # evidently removed the generated Version.cs too, which is why the compile
   # suddenly could not find a name that had "always been there".
   # The number settled at the top of this script, which came from
-  # version.txt. It is written here as well as by buildEdSharp.cmd so that
+  # version.txt. It is written here as well as by build.cmd so that
   # this script still produces a correct Version.cs when run on its own.
   $sVersion = $sNewVersion
   writeLog "Version for BuildVersion.Version: $sVersion (version.txt)"
   $sStaleFile = Join-Path $sScriptDir "BuildVersion.cs"
   if (Test-Path -LiteralPath $sStaleFile) { Remove-Item -LiteralPath $sStaleFile -Force; writeLog "Removed stale BuildVersion.cs from an earlier build revision." }
   $sBreak = [char]13 + [char]10
-  $sVersionSource = "// Version.cs -- generated by BuildEdSharp.ps1 on every run; do not edit or commit." + $sBreak + "public static class BuildVersion" + $sBreak + "{" + $sBreak + "  public const string Version = `"$sVersion`";" + $sBreak + "}" + $sBreak
+  $sVersionSource = "// Version.cs -- generated by Build.ps1 on every run; do not edit or commit." + $sBreak + "public static class BuildVersion" + $sBreak + "{" + $sBreak + "  public const string Version = `"$sVersion`";" + $sBreak + "}" + $sBreak
   Set-Content -LiteralPath (Join-Path $sScriptDir "Version.cs") -Value $sVersionSource -Encoding UTF8 -NoNewline
   writeLog "Generated Version.cs with BuildVersion.Version = $sVersion"
   # Keep the generated file out of the repository, the same way the other
@@ -691,7 +691,7 @@ try {
     # purpose: the drifted copies are what this migration removed.
     $sKitSource = Join-Path $sHomerCSharp $sSourceFile
     if (Test-Path -LiteralPath $sKitSource) { $lArguments += $sKitSource }
-    else { throw "The kit is missing $sSourceFile. Run buildHomerDev in $HomerDev, then build again." }
+    else { throw "The kit is missing $sSourceFile. Run build in $HomerDev, then build again." }
   }
   $lArguments += @("Version.cs")
   if ((runTool $sCscFile $lArguments "compile EdSharp.exe") -ne 0) { throw "EdSharp.exe compilation failed; the compiler output above names the lines." }
@@ -857,7 +857,7 @@ try {
 
   # ---- 7. installer, if Inno Setup is present (buildHomerScribe pattern) ----
   if ($bConsole) {
-    writeLog "CONSOLE MODE: the installer step is skipped; run plain buildEdSharp for the release build."
+    writeLog "CONSOLE MODE: the installer step is skipped; run plain build for the release build."
     $sIsccFile = ""
   } else {
   $sIsccFile = findIscc

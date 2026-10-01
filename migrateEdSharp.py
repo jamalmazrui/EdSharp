@@ -29,7 +29,7 @@ is where the build writes them now and the only place they belong.
 Retires EdSharp's own earlier editions of what the kit now does --
 tidyRepo, repoPolicy, moveNotes, restoreMissing, prepareAuditFixes,
 applyConvertPolicy, dropLatexJawsKeys, auditEdSharp, summarizeSetup,
-ModernizePandocConfig, the root tagRelease, and the old BuildEdSharp pair --
+ModernizePandocConfig, the root tagRelease, and the old Build pair --
 and the copies of the shared Homer classes, which had all drifted from the
 kit's. Retired files go to notes\ rather than being deleted, so anything
 still wanted can be fetched back; the class copies go for good, because
@@ -77,7 +77,7 @@ c_lClassCopies = ["Inix.cs", "KeyMap.cs", "Lbc.cs", "Say.cs", "Web.cs", "inixVer
 # Earlier editions of what the kit now does, and the odds and ends the new
 # layout leaves behind. To notes, not deleted.
 c_lRetired = [
-    "BuildEdSharp.cmd", "BuildEdSharp.ps1",
+    "Build.cmd", "Build.ps1",
     "CamelType_CSharp.htm", "CamelType_CSharp.md",
     "CamelType_JAWSScript.htm", "CamelType_JAWSScript.md",
     "Development.htm", "Development.md",
@@ -335,7 +335,7 @@ def main():
         say(f"Retired {iRetired} files into notes and deleted {iClasses} class copies.")
         say()
         say("Next:")
-        say("  1. buildEdSharp")
+        say("  1. build")
         say("  2. exec\\EdSharp.exe            (the quick test)")
         say("  3. scripts\\checkHomerApp --build")
         say("  4. scripts\\gitPush \"Move to the Homer Development Kit.\"")

@@ -791,6 +791,32 @@ def main():
     bDoIt = True
     sayLine("%s in %s" % (appName(), sRoot))
 
+    # THE BUILD SCRIPT TAKES ITS SHORT NAME HERE (1.43.56). Since 1.43.55 an
+    # app's build script is build.cmd, and check fails build<App>.cmd. Tidy runs
+    # before every push, so when an old name is still here it runs the kit's
+    # renameBuild on this folder -- git mv, every reference updated, its own log
+    # -- and the push that follows records the rename. Nothing is asked of you.
+    sApp = os.path.basename(sRoot.rstrip("\\/"))
+    lsOldBuild = [s for s in os.listdir(sRoot) if s.lower() in (("build" + sApp + ".cmd").lower(), ("build" + sApp + ".ps1").lower())]
+    if os.path.isfile(os.path.join(sRoot, "Templates", "HomerComponents.iss")): lsOldBuild = []  # the kit renames its own, in build.py (1.43.58)
+    if lsOldBuild and not dArguments.repo_only:
+        lsKit = [os.environ.get("HomerDev", ""), r"C:\HomerDev", os.path.join(os.path.dirname(sRoot.rstrip("\\/")), "HomerDev")]
+        sRename = ""
+        for sKit in lsKit:
+            if sKit and os.path.isfile(os.path.join(sKit, "scripts", "renameBuild.py")):
+                sRename = os.path.join(sKit, "scripts", "renameBuild.py")
+                break
+        logLine("old build script names: %s; renameBuild: %s" % (", ".join(lsOldBuild), sRename or "not found"))
+        if sRename:
+            sayLine("Renaming %s to the short name, build.%s." % (" and ".join(lsOldBuild), "cmd and build.ps1" if len(lsOldBuild) > 1 else "cmd"))
+            oResult = subprocess.run([sys.executable, sRename, sRoot], capture_output=True, text=True)
+            for sLine in (oResult.stdout + oResult.stderr).splitlines():
+                logLine("renameBuild: " + sLine)
+            logLine("renameBuild exit %d" % oResult.returncode)
+            if oResult.returncode != 0: sayLine("renameBuild could not finish; its log in logs says why.")
+        else:
+            sayLine("The build script still has its old name, and the kit's renameBuild was not found to fix it.")
+
     if dArguments.gitignore:
         writeWhitelistGitignore()
         logLine("tidy end")

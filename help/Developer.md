@@ -9,13 +9,13 @@ of it. EdSharp carries no copies of its own. It did until September 2026,
 and every one of them had drifted from the kit's.
 
 Get the kit first: unzip HomerDev.zip into C:\HomerDev and run
-buildHomerDev. EdSharp asks for version 1.39.1 or later and stops with a
+build. EdSharp asks for version 1.39.1 or later and stops with a
 plain message if the kit is older, rather than failing somewhere inside the
 compiler.
 
 Then, in C:\EdSharp:
 
-1. **buildEdSharp** -- steps version.txt, writes Version.cs, refreshes the
+1. **build** -- steps version.txt, writes Version.cs, refreshes the
    kit's tools into scripts, puts the files into the Homer encoding, speaks
    any tutorial with no audio yet, then compiles into exec and builds
    EdSharp_Setup.exe at the top of the project.
@@ -27,7 +27,7 @@ Then, in C:\EdSharp:
 5. **scripts\release** -- runs scripts\check, then tags the pushed commit with
    the version stamped in EdSharp_Setup.exe and publishes the installer.
 
-`buildEdSharp nobump` keeps the current number. `scripts\tidy` is the
+`build nobump` keeps the current number. `scripts\tidy` is the
 periodic clean, and `scripts\unpushed` undoes a local commit that
 should not go up.
 
@@ -67,11 +67,11 @@ For using EdSharp, see the user guide; for learning it by role, the tutorials.
 
 ## Building
 
-Clone the project and run **BuildEdSharp.cmd** from the project folder. It
+Clone the project and run **Build.cmd** from the project folder. It
 needs nothing installed beyond Windows itself, though it uses more when it is
 there.
 
-The build does these things in order, writing everything to BuildEdSharp.log:
+The build does these things in order, writing everything to Build.log:
 
 1. Works out the next version number from the release tags on the remote, and
    writes it into the installer script.

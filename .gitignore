@@ -14,8 +14,8 @@
 # Put back what the project names.
 !/.gitattributes
 !/accept.inix
-!/buildEdSharp.cmd
-!/buildEdSharp.ps1
+!/build.cmd
+!/build.ps1
 !/configs/
 !/data/
 !/EdSharp.cs

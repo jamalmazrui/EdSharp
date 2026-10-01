@@ -29,7 +29,7 @@ using Homer;
 
 [assembly: AssemblyTitle("EdSharp")]
 [assembly: AssemblyProduct("EdSharp")]
-// Single-sourced from AppVersion in EdSharp_setup.iss: BuildEdSharp.cmd generates
+// Single-sourced from AppVersion in EdSharp_setup.iss: Build.cmd generates
 // Version.cs (BuildVersion.Version) from it.  This replaces the wildcard "5.0.*",
 // which made the assembly version a build TIMESTAMP unrelated to the release --
 // so the program, the installer, and the release tag could never agree.
@@ -50,7 +50,7 @@ public class App : WindowsFormsApplicationBase {
 // the latest GitHub release tag.  Bump this on each release; the About dialog
 // shows the friendly "5.0 beta" label separately.
 // The version number is NOT stored here.  It lives in exactly one place --
-// AppVersion in EdSharp_Setup.iss -- and BuildEdSharp.cmd generates Version.cs
+// AppVersion in EdSharp_Setup.iss -- and Build.cmd generates Version.cs
 // from it at build time, defining BuildVersion.Version.  That makes it
 // impossible for the running program and the installer (and therefore the
 // release tag that F11 compares against) to disagree.

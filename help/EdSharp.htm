@@ -2087,7 +2087,7 @@ language</a>.</p>
 <p>EdSharp 5.0 targets the .NET Framework 4.8 and is compiled AnyCPU, so
 the same build runs as native 64-bit on x64 and ARM64 Windows. To
 rebuild it from source, open a command prompt in the program folder and
-run <code>BuildEdSharp.cmd</code>. That script locates the C# compiler
+run <code>Build.cmd</code>. That script locates the C# compiler
 (preferring the newest Roslyn <code>csc.exe</code>, otherwise the
 framework <code>csc.exe</code> that ships with .NET), compiles
 <code>EdSharp.exe</code> and <code>EdSharp.dll</code>, and -- on a
@@ -2095,16 +2095,16 @@ best-effort basis -- fetches the few files it needs: the
 <code>Ude.dll</code> encoding-detection library and current portable
 builds of the Convert tools (Pandoc, HTML Tidy, liblouis, Xpdf, and
 Artistic Style). A clean clone therefore needs nothing but
-<code>BuildEdSharp.cmd</code>; everything generated or downloaded is
+<code>Build.cmd</code>; everything generated or downloaded is
 reproduced on demand.</p>
 <p>To build the Windows installer, <code>EdSharp_Setup.exe</code>,
 install <a href="https://jrsoftware.org/isinfo.php">Inno Setup</a> and
 compile <code>EdSharp_Setup.iss</code> with it (after a successful
-<code>BuildEdSharp.cmd</code>, so the compiled files exist).</p>
+<code>Build.cmd</code>, so the compiled files exist).</p>
 <p>Because the built and fetched files are reproducible, they are kept
 out of source control by <code>.gitignore</code>:
 <code>EdSharp.exe</code>, <code>EdSharp.dll</code>,
-<code>EdSharp_Setup.exe</code>, <code>BuildEdSharp.log</code>, the
+<code>EdSharp_Setup.exe</code>, <code>Build.log</code>, the
 fetched <code>Ude.dll</code>, and the downloaded tool folders under
 <code>Convert</code>. Committed binaries that are not produced by the
 build, such as <code>Tektosyne.dll</code>,

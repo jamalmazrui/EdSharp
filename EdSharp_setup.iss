@@ -1,7 +1,7 @@
 ﻿; EdSharp_Setup.iss -- Inno Setup script for the AnyCPU EdSharp baseline (x64 and ARM64).
 ;
 ; Compile with ISCC.exe (Inno Setup 6.3+ required for x64compatible and for the
-; per-user fallback described below). Run BuildEdSharp.cmd first so EdSharp.exe,
+; per-user fallback described below). Run Build.cmd first so EdSharp.exe,
 ; EdSharp.dll, and nvdaControllerClient.dll exist. Produces EdSharp_Setup.exe
 ; in C:\EdSharp.
 ;
@@ -108,7 +108,7 @@ SetupLogging=yes
 ; SignedUninstaller=yes
 
 [Files]
-; Built artifacts (present after BuildEdSharp.cmd).
+; Built artifacts (present after Build.cmd).
 Source: "exec\EdSharp.exe";        DestDir: "{app}"; Flags: ignoreversion
 ; Runtime configuration for EdSharp.exe -- carries the startup tuning (disables
 ; Authenticode publisher-evidence/CRL checks, enables concurrent GC).  It must
@@ -138,7 +138,7 @@ Source: "EdSharp.ico";        DestDir: "{app}"; Flags: ignoreversion skipifsourc
 Source: "exec\EdSharp.dll";        DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp.js";         DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp.manifest";   DestDir: "{app}"; Flags: ignoreversion
-Source: "buildEdSharp.cmd";   DestDir: "{app}"; Flags: ignoreversion
+Source: "build.cmd";   DestDir: "{app}"; Flags: ignoreversion
 Source: "FetchConvertTools.ps1";   DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "FetchUde.ps1";            DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "ModernizePandocConfig.ps1"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
@@ -153,7 +153,7 @@ Source: "scripts\installPandoc.cmd";  DestDir: "{app}\scripts"; Flags: ignorever
 ; single-file extension BUNDLE from nalgeon/sqlean, still actively released;
 ; it loads into any SQLite host (DbDo does exactly that), and the frozen
 ; shell can .load it to pick up extensions newer than its baked-in set.
-; BuildEdSharp refreshes the DLL from the sqlean releases; the EXE ships as
+; Build refreshes the DLL from the sqlean releases; the EXE ships as
 ; the copy kept in the source folder. skipifsourcedoesntexist protects a
 ; fresh clone that has not fetched them yet.
 Source: "scripts\installGitHub.cmd"; DestDir: "{app}\scripts"; Flags: ignoreversion
@@ -461,7 +461,7 @@ Filename: "{code:ngenExe}"; Parameters: "uninstall EdSharp /nologo /silent"; Fla
 [UninstallDelete]
 Type: files; Name: "{app}\EdSharp.exe"
 Type: files; Name: "{app}\EdSharp.dll"
-Type: files; Name: "{app}\BuildEdSharp.log"
+Type: files; Name: "{app}\Build.log"
 ; pandoc.exe was placed by installPandoc, not by this installer, so Inno does
 ; not know to remove it; named here so an uninstall leaves no 200 MB orphan.
 Type: files; Name: "{app}\configs\convert\Pandoc\pandoc.exe"

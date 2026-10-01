@@ -730,6 +730,8 @@ def checkBuildName():
     app, so build<App>.cmd said it twice. An old name fails the check and names
     the kit's renameBuild, which renames it and every reference to it."""
     sApp = os.path.basename(sRoot)
+    # The kit follows the same rule since 1.43.58: its build script is
+    # build.cmd too, and its build removes buildHomerDev.cmd and .py.
     lsOld = [s for s in os.listdir(sRoot) if s.lower() in (("build" + sApp + ".cmd").lower(), ("build" + sApp + ".ps1").lower())]
     if lsOld:
         for sName in lsOld: logLine("BUILD NAME: %s should be %s" % (sName, "build" + os.path.splitext(sName)[1].lower()))

@@ -40,8 +40,8 @@ nvdaControllerClient.dll
 KeepEncoding.txt
 
 ; Build and release
-buildEdSharp.cmd
-buildEdSharp.ps1
+build.cmd
+build.ps1
 migrateEdSharp.cmd
 migrateEdSharp.py
 EdSharp_setup.iss

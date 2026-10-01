@@ -5,7 +5,7 @@
 #   buildTutorials -docs              documents and feed only, no speaking
 #   buildTutorials -sapi              use Windows voices; fetch nothing
 #   buildTutorials -live              perform it now through the screen reader, write no file
-#   buildTutorials -fetch             allowed to download engines and voices: buildHomerDev
+#   buildTutorials -fetch             allowed to download engines and voices: build
 #                                     passes this; an app's build does not
 #   buildTutorials -build             called from a build script; means nothing else
 #
@@ -152,8 +152,8 @@ $bSapi = $false
 $bLive = $false
 # ONLY THE KIT'S BUILD FETCHES (25 Sep 2026). The voices are shared by every
 # app and live in the kit's exec folder, so the kit's build is the one thing
-# that downloads them: buildHomerDev passes -fetch. An app's build finds them
-# there; when they are missing it says to run buildHomerDev, and speaks nothing.
+# that downloads them: build passes -fetch. An app's build finds them
+# there; when they are missing it says to run build, and speaks nothing.
 $bFetch = $false
 $sOnly = ""
 foreach ($sArg in $args) {
@@ -1131,7 +1131,7 @@ if (-not $bDocsOnly -and -not $bLive) {
 if (-not $bSapi -and -not $bLive -and -not $bDocsOnly) {
   $bHaveVoice = ($bKokoro) -or ($sPiper -ne "" -and $sPiperVoice -ne "")
   if (-not $bHaveVoice) {
-    say "No voices in $sTools. Run buildHomerDev: the kit's build fetches them, once, for every app."
+    say "No voices in $sTools. Run build: the kit's build fetches them, once, for every app."
     note "stopping: no voices and -fetch not given"
     exit 1
   }
