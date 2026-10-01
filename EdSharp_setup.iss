@@ -92,7 +92,7 @@ SourceDir=C:\EdSharp
 PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=commandline
 ; The [Dirs] section below intentionally creates per-user data folders under
-; {userappdata} even in an elevated install; EdSharp also recreates them at
+; {localappdata} even in an elevated install; EdSharp also recreates them at
 ; run time for each user, so a mismatch is self-healing.  Silence the compiler
 ; warning about user areas in an admin install.
 UsedUserAreasWarning=no
@@ -234,8 +234,8 @@ Source: "data\dictionaries\*"; DestDir: "{app}\data\dictionaries"; Flags: ignore
 Source: "exec\WeCantSpell.Hunspell.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 
 [Dirs]
-Name: "{userappdata}\EdSharp";
-Name: "{userappdata}\EdSharp\Temp";
+Name: "{localappdata}\EdSharp";
+Name: "{localappdata}\EdSharp\Temp";
 
 [InstallDelete]
 ; scripts\jaws is refilled from scratch each time (29 September 2026): an
@@ -302,7 +302,7 @@ Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installGitHub.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descGitHub}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: gitNeedsInstall
+  Flags: postinstall skipifsilent runascurrentuser; Check: gitNeedsInstall
 
 Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; \
   Description: "{code:labelJaws}"; \
@@ -312,7 +312,7 @@ Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installNode.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descNode}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeNeedsInstall
+  Flags: postinstall skipifsilent runascurrentuser; Check: nodeNeedsInstall
 
 Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bNvda -bQuiet"; WorkingDir: "{app}"; \
   Description: "{code:labelNvda}"; \
@@ -322,7 +322,7 @@ Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descOllama}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaNeedsInstall
+  Flags: postinstall skipifsilent runascurrentuser; Check: ollamaNeedsInstall
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installPython.cmd"""" noPause";  \
@@ -334,20 +334,20 @@ Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installCodeModel.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descCodeModel}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: codeModelNeedsInstall
+  Flags: postinstall skipifsilent runascurrentuser; Check: codeModelNeedsInstall
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installTranslateModel.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descTranslateModel}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: translateModelNeedsInstall
+  Flags: postinstall skipifsilent runascurrentuser; Check: translateModelNeedsInstall
 
 ; ---- 2. Update --------------------------------------------------------------
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installGitHub.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descGitHub}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: gitNeedsUpdate
+  Flags: postinstall skipifsilent runascurrentuser; Check: gitNeedsUpdate
 
 Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bQuiet -pathResultFile ""{localappdata}\EdSharp\logs\EdSharp_jaws.result"""; WorkingDir: "{app}"; \
   Description: "{code:labelJaws}"; \
@@ -357,17 +357,17 @@ Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installNode.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
   Description: "{code:descNode}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: nodeNeedsUpdate
+  Flags: postinstall skipifsilent runascurrentuser; Check: nodeNeedsUpdate
 
 Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bNvda -bQuiet"; WorkingDir: "{app}"; \
   Description: "{code:labelNvda}"; \
   Flags: postinstall skipifsilent runhidden runasoriginaluser waituntilterminated; Check: isUpdateNvda
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
+  Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause update";  \
   WorkingDir: "{app}"; \
   Description: "{code:descOllama}"; \
-  Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaNeedsUpdate
+  Flags: postinstall skipifsilent runascurrentuser; Check: ollamaNeedsUpdate
 
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installPython.cmd"""" noPause";  \
@@ -403,7 +403,7 @@ Filename: "{app}\scripts\installJawsScripts.cmd"; Parameters: "-bNvda -bQuiet"; 
   Flags: postinstall skipifsilent runhidden runasoriginaluser waituntilterminated unchecked; Check: isReinstallNvda
 
 Filename: "{cmd}"; \
-  Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause";  \
+  Parameters: "/c """"{app}\scripts\installOllama.cmd"""" noPause reinstall";  \
   WorkingDir: "{app}"; \
   Description: "{code:descOllama}"; \
   Flags: postinstall skipifsilent runascurrentuser unchecked; Check: ollamaIsCurrent

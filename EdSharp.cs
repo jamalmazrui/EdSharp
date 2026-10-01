@@ -372,14 +372,45 @@ string sReturn = Application.StartupPath;
 return sReturn;
 } // GetProgramDir method
 
+private static bool bRoamingChecked = false;
+public static void MoveFromRoaming(string sName, string sLocal) {
+if (bRoamingChecked) return;
+bRoamingChecked = true;
+try {
+string sRoaming = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), sName);
+if (!Directory.Exists(sRoaming)) return;
+foreach (string sFile in Directory.GetFiles(sRoaming, "*", System.IO.SearchOption.AllDirectories)) {
+string sTarget = Path.Combine(sLocal, sFile.Substring(sRoaming.Length).TrimStart('\\'));
+try {
+if (File.Exists(sTarget)) continue;
+Directory.CreateDirectory(Path.GetDirectoryName(sTarget));
+File.Move(sFile, sTarget);
+}
+catch (Exception) { }
+}
+string[] aFolders = Directory.GetDirectories(sRoaming, "*", System.IO.SearchOption.AllDirectories);
+Array.Sort(aFolders, delegate(string sOne, string sTwo) { return sTwo.Length.CompareTo(sOne.Length); });
+foreach (string sFolder in aFolders) {
+try { if (Directory.GetFileSystemEntries(sFolder).Length == 0) Directory.Delete(sFolder); } catch (Exception) { }
+}
+try { if (Directory.GetFileSystemEntries(sRoaming).Length == 0) Directory.Delete(sRoaming); } catch (Exception) { }
+}
+catch (Exception) { }
+} // MoveFromRoaming method
+
 public static string GetDataDir() {
 string sName = GetAppName();
 //string sDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 //string sDir = Application.UserAppDataPath;
 //string sDir = Application.LocalUserAppDataPath
-string sDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+// ONLY THE LOCAL TREE (30 September 2026): EdSharp's settings and temporary
+// files live under %LOCALAPPDATA%\EdSharp, never the Roaming tree. What an
+// earlier EdSharp left under %APPDATA%\EdSharp is moved here the first time,
+// each file to the same place, unless a file of that name is already here.
+string sDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 string sReturn = Path.Combine(sDir, sName);
 if (!Directory.Exists(sReturn)) Directory.CreateDirectory(sReturn);
+MoveFromRoaming(sName, sReturn);
 return sReturn;
 } // GetDataDir method
 

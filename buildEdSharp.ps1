@@ -845,6 +845,15 @@ try {
     if (-not (Test-Path -LiteralPath (Join-Path $sScriptDir "EdSharp_setup.iss"))) { throw "EdSharp_setup.iss was not found beside the build script, so the installer cannot be compiled." }
     if ((runTool $sIsccFile @("EdSharp_setup.iss") "compile EdSharp_Setup.exe") -ne 0) { throw "The installer build failed; the Inno Setup output above names the reason." }
     writeLog "Built EdSharp_Setup.exe."
+    # OLD STAND-ALONE JAWS SCRIPT INSTALLERS, which nothing builds now, are
+    # removed (30 September 2026): EdSharp_Scripts_Setup.iss in scripts and in
+    # scripts\jaws.
+    foreach ($sOld in @((Join-Path $sScriptDir "scripts\EdSharp_Scripts_Setup.iss"), (Join-Path $sScriptDir "scripts\jaws\EdSharp_Scripts_Setup.iss"))) {
+      if (Test-Path -LiteralPath $sOld) {
+        Remove-Item -LiteralPath $sOld -Force
+        writeLog "Removed $sOld, an old stand-alone JAWS script installer."
+      }
+    }
     # ONE INSTALLER, AT THE TOP (29 September 2026). The installer is built at
     # the top of the project (OutputDir=.), where the release takes it from. A
     # copy left in exec from before is removed: EdSharp's acceptance check was

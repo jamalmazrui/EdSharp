@@ -40,6 +40,13 @@ call "%~dp0installCommon.cmd" setup "%~f0" %*
 
 
 :afterLogSetup
+rem THE FINISH PAGE HAS ALREADY DECIDED (1.43.51). It compared versions and
+rem offered Install, Update or Reinstall; this script does what the box said,
+rem and says that, rather than announcing a check of its own.
+set "sVerb=update"
+for %%a in (%*) do if /i "%%~a"=="reinstall" set "sVerb=reinstall"
+for %%a in (%*) do if /i "%%~a"=="update" set "sVerb=update"
+call "%~dp0installCommon.cmd" log "asked to: %sVerb% (when Ollama is already installed)"
 
 call :findOllama
 if defined ollamaExe goto :already
@@ -63,6 +70,7 @@ for /l %%N in (1,1,30) do (
 )
 
 :ready
+call :closeOllamaWindow
 echo(
 echo Ollama is installed and running. It starts with Windows from now on.
 echo(
@@ -81,14 +89,27 @@ rem installed" and exited in a second -- which is exactly what he noticed. A
 rem winget upgrade is what an Update box means; when nothing is newer, winget
 rem says so and returns at once, and that is the honest outcome.
 echo(
-echo Ollama is installed. Checking for a newer version. If there is one, it is
-echo downloaded and installed now: about 1 GB, and a few minutes. Nothing is
-echo asked of you while it runs.
+if /i "%sVerb%"=="reinstall" goto :reinstall
+echo Updating Ollama to the newest version: about 1 GB, and a few minutes.
+echo Nothing is asked of you while it runs.
 winget upgrade --id Ollama.Ollama --exact --silent --accept-source-agreements --accept-package-agreements >> "%log%" 2>&1
 set "iUp=%ERRORLEVEL%"
 call "%~dp0installCommon.cmd" log "winget upgrade exit code %iUp%"
 if "%iUp%"=="0" echo Ollama was updated.
-if not "%iUp%"=="0" echo Ollama is already the newest winget offers.
+if not "%iUp%"=="0" echo Ollama was NOT updated; the log has winget's answer.
+goto :afterChange
+
+:reinstall
+echo Reinstalling Ollama: about 1 GB, and a few minutes. Nothing is asked of you
+echo while it runs.
+winget install --id Ollama.Ollama --exact --force --silent --accept-source-agreements --accept-package-agreements >> "%log%" 2>&1
+set "iUp=%ERRORLEVEL%"
+call "%~dp0installCommon.cmd" log "winget install --force exit code %iUp%"
+if "%iUp%"=="0" echo Ollama was reinstalled.
+if not "%iUp%"=="0" echo Ollama was NOT reinstalled; the log has winget's answer.
+
+:afterChange
+call :closeOllamaWindow
 call :findOllama
 if not defined ollamaExe goto :installedButLost
 echo Ollama is at !ollamaExe!
@@ -118,6 +139,17 @@ echo(
 if not defined noPause pause
 endlocal
 exit /b 1
+
+rem NO OLLAMA WINDOW LEFT OPEN (1.43.52). Ollama's own installer starts its
+rem desktop app when it finishes, and the app opens a chat window. Homer apps
+rem use Ollama behind the scenes and never its window, which only confuses
+rem someone who did not ask for it. The window is closed politely -- the same
+rem as pressing Alt+F4 -- so the app and the Ollama service keep running, as
+rem every Homer app needs. Up to 20 seconds is allowed for it to appear.
+:closeOllamaWindow
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$iClosed = 0; for ($i = 0; $i -lt 20; $i++) { foreach ($p in @(Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowHandle -ne 0 -and $_.MainWindowTitle -like 'Ollama*' })) { if ($p.CloseMainWindow()) { $iClosed++; 'closed the Ollama window of ' + $p.ProcessName + ' (process ' + $p.Id + ')' } }; if ($iClosed -gt 0) { break }; Start-Sleep -Seconds 1 }; if ($iClosed -eq 0) { 'no Ollama window appeared' }" >> "%log%" 2>&1
+goto :eof
 
 :findOllama
 rem The parenthesis in the variable name ProgramFiles(x86) must not appear
