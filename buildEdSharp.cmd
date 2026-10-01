@@ -220,6 +220,14 @@ del "!sTagFile!" >nul 2>&1
 git ls-remote --tags origin "v*" > "!sTagFile!" 2>> "%log%"
 if errorlevel 1 echo WARN: the released tags could not be read, so the next number is taken blindly.>> "%log%"
 if errorlevel 1 del "!sTagFile!" >nul 2>&1
+rem THE TAG LIST WITH WINDOWS LINE ENDS (1 October 2026). git writes it with
+rem LF alone, and findstr /e matches only before a CR LF, so no tag ever
+rem matched and no spent number was stepped over: EdSharp's old releases
+rem v5.0.32 to v5.0.36 were each chosen again, and each refused as already
+rem released. find /v "" rewrites every line with CR LF.
+if exist "!sTagFile!" type "!sTagFile!" | find /v "" > "!sTagFile!.crlf"
+if exist "!sTagFile!.crlf" move /y "!sTagFile!.crlf" "!sTagFile!" >nul
+if exist "!sTagFile!" for /f %%n in ('find /c "refs/tags/" ^< "!sTagFile!"') do echo Released tags on origin: %%n>> "%log%"
 
 :nextCandidate
 call :incrementVersion

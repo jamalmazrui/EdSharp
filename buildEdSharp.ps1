@@ -119,7 +119,9 @@ else {
   if (-not (Test-Path -LiteralPath $sLogDir)) { New-Item -ItemType Directory -Path $sLogDir -Force | Out-Null }
   $sLogFile = Join-Path $sLogDir ("EdSharp-build-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
 }
-Set-Content -LiteralPath $sLogFile -Value "" -Encoding UTF8
+# APPEND, NEVER EMPTY (1 October 2026): buildEdSharp.cmd has already written
+# the kit check and the version step to this log; emptying it lost them.
+if (-not (Test-Path -LiteralPath $sLogFile)) { Set-Content -LiteralPath $sLogFile -Value "" -Encoding UTF8 }
 
 $bFailed = $false
 
