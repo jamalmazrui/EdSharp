@@ -147,6 +147,27 @@ if ($HomerDev -eq "" -or -not (Test-Path -LiteralPath (Join-Path $HomerDev "exec
 }
 $sHomerCSharp = Join-Path $HomerDev "exec\CSharp"
 writeLog "Kit: $HomerDev"
+
+# THE KIT'S SHARED SCRIPTS, REFRESHED AT EVERY BUILD (1 October 2026), as DbDo's,
+# FileDir's and HomerScribe's builds do. EdSharp's build never copied them, so
+# its scripts\release.ps1 stayed the old one, which judged "already on GitHub"
+# by an exit code that gh.cmd does not report reliably -- and refused to publish
+# 5.0.32, 5.0.33 and 5.0.34 as "ALREADY RELEASED". Each file copied is logged.
+foreach ($sShared in @("buildTutorials.cmd", "buildTutorials.ps1", "check.cmd", "check.py", "checkTutorial.cmd",
+                       "checkTutorial.py", "finish.cmd", "fixEncoding.cmd", "fixEncoding.py", "installCommon.cmd",
+                       "installOllama.cmd", "installScreenReaderSupport.cmd", "makeTutorials.cmd", "makeTutorials.py",
+                       "push.cmd", "release.cmd", "release.ps1", "tidy.cmd", "tidy.py", "uiCheck.cmd", "uiCheck.py",
+                       "unpushed.cmd", "unpushed.py")) {
+  $sFrom = Join-Path $HomerDev ("scripts\" + $sShared)
+  $sTo = Join-Path $sScriptDir ("scripts\" + $sShared)
+  if (-not (Test-Path -LiteralPath $sFrom)) { writeLog "Kit script not found, so not refreshed: $sFrom"; continue }
+  try {
+    Copy-Item -LiteralPath $sFrom -Destination $sTo -Force
+    writeLog "Refreshed scripts\$sShared from the kit."
+  } catch {
+    writeLog "WARNING: could not refresh scripts\$sShared from the kit: $($_.Exception.Message)"
+  }
+}
 # Where the build writes: the program, its libraries and the installer, and
 # nothing else. Named in LocalFiles.txt, so none of it reaches the repository.
 $sExecDir = Join-Path $sScriptDir "exec"
