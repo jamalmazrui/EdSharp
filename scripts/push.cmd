@@ -7,7 +7,7 @@ rem     push                          commit with the default message, "Fix."
 rem     push "Add the prefix field."  commit with your own
 rem
 rem HOW IT FITS WITH THE OTHERS:
-rem   build<App>      steps version.txt and builds; run it first, so the number
+rem   build           steps version.txt and builds; run it first, so the number
 rem                   that goes up is the one in the installer.
 rem   push         commits what RepoFiles.txt names -- this script.
 rem   tidy       the periodic clean: puts strays in place, deletes fetched

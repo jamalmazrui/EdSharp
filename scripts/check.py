@@ -725,13 +725,29 @@ def checkKeys():
     return finding("keys", "pass", "0 reserved combinations, 0 access keys claimed twice")
 
 
+def checkBuildName():
+    """THE BUILD SCRIPT IS build.cmd (1.43.55). The folder already names the
+    app, so build<App>.cmd said it twice. An old name fails the check and names
+    the kit's renameBuild, which renames it and every reference to it."""
+    sApp = os.path.basename(sRoot)
+    lsOld = [s for s in os.listdir(sRoot) if s.lower() in (("build" + sApp + ".cmd").lower(), ("build" + sApp + ".ps1").lower())]
+    if lsOld:
+        for sName in lsOld: logLine("BUILD NAME: %s should be %s" % (sName, "build" + os.path.splitext(sName)[1].lower()))
+        return finding("buildname", "fail", "%s still named after the app; run the kit's scripts\\renameBuild here" % " and ".join(lsOld))
+    if os.path.isfile(os.path.join(sRoot, "build.cmd")):
+        return finding("buildname", "pass", "the build script is build.cmd")
+    return finding("buildname", "skip", "no build script here")
+
+
 def checkBuild(bBuild):
     if not bBuild:
         return finding("build", "skip", "not asked for; run with --build to make the build itself evidence")
-    # THE APP'S OWN BUILD SCRIPT: build<App>.cmd, named after the folder. Any
-    # other build*.cmd -- buildTutorials.cmd, say -- is a tool, not the build;
-    # on 25 Sep 2026 this ran buildTutorials.cmd with "nobump" as a script name.
-    sOwn = os.path.join(sRoot, "build" + os.path.basename(sRoot) + ".cmd")
+    # THE APP'S OWN BUILD SCRIPT: build.cmd (1.43.55; before, build<App>.cmd,
+    # still run if not yet renamed). Any other build*.cmd -- buildTutorials.cmd,
+    # say -- is a tool, not the build; on 25 Sep 2026 this ran
+    # buildTutorials.cmd with "nobump" as a script name.
+    sOwn = os.path.join(sRoot, "build.cmd")
+    if not os.path.isfile(sOwn): sOwn = os.path.join(sRoot, "build" + os.path.basename(sRoot) + ".cmd")
     lsBuild = [sOwn] if os.path.isfile(sOwn) else [s for s in glob.glob(os.path.join(sRoot, "build*.cmd"))
                                                      if os.path.basename(s).lower() not in ("buildtutorials.cmd",)]
     if not lsBuild:
@@ -915,6 +931,7 @@ def main():
     checkNaming()
     checkLocal()
     checkFinishPage()
+    checkBuildName()
     checkKeys()
     checkBuild(dArguments.build)
     checkSmoke(dArguments.build)
