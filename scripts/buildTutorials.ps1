@@ -84,11 +84,11 @@ $sLog = Join-Path $sLogDir ((Split-Path -Leaf (Split-Path -Parent $sTool)) + "-t
 # never a copy inside an app's own tree, fetched again for the next app. For
 # Whisper or Pandoc that copy is where their installer puts it; piper and
 # sherpa-onnx have no installer, so there is no default location to look in.
-# Every Homer app already relies on C:\HomerDev for its shared classes, so
+# Every Homer app already relies on the kit for its shared classes, so
 # the voices live there too, in exec: the Homer folder for binaries that are
 # not in git, which is what a fetched engine and the model files it needs
 # are -- the same shape as exiftool.exe with its runtime folder beside it.
-# C:\HomerDev\exec, fetched once, found by every app's build; LocalFiles.txt
+# the kit's exec, fetched once, found by every app's build; LocalFiles.txt
 # names it as never pushed, and the kit's own build skips it.
 #
 # The order, first found wins: HOMER_VOICES, for a machine that keeps them
@@ -97,10 +97,28 @@ $sLog = Join-Path $sLogDir ((Split-Path -Leaf (Split-Path -Parent $sTool)) + "-t
 # place beside this script. A script's [global] VoiceFolder still overrides
 # all of it for that series.
 function findKit() {
-  if ($env:HomerDev -and (Test-Path -LiteralPath (Join-Path $env:HomerDev "exec\CSharp\Lbc.cs"))) { return $env:HomerDev }
-  if (Test-Path -LiteralPath "C:\HomerDev\exec\CSharp\Lbc.cs") { return "C:\HomerDev" }
-  $sUp = Split-Path -Parent $sTool
-  if (Test-Path -LiteralPath (Join-Path $sUp "exec\CSharp\Lbc.cs")) { return $sUp }
+  # The kit wherever it is (1.46.0): only Windows and the folder name
+  # HomerDev are assumed, never a drive or a depth. The HomerDev variable;
+  # then the project folder and every folder above it, and this script's
+  # folder and every folder above it, each either the kit or holding a
+  # HomerDev folder; then a HomerDev folder at the top of any ready fixed drive.
+  $fnIsKit = { param($sDir) $sDir -and ((Test-Path -LiteralPath (Join-Path $sDir "exec\CSharp\Lbc.cs")) -or (Test-Path -LiteralPath (Join-Path $sDir "exec\Python\lbc.py"))) }
+  if (& $fnIsKit $env:HomerDev) { return $env:HomerDev }
+  foreach ($sStart in @((Split-Path -Parent $sTool), $PSScriptRoot)) {
+    $sDir = $sStart
+    while ($sDir) {
+      if (& $fnIsKit $sDir) { return $sDir }
+      if (& $fnIsKit (Join-Path $sDir "HomerDev")) { return (Join-Path $sDir "HomerDev") }
+      $sUp = Split-Path -Parent $sDir
+      if (-not $sUp -or $sUp -eq $sDir) { break }
+      $sDir = $sUp
+    }
+  }
+  foreach ($oDrive in [System.IO.DriveInfo]::GetDrives()) {
+    if ($oDrive.DriveType -ne "Fixed" -or -not $oDrive.IsReady) { continue }
+    $sTry = Join-Path $oDrive.RootDirectory.FullName "HomerDev"
+    if (& $fnIsKit $sTry) { return $sTry }
+  }
   return ""
 }
 $sTools = ""
@@ -138,6 +156,18 @@ function say([string] $sText) {
 
 if (Test-Path -LiteralPath $sLog) { Remove-Item -LiteralPath $sLog -Force }
 note "buildTutorials starting"
+# FOUR KINDS OF HOMER RESOURCE (1.45.0). Tutorials walk through a program, so
+# a page or a collection, which has none, is left alone. kind.py decides.
+$sKindPy = Join-Path $sTool "kind.py"
+if (-not (Test-Path -LiteralPath $sKindPy)) { $sKit0 = findKit; if ($sKit0 -ne "") { $sKindPy = Join-Path $sKit0 "scripts\kind.py" } }
+if (Test-Path -LiteralPath $sKindPy) {
+  $sKind = (& python $sKindPy (Split-Path -Parent $sTool) --word 2>$null | Select-Object -First 1)
+  note ("kind: " + $sKind)
+  if ($sKind -eq "collection" -or $sKind -eq "page") {
+    say ("A " + $sKind + " has no program to walk through, so there are no tutorials to build.")
+    exit 0
+  }
+}
 note ("script: " + $MyInvocation.MyCommand.Path)
 note ("PowerShell: " + $PSVersionTable.PSVersion.ToString())
 note ("platform: " + [Environment]::OSVersion.VersionString)

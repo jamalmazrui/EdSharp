@@ -98,6 +98,33 @@ def projectRoot(sStart):
     return sStart
 
 
+def loadKind():
+    """The kit's kind.py (1.45.0): beside this script, or in the kit's scripts
+    folder wherever the kit is (1.46.0): the HomerDev variable, then a folder
+    named HomerDev above or beside where this runs, at any depth, then one at
+    the top of any fixed drive. Without it the project is taken to be an app,
+    as every script assumed before there were four kinds."""
+    lsDirs = [os.path.dirname(os.path.abspath(__file__)), os.path.join(os.environ.get("HomerDev", ""), "scripts")]
+    for sStart in (os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
+        sDir = os.path.abspath(sStart)
+        while True:
+            lsDirs.append(os.path.join(sDir, "scripts"))
+            lsDirs.append(os.path.join(sDir, "HomerDev", "scripts"))
+            sUp = os.path.dirname(sDir)
+            if sUp == sDir: break
+            sDir = sUp
+    if os.name == "nt":
+        import ctypes
+        lsDirs += [sLetter + ":\\HomerDev\\scripts" for sLetter in "CDEFGHIJKLMNOPQRSTUVWXYZ"
+                   if ctypes.windll.kernel32.GetDriveTypeW(sLetter + ":\\") == 3]
+    for sDir in lsDirs:
+        if sDir and os.path.isfile(os.path.join(sDir, "kind.py")):
+            if sDir not in sys.path: sys.path.insert(0, sDir)
+            import kind
+            return kind.projectKind
+    return lambda sFolder: ("app", "kind.py was not found, so taken to be an app")
+
+
 sRoot = projectRoot(os.getcwd())
 sLogDir = os.path.join(sRoot, "logs")
 os.makedirs(sLogDir, exist_ok=True)
@@ -430,6 +457,56 @@ def checkVersion():
     return finding("version", "fail",
                    "%s carries its own version literal instead of reading version.txt"
                    % os.path.basename(lsIss[0]))
+
+
+def checkDocumentsNotApp(sKind):
+    """A page has one document named for the folder, with its .htm and a title
+    in its front matter; a collection has a ReadMe and an .htm for every .md."""
+    sApp = appName()
+    if sKind == "page":
+        sMd = os.path.join(sRoot, sApp + ".md")
+        if not os.path.isfile(sMd):
+            lsMd = [s for s in glob.glob(os.path.join(sRoot, "*.md")) if os.path.basename(s).lower() not in ("readme.md", "index.md", "self.md")]
+            sMd = lsMd[0] if lsMd else ""
+        if not sMd:
+            return finding("documents", "fail", "no document to publish at the top")
+        lsWrong = []
+        if not os.path.isfile(sMd[:-3] + ".htm"): lsWrong.append("no %s.htm" % os.path.basename(sMd)[:-3])
+        if not re.match(r"\A---\s*\n(?:.*\n)*?title:", readText(sMd).replace("\r\n", "\n")):
+            lsWrong.append("no title in the front matter of %s" % os.path.basename(sMd))
+        if lsWrong: return finding("documents", "fail", "; ".join(lsWrong))
+        return finding("documents", "pass", "%s has a title and its .htm" % os.path.basename(sMd))
+    lsMd = sorted(glob.glob(os.path.join(sRoot, "*.md")))
+    bReadMe = any(os.path.splitext(s)[0].lower() == "readme" and os.path.splitext(s)[1].lower() in (".md", ".htm") for s in os.listdir(sRoot))
+    lsNoHtm = [os.path.basename(s) for s in lsMd if not os.path.isfile(s[:-3] + ".htm")]
+    if not bReadMe or lsNoHtm:
+        return finding("documents", "fail", "%s%s" % ("" if bReadMe else "no ReadMe; ",
+                       ("no .htm for: " + ", ".join(lsNoHtm[:10])) if lsNoHtm else "every .md has its .htm"))
+    iHtm = len(glob.glob(os.path.join(sRoot, "*.htm")))
+    return finding("documents", "pass", "a ReadMe and %s, every .md with its .htm" % countNoun(iHtm, "document"))
+
+
+def checkLicense(sKind):
+    """A resource names its license succinctly (1.48.0): an app or the kit has
+    License.md with the MIT text; a page names its license in its front matter;
+    a collection's ReadMe names its license."""
+    if sKind == "app":
+        sPath = os.path.join(sRoot, "License.md")
+        if not os.path.isfile(sPath): return finding("license", "fail", "no License.md")
+        if "MIT License" not in readText(sPath): return finding("license", "fail", "License.md is not the MIT License")
+        return finding("license", "pass", "License.md holds the MIT License")
+    if sKind == "page":
+        sMd = os.path.join(sRoot, appName() + ".md")
+        if not os.path.isfile(sMd): return finding("license", "skip", "no %s.md to read" % appName())
+        sText = readText(sMd).replace("\r\n", "\n")
+        oFront = re.match(r"\A---\s*\n(.*?)\n---", sText, re.S)
+        if oFront and re.search(r"(?m)^license:", oFront.group(1)):
+            return finding("license", "pass", "the front matter names the license")
+        return finding("license", "fail", "no license: line in the front matter of %s.md" % appName())
+    lsReadMe = [s for s in os.listdir(sRoot) if os.path.splitext(s)[0].lower() == "readme" and s.lower().endswith(".md")]
+    if lsReadMe and re.search(r"(?i)licen[cs]e", readText(os.path.join(sRoot, lsReadMe[0]))):
+        return finding("license", "pass", "%s names the license" % lsReadMe[0])
+    return finding("license", "fail", "the ReadMe does not name a license")
 
 
 def checkPublish():
@@ -905,7 +982,7 @@ def writeReport():
 
 def main():
     global oLog, sRoot
-    oParser = argparse.ArgumentParser(description="Gather evidence about a Homer app.")
+    oParser = argparse.ArgumentParser(description="Gather evidence about a Homer app, page or collection.")
     oParser.add_argument("--build", action="store_true",
                          help="build the app first, and count the build as evidence")
     oParser.add_argument("--path", default="", help="the app folder; this one by default")
@@ -922,22 +999,44 @@ def main():
     logFact("arguments", " ".join(sys.argv[1:]))
     logLine("settings build=%s quiet=%s" % (dArguments.build, dArguments.quiet))
 
-    if not dArguments.quiet: sayLine("Checking %s in %s" % (appName(), sRoot))
+    # FOUR KINDS OF HOMER RESOURCE (1.45.0). check gathers evidence about an
+    # app. The kit has its own checker; a page or a collection has no program,
+    # so only the checks that fit a set of documents run, and the report says
+    # which were left out and why.
+    sKind, sWhy = loadKind()(sRoot)
+    logLine("setting kind=%s reason=%s" % (sKind, logValue(sWhy)))
+    if sKind == "kit":
+        sayLine("This is the kit, which checkHomerDev checks. Run checkHomerDev here instead.")
+        logLine("check end")
+        return 0
 
-    checkDocuments()
-    checkEncoding()
-    checkEmpty()
-    checkVersion()
-    checkPublish()
-    checkLogging()
-    checkNaming()
-    checkLocal()
-    checkFinishPage()
-    checkBuildName()
-    checkKeys()
-    checkBuild(dArguments.build)
-    checkSmoke(dArguments.build)
-    checkAccept()
+    if not dArguments.quiet: sayLine("Checking %s, %s %s, in %s" % (appName(), "an" if sKind[0] in "aeiou" else "a", sKind, sRoot))
+
+    if sKind in ("collection", "page"):
+        checkDocumentsNotApp(sKind)
+        checkLicense(sKind)
+        checkEncoding()
+        checkEmpty()
+        if os.path.isdir(os.path.join(sRoot, ".git")): checkPublish()
+        else: finding("publish", "skip", "not a git repository; post keeps a page's repository")
+        finding("program", "skip", "a %s has no program, so the version, logging, naming, local files, "
+                "finish page, build name, keys, build, smoke run and acceptance checks do not apply" % sKind)
+    else:
+        checkDocuments()
+        checkLicense("app")
+        checkEncoding()
+        checkEmpty()
+        checkVersion()
+        checkPublish()
+        checkLogging()
+        checkNaming()
+        checkLocal()
+        checkFinishPage()
+        checkBuildName()
+        checkKeys()
+        checkBuild(dArguments.build)
+        checkSmoke(dArguments.build)
+        checkAccept()
 
     sReport = writeReport()
     iPassed = len([t for t in lsFindings if t[1] == "pass"])

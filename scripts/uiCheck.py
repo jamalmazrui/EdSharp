@@ -378,6 +378,33 @@ def writeReport():
     return sPath
 
 
+
+def loadKind():
+    """The kit's kind.py (1.45.0): beside this script, or in the kit's scripts
+    folder wherever the kit is (1.46.0): the HomerDev variable, then a folder
+    named HomerDev above or beside where this runs, at any depth, then one at
+    the top of any fixed drive. Without it the project is taken to be an app,
+    as every script assumed before there were four kinds."""
+    lsDirs = [os.path.dirname(os.path.abspath(__file__)), os.path.join(os.environ.get("HomerDev", ""), "scripts")]
+    for sStart in (os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
+        sDir = os.path.abspath(sStart)
+        while True:
+            lsDirs.append(os.path.join(sDir, "scripts"))
+            lsDirs.append(os.path.join(sDir, "HomerDev", "scripts"))
+            sUp = os.path.dirname(sDir)
+            if sUp == sDir: break
+            sDir = sUp
+    if os.name == "nt":
+        import ctypes
+        lsDirs += [sLetter + ":\\HomerDev\\scripts" for sLetter in "CDEFGHIJKLMNOPQRSTUVWXYZ"
+                   if ctypes.windll.kernel32.GetDriveTypeW(sLetter + ":\\") == 3]
+    for sDir in lsDirs:
+        if sDir and os.path.isfile(os.path.join(sDir, "kind.py")):
+            if sDir not in sys.path: sys.path.insert(0, sDir)
+            import kind
+            return kind.projectKind
+    return lambda sFolder: ("app", "kind.py was not found, so taken to be an app")
+
 def main():
     global oLog, sRoot
     oParser = argparse.ArgumentParser(description="Run a program and check what appeared.")
@@ -393,6 +420,14 @@ def main():
     logFact("windows", logWindows())
     logLine("Folder: %s" % sRoot)
     logFact("arguments", " ".join(sys.argv[1:]))
+
+    # A page or a collection has no program to press keys in (1.45.0).
+    sProject = os.path.dirname(sRoot) if os.path.basename(sRoot).lower() in ("scripts", "exec") else sRoot
+    sKind, sWhy = loadKind()(sProject)
+    logLine("setting kind=%s reason=%s" % (sKind, sWhy))
+    if sKind in ("collection", "page"):
+        sayLine("uiCheck tests a program, and a %s has none, so nothing was run." % sKind)
+        return 0
 
     if not sys.platform.startswith("win"):
         sayLine("uiCheck drives Windows programs, so it does nothing on %s." % sys.platform)

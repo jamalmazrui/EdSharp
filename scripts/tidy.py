@@ -749,6 +749,33 @@ def addToGitignore(lsPaths):
 
 # --- the plan ---------------------------------------------------------------
 
+
+def loadKind():
+    """The kit's kind.py (1.45.0): beside this script, or in the kit's scripts
+    folder wherever the kit is (1.46.0): the HomerDev variable, then a folder
+    named HomerDev above or beside where this runs, at any depth, then one at
+    the top of any fixed drive. Without it the project is taken to be an app,
+    as every script assumed before there were four kinds."""
+    lsDirs = [os.path.dirname(os.path.abspath(__file__)), os.path.join(os.environ.get("HomerDev", ""), "scripts")]
+    for sStart in (os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
+        sDir = os.path.abspath(sStart)
+        while True:
+            lsDirs.append(os.path.join(sDir, "scripts"))
+            lsDirs.append(os.path.join(sDir, "HomerDev", "scripts"))
+            sUp = os.path.dirname(sDir)
+            if sUp == sDir: break
+            sDir = sUp
+    if os.name == "nt":
+        import ctypes
+        lsDirs += [sLetter + ":\\HomerDev\\scripts" for sLetter in "CDEFGHIJKLMNOPQRSTUVWXYZ"
+                   if ctypes.windll.kernel32.GetDriveTypeW(sLetter + ":\\") == 3]
+    for sDir in lsDirs:
+        if sDir and os.path.isfile(os.path.join(sDir, "kind.py")):
+            if sDir not in sys.path: sys.path.insert(0, sDir)
+            import kind
+            return kind.projectKind
+    return lambda sFolder: ("app", "kind.py was not found, so taken to be an app")
+
 def main():
     global oLog, sRoot
     oParser = argparse.ArgumentParser(
@@ -789,6 +816,14 @@ def main():
              dArguments.repo_only))
 
     bDoIt = True
+    # FOUR KINDS OF HOMER RESOURCE (1.45.0). A page project that is not a git
+    # repository has nothing for tidy to tidy: post stages and publishes it.
+    sKind, sWhy = loadKind()(sRoot)
+    logLine("setting kind=%s reason=%s" % (sKind, logValue(sWhy)))
+    if sKind == "page" and not isGitRepo():
+        sayLine("%s is a page project, not a repository: post publishes it, and tidy has nothing to do." % appName())
+        logLine("tidy end")
+        return 0
     sayLine("%s in %s" % (appName(), sRoot))
 
     # THE BUILD SCRIPT TAKES ITS SHORT NAME HERE (1.43.56). Since 1.43.55 an
@@ -798,9 +833,17 @@ def main():
     # -- and the push that follows records the rename. Nothing is asked of you.
     sApp = os.path.basename(sRoot.rstrip("\\/"))
     lsOldBuild = [s for s in os.listdir(sRoot) if s.lower() in (("build" + sApp + ".cmd").lower(), ("build" + sApp + ".ps1").lower())]
-    if os.path.isfile(os.path.join(sRoot, "Templates", "HomerComponents.iss")): lsOldBuild = []  # the kit renames its own, in build.py (1.43.58)
+    if sKind != "app": lsOldBuild = []  # the kit renames its own, in build.py (1.43.58); a page or collection has no build
     if lsOldBuild and not dArguments.repo_only:
-        lsKit = [os.environ.get("HomerDev", ""), r"C:\HomerDev", os.path.join(os.path.dirname(sRoot.rstrip("\\/")), "HomerDev")]
+        # The kit wherever it is (1.46.0): kind.py's findKit, which assumes
+        # only Windows and the folder name, never a drive or a depth.
+        lsKit = [os.environ.get("HomerDev", "")]
+        try:
+            import kind
+            lsKit.append(kind.findKit([sRoot]))
+        except Exception:
+            pass
+        lsKit.append(os.path.join(os.path.dirname(sRoot.rstrip("\\/")), "HomerDev"))
         sRename = ""
         for sKit in lsKit:
             if sKit and os.path.isfile(os.path.join(sKit, "scripts", "renameBuild.py")):
@@ -827,8 +870,12 @@ def main():
     lsNamed = namedByInstaller() + namedByRepoFiles() + namedByLocalFiles()
     logLine("Named by the project: %s" % countNoun(len(lsNamed), "entry", "entries"))
     if not lsNamed:
-        sayLine("Nothing names the project's files: there is no <App>_setup.iss and")
-        sayLine("no RepoFiles.txt here. Refusing to guess. Add one and run again.")
+        if sKind == "app":
+            sayLine("Nothing names the project's files: there is no <App>_setup.iss and")
+            sayLine("no RepoFiles.txt here. Refusing to guess. Add one and run again.")
+        else:
+            sayLine("Nothing names this %s's files: there is no RepoFiles.txt here." % sKind)
+            sayLine("Refusing to guess. Add one and run again.")
         return 1
 
     iChanges = 0

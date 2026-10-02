@@ -56,8 +56,27 @@ for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "Get-Date -For
 >> "%log%" echo Command line: %0 %*
 >> "%log%" echo Message: %message%
 
+rem FOUR KINDS OF HOMER RESOURCE (1.45.0). kind.py says whether this is an
+rem app, a collection, the kit or a page. A page project that is not a
+rem repository is published by post, so push has nothing to do there.
+set "sKind=app"
+set "sKindPy=%~dp0kind.py"
+if not exist "%sKindPy%" if defined HomerDev set "sKindPy=%HomerDev%\scripts\kind.py"
+if not exist "%sKindPy%" (
+  set "sUp=%CD%"
+  call :findKindUp
+)
+if not exist "%sKindPy%" for %%L in (C D E F G H I J K L M N O P Q R S T U V W X Y Z) do if exist "%%L:\HomerDev\scripts\kind.py" set "sKindPy=%%L:\HomerDev\scripts\kind.py"
+if exist "%sKindPy%" for /f "usebackq delims=" %%K in (`python "%sKindPy%" "%CD%" --word 2^>nul`) do set "sKind=%%K"
+>> "%log%" echo Kind: !sKind! ^(from %sKindPy%^)
+
 git rev-parse --is-inside-work-tree >nul 2>&1
 if errorlevel 1 (
+  if /i "!sKind!"=="page" (
+    echo This is a page project, not a repository: post publishes it, so there is nothing to push.
+    echo PAGE PROJECT, not a repository: nothing to push>> "%log%"
+    endlocal & exit /b 0
+  )
   echo This folder is not a git repository. Run create^<App^>Repo first.
   echo NOT A REPOSITORY>> "%log%"
   endlocal & exit /b 1
@@ -118,3 +137,13 @@ git status --short --branch
 >> "%log%" echo push finished %date% %time%
 echo Pushed: %message%
 endlocal & exit /b 0
+
+:findKindUp
+rem Climbs from sUp to the top of its drive (1.46.0) for the kit's kind.py:
+rem in a folder that is the kit, or in a HomerDev folder beside one above.
+if exist "!sUp!\scripts\kind.py" if exist "!sUp!\exec\CSharp\Lbc.cs" (set "sKindPy=!sUp!\scripts\kind.py" & goto :eof)
+if exist "!sUp!\HomerDev\scripts\kind.py" (set "sKindPy=!sUp!\HomerDev\scripts\kind.py" & goto :eof)
+for %%I in ("!sUp!\..") do set "sNext=%%~fI"
+if /i "!sNext!"=="!sUp!" goto :eof
+set "sUp=!sNext!"
+goto :findKindUp

@@ -201,6 +201,33 @@ def projectRoot(sScriptDir):
     return sScriptDir
 
 
+
+def loadKind():
+    """The kit's kind.py (1.45.0): beside this script, or in the kit's scripts
+    folder wherever the kit is (1.46.0): the HomerDev variable, then a folder
+    named HomerDev above or beside where this runs, at any depth, then one at
+    the top of any fixed drive. Without it the project is taken to be an app,
+    as every script assumed before there were four kinds."""
+    lsDirs = [os.path.dirname(os.path.abspath(__file__)), os.path.join(os.environ.get("HomerDev", ""), "scripts")]
+    for sStart in (os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
+        sDir = os.path.abspath(sStart)
+        while True:
+            lsDirs.append(os.path.join(sDir, "scripts"))
+            lsDirs.append(os.path.join(sDir, "HomerDev", "scripts"))
+            sUp = os.path.dirname(sDir)
+            if sUp == sDir: break
+            sDir = sUp
+    if os.name == "nt":
+        import ctypes
+        lsDirs += [sLetter + ":\\HomerDev\\scripts" for sLetter in "CDEFGHIJKLMNOPQRSTUVWXYZ"
+                   if ctypes.windll.kernel32.GetDriveTypeW(sLetter + ":\\") == 3]
+    for sDir in lsDirs:
+        if sDir and os.path.isfile(os.path.join(sDir, "kind.py")):
+            if sDir not in sys.path: sys.path.insert(0, sDir)
+            import kind
+            return kind.projectKind
+    return lambda sFolder: ("app", "kind.py was not found, so taken to be an app")
+
 def main():
     global oLog
     sRoot = projectRoot(os.path.dirname(os.path.abspath(__file__)))
@@ -211,6 +238,11 @@ def main():
     sLogPath = os.path.join(sLogDir, "%s-tutorials-check-%s.log" % (os.path.basename(sRoot), datetime.datetime.now().strftime("%Y%m%d-%H%M%S")))
     oLog = io.open(sLogPath, "w", encoding="utf-8")
     logLine("checkTutorial start pid=%d" % os.getpid())
+    sKind, sWhy = loadKind()(sRoot)
+    logLine("setting kind=%s reason=%s" % (sKind, sWhy))
+    if sKind in ("collection", "page"):
+        print("A %s has no program to walk through, so there is no tutorial to check." % sKind)
+        return 0
     logFact("script", os.path.abspath(__file__))
     logFact("python", platform.python_version())
     logFact("windows", logWindows())

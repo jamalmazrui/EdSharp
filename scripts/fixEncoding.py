@@ -183,6 +183,33 @@ def wantedBytes(sPath, binData):
     return (("\ufeff" + sText) if bBom else sText).encode("utf-8")
 
 
+
+def loadKind():
+    """The kit's kind.py (1.45.0): beside this script, or in the kit's scripts
+    folder wherever the kit is (1.46.0): the HomerDev variable, then a folder
+    named HomerDev above or beside where this runs, at any depth, then one at
+    the top of any fixed drive. Without it the project is taken to be an app,
+    as every script assumed before there were four kinds."""
+    lsDirs = [os.path.dirname(os.path.abspath(__file__)), os.path.join(os.environ.get("HomerDev", ""), "scripts")]
+    for sStart in (os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
+        sDir = os.path.abspath(sStart)
+        while True:
+            lsDirs.append(os.path.join(sDir, "scripts"))
+            lsDirs.append(os.path.join(sDir, "HomerDev", "scripts"))
+            sUp = os.path.dirname(sDir)
+            if sUp == sDir: break
+            sDir = sUp
+    if os.name == "nt":
+        import ctypes
+        lsDirs += [sLetter + ":\\HomerDev\\scripts" for sLetter in "CDEFGHIJKLMNOPQRSTUVWXYZ"
+                   if ctypes.windll.kernel32.GetDriveTypeW(sLetter + ":\\") == 3]
+    for sDir in lsDirs:
+        if sDir and os.path.isfile(os.path.join(sDir, "kind.py")):
+            if sDir not in sys.path: sys.path.insert(0, sDir)
+            import kind
+            return kind.projectKind
+    return lambda sFolder: ("app", "kind.py was not found, so taken to be an app")
+
 def main():
     global oLog
     bCheck = "--check" in sys.argv
@@ -199,6 +226,16 @@ def main():
     logFact("arguments", " ".join(sys.argv[1:]))
     logFact("mode", "check" if bCheck else "fix")
     lsNamed = readNamed(sRoot)
+    sKind, sWhy = loadKind()(sRoot)
+    logFact("kind", sKind)
+    logLine("kind reason=%s" % logValue(sWhy))
+    if lsNamed is None and sKind == "page":
+        # A PAGE PROJECT NEEDS NO RepoFiles.txt (1.45.0): its own files are its
+        # documents, its scripts and the site files Jekyll reads. post strips
+        # the byte order mark from what it stages, so the Homer encoding is
+        # right here too.
+        lsNamed = ["*.md", "*.htm", "*.cmd", "*.ps1", "_includes/", "_layouts/", "assets/css/"]
+        logLine("page project: own files are %s" % ", ".join(lsNamed))
     if lsNamed is None:
         print("No RepoFiles.txt here, so nothing names the project's own files. Nothing was changed.")
         logLine("NO RepoFiles.txt")
