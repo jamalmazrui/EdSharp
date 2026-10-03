@@ -1,7 +1,7 @@
 ﻿//EdSharp 5.0
 // June 16, 2026
 //Copyright 2007 - 2026 by Jamal Mazrui
-// GNU Lesser General Public License (LGPL)
+// MIT License
 
 using Microsoft.VisualBasic.ApplicationServices;
 using System.Windows.Automation.Provider;
@@ -6577,7 +6577,7 @@ return;
 
 if (menuItem == menuHelpAbout) {
 sText = "EdSharp 5.0 beta\nJune 16, 2026\n\n";
-sText += "Copyright 2007 - 2026 by Jamal Mazrui\nGNU Lesser General Public License (LGPL)\n\n";
+sText += "Copyright 2007 - 2026 by Jamal Mazrui\nMIT License\n\n";
 sText += ".NET Framework " + RuntimeEnvironment.GetSystemVersion() + "\n\n";
 sText += Util.GetPortableExecutableKind();
 Dialog.Show("About", sText);

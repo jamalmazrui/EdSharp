@@ -1,6 +1,6 @@
 ﻿;Homer Script Library
 ;Copyright 2001 - 2008 by Jamal Mazrui
-;Modified GPL License
+;MIT License
 
 Include "hjglobal.jsh"
 Include "hjconst.jsh"

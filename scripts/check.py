@@ -492,9 +492,35 @@ def checkLicense(sKind):
     a collection's ReadMe names its license."""
     if sKind == "app":
         sPath = os.path.join(sRoot, "License.md")
-        if not os.path.isfile(sPath): return finding("license", "fail", "no License.md")
-        if "MIT License" not in readText(sPath): return finding("license", "fail", "License.md is not the MIT License")
-        return finding("license", "pass", "License.md holds the MIT License")
+        if not os.path.isfile(sPath): return finding("license", "fail", "no License.md; run the kit's scripts\\relicense here")
+        if "MIT License" not in readText(sPath): return finding("license", "fail", "License.md is not the MIT License; run the kit's scripts\\relicense here")
+        # NOTHING ELSE CLAIMS ANOTHER LICENSE (1.50.2): a source header, an About
+        # box or an installer page that still names the GPL or LGPL for the app
+        # itself. Lines about other people's software are not claims.
+        lsClaims = []
+        try:
+            # relicense.py lives in the kit; an app's check finds the kit
+            # wherever it is (kind.findKit), or uses one beside itself.
+            lsPlaces = [os.path.dirname(os.path.abspath(__file__))]
+            try:
+                import kind
+                sKitDir = kind.findKit([sRoot])
+                if sKitDir: lsPlaces.append(os.path.join(sKitDir, "scripts"))
+            except Exception:
+                pass
+            lsPlaces.append(os.path.join(os.environ.get("HomerDev", ""), "scripts"))
+            for sPlace in lsPlaces:
+                if os.path.isfile(os.path.join(sPlace, "relicense.py")):
+                    if sPlace not in sys.path: sys.path.insert(0, sPlace)
+                    break
+            import relicense
+            lsClaims = relicense.rewriteClaims(sRoot, appName(), bDryRun=True)
+        except Exception as oError:
+            logLine("license: claims not searched: %s" % oError)
+        for sClaim in lsClaims: logLine("LICENSE CLAIM: " + sClaim)
+        if lsClaims:
+            return finding("license", "fail", "%s another license (the log lists %s); run the kit's scripts\\relicense here" % ("1 line names" if len(lsClaims) == 1 else "%d lines name" % len(lsClaims), "it" if len(lsClaims) == 1 else "them"))
+        return finding("license", "pass", "License.md holds the MIT License, and nothing claims another")
     if sKind == "page":
         sMd = os.path.join(sRoot, appName() + ".md")
         if not os.path.isfile(sMd): return finding("license", "skip", "no %s.md to read" % appName())

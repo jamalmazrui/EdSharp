@@ -834,6 +834,28 @@ def main():
     sApp = os.path.basename(sRoot.rstrip("\\/"))
     lsOldBuild = [s for s in os.listdir(sRoot) if s.lower() in (("build" + sApp + ".cmd").lower(), ("build" + sApp + ".ps1").lower())]
     if sKind != "app": lsOldBuild = []  # the kit renames its own, in build.py (1.43.58); a page or collection has no build
+    # EVERY HOMER APP IS MIT (1.50.2): the kit's relicense runs before the
+    # push, as an old build name is renamed. With --if-needed it does nothing,
+    # and writes no log, when License.md and everything else already say MIT.
+    if sKind == "app" and not dArguments.repo_only:
+        sRelicense = ""
+        lsKitDirs = [os.environ.get("HomerDev", "")]
+        try:
+            import kind
+            lsKitDirs.append(kind.findKit([sRoot]))
+        except Exception:
+            pass
+        lsKitDirs.append(os.path.join(os.path.dirname(sRoot.rstrip("\\/")), "HomerDev"))
+        for sKit in lsKitDirs:
+            if sKit and os.path.isfile(os.path.join(sKit, "scripts", "relicense.py")):
+                sRelicense = os.path.join(sKit, "scripts", "relicense.py")
+                break
+        logLine("relicense: %s" % (sRelicense or "not found"))
+        if sRelicense:
+            oResult = subprocess.run([sys.executable, sRelicense, sRoot, "--if-needed"], capture_output=True, text=True)
+            for sLine in (oResult.stdout + oResult.stderr).splitlines(): logLine("relicense: " + sLine)
+            logLine("relicense exit %d" % oResult.returncode)
+            if oResult.stdout.strip(): sayLine("Relicensed under the MIT License, as every Homer app is; its log says what changed.")
     if lsOldBuild and not dArguments.repo_only:
         # The kit wherever it is (1.46.0): kind.py's findKit, which assumes
         # only Windows and the folder name, never a drive or a depth.
