@@ -453,15 +453,17 @@ def main():
                     if sKey != "_name":
                         dFeed[sKey] = dSection[sKey][0]
         sStem = os.path.splitext(os.path.basename(sSource))[0]
-        # The audio lives in help\tutorials, one .mp3 per script (25 Sep 2026).
-        sAudio = os.path.join(c_sHere, "tutorials", sStem + ".mp3")
+        # The audio lives in help\tutorials, one .mp3 per script (25 Sep 2026),
+        # named like a chapter: the script's stem without its Tutorial_ prefix.
+        sAudioStem = sStem[len("Tutorial_"):] if sStem.startswith("Tutorial_") else sStem
+        sAudio = os.path.join(c_sHere, "tutorials", sAudioStem + ".mp3")
         if os.path.isfile(sAudio):
             lsEpisodes.append({
                 "stem": sStem,
                 "number": sNumber,
                 "title": firstOf(dAbout, "Title") or sStem,
                 "intro": firstOf(dAbout, "Setup") or firstOf(dAbout, "Intro"),
-                "audio": "tutorials/" + sStem + ".mp3",
+                "audio": "tutorials/" + sAudioStem + ".mp3",
                 "bytes": os.path.getsize(sAudio),
                 "seconds": secondsOf(sAudio)})
         else:

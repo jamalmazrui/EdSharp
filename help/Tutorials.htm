@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
@@ -7,6 +7,9 @@
   <title>Tutorials</title>
   <style>
     html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
       color: #1a1a1a;
       background-color: #fdfdfd;
     }
@@ -25,16 +28,13 @@
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 12px;
+        padding: 1em;
       }
       h1 {
         font-size: 1.8em;
       }
     }
     @media print {
-      html {
-        background-color: white;
-      }
       body {
         background-color: transparent;
         color: black;
@@ -84,10 +84,9 @@
       color: #606060;
     }
     code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
       font-size: 85%;
       margin: 0;
-      hyphens: manual;
     }
     pre {
       margin: 1em 0;
@@ -152,17 +151,17 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
+    ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
 <h1 id="edsharp-tutorials">EdSharp Tutorials</h1>
@@ -986,5 +985,116 @@ convert it to HTML. For the complete set of commands and features,
 including programming, math, word processing, and scripting, press F1 in
 EdSharp to open the full User Guide. EdSharp's author welcomes feedback
 and contributions toward its continued improvement.</p>
+<!-- walkthrough: written by makeTutorials.py, do not edit between the markers -->
+
+<h2 id="00---overview-and-table-of-contents">00 - Overview and Table of
+Contents</h2>
+<p>A simulated walk through EdSharp: a person working, and a screen
+reader answering.</p>
+<p><strong>Before you start:</strong> Nothing to prepare. This one is a
+few minutes on what EdSharp is and where the rest of the walks go.</p>
+<h3 id="step-1">Step 1</h3>
+<p>EdSharp is a text editor built for people who listen to their screen
+rather than look at it. It opens plain text, Markdown, HTML and program
+source, and it converts between about forty formats without leaving the
+keyboard.</p>
+<h3 id="step-2">Step 2</h3>
+<p>Everything here is a key. There are no toolbars to hunt for and no
+panes to get lost in. Where a key has a letter in it, the letter is the
+first letter of a word in the command's name, so the key is something
+you work out rather than something you memorise.</p>
+<h3 id="step-3-altcontrole">Step 3: Alt+Control+E</h3>
+<p>Let us start the program and hear what it says. The editor opens with
+one empty document.</p>
+<p>Screen reader:</p>
+<ul>
+<li>EdSharp</li>
+<li>Untitled, edit, multiline, blank</li>
+</ul>
+<h3 id="step-4-f1">Step 4: F1</h3>
+<p>Press F1 for Help. F1 is Help everywhere in Windows, and in EdSharp
+it opens the user guide.</p>
+<p>Screen reader:</p>
+<ul>
+<li>EdSharp User Guide, document</li>
+</ul>
+<h3 id="step-5-insertt">Step 5: Insert+T</h3>
+<p>Come back to the editor with Alt plus Tab, then let us hear where we
+are. Insert plus T, Tango, says the window title.</p>
+<p>Screen reader:</p>
+<ul>
+<li>EdSharp</li>
+</ul>
+<h3 id="step-6-insertuparrow">Step 6: Insert+UpArrow</h3>
+<p>If you miss what was said, Insert plus Up Arrow says the current line
+again. That key is worth learning first, because it turns every other
+key in these walks into something you can replay.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Untitled, edit, multiline, blank</li>
+</ul>
+<h3 id="step-7-altf10">Step 7: Alt+F10</h3>
+<p>Now the command space. Alt plus F10 opens the Alternate Menu, which
+lists every command EdSharp has, with its key beside it.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Alternate Menu</li>
+<li>Command, list box, 1 of 222</li>
+</ul>
+<h3 id="step-8-c-o-n-v-e-r-t">Step 8: c o n v e r t</h3>
+<p>Type the word convert and listen.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Convert File Format, Control plus Shift plus V, 1 of 9</li>
+</ul>
+<h3 id="step-9-escape">Step 9: Escape</h3>
+<p>Escape closes the menu without running anything.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Untitled, edit, multiline, blank</li>
+</ul>
+<h3 id="step-10-f11">Step 10: F11</h3>
+<p>One more key before the tour of the other walks. F11 is Elevate
+Version. Elevate sounds like eleven, which is how the key was
+chosen.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Elevate Version, dialog</li>
+<li>EdSharp 5.0 is the newest version. Yes button.</li>
+</ul>
+<h3 id="step-11-escape">Step 11: Escape</h3>
+<p>Nothing was changed.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Untitled, edit, multiline, blank</li>
+</ul>
+<h3 id="step-12">Step 12</h3>
+<p>That is the shape of it. The other walks each take one thing and go
+through it slowly.</p>
+<p>The walks below are the planned set. Each becomes its own Tutorial_NN
+file.</p>
+<h3 id="step-13">Step 13</h3>
+<p>Walk one is opening, editing and saving, including the encoding of a
+file and what to do when it opens as nonsense.</p>
+<h3 id="step-14">Step 14</h3>
+<p>Walk two is moving around a long document by headings, by blocks that
+mean something in the language you are in, and by bookmarks.</p>
+<h3 id="step-15">Step 15</h3>
+<p>Walk three is converting between formats: Markdown to a web page, a
+web page to text, a PDF to something you can read.</p>
+<h3 id="step-16">Step 16</h3>
+<p>Walk four is writing code: checking the syntax without running it,
+stepping definition to definition, and the snippets that fill in the
+parts that change.</p>
+<h3 id="step-17">Step 17</h3>
+<p>Walk five is the local AI: chatting about the document in front of
+you, and translating it, with no web service involved.</p>
+<h3 id="step-18">Step 18</h3>
+<p>Pick the one that matches what you want to do today. Each is about
+three minutes, and each ends with something to try.</p>
+<p><strong>Something to try:</strong> Open a file you already have and
+press F1. Then come back and pick the walk that matches what you want to
+do today.</p>
+<!-- walkthrough ends -->
 </body>
 </html>

@@ -191,6 +191,11 @@ def checkOne(sScript, bFirst):
         for sHear in lsHear: checkHear(sScript, iAt, sHear)
     if bFirst and not re.search(r"Insert (plus )?Up Arrow", sWhole):
         problem(sScript, 0, "the first script does not teach the repeat key, Insert plus Up Arrow")
+    # The orientation key goes with the repeat key: the trainers teach both in
+    # their first module, and a listener who can repeat a line but cannot ask
+    # "where am I" is half equipped.
+    if bFirst and not re.search(r"Insert (plus )?Tab", sWhole):
+        problem(sScript, 0, "the first script does not teach the orientation key, Insert plus Tab")
     logLine("%s: %d steps, %d Hear lines" % (os.path.basename(sScript), len(lsSteps), sum(len([h for h in d.get("Hear", []) if h]) for d in lsSteps)))
     return True
 
@@ -258,6 +263,28 @@ def main():
         return 0
     for iAt, sScript in enumerate(lsScripts):
         checkOne(sScript, bFirst=(iAt == 0 and len(sys.argv) == 1))
+    # THE ELEVEN-WALK PATTERN (5 October 2026): the first three and the last
+    # two walks have fixed names, and 04 to 08 are the program's tasks. A set
+    # that is not the whole set is reported once, by what it lacks.
+    if len(sys.argv) == 1 and sKind != "kit":
+        c_dFixed = {"00": "Overview_and_Table_of_Contents", "01": "Install_and_Launch", "02": "User_Interface_Concepts",
+                    "03": "Key_Patterns", "09": "Glossary", "10": "Conclusion", "11": "More_Information"}
+        dHave = {}
+        for sScript in lsScripts:
+            m = re.match(r"Tutorial_(\d\d)_(.+)\.inix$", os.path.basename(sScript))
+            if m: dHave[m.group(1)] = m.group(2)
+        for sNum, sName in sorted(c_dFixed.items()):
+            if dHave.get(sNum) != sName:
+                problem(os.path.basename(lsScripts[0]), 0, "the pattern wants Tutorial_%s_%s.inix%s" % (sNum, sName, (", not " + dHave[sNum]) if sNum in dHave else ""))
+        # Tasks are 04 to 08: at least one, at most five, filled from 04 up with
+        # no gap, so the numbers are the order and the order is the numbers.
+        lsTasks = [s for s in sorted(dHave) if s in ("04", "05", "06", "07", "08")]
+        if not lsTasks: problem(os.path.basename(lsScripts[0]), 0, "the pattern wants at least one task walk, numbered from 04")
+        for iAt, sNum in enumerate(lsTasks):
+            if int(sNum) != 4 + iAt: problem(os.path.basename(lsScripts[0]), 0, "the task walks must run from 04 without a gap; found %s" % ", ".join(lsTasks)); break
+        for sNum in sorted(dHave):
+            if sNum not in c_dFixed and sNum not in ("04", "05", "06", "07", "08"):
+                problem(os.path.basename(lsScripts[0]), 0, "Tutorial_%s is outside the pattern of 00 to 11" % sNum)
     for sText in lsProblems: say("  " + sText)
     say("%d script%s checked, %d problem%s." % (len(lsScripts), "" if len(lsScripts) == 1 else "s",
         len(lsProblems), "" if len(lsProblems) == 1 else "s"))

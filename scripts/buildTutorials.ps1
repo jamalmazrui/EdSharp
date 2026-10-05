@@ -812,9 +812,30 @@ function applyGlobal($dGlobal) {
   }
 }
 
+# THE AUDIO IS NAMED LIKE A CHAPTER, NOT LIKE A SCRIPT (5 October 2026):
+# Tutorial_04_Open_and_Move.inix speaks to 04_Open_and_Move.mp3. The number
+# and the title are what a listener reads in a folder or a player; the word
+# Tutorial is the script's, and the folder is already called tutorials.
+function audioName([string] $sScript) {
+  $sStem = [System.IO.Path]::GetFileNameWithoutExtension($sScript)
+  if ($sStem -match '^Tutorial_(.+)$') { $sStem = $matches[1] }
+  return ($sStem + ".mp3")
+}
+
 function buildOne([string] $sScript) {
   $sStem = [System.IO.Path]::GetFileNameWithoutExtension($sScript)
-  $sOut = Join-Path $sAudioDir ($sStem + ".mp3")
+  $sOut = Join-Path $sAudioDir (audioName $sScript)
+  # SPEAK ONLY WHAT IS MISSING OR STALE. A walk whose mp3 is newer than the
+  # walk itself is already spoken; re-speaking nineteen walks because four new
+  # ones arrived would cost twenty minutes for nothing (5 October 2026). -live
+  # performs regardless, since nothing is written.
+  if (-not $bLive -and (Test-Path -LiteralPath $sOut)) {
+    if ((Get-Item -LiteralPath $sOut).LastWriteTimeUtc -gt (Get-Item -LiteralPath $sScript).LastWriteTimeUtc) {
+      note ("  " + $sStem + " is already spoken and current; skipped")
+      say ("  " + $sStem + ": already spoken")
+      return
+    }
+  }
   $sWork = Join-Path $env:TEMP ("buildTutorial_" + [Guid]::NewGuid().ToString("N"))
   $script:iPiece = 0
   $script:lsPieces = New-Object System.Collections.Generic.List[string]
@@ -1069,7 +1090,7 @@ function buildOne([string] $sScript) {
   $lsSteps = @($lsSections | Where-Object { $_["_name"] -eq "step" })
   if ($lsSteps.Count -eq 0) { say ($sStem + " holds 0 steps."); return $false }
   note ($sStem + ": steps " + $lsSteps.Count)
-  say ("Creating " + $sStem + ".mp3, " + $lsSteps.Count + " steps. A few minutes.")
+  say ("Creating " + (audioName $sScript) + ", " + $lsSteps.Count + " steps. A few minutes.")
   note ("loudness: every piece to loudnorm I=-16 TP=-1.5 LRA=11; reader gain " + $dReaderGain.ToString([System.Globalization.CultureInfo]::InvariantCulture))
 
   # A BEAT BEFORE ANYTHING IS SAID.
@@ -1176,7 +1197,7 @@ if (-not $bSapi -and -not $bLive -and -not $bDocsOnly) {
 $iDone = 0
 $iKept = 0
 foreach ($sScript in $lsScripts) {
-  $sHave = Join-Path $sAudioDir ([System.IO.Path]::GetFileNameWithoutExtension($sScript) + ".mp3")
+  $sHave = Join-Path $sAudioDir (audioName $sScript)
   if (-not $bLive -and $sOnly -eq "" -and (Test-Path -LiteralPath $sHave)) {
     note ("kept " + $sHave + ", already spoken")
     $iKept = $iKept + 1
@@ -1200,14 +1221,14 @@ function writePlaylist() {
   $iListed = 0
   foreach ($sScript in $lsScripts) {
     $sStem = [System.IO.Path]::GetFileNameWithoutExtension($sScript)
-    $sMp3 = Join-Path $sAudioDir ($sStem + ".mp3")
+    $sMp3 = Join-Path $sAudioDir (audioName $sScript)
     if (-not (Test-Path -LiteralPath $sMp3)) { continue }
     $sTitle = $sStem
     foreach ($sLine in (Get-Content -LiteralPath $sScript)) {
       if ($sLine -match "^\s*Title\s*=\s*(.+?)\s*$") { $sTitle = $matches[1]; break }
     }
     $lsM3u += ("#EXTINF:-1," + $sTitle)
-    $lsM3u += ($sStem + ".mp3")
+    $lsM3u += (audioName $sScript)
     $iListed = $iListed + 1
   }
   if ($iListed -eq 0) { say "No audio to list."; return $false }

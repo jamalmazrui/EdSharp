@@ -727,3 +727,128 @@ Email:
 ### Conclusion
 
 This tutorial has covered the commands you will use most often in day-to-day work with text, and it has shown how the section feature lets you build and navigate a structured document such as an address book and convert it to HTML. For the complete set of commands and features, including programming, math, word processing, and scripting, press F1 in EdSharp to open the full User Guide. EdSharp's author welcomes feedback and contributions toward its continued improvement.
+
+<!-- walkthrough: written by makeTutorials.py, do not edit between the markers -->
+
+## 00 - Overview and Table of Contents
+
+A simulated walk through EdSharp: a person working, and a screen reader answering.
+
+**Before you start:** Nothing to prepare. This one is a few minutes on what EdSharp is and where the rest of the walks go.
+
+### Step 1
+
+EdSharp is a text editor built for people who listen to their screen rather than look at it. It opens plain text, Markdown, HTML and program source, and it converts between about forty formats without leaving the keyboard.
+
+### Step 2
+
+Everything here is a key. There are no toolbars to hunt for and no panes to get lost in. Where a key has a letter in it, the letter is the first letter of a word in the command's name, so the key is something you work out rather than something you memorise.
+
+### Step 3: Alt+Control+E
+
+Let us start the program and hear what it says. The editor opens with one empty document.
+
+Screen reader:
+
+- EdSharp
+- Untitled, edit, multiline, blank
+
+### Step 4: F1
+
+Press F1 for Help. F1 is Help everywhere in Windows, and in EdSharp it opens the user guide.
+
+Screen reader:
+
+- EdSharp User Guide, document
+
+### Step 5: Insert+T
+
+Come back to the editor with Alt plus Tab, then let us hear where we are. Insert plus T, Tango, says the window title.
+
+Screen reader:
+
+- EdSharp
+
+### Step 6: Insert+UpArrow
+
+If you miss what was said, Insert plus Up Arrow says the current line again. That key is worth learning first, because it turns every other key in these walks into something you can replay.
+
+Screen reader:
+
+- Untitled, edit, multiline, blank
+
+### Step 7: Alt+F10
+
+Now the command space. Alt plus F10 opens the Alternate Menu, which lists every command EdSharp has, with its key beside it.
+
+Screen reader:
+
+- Alternate Menu
+- Command, list box, 1 of 222
+
+### Step 8: c o n v e r t
+
+Type the word convert and listen.
+
+Screen reader:
+
+- Convert File Format, Control plus Shift plus V, 1 of 9
+
+### Step 9: Escape
+
+Escape closes the menu without running anything.
+
+Screen reader:
+
+- Untitled, edit, multiline, blank
+
+### Step 10: F11
+
+One more key before the tour of the other walks. F11 is Elevate Version. Elevate sounds like eleven, which is how the key was chosen.
+
+Screen reader:
+
+- Elevate Version, dialog
+- EdSharp 5.0 is the newest version. Yes button.
+
+### Step 11: Escape
+
+Nothing was changed.
+
+Screen reader:
+
+- Untitled, edit, multiline, blank
+
+### Step 12
+
+That is the shape of it. The other walks each take one thing and go through it slowly.
+
+The walks below are the planned set. Each becomes its own Tutorial_NN file.
+
+### Step 13
+
+Walk one is opening, editing and saving, including the encoding of a file and what to do when it opens as nonsense.
+
+### Step 14
+
+Walk two is moving around a long document by headings, by blocks that mean something in the language you are in, and by bookmarks.
+
+### Step 15
+
+Walk three is converting between formats: Markdown to a web page, a web page to text, a PDF to something you can read.
+
+### Step 16
+
+Walk four is writing code: checking the syntax without running it, stepping definition to definition, and the snippets that fill in the parts that change.
+
+### Step 17
+
+Walk five is the local AI: chatting about the document in front of you, and translating it, with no web service involved.
+
+### Step 18
+
+Pick the one that matches what you want to do today. Each is about three minutes, and each ends with something to try.
+
+**Something to try:** Open a file you already have and press F1. Then come back and pick the walk that matches what you want to do today.
+
+<!-- walkthrough ends -->
