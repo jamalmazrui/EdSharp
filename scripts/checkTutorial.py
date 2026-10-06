@@ -263,6 +263,13 @@ def main():
         return 0
     for iAt, sScript in enumerate(lsScripts):
         checkOne(sScript, bFirst=(iAt == 0 and len(sys.argv) == 1))
+    # FIVE MINUTES IS THE CEILING (5 October 2026): at the voices' pace about
+    # twenty-five steps. Twenty-eight is the line here, so a walk a little over
+    # passes and one plainly over is sent back to be cut or split.
+    for sScript in lsScripts:
+        iSteps = readText(sScript).count("[step]") if "readText" in globals() else open(sScript, "rb").read().decode("utf-8-sig").count("[step]")
+        if iSteps > 28:
+            problem(os.path.basename(sScript), 0, "%d steps is more than five minutes; cut what an earlier walk taught, or split it" % iSteps)
     # THE ELEVEN-WALK PATTERN (5 October 2026): the first three and the last
     # two walks have fixed names, and 04 to 08 are the program's tasks. A set
     # that is not the whole set is reported once, by what it lacks.
