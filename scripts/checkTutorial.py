@@ -102,6 +102,12 @@ def say(sText):
     return True
 
 
+lsNotices = []
+
+def notice(sText):
+    lsNotices.append(sText)
+    logLine("NOTICE: " + sText)
+
 def problem(sScript, iStep, sText):
     sWhere = os.path.basename(sScript) + (", step %d" % iStep if iStep else "")
     lsProblems.append("%s: %s" % (sWhere, sText))
@@ -195,7 +201,9 @@ def checkOne(sScript, bFirst):
     # their first module, and a listener who can repeat a line but cannot ask
     # "where am I" is half equipped.
     if bFirst and not re.search(r"Insert (plus )?Tab", sWhole):
-        problem(sScript, 0, "the first script does not teach the orientation key, Insert plus Tab")
+        # A notice, as the pattern is: a set written before the orientation key
+        # joined the first walk (5 October 2026) is still spoken, and told.
+        notice(os.path.basename(sScript) + ": the first walk should teach the orientation key, Insert plus Tab")
     logLine("%s: %d steps, %d Hear lines" % (os.path.basename(sScript), len(lsSteps), sum(len([h for h in d.get("Hear", []) if h]) for d in lsSteps)))
     return True
 
@@ -270,9 +278,11 @@ def main():
         iSteps = readText(sScript).count("[step]") if "readText" in globals() else open(sScript, "rb").read().decode("utf-8-sig").count("[step]")
         if iSteps > 28:
             problem(os.path.basename(sScript), 0, "%d steps is more than five minutes; cut what an earlier walk taught, or split it" % iSteps)
-    # THE ELEVEN-WALK PATTERN (5 October 2026): the first three and the last
-    # two walks have fixed names, and 04 to 08 are the program's tasks. A set
-    # that is not the whole set is reported once, by what it lacks.
+    # THE TWELVE-WALK PATTERN (5 October 2026) is reported as NOTICES, not
+    # problems: a program whose set is not yet the pattern still has its clean
+    # walks spoken and still releases, and hears on every build what the set
+    # lacks. A problem is something wrong in a walk; an incomplete set is work
+    # not yet done, and the tool should not silence a program for that.
     if len(sys.argv) == 1 and sKind != "kit":
         c_dFixed = {"00": "Overview_and_Table_of_Contents", "01": "Install_and_Launch", "02": "User_Interface_Concepts",
                     "03": "Key_Patterns", "09": "Glossary", "10": "Conclusion", "11": "More_Information"}
@@ -282,17 +292,20 @@ def main():
             if m: dHave[m.group(1)] = m.group(2)
         for sNum, sName in sorted(c_dFixed.items()):
             if dHave.get(sNum) != sName:
-                problem(os.path.basename(lsScripts[0]), 0, "the pattern wants Tutorial_%s_%s.inix%s" % (sNum, sName, (", not " + dHave[sNum]) if sNum in dHave else ""))
+                notice("the pattern wants Tutorial_%s_%s.inix%s" % (sNum, sName, (", not " + dHave[sNum]) if sNum in dHave else ""))
         # Tasks are 04 to 08: at least one, at most five, filled from 04 up with
         # no gap, so the numbers are the order and the order is the numbers.
         lsTasks = [s for s in sorted(dHave) if s in ("04", "05", "06", "07", "08")]
-        if not lsTasks: problem(os.path.basename(lsScripts[0]), 0, "the pattern wants at least one task walk, numbered from 04")
+        if not lsTasks: notice("the pattern wants at least one task walk, numbered from 04")
         for iAt, sNum in enumerate(lsTasks):
-            if int(sNum) != 4 + iAt: problem(os.path.basename(lsScripts[0]), 0, "the task walks must run from 04 without a gap; found %s" % ", ".join(lsTasks)); break
+            if int(sNum) != 4 + iAt: notice("the task walks must run from 04 without a gap; found %s" % ", ".join(lsTasks)); break
         for sNum in sorted(dHave):
             if sNum not in c_dFixed and sNum not in ("04", "05", "06", "07", "08"):
-                problem(os.path.basename(lsScripts[0]), 0, "Tutorial_%s is outside the pattern of 00 to 11" % sNum)
+                notice("Tutorial_%s is outside the pattern of 00 to 11" % sNum)
     for sText in lsProblems: say("  " + sText)
+    if lsNotices:
+        say("  The set is not yet the Homer pattern of twelve walks:")
+        for sText in lsNotices: say("    " + sText)
     say("%d script%s checked, %d problem%s." % (len(lsScripts), "" if len(lsScripts) == 1 else "s",
         len(lsProblems), "" if len(lsProblems) == 1 else "s"))
     logLine("checkTutorial end")
