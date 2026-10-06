@@ -52,6 +52,42 @@ Hear=
 
 [step]
 
+Say=Which model answers is a setting: Alt plus Shift plus C, Configuration Options, names the model, and any model Ollama has pulled can be chosen. A small model answers in seconds; a large one answers better and slower.
+Key=
+Hear=
+
+[step]
+
+Say=What makes a good question here is what makes one anywhere: say what you want back -- three bullet points, a one-paragraph summary, the dates mentioned -- and the answer takes that shape. A vague question gets a vague answer, locally as much as online.
+Key=
+Hear=
+
+[step]
+
+Say=The answer window is a document. Alt plus C, Copy Append, adds a passage to the clipboard without losing what is there; Control plus S saves the whole answer beside the document it is about.
+Key=
+Hear=
+
+[step]
+
+Say=A planned misstep. Shift plus F12 with Ollama not running, or no model pulled, says so plainly and names what to do; nothing hangs. Ollama starts with Windows once installed, so this is rare after the first day.
+Key=
+Hear=
+
+[step]
+
+Say=Summarizing is a question: select nothing, Shift plus F12, and ask for a summary in five sentences. Translation is a question too, but Alt plus Shift plus F7 asks it with the languages as a dialog, so the two languages are remembered next time.
+Key=
+Hear=
+
+[step]
+
+Say=Nothing in this walk needs the Internet. The model, the question and the document stay on the machine, which is what makes it fit for a letter you would not paste into a web page.
+Key=
+Hear=
+
+[step]
+
 Say=What this walk taught. I say the key; the reader says what it does.
 Key=
 Hear=

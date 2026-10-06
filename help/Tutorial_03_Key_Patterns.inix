@@ -56,6 +56,67 @@ Hear=Untitled, edit, multiline, blank
 
 [step]
 
+Say=The rules let a key be guessed. I say a command; the reader says the key the rules give it.
+Key=
+Hear=
+
+[step]
+
+Say=Save As.
+Key=
+Hear=Control plus Shift plus S
+
+[step]
+
+Say=Replace.
+Key=
+Hear=Control plus R
+
+[step]
+
+Say=Go to a line by number -- Jump to Line.
+Key=
+Hear=Control plus J
+
+[step]
+
+Say=Say the path of this file.
+Key=
+Hear=Alt plus P
+
+[step]
+
+Say=Say the time.
+Key=
+Hear=Alt plus Semicolon
+
+[step]
+
+Say=Insert the time.
+Key=
+Hear=Alt plus Shift plus Semicolon
+Say=The same key with Shift: saying becomes doing.
+
+[step]
+
+Say=Copy the whole document.
+Key=
+Hear=Control plus F8
+
+[step]
+
+Say=Keys that are the reader's are not EdSharp's: anything with Insert in it belongs to the screen reader, and EdSharp never uses the Insert key, so the two never collide.
+Key=
+Hear=
+
+[step]
+
+Say=One more family. Alt plus a letter says; Alt plus Shift plus the same letter often acts on the same thing: Alt plus Y says the yield, Alt plus Shift plus Y renders the text in another encoding; Alt plus V invokes a snippet, Alt plus Shift plus V views one.
+Key=
+Hear=
+
+[step]
+
 Say=What this walk taught. I say the key; the reader says what it does.
 Key=
 Hear=

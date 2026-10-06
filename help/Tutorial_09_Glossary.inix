@@ -6,6 +6,12 @@ Homework=Pick three terms you did not know and find each one in EdSharp.
 
 [step]
 
+Say=address.
+Key=
+Hear=Where the cursor is: line, column and percent of the document. Alt plus A.
+
+[step]
+
 Say=Alternate Menu.
 Key=
 Hear=Every command in one list you type into, with its key beside it. Alt plus F10.
@@ -36,9 +42,33 @@ Hear=The program EdSharp hands your file to with Control plus F5, chosen once by
 
 [step]
 
+Say=configuration options.
+Key=
+Hear=The one dialog of settings -- spell checker, font, speech, the AI model. Alt plus Shift plus C.
+
+[step]
+
+Say=convert file format.
+Key=
+Hear=Converting a file on disk without opening it, one or many at a time. Control plus Shift plus V.
+
+[step]
+
+Say=current windows.
+Key=
+Hear=The list of open documents, to pick one. F4; Shift plus F4 says their titles.
+
+[step]
+
 Say=document.
 Key=
 Hear=One file open in EdSharp, in a window of its own; Control plus Tab moves to the next, F4 lists them.
+
+[step]
+
+Say=Elevate Version.
+Key=
+Hear=Checking for a newer EdSharp and installing it. F11, because elevate sounds like eleven.
 
 [step]
 
@@ -54,15 +84,69 @@ Hear=Writing the document out as another format -- a web page, a Word document, 
 
 [step]
 
+Say=file find.
+Key=
+Hear=Searching a folder of files for a string and opening the one you pick. Alt plus Shift plus F.
+
+[step]
+
+Say=hotkey summary.
+Key=
+Hear=Every command with its key and description, in a new window. Alt plus Shift plus H.
+
+[step]
+
 Say=Key Describer.
 Key=
 Hear=A mode in which every key says what it does instead of doing it. Control plus F1 turns it on and off.
 
 [step]
 
+Say=Ollama.
+Key=
+Hear=The program that runs AI models on your own computer; EdSharp's F12, Shift plus F12 and Alt plus Shift plus F7 talk to it.
+
+[step]
+
 Say=open other format.
 Key=
 Hear=Opening a Word document, PDF, slide deck or spreadsheet converted to text. Control plus Shift plus O.
+
+[step]
+
+Say=preview.
+Key=
+Hear=Markdown shown as a formatted page in a window of EdSharp's own. Control plus F9.
+
+[step]
+
+Say=regular expression.
+Key=
+Hear=A pattern that matches many strings -- every number, every line starting with a dash. Control plus F3 finds with one; Control plus Shift plus R replaces.
+
+[step]
+
+Say=result window.
+Key=
+Hear=A document EdSharp opens with the output of a compile, an AI answer or a summary; read-only until you say otherwise.
+
+[step]
+
+Say=run.
+Key=
+Hear=Executing the current file by its extension. F5; Shift plus F5 runs the address at the cursor.
+
+[step]
+
+Say=say status.
+Key=
+Hear=Whether the document has changed since it was saved; pressed twice, its encoding. Alt plus Z.
+
+[step]
+
+Say=session log.
+Key=
+Hear=What EdSharp did this session, kept under your local application data. Control plus F12 copies its path for a report.
 
 [step]
 
@@ -78,6 +162,6 @@ Hear=The size of the text: characters, words and lines, for all of it or the sel
 
 [step]
 
-Say=Twelve terms. The guide, F1, has each of them in context.
+Say=Twenty-six terms. The guide, F1, has each of them in context.
 Key=
 Hear=

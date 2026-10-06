@@ -62,6 +62,36 @@ Hear=letter dot t x t, EdSharp
 
 [step]
 
+Say=A planned misstep. I meant to type in the letter and typed over a word I had selected. Control plus Z, Undo, as everywhere in Windows.
+Key=Control+Z
+Hear=Thank you for your letter of the fourth.
+
+[step]
+
+Say=A new file starts with Control plus N, New; the first Save asks for a name, and the extension you give it decides what EdSharp will offer -- dot t x t for plain text, dot m d for Markdown.
+Key=
+Hear=
+
+[step]
+
+Say=Control plus Shift plus S, Save As, saves under a new name, and the window takes it; Alt plus Shift plus S, Save Copy, writes a copy and leaves you in the original.
+Key=
+Hear=
+
+[step]
+
+Say=Control plus F4 closes the document; if it has changed, EdSharp asks once. Control plus Tab moves to the next open document; F4 lists them all, so a dozen files are a list away.
+Key=F4
+Hear=Current Windows dialog, list box, letter dot t x t, 1 of 2
+
+[step]
+
+Say=Escape. Alt plus P, Say Path, says where this file is on disk, for when the title is not enough.
+Key=Alt+P
+Hear=C colon, Users, Jamal, Documents, letter dot t x t
+
+[step]
+
 Say=What this walk taught. I say the key; the reader says what it does.
 Key=
 Hear=

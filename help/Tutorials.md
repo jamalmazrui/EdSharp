@@ -899,9 +899,46 @@ Screen reader:
 
 ### Step 6
 
-What this walk taught. I say the key; the reader says what it does.
+What each box is for. Python runs the conversion tools and the spell checker's helpers; the document tools -- pandoc and its companions -- turn Word, PDF and web pages into text and back. Together they are what makes Control plus Shift plus O and Alt plus Shift plus E rich rather than basic.
 
 ### Step 7
+
+Git is for people who keep code in repositories; Node for web developers who run JavaScript tools; Ollama for the AI features, with a model that is a few gigabytes. Each box says its size, so the decision is yours and informed.
+
+### Step 8
+
+A box ticked by mistake is no disaster: the same installer, run again later, offers the same page, and an item already present says so and does nothing. Nothing is installed twice.
+
+### Step 9
+
+The screen reader scripts are offered too. Install when they are not there, Update when a newer set is available, Reinstall when they are current -- the word is the state, so you need not ask.
+
+### Step 10
+
+Where things went. EdSharp itself is in Program Files; your settings, snippets and logs are under your local application data, in a folder named EdSharp. An update never touches them.
+
+### Step 11: F11
+
+F11, Elevate Version, is the installer's other half from now on: it asks the web for a newer EdSharp and offers to fetch and run it. Elevate sounds like eleven.
+
+Screen reader:
+
+- Elevate Version dialog
+- EdSharp 5.0 is the newest version. Yes button
+
+### Step 12: Escape
+
+Escape. Alt plus F1 says the version at any time; Control plus F12 copies the session log's path, ready to attach to a report of a problem.
+
+Screen reader:
+
+- Untitled, edit, multiline, blank
+
+### Step 13
+
+What this walk taught. I say the key; the reader says what it does.
+
+### Step 14
 
 Alt plus Control plus E.
 
@@ -947,9 +984,33 @@ The Help menu, F10 then H, Hotel, holds the same, and Play Tutorials, which play
 
 ### Step 8
 
-What this walk taught. I say the key; the reader says what it does.
+Three kinds of window besides the document. A result window -- the output of a compile, the answer from the AI, a hotkey summary -- is a document like any other, read-only until you decide otherwise. A preview window shows Markdown formatted. A dialog asks and closes.
 
 ### Step 9
+
+Text boxes that ask for something -- a search, a file, a line number -- remember your last answers: Up and Down Arrows in the box bring them back, and the newest is offered first.
+
+### Step 10
+
+Selection is spoken as you make it: Shift with the arrows selects, and Shift plus Space, Say Selected, reads what is selected; twice, it spells. Control plus Space selects the chunk at the cursor -- a word with no spaces in it -- and again selects the next.
+
+### Step 11
+
+EdSharp speaks its own confirmations so you need not ask: Converting when a conversion starts, the count of lines after a sort or a wrap, Bookmark at percent 40 when a bookmark is set. If a message is missed, Insert plus Page Down reads the status line, and Alt plus Z says whether the document is modified.
+
+### Step 12
+
+Formats are a matter of the file's extension. A dot m d file is Markdown and gets the preview; a dot p y file is Python and gets its compiler; a dot h t m file is a web page and opens in the browser with F5. Save As with a new extension changes what EdSharp offers.
+
+### Step 13
+
+Settings live in one dialog, Alt plus Shift plus C, Configuration Options: the spell checker, the font, what is said and what is not. Each is a labelled control, so a setting is found by its name.
+
+### Step 14
+
+What this walk taught. I say the key; the reader says what it does.
+
+### Step 15
 
 F1.
 
@@ -957,7 +1018,7 @@ Screen reader:
 
 - Documentation
 
-### Step 10
+### Step 16
 
 Alt plus A.
 
@@ -965,7 +1026,7 @@ Screen reader:
 
 - Say Address
 
-### Step 11
+### Step 17
 
 Alt plus Z.
 
@@ -1028,9 +1089,77 @@ Screen reader:
 
 ### Step 9
 
-What this walk taught. I say the key; the reader says what it does.
+The rules let a key be guessed. I say a command; the reader says the key the rules give it.
 
 ### Step 10
+
+Save As.
+
+Screen reader:
+
+- Control plus Shift plus S
+
+### Step 11
+
+Replace.
+
+Screen reader:
+
+- Control plus R
+
+### Step 12
+
+Go to a line by number -- Jump to Line.
+
+Screen reader:
+
+- Control plus J
+
+### Step 13
+
+Say the path of this file.
+
+Screen reader:
+
+- Alt plus P
+
+### Step 14
+
+Say the time.
+
+Screen reader:
+
+- Alt plus Semicolon
+
+### Step 15
+
+Insert the time.
+
+Screen reader:
+
+- Alt plus Shift plus Semicolon
+
+### Step 16
+
+Copy the whole document.
+
+Screen reader:
+
+- Control plus F8
+
+### Step 17
+
+Keys that are the reader's are not EdSharp's: anything with Insert in it belongs to the screen reader, and EdSharp never uses the Insert key, so the two never collide.
+
+### Step 18
+
+One more family. Alt plus a letter says; Alt plus Shift plus the same letter often acts on the same thing: Alt plus Y says the yield, Alt plus Shift plus Y renders the text in another encoding; Alt plus V invokes a snippet, Alt plus Shift plus V views one.
+
+### Step 19
+
+What this walk taught. I say the key; the reader says what it does.
+
+### Step 20
 
 Alt plus F10.
 
@@ -1038,7 +1167,7 @@ Screen reader:
 
 - Alternate Menu
 
-### Step 11
+### Step 21
 
 Control plus F1.
 
@@ -1127,11 +1256,43 @@ Screen reader:
 
 - letter dot t x t, EdSharp
 
-### Step 10
+### Step 10: Control+Z
+
+A planned misstep. I meant to type in the letter and typed over a word I had selected. Control plus Z, Undo, as everywhere in Windows.
+
+Screen reader:
+
+- Thank you for your letter of the fourth.
+
+### Step 11
+
+A new file starts with Control plus N, New; the first Save asks for a name, and the extension you give it decides what EdSharp will offer -- dot t x t for plain text, dot m d for Markdown.
+
+### Step 12
+
+Control plus Shift plus S, Save As, saves under a new name, and the window takes it; Alt plus Shift plus S, Save Copy, writes a copy and leaves you in the original.
+
+### Step 13: F4
+
+Control plus F4 closes the document; if it has changed, EdSharp asks once. Control plus Tab moves to the next open document; F4 lists them all, so a dozen files are a list away.
+
+Screen reader:
+
+- Current Windows dialog, list box, letter dot t x t, 1 of 2
+
+### Step 14: Alt+P
+
+Escape. Alt plus P, Say Path, says where this file is on disk, for when the title is not enough.
+
+Screen reader:
+
+- C colon, Users, Jamal, Documents, letter dot t x t
+
+### Step 15
 
 What this walk taught. I say the key; the reader says what it does.
 
-### Step 11
+### Step 16
 
 Control plus O.
 
@@ -1139,7 +1300,7 @@ Screen reader:
 
 - Open
 
-### Step 12
+### Step 17
 
 Control plus S.
 
@@ -1147,7 +1308,7 @@ Screen reader:
 
 - Save
 
-### Step 13
+### Step 18
 
 F7.
 
@@ -1155,7 +1316,7 @@ Screen reader:
 
 - Spell Check
 
-### Step 14
+### Step 19
 
 Alt plus A.
 
@@ -1235,11 +1396,55 @@ Screen reader:
 
 - 14,205 characters, 2,310 words, 188 lines
 
-### Step 9
+### Step 9: Control+R
+
+Control plus R, Replace, is Find's sibling: the text to find, the text to put in its place, in all the document or in the selection. Each replacement is counted and the count is said.
+
+Screen reader:
+
+- Replace dialog, Find: edit combo
+
+### Step 10: Escape
+
+Escape. For a pattern rather than a word -- every number, every line that begins with a dash -- Control plus F3 finds with a regular expression, and Control plus Shift plus R replaces with one. The expressions are the dot NET kind, and the guide has a page on them.
+
+Screen reader:
+
+- Section four. Staffing.
+
+### Step 11
+
+The document's shape is a set of keys too. Control plus Down Arrow is the next paragraph; Alt plus Right Arrow the next chunk, read as you land on it; Control plus Right Arrow the next word.
+
+### Step 12: Alt+A
+
+Alt plus A, Say Address, is the anchor for all of this: line, column and percent, at any moment, so you know where a find landed you before you start to type.
+
+Screen reader:
+
+- Line 120, column 1, 64 percent
+
+### Step 13: Alt+Shift+F
+
+Alt plus Shift plus F, File Find, searches not this document but a folder of files for a string, and opens the one you pick from the list -- for the day the place you want is in some other file.
+
+Screen reader:
+
+- File Find dialog, Find: edit combo
+
+### Step 14: Escape
+
+Escape.
+
+Screen reader:
+
+- Section four. Staffing.
+
+### Step 15
 
 What this walk taught. I say the key; the reader says what it does.
 
-### Step 10
+### Step 16
 
 Control plus F.
 
@@ -1247,7 +1452,7 @@ Screen reader:
 
 - Forward Find
 
-### Step 11
+### Step 17
 
 Control plus J.
 
@@ -1255,7 +1460,7 @@ Screen reader:
 
 - Jump to Line
 
-### Step 12
+### Step 18
 
 Control plus K.
 
@@ -1263,7 +1468,7 @@ Screen reader:
 
 - Set Bookmark
 
-### Step 13
+### Step 19
 
 Alt plus K.
 
@@ -1329,11 +1534,39 @@ Screen reader:
 
 - report dot d o c x, EdSharp
 
-### Step 7
+### Step 7: Control+Shift+V
+
+Control plus Shift plus V, Convert File Format, converts a file on disk without opening it: pick the file, pick the format, and the new file lands beside the old. Several files at once make a batch, and EdSharp says how many were converted.
+
+Screen reader:
+
+- Convert File Format dialog, File name: edit combo
+
+### Step 8: Escape
+
+Escape. The formats on offer depend on what was installed: the document tools from the installer's last page add Word, PDF, EPUB and slide decks; without them, text, Markdown, HTML and RTF are always there.
+
+Screen reader:
+
+- report dot d o c x, EdSharp
+
+### Step 9
+
+A planned misstep. A PDF that is only a picture of a page -- a scan -- opens as empty or as nonsense, because there is no text in it to convert. The guide's section on PDF says what to do: optical character recognition, which the document tools can run on it.
+
+### Step 10
+
+Encoding is the other kind of conversion. A file that opens as symbols where accents should be is in an encoding EdSharp guessed wrong; Alt plus Shift plus Y, Yield Encoding, renders the text in the one you choose, and Alt plus Z twice says the encoding in use.
+
+### Step 11
+
+Markdown to plain text, HTML to Markdown, a table in a document to lines you can read -- each is an export or an open-other-format away, and the preview, Control plus F9, is the check before you send.
+
+### Step 12
 
 What this walk taught. I say the key; the reader says what it does.
 
-### Step 8
+### Step 13
 
 Control plus Shift plus O.
 
@@ -1341,7 +1574,7 @@ Screen reader:
 
 - Open Other Format
 
-### Step 9
+### Step 14
 
 Alt plus Shift plus E.
 
@@ -1349,7 +1582,7 @@ Screen reader:
 
 - Export Format
 
-### Step 10
+### Step 15
 
 Control plus F9.
 
@@ -1424,11 +1657,43 @@ Screen reader:
 
 - hello dot p y, EdSharp
 
-### Step 8
+### Step 8: Alt+0
+
+Alt plus 0, Say Compiler, says which compiler is set for this file and the folder it runs in, so a wrong one is heard before it runs.
+
+Screen reader:
+
+- Compiler Python, folder C colon, Users, Jamal, Code
+
+### Step 9
+
+A planned misstep. Control plus F5 with no compiler chosen for a new extension says so and names the key to fix it.
+
+Screen reader:
+
+- No compiler configured. Press Control plus Shift plus F5 to pick one.
+
+### Step 10
+
+Alt plus Shift plus right bracket, Say Braces, counts the braces on either side of the cursor -- the quickest answer to a parser's complaint about an unmatched one.
+
+### Step 11
+
+Indentation is spoken as structure. Alt plus Shift plus I, Indent Mode, makes Enter keep the current indentation and announces changes of level as you arrow; Tab and Shift plus Tab indent and outdent a line or a selection by one unit.
+
+### Step 12
+
+Shift plus F5, Run at Cursor, runs the web address or email address at the cursor -- a link in a comment, a URL in a string -- in the program Windows has for it.
+
+### Step 13
+
+Alt plus Shift plus F9, Run Code Blocks, runs the SQL and JScript blocks in a Markdown document and writes each block's result beneath it, which turns a notes file into a small notebook.
+
+### Step 14
 
 What this walk taught. I say the key; the reader says what it does.
 
-### Step 9
+### Step 15
 
 Control plus F5.
 
@@ -1436,7 +1701,7 @@ Screen reader:
 
 - Compile
 
-### Step 10
+### Step 16
 
 Control plus Shift plus F5.
 
@@ -1444,7 +1709,7 @@ Screen reader:
 
 - Choose Compiler
 
-### Step 11
+### Step 17
 
 Control plus B.
 
@@ -1452,7 +1717,7 @@ Screen reader:
 
 - Next Block
 
-### Step 12
+### Step 18
 
 Alt plus V.
 
@@ -1517,9 +1782,33 @@ All of it waits on the machine, not on a service: the first answer from a model 
 
 ### Step 8
 
-What this walk taught. I say the key; the reader says what it does.
+Which model answers is a setting: Alt plus Shift plus C, Configuration Options, names the model, and any model Ollama has pulled can be chosen. A small model answers in seconds; a large one answers better and slower.
 
 ### Step 9
+
+What makes a good question here is what makes one anywhere: say what you want back -- three bullet points, a one-paragraph summary, the dates mentioned -- and the answer takes that shape. A vague question gets a vague answer, locally as much as online.
+
+### Step 10
+
+The answer window is a document. Alt plus C, Copy Append, adds a passage to the clipboard without losing what is there; Control plus S saves the whole answer beside the document it is about.
+
+### Step 11
+
+A planned misstep. Shift plus F12 with Ollama not running, or no model pulled, says so plainly and names what to do; nothing hangs. Ollama starts with Windows once installed, so this is rare after the first day.
+
+### Step 12
+
+Summarizing is a question: select nothing, Shift plus F12, and ask for a summary in five sentences. Translation is a question too, but Alt plus Shift plus F7 asks it with the languages as a dialog, so the two languages are remembered next time.
+
+### Step 13
+
+Nothing in this walk needs the Internet. The model, the question and the document stay on the machine, which is what makes it fit for a letter you would not paste into a web page.
+
+### Step 14
+
+What this walk taught. I say the key; the reader says what it does.
+
+### Step 15
 
 Shift plus F12.
 
@@ -1527,7 +1816,7 @@ Screen reader:
 
 - Chat about Document
 
-### Step 10
+### Step 16
 
 F12.
 
@@ -1535,7 +1824,7 @@ Screen reader:
 
 - Chat with AI
 
-### Step 11
+### Step 17
 
 Alt plus Shift plus F7.
 
@@ -1553,13 +1842,21 @@ The words EdSharp uses, in alphabetical order. I say the term; the reader says w
 
 ### Step 1
 
+address.
+
+Screen reader:
+
+- Where the cursor is: line, column and percent of the document. Alt plus A.
+
+### Step 2
+
 Alternate Menu.
 
 Screen reader:
 
 - Every command in one list you type into, with its key beside it. Alt plus F10.
 
-### Step 2
+### Step 3
 
 block.
 
@@ -1567,7 +1864,7 @@ Screen reader:
 
 - A stretch of code at one indentation. Control plus B goes to the next; Alt plus B reads the rest of this one.
 
-### Step 3
+### Step 4
 
 bookmark.
 
@@ -1575,7 +1872,7 @@ Screen reader:
 
 - A place in a file, kept with the file. Control plus K sets one; Alt plus K returns to it.
 
-### Step 4
+### Step 5
 
 chunk.
 
@@ -1583,7 +1880,7 @@ Screen reader:
 
 - A run of characters with no space in it. Alt plus Right Arrow goes to the next; Control plus Space selects it.
 
-### Step 5
+### Step 6
 
 compiler.
 
@@ -1591,7 +1888,31 @@ Screen reader:
 
 - The program EdSharp hands your file to with Control plus F5, chosen once by extension with Control plus Shift plus F5.
 
-### Step 6
+### Step 7
+
+configuration options.
+
+Screen reader:
+
+- The one dialog of settings -- spell checker, font, speech, the AI model. Alt plus Shift plus C.
+
+### Step 8
+
+convert file format.
+
+Screen reader:
+
+- Converting a file on disk without opening it, one or many at a time. Control plus Shift plus V.
+
+### Step 9
+
+current windows.
+
+Screen reader:
+
+- The list of open documents, to pick one. F4; Shift plus F4 says their titles.
+
+### Step 10
 
 document.
 
@@ -1599,7 +1920,15 @@ Screen reader:
 
 - One file open in EdSharp, in a window of its own; Control plus Tab moves to the next, F4 lists them.
 
-### Step 7
+### Step 11
+
+Elevate Version.
+
+Screen reader:
+
+- Checking for a newer EdSharp and installing it. F11, because elevate sounds like eleven.
+
+### Step 12
 
 encoding.
 
@@ -1607,7 +1936,7 @@ Screen reader:
 
 - How a file's characters are stored. Alt plus Z twice says it; Alt plus Shift plus Y renders the text in another one.
 
-### Step 8
+### Step 13
 
 export.
 
@@ -1615,7 +1944,23 @@ Screen reader:
 
 - Writing the document out as another format -- a web page, a Word document, plain text. Alt plus Shift plus E.
 
-### Step 9
+### Step 14
+
+file find.
+
+Screen reader:
+
+- Searching a folder of files for a string and opening the one you pick. Alt plus Shift plus F.
+
+### Step 15
+
+hotkey summary.
+
+Screen reader:
+
+- Every command with its key and description, in a new window. Alt plus Shift plus H.
+
+### Step 16
 
 Key Describer.
 
@@ -1623,7 +1968,15 @@ Screen reader:
 
 - A mode in which every key says what it does instead of doing it. Control plus F1 turns it on and off.
 
-### Step 10
+### Step 17
+
+Ollama.
+
+Screen reader:
+
+- The program that runs AI models on your own computer; EdSharp's F12, Shift plus F12 and Alt plus Shift plus F7 talk to it.
+
+### Step 18
 
 open other format.
 
@@ -1631,7 +1984,55 @@ Screen reader:
 
 - Opening a Word document, PDF, slide deck or spreadsheet converted to text. Control plus Shift plus O.
 
-### Step 11
+### Step 19
+
+preview.
+
+Screen reader:
+
+- Markdown shown as a formatted page in a window of EdSharp's own. Control plus F9.
+
+### Step 20
+
+regular expression.
+
+Screen reader:
+
+- A pattern that matches many strings -- every number, every line starting with a dash. Control plus F3 finds with one; Control plus Shift plus R replaces.
+
+### Step 21
+
+result window.
+
+Screen reader:
+
+- A document EdSharp opens with the output of a compile, an AI answer or a summary; read-only until you say otherwise.
+
+### Step 22
+
+run.
+
+Screen reader:
+
+- Executing the current file by its extension. F5; Shift plus F5 runs the address at the cursor.
+
+### Step 23
+
+say status.
+
+Screen reader:
+
+- Whether the document has changed since it was saved; pressed twice, its encoding. Alt plus Z.
+
+### Step 24
+
+session log.
+
+Screen reader:
+
+- What EdSharp did this session, kept under your local application data. Control plus F12 copies its path for a report.
+
+### Step 25
 
 snippet.
 
@@ -1639,7 +2040,7 @@ Screen reader:
 
 - A saved piece of text or code, pasted or run with Alt plus V, saved with Alt plus S.
 
-### Step 12
+### Step 26
 
 yield.
 
@@ -1647,27 +2048,123 @@ Screen reader:
 
 - The size of the text: characters, words and lines, for all of it or the selection. Alt plus Y.
 
-### Step 13
+### Step 27
 
-Twelve terms. The guide, F1, has each of them in context.
+Twenty-six terms. The guide, F1, has each of them in context.
 
 **Something to try:** Pick three terms you did not know and find each one in EdSharp.
 
 ## 10 - Conclusion
 
-What to carry away from the walks, in four sentences, and where to begin.
+What to carry away from the walks: four principles, one thing kept from each task walk, three habits, and where to begin. I say the idea; the reader says the key.
 
 **Before you start:** Nothing is needed.
 
 ### Step 1
 
-Four things to carry away. A key is named for a word of its command, so it can be guessed, and the Alternate Menu tells you any key you have not learned. Alt says, Control does, Shift widens. A document in any format becomes text you can read, and your text becomes any format. And the AI is on your own machine.
+Four things to carry away, each with its key. A key is named for a word of its command, so it can be guessed; and when it cannot, one list names every command and its key.
 
 ### Step 2
 
-Start with the file you work in most. Open it, change a line, save it, and let the keys come as you need them; the guide and the Key Describer are there for the ones you do not know yet.
+The Alternate Menu.
 
-**Something to try:** Open the file you work in most and change one line.
+Screen reader:
+
+- Alt plus F10
+
+### Step 3
+
+Alt says, Control does, Shift widens. Where am I?
+
+Screen reader:
+
+- Alt plus A
+
+### Step 4
+
+Has the document changed since I saved it?
+
+Screen reader:
+
+- Alt plus Z
+
+### Step 5
+
+A document in any format becomes text you can read, and your text becomes any format.
+
+Screen reader:
+
+- Control plus Shift plus O
+
+### Step 6
+
+And the AI is on your own machine; nothing leaves it.
+
+Screen reader:
+
+- Shift plus F12
+
+### Step 7
+
+One thing kept from each task walk. Walk four: open, change, save -- and F7 for the spelling before anyone else reads it.
+
+Screen reader:
+
+- F7
+
+### Step 8
+
+Walk five: a place is found by a word, a line or a bookmark, and a bookmark is kept with the file.
+
+Screen reader:
+
+- Control plus K
+
+### Step 9
+
+Walk six: Word, PDF and slides open as text; Markdown goes out as a web page; the preview is the check before you send.
+
+Screen reader:
+
+- Alt plus Shift plus E
+
+### Step 10
+
+Walk seven: choose the compiler once, compile, land on the error, move by blocks.
+
+Screen reader:
+
+- Control plus F5
+
+### Step 11
+
+Walk eight: ask the document a question, and translate it, on your own computer.
+
+Screen reader:
+
+- Alt plus Shift plus F7
+
+### Step 12
+
+Three habits that make the rest easy. Arrow a menu once a week: each item says its key. Open the Alternate Menu when a key is unknown and type part of the command's name. And Control plus F1, then press a key, to hear what it does without doing it.
+
+Screen reader:
+
+- Key Describer
+
+### Step 13
+
+Where to begin. Start with the file you work in most. Open it, change a line, save it, and let the keys come as you need them; the guide and the Key Describer are there for the ones you do not know yet.
+
+### Step 14
+
+When EdSharp is yours, make it yours further: Configuration Options for the spell checker and the voice of its messages, snippets for the text you type again and again, a compiler for each language you write.
+
+### Step 15
+
+If something goes wrong, Control plus F12 copies the session log's path; that file with a line about what you were doing, sent to the project page on GitHub, is the fastest way to a fix.
+
+**Something to try:** Open the file you work in most, change one line, save it; then do one thing from each task walk in it.
 
 ## 11 - More Information
 

@@ -38,6 +38,49 @@ Say=The window title first, then the edit box you type in. Blank means the docum
 
 [step]
 
+Say=What each box is for. Python runs the conversion tools and the spell checker's helpers; the document tools -- pandoc and its companions -- turn Word, PDF and web pages into text and back. Together they are what makes Control plus Shift plus O and Alt plus Shift plus E rich rather than basic.
+Key=
+Hear=
+
+[step]
+
+Say=Git is for people who keep code in repositories; Node for web developers who run JavaScript tools; Ollama for the AI features, with a model that is a few gigabytes. Each box says its size, so the decision is yours and informed.
+Key=
+Hear=
+
+[step]
+
+Say=A box ticked by mistake is no disaster: the same installer, run again later, offers the same page, and an item already present says so and does nothing. Nothing is installed twice.
+Key=
+Hear=
+
+[step]
+
+Say=The screen reader scripts are offered too. Install when they are not there, Update when a newer set is available, Reinstall when they are current -- the word is the state, so you need not ask.
+Key=
+Hear=
+
+[step]
+
+Say=Where things went. EdSharp itself is in Program Files; your settings, snippets and logs are under your local application data, in a folder named EdSharp. An update never touches them.
+Key=
+Hear=
+
+[step]
+
+Say=F11, Elevate Version, is the installer's other half from now on: it asks the web for a newer EdSharp and offers to fetch and run it. Elevate sounds like eleven.
+Key=F11
+Hear=Elevate Version dialog
+Hear=EdSharp 5.0 is the newest version. Yes button
+
+[step]
+
+Say=Escape. Alt plus F1 says the version at any time; Control plus F12 copies the session log's path, ready to attach to a report of a problem.
+Key=Escape
+Hear=Untitled, edit, multiline, blank
+
+[step]
+
 Say=What this walk taught. I say the key; the reader says what it does.
 Key=
 Hear=

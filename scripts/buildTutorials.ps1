@@ -1255,6 +1255,7 @@ function writePlaylist() {
   $iListed = 0
   $iTotal = 0
   $lsLong = @()
+  $lsShort = @()
   foreach ($sScript in $lsScripts) {
     $sStem = [System.IO.Path]::GetFileNameWithoutExtension($sScript)
     $sMp3 = Join-Path $sAudioDir (audioName $sScript)
@@ -1267,6 +1268,8 @@ function writePlaylist() {
     if ($iSeconds -ge 0) { $iTotal = $iTotal + $iSeconds }
     note ("  " + (audioName $sScript) + " runs " + (minutesText $iSeconds))
     if ($iSeconds -gt 300) { $lsLong += ((audioName $sScript) + " at " + (minutesText $iSeconds)) }
+    # PARTS 01 TO 10 WANT THREE TO FIVE MINUTES; 00 and 11 may be short.
+    if ($iSeconds -ge 0 -and $iSeconds -lt 180 -and $sStem -match "^Tutorial_(0[1-9]|10)_") { $lsShort += ((audioName $sScript) + " at " + (minutesText $iSeconds)) }
     $lsM3u += ("#EXTINF:" + $(if ($iSeconds -ge 0) { $iSeconds } else { -1 }) + "," + $sTitle)
     $lsM3u += (audioName $sScript)
     $iListed = $iListed + 1
@@ -1276,6 +1279,7 @@ function writePlaylist() {
   [System.IO.File]::WriteAllLines($sM3u, $lsM3u, (New-Object System.Text.UTF8Encoding($false)))
   say ("Wrote Tutorials.m3u naming " + $iListed + " tutorial" + $(if ($iListed -eq 1) { "" } else { "s" }) + ", " + (minutesText $iTotal) + " in all.")
   foreach ($s in $lsLong) { say ("  Over five minutes: " + $s + ". The guideline says cut what an earlier walk taught, or split it.") }
+  foreach ($s in $lsShort) { say ("  Under three minutes: " + $s + ". The guideline wants three to five for parts 01 to 10; give it more substance, not padding.") }
   return $true
 }
 

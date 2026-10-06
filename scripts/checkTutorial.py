@@ -274,16 +274,26 @@ def main():
     # FIVE MINUTES IS THE CEILING (5 October 2026): at the voices' pace about
     # twenty-five steps. Twenty-eight is the line here, so a walk a little over
     # passes and one plainly over is sent back to be cut or split.
+    # BETWEEN THREE AND FIVE MINUTES for parts 01 to 10 (6 October 2026): under
+    # three is usually too thin to be worth a listener's start; 00 and 11 may
+    # be short. A glossary's steps are two short lines each, so its count is
+    # not a measure of its length and it is exempt from the ceiling; the tool
+    # measures the audio itself and says what runs under or over.
     for sScript in lsScripts:
+        sBase = os.path.basename(sScript)
         iSteps = readText(sScript).count("[step]") if "readText" in globals() else open(sScript, "rb").read().decode("utf-8-sig").count("[step]")
-        if iSteps > 28:
-            problem(os.path.basename(sScript), 0, "%d steps is more than five minutes; cut what an earlier walk taught, or split it" % iSteps)
+        mNum = re.match(r"Tutorial_(\d\d)_", sBase)
+        sNum = mNum.group(1) if mNum else ""
+        if iSteps > 28 and sNum != "09":
+            problem(sBase, 0, "%d steps is more than five minutes; cut what an earlier walk taught, or split it" % iSteps)
+        if sNum and sNum not in ("00", "11", "09") and iSteps < 12:
+            notice(sBase + ": %d steps is likely under three minutes; the guideline wants three to five for parts 01 to 10" % iSteps)
     # THE TWELVE-WALK PATTERN (5 October 2026) is reported as NOTICES, not
     # problems: a program whose set is not yet the pattern still has its clean
     # walks spoken and still releases, and hears on every build what the set
     # lacks. A problem is something wrong in a walk; an incomplete set is work
     # not yet done, and the tool should not silence a program for that.
-    if len(sys.argv) == 1 and sKind != "kit":
+    if len(sys.argv) == 1:
         c_dFixed = {"00": "Overview_and_Table_of_Contents", "01": "Install_and_Launch", "02": "User_Interface_Concepts",
                     "03": "Key_Patterns", "09": "Glossary", "10": "Conclusion", "11": "More_Information"}
         dHave = {}

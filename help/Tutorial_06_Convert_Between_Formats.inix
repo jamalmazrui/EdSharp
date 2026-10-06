@@ -45,6 +45,36 @@ Hear=report dot d o c x, EdSharp
 
 [step]
 
+Say=Control plus Shift plus V, Convert File Format, converts a file on disk without opening it: pick the file, pick the format, and the new file lands beside the old. Several files at once make a batch, and EdSharp says how many were converted.
+Key=Control+Shift+V
+Hear=Convert File Format dialog, File name: edit combo
+
+[step]
+
+Say=Escape. The formats on offer depend on what was installed: the document tools from the installer's last page add Word, PDF, EPUB and slide decks; without them, text, Markdown, HTML and RTF are always there.
+Key=Escape
+Hear=report dot d o c x, EdSharp
+
+[step]
+
+Say=A planned misstep. A PDF that is only a picture of a page -- a scan -- opens as empty or as nonsense, because there is no text in it to convert. The guide's section on PDF says what to do: optical character recognition, which the document tools can run on it.
+Key=
+Hear=
+
+[step]
+
+Say=Encoding is the other kind of conversion. A file that opens as symbols where accents should be is in an encoding EdSharp guessed wrong; Alt plus Shift plus Y, Yield Encoding, renders the text in the one you choose, and Alt plus Z twice says the encoding in use.
+Key=
+Hear=
+
+[step]
+
+Say=Markdown to plain text, HTML to Markdown, a table in a document to lines you can read -- each is an export or an open-other-format away, and the preview, Control plus F9, is the check before you send.
+Key=
+Hear=
+
+[step]
+
 Say=What this walk taught. I say the key; the reader says what it does.
 Key=
 Hear=

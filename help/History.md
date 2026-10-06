@@ -4,6 +4,18 @@ A human-readable record of fixes and enhancements, newest first. Each entry
 says what changed and why, so a future reader -- or a future maintainer --
 can judge the decision, not just observe it.
 
+## 6 October 2026 -- the walks run three to five minutes
+
+**More substance in every part from 01 to 10.** The first spoken set measured
+under two and a half minutes a walk; each was given the adjacent things its
+want needs -- what each installer box is for, the result and preview windows,
+a guessing exchange for the key rules, Undo and Save As and the window list,
+Replace and regular expressions and File Find, batch conversion and
+encodings, Say Compiler and the code-block runner, choosing the model and
+asking well -- a planned misstep with its recovery where one fits, fourteen
+more glossary terms, and a conclusion that keeps one thing from each walk in
+two voices. Needs HomerDev 1.52.7.
+
 ## 6 October 2026 -- twelve spoken walks, in the Homer pattern
 
 **Twelve walks replace the one.** 00 Overview and Table of Contents, 01

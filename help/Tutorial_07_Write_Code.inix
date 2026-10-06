@@ -52,6 +52,42 @@ Hear=hello dot p y, EdSharp
 
 [step]
 
+Say=Alt plus 0, Say Compiler, says which compiler is set for this file and the folder it runs in, so a wrong one is heard before it runs.
+Key=Alt+0
+Hear=Compiler Python, folder C colon, Users, Jamal, Code
+
+[step]
+
+Say=A planned misstep. Control plus F5 with no compiler chosen for a new extension says so and names the key to fix it.
+Key=
+Hear=No compiler configured. Press Control plus Shift plus F5 to pick one.
+
+[step]
+
+Say=Alt plus Shift plus right bracket, Say Braces, counts the braces on either side of the cursor -- the quickest answer to a parser's complaint about an unmatched one.
+Key=
+Hear=
+
+[step]
+
+Say=Indentation is spoken as structure. Alt plus Shift plus I, Indent Mode, makes Enter keep the current indentation and announces changes of level as you arrow; Tab and Shift plus Tab indent and outdent a line or a selection by one unit.
+Key=
+Hear=
+
+[step]
+
+Say=Shift plus F5, Run at Cursor, runs the web address or email address at the cursor -- a link in a comment, a URL in a string -- in the program Windows has for it.
+Key=
+Hear=
+
+[step]
+
+Say=Alt plus Shift plus F9, Run Code Blocks, runs the SQL and JScript blocks in a Markdown document and writes each block's result beneath it, which turns a notes file into a small notebook.
+Key=
+Hear=
+
+[step]
+
 Say=What this walk taught. I say the key; the reader says what it does.
 Key=
 Hear=

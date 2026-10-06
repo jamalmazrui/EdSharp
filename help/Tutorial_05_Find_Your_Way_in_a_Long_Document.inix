@@ -54,6 +54,42 @@ Hear=14,205 characters, 2,310 words, 188 lines
 
 [step]
 
+Say=Control plus R, Replace, is Find's sibling: the text to find, the text to put in its place, in all the document or in the selection. Each replacement is counted and the count is said.
+Key=Control+R
+Hear=Replace dialog, Find: edit combo
+
+[step]
+
+Say=Escape. For a pattern rather than a word -- every number, every line that begins with a dash -- Control plus F3 finds with a regular expression, and Control plus Shift plus R replaces with one. The expressions are the dot NET kind, and the guide has a page on them.
+Key=Escape
+Hear=Section four. Staffing.
+
+[step]
+
+Say=The document's shape is a set of keys too. Control plus Down Arrow is the next paragraph; Alt plus Right Arrow the next chunk, read as you land on it; Control plus Right Arrow the next word.
+Key=
+Hear=
+
+[step]
+
+Say=Alt plus A, Say Address, is the anchor for all of this: line, column and percent, at any moment, so you know where a find landed you before you start to type.
+Key=Alt+A
+Hear=Line 120, column 1, 64 percent
+
+[step]
+
+Say=Alt plus Shift plus F, File Find, searches not this document but a folder of files for a string, and opens the one you pick from the list -- for the day the place you want is in some other file.
+Key=Alt+Shift+F
+Hear=File Find dialog, Find: edit combo
+
+[step]
+
+Say=Escape.
+Key=Escape
+Hear=Section four. Staffing.
+
+[step]
+
 Say=What this walk taught. I say the key; the reader says what it does.
 Key=
 Hear=
