@@ -849,7 +849,18 @@ try {
       if (-not $bMake) { continue }
       if ((runTool $sPandocFile @($sMdFile, "-f", "gfm", "-t", "html", "-s", "-o", $sHtmFile) "regenerate $([System.IO.Path]::GetFileName($sHtmFile))") -ne 0) {
         writeLog "WARNING: the .htm for $sMdName was not regenerated; pandoc's output above says why."
-      } else { $iFresh++ }
+      } else {
+        $iFresh++
+        # THE HOMER ENCODING, APPLIED HERE. pandoc writes UTF-8 without a byte
+        # order mark and with bare line feeds; fixEncoding has already run by
+        # this point in build.cmd, so a page made here shipped without them and
+        # failed the release check (help\Tutorials.htm, 5 and 6 October 2026).
+        try {
+          $sPage = [System.IO.File]::ReadAllText($sHtmFile)
+          $sPage = $sPage -replace "\r?\n", "`r`n"
+          [System.IO.File]::WriteAllText($sHtmFile, $sPage, (New-Object System.Text.UTF8Encoding($true)))
+        } catch { writeLog "WARNING: could not set the encoding of $([System.IO.Path]::GetFileName($sHtmFile)): $_" }
+      }
     }
     $sPairs = if ($iFresh -eq 1) { "pair" } else { "pairs" }
     writeLog "Documentation: $iFresh .htm $sPairs regenerated."

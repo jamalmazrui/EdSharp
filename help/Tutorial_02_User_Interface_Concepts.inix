@@ -1,0 +1,71 @@
+﻿[about]
+Title=02 - User Interface Concepts
+Intro=What EdSharp is made of: one window with documents behind it, the edit box you hear, dialogs that all work one way, the two keys that say where you are, messages, and where help is.
+Setup=EdSharp is open. Nothing needs pressing in this walk; it is listened to.
+Homework=Open EdSharp and name each thing as you reach it: the title, the edit box, the status line.
+
+[step]
+
+Say=EdSharp is one window. The document you are editing fills it; others you have opened wait behind it. Control plus Tab moves to the next; F4 lists them all by name.
+Key=
+Hear=
+
+[step]
+
+Say=What you hear is the edit box: the window title, then Untitled or the file's name, then edit, multiline, and the line the cursor is on. It is a plain Windows edit control, so every reader reads it the same way.
+Key=
+Hear=
+
+[step]
+
+Say=Every dialog is built the same way: a label and its control, Tab between them, Alt plus the underlined letter to jump to one, Control plus Enter for OK from anywhere, Escape to cancel. Open and Save are the Windows dialogs you already know.
+Key=
+Hear=
+
+[step]
+
+Say=Two keys say where you are. Alt plus A, Say Address, says the line, the column and how far down the document you are. Alt plus Z, Say Status, says whether the document has changed since it was saved; pressed again, its character encoding.
+Key=
+Hear=
+
+[step]
+
+Say=Messages from EdSharp are spoken as they happen, and shown on the status line at the bottom: Converting, Line, Bookmark at percent 40. Insert plus Page Down, the reader's own key, reads that line.
+Key=
+Hear=
+
+[step]
+
+Say=Help is in four places, and they are the same in every Homer program. F1 opens the guide, the whole program in one document. Shift plus F1 opens the history of changes. Alt plus F1 says the version and offers the newer one if there is one. Control plus Shift plus F1 opens the quick starts by role: Python developer, screen reader script writer, translator, slide presenter and more.
+Key=
+Hear=
+
+[step]
+
+Say=The Help menu, F10 then H, Hotel, holds the same, and Play Tutorials, which plays these walks. And the menus themselves are help: arrow through any menu and the reader says each command with its key and its letter.
+Key=
+Hear=
+
+[step]
+
+Say=What this walk taught. I say the key; the reader says what it does.
+Key=
+Hear=
+
+[step]
+
+Say=F1.
+Key=
+Hear=Documentation
+
+[step]
+
+Say=Alt plus A.
+Key=
+Hear=Say Address
+
+[step]
+
+Say=Alt plus Z.
+Key=
+Hear=Say Status

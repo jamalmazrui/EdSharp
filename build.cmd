@@ -46,7 +46,7 @@ if not defined homerDev (
 )
 set "homerVer=0.0.0"
 if exist "!homerDev!\version.txt" set /p homerVer=<"!homerDev!\version.txt"
-set "kitNeeded=1.43.29"
+set "kitNeeded=1.52.6"
 powershell -NoProfile -Command "if ([version]'!homerVer!' -lt [version]'!kitNeeded!') { exit 1 } else { exit 0 }" >nul
 if errorlevel 1 (
   echo EdSharp needs HomerDev !kitNeeded! or later, and the kit is !homerVer!.
@@ -152,6 +152,12 @@ if exist "scripts\fixEncoding.cmd" (
 )
 
 rem ---- spoken tutorials, for any walk with no audio yet ---------------
+rem The walks took the Homer pattern of twelve on 6 October 2026; the one
+rem earlier script is retired, and the tool retires its audio.
+if exist "help\Tutorial_00_Overview.inix" (
+  del /q "help\Tutorial_00_Overview.inix"
+  echo Removed the retired walk help\Tutorial_00_Overview.inix >> "%log%"
+)
 rem -build is an argument of its own: a bare call hands the tool THIS
 rem script's arguments through %*, and "nobump" is not a script name.
 if exist "help\Tutorial_*.inix" (

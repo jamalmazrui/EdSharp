@@ -4,6 +4,22 @@ A human-readable record of fixes and enhancements, newest first. Each entry
 says what changed and why, so a future reader -- or a future maintainer --
 can judge the decision, not just observe it.
 
+## 6 October 2026 -- twelve spoken walks, in the Homer pattern
+
+**Twelve walks replace the one.** 00 Overview and Table of Contents, 01
+Install and Launch, 02 User Interface Concepts, 03 Key Patterns, five tasks --
+04 Open, Edit and Save a File; 05 Find Your Way in a Long Document; 06 Convert
+Between Formats; 07 Write Code; 08 Ask the AI on Your Own Computer -- then 09
+Glossary, 10 Conclusion and 11 More Information. Each is built around a plain
+want, each is under five minutes, and every recap and the glossary are two
+voices: the host says the key or the term, the reader says the command or the
+meaning. The earlier overview's real speech was kept where it fit.
+
+**Pages made by pandoc get the Homer encoding.** The build regenerated
+help\Tutorials.htm after fixEncoding had run, so it shipped without a byte
+order mark and the release check refused it two days running; the page is now
+given the mark and CRLF line endings as it is made. Needs HomerDev 1.52.6.
+
 ## 27 September 2026 -- setup fixes
 
 - **Setup.** The Results box at the end of setup is titled "EdSharp Setup Results", and the finish page uses the Homer wording: the verb first, no "recommended", and "Launch EdSharp (desktop hotkey ...)". The JAWS scripts were never installed: the finish page ran scripts\installJawsScripts.cmd, which the installer had put at the top of the program folder, and "Scripts\*" copied the whole scripts folder into scripts\jaws. Both go where they belong now. The Results box said Pandoc was "not present" beside a working install, because it looked in configs\convert\Pandoc; it asks the same check as the finish page. Updating Python upgraded Python 3.13 whatever was installed, so with 3.14 it did nothing; it upgrades the release that is there. The boxes read "Install JAWS scripts" and "Install NVDA add-on (NVDA must be running)".

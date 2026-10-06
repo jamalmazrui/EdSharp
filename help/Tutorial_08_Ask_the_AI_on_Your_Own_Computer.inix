@@ -1,0 +1,75 @@
+﻿[about]
+Title=08 - Ask the AI on Your Own Computer
+Intro=One want: a question about a document, answered with nothing sent off the machine. Chatting about the document, chatting with no document, and translating it, all with the model Ollama runs on your own computer. This walk assumes walks four to six.
+Setup=EdSharp is open on a document, and Ollama with a model was ticked when EdSharp was installed, or installed since.
+Homework=Ask a question about a document of your own, then translate a paragraph of it.
+
+[step]
+
+Say=The want: a question about the document, answered without sending it anywhere. The model runs on your own computer, through Ollama, which the installer offered; nothing leaves the machine.
+Key=
+Hear=
+
+[step]
+
+Say=Shift plus F12, Chat about Document: the question goes with the document, or with the selection when text is selected, and the answer opens in a new window.
+Key=Shift+F12
+Hear=Chat about Document dialog, Question: edit
+
+[step]
+
+Say=What are the three main points? And Enter. EdSharp names the model it is asking.
+Key=Enter
+Hear=Asking llama3.2
+Hear=Answer - EdSharp
+Hear=The report makes three points. First,
+Say=The answer is a document like any other: arrow it, copy from it, save it.
+
+[step]
+
+Say=F12 alone, Chat with AI, asks a question with no document attached. The answer opens the same way.
+Key=
+Hear=
+
+[step]
+
+Say=Alt plus Shift plus F7, Translate Language, translates the selection or the whole document between two languages, with the same model. EdSharp names the model and the languages.
+Key=Alt+Shift+F7
+Hear=Translate Language dialog, From: combo, English
+
+[step]
+
+Say=Spanish as the target, Control plus Enter, and the translation opens in a new window, the original untouched.
+Key=Control+Enter
+Hear=Translating with llama3.2
+Hear=Translation - EdSharp
+
+[step]
+
+Say=All of it waits on the machine, not on a service: the first answer from a model takes a few seconds while it loads, and the next ones are quick.
+Key=
+Hear=
+
+[step]
+
+Say=What this walk taught. I say the key; the reader says what it does.
+Key=
+Hear=
+
+[step]
+
+Say=Shift plus F12.
+Key=
+Hear=Chat about Document
+
+[step]
+
+Say=F12.
+Key=
+Hear=Chat with AI
+
+[step]
+
+Say=Alt plus Shift plus F7.
+Key=
+Hear=Translate Language

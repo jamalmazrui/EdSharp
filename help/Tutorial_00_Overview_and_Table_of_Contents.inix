@@ -1,0 +1,114 @@
+﻿; The format is in the kit's help\Tutorials.md: four beats per key -- say the
+; key with the word it comes from, press it, hear the reader word for word,
+; say what that meant. Name silence. Name no screen reader. Twelve walks,
+; each under five minutes, in the Homer pattern.
+
+[feed]
+Title=EdSharp Walkthroughs
+Description=Spoken walks through EdSharp, the text and code editor for working by ear. Twelve walks, each under five minutes, in the order a new person meets them.
+Author=Jamal Mazrui
+Email=jamal.mazrui@outlook.com
+Base=
+
+[about]
+Title=00 - Overview and Table of Contents
+Intro=What EdSharp is, in a paragraph; the two reader keys every walk assumes; then the table of contents, one line per walk.
+Setup=Nothing is needed; this walk is listened to.
+Homework=Listen to the walks in order; each one assumes the ones before it.
+
+[step]
+
+Say=EdSharp is a text and code editor for people who listen to the screen rather than look at it. It opens plain text, Markdown, HTML and program source; it opens Word documents, PDF files, slide decks and spreadsheets as text you can read and search; it compiles and runs programs and lands the cursor on the error; it checks spelling; and it talks to an AI model on your own computer. Everything is a key, and every key is named for a word in its command.
+Key=
+Hear=
+
+[step]
+
+Say=Two keys before anything else, both the reader's own. If a line goes by too fast, Insert plus Up Arrow says it again.
+Key=Insert+UpArrow
+Hear=(the last line, read a second time)
+Say=Nothing changed; the key only repeats.
+
+[step]
+
+Say=And if you lose your place, Insert plus Tab says where you are: the control, its state, its position, and any hint it carries. The walks are heard with those hints off, the way most people work.
+Key=Insert+Tab
+Hear=(the current control, with its state and position)
+
+[step]
+
+Say=Now the table of contents. I say the number and the title; the reader says what the walk covers.
+Key=
+Hear=
+
+[step]
+
+Say=One, Install and Launch.
+Key=
+Hear=The download, the installer's last page and its boxes, and EdSharp opening with Alt plus Control plus E.
+
+[step]
+
+Say=Two, User Interface Concepts.
+Key=
+Hear=One window, one document at a time with others behind it, the edit box you hear, dialogs that all work one way, and where help is.
+
+[step]
+
+Say=Three, Key Patterns.
+Key=
+Hear=The rules every key follows, so a key can be guessed before it is learned, and the keys that explain the keys.
+
+[step]
+
+Say=Four, Open, Edit and Save a File.
+Key=
+Hear=A file opened, a line changed, the document saved, and the two ways to hear where you are.
+
+[step]
+
+Say=Five, Find Your Way in a Long Document.
+Key=
+Hear=Finding a word, jumping to a line, and bookmarks that bring you back.
+
+[step]
+
+Say=Six, Convert Between Formats.
+Key=
+Hear=A Word document opened as text; Markdown written out as a web page.
+
+[step]
+
+Say=Seven, Write Code.
+Key=
+Hear=A program compiled from the editor, the cursor landing on the error, and blocks of code moved through.
+
+[step]
+
+Say=Eight, Ask the AI on Your Own Computer.
+Key=
+Hear=A question answered and a document translated, with nothing sent off the machine.
+
+[step]
+
+Say=Nine, Glossary.
+Key=
+Hear=The words EdSharp uses, in alphabetical order, one line each.
+
+[step]
+
+Say=Ten, Conclusion.
+Key=
+Hear=Four sentences to carry away, and where to begin.
+
+[step]
+
+Say=Eleven, More Information.
+Key=
+Hear=The guide and history from inside EdSharp, the documents, the GitHub page, updates, and the other Homer Tools.
+
+[step]
+
+Say=Twelve walks, each under five minutes, about an hour together. They are a course, not a reference: each one assumes those before it.
+Key=
+Hear=

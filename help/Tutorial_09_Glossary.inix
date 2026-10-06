@@ -1,0 +1,83 @@
+﻿[about]
+Title=09 - Glossary
+Intro=The words EdSharp uses, in alphabetical order. I say the term; the reader says what it means. Each is one line, for looking up or for listening straight through.
+Setup=Nothing is needed.
+Homework=Pick three terms you did not know and find each one in EdSharp.
+
+[step]
+
+Say=Alternate Menu.
+Key=
+Hear=Every command in one list you type into, with its key beside it. Alt plus F10.
+
+[step]
+
+Say=block.
+Key=
+Hear=A stretch of code at one indentation. Control plus B goes to the next; Alt plus B reads the rest of this one.
+
+[step]
+
+Say=bookmark.
+Key=
+Hear=A place in a file, kept with the file. Control plus K sets one; Alt plus K returns to it.
+
+[step]
+
+Say=chunk.
+Key=
+Hear=A run of characters with no space in it. Alt plus Right Arrow goes to the next; Control plus Space selects it.
+
+[step]
+
+Say=compiler.
+Key=
+Hear=The program EdSharp hands your file to with Control plus F5, chosen once by extension with Control plus Shift plus F5.
+
+[step]
+
+Say=document.
+Key=
+Hear=One file open in EdSharp, in a window of its own; Control plus Tab moves to the next, F4 lists them.
+
+[step]
+
+Say=encoding.
+Key=
+Hear=How a file's characters are stored. Alt plus Z twice says it; Alt plus Shift plus Y renders the text in another one.
+
+[step]
+
+Say=export.
+Key=
+Hear=Writing the document out as another format -- a web page, a Word document, plain text. Alt plus Shift plus E.
+
+[step]
+
+Say=Key Describer.
+Key=
+Hear=A mode in which every key says what it does instead of doing it. Control plus F1 turns it on and off.
+
+[step]
+
+Say=open other format.
+Key=
+Hear=Opening a Word document, PDF, slide deck or spreadsheet converted to text. Control plus Shift plus O.
+
+[step]
+
+Say=snippet.
+Key=
+Hear=A saved piece of text or code, pasted or run with Alt plus V, saved with Alt plus S.
+
+[step]
+
+Say=yield.
+Key=
+Hear=The size of the text: characters, words and lines, for all of it or the selection. Alt plus Y.
+
+[step]
+
+Say=Twelve terms. The guide, F1, has each of them in context.
+Key=
+Hear=

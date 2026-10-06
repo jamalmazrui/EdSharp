@@ -1,0 +1,91 @@
+﻿[about]
+Title=04 - Open, Edit and Save a File
+Intro=One want: a letter to finish. Opening it, moving through it, changing it, hearing where you are and whether it is saved, checking the spelling, and saving. This walk assumes walks one to three.
+Setup=EdSharp is open, and letter.txt is in your Documents folder.
+Homework=Open a file of your own, change one line, check its spelling, and save it.
+
+[step]
+
+Say=The want: a letter to finish. Control plus O, Open, is the Windows open dialog; type the name, or arrow the list.
+Key=Control+O
+Hear=Open dialog, File name: edit combo
+
+[step]
+
+Say=letter dot t x t, and Enter.
+Key=Enter
+Hear=letter dot t x t, EdSharp
+Hear=Dear Ms. Alvarez,
+Say=The title is the file's name now, and the first line is read.
+
+[step]
+
+Say=Arrow down through it as in any editor. Control plus Down Arrow is the next paragraph; Control plus Right Arrow the next word, read as you land on it.
+Key=DownArrow
+Hear=Thank you for your letter of the fourth.
+
+[step]
+
+Say=Type at the end, Shift plus Enter for a new line keeping the indentation, Enter for a plain one. Then Alt plus A, Say Address, says where you are.
+Key=Alt+A
+Hear=Line 2, column 42, 30 percent
+
+[step]
+
+Say=Alt plus Z, Say Status: has the document changed since it was saved?
+Key=Alt+Z
+Hear=Modified
+
+[step]
+
+Say=Control plus S saves. The title loses its mark and the status becomes unmodified; nothing more is said, because nothing more happened.
+Key=Control+S
+Hear=letter dot t x t, EdSharp
+
+[step]
+
+Say=F7 checks spelling, all or selected text. Each misspelling comes as a dialog: the word, its context, the suggestions in a list; Enter takes the one you are on, Escape leaves the word alone.
+Key=F7
+Hear=Spell Check dialog, recieve, list box, receive, 1 of 3
+
+[step]
+
+Say=Enter takes receive, and the next misspelling follows, until the end.
+Key=Enter
+Hear=Spell check complete
+
+[step]
+
+Say=Shift plus F7, Thesaurus, lists synonyms for the word at the cursor, the same way: a list, Enter to replace. Control plus S again, and the letter is done.
+Key=Control+S
+Hear=letter dot t x t, EdSharp
+
+[step]
+
+Say=What this walk taught. I say the key; the reader says what it does.
+Key=
+Hear=
+
+[step]
+
+Say=Control plus O.
+Key=
+Hear=Open
+
+[step]
+
+Say=Control plus S.
+Key=
+Hear=Save
+
+[step]
+
+Say=F7.
+Key=
+Hear=Spell Check
+
+[step]
+
+Say=Alt plus A.
+Key=
+Hear=Say Address

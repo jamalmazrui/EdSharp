@@ -1,0 +1,49 @@
+﻿[about]
+Title=01 - Install and Launch
+Intro=The download, the installer's pages, the last page with its boxes and its summary, and EdSharp opening by itself.
+Setup=The installer is downloaded, and your reader is running.
+Homework=Install EdSharp and open it with Alt plus Control plus E.
+
+[step]
+
+Say=The installer is downloaded; Enter opens it. Windows may first ask whether to run a file from the Internet; Alt plus R, Run, answers it.
+Key=Enter
+Hear=EdSharp Setup dialog
+
+[step]
+
+Say=Each page is a dialog like any other: Tab through it, Enter for Next. Accept the defaults; the one page that asks a decision is the last.
+Key=Enter
+Hear=Next button
+
+[step]
+
+Say=The last page offers optional pieces as boxes, each saying what it does and how much space it needs. Python and the document tools are ticked: about a hundred and fifty megabytes, for rich PDF conversion and the thesaurus. Git, Node and Ollama with its AI models are not ticked; each backs a real feature, and each serves some people and not others. Spacebar changes a box.
+Key=
+Hear=
+
+[step]
+
+Say=Enter on Finish. Whatever was ticked installs now, and one summary then reports each item by name. The summary is saved in the logs folder, and summarizeSetup, in the program folder, shows it again.
+Key=Enter
+Hear=EdSharp Setup, Install Python: installed. Install document tools: installed.
+
+[step]
+
+Say=EdSharp opens by itself. From then on, Alt plus Control plus E opens it from anywhere in Windows, or brings it forward if it is already open.
+Key=Alt+Control+E
+Hear=EdSharp
+Hear=Untitled, edit, multiline, blank
+Say=The window title first, then the edit box you type in. Blank means the document is empty.
+
+[step]
+
+Say=What this walk taught. I say the key; the reader says what it does.
+Key=
+Hear=
+
+[step]
+
+Say=Alt plus Control plus E.
+Key=
+Hear=Open EdSharp

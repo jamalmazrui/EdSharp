@@ -1,0 +1,81 @@
+﻿[about]
+Title=07 - Write Code
+Intro=One want: a program that will not run, fixed. Choosing the compiler once, compiling with the cursor landing on the error, moving by blocks of code, hearing indentation, and snippets. This walk assumes walks four and five.
+Setup=EdSharp is open on a short Python file with one mistake, and Python was ticked when EdSharp was installed.
+Homework=Compile a program of your own, go to its first error, fix it, and run it.
+
+[step]
+
+Say=The want: a Python program that will not run, fixed. With hello dot p y open, Control plus Shift plus F5, Choose Compiler, picks the language once; EdSharp remembers it by extension.
+Key=Control+Shift+F5
+Hear=Choose Compiler dialog, Compiler: list box, Python, 7 of 20
+
+[step]
+
+Say=Enter. Then Control plus F5, Compile: the program is run or checked, the output is spoken, and the cursor lands on the first error.
+Key=Control+F5
+Hear=Compiler Python
+Hear=line 12, SyntaxError: expected colon
+Hear=for item in items
+Say=The cursor is on line twelve, where the colon is missing.
+
+[step]
+
+Say=Code is moved through by its shape. Control plus B, Next Block, goes to the next block of code with the same or less indentation; Control plus Shift plus B the previous.
+Key=Control+B
+Hear=def total(items):
+
+[step]
+
+Say=Alt plus I, Say Indentation, says the level of the current line; Alt plus B, Say Block, reads the rest of the block, so you hear a loop or a function whole.
+Key=Alt+I
+Hear=Indent 1
+
+[step]
+
+Say=Fix the line, Control plus S, Control plus F5 again. A clean run speaks its output and lands nowhere.
+Key=Control+F5
+Hear=Compiler Python
+Hear=Total: 42
+
+[step]
+
+Say=Snippets fill in the parts that change. Alt plus V, Invoke Snippet, picks a saved piece of code to paste or run; Alt plus S saves the selection as a new one.
+Key=Alt+V
+Hear=Invoke Snippet dialog, Snippet: list box, python-main, 1 of 14
+
+[step]
+
+Say=F5, Run, executes the file by its extension, without the compile step, once it is right.
+Key=Escape
+Hear=hello dot p y, EdSharp
+
+[step]
+
+Say=What this walk taught. I say the key; the reader says what it does.
+Key=
+Hear=
+
+[step]
+
+Say=Control plus F5.
+Key=
+Hear=Compile
+
+[step]
+
+Say=Control plus Shift plus F5.
+Key=
+Hear=Choose Compiler
+
+[step]
+
+Say=Control plus B.
+Key=
+Hear=Next Block
+
+[step]
+
+Say=Alt plus V.
+Key=
+Hear=Invoke Snippet

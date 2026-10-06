@@ -1,0 +1,68 @@
+﻿[about]
+Title=06 - Convert Between Formats
+Intro=Two wants: a Word document read as text, and Markdown written out as a web page. Opening in another format, exporting to one, and the Markdown preview. This walk assumes walks four and five.
+Setup=EdSharp is open, and report.docx is in your Documents folder.
+Homework=Open a Word document or a PDF as text, and export a Markdown file as a web page.
+
+[step]
+
+Say=The want: a Word document someone sent, read as text. Control plus Shift plus O, Open Other Format -- Shift widens Open -- converts it on the way in.
+Key=Control+Shift+O
+Hear=Open Other Format dialog, File name: edit combo
+
+[step]
+
+Say=report dot d o c x, and Enter. EdSharp says what it is doing.
+Key=Enter
+Hear=Converting
+Hear=report dot d o c x, EdSharp
+Hear=Quarterly Report
+Say=The document is text now: headings are lines, tables are lines, and every key of walks four and five works on it.
+
+[step]
+
+Say=The other direction: writing out as something else. Alt plus Shift plus E, Export Format, offers the formats this document can become.
+Key=Alt+Shift+E
+Hear=Export Format dialog, Format: list box, Web page, 1 of 8
+
+[step]
+
+Say=Web page, and Enter: the Markdown you are writing becomes an HTML file beside it, and EdSharp says the file.
+Key=Enter
+Hear=Converted 1 file
+
+[step]
+
+Say=Control plus F9, Preview Markdown, shows the same thing as a formatted page in a window of EdSharp's own, for checking headings and links without leaving the editor.
+Key=Control+F9
+Hear=Preview, document
+
+[step]
+
+Say=Escape returns. PDF files, slide decks and spreadsheets open the same way, by Control plus Shift plus O; the document tools from the installer's last page are what make the richer ones possible.
+Key=Escape
+Hear=report dot d o c x, EdSharp
+
+[step]
+
+Say=What this walk taught. I say the key; the reader says what it does.
+Key=
+Hear=
+
+[step]
+
+Say=Control plus Shift plus O.
+Key=
+Hear=Open Other Format
+
+[step]
+
+Say=Alt plus Shift plus E.
+Key=
+Hear=Export Format
+
+[step]
+
+Say=Control plus F9.
+Key=
+Hear=Preview Markdown

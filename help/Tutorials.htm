@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
@@ -989,112 +989,884 @@ and contributions toward its continued improvement.</p>
 
 <h2 id="00---overview-and-table-of-contents">00 - Overview and Table of
 Contents</h2>
-<p>A simulated walk through EdSharp: a person working, and a screen
-reader answering.</p>
-<p><strong>Before you start:</strong> Nothing to prepare. This one is a
-few minutes on what EdSharp is and where the rest of the walks go.</p>
+<p>What EdSharp is, in a paragraph; the two reader keys every walk
+assumes; then the table of contents, one line per walk.</p>
+<p><strong>Before you start:</strong> Nothing is needed; this walk is
+listened to.</p>
 <h3 id="step-1">Step 1</h3>
-<p>EdSharp is a text editor built for people who listen to their screen
+<p>EdSharp is a text and code editor for people who listen to the screen
 rather than look at it. It opens plain text, Markdown, HTML and program
-source, and it converts between about forty formats without leaving the
-keyboard.</p>
+source; it opens Word documents, PDF files, slide decks and spreadsheets
+as text you can read and search; it compiles and runs programs and lands
+the cursor on the error; it checks spelling; and it talks to an AI model
+on your own computer. Everything is a key, and every key is named for a
+word in its command.</p>
+<h3 id="step-2-insertuparrow">Step 2: Insert+UpArrow</h3>
+<p>Two keys before anything else, both the reader's own. If a line goes
+by too fast, Insert plus Up Arrow says it again.</p>
+<p>Screen reader:</p>
+<ul>
+<li>(the last line, read a second time)</li>
+</ul>
+<h3 id="step-3-inserttab">Step 3: Insert+Tab</h3>
+<p>And if you lose your place, Insert plus Tab says where you are: the
+control, its state, its position, and any hint it carries. The walks are
+heard with those hints off, the way most people work.</p>
+<p>Screen reader:</p>
+<ul>
+<li>(the current control, with its state and position)</li>
+</ul>
+<h3 id="step-4">Step 4</h3>
+<p>Now the table of contents. I say the number and the title; the reader
+says what the walk covers.</p>
+<h3 id="step-5">Step 5</h3>
+<p>One, Install and Launch.</p>
+<p>Screen reader:</p>
+<ul>
+<li>The download, the installer's last page and its boxes, and EdSharp
+opening with Alt plus Control plus E.</li>
+</ul>
+<h3 id="step-6">Step 6</h3>
+<p>Two, User Interface Concepts.</p>
+<p>Screen reader:</p>
+<ul>
+<li>One window, one document at a time with others behind it, the edit
+box you hear, dialogs that all work one way, and where help is.</li>
+</ul>
+<h3 id="step-7">Step 7</h3>
+<p>Three, Key Patterns.</p>
+<p>Screen reader:</p>
+<ul>
+<li>The rules every key follows, so a key can be guessed before it is
+learned, and the keys that explain the keys.</li>
+</ul>
+<h3 id="step-8">Step 8</h3>
+<p>Four, Open, Edit and Save a File.</p>
+<p>Screen reader:</p>
+<ul>
+<li>A file opened, a line changed, the document saved, and the two ways
+to hear where you are.</li>
+</ul>
+<h3 id="step-9">Step 9</h3>
+<p>Five, Find Your Way in a Long Document.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Finding a word, jumping to a line, and bookmarks that bring you
+back.</li>
+</ul>
+<h3 id="step-10">Step 10</h3>
+<p>Six, Convert Between Formats.</p>
+<p>Screen reader:</p>
+<ul>
+<li>A Word document opened as text; Markdown written out as a web
+page.</li>
+</ul>
+<h3 id="step-11">Step 11</h3>
+<p>Seven, Write Code.</p>
+<p>Screen reader:</p>
+<ul>
+<li>A program compiled from the editor, the cursor landing on the error,
+and blocks of code moved through.</li>
+</ul>
+<h3 id="step-12">Step 12</h3>
+<p>Eight, Ask the AI on Your Own Computer.</p>
+<p>Screen reader:</p>
+<ul>
+<li>A question answered and a document translated, with nothing sent off
+the machine.</li>
+</ul>
+<h3 id="step-13">Step 13</h3>
+<p>Nine, Glossary.</p>
+<p>Screen reader:</p>
+<ul>
+<li>The words EdSharp uses, in alphabetical order, one line each.</li>
+</ul>
+<h3 id="step-14">Step 14</h3>
+<p>Ten, Conclusion.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Four sentences to carry away, and where to begin.</li>
+</ul>
+<h3 id="step-15">Step 15</h3>
+<p>Eleven, More Information.</p>
+<p>Screen reader:</p>
+<ul>
+<li>The guide and history from inside EdSharp, the documents, the GitHub
+page, updates, and the other Homer Tools.</li>
+</ul>
+<h3 id="step-16">Step 16</h3>
+<p>Twelve walks, each under five minutes, about an hour together. They
+are a course, not a reference: each one assumes those before it.</p>
+<p><strong>Something to try:</strong> Listen to the walks in order; each
+one assumes the ones before it.</p>
+<h2 id="01---install-and-launch">01 - Install and Launch</h2>
+<p>The download, the installer's pages, the last page with its boxes and
+its summary, and EdSharp opening by itself.</p>
+<p><strong>Before you start:</strong> The installer is downloaded, and
+your reader is running.</p>
+<h3 id="step-1-enter">Step 1: Enter</h3>
+<p>The installer is downloaded; Enter opens it. Windows may first ask
+whether to run a file from the Internet; Alt plus R, Run, answers
+it.</p>
+<p>Screen reader:</p>
+<ul>
+<li>EdSharp Setup dialog</li>
+</ul>
+<h3 id="step-2-enter">Step 2: Enter</h3>
+<p>Each page is a dialog like any other: Tab through it, Enter for Next.
+Accept the defaults; the one page that asks a decision is the last.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Next button</li>
+</ul>
+<h3 id="step-3">Step 3</h3>
+<p>The last page offers optional pieces as boxes, each saying what it
+does and how much space it needs. Python and the document tools are
+ticked: about a hundred and fifty megabytes, for rich PDF conversion and
+the thesaurus. Git, Node and Ollama with its AI models are not ticked;
+each backs a real feature, and each serves some people and not others.
+Spacebar changes a box.</p>
+<h3 id="step-4-enter">Step 4: Enter</h3>
+<p>Enter on Finish. Whatever was ticked installs now, and one summary
+then reports each item by name. The summary is saved in the logs folder,
+and summarizeSetup, in the program folder, shows it again.</p>
+<p>Screen reader:</p>
+<ul>
+<li>EdSharp Setup, Install Python: installed. Install document tools:
+installed.</li>
+</ul>
+<h3 id="step-5-altcontrole">Step 5: Alt+Control+E</h3>
+<p>EdSharp opens by itself. From then on, Alt plus Control plus E opens
+it from anywhere in Windows, or brings it forward if it is already
+open.</p>
+<p>Screen reader:</p>
+<ul>
+<li>EdSharp</li>
+<li>Untitled, edit, multiline, blank</li>
+</ul>
+<h3 id="step-6-1">Step 6</h3>
+<p>What this walk taught. I say the key; the reader says what it
+does.</p>
+<h3 id="step-7-1">Step 7</h3>
+<p>Alt plus Control plus E.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Open EdSharp</li>
+</ul>
+<p><strong>Something to try:</strong> Install EdSharp and open it with
+Alt plus Control plus E.</p>
+<h2 id="02---user-interface-concepts">02 - User Interface Concepts</h2>
+<p>What EdSharp is made of: one window with documents behind it, the
+edit box you hear, dialogs that all work one way, the two keys that say
+where you are, messages, and where help is.</p>
+<p><strong>Before you start:</strong> EdSharp is open. Nothing needs
+pressing in this walk; it is listened to.</p>
+<h3 id="step-1-1">Step 1</h3>
+<p>EdSharp is one window. The document you are editing fills it; others
+you have opened wait behind it. Control plus Tab moves to the next; F4
+lists them all by name.</p>
 <h3 id="step-2">Step 2</h3>
-<p>Everything here is a key. There are no toolbars to hunt for and no
-panes to get lost in. Where a key has a letter in it, the letter is the
-first letter of a word in the command's name, so the key is something
-you work out rather than something you memorise.</p>
-<h3 id="step-3-altcontrole">Step 3: Alt+Control+E</h3>
-<p>Let us start the program and hear what it says. The editor opens with
-one empty document.</p>
+<p>What you hear is the edit box: the window title, then Untitled or the
+file's name, then edit, multiline, and the line the cursor is on. It is
+a plain Windows edit control, so every reader reads it the same way.</p>
+<h3 id="step-3-1">Step 3</h3>
+<p>Every dialog is built the same way: a label and its control, Tab
+between them, Alt plus the underlined letter to jump to one, Control
+plus Enter for OK from anywhere, Escape to cancel. Open and Save are the
+Windows dialogs you already know.</p>
+<h3 id="step-4-1">Step 4</h3>
+<p>Two keys say where you are. Alt plus A, Say Address, says the line,
+the column and how far down the document you are. Alt plus Z, Say
+Status, says whether the document has changed since it was saved;
+pressed again, its character encoding.</p>
+<h3 id="step-5-1">Step 5</h3>
+<p>Messages from EdSharp are spoken as they happen, and shown on the
+status line at the bottom: Converting, Line, Bookmark at percent 40.
+Insert plus Page Down, the reader's own key, reads that line.</p>
+<h3 id="step-6-2">Step 6</h3>
+<p>Help is in four places, and they are the same in every Homer program.
+F1 opens the guide, the whole program in one document. Shift plus F1
+opens the history of changes. Alt plus F1 says the version and offers
+the newer one if there is one. Control plus Shift plus F1 opens the
+quick starts by role: Python developer, screen reader script writer,
+translator, slide presenter and more.</p>
+<h3 id="step-7-2">Step 7</h3>
+<p>The Help menu, F10 then H, Hotel, holds the same, and Play Tutorials,
+which plays these walks. And the menus themselves are help: arrow
+through any menu and the reader says each command with its key and its
+letter.</p>
+<h3 id="step-8-1">Step 8</h3>
+<p>What this walk taught. I say the key; the reader says what it
+does.</p>
+<h3 id="step-9-1">Step 9</h3>
+<p>F1.</p>
 <p>Screen reader:</p>
 <ul>
-<li>EdSharp</li>
-<li>Untitled, edit, multiline, blank</li>
+<li>Documentation</li>
 </ul>
-<h3 id="step-4-f1">Step 4: F1</h3>
-<p>Press F1 for Help. F1 is Help everywhere in Windows, and in EdSharp
-it opens the user guide.</p>
+<h3 id="step-10-1">Step 10</h3>
+<p>Alt plus A.</p>
 <p>Screen reader:</p>
 <ul>
-<li>EdSharp User Guide, document</li>
+<li>Say Address</li>
 </ul>
-<h3 id="step-5-insertt">Step 5: Insert+T</h3>
-<p>Come back to the editor with Alt plus Tab, then let us hear where we
-are. Insert plus T, Tango, says the window title.</p>
+<h3 id="step-11-1">Step 11</h3>
+<p>Alt plus Z.</p>
 <p>Screen reader:</p>
 <ul>
-<li>EdSharp</li>
+<li>Say Status</li>
 </ul>
-<h3 id="step-6-insertuparrow">Step 6: Insert+UpArrow</h3>
-<p>If you miss what was said, Insert plus Up Arrow says the current line
-again. That key is worth learning first, because it turns every other
-key in these walks into something you can replay.</p>
-<p>Screen reader:</p>
-<ul>
-<li>Untitled, edit, multiline, blank</li>
-</ul>
-<h3 id="step-7-altf10">Step 7: Alt+F10</h3>
-<p>Now the command space. Alt plus F10 opens the Alternate Menu, which
-lists every command EdSharp has, with its key beside it.</p>
+<p><strong>Something to try:</strong> Open EdSharp and name each thing
+as you reach it: the title, the edit box, the status line.</p>
+<h2 id="03---key-patterns">03 - Key Patterns</h2>
+<p>The rules every EdSharp key follows, so a key can be guessed before
+it is learned: the word gives the letter, Control does, Alt says, Shift
+widens, Alt Shift is a command with no control, the function keys follow
+Windows -- and the keys that explain the keys.</p>
+<p><strong>Before you start:</strong> EdSharp is open on an empty
+document.</p>
+<h3 id="step-1-2">Step 1</h3>
+<p>Every key in EdSharp is named for a word in its command: Control plus
+O is Open, Control plus S is Save, Control plus F is Find, Control plus
+K is bookmark, F7 is spell check as in Word. A key never comes from the
+middle of a word.</p>
+<h3 id="step-2-1">Step 2</h3>
+<p>Control plus a letter does something. Alt plus a letter says
+something and changes nothing: Alt plus A the address, Alt plus Z the
+status, Alt plus P the path, Alt plus Y the yield -- the count of
+characters, words and lines.</p>
+<h3 id="step-3-2">Step 3</h3>
+<p>Adding Shift widens or reverses a key. Control plus O opens a file;
+Control plus Shift plus O opens one in another format, converting it to
+text. Control plus F finds forward; Control plus Shift plus F finds
+backward. F3 finds the next; Shift plus F3 the previous.</p>
+<h3 id="step-4-2">Step 4</h3>
+<p>Alt plus Shift plus a letter is a command with no control of its own:
+Alt plus Shift plus E exports the document as another format, Alt plus
+Shift plus H shows the hotkey summary.</p>
+<h3 id="step-5-2">Step 5</h3>
+<p>The function keys follow Windows and Office: F1 help, F3 find again,
+F4 the open documents, F5 run, F7 spelling, F11 the newer version, F12
+the AI. Control plus F5 compiles; Control plus Shift plus F5 chooses the
+compiler.</p>
+<h3 id="step-6-altf10">Step 6: Alt+F10</h3>
+<p>The keys that explain the keys. Control plus F1 is the Key Describer:
+on, every key says what it does instead of doing it, the safe way to
+explore the keyboard. Alt plus F10 is the Alternate Menu: every command
+in one list you type into, and the list tells you the key.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Alternate Menu</li>
 <li>Command, list box, 1 of 222</li>
 </ul>
-<h3 id="step-8-c-o-n-v-e-r-t">Step 8: c o n v e r t</h3>
-<p>Type the word convert and listen.</p>
+<h3 id="step-7-convert">Step 7: convert</h3>
+<p>Type the word convert.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Convert File Format, Control plus Shift plus V, 1 of 9</li>
 </ul>
-<h3 id="step-9-escape">Step 9: Escape</h3>
-<p>Escape closes the menu without running anything.</p>
+<h3 id="step-8-escape">Step 8: Escape</h3>
+<p>Escape closes the menu without running anything. Hotkeys, in the Help
+menu, lists every key three ways; and your reader's own Insert plus Tab
+says where you are.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Untitled, edit, multiline, blank</li>
 </ul>
-<h3 id="step-10-f11">Step 10: F11</h3>
-<p>One more key before the tour of the other walks. F11 is Elevate
-Version. Elevate sounds like eleven, which is how the key was
-chosen.</p>
+<h3 id="step-9-2">Step 9</h3>
+<p>What this walk taught. I say the key; the reader says what it
+does.</p>
+<h3 id="step-10-2">Step 10</h3>
+<p>Alt plus F10.</p>
 <p>Screen reader:</p>
 <ul>
-<li>Elevate Version, dialog</li>
-<li>EdSharp 5.0 is the newest version. Yes button.</li>
+<li>Alternate Menu</li>
 </ul>
-<h3 id="step-11-escape">Step 11: Escape</h3>
-<p>Nothing was changed.</p>
+<h3 id="step-11-2">Step 11</h3>
+<p>Control plus F1.</p>
 <p>Screen reader:</p>
 <ul>
-<li>Untitled, edit, multiline, blank</li>
+<li>Key Describer</li>
 </ul>
-<h3 id="step-12">Step 12</h3>
-<p>That is the shape of it. The other walks each take one thing and go
-through it slowly.</p>
-<p>The walks below are the planned set. Each becomes its own Tutorial_NN
-file.</p>
-<h3 id="step-13">Step 13</h3>
-<p>Walk one is opening, editing and saving, including the encoding of a
-file and what to do when it opens as nonsense.</p>
-<h3 id="step-14">Step 14</h3>
-<p>Walk two is moving around a long document by headings, by blocks that
-mean something in the language you are in, and by bookmarks.</p>
-<h3 id="step-15">Step 15</h3>
-<p>Walk three is converting between formats: Markdown to a web page, a
-web page to text, a PDF to something you can read.</p>
-<h3 id="step-16">Step 16</h3>
-<p>Walk four is writing code: checking the syntax without running it,
-stepping definition to definition, and the snippets that fill in the
-parts that change.</p>
-<h3 id="step-17">Step 17</h3>
-<p>Walk five is the local AI: chatting about the document in front of
-you, and translating it, with no web service involved.</p>
-<h3 id="step-18">Step 18</h3>
-<p>Pick the one that matches what you want to do today. Each is about
-three minutes, and each ends with something to try.</p>
-<p><strong>Something to try:</strong> Open a file you already have and
-press F1. Then come back and pick the walk that matches what you want to
-do today.</p>
+<p><strong>Something to try:</strong> Guess the key for Replace, Save As
+and Thesaurus before you look them up, then check with Control plus
+F1.</p>
+<h2 id="04---open-edit-and-save-a-file">04 - Open, Edit and Save a
+File</h2>
+<p>One want: a letter to finish. Opening it, moving through it, changing
+it, hearing where you are and whether it is saved, checking the
+spelling, and saving. This walk assumes walks one to three.</p>
+<p><strong>Before you start:</strong> EdSharp is open, and letter.txt is
+in your Documents folder.</p>
+<h3 id="step-1-controlo">Step 1: Control+O</h3>
+<p>The want: a letter to finish. Control plus O, Open, is the Windows
+open dialog; type the name, or arrow the list.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Open dialog, File name: edit combo</li>
+</ul>
+<h3 id="step-2-enter-1">Step 2: Enter</h3>
+<p>letter dot t x t, and Enter.</p>
+<p>Screen reader:</p>
+<ul>
+<li>letter dot t x t, EdSharp</li>
+<li>Dear Ms. Alvarez,</li>
+</ul>
+<h3 id="step-3-downarrow">Step 3: DownArrow</h3>
+<p>Arrow down through it as in any editor. Control plus Down Arrow is
+the next paragraph; Control plus Right Arrow the next word, read as you
+land on it.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Thank you for your letter of the fourth.</li>
+</ul>
+<h3 id="step-4-alta">Step 4: Alt+A</h3>
+<p>Type at the end, Shift plus Enter for a new line keeping the
+indentation, Enter for a plain one. Then Alt plus A, Say Address, says
+where you are.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Line 2, column 42, 30 percent</li>
+</ul>
+<h3 id="step-5-altz">Step 5: Alt+Z</h3>
+<p>Alt plus Z, Say Status: has the document changed since it was
+saved?</p>
+<p>Screen reader:</p>
+<ul>
+<li>Modified</li>
+</ul>
+<h3 id="step-6-controls">Step 6: Control+S</h3>
+<p>Control plus S saves. The title loses its mark and the status becomes
+unmodified; nothing more is said, because nothing more happened.</p>
+<p>Screen reader:</p>
+<ul>
+<li>letter dot t x t, EdSharp</li>
+</ul>
+<h3 id="step-7-f7">Step 7: F7</h3>
+<p>F7 checks spelling, all or selected text. Each misspelling comes as a
+dialog: the word, its context, the suggestions in a list; Enter takes
+the one you are on, Escape leaves the word alone.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Spell Check dialog, recieve, list box, receive, 1 of 3</li>
+</ul>
+<h3 id="step-8-enter">Step 8: Enter</h3>
+<p>Enter takes receive, and the next misspelling follows, until the
+end.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Spell check complete</li>
+</ul>
+<h3 id="step-9-controls">Step 9: Control+S</h3>
+<p>Shift plus F7, Thesaurus, lists synonyms for the word at the cursor,
+the same way: a list, Enter to replace. Control plus S again, and the
+letter is done.</p>
+<p>Screen reader:</p>
+<ul>
+<li>letter dot t x t, EdSharp</li>
+</ul>
+<h3 id="step-10-3">Step 10</h3>
+<p>What this walk taught. I say the key; the reader says what it
+does.</p>
+<h3 id="step-11-3">Step 11</h3>
+<p>Control plus O.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Open</li>
+</ul>
+<h3 id="step-12-1">Step 12</h3>
+<p>Control plus S.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Save</li>
+</ul>
+<h3 id="step-13-1">Step 13</h3>
+<p>F7.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Spell Check</li>
+</ul>
+<h3 id="step-14-1">Step 14</h3>
+<p>Alt plus A.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Say Address</li>
+</ul>
+<p><strong>Something to try:</strong> Open a file of your own, change
+one line, check its spelling, and save it.</p>
+<h2 id="05---find-your-way-in-a-long-document">05 - Find Your Way in a
+Long Document</h2>
+<p>One want: a place in a long report, found now and found again
+tomorrow. Finding a word, jumping to a line, setting a bookmark and
+returning to it, and hearing how big the document is. This walk assumes
+walk four.</p>
+<p><strong>Before you start:</strong> A long document is open in
+EdSharp.</p>
+<h3 id="step-1-controlf">Step 1: Control+F</h3>
+<p>The want: a place in a long report, found again tomorrow. Control
+plus F, Forward Find, asks for the text and remembers your last
+answers.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Forward Find dialog, Find: edit combo</li>
+</ul>
+<h3 id="step-2-enter-2">Step 2: Enter</h3>
+<p>budget, and Enter. The cursor lands on the first match, and the line
+is read.</p>
+<p>Screen reader:</p>
+<ul>
+<li>The budget for the second quarter is attached.</li>
+</ul>
+<h3 id="step-3-f3">Step 3: F3</h3>
+<p>F3 finds the next; Shift plus F3 the previous. A find that reaches
+the end says so and stops.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Budget notes follow in the appendix.</li>
+</ul>
+<h3 id="step-4-controlj">Step 4: Control+J</h3>
+<p>Control plus J, Jump to Line, takes a number: a line, or a line and a
+column.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Jump to Line dialog, Line: edit</li>
+</ul>
+<h3 id="step-5-enter">Step 5: Enter</h3>
+<p>120, and Enter.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Section four. Staffing.</li>
+</ul>
+<h3 id="step-6-controlk">Step 6: Control+K</h3>
+<p>Control plus K, Set Bookmark, marks the place; EdSharp says how far
+down the document it is.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Bookmark at percent 40</li>
+</ul>
+<h3 id="step-7-altk">Step 7: Alt+K</h3>
+<p>Move away -- Control plus Home to the top -- then Alt plus K, Go to
+Bookmark, brings you back. Bookmarks are kept with the file, so
+tomorrow's Alt plus K lands here too.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Section four. Staffing.</li>
+</ul>
+<h3 id="step-8-alty">Step 8: Alt+Y</h3>
+<p>Alt plus Y, Say Yield, says the size of what you are in: characters,
+words and lines, for all the text or the selection.</p>
+<p>Screen reader:</p>
+<ul>
+<li>14,205 characters, 2,310 words, 188 lines</li>
+</ul>
+<h3 id="step-9-3">Step 9</h3>
+<p>What this walk taught. I say the key; the reader says what it
+does.</p>
+<h3 id="step-10-4">Step 10</h3>
+<p>Control plus F.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Forward Find</li>
+</ul>
+<h3 id="step-11-4">Step 11</h3>
+<p>Control plus J.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Jump to Line</li>
+</ul>
+<h3 id="step-12-2">Step 12</h3>
+<p>Control plus K.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Set Bookmark</li>
+</ul>
+<h3 id="step-13-2">Step 13</h3>
+<p>Alt plus K.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Go to Bookmark</li>
+</ul>
+<p><strong>Something to try:</strong> Find a word in a document of your
+own, bookmark the place, go to the top, and come back.</p>
+<h2 id="06---convert-between-formats">06 - Convert Between Formats</h2>
+<p>Two wants: a Word document read as text, and Markdown written out as
+a web page. Opening in another format, exporting to one, and the
+Markdown preview. This walk assumes walks four and five.</p>
+<p><strong>Before you start:</strong> EdSharp is open, and report.docx
+is in your Documents folder.</p>
+<h3 id="step-1-controlshifto">Step 1: Control+Shift+O</h3>
+<p>The want: a Word document someone sent, read as text. Control plus
+Shift plus O, Open Other Format -- Shift widens Open -- converts it on
+the way in.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Open Other Format dialog, File name: edit combo</li>
+</ul>
+<h3 id="step-2-enter-3">Step 2: Enter</h3>
+<p>report dot d o c x, and Enter. EdSharp says what it is doing.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Converting</li>
+<li>report dot d o c x, EdSharp</li>
+<li>Quarterly Report</li>
+</ul>
+<h3 id="step-3-altshifte">Step 3: Alt+Shift+E</h3>
+<p>The other direction: writing out as something else. Alt plus Shift
+plus E, Export Format, offers the formats this document can become.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Export Format dialog, Format: list box, Web page, 1 of 8</li>
+</ul>
+<h3 id="step-4-enter-1">Step 4: Enter</h3>
+<p>Web page, and Enter: the Markdown you are writing becomes an HTML
+file beside it, and EdSharp says the file.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Converted 1 file</li>
+</ul>
+<h3 id="step-5-controlf9">Step 5: Control+F9</h3>
+<p>Control plus F9, Preview Markdown, shows the same thing as a
+formatted page in a window of EdSharp's own, for checking headings and
+links without leaving the editor.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Preview, document</li>
+</ul>
+<h3 id="step-6-escape">Step 6: Escape</h3>
+<p>Escape returns. PDF files, slide decks and spreadsheets open the same
+way, by Control plus Shift plus O; the document tools from the
+installer's last page are what make the richer ones possible.</p>
+<p>Screen reader:</p>
+<ul>
+<li>report dot d o c x, EdSharp</li>
+</ul>
+<h3 id="step-7-3">Step 7</h3>
+<p>What this walk taught. I say the key; the reader says what it
+does.</p>
+<h3 id="step-8-2">Step 8</h3>
+<p>Control plus Shift plus O.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Open Other Format</li>
+</ul>
+<h3 id="step-9-4">Step 9</h3>
+<p>Alt plus Shift plus E.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Export Format</li>
+</ul>
+<h3 id="step-10-5">Step 10</h3>
+<p>Control plus F9.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Preview Markdown</li>
+</ul>
+<p><strong>Something to try:</strong> Open a Word document or a PDF as
+text, and export a Markdown file as a web page.</p>
+<h2 id="07---write-code">07 - Write Code</h2>
+<p>One want: a program that will not run, fixed. Choosing the compiler
+once, compiling with the cursor landing on the error, moving by blocks
+of code, hearing indentation, and snippets. This walk assumes walks four
+and five.</p>
+<p><strong>Before you start:</strong> EdSharp is open on a short Python
+file with one mistake, and Python was ticked when EdSharp was
+installed.</p>
+<h3 id="step-1-controlshiftf5">Step 1: Control+Shift+F5</h3>
+<p>The want: a Python program that will not run, fixed. With hello dot p
+y open, Control plus Shift plus F5, Choose Compiler, picks the language
+once; EdSharp remembers it by extension.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Choose Compiler dialog, Compiler: list box, Python, 7 of 20</li>
+</ul>
+<h3 id="step-2-controlf5">Step 2: Control+F5</h3>
+<p>Enter. Then Control plus F5, Compile: the program is run or checked,
+the output is spoken, and the cursor lands on the first error.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Compiler Python</li>
+<li>line 12, SyntaxError: expected colon</li>
+<li>for item in items</li>
+</ul>
+<h3 id="step-3-controlb">Step 3: Control+B</h3>
+<p>Code is moved through by its shape. Control plus B, Next Block, goes
+to the next block of code with the same or less indentation; Control
+plus Shift plus B the previous.</p>
+<p>Screen reader:</p>
+<ul>
+<li>def total(items):</li>
+</ul>
+<h3 id="step-4-alti">Step 4: Alt+I</h3>
+<p>Alt plus I, Say Indentation, says the level of the current line; Alt
+plus B, Say Block, reads the rest of the block, so you hear a loop or a
+function whole.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Indent 1</li>
+</ul>
+<h3 id="step-5-controlf5">Step 5: Control+F5</h3>
+<p>Fix the line, Control plus S, Control plus F5 again. A clean run
+speaks its output and lands nowhere.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Compiler Python</li>
+<li>Total: 42</li>
+</ul>
+<h3 id="step-6-altv">Step 6: Alt+V</h3>
+<p>Snippets fill in the parts that change. Alt plus V, Invoke Snippet,
+picks a saved piece of code to paste or run; Alt plus S saves the
+selection as a new one.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Invoke Snippet dialog, Snippet: list box, python-main, 1 of 14</li>
+</ul>
+<h3 id="step-7-escape">Step 7: Escape</h3>
+<p>F5, Run, executes the file by its extension, without the compile
+step, once it is right.</p>
+<p>Screen reader:</p>
+<ul>
+<li>hello dot p y, EdSharp</li>
+</ul>
+<h3 id="step-8-3">Step 8</h3>
+<p>What this walk taught. I say the key; the reader says what it
+does.</p>
+<h3 id="step-9-5">Step 9</h3>
+<p>Control plus F5.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Compile</li>
+</ul>
+<h3 id="step-10-6">Step 10</h3>
+<p>Control plus Shift plus F5.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Choose Compiler</li>
+</ul>
+<h3 id="step-11-5">Step 11</h3>
+<p>Control plus B.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Next Block</li>
+</ul>
+<h3 id="step-12-3">Step 12</h3>
+<p>Alt plus V.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Invoke Snippet</li>
+</ul>
+<p><strong>Something to try:</strong> Compile a program of your own, go
+to its first error, fix it, and run it.</p>
+<h2 id="08---ask-the-ai-on-your-own-computer">08 - Ask the AI on Your
+Own Computer</h2>
+<p>One want: a question about a document, answered with nothing sent off
+the machine. Chatting about the document, chatting with no document, and
+translating it, all with the model Ollama runs on your own computer.
+This walk assumes walks four to six.</p>
+<p><strong>Before you start:</strong> EdSharp is open on a document, and
+Ollama with a model was ticked when EdSharp was installed, or installed
+since.</p>
+<h3 id="step-1-3">Step 1</h3>
+<p>The want: a question about the document, answered without sending it
+anywhere. The model runs on your own computer, through Ollama, which the
+installer offered; nothing leaves the machine.</p>
+<h3 id="step-2-shiftf12">Step 2: Shift+F12</h3>
+<p>Shift plus F12, Chat about Document: the question goes with the
+document, or with the selection when text is selected, and the answer
+opens in a new window.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Chat about Document dialog, Question: edit</li>
+</ul>
+<h3 id="step-3-enter">Step 3: Enter</h3>
+<p>What are the three main points? And Enter. EdSharp names the model it
+is asking.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Asking llama3.2</li>
+<li>Answer - EdSharp</li>
+<li>The report makes three points. First,</li>
+</ul>
+<h3 id="step-4-3">Step 4</h3>
+<p>F12 alone, Chat with AI, asks a question with no document attached.
+The answer opens the same way.</p>
+<h3 id="step-5-altshiftf7">Step 5: Alt+Shift+F7</h3>
+<p>Alt plus Shift plus F7, Translate Language, translates the selection
+or the whole document between two languages, with the same model.
+EdSharp names the model and the languages.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Translate Language dialog, From: combo, English</li>
+</ul>
+<h3 id="step-6-controlenter">Step 6: Control+Enter</h3>
+<p>Spanish as the target, Control plus Enter, and the translation opens
+in a new window, the original untouched.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Translating with llama3.2</li>
+<li>Translation - EdSharp</li>
+</ul>
+<h3 id="step-7-4">Step 7</h3>
+<p>All of it waits on the machine, not on a service: the first answer
+from a model takes a few seconds while it loads, and the next ones are
+quick.</p>
+<h3 id="step-8-4">Step 8</h3>
+<p>What this walk taught. I say the key; the reader says what it
+does.</p>
+<h3 id="step-9-6">Step 9</h3>
+<p>Shift plus F12.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Chat about Document</li>
+</ul>
+<h3 id="step-10-7">Step 10</h3>
+<p>F12.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Chat with AI</li>
+</ul>
+<h3 id="step-11-6">Step 11</h3>
+<p>Alt plus Shift plus F7.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Translate Language</li>
+</ul>
+<p><strong>Something to try:</strong> Ask a question about a document of
+your own, then translate a paragraph of it.</p>
+<h2 id="09---glossary">09 - Glossary</h2>
+<p>The words EdSharp uses, in alphabetical order. I say the term; the
+reader says what it means. Each is one line, for looking up or for
+listening straight through.</p>
+<p><strong>Before you start:</strong> Nothing is needed.</p>
+<h3 id="step-1-4">Step 1</h3>
+<p>Alternate Menu.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Every command in one list you type into, with its key beside it. Alt
+plus F10.</li>
+</ul>
+<h3 id="step-2-2">Step 2</h3>
+<p>block.</p>
+<p>Screen reader:</p>
+<ul>
+<li>A stretch of code at one indentation. Control plus B goes to the
+next; Alt plus B reads the rest of this one.</li>
+</ul>
+<h3 id="step-3-3">Step 3</h3>
+<p>bookmark.</p>
+<p>Screen reader:</p>
+<ul>
+<li>A place in a file, kept with the file. Control plus K sets one; Alt
+plus K returns to it.</li>
+</ul>
+<h3 id="step-4-4">Step 4</h3>
+<p>chunk.</p>
+<p>Screen reader:</p>
+<ul>
+<li>A run of characters with no space in it. Alt plus Right Arrow goes
+to the next; Control plus Space selects it.</li>
+</ul>
+<h3 id="step-5-3">Step 5</h3>
+<p>compiler.</p>
+<p>Screen reader:</p>
+<ul>
+<li>The program EdSharp hands your file to with Control plus F5, chosen
+once by extension with Control plus Shift plus F5.</li>
+</ul>
+<h3 id="step-6-3">Step 6</h3>
+<p>document.</p>
+<p>Screen reader:</p>
+<ul>
+<li>One file open in EdSharp, in a window of its own; Control plus Tab
+moves to the next, F4 lists them.</li>
+</ul>
+<h3 id="step-7-5">Step 7</h3>
+<p>encoding.</p>
+<p>Screen reader:</p>
+<ul>
+<li>How a file's characters are stored. Alt plus Z twice says it; Alt
+plus Shift plus Y renders the text in another one.</li>
+</ul>
+<h3 id="step-8-5">Step 8</h3>
+<p>export.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Writing the document out as another format -- a web page, a Word
+document, plain text. Alt plus Shift plus E.</li>
+</ul>
+<h3 id="step-9-7">Step 9</h3>
+<p>Key Describer.</p>
+<p>Screen reader:</p>
+<ul>
+<li>A mode in which every key says what it does instead of doing it.
+Control plus F1 turns it on and off.</li>
+</ul>
+<h3 id="step-10-8">Step 10</h3>
+<p>open other format.</p>
+<p>Screen reader:</p>
+<ul>
+<li>Opening a Word document, PDF, slide deck or spreadsheet converted to
+text. Control plus Shift plus O.</li>
+</ul>
+<h3 id="step-11-7">Step 11</h3>
+<p>snippet.</p>
+<p>Screen reader:</p>
+<ul>
+<li>A saved piece of text or code, pasted or run with Alt plus V, saved
+with Alt plus S.</li>
+</ul>
+<h3 id="step-12-4">Step 12</h3>
+<p>yield.</p>
+<p>Screen reader:</p>
+<ul>
+<li>The size of the text: characters, words and lines, for all of it or
+the selection. Alt plus Y.</li>
+</ul>
+<h3 id="step-13-3">Step 13</h3>
+<p>Twelve terms. The guide, F1, has each of them in context.</p>
+<p><strong>Something to try:</strong> Pick three terms you did not know
+and find each one in EdSharp.</p>
+<h2 id="10---conclusion">10 - Conclusion</h2>
+<p>What to carry away from the walks, in four sentences, and where to
+begin.</p>
+<p><strong>Before you start:</strong> Nothing is needed.</p>
+<h3 id="step-1-5">Step 1</h3>
+<p>Four things to carry away. A key is named for a word of its command,
+so it can be guessed, and the Alternate Menu tells you any key you have
+not learned. Alt says, Control does, Shift widens. A document in any
+format becomes text you can read, and your text becomes any format. And
+the AI is on your own machine.</p>
+<h3 id="step-2-3">Step 2</h3>
+<p>Start with the file you work in most. Open it, change a line, save
+it, and let the keys come as you need them; the guide and the Key
+Describer are there for the ones you do not know yet.</p>
+<p><strong>Something to try:</strong> Open the file you work in most and
+change one line.</p>
+<h2 id="11---more-information">11 - More Information</h2>
+<p>Where the rest is: the guide and history from inside EdSharp, the
+documents, the GitHub page, updates, the session log, and the other
+Homer Tools.</p>
+<p><strong>Before you start:</strong> Nothing is needed.</p>
+<h3 id="step-1-6">Step 1</h3>
+<p>F1 opens the guide, the whole of EdSharp in one document, from inside
+the program. Shift plus F1 opens the history of changes. Alt plus F1
+says the version. Control plus Shift plus F1 opens the quick starts by
+role.</p>
+<h3 id="step-2-4">Step 2</h3>
+<p>The ReadMe is the short start; the guide is the reference; Hotkeys
+lists every key three ways; the FAQ holds the questions people actually
+ask. All are in the help folder of the installation, and on the
+project's GitHub page.</p>
+<h3 id="step-3-4">Step 3</h3>
+<p>F11 checks for a newer version and offers to install it. The project
+is at github dot com, slash JamalMazrui, slash EdSharp. Control plus F12
+copies this session's log to the clipboard, ready to attach to a report
+of a problem.</p>
+<h3 id="step-4-5">Step 4</h3>
+<p>EdSharp is one of the Homer Tools, free programs for working by ear:
+EdSharp for text, FileDir for files, DbDo for data. They share their
+keys and their player, so learning one is most of learning the next.</p>
+<p><strong>Something to try:</strong> Press F1 and read the first
+section of the guide.</p>
 <!-- walkthrough ends -->
 </body>
 </html>

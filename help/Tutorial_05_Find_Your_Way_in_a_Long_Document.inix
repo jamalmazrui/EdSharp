@@ -1,0 +1,83 @@
+﻿[about]
+Title=05 - Find Your Way in a Long Document
+Intro=One want: a place in a long report, found now and found again tomorrow. Finding a word, jumping to a line, setting a bookmark and returning to it, and hearing how big the document is. This walk assumes walk four.
+Setup=A long document is open in EdSharp.
+Homework=Find a word in a document of your own, bookmark the place, go to the top, and come back.
+
+[step]
+
+Say=The want: a place in a long report, found again tomorrow. Control plus F, Forward Find, asks for the text and remembers your last answers.
+Key=Control+F
+Hear=Forward Find dialog, Find: edit combo
+
+[step]
+
+Say=budget, and Enter. The cursor lands on the first match, and the line is read.
+Key=Enter
+Hear=The budget for the second quarter is attached.
+
+[step]
+
+Say=F3 finds the next; Shift plus F3 the previous. A find that reaches the end says so and stops.
+Key=F3
+Hear=Budget notes follow in the appendix.
+
+[step]
+
+Say=Control plus J, Jump to Line, takes a number: a line, or a line and a column.
+Key=Control+J
+Hear=Jump to Line dialog, Line: edit
+
+[step]
+
+Say=120, and Enter.
+Key=Enter
+Hear=Section four. Staffing.
+
+[step]
+
+Say=Control plus K, Set Bookmark, marks the place; EdSharp says how far down the document it is.
+Key=Control+K
+Hear=Bookmark at percent 40
+
+[step]
+
+Say=Move away -- Control plus Home to the top -- then Alt plus K, Go to Bookmark, brings you back. Bookmarks are kept with the file, so tomorrow's Alt plus K lands here too.
+Key=Alt+K
+Hear=Section four. Staffing.
+
+[step]
+
+Say=Alt plus Y, Say Yield, says the size of what you are in: characters, words and lines, for all the text or the selection.
+Key=Alt+Y
+Hear=14,205 characters, 2,310 words, 188 lines
+
+[step]
+
+Say=What this walk taught. I say the key; the reader says what it does.
+Key=
+Hear=
+
+[step]
+
+Say=Control plus F.
+Key=
+Hear=Forward Find
+
+[step]
+
+Say=Control plus J.
+Key=
+Hear=Jump to Line
+
+[step]
+
+Say=Control plus K.
+Key=
+Hear=Set Bookmark
+
+[step]
+
+Say=Alt plus K.
+Key=
+Hear=Go to Bookmark
