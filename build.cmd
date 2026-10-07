@@ -46,7 +46,7 @@ if not defined homerDev (
 )
 set "homerVer=0.0.0"
 if exist "!homerDev!\version.txt" set /p homerVer=<"!homerDev!\version.txt"
-set "kitNeeded=1.54.0"
+set "kitNeeded=1.54.1"
 powershell -NoProfile -Command "if ([version]'!homerVer!' -lt [version]'!kitNeeded!') { exit 1 } else { exit 0 }" >nul
 if errorlevel 1 (
   echo EdSharp needs HomerDev !kitNeeded! or later, and the kit is !homerVer!.

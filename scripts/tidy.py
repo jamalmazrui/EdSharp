@@ -912,7 +912,9 @@ def main():
         logLine("tidy end")
         return 0
     sayLine("%s in %s" % (appName(), sRoot))
-    if not dArguments.repo_only and sKind != "kit":
+    if not dArguments.repo_only:
+        # The step itself declines when this folder is the kit's own; the kind
+        # is not trusted here, since the strays are what mislead it.
         try: removeStrayKitFiles(isGitRepo() and not dArguments.folder_only)
         except Exception as oError: logLine("stray kit files: skipped, " + str(oError))
 
