@@ -81,6 +81,42 @@ Hear=Untitled, edit, multiline, blank
 
 [step]
 
+Say=Before the installer, the download: the ReadMe on the project page has one link, EdSharp underscore setup dot exe, and F11 inside an installed EdSharp fetches the same file.
+Key=
+Hear=
+
+[step]
+
+Say=A planned misstep. Run the installer while EdSharp is open and it asks you to close it first, by name; close it, press Retry, and the installer carries on. Nothing is half-installed.
+Key=
+Hear=
+
+[step]
+
+Say=The first run asks nothing. EdSharp opens on an empty document, and the reader says the title, then the edit box, then blank; typing starts at once.
+Key=
+Hear=
+
+[step]
+
+Say=What the screen reader scripts give. With them installed, the reader knows EdSharp's edit box and dialogs by name, and reads the status line's messages as they arrive without your asking.
+Key=
+Hear=
+
+[step]
+
+Say=What to try first. Type a sentence, Control plus S, give it a name, Alt plus A to hear where you are, F1 for the guide. Five minutes of that and walk four is half known.
+Key=
+Hear=
+
+[step]
+
+Say=Updating later is F11 inside EdSharp: it says the installed version and the newest one, and offers to fetch and run the installer, whose last page shows the same boxes, each saying its state.
+Key=
+Hear=
+
+[step]
+
 Say=What this walk taught. I say the key; the reader says what it does.
 Key=
 Hear=

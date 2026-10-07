@@ -936,9 +936,33 @@ Screen reader:
 
 ### Step 13
 
-What this walk taught. I say the key; the reader says what it does.
+Before the installer, the download: the ReadMe on the project page has one link, EdSharp underscore setup dot exe, and F11 inside an installed EdSharp fetches the same file.
 
 ### Step 14
+
+A planned misstep. Run the installer while EdSharp is open and it asks you to close it first, by name; close it, press Retry, and the installer carries on. Nothing is half-installed.
+
+### Step 15
+
+The first run asks nothing. EdSharp opens on an empty document, and the reader says the title, then the edit box, then blank; typing starts at once.
+
+### Step 16
+
+What the screen reader scripts give. With them installed, the reader knows EdSharp's edit box and dialogs by name, and reads the status line's messages as they arrive without your asking.
+
+### Step 17
+
+What to try first. Type a sentence, Control plus S, give it a name, Alt plus A to hear where you are, F1 for the guide. Five minutes of that and walk four is half known.
+
+### Step 18
+
+Updating later is F11 inside EdSharp: it says the installed version and the newest one, and offers to fetch and run the installer, whose last page shows the same boxes, each saying its state.
+
+### Step 19
+
+What this walk taught. I say the key; the reader says what it does.
+
+### Step 20
 
 Alt plus Control plus E.
 
@@ -1564,9 +1588,33 @@ Markdown to plain text, HTML to Markdown, a table in a document to lines you can
 
 ### Step 12
 
-What this walk taught. I say the key; the reader says what it does.
+Where converted files go. Open Other Format reads the original and makes a text copy in your temporary folder; Save puts it where you say. Export writes beside the original, with the new extension; Convert File Format does the same for files on disk.
 
 ### Step 13
+
+Tables come through as lines: each row is a line, each cell separated by a tab or a bar, which a reader reads better than a grid. Headings keep their level as Markdown's pound signs, so Control plus B and the heading keys still move by them.
+
+### Step 14
+
+A planned misstep. Export to PDF with the document tools not installed, and EdSharp says so and names the box on the installer's last page that provides them; nothing hangs and nothing half-converts.
+
+Screen reader:
+
+- PDF export needs the document tools. Run the installer and tick Document tools.
+
+### Step 15
+
+Images in a document are listed by their alternative text, when the author gave any; a document with none says image and its file name, which is itself a finding when you are checking someone's accessibility.
+
+### Step 16
+
+Round trips are safe: a Markdown file exported to Word and opened again as text returns as the same Markdown, headings and lists intact; what is lost is only what Markdown cannot say, such as a font.
+
+### Step 17
+
+What this walk taught. I say the key; the reader says what it does.
+
+### Step 18
 
 Control plus Shift plus O.
 
@@ -1574,7 +1622,7 @@ Screen reader:
 
 - Open Other Format
 
-### Step 14
+### Step 19
 
 Alt plus Shift plus E.
 
@@ -1582,7 +1630,7 @@ Screen reader:
 
 - Export Format
 
-### Step 15
+### Step 20
 
 Control plus F9.
 
@@ -2163,6 +2211,18 @@ When EdSharp is yours, make it yours further: Configuration Options for the spel
 ### Step 15
 
 If something goes wrong, Control plus F12 copies the session log's path; that file with a line about what you were doing, sent to the project page on GitHub, is the fastest way to a fix.
+
+### Step 16
+
+Three things people do with EdSharp every day, each in one breath. Read a document someone sent: Control plus Shift plus O, and it is text. Fix a program: Control plus F5, land on the error, fix it, Control plus F5. Write for the web: Markdown, Control plus F9 to check, Alt plus Shift plus E to export.
+
+### Step 17
+
+And three things the other Homer programs share with it, so the second program costs nothing to learn: the dialog that works one way, the Say keys that change nothing, and the Key Describer that answers any key without doing it.
+
+### Step 18
+
+Where the walks stop and the guide begins: scripting EdSharp in JScript, the Markdown code-block runner, the translator's quick start, the slide presenter's, the screen reader script writer's. F1 has all of it, and Control plus Shift plus F1 picks the quick start for your role.
 
 **Something to try:** Open the file you work in most, change one line, save it; then do one thing from each task walk in it.
 

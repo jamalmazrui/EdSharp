@@ -284,8 +284,11 @@ def main():
         iSteps = readText(sScript).count("[step]") if "readText" in globals() else open(sScript, "rb").read().decode("utf-8-sig").count("[step]")
         mNum = re.match(r"Tutorial_(\d\d)_", sBase)
         sNum = mNum.group(1) if mNum else ""
-        if iSteps > 28 and sNum != "09":
-            problem(sBase, 0, "%d steps is more than five minutes; cut what an earlier walk taught, or split it" % iSteps)
+        # Step counts are a guess at length; the tool's measurement of the
+        # audio is the fact. A high count is a notice, so a walk of many short
+        # two-voice exchanges is not refused for being brisk.
+        if iSteps > 32 and sNum != "09":
+            notice(sBase + ": %d steps is likely over five minutes; the tool will measure it -- cut what an earlier walk taught, or split it, if it is" % iSteps)
         if sNum and sNum not in ("00", "11", "09") and iSteps < 12:
             notice(sBase + ": %d steps is likely under three minutes; the guideline wants three to five for parts 01 to 10" % iSteps)
     # THE TWELVE-WALK PATTERN (5 October 2026) is reported as NOTICES, not

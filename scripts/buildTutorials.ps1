@@ -825,6 +825,10 @@ function retireOldAudio() {
   }
 }
 
+# Minutes and seconds as text, used by the progress line and the playlist.
+function minutesText([int] $iSeconds) {
+  if ($iSeconds -lt 0) { return "length unknown" }
+
 function audioName([string] $sScript) {
   $sStem = [System.IO.Path]::GetFileNameWithoutExtension($sScript)
   if ($sStem -match '^Tutorial_(.+)$') { $sStem = $matches[1] }
@@ -1121,9 +1125,20 @@ function buildOne([string] $sScript) {
   # and the starting state is in the transcript for anybody who wants it.
 
   $iStepAt = 0
+  $dtWalkStart = Get-Date
+  $bSaidBusy = $false
   foreach ($dStep in $lsSteps) {
     $iStepAt = $iStepAt + 1
-    if ($iStepAt -gt 1 -and (($iStepAt - 1) % 4) -eq 0) { say ("  step " + $iStepAt + " of " + $lsSteps.Count) }
+    if ($iStepAt -gt 1 -and (($iStepAt - 1) % 4) -eq 0) {
+      # THE PROGRESS LINE CARRIES THE CLOCK, so a slow run is seen to be slow
+      # and not taken for a hang: on 6 October 2026 four builds spoke at once
+      # and each step took twenty seconds instead of five.
+      $tsSoFar = (Get-Date) - $dtWalkStart
+      $dPerStep = $tsSoFar.TotalSeconds / [Math]::Max(1, $iStepAt - 1)
+      $iLeft = [int][Math]::Round($dPerStep * ($lsSteps.Count - $iStepAt + 1))
+      say ("  step " + $iStepAt + " of " + $lsSteps.Count + ", " + (minutesText ([int]$tsSoFar.TotalSeconds)) + " elapsed, about " + (minutesText $iLeft) + " to go")
+      if ($dPerStep -gt 12 -and -not $bSaidBusy) { say "  Slower than usual: the computer is busy, perhaps with another build speaking its tutorials."; $bSaidBusy = $true }
+    }
     # Pause= is the one piece of timing a script can set for itself: seconds of
     # silence before the step is spoken. SSML calls this <break time="2s"/>; our
     # key is the same idea with the angle brackets left off. Everything else --
@@ -1205,6 +1220,21 @@ if (-not $bSapi -and -not $bLive -and -not $bDocsOnly) {
 # script named on the command line always speak.
 $iDone = 0
 $iKept = 0
+# ONE BUILD SPEAKS AT A TIME, MACHINE-WIDE. Kokoro takes the whole processor;
+# two builds speaking together each crawl and both look hung. A named mutex
+# serializes them, and the one that waits says so, and for how long.
+$oMutex = $null
+try {
+  $bCreated = $false
+  $oMutex = New-Object System.Threading.Mutex($false, "Global\HomerTutorialsSpeaking", [ref] $bCreated)
+  $iWaited = 0
+  while (-not $oMutex.WaitOne(60000)) {
+    $iWaited = $iWaited + 1
+    if ($iWaited -eq 1) { say "Another Homer build is speaking its tutorials. Waiting for it to finish, so neither crawls." }
+    else { say ("  still waiting, " + $iWaited + " minutes") }
+  }
+  if ($iWaited -gt 0) { say "The other build has finished; speaking now." }
+} catch { note ("tutorial mutex not available: " + $_); $oMutex = $null }
 retireOldAudio
 foreach ($sScript in $lsScripts) {
   $sHave = Join-Path $sAudioDir (audioName $sScript)
@@ -1220,6 +1250,7 @@ foreach ($sScript in $lsScripts) {
   }
   if (buildOne $sScript) { $iDone = $iDone + 1 }
 }
+if ($oMutex -ne $null) { try { $oMutex.ReleaseMutex() } catch { } ; try { $oMutex.Dispose() } catch { } }
 if ($iKept -gt 0) { say ("Kept " + $iKept + " tutorial" + $(if ($iKept -eq 1) { "" } else { "s" }) + " already spoken.") }
 $oSpeaker.Dispose()
 
@@ -1245,8 +1276,6 @@ function audioSeconds([string] $sMp3) {
   return -1
 }
 
-function minutesText([int] $iSeconds) {
-  if ($iSeconds -lt 0) { return "length unknown" }
   return ("" + [int][Math]::Floor($iSeconds / 60) + ":" + ("" + ($iSeconds % 60)).PadLeft(2, "0"))
 }
 

@@ -75,6 +75,36 @@ Hear=
 
 [step]
 
+Say=Where converted files go. Open Other Format reads the original and makes a text copy in your temporary folder; Save puts it where you say. Export writes beside the original, with the new extension; Convert File Format does the same for files on disk.
+Key=
+Hear=
+
+[step]
+
+Say=Tables come through as lines: each row is a line, each cell separated by a tab or a bar, which a reader reads better than a grid. Headings keep their level as Markdown's pound signs, so Control plus B and the heading keys still move by them.
+Key=
+Hear=
+
+[step]
+
+Say=A planned misstep. Export to PDF with the document tools not installed, and EdSharp says so and names the box on the installer's last page that provides them; nothing hangs and nothing half-converts.
+Key=
+Hear=PDF export needs the document tools. Run the installer and tick Document tools.
+
+[step]
+
+Say=Images in a document are listed by their alternative text, when the author gave any; a document with none says image and its file name, which is itself a finding when you are checking someone's accessibility.
+Key=
+Hear=
+
+[step]
+
+Say=Round trips are safe: a Markdown file exported to Word and opened again as text returns as the same Markdown, headings and lists intact; what is lost is only what Markdown cannot say, such as a font.
+Key=
+Hear=
+
+[step]
+
 Say=What this walk taught. I say the key; the reader says what it does.
 Key=
 Hear=

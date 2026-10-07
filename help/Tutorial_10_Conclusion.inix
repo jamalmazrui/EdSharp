@@ -93,3 +93,22 @@ Hear=
 Say=If something goes wrong, Control plus F12 copies the session log's path; that file with a line about what you were doing, sent to the project page on GitHub, is the fastest way to a fix.
 Key=
 Hear=
+
+[step]
+
+Say=Three things people do with EdSharp every day, each in one breath. Read a document someone sent: Control plus Shift plus O, and it is text. Fix a program: Control plus F5, land on the error, fix it, Control plus F5. Write for the web: Markdown, Control plus F9 to check, Alt plus Shift plus E to export.
+Key=
+Hear=
+
+[step]
+
+Say=And three things the other Homer programs share with it, so the second program costs nothing to learn: the dialog that works one way, the Say keys that change nothing, and the Key Describer that answers any key without doing it.
+Key=
+Hear=
+
+[step]
+
+Say=Where the walks stop and the guide begins: scripting EdSharp in JScript, the Markdown code-block runner, the translator's quick start, the slide presenter's, the screen reader script writer's. F1 has all of it, and Control plus Shift plus F1 picks the quick start for your role.
+Key=
+Hear=
+
