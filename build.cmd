@@ -46,7 +46,7 @@ if not defined homerDev (
 )
 set "homerVer=0.0.0"
 if exist "!homerDev!\version.txt" set /p homerVer=<"!homerDev!\version.txt"
-set "kitNeeded=1.54.1"
+set "kitNeeded=1.54.2"
 powershell -NoProfile -Command "if ([version]'!homerVer!' -lt [version]'!kitNeeded!') { exit 1 } else { exit 0 }" >nul
 if errorlevel 1 (
   echo EdSharp needs HomerDev !kitNeeded! or later, and the kit is !homerVer!.
@@ -182,6 +182,12 @@ rem script's arguments through %*, and "nobump" is not a script name.
 if exist "help\Tutorial_*.inix" (
   set "tutorialsMissing="
   for %%F in (help\Tutorial_*.inix) do if not exist "help\tutorials\%%~nF.mp3" set "tutorialsMissing=1"
+  rem AN ACCEPTANCE BUILD SPEAKS NOTHING (kit 1.54.2): check runs build.cmd
+  rem nobump with HomerAcceptance set; the ordinary build's audio is what ships.
+  if defined HomerAcceptance (
+    set "tutorialsMissing="
+    echo Tutorials: acceptance build, speaking left to the ordinary build >> "%log%"
+  )
   if defined tutorialsMissing (
     echo Speaking the tutorials that have no audio yet.
     call "scripts\buildTutorials.cmd" -build

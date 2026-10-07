@@ -240,6 +240,11 @@ def runCommand(lsArgs, sShell=""):
     """
     sCmd = sShell or " ".join(lsArgs)
     nStarted = time.time()
+    # AN ACCEPTANCE COMMAND KNOWS IT IS ONE (kit 1.54.2). A build run as an
+    # acceptance check sees HomerAcceptance in its environment and leaves the
+    # speaking of tutorials to the ordinary build: on 7 October 2026 DbDo's
+    # acceptance build spoke twelve walks and ran out the fifteen-minute clock.
+    dEnv = dict(os.environ); dEnv["HomerAcceptance"] = "1"
     logLine("run start cmd=" + logValue(sCmd))
     sayConsoleRunning(sShell or " ".join(lsArgs))
     try:
@@ -261,15 +266,15 @@ def runCommand(lsArgs, sShell=""):
             if oCmd and os.name == "nt":
                 oResult = subprocess.run('cmd /s /c "' + oCmd.group(1).strip() + '"', shell=False, cwd=sRoot,
                                          capture_output=True, text=True, timeout=900,
-                                         stdin=subprocess.DEVNULL)
+                                         stdin=subprocess.DEVNULL, env=dEnv)
             else:
                 oResult = subprocess.run(sShell, shell=True, cwd=sRoot,
                                          capture_output=True, text=True, timeout=900,
-                                         stdin=subprocess.DEVNULL)
+                                         stdin=subprocess.DEVNULL, env=dEnv)
         else:
             oResult = subprocess.run(lsArgs, cwd=sRoot,
                                      capture_output=True, text=True, timeout=900,
-                                         stdin=subprocess.DEVNULL)
+                                         stdin=subprocess.DEVNULL, env=dEnv)
     except Exception as oError:
         logLine("ERROR run failed message=%s cmd=%s" % (logValue(str(oError)), logValue(sCmd)))
         return (1, str(oError))
