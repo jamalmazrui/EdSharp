@@ -747,6 +747,93 @@ def addToGitignore(lsPaths):
     return True
 
 
+def findKitFolder():
+    """Where the kit is: the HomerDev variable, a HomerDev folder above or
+    beside the project, or one at the top of a fixed drive."""
+    lsDirs = [os.environ.get("HomerDev", "")]
+    for sStart in (sRoot, os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
+        sDir = os.path.abspath(sStart)
+        while True:
+            lsDirs.append(os.path.join(sDir, "HomerDev"))
+            sUp = os.path.dirname(sDir)
+            if sUp == sDir: break
+            sDir = sUp
+    if os.name == "nt":
+        import ctypes
+        lsDirs += [sLetter + ":\\HomerDev" for sLetter in "CDEFGHIJKLMNOPQRSTUVWXYZ"
+                   if ctypes.windll.kernel32.GetDriveTypeW(sLetter + ":\\") == 3]
+    for sDir in lsDirs:
+        if sDir and os.path.isfile(os.path.join(sDir, "version.txt")) and os.path.isdir(os.path.join(sDir, "Templates")):
+            return os.path.abspath(sDir)
+    return ""
+
+
+# Files an app may legitimately hold byte for byte as the kit holds them: the
+# shared scripts the build refreshes from the kit, the licence, the policy
+# files that are the same everywhere. Never taken for strays.
+c_lsNeverStray = ("scripts/", "License.md", "License.htm", ".gitattributes", ".gitignore", "KeepEncoding.txt", "version.txt")
+
+# One-off repair scripts delivered during 5 and 6 October 2026, each of which
+# did its work once; the build retires them so the release check, which reads
+# scripts too, stops meeting their text.
+c_lsRetiredScripts = ("scripts/repairFileDir.cmd", "scripts/restoreFileDir.cmd", "scripts/retireRepair.cmd", "scripts/removeKitFiles.cmd")
+
+
+def removeStrayKitFiles(bRepo):
+    """A HomerDev.zip unarchived into an app's folder leaves the kit's files
+    beside the app's (6 October 2026: twice, into C:\\DbDo). A stray is a file
+    at the same relative path as one of the kit's, byte for byte the kit's,
+    and not one the app may share. Each is deleted, taken out of git's index,
+    and logged; the folders left empty go too. The kit itself is never tidied
+    this way."""
+    sKit = findKitFolder()
+    if not sKit or os.path.abspath(sRoot).lower() == sKit.lower():
+        logLine("stray kit files: no kit found or this is the kit; skipped")
+        return 0
+    lsKitFiles = []
+    for sLine in open(os.path.join(sKit, "RepoFiles.txt"), "r", encoding="utf-8-sig"):
+        sName = sLine.strip()
+        if not sName or sName[0] in "#;": continue
+        sPath = os.path.join(sKit, sName.replace("/", os.sep))
+        if sName.endswith("/") and os.path.isdir(sPath):
+            for sDir, lsSub, lsNames in os.walk(sPath):
+                for sFile in lsNames:
+                    lsKitFiles.append(os.path.relpath(os.path.join(sDir, sFile), sKit).replace(os.sep, "/"))
+        elif os.path.isfile(sPath):
+            lsKitFiles.append(sName)
+    iRemoved = 0
+    lsDirs = set()
+    for sRel in sorted(lsKitFiles):
+        if any(sRel == s or (s.endswith("/") and sRel.startswith(s)) for s in c_lsNeverStray): continue
+        sMine = os.path.join(sRoot, sRel.replace("/", os.sep))
+        if not os.path.isfile(sMine): continue
+        try:
+            if hashOf(sMine) != hashOf(os.path.join(sKit, sRel.replace("/", os.sep))): continue
+        except OSError:
+            continue
+        os.remove(sMine)
+        iRemoved += 1
+        lsDirs.add(os.path.dirname(sMine))
+        logLine("stray kit file removed: " + sRel)
+        if bRepo: runGit(["rm", "-q", "--cached", sRel], bQuiet=True)
+    for sRel in c_lsRetiredScripts:
+        sMine = os.path.join(sRoot, sRel.replace("/", os.sep))
+        if os.path.isfile(sMine):
+            os.remove(sMine); iRemoved += 1
+            logLine("retired one-off script removed: " + sRel)
+            if bRepo: runGit(["rm", "-q", "--cached", sRel], bQuiet=True)
+    for sDir in sorted(lsDirs, key=len, reverse=True):
+        while sDir and os.path.abspath(sDir).lower() != os.path.abspath(sRoot).lower():
+            try:
+                if not os.listdir(sDir): os.rmdir(sDir); logLine("empty folder removed: " + os.path.relpath(sDir, sRoot))
+                else: break
+            except OSError: break
+            sDir = os.path.dirname(sDir)
+    if iRemoved: sayLine("%s of the kit's, or of a one-off repair, removed from the folder." % countNoun(iRemoved, "file", "files"))
+    return iRemoved
+
+
+
 # --- the plan ---------------------------------------------------------------
 
 
@@ -825,6 +912,9 @@ def main():
         logLine("tidy end")
         return 0
     sayLine("%s in %s" % (appName(), sRoot))
+    if not dArguments.repo_only and sKind != "kit":
+        try: removeStrayKitFiles(isGitRepo() and not dArguments.folder_only)
+        except Exception as oError: logLine("stray kit files: skipped, " + str(oError))
 
     # THE BUILD SCRIPT TAKES ITS SHORT NAME HERE (1.43.56). Since 1.43.55 an
     # app's build script is build.cmd, and check fails build<App>.cmd. Tidy runs

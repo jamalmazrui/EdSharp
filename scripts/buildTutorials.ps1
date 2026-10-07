@@ -828,6 +828,8 @@ function retireOldAudio() {
 # Minutes and seconds as text, used by the progress line and the playlist.
 function minutesText([int] $iSeconds) {
   if ($iSeconds -lt 0) { return "length unknown" }
+  return ("" + [int][Math]::Floor($iSeconds / 60) + ":" + ("" + ($iSeconds % 60)).PadLeft(2, "0"))
+}
 
 function audioName([string] $sScript) {
   $sStem = [System.IO.Path]::GetFileNameWithoutExtension($sScript)
@@ -1225,8 +1227,8 @@ $iKept = 0
 # serializes them, and the one that waits says so, and for how long.
 $oMutex = $null
 try {
-  $bCreated = $false
-  $oMutex = New-Object System.Threading.Mutex($false, "Global\HomerTutorialsSpeaking", [ref] $bCreated)
+  # The two-argument constructor: New-Object cannot bind an out parameter.
+  $oMutex = New-Object System.Threading.Mutex($false, "Global\HomerTutorialsSpeaking")
   $iWaited = 0
   while (-not $oMutex.WaitOne(60000)) {
     $iWaited = $iWaited + 1
@@ -1252,7 +1254,7 @@ foreach ($sScript in $lsScripts) {
 }
 if ($oMutex -ne $null) { try { $oMutex.ReleaseMutex() } catch { } ; try { $oMutex.Dispose() } catch { } }
 if ($iKept -gt 0) { say ("Kept " + $iKept + " tutorial" + $(if ($iKept -eq 1) { "" } else { "s" }) + " already spoken.") }
-$oSpeaker.Dispose()
+if ($oSpeaker -ne $null) { try { $oSpeaker.Dispose() } catch { } }
 
 # ---- step 4 of 5: the playlist ----
 #
@@ -1274,9 +1276,6 @@ function audioSeconds([string] $sMp3) {
     if ([double]::TryParse(("" + $sOut).Trim(), [System.Globalization.NumberStyles]::Float, [System.Globalization.CultureInfo]::InvariantCulture, [ref] $d)) { return [int][Math]::Round($d) }
   } catch { }
   return -1
-}
-
-  return ("" + [int][Math]::Floor($iSeconds / 60) + ":" + ("" + ($iSeconds % 60)).PadLeft(2, "0"))
 }
 
 function writePlaylist() {
@@ -1321,6 +1320,6 @@ if (-not $bLive -and $iDone -gt 0) {
   runMake | Out-Null
 }
 
-say ($iDone.ToString() + " of " + $lsScripts.Count + " tutorials built.")
+say ("" + $iDone + " of " + $lsScripts.Count + " tutorials built.")
 if ($iDone -lt $lsScripts.Count) { exit 1 }
 exit 0

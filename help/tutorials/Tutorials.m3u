@@ -1,17 +1,17 @@
-﻿#EXTM3U
-#EXTINF:144,EdSharp Walkthroughs
+#EXTM3U
+#EXTINF:145,EdSharp Walkthroughs
 00_Overview_and_Table_of_Contents.mp3
-#EXTINF:171,01 - Install and Launch
+#EXTINF:226,01 - Install and Launch
 01_Install_and_Launch.mp3
 #EXTINF:186,02 - User Interface Concepts
 02_User_Interface_Concepts.mp3
-#EXTINF:176,03 - Key Patterns
+#EXTINF:175,03 - Key Patterns
 03_Key_Patterns.mp3
 #EXTINF:176,04 - Open, Edit and Save a File
 04_Open_Edit_and_Save_a_File.mp3
 #EXTINF:183,05 - Find Your Way in a Long Document
 05_Find_Your_Way_in_a_Long_Document.mp3
-#EXTINF:169,06 - Convert Between Formats
+#EXTINF:230,06 - Convert Between Formats
 06_Convert_Between_Formats.mp3
 #EXTINF:180,07 - Write Code
 07_Write_Code.mp3
@@ -19,7 +19,7 @@
 08_Ask_the_AI_on_Your_Own_Computer.mp3
 #EXTINF:193,09 - Glossary
 09_Glossary.mp3
-#EXTINF:122,10 - Conclusion
+#EXTINF:164,10 - Conclusion
 10_Conclusion.mp3
 #EXTINF:57,11 - More Information
 11_More_Information.mp3
