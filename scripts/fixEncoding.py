@@ -31,9 +31,16 @@ many files were fixed.
 
 import datetime, glob, io, os, platform, re, sys
 
-c_lsTextExt = (".cmd", ".bat", ".cs", ".htm", ".html", ".inix", ".iss", ".json", ".lua", ".md",
-               ".ps1", ".py", ".spec", ".txt", ".xml", ".m3u")
-c_lsNoBom = (".cmd", ".bat")
+# THE HOMER ENCODING RULES, IN ONE PLACE (1.64.0, don't repeat yourself): this
+# file is their authoritative home. The homer-convert skill's toHomerEncoding.py
+# must carry its own copy, to work when uploaded on its own, and the kit's build
+# fails if that copy states different rules. The two had drifted: the skill knew
+# SKILL.md takes no mark, read UTF-16 and Windows-1252, and knew .css, .csv, .js
+# and .tsv; this file knew .lua, .m3u and .spec. Each now has all of it.
+c_lsTextExt = (".bat", ".cmd", ".cs", ".css", ".csv", ".htm", ".html", ".inix", ".iss", ".js", ".json", ".lua",
+               ".m3u", ".md", ".ps1", ".py", ".spec", ".tsv", ".txt", ".xml")
+c_lsNoBom = (".bat", ".cmd")
+c_lsNoBomNames = ("skill.md", "version.txt")
 # exec is walked, not pruned (1.43.22): the kit keeps its libraries in
 # exec\\CSharp and exec\\homer, and only what RepoFiles.txt names is touched, so
 # a build's binaries there are left alone either way.
@@ -172,14 +179,24 @@ def ownFiles(sRoot, lsNamed):
     return sorted(lsSeen)
 
 
+def decodeText(binData):
+    """The text, read in the first encoding that decodes it cleanly: UTF-16 with a mark, then UTF-8 with or without
+    one, then Windows-1252, the encoding older Windows tools wrote. None when it is none of them."""
+    if binData[:2] in (b"\xff\xfe", b"\xfe\xff"):
+        try: return binData.decode("utf-16")
+        except UnicodeDecodeError: return None
+    for sEncoding in ("utf-8-sig", "cp1252"):
+        try: return binData.decode(sEncoding)
+        except UnicodeDecodeError: continue
+    return None
+
+
 def wantedBytes(sPath, binData):
     """What the file should hold; None when it is not text we can decode."""
-    try:
-        sText = binData.decode("utf-8-sig")
-    except UnicodeDecodeError:
-        return None
+    sText = decodeText(binData)
+    if sText is None: return None
     sText = sText.replace("\r\n", "\n").replace("\r", "\n").replace("\n", "\r\n")
-    bBom = not sPath.lower().endswith(c_lsNoBom) and os.path.basename(sPath).lower() != "version.txt"
+    bBom = not sPath.lower().endswith(c_lsNoBom) and os.path.basename(sPath).lower() not in c_lsNoBomNames
     return (("\ufeff" + sText) if bBom else sText).encode("utf-8")
 
 

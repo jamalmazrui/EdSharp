@@ -215,6 +215,12 @@ Source: "help\Announce.htm";         DestDir: "{app}\help"; Flags: ignoreversion
 Source: "help\History.md";           DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "help\History.htm";          DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "help\Tutorials.htm";      DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+; The spoken tutorials' audio, playlist and feed, made by the build before this is compiled (8 October 2026).
+Source: "help\TutorialFeed.xml"; DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\tutorials\*.mp3"; DestDir: "{app}\help\tutorials"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\tutorials\Tutorials.m3u"; DestDir: "{app}\help\tutorials"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\tutorials\*.sha256"; DestDir: "{app}\help\tutorials"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "help\Tutorial_*.inix"; DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "help\Announce.md";        DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "help\Announce.htm";       DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "License.md";         DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
@@ -226,9 +232,9 @@ Source: "help\lgpl.txt";           DestDir: "{app}\help"; Flags: ignoreversion s
 ; Data trees.  pandoc.exe is excluded from Convert even if a copy is sitting
 ; there at compile time: the Run section below fetches it on the user's
 ; machine instead, so the installer stays small enough for GitHub.
-Source: "templates\snippets\*"; DestDir: "{app}\templates\snippets"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
-Source: "configs\convert\*";  DestDir: "{app}\configs\convert";  Excludes: "pandoc.exe,*.sln,*.vcproj,*.vcxproj,*.vcxproj.filters,*.suo,*.user,*.c,*.asm,*.cs,*.obj,*.zip,temp.htm,temp.txt"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
-Source: "templates\samples\*"; DestDir: "{app}\templates\samples"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
+Source: "templates\snippets\*"; DestDir: "{app}\templates\snippets"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist; Excludes: ".git,.venv,__pycache__,*.pyc,venv"
+Source: "configs\convert\*";  DestDir: "{app}\configs\convert";  Excludes: "pandoc.exe,*.sln,*.vcproj,*.vcxproj,*.vcxproj.filters,*.suo,*.user,*.c,*.asm,*.cs,*.obj,*.zip,temp.htm,temp.txt,.git,.venv,__pycache__,*.pyc,venv"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
+Source: "templates\samples\*"; DestDir: "{app}\templates\samples"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist; Excludes: ".git,.venv,__pycache__,*.pyc,venv"
 ; The spelling dictionary: two plain files the spell checker reads.
 Source: "data\dictionaries\*"; DestDir: "{app}\data\dictionaries"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "exec\WeCantSpell.Hunspell.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist

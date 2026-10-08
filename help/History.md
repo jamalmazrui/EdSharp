@@ -1,5 +1,20 @@
 ﻿# EdSharp History
 
+## 8 October 2026 -- the pattern of ten, delivered and corrected
+
+The conversion to ten spoken walks, made on 7 October, had not reached GitHub, where the twelve older walks remained; it is delivered again, and the build retires the twelve and their audio on its own. Checked against the current Homer practices, the walks were also corrected:
+
+- **Walk 1, User Interface, rewritten to show, then tell.** One step had been a three-minute speech; now each idea is named and then shown, with its key and what the screen reader says: the window, Say Address and Say Status, the status line, dialogs, remembered answers, selection, help, the Key Describer and the Alternate Menu.
+- **A command that does not exist, removed.** Walks 1 and 5 taught "Convert File Format, Control plus Shift plus V"; Control plus Shift plus V is Paste File, and EdSharp has no such command. Converting files on disk is Text Convert, Control plus T, which converts each file named in the document, one to a line, to a text file beside it; Text Combine, Control plus Shift plus T, puts them in one window.
+- **Walk 8, Do Math, shows what it promised.** Powers, roots and rounding with Control plus Equals, and mathematics written the LaTeX way in Markdown, turned into a web page whose formula the screen reader reads as math.
+- **Shorter lines, longer walks.** Walk 0's opening is three steps, not one long one, and walk 4 has more on moving through a long document.
+- **The installer** ships the walk scripts and the audio's fingerprints as well.
+- **Kit tools** updated from HomerDev 1.64.0.
+
+## 8 October 2026 -- tutorials in the pattern of ten
+
+The tutorials follow the Homer pattern of ten. The interface and key-pattern walks are now one, 1 User Interface, its narration folded into the reader's demonstrations; the five task walks are 3 to 7; 8 Do Math is new, Control plus Equals on the line or a selection, and math that reads aloud; and 9 Conclusion joins the conclusion, the glossary and more information. The installer now ships the tutorials' audio, playlist and feed, which it had left out.
+
 A human-readable record of fixes and enhancements, newest first. Each entry
 says what changed and why, so a future reader -- or a future maintainer --
 can judge the decision, not just observe it.

@@ -163,6 +163,7 @@ c_lsSkipFolders = [".git", ".venv", "__pycache__", "build", "dist", "exec", "log
 # <App>-<task>-yyyyMMdd-HHmmss.log, one per run, so an alphabetical sort is a
 # chronological one and the whole folder can be zipped and sent. A single
 # fixed name beside the script overwrites the evidence of the run before.
+c_lsInstallerExcludes = [".git", ".venv", "__pycache__", "*.pyc", "venv"]   # build leftovers no installer may ship
 c_sLogName = "tidy.log"
 c_sNotes = "notes"
 
@@ -181,6 +182,10 @@ c_lsStandingNames = [
     r"^(homertidy|tagrelease|summarizesetup)\.log$",
     r"^(build|create|new|clean|tidy)[a-z0-9_]*\.log$",
     r"^[a-z0-9_+-]+\.(cs|py|js|iss|ico|inix|manifest|config|lua)$",
+    # The fingerprint beside each tutorial's audio (1.60.3), 04_Open_and_Move.sha256: buildTutorials keeps it to know the
+    # audio is current, and the repository carries it with the audio so a build elsewhere speaks nothing it need not.
+    # One digit since the pattern of ten (1.62.0), 4_Open_and_Move.sha256; two-digit names are still kept until retired.
+    r"^\d{1,2}_[a-z0-9_]+\.sha256$",
 ]
 
 # Where an unnamed file goes when it is moved out of the way.
@@ -318,6 +323,42 @@ def namedByInstaller():
             lsNames.append(oMatch.group(1))
         lsNames.append(sName)
     return lsNames
+
+
+def installerExcludes():
+    """Adds Excludes for build leftovers to every Source: line of the <App>_setup.iss that takes in a folder with
+    recursesubdirs: a Python virtual environment, compiled Python and Git folders. Returns the number of lines changed.
+
+    WHY (1.60.2, 7 October 2026): DbDo's installer took in templates\\samples\\.venv, a virtual environment left by a
+    build, and shipped it: 4,650 of its 4,805 files, 2,290 of them compiled Python. Tidy runs before release builds the
+    installer, so a line repaired here is clean in that same build. Inno Setup matches an Excludes pattern against the end
+    of each path, so ".venv" leaves out a folder of that name at any depth, with everything in it."""
+    iChanged = 0
+    for sName in sorted(os.listdir(sRoot)):
+        if not sName.lower().endswith("_setup.iss"): continue
+        sPath = os.path.join(sRoot, sName)
+        bRaw = open(sPath, "rb").read()
+        bBom = bRaw[:3] == b"\xef\xbb\xbf"
+        sText = bRaw.decode("utf-8-sig", errors="replace")
+        lsLines, lsOut = sText.split("\n"), []
+        for sLine in lsLines:
+            oSource = re.match(r'(?i)\s*Source:\s*"[^"]+"', sLine)
+            if oSource and re.search(r"(?i)\brecursesubdirs\b", sLine):
+                oExcludes = re.search(r'(?i)Excludes:\s*"([^"]*)"', sLine)
+                lsHave = [x.strip() for x in oExcludes.group(1).split(",") if x.strip()] if oExcludes else []
+                lsAdd = [x for x in c_lsInstallerExcludes if x.lower() not in [h.lower() for h in lsHave]]
+                if lsAdd:
+                    sAll = ",".join(lsHave + lsAdd)
+                    sEnd = "\r" if sLine.endswith("\r") else ""
+                    sBody = sLine[:-1] if sEnd else sLine
+                    sNew = re.sub(r'(?i)Excludes:\s*"[^"]*"', 'Excludes: "' + sAll + '"', sBody) if oExcludes else sBody.rstrip() + '; Excludes: "' + sAll + '"'
+                    logLine("Installer %s: added Excludes %s to: %s" % (sName, ", ".join(lsAdd), sBody.strip()))
+                    sLine = sNew + sEnd
+                    iChanged += 1
+            lsOut.append(sLine)
+        if iChanged:
+            with open(sPath, "wb") as oFile: oFile.write((b"\xef\xbb\xbf" if bBom else b"") + "\n".join(lsOut).encode("utf-8"))
+    return iChanged
 
 
 def namedByRepoFiles():
@@ -833,6 +874,34 @@ def removeStrayKitFiles(bRepo):
     return iRemoved
 
 
+def removeKitSampleLeftovers(bRepo):
+    """The kit's samples, unarchived into an app, leave what their build made beside the files removeStrayKitFiles
+    takes away: the sample programs, PyInstaller's build and dist folders, their logs, the generated version files.
+    None is in the kit's RepoFiles, so none is a stray by that test, and DbDo's installer shipped them -- 30 files,
+    among them six sample programs (8 October 2026). An app's templates\\samples folder holding nothing but the kit's
+    sample leftovers is removed whole, and logged; one holding anything else is left alone, with the reason logged.
+    The kit itself is never tidied this way."""
+    sKit = findKitFolder()
+    if not sKit or os.path.abspath(sRoot).lower() == sKit.lower(): return 0
+    sSamples = os.path.join(sRoot, "templates", "samples")
+    if not os.path.isdir(sSamples): return 0
+    c_lsLeftovers = ["FruitBasket*", "build", "dist", "logs", ".venv", "venv", "__pycache__", "Version.cs", "version.py",
+                     "version.txt", "accept.inix", "*.spec", "*.pyc", "evidence-*.md"]
+    lsOther = [s for s in os.listdir(sSamples) if not any(fnmatch.fnmatch(s.lower(), sPattern.lower()) for sPattern in c_lsLeftovers)]
+    if lsOther:
+        logLine("kit sample leftovers: templates\\samples kept, since it holds " + ", ".join(sorted(lsOther)[:5]) + ", not the kit's")
+        return 0
+    iFiles = sum(len(lsNames) for _, _, lsNames in os.walk(sSamples))
+    shutil.rmtree(sSamples, ignore_errors=True)
+    logLine("kit sample leftovers: templates\\samples removed, %d files the kit's samples had built" % iFiles)
+    if bRepo: runGit(["rm", "-r", "-q", "--cached", "--ignore-unmatch", "templates/samples"], bQuiet=True)
+    sTemplates = os.path.join(sRoot, "templates")
+    if os.path.isdir(sTemplates) and not os.listdir(sTemplates):
+        os.rmdir(sTemplates)
+        logLine("empty folder removed: templates")
+    sayLine("The kit's sample programs, left in templates\\samples by an earlier unarchive, removed: %s." % countNoun(iFiles, "file", "files"))
+    return iFiles
+
 
 # --- the plan ---------------------------------------------------------------
 
@@ -917,6 +986,8 @@ def main():
         # is not trusted here, since the strays are what mislead it.
         try: removeStrayKitFiles(isGitRepo() and not dArguments.folder_only)
         except Exception as oError: logLine("stray kit files: skipped, " + str(oError))
+        try: removeKitSampleLeftovers(isGitRepo() and not dArguments.folder_only)
+        except Exception as oError: logLine("kit sample leftovers: skipped, " + str(oError))
 
     # THE BUILD SCRIPT TAKES ITS SHORT NAME HERE (1.43.56). Since 1.43.55 an
     # app's build script is build.cmd, and check fails build<App>.cmd. Tidy runs
@@ -993,6 +1064,12 @@ def main():
         return 1
 
     iChanges = 0
+
+    # ---- the installer: no build leftovers in it ----
+    iInstaller = installerExcludes()
+    if iInstaller:
+        sayLine("Installer: %s now leave%s out build leftovers (.venv, __pycache__, compiled Python, .git)." % (countNoun(iInstaller, "folder line"), "s" if iInstaller == 1 else ""))
+        iChanges += iInstaller
 
     # ---- the folder ----
     if not dArguments.repo_only:

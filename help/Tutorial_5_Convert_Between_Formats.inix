@@ -1,6 +1,6 @@
 ﻿[about]
-Title=06 - Convert Between Formats
-Intro=Two wants: a Word document read as text, and Markdown written out as a web page. Opening in another format, exporting to one, and the Markdown preview. This walk assumes walks four and five.
+Title=5 - Convert Between Formats
+Intro=Two wants: a Word document read as text, and Markdown written out as a web page. Opening in another format, exporting to one, and the Markdown preview. This walk assumes walks three and five.
 Setup=EdSharp is open, and report.docx is in your Documents folder.
 Homework=Open a Word document or a PDF as text, and export a Markdown file as a web page.
 
@@ -17,7 +17,7 @@ Key=Enter
 Hear=Converting
 Hear=report dot d o c x, EdSharp
 Hear=Quarterly Report
-Say=The document is text now: headings are lines, tables are lines, and every key of walks four and five works on it.
+Say=The document is text now: headings are lines, tables are lines, and every key of walks three and five works on it.
 
 [step]
 
@@ -45,9 +45,17 @@ Hear=report dot d o c x, EdSharp
 
 [step]
 
-Say=Control plus Shift plus V, Convert File Format, converts a file on disk without opening it: pick the file, pick the format, and the new file lands beside the old. Several files at once make a batch, and EdSharp says how many were converted.
-Key=Control+Shift+V
-Hear=Convert File Format dialog, File name: edit combo
+Say=Control plus T, Text Convert, converts files on disk to text without opening them. List their names in a document, one to a line, and each becomes a text file beside it, ending in dot t x t.
+Key=Control+T
+Hear=Converted 3 files
+Note=Confirm the wording with a live run: buildTutorials -live.
+
+[step]
+
+Say=Control plus Shift plus T, Text Combine, takes the same list but puts every file's text together in one new window, one after another.
+Key=Control+Shift+T
+Hear=Untitled, edit, multiline
+Note=Confirm the wording with a live run: buildTutorials -live.
 
 [step]
 
@@ -75,7 +83,7 @@ Hear=
 
 [step]
 
-Say=Where converted files go. Open Other Format reads the original and makes a text copy in your temporary folder; Save puts it where you say. Export writes beside the original, with the new extension; Convert File Format does the same for files on disk.
+Say=Where converted files go. Open Other Format reads the original and makes a text copy in your temporary folder; Save puts it where you say. Export writes beside the original, with the new extension; Text Convert does the same for files on disk.
 Key=
 Hear=
 

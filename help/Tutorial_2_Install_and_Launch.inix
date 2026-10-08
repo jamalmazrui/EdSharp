@@ -1,5 +1,5 @@
 ﻿[about]
-Title=01 - Install and Launch
+Title=2 - Install and Launch
 Intro=The download, the installer's pages, the last page with its boxes and its summary, and EdSharp opening by itself.
 Setup=The installer is downloaded, and your reader is running.
 Homework=Install EdSharp and open it with Alt plus Control plus E.
@@ -105,7 +105,7 @@ Hear=
 
 [step]
 
-Say=What to try first. Type a sentence, Control plus S, give it a name, Alt plus A to hear where you are, F1 for the guide. Five minutes of that and walk four is half known.
+Say=What to try first. Type a sentence, Control plus S, give it a name, Alt plus A to hear where you are, F1 for the guide. Five minutes of that and walk three is half known.
 Key=
 Hear=
 

@@ -1,0 +1,198 @@
+﻿[about]
+Title=1 - User Interface
+Intro=EdSharp's one window, the edit box you hear, dialogs that all work one way, and where help is, each named and then shown by the reader; then the rules every key follows, so a key can be guessed before it is learned.
+Setup=EdSharp is open, with an empty document.
+Homework=Open EdSharp and name each thing as you reach it: the title, the edit box, the status line.
+
+[step]
+
+Say=One want: to move around EdSharp without hunting. Everything in it follows a few rules, and this walk shows each one as the screen reader hears it.
+Key=
+[step]
+
+Say=EdSharp is one window. The document you are editing fills it, and its name is in the title. The edit box is a plain Windows edit control, so every reader reads it the same way.
+Key=Insert+Tab
+Hear=EdSharp, Untitled, edit, multiline, blank
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Other documents you open wait behind this one. Control plus Tab moves to the next, and the reader says its name.
+Key=Control+Tab
+Hear=Notes dot txt, edit, multiline
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=F4 lists every open document by name, so you can choose one rather than cycle through them.
+Key=F4
+Hear=Pick Window dialog, list box, Notes dot txt, 1 of 2
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Escape returns to the document, with nothing changed.
+Key=Escape
+Hear=Notes dot txt, edit, multiline
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Two keys say where you are. Alt plus A, Say Address, gives the line, the column, and how far down the document you are.
+Key=Alt+A
+Hear=Line 1, column 1, 0 percent
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Alt plus Z, Say Status, says whether the document has changed since it was saved.
+Key=Alt+Z
+Hear=Not modified
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Pressed twice, Alt plus Z says the file's character encoding, the way its letters are stored.
+Key=Alt+Z
+Hear=UTF-8
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=EdSharp speaks its own confirmations as they happen, such as Converting, or a bookmark's place. They are shown on the status line too, so a message missed can be read again with the reader's own key for that line.
+Key=Insert+Page Down
+Hear=Line 1 of 1
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Every dialog works the same way. Control plus O, Open, shows the Windows Open dialog you already know.
+Key=Control+O
+Hear=Open dialog
+Hear=File name: edit combo
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=A label and its control, Tab between them, Alt with the underlined letter to jump to one, Control plus Enter for OK from anywhere, and Escape to cancel.
+Key=Escape
+Hear=Notes dot txt, edit, multiline
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Text boxes that ask for something remember your answers. Control plus J, Jump to Line, asks for a line number.
+Key=Control+J
+Hear=Jump to Line dialog, Line: edit, 120
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=The box already holds my last answer, 120. Up and Down Arrows bring back earlier ones, newest first.
+Key=Up Arrow
+Hear=40
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Escape, and I am back where I was.
+Key=Escape
+Hear=Notes dot txt, edit, multiline
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Selection is spoken as you make it. Shift with Down Arrow selects a line.
+Key=Shift+Down Arrow
+Hear=The budget for the second quarter is attached. selected
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Shift plus Space, Say Selected, reads what is selected. Pressed twice, it spells it.
+Key=Shift+Space
+Hear=The budget for the second quarter is attached.
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Control plus Space selects the chunk at the cursor, a run of characters with no spaces in it, such as a web address; pressed again, it adds the next.
+Key=
+[step]
+
+Say=Help is in four places, and they are the same in every Homer program. F1 opens the guide, the whole program in one document.
+Key=F1
+Hear=EdSharp Guide
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Shift plus F1 opens the history of changes; Alt plus F1 says the version, and offers a newer one if there is one; Control plus Shift plus F1 opens the quick starts, one for each kind of work.
+Key=Alt+F1
+Hear=About EdSharp dialog
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Escape closes it. The Help menu, F10 then H, holds all of these, and Play Tutorials, which plays these walks.
+Key=Escape
+Hear=Notes dot txt, edit, multiline
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Every key is named for a word in its command: Control plus O for Open, Control plus F for Find, Control plus K for bookmark. A key never comes from the middle of a word.
+Key=
+[step]
+
+Say=Control plus F1 is the Key Describer. While it is on, every key says what it does instead of doing it: the safe way to explore the keyboard.
+Key=Control+F1
+Hear=Key Describer on
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Now Control plus O only says what it would do.
+Key=Control+O
+Hear=Control plus O, Open a file
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Control plus F1 again turns the describer off.
+Key=Control+F1
+Hear=Key Describer off
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Alt plus F10 is the Alternate Menu: every command in one list you type into, with its key beside it.
+Key=Alt+F10
+Hear=Alternate Menu
+Hear=Command, list box, 1 of 222
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=I type the word convert, and the list narrows to the commands with that word.
+Key=convert
+Hear=Text Convert, Control plus T, 1 of 9
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Escape closes the list without running anything. Configuration Options, Alt plus Shift plus C, holds every setting, each a labelled control, so a setting is found by its name.
+Key=Escape
+Hear=Notes dot txt, edit, multiline
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=A short review. I say a command; the reader says its key. Save As.
+Key=
+Hear=Control plus Shift plus S
+[step]
+
+Say=Jump to Line.
+Key=
+Hear=Control plus J
+[step]
+
+Say=Replace.
+Key=
+Hear=Control plus R
+[step]
+
+Say=Say the path of this file.
+Key=
+Hear=Alt plus P
+[step]
+
+Say=Say the time.
+Key=
+Hear=Alt plus Semicolon
+[step]
+
+Say=Copy the whole document.
+Key=
+Hear=Control plus F8
+[step]
+
+Say=Every one of these is in Hotkeys, in the Help menu, listed three ways: by key, by command, and by menu.
+Key=

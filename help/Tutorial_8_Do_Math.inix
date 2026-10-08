@@ -1,0 +1,152 @@
+﻿; Tutorial_8_Do_Math.inix -- working out sums in the editor, and math that reads aloud.
+
+[about]
+Title=8 - Do Math
+Intro=One want: an answer to a sum without leaving the document. Control plus Equals works out the expression on the current line or in a selection; mathematics written the LaTeX way becomes real math in a web page that the reader speaks.
+Setup=EdSharp is open with a new document.
+Homework=Write three sums of your own, one per line, and work each out with Control plus Equals.
+
+[step]
+
+Say=One want: a sum worked out right in the document, without a calculator in another window. EdSharp does arithmetic, and more, on the line you are on.
+Key=
+[step]
+
+Say=Alt plus Control plus E opens EdSharp, with an empty document.
+Key=Alt+Control+E
+Hear=EdSharp
+Hear=Untitled, edit, multiline, blank
+[step]
+
+Say=I type a sum as I would write it in code: 1250 times 12, plus 300.
+Key=1250 * 12 + 300
+Hear=(each character echoed as it is typed)
+[step]
+
+Say=Control plus Equals works it out: Equals, the sign that asks for an answer.
+Key=Control+Equals
+Hear=15300
+[step]
+
+Say=The answer is spoken, and placed in the document after the sum, so the working stays on the page beside its result.
+Key=
+[step]
+
+Say=A planned misstep: a sum with a comma in a number, as we write money.
+Key=1,250 * 12
+Hear=(each character echoed as it is typed)
+[step]
+
+Say=Control plus Equals.
+Key=Control+Equals
+Hear=15000
+[step]
+
+Say=Not the answer I meant. The expression is JScript, and in code a comma separates two expressions, of which only the last counts. Numbers are written without commas.
+Key=
+[step]
+
+Say=Control plus Z undoes the result, and I fix the number.
+Key=Control+Z
+Hear=Undo
+[step]
+
+Say=Since the expression is JScript, more than arithmetic works. A power: 2 to the 10th.
+Key=Math.pow(2, 10)
+Hear=(each character echoed as it is typed)
+[step]
+
+Say=Control plus Equals.
+Key=Control+Equals
+Hear=1024
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=A square root, the same way.
+Key=Math.sqrt(144)
+Hear=(each character echoed as it is typed)
+[step]
+
+Say=Control plus Equals.
+Key=Control+Equals
+Hear=12
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Rounding to cents: multiply by 100, round, and divide by 100.
+Key=Math.round(19.987 * 100) / 100
+Hear=(each character echoed as it is typed)
+[step]
+
+Say=Control plus Equals.
+Key=Control+Equals
+Hear=19.99
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=A selection works too. Select several lines of sums, and Control plus Equals works out each one, placing each answer beside its own line.
+Key=Control+Equals
+Hear=3 lines worked out
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=For more than a line's worth, Control plus Shift plus G opens a more interactive environment, such as an interactive console, where each answer leads to the next question.
+Key=Control+Shift+G
+Hear=Interactive console
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Now the second half of math: mathematics to be read by others. Written the LaTeX way, between dollar signs, in a Markdown document, it becomes real math in a web page.
+Key=
+[step]
+
+Say=I save a new document as a Markdown file, math dot m d, so EdSharp treats it as Markdown.
+Key=Control+Shift+S
+Hear=Save As dialog
+Hear=File name: edit combo
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Then I write a sentence with a formula in it: the area of a circle is, dollar, backslash pi r caret 2, dollar.
+Key=The area of a circle is $\pi r^2$.
+Hear=(each character echoed as it is typed)
+[step]
+
+Say=Control plus H, HTML Format, converts the document to a web page in a new window, and Pandoc turns the formula into MathML, the standard for math on the web.
+Key=Control+H
+Hear=Untitled, edit, multiline
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=Saved as a dot h t m file, F5 opens it in the browser, where the screen reader reads the formula as math, not as a row of symbols.
+Key=F5
+Hear=The area of a circle is pi r squared.
+Note=Confirm the wording with a live run: buildTutorials -live.
+[step]
+
+Say=And in the browser, the formula can be explored a piece at a time, as a reader of math expects: the reader's own math mode takes you into it.
+Key=
+[step]
+
+Say=Nothing needs installing for this. Browsers draw MathML themselves, and current screen readers read it, so a page made this way works for every reader.
+Key=
+[step]
+
+Say=What this walk taught. I say what I want; the reader says the key. Work out a sum.
+Key=
+Hear=Control plus Equals
+[step]
+
+Say=Undo an answer you did not want.
+Key=
+Hear=Control plus Z
+[step]
+
+Say=Open the more interactive environment.
+Key=
+Hear=Control plus Shift plus G
+[step]
+
+Say=Make a web page with real math from Markdown.
+Key=
+Hear=Control plus H

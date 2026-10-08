@@ -833,6 +833,55 @@ def checkKeys():
     return finding("keys", "pass", "0 reserved combinations, 0 access keys claimed twice")
 
 
+def checkSkillChecks(sKind):
+    """THE KIT EATS ITS OWN COOKING (1.64.0): the checks the kit's skills carry run on
+    every project the kit checks, so a skill's rules are proved on the kit's own work
+    before anyone else is asked to follow them. checkDocs (homer-docs) judges the
+    documents; checkDb (homer-db) each DbDo database the project holds; summarizeLogs
+    (homer-build-release) reports the project's recent runs into this log. A database
+    that fails fails this check; document and log findings are recorded and named, not
+    a reason to stop a release."""
+    try:
+        import kind
+        sKit = kind.findKit([sRoot])
+    except Exception:
+        sKit = ""
+    if not sKit:
+        return finding("skills", "skip", "the HomerDev kit was not found, so its skills' checks could not run")
+    sSkills = os.path.join(sKit, ".claude", "skills")
+    lsNotes, lsFailed = [], []
+
+    def runSkill(sSkill, sScript, lsArgs):
+        sPath = os.path.join(sSkills, sSkill, "scripts", sScript)
+        if not os.path.isfile(sPath):
+            lsNotes.append(sScript + " missing from " + sSkill)
+            return None, ""
+        try:
+            oDone = subprocess.run([sys.executable, sPath] + lsArgs, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
+        except Exception as oError:
+            lsNotes.append(sScript + " could not run: " + str(oError))
+            return None, ""
+        sOut = (oDone.stdout or "") + (oDone.stderr or "")
+        logLine("skill %s/%s exit %d" % (sSkill, sScript, oDone.returncode))
+        for sLine in sOut.strip().splitlines()[:200]: logLine("  %s| %s" % (sScript, sLine))
+        return oDone.returncode, sOut
+
+    iCode, sOut = runSkill("homer-docs", "checkDocs.py", [sRoot] + (["--app", appName()] if sKind == "app" else []))
+    if iCode == 1: lsNotes.append("checkDocs has findings on the documents")
+    lsDatabases = [s for s in glob.glob(os.path.join(sRoot, "**", "*.db"), recursive=True) if "\\notes\\" not in s and "/notes/" not in s]
+    for sDb in lsDatabases[:20]:
+        iCode, sOut = runSkill("homer-db", "checkDb.py", [sDb])
+        # checkDb ends "N checks passed, N warnings, N failures."; any failure but zero counts.
+        # (Matching the word "fail" missed "1 failure", so a failing database passed.)
+        if iCode not in (None, 0) and re.search(r"\b[1-9]\d* failures?\b", sOut): lsFailed.append("checkDb fails " + os.path.relpath(sDb, sRoot))
+    if os.path.isdir(os.path.join(sRoot, "logs")) and glob.glob(os.path.join(sRoot, "logs", "*.log")):
+        runSkill("homer-build-release", "summarizeLogs.py", [os.path.join(sRoot, "logs")])
+    sRan = "checkDocs" + (", checkDb on %d database%s" % (len(lsDatabases), "" if len(lsDatabases) == 1 else "s") if lsDatabases else "") + ", summarizeLogs"
+    if lsFailed:
+        return finding("skills", "fail", "; ".join(lsFailed) + "; the log has each finding")
+    return finding("skills", "pass", "ran " + sRan + ((" -- " + "; ".join(lsNotes) + "; the log names each") if lsNotes else ""))
+
+
 def checkBuildName():
     """THE BUILD SCRIPT IS build.cmd (1.43.55). The folder already names the
     app, so build<App>.cmd said it twice. An old name fails the check and names
@@ -1048,6 +1097,7 @@ def main():
         checkLicense(sKind)
         checkEncoding()
         checkEmpty()
+        checkSkillChecks(sKind)
         if os.path.isdir(os.path.join(sRoot, ".git")): checkPublish()
         else: finding("publish", "skip", "not a git repository; post keeps a page's repository")
         finding("program", "skip", "a %s has no program, so the version, logging, naming, local files, "
@@ -1063,6 +1113,7 @@ def main():
         checkNaming()
         checkLocal()
         checkFinishPage()
+        checkSkillChecks("app")
         checkBuildName()
         checkKeys()
         checkBuild(dArguments.build)

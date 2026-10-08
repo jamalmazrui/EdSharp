@@ -1,6 +1,6 @@
 ﻿[about]
-Title=07 - Write Code
-Intro=One want: a program that will not run, fixed. Choosing the compiler once, compiling with the cursor landing on the error, moving by blocks of code, hearing indentation, and snippets. This walk assumes walks four and five.
+Title=6 - Write Code
+Intro=One want: a program that will not run, fixed. Choosing the compiler once, compiling with the cursor landing on the error, moving by blocks of code, hearing indentation, and snippets. This walk assumes walks three and five.
 Setup=EdSharp is open on a short Python file with one mistake, and Python was ticked when EdSharp was installed.
 Homework=Compile a program of your own, go to its first error, fix it, and run it.
 

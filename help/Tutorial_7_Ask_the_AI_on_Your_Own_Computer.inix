@@ -1,6 +1,6 @@
 ﻿[about]
-Title=08 - Ask the AI on Your Own Computer
-Intro=One want: a question about a document, answered with nothing sent off the machine. Chatting about the document, chatting with no document, and translating it, all with the model Ollama runs on your own computer. This walk assumes walks four to six.
+Title=7 - Ask the AI on Your Own Computer
+Intro=One want: a question about a document, answered with nothing sent off the machine. Chatting about the document, chatting with no document, and translating it, all with the model Ollama runs on your own computer. This walk assumes walks three to six.
 Setup=EdSharp is open on a document, and Ollama with a model was ticked when EdSharp was installed, or installed since.
 Homework=Ask a question about a document of your own, then translate a paragraph of it.
 

@@ -1,6 +1,6 @@
 ﻿[about]
-Title=04 - Open, Edit and Save a File
-Intro=One want: a letter to finish. Opening it, moving through it, changing it, hearing where you are and whether it is saved, checking the spelling, and saving. This walk assumes walks one to three.
+Title=3 - Open, Edit and Save a File
+Intro=One want: a letter to finish. Opening it, moving through it, changing it, hearing where you are and whether it is saved, checking the spelling, and saving. This walk assumes walks two to three.
 Setup=EdSharp is open, and letter.txt is in your Documents folder.
 Homework=Open a file of your own, change one line, check its spelling, and save it.
 

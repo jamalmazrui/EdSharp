@@ -1,0 +1,179 @@
+﻿[about]
+Title=9 - Conclusion
+Intro=The conclusion and summary of the walks; the words EdSharp uses, in two voices; then more information: the help built into the program and where to learn more.
+Setup=Nothing is needed.
+Homework=Open the file you work in most, change one line, save it; then do one thing from each task walk in it.
+
+[step]
+
+Say=Four things to carry away, each with its key. A key is named for a word of its command, so it can be guessed; and when it cannot, one list names every command and its key.
+Key=
+Hear=
+
+[step]
+
+Say=The Alternate Menu.
+Key=
+Hear=Alt plus F10
+
+[step]
+
+Say=Alt says, Control does, Shift widens. Where am I?
+Key=
+Hear=Alt plus A
+
+[step]
+
+Say=Has the document changed since I saved it?
+Key=
+Hear=Alt plus Z
+
+[step]
+
+Say=A document in any format becomes text you can read, and your text becomes any format.
+Key=
+Hear=Control plus Shift plus O
+
+[step]
+
+Say=And the AI is on your own machine; nothing leaves it.
+Key=
+Hear=Shift plus F12
+
+[step]
+
+Say=One thing kept from each task walk. Walk three: open, change, save -- and F7 for the spelling before anyone else reads it.
+Key=
+Hear=F7
+
+[step]
+
+Say=Where the walks stop and the guide begins: scripting EdSharp in JScript, the Markdown code-block runner, the translator's quick start, the slide presenter's, the screen reader script writer's. F1 has all of it, and Control plus Shift plus F1 picks the quick start for your role.
+Key=
+Hear=
+
+
+; ---- the glossary: the host says the term, the reader its meaning ----
+
+[step]
+
+Say=Now the words EdSharp uses, in alphabetical order. I say the term; the reader says what it means.
+Key=
+Hear=
+
+[step]
+
+Say=Alternate Menu.
+Key=
+Hear=Every command in one list you type into, with its key beside it. Alt plus F10.
+
+[step]
+
+Say=block.
+Key=
+Hear=A stretch of code at one indentation. Control plus B goes to the next; Alt plus B reads the rest of this one.
+
+[step]
+
+Say=bookmark.
+Key=
+Hear=A place in a file, kept with the file. Control plus K sets one; Alt plus K returns to it.
+
+[step]
+
+Say=chunk.
+Key=
+Hear=A run of characters with no space in it. Alt plus Right Arrow goes to the next; Control plus Space selects it.
+
+[step]
+
+Say=compiler.
+Key=
+Hear=The program EdSharp hands your file to with Control plus F5, chosen once by extension with Control plus Shift plus F5.
+
+[step]
+
+Say=configuration options.
+Key=
+Hear=The one dialog of settings -- spell checker, font, speech, the AI model. Alt plus Shift plus C.
+
+[step]
+
+Say=convert file format.
+Key=
+Hear=Converting a file on disk without opening it, one or many at a time. Control plus Shift plus V.
+
+[step]
+
+Say=current windows.
+Key=
+Hear=The list of open documents, to pick one. F4; Shift plus F4 says their titles.
+
+[step]
+
+Say=document.
+Key=
+Hear=One file open in EdSharp, in a window of its own; Control plus Tab moves to the next, F4 lists them.
+
+[step]
+
+Say=Elevate Version.
+Key=
+Hear=Checking for a newer EdSharp and installing it. F11, because elevate sounds like eleven.
+
+[step]
+
+Say=encoding.
+Key=
+Hear=How a file's characters are stored. Alt plus Z twice says it; Alt plus Shift plus Y renders the text in another one.
+
+[step]
+
+Say=export.
+Key=
+Hear=Writing the document out as another format -- a web page, a Word document, plain text. Alt plus Shift plus E.
+
+[step]
+
+Say=file find.
+Key=
+Hear=Searching a folder of files for a string and opening the one you pick. Alt plus Shift plus F.
+
+[step]
+
+Say=hotkey summary.
+Key=
+Hear=Every command with its key and description, in a new window. Alt plus Shift plus H.
+
+[step]
+
+Say=Key Describer.
+Key=
+Hear=A mode in which every key says what it does instead of doing it. Control plus F1 turns it on and off.
+
+
+; ---- more information: help built in, and where to learn more ----
+
+[step]
+
+Say=F1 opens the guide, the whole of EdSharp in one document, from inside the program. Shift plus F1 opens the history of changes. Alt plus F1 says the version. Control plus Shift plus F1 opens the quick starts by role.
+Key=
+Hear=
+
+[step]
+
+Say=The ReadMe is the short start; the guide is the reference; Hotkeys lists every key three ways; the FAQ holds the questions people actually ask. All are in the help folder of the installation, and on the project's GitHub page.
+Key=
+Hear=
+
+[step]
+
+Say=F11 checks for a newer version and offers to install it. The project is at github dot com, slash JamalMazrui, slash EdSharp. Control plus F12 copies this session's log to the clipboard, ready to attach to a report of a problem.
+Key=
+Hear=
+
+[step]
+
+Say=EdSharp is one of the Homer Tools, free programs for working by ear: EdSharp for text, FileDir for files, DbDo for data. They share their keys and their player, so learning one is most of learning the next.
+Key=
+Hear=

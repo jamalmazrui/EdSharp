@@ -1,6 +1,6 @@
 ﻿[about]
-Title=05 - Find Your Way in a Long Document
-Intro=One want: a place in a long report, found now and found again tomorrow. Finding a word, jumping to a line, setting a bookmark and returning to it, and hearing how big the document is. This walk assumes walk four.
+Title=4 - Find Your Way in a Long Document
+Intro=One want: a place in a long report, found now and found again tomorrow. Finding a word, jumping to a line, setting a bookmark and returning to it, and hearing how big the document is. This walk assumes walk three.
 Setup=A long document is open in EdSharp.
 Homework=Find a word in a document of your own, bookmark the place, go to the top, and come back.
 
@@ -81,6 +81,33 @@ Hear=Line 120, column 1, 64 percent
 Say=Alt plus Shift plus F, File Find, searches not this document but a folder of files for a string, and opens the one you pick from the list -- for the day the place you want is in some other file.
 Key=Alt+Shift+F
 Hear=File Find dialog, Find: edit combo
+
+[step]
+
+Say=Escape.
+Key=Escape
+Hear=Section four. Staffing.
+
+[step]
+
+Say=Control plus Home goes to the very top of the document, and Control plus End to the very bottom; Alt plus A then says where you landed.
+Key=Control+End
+Hear=Thank you for reading.
+Note=Confirm the wording with a live run: buildTutorials -live.
+
+[step]
+
+Say=A bookmark stays with the file, so a long report can be left and picked up again tomorrow, at the same place, with Alt plus K.
+Key=Alt+K
+Hear=Section four. Staffing.
+Note=Confirm the wording with a live run: buildTutorials -live.
+
+[step]
+
+Say=And a find's last answers are remembered too: Control plus F offers budget again, so the next search for it is one key.
+Key=Control+F
+Hear=Forward Find dialog, Find: edit combo, budget
+Note=Confirm the wording with a live run: buildTutorials -live.
 
 [step]
 
