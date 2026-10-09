@@ -369,6 +369,28 @@ try {
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
   writeLog "TLS 1.2 enabled for downloads."
 
+  # ---- 2d. Retire the old top-level Convert and Samples folders (9 October 2026) ----
+  # Leftovers from the layout before configs\convert and templates\samples:
+  # the program reads neither, every file in them but one was already kept,
+  # word for word, where EdSharp does read, and the kit's layout check names
+  # them as folders outside the Homer tree. Each file is moved into
+  # notes\retired, never deleted, and each move is logged.
+  foreach ($sOld in @("Convert", "Samples")) {
+    $sOldDir = Join-Path $sScriptDir $sOld
+    if (-not (Test-Path -LiteralPath $sOldDir -PathType Container)) { continue }
+    $sRetired = Join-Path $sScriptDir ("notes\retired\" + $sOld)
+    New-Item -ItemType Directory -Force -Path $sRetired | Out-Null
+    foreach ($oFile in @(Get-ChildItem -LiteralPath $sOldDir -Recurse -File)) {
+      $sRelative = $oFile.FullName.Substring($sOldDir.Length).TrimStart([char]92)
+      $sTarget = Join-Path $sRetired $sRelative
+      New-Item -ItemType Directory -Force -Path (Split-Path -Parent $sTarget) | Out-Null
+      Move-Item -LiteralPath $oFile.FullName -Destination $sTarget -Force
+      writeLog ("Retired: " + $sOld + "\" + $sRelative + " moved into notes\retired\" + $sOld)
+    }
+    Remove-Item -LiteralPath $sOldDir -Recurse -Force
+    writeLog ("Retired: the top-level " + $sOld + " folder, which nothing reads, is gone; its files are in notes\retired\" + $sOld)
+  }
+
   # ---- 2c. The spelling dictionary ----
   # Hunspell dictionaries are two plain text files, an affix file and a
   # word list, published by the LibreOffice project. About one megabyte

@@ -1,5 +1,10 @@
 ﻿# EdSharp History
 
+
+## Unreleased -- 9 October 2026
+
+- **Two old folders retired.** The top-level Convert and Samples folders were left from the layout before configs\convert and templates\samples; EdSharp reads neither, and all but one of their nine files were already kept, word for word, where it does read. The build now moves them into notes\retired, file by file, logging each, and deletes nothing.
+
 ## 8 October 2026 -- the pattern of ten, delivered and corrected
 
 The conversion to ten spoken walks, made on 7 October, had not reached GitHub, where the twelve older walks remained; it is delivered again, and the build retires the twelve and their audio on its own. Checked against the current Homer practices, the walks were also corrected:

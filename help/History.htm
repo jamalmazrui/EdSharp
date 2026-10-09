@@ -7,6 +7,9 @@
   <title>History</title>
   <style>
     html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
       color: #1a1a1a;
       background-color: #fdfdfd;
     }
@@ -25,16 +28,13 @@
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 12px;
+        padding: 1em;
       }
       h1 {
         font-size: 1.8em;
       }
     }
     @media print {
-      html {
-        background-color: white;
-      }
       body {
         background-color: transparent;
         color: black;
@@ -84,10 +84,9 @@
       color: #606060;
     }
     code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
       font-size: 85%;
       margin: 0;
-      hyphens: manual;
     }
     pre {
       margin: 1em 0;
@@ -152,25 +151,31 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
+    ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">History</h1>
-</header>
 <h1 id="edsharp-history">EdSharp History</h1>
-<h2 id="october-2026-the-pattern-of-ten-delivered-and-corrected">8
-October 2026 – the pattern of ten, delivered and corrected</h2>
+<h2 id="unreleased----9-october-2026">Unreleased -- 9 October 2026</h2>
+<ul>
+<li><strong>Two old folders retired.</strong> The top-level Convert and
+Samples folders were left from the layout before configs\convert and
+templates\samples; EdSharp reads neither, and all but one of their nine
+files were already kept, word for word, where it does read. The build
+now moves them into notes\retired, file by file, logging each, and
+deletes nothing.</li>
+</ul>
+<h2 id="8-october-2026----the-pattern-of-ten-delivered-and-corrected">8
+October 2026 -- the pattern of ten, delivered and corrected</h2>
 <p>The conversion to ten spoken walks, made on 7 October, had not
 reached GitHub, where the twelve older walks remained; it is delivered
 again, and the build retires the twelve and their audio on its own.
@@ -183,7 +188,7 @@ named and then shown, with its key and what the screen reader says: the
 window, Say Address and Say Status, the status line, dialogs, remembered
 answers, selection, help, the Key Describer and the Alternate Menu.</li>
 <li><strong>A command that does not exist, removed.</strong> Walks 1 and
-5 taught “Convert File Format, Control plus Shift plus V”; Control plus
+5 taught "Convert File Format, Control plus Shift plus V"; Control plus
 Shift plus V is Paste File, and EdSharp has no such command. Converting
 files on disk is Text Convert, Control plus T, which converts each file
 named in the document, one to a line, to a text file beside it; Text
@@ -192,126 +197,130 @@ Combine, Control plus Shift plus T, puts them in one window.</li>
 roots and rounding with Control plus Equals, and mathematics written the
 LaTeX way in Markdown, turned into a web page whose formula the screen
 reader reads as math.</li>
-<li><strong>Shorter lines, longer walks.</strong> Walk 0’s opening is
+<li><strong>Shorter lines, longer walks.</strong> Walk 0's opening is
 three steps, not one long one, and walk 4 has more on moving through a
 long document.</li>
 <li><strong>The installer</strong> ships the walk scripts and the
-audio’s fingerprints as well.</li>
+audio's fingerprints as well.</li>
 <li><strong>Kit tools</strong> updated from HomerDev 1.64.0.</li>
 </ul>
-<h2 id="october-2026-tutorials-in-the-pattern-of-ten">8 October 2026 –
-tutorials in the pattern of ten</h2>
+<h2 id="8-october-2026----tutorials-in-the-pattern-of-ten">8 October
+2026 -- tutorials in the pattern of ten</h2>
 <p>The tutorials follow the Homer pattern of ten. The interface and
 key-pattern walks are now one, 1 User Interface, its narration folded
-into the reader’s demonstrations; the five task walks are 3 to 7; 8 Do
+into the reader's demonstrations; the five task walks are 3 to 7; 8 Do
 Math is new, Control plus Equals on the line or a selection, and math
 that reads aloud; and 9 Conclusion joins the conclusion, the glossary
-and more information. The installer now ships the tutorials’ audio,
+and more information. The installer now ships the tutorials' audio,
 playlist and feed, which it had left out.</p>
 <p>A human-readable record of fixes and enhancements, newest first. Each
-entry says what changed and why, so a future reader – or a future
-maintainer – can judge the decision, not just observe it.</p>
-<h2 id="october-2026-the-walks-run-three-to-five-minutes">6 October 2026
-– the walks run three to five minutes</h2>
+entry says what changed and why, so a future reader -- or a future
+maintainer -- can judge the decision, not just observe it.</p>
+<h2 id="6-october-2026----the-walks-run-three-to-five-minutes">6 October
+2026 -- the walks run three to five minutes</h2>
 <p><strong>More substance in every part from 01 to 10.</strong> The
 first spoken set measured under two and a half minutes a walk; each was
-given the adjacent things its want needs – what each installer box is
+given the adjacent things its want needs -- what each installer box is
 for, the result and preview windows, a guessing exchange for the key
 rules, Undo and Save As and the window list, Replace and regular
 expressions and File Find, batch conversion and encodings, Say Compiler
-and the code-block runner, choosing the model and asking well – a
+and the code-block runner, choosing the model and asking well -- a
 planned misstep with its recovery where one fits, fourteen more glossary
 terms, and a conclusion that keeps one thing from each walk in two
 voices. Needs HomerDev 1.52.7.</p>
-<h2 id="october-2026-twelve-spoken-walks-in-the-homer-pattern">6 October
-2026 – twelve spoken walks, in the Homer pattern</h2>
+<h2 id="6-october-2026----twelve-spoken-walks-in-the-homer-pattern">6
+October 2026 -- twelve spoken walks, in the Homer pattern</h2>
 <p><strong>Twelve walks replace the one.</strong> 00 Overview and Table
 of Contents, 01 Install and Launch, 02 User Interface Concepts, 03 Key
-Patterns, five tasks – 04 Open, Edit and Save a File; 05 Find Your Way
+Patterns, five tasks -- 04 Open, Edit and Save a File; 05 Find Your Way
 in a Long Document; 06 Convert Between Formats; 07 Write Code; 08 Ask
-the AI on Your Own Computer – then 09 Glossary, 10 Conclusion and 11
+the AI on Your Own Computer -- then 09 Glossary, 10 Conclusion and 11
 More Information. Each is built around a plain want, each is under five
 minutes, and every recap and the glossary are two voices: the host says
 the key or the term, the reader says the command or the meaning. The
-earlier overview’s real speech was kept where it fit.</p>
+earlier overview's real speech was kept where it fit.</p>
 <p><strong>Pages made by pandoc get the Homer encoding.</strong> The
-build regenerated help.htm after fixEncoding had run, so it shipped
-without a byte order mark and the release check refused it two days
-running; the page is now given the mark and CRLF line endings as it is
-made. Needs HomerDev 1.52.6.</p>
-<h2 id="september-2026-setup-fixes">27 September 2026 – setup fixes</h2>
+build regenerated help\Tutorials.htm after fixEncoding had run, so it
+shipped without a byte order mark and the release check refused it two
+days running; the page is now given the mark and CRLF line endings as it
+is made. Needs HomerDev 1.52.6.</p>
+<h2 id="27-september-2026----setup-fixes">27 September 2026 -- setup
+fixes</h2>
 <ul>
 <li><strong>Setup.</strong> The Results box at the end of setup is
-titled “EdSharp Setup Results”, and the finish page uses the Homer
-wording: the verb first, no “recommended”, and “Launch EdSharp (desktop
-hotkey …)”. The JAWS scripts were never installed: the finish page ran
-scripts.cmd, which the installer had put at the top of the program
-folder, and “Scripts*” copied the whole scripts folder into scripts.
-Both go where they belong now. The Results box said Pandoc was “not
-present” beside a working install, because it looked in configs; it asks
-the same check as the finish page. Updating Python upgraded Python 3.13
-whatever was installed, so with 3.14 it did nothing; it upgrades the
-release that is there. The boxes read “Install JAWS scripts” and
-“Install NVDA add-on (NVDA must be running)”.</li>
+titled "EdSharp Setup Results", and the finish page uses the Homer
+wording: the verb first, no "recommended", and "Launch EdSharp (desktop
+hotkey ...)". The JAWS scripts were never installed: the finish page ran
+scripts\installJawsScripts.cmd, which the installer had put at the top
+of the program folder, and "Scripts*" copied the whole scripts folder
+into scripts\jaws. Both go where they belong now. The Results box said
+Pandoc was "not present" beside a working install, because it looked in
+configs\convert\Pandoc; it asks the same check as the finish page.
+Updating Python upgraded Python 3.13 whatever was installed, so with
+3.14 it did nothing; it upgrades the release that is there. The boxes
+read "Install JAWS scripts" and "Install NVDA add-on (NVDA must be
+running)".</li>
 </ul>
-<h2 id="september-2026-built-with-homerdev-1.43.19">26 September 2026 –
-built with HomerDev 1.43.19</h2>
+<h2 id="26-september-2026----built-with-homerdev-14319">26 September
+2026 -- built with HomerDev 1.43.19</h2>
 <ul>
-<li><strong>The kit’s tools carry the day’s fixes.</strong>
+<li><strong>The kit's tools carry the day's fixes.</strong>
 <code>scripts\tidy</code> keeps a file where the project says it lives,
 so the two carried libraries stay at the top; <code>scripts\check</code>
 reads keys and access letters without false alarms and never waits for a
-key; and <code>scripts\release</code> publishes a draft – 5.0.15 was
-left as one by an earlier run – and confirms the release is GitHub’s
+key; and <code>scripts\release</code> publishes a draft -- 5.0.15 was
+left as one by an earlier run -- and confirms the release is GitHub's
 latest before calling it published.</li>
-<li><strong>The grave accent convention is now the kit’s.</strong>
-EdSharp’s arrangement – Alt for volume, Control for rate, Shift
-reversing, and the screen reader key for punctuation – is how every
+<li><strong>The grave accent convention is now the kit's.</strong>
+EdSharp's arrangement -- Alt for volume, Control for rate, Shift
+reversing, and the screen reader key for punctuation -- is how every
 Homer app with speech commands uses the key.</li>
 </ul>
-<h2 id="september-2026-brought-up-to-homerdev-1.43.10">26 September 2026
-– brought up to HomerDev 1.43.10</h2>
+<h2 id="26-september-2026----brought-up-to-homerdev-14310">26 September
+2026 -- brought up to HomerDev 1.43.10</h2>
 <ul>
 <li><strong>The installer is written to the top of the project</strong>,
-where the kit’s release script looks for it. The release that day
-stopped with “EdSharp_Setup.exe not found” because the installer was in
+where the kit's release script looks for it. The release that day
+stopped with "EdSharp_Setup.exe not found" because the installer was in
 exec. The file keeps its name, EdSharp_Setup.exe: it is the asset every
 installed EdSharp downloads with F11.</li>
-<li><strong>The kit’s scripts under their plain names.</strong> The
+<li><strong>The kit's scripts under their plain names.</strong> The
 build refreshes check, push, release, tidy, unpushed, finish and
 installCommon into scripts and deletes the old checkHomerApp, gitPush,
 gitUnpushed, homerFinish, homerInstall, homerTidy and tagRelease copies.
-EdSharp’s own install scripts and the installer use installCommon.cmd,
+EdSharp's own install scripts and the installer use installCommon.cmd,
 the shared half of every install script.</li>
 <li><strong>The table conversions find inixVert.exe.</strong> The build
-wrote it to Convert, the layout-before-the-kit’s folder; the Import and
-Export tables run it from configs, which is where it goes now.</li>
+wrote it to Convert, the layout-before-the-kit's folder; the Import and
+Export tables run it from configs\convert, which is where it goes
+now.</li>
 <li><strong>The documents are converted again.</strong> The build looked
-for pandoc in Convert, which the Homer layout no longer has, so no .htm
-had been regenerated since the move. It uses the pandoc on the PATH, as
-the conversions do, and now converts the documents in help as well as
-the ReadMe and License.</li>
+for pandoc in Convert\Pandoc, which the Homer layout no longer has, so
+no .htm had been regenerated since the move. It uses the pandoc on the
+PATH, as the conversions do, and now converts the documents in help as
+well as the ReadMe and License.</li>
 <li><strong>The two carried libraries come back.</strong> A tidy on 26
 September moved Tektosyne.dll and nvdaControllerClient.dll from the top
 of the project into notes, and git recorded them as deleted; kit 1.43.11
 leaves them where they are. The build restores each from exec when the
 top copy is missing, so the next push carries them again.</li>
-<li><strong>Other people’s files keep their encoding.</strong>
-KeepEncoding.txt names configs, dataand templates, which fixEncoding and
-the kit’s check now leave as they came – a byte order mark on a Lua
-filter or a tool’s config is read as part of its first line.</li>
+<li><strong>Other people's files keep their encoding.</strong>
+KeepEncoding.txt names configs\convert, data\dictionaries and
+templates\snippets\LaTeX, which fixEncoding and the kit's check now
+leave as they came -- a byte order mark on a Lua filter or a tool's
+config is read as part of its first line.</li>
 <li><strong>The fruit basket sample names its fields once.</strong> It
 set an accessible name repeating each label, so a screen reader said
-“Fruit” twice; the labels now come just before their fields in tab
+"Fruit" twice; the labels now come just before their fields in tab
 order, which names them.</li>
-<li><strong>Tidier repository.</strong> The copies of the kit’s classes
+<li><strong>Tidier repository.</strong> The copies of the kit's classes
 and the root tagRelease pair are removed from the top of the project;
 git records buildEdSharp.cmd, buildEdSharp.ps1 and EdSharp_setup.iss
 under their current capitals; and <code>.gitattributes</code> keeps the
 Homer CRLF line endings as they are, rather than converting them.</li>
 </ul>
-<h2 id="september-2026-moved-to-the-homer-development-kit">26 September
-2026 – moved to the Homer Development Kit</h2>
+<h2 id="26-september-2026----moved-to-the-homer-development-kit">26
+September 2026 -- moved to the Homer Development Kit</h2>
 <p><strong>Two reports from a beta tester, both taken.</strong> A file
 opened by pressing Enter on it in Explorer, or by Open With, did not
 move the remembered folder: only the Open dialog did. The call that
@@ -339,23 +348,23 @@ says quietly when it cannot.</p>
 <p><strong>The install scripts log through the kit.</strong> Each
 install script carried its own forty lines of log setup, all writing one
 shared EdSharp_setup.log with no timestamp, so a second run wrote over
-the first. They now call the kit’s homerInstall.cmd first, which gives
+the first. They now call the kit's homerInstall.cmd first, which gives
 each run its own stamped log in %LOCALAPPDATA%\EdSharp\logs and works
 out the quiet flag in one place. The installer ships homerInstall.cmd
-beside them – without it every script would stop on its first line – and
-passes noPause to each, since Inno runs them with no console to read
-from. EdSharp’s own installOllama.cmd is gone; the kit’s is refreshed
+beside them -- without it every script would stop on its first line --
+and passes noPause to each, since Inno runs them with no console to read
+from. EdSharp's own installOllama.cmd is gone; the kit's is refreshed
 into scripts by every build. Eighteen script invocations inside the
-installer’s Parameters strings were also still naming the top of the
+installer's Parameters strings were also still naming the top of the
 folder rather than scripts, missed by the earlier repoint; all
 moved.</p>
 <p><strong>The finish page stays as it is, on purpose.</strong> The
-kit’s HomerComponents.iss describes itself as a faithful port of what
-EdSharp and FileDir already had right. EdSharp’s installer is the
+kit's HomerComponents.iss describes itself as a faithful port of what
+EdSharp and FileDir already had right. EdSharp's installer is the
 original that file was ported from, so it already behaves exactly as the
 include does. Replacing working Pascal with its own port, with no Inno
 Setup on hand to compile the result, would be risk without gain. If the
-kit’s copy ever moves ahead, that is the time.</p>
+kit's copy ever moves ahead, that is the time.</p>
 <p><strong>The acceptance checks are rewritten</strong> without
 parentheses, as one dir of one file each. The first form failed nine out
 of nine on a quoting error.</p>
@@ -364,34 +373,34 @@ things, all of them the migration only half done.</p>
 <p>On the third attempt the build succeeded end to end: the program, the
 JScript support assembly and the installer, all in exec. The release
 then failed on its own rebuild, because homerTidy had carried
-Tektosyne.dll into notes– nothing named it, and the build does not fetch
-it, because nothing can: it is a 2007-era library with no package and no
-download. It is now named in RepoFiles.txt as the repository’s one
-binary, the exception the rule allows, and the build brings it home from
-notes if a tidy ever carries it off again.</p>
-<p>On the second attempt the program compiled against the kit’s classes
-with one warning and no errors – the first proof that EdSharp and the
-kit’s newer Lbc, Say and Inix agree. The build then stopped in Inno
+Tektosyne.dll into notes\other -- nothing named it, and the build does
+not fetch it, because nothing can: it is a 2007-era library with no
+package and no download. It is now named in RepoFiles.txt as the
+repository's one binary, the exception the rule allows, and the build
+brings it home from notes if a tidy ever carries it off again.</p>
+<p>On the second attempt the program compiled against the kit's classes
+with one warning and no errors -- the first proof that EdSharp and the
+kit's newer Lbc, Say and Inix agree. The build then stopped in Inno
 Setup, which was told to ship EdSharp.exe from the top of the folder
-when the build now writes it to exec. The installer’s binary lines were
+when the build now writes it to exec. The installer's binary lines were
 half repointed: the ones with aligned columns had been missed, the same
 slip that caught the documents a day earlier. And fixing that alone
 would have shipped a program with no libraries beside it, since the
 fetched libraries land beside the sources for the compiler and a program
 in exec cannot load from the folder above. The build now copies every
 library it loads into exec after the compile.</p>
-<p>The build still ran EdSharp’s own auditEdSharp.py, whose repoPolicy
-knows nothing of the new folders, so it failed on “Tracked files are
-ones the project needs” – a check about a layout that no longer exists.
-The kit’s scriptsdoes that job now, from tagRelease and by hand; the
-build no longer calls the retired one. EdSharp’s own invariants that the
-kit does not cover, such as duplicate shortcuts and the compiler table,
-are worth moving into the kit’s check or into accept.inix rather than
-losing.</p>
+<p>The build still ran EdSharp's own auditEdSharp.py, whose repoPolicy
+knows nothing of the new folders, so it failed on "Tracked files are
+ones the project needs" -- a check about a layout that no longer exists.
+The kit's scripts\checkHomerApp does that job now, from tagRelease and
+by hand; the build no longer calls the retired one. EdSharp's own
+invariants that the kit does not cover, such as duplicate shortcuts and
+the compiler table, are worth moving into the kit's check or into
+accept.inix rather than losing.</p>
 <p>The build also still worked the version out from the release tags on
 the remote and wrote it into the installer script. With version.txt
 saying 5.0.1 and this saying 5.0.43, two systems were minting numbers,
-and the second one read the literal “{#MyAppVersion}” as a version
+and the second one read the literal "{#MyAppVersion}" as a version
 because the installer now computes it from version.txt. The version
 comes from version.txt alone.</p>
 <p>And a failed build left no evidence: the PowerShell half logged to
@@ -400,40 +409,42 @@ build script did not capture its output. Both halves now write one
 stamped log in logs.</p>
 <p><strong>EdSharp now shares one copy of the Homer classes with every
 other Homer program.</strong> It carried its own Inix, KeyMap, Lbc, Say,
-Web and inixVert, and all six had drifted from the kit’s. They are gone;
-the build compiles the kit’s, by path, out of C:, so a fix there reaches
-EdSharp on its next build. Elevate came with them, which is what gives
-the Help box its version section and F11 its update offer.</p>
+Web and inixVert, and all six had drifted from the kit's. They are gone;
+the build compiles the kit's, by path, out of C:\HomerDev, so a fix
+there reaches EdSharp on its next build. Elevate came with them, which
+is what gives the Help box its version section and F11 its update
+offer.</p>
 <p><strong>The folder is laid out the way every Homer program
 is.</strong> Sources, build files, ReadMe and License at the top;
 configs, data, exec, help, logs, scripts and templates below, each
 starting with a different letter so the list can be walked by initial.
-Convert became configs, Dictionaries became data, Samples and Snippets
-became templatesand templates, the documents moved into help, the JAWS
-scripts into scripts, and the built program and installer into exec. The
-installed tree mirrors it, so every path the program uses moved with
-it.</p>
+Convert became configs\convert, Dictionaries became data\dictionaries,
+Samples and Snippets became templates\samples and templates\snippets,
+the documents moved into help, the JAWS scripts into scripts\jaws, and
+the built program and installer into exec. The installed tree mirrors
+it, so every path the program uses moved with it.</p>
 <p><strong>The version lives in version.txt.</strong> It was AppVersion
 in the installer script, worked out from the release tags on the remote.
 Now the build steps version.txt, writes Version.cs from it, the
 installer reads it, and tagRelease reads it back out of what was
 actually built, so the program, the installer and the tag cannot
 disagree.</p>
-<p><strong>Nine of EdSharp’s own tools were retired</strong>, each an
+<p><strong>Nine of EdSharp's own tools were retired</strong>, each an
 earlier edition of something the kit now does: tidyRepo, repoPolicy,
 moveNotes, restoreMissing, prepareAuditFixes, applyConvertPolicy,
 dropLatexJawsKeys, auditEdSharp and summarizeSetup, along with the root
-tagRelease and the old BuildEdSharp pair. The kit’s homerTidy,
+tagRelease and the old BuildEdSharp pair. The kit's homerTidy,
 checkHomerApp, gitPush, gitUnpushed, fixEncoding, buildTutorials and
 tagRelease take their place, refreshed into scripts on every build.</p>
 <p><strong>Two documents were merged and one renamed.</strong> Tutorial
 and Tutorials were two documents covering the same ground and are now
-one; Development became Developer, which is what the kit’s check looks
-for. The CamelType documents are the kit’s now, so EdSharp’s copies
+one; Development became Developer, which is what the kit's check looks
+for. The CamelType documents are the kit's now, so EdSharp's copies
 went.</p>
-<p><strong>A first spoken walk</strong> is in help_00_Overview.inix,
-which the build speaks into an .mp3.</p>
-<h2 id="august-2026-version-5.0.40">28 August 2026 – version 5.0.40</h2>
+<p><strong>A first spoken walk</strong> is in
+help\Tutorial_00_Overview.inix, which the build speaks into an .mp3.</p>
+<h2 id="28-august-2026----version-5040">28 August 2026 -- version
+5.0.40</h2>
 <p><strong>Three reports from a beta tester, addressed.</strong></p>
 <p><em>A document translated to English came back in Spanish.</em> The
 model was not at fault. The language pair is remembered between uses and
@@ -441,26 +452,26 @@ started at English to Spanish, so the model was told to translate
 English into Spanish, handed Spanish, and sensibly returned it much as
 it found it. The source language now offers Detect, which is what a
 first use gets, and with Detect chosen the prompt names no source at all
-– naming the wrong one is worse than naming none. A translation that
+-- naming the wrong one is worse than naming none. A translation that
 comes back the same as the text that went in now says so rather than
 opening a window that looks translated until you read it.</p>
 <p><em>A replacement of a space and an x produced only the x.</em> A
 settings value on one line is trimmed, so the space was gone before the
-job ran. Quoting the value keeps it – Replace=” x” – and that already
-worked, but nothing said so. Two things made it hard to find: , which is
-what a person reaches for, means nothing in a replacement and is
+job ran. Quoting the value keeps it -- Replace=" x" -- and that already
+worked, but nothing said so. Two things made it hard to find: \s, which
+is what a person reaches for, means nothing in a replacement and is
 silently handed back as the letter s by the .NET unescaper; and an older
 build did not yet strip the quotation marks, so quoting appeared not to
-work either. No new escape was invented for this – a job file should
-stay readable as ordinary .NET regular expressions – and the quoting is
+work either. No new escape was invented for this -- a job file should
+stay readable as ordinary .NET regular expressions -- and the quoting is
 now documented instead.</p>
 <p><em>Numbering passages that share an ending</em> turned out to need
 no new feature. $# in a Replace value is the number of the match,
 counting from one, and has been there all along without being written
 down anywhere.</p>
-<p>A new Samples\Jobs folder holds three worked jobs – numbering
+<p>A new Samples\Jobs folder holds three worked jobs -- numbering
 passages, turning a braille-ready file into readable text, and gathering
-headings to the clipboard – with a page explaining the format and the
+headings to the clipboard -- with a page explaining the format and the
 three things easiest to miss.</p>
 <p><strong>The language settings follow the file you are in.</strong>
 The compiler was one setting for the whole program, changed only by Pick
@@ -488,9 +499,9 @@ Markdown, Inix, Batch and SQL have no checker worth having and say so,
 but all six gained block navigation.</p>
 <p>Fifteen of the nineteen can now report what is wrong before anything
 runs, and all nineteen move by blocks that mean something in that
-language – a declaration in C#, a heading or landmark in HTML, a section
-in a settings file, a label in a batch file, a sectioning command in
-LaTeX.</p>
+language -- a declaration in C#, a heading or landmark in HTML, a
+section in a settings file, a label in a batch file, a sectioning
+command in LaTeX.</p>
 <p>A new audit check holds the map to its sections, so an extension can
 never point at a language that does not exist or be claimed by two.</p>
 <p><strong>Mathematics now converts to MathML rather than
@@ -506,7 +517,7 @@ it from its 2026 releases. Meanwhile MathJax version 4 turned off the
 hidden MathML that screen readers had been relying on, preferring speech
 of its own. Native MathML is smaller, works offline, and is read by the
 screen reader itself.</p>
-<p>The guide’s mathematics section was rewritten with it. It had been
+<p>The guide's mathematics section was rewritten with it. It had been
 telling readers to install MathPlayer and open the page in Internet
 Explorer, advice that was sound around 2010 and has been wrong for
 years: MathPlayer has not been developed since 2017 and Internet
@@ -524,12 +535,12 @@ being crammed onto one separated by vertical bars, and the companion
 .txt file that existed only to get round that limit is gone: an .inix
 value holds as many lines as it needs. The bars still work, so every old
 definition still runs. Four control types are added to the original nine
-– combo, spin, heading and separator – and password, which was an
+-- combo, spin, heading and separator -- and password, which was an
 attribute, is a type as well.</p>
 <p><strong>The names come from IniForm, spelled in Camel Type.</strong>
-The three passes keep their own names – dialogGroupControls,
-dialogSizeControls, dialogPositionControls – in their own order, the
-DialogBand record keeps its fields, and the COM server’s runForm,
+The three passes keep their own names -- dialogGroupControls,
+dialogSizeControls, dialogPositionControls -- in their own order, the
+DialogBand record keeps its fields, and the COM server's runForm,
 showResults and getResult are on LbcInixForm under those names, so a
 caller written against IniForm needs nothing new learnt. Only the
 spelling changes: lower camel case for methods and properties, a
@@ -544,20 +555,20 @@ Lbc gained addComboEditBox for the first, beside the addComboPickBox it
 already had for the second and addComboHistoryBox for a list of what was
 typed before.</p>
 <p><strong>Both layouts are kept, named in parallel.</strong>
-LbcInixForm’s Layout property chooses between them, and the methods pair
-off: buildStack and buildBand, runStack and runBand. Stack is Lbc’s own,
+LbcInixForm's Layout property chooses between them, and the methods pair
+off: buildStack and buildBand, runStack and runBand. Stack is Lbc's own,
 one control to a row, which is what guarantees that reading order, tab
 order and visual order are one order, and it stays the default. Band is
-IniForm’s arithmetic, transcribed whole into LbcBandLayout and checked
+IniForm's arithmetic, transcribed whole into LbcBandLayout and checked
 against the layout IniForm itself recorded for the Customer Information
 sample: all eighteen positions and sizes, and the form size of 421 by
-286, come out identical. Two details had to be right for that – the
+286, come out identical. Two details had to be right for that -- the
 even-spacing division rounds half to even, as PowerBASIC did when
 assigning to a Long, and dialog units become pixels through base units
-measured from the form’s own font rather than the 8 point figures
-IniForm could assume. One slip is not carried forward: a band’s shared
+measured from the form's own font rather than the 8 point figures
+IniForm could assume. One slip is not carried forward: a band's shared
 button width was written to the band but read from an array indexed by
-control, so a band took its last control’s width rather than its widest.
+control, so a band took its last control's width rather than its widest.
 The documented intent was plain, and the intent is what is
 implemented.</p>
 <p>A multi-line .inix value is read verbatim, from the start of its
@@ -570,7 +581,7 @@ indented is written flush left, or between fences, which also lets it
 hold lines that would otherwise look like keys.</p>
 <p><strong>A snippet can now describe its own dialog.</strong> A block
 between [[form]] and [[end]] is a form definition in that same format,
-and each answer replaces the control’s name between percent signs in the
+and each answer replaces the control's name between percent signs in the
 rest of the snippet. The %Label=Value% syntax asks for text and nothing
 else; this gives a snippet check boxes, lists, memos and spin controls,
 all obeying the same form rules as every other EdSharp dialog. Sample
@@ -582,7 +593,7 @@ Web.cs are checked too.</p>
 <p><strong>Snippet variables with more than one word in the label now
 work.</strong> They never had. The pattern that found them required the
 label to be a single run of word characters, and a space is not one, so
-“%First participant=User%” was invisible: no question was asked and the
+"%First participant=User%" was invisible: no question was asked and the
 raw text was left in the finished document. Of the eleven snippets that
 use variables, the three Mermaid ones were affected, every variable in
 them but one. A label may now hold anything except a percent sign, an
@@ -618,7 +629,7 @@ description, should not set a theme in its init block, should have its
 colours checked three ways if it sets any, and should have a heading
 before it when a page holds several. The reason these matter is that
 Mermaid does not tell assistive technology how its nodes connect, so the
-description is not a caption for the picture – for some readers it is
+description is not a caption for the picture -- for some readers it is
 the picture.</p>
 <p>The ten shipped snippets prompt for the name and the description
 first, so the accessible version is the one that costs nothing extra,
@@ -633,7 +644,7 @@ version 5.0. The MIT terms ask less of anyone who wants to build on the
 code: use it, change it, ship it in something of your own, including
 something you sell, as long as the copyright notice goes with it. The
 full terms are in License.md, which also names the parts of EdSharp that
-other people wrote and that keep their own licenses – the Ude encoding
+other people wrote and that keep their own licenses -- the Ude encoding
 detector under the LGPL, the 2htm extractor in the Convert folder, and
 the libraries and tools EdSharp fetches rather than carries. Earlier
 releases stay under the terms they were published with.</p>
@@ -658,8 +669,8 @@ guard the arrangement: the script sources must be present to ship, and
 no compiled .jsb may be shipped, since a compiled script belongs to the
 JAWS version that compiled it and each installed version compiles its
 own.</p>
-<h2 id="august-2026-version-5.0-out-of-beta">26 August 2026 – version
-5.0, out of beta</h2>
+<h2 id="26-august-2026----version-50-out-of-beta">26 August 2026 --
+version 5.0, out of beta</h2>
 <p>The beta released earlier this year invited people to try EdSharp
 again after a decade. What they reported, and what testing found, shaped
 everything below. Each entry says what changed and why.</p>
@@ -668,11 +679,11 @@ Markdown and HTML are supported as both input and output, alongside
 Word, PowerPoint, spreadsheets, rich text and web pages. PDF was
 rebuilt: it now goes through a free reader that keeps headings, lists
 and tables, so a converted PDF can be navigated by block rather than
-read as a wall. The route that depended on Microsoft Word’s PDF reflow
+read as a wall. The route that depended on Microsoft Word's PDF reflow
 is gone.</p>
 <p><strong>Spell check and thesaurus without Microsoft Office.</strong>
 F7 uses Hunspell, with a dictionary that ships in the box, and walks the
-document one misspelling at a time the way Compile walks errors – word
+document one misspelling at a time the way Compile walks errors -- word
 spoken and spelled, position in the pass announced, suggestions in an
 editable box. Shift+F7 uses WordNet, grouped by meaning. The Windows
 spell checking service is a fallback, and Word remains an option;
@@ -688,7 +699,7 @@ PowerShell, JAWS script and JScript .NET ship configured; nine
 unmaintained or unverifiable entries were retired, and VBScript joined
 them when Microsoft began removing it from Windows. Compile speech
 starts at the earliest error in the file rather than the first one
-printed, with the caret placed by reading the tool’s own marker.</p>
+printed, with the caret placed by reading the tool's own marker.</p>
 <p><strong>A console for writing snippets.</strong> Control+Shift+G
 opens a prompt with the editor window and its text box already in scope.
 The JScript one is the Interactive JScript program of 2010, recovered
@@ -727,15 +738,16 @@ conversion scripts, unbalanced braces in the C# and PowerShell sources,
 interface layouts that must match what Windows publishes, public methods
 exposing private types, and bare type names from namespaces the file
 does not import. Each check exists because something once broke, and
-each now fails in a second rather than in a tester’s hands.</p>
+each now fails in a second rather than in a tester's hands.</p>
 <p><strong>The installer explains itself.</strong> Optional pieces are
 checkboxes that say what they will do and how large they are, grouped by
 whether they install, update or reinstall, alphabetical within each
 group, with the versions probed behind the progress bar so the page
 appears at once. Nothing pauses for a keypress, and one Results box at
 the very end reports every item by name.</p>
-<h2 id="august-2026-audit-follow-up-applied-on-standing-authority">23
-August 2026 – audit follow-up, applied on standing authority</h2>
+<h2
+id="23-august-2026----audit-follow-up-applied-on-standing-authority">23
+August 2026 -- audit follow-up, applied on standing authority</h2>
 <p>Jamal authorized best-judgment implementation of the remaining items
 from the 22 August documentation-and-code audit, with alternatives
 weighed and the reasoning recorded. Before any of this is committed, the
@@ -745,32 +757,32 @@ checking out that branch (or restoring single files from it) brings back
 the exact pre-change code.</p>
 <p>What changed, and the judgment behind each piece:</p>
 <ul>
-<li><p>Open Other Format’s duplicate picker row is gone (EdSharp.cs,
+<li><p>Open Other Format's duplicate picker row is gone (EdSharp.cs,
 ConvertFile2String). When a real to-text converter exists for a format,
-the bare keep-the-extension entry – which displayed as “txt” but opened
-the file raw – no longer appears. The alternative considered was
+the bare keep-the-extension entry -- which displayed as "txt" but opened
+the file raw -- no longer appears. The alternative considered was
 relabeling the bare row as its own extension; removal won because two
-rows meaning “convert to text” and “show raw source” under one label was
+rows meaning "convert to text" and "show raw source" under one label was
 the confusion, and raw opening already belongs to the ordinary Open
 command. When no converter exists, the bare row stays, and its raw-read
 fallback is exactly what its offer means.</p></li>
 <li><p>A blocked converter can no longer freeze EdSharp (EdSharp.cs,
 runShell). The hidden converter process now gets two minutes, and one
 still running after that is ended, letting the existing error dialog
-show the command line. The alternative – moving conversion to a
-background thread – was rejected for now as a larger rewrite with new
+show the command line. The alternative -- moving conversion to a
+background thread -- was rejected for now as a larger rewrite with new
 failure modes; a bounded wait fixes the harm with eight lines.</p></li>
 <li><p>The conversion tables live in EdSharp.inix alone, under the
 policy: Pandoc directly wherever Pandoc reads the format; 2htm or the
-OfficeConvert utilities where it cannot (old Word, PDF through Word’s
+OfficeConvert utilities where it cannot (old Word, PDF through Word's
 PDF Reflow, PowerPoint, Excel); .cmd batch files only, never .bat.
 Entries whose tools were removed from Convert (braille through liblouis,
-HTML Tidy, WinHelp and WordPerfect through GetText) are tombstoned – an
-empty value hides them everywhere, including stale copies in a user’s
+HTML Tidy, WinHelp and WordPerfect through GetText) are tombstoned -- an
+empty value hides them everywhere, including stale copies in a user's
 old EdSharp.ini. Excel to Markdown goes through a CSV made by
 OfficeConvert, because Pandoc has no Excel reader. New routes: doc, pdf,
 ppt, and pptx to HTML and Markdown via 2htm, and rtf to HTML, Markdown,
-and text via Pandoc’s RTF reader.</p></li>
+and text via Pandoc's RTF reader.</p></li>
 <li><p>The user guide matches the program again (EdSharp.md): two
 commands that no longer exist are out of the catalog, three malformed
 catalog lines are repaired, ten commands are newly documented (Preview
@@ -783,22 +795,22 @@ retired with their tools.</p></li>
 Every git-tracked root Markdown file regenerates its .htm through Pandoc
 when the Markdown is newer or the .htm is missing. Tracked-only is the
 judgment: personal notes living in the same folder must never sprout
-.htm files. The alternative – a separate regeneration script – was
+.htm files. The alternative -- a separate regeneration script -- was
 rejected because a manual step is a step someone forgets, which is how
 the shipped EdSharp.htm drifted behind EdSharp.md in the first
 place.</p></li>
 <li><p>The JAWS scripts join the repository (prepareAuditFixes runs git
 add -f Scripts). A fresh clone previously built an installer with no
 JAWS scripts at all, because the folder existed only on the development
-machine and the repository’s ignore rules – which treat installer
-wildcards as permission, not desire – would never add it. The forced add
-was chosen over editing .gitignore because it is one action, leaves the
-protective ignore rules intact for future strays, and is permanent:
+machine and the repository's ignore rules -- which treat installer
+wildcards as permission, not desire -- would never add it. The forced
+add was chosen over editing .gitignore because it is one action, leaves
+the protective ignore rules intact for future strays, and is permanent:
 files already tracked stay tracked.</p></li>
 </ul>
 <p>Reverting: git checkout snapshotBeforeAuditFixes_20260823 restores
 the whole pre-change state; git checkout
-snapshotBeforeAuditFixes_20260823 – EdSharp.cs (or any single path)
+snapshotBeforeAuditFixes_20260823 -- EdSharp.cs (or any single path)
 restores one file.</p>
 <h2 id="earlier-in-august-2026">Earlier in August 2026</h2>
 <ul>

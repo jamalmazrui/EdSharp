@@ -903,6 +903,176 @@ def checkInstallerNames():
     return finding("installer", "pass", "no function is defined both here and in the kit's components")
 
 
+def declaredNames():
+    """The lines of RepoFiles.txt and LocalFiles.txt, lowercased, with / for \\."""
+    lsNames = []
+    for sList in ("RepoFiles.txt", "LocalFiles.txt"):
+        sPath = os.path.join(sRoot, sList)
+        if os.path.isfile(sPath):
+            for sLine in readText(sPath).splitlines():
+                sLine = sLine.strip()
+                if sLine and not sLine.startswith("#"): lsNames.append(sLine.replace("\\", "/").lower())
+    return lsNames
+
+
+def knownDebt(sKey):
+    """The entries of the kit's conformanceBacklog.inix for this project under sKey
+    (folders or shared), lowercased, and the plan -- the known departures that are
+    reported rather than failed."""
+    try:
+        import kind
+        sKit = kind.findKit([sRoot]) or ""
+    except Exception:
+        sKit = ""
+    for sDir in (os.path.join(sKit, "scripts"), os.path.dirname(os.path.abspath(__file__))):
+        sPath = os.path.join(sDir, "conformanceBacklog.inix")
+        if not os.path.isfile(sPath): continue
+        sSection = ""
+        dFound = {}
+        for sLine in readText(sPath).splitlines():
+            sLine = sLine.strip()
+            if not sLine or sLine.startswith(";"): continue
+            if sLine.startswith("[") and sLine.endswith("]"): sSection = sLine[1:-1].lower(); continue
+            if sSection == appName().lower() and "=" in sLine:
+                sName, sValue = [s.strip() for s in sLine.split("=", 1)]
+                dFound[sName.lower()] = sValue
+        lsItems = [s.strip().lower().replace("\\", "/") for s in dFound.get(sKey, "").split(",") if s.strip()]
+        return lsItems, dFound.get("plan", "")
+    return [], ""
+
+
+def checkLayout(sKind):
+    """THE HOMER TREE (1.65.0): a top-level folder outside the standard set for the
+    project's kind fails, unless RepoFiles.txt or LocalFiles.txt declares it; a
+    declared one is listed in the log, for the author to confirm he wanted it.
+    Folders had been added to Homer projects unasked."""
+    try:
+        import kind
+        setStandard = kind.standardFolders(sKind)
+        if kind.publishesBooks(sRoot): setStandard.add("books")   # the book tools' own folder, by convention
+    except Exception as oError:
+        return finding("layout", "skip", "kind.py has no standard folders: %s" % oError)
+    lsDeclared = declaredNames()
+    lsBad, lsDeclaredExtra = [], []
+    for sName in sorted(os.listdir(sRoot), key=str.lower):
+        if not os.path.isdir(os.path.join(sRoot, sName)) or sName.lower() in setStandard: continue
+        if any(s == sName.lower() + "/" or s.startswith(sName.lower() + "/") for s in lsDeclared): lsDeclaredExtra.append(sName)
+        else: lsBad.append(sName)
+    for s in lsDeclaredExtra: logLine("LAYOUT: %s is not a standard Homer folder, but the project declares it; confirm it was wanted" % s)
+    lsKnown, sPlan = knownDebt("folders")
+    lsListed = [s for s in lsBad if s.lower() in lsKnown]
+    for s in lsListed: logLine("KNOWN: folder %s, in the kit's conformance backlog -- %s" % (s, sPlan))
+    lsBad = [s for s in lsBad if s.lower() not in lsKnown]
+    if lsListed and not lsBad:
+        return finding("layout", "pass", "%d folder%s outside the tree, all in the kit's conformance backlog: %s" % (len(lsListed), "" if len(lsListed) == 1 else "s", ", ".join(lsListed)))
+    if lsBad:
+        return finding("layout", "fail", "%s outside the Homer tree and declared nowhere: %s" % (countNoun(len(lsBad), "folder") if "countNoun" in globals() else str(len(lsBad)) + " folders", ", ".join(lsBad)))
+    return finding("layout", "pass", "every top-level folder is a standard one" + ("" if not lsDeclaredExtra else "; declared besides: " + ", ".join(lsDeclaredExtra)))
+
+
+c_nCopyThreshold = 0.5
+
+
+def sharedFraction(sPathA, sPathB):
+    """The share of the shorter file's meaningful lines that also appear in the other."""
+    def meaningful(sPath):
+        return [s.strip() for s in readText(sPath).splitlines() if s.strip() and not s.strip().startswith(("#", "//"))]
+    lsA, lsB = meaningful(sPathA), meaningful(sPathB)
+    if not lsA or not lsB: return 0.0
+    if len(lsA) > len(lsB): lsA, lsB = lsB, lsA
+    setB = set(lsB)
+    return sum(1 for s in lsA if s in setB) / float(len(lsA))
+
+
+def classBody(sText, sClass):
+    """The text of class sClass in sText, from its declaration to its closing brace."""
+    oMatch = re.search(r"(?m)^[ \t]*(?:public\s+|internal\s+)?(?:static\s+|sealed\s+|partial\s+|abstract\s+)*class\s+" + sClass + r"\b[^{]*\{", sText)
+    if not oMatch: return ""
+    iDepth, i = 1, oMatch.end()
+    while iDepth and i < len(sText):
+        iDepth += (sText[i] == "{") - (sText[i] == "}")
+        i += 1
+    return sText[oMatch.start():i]
+
+
+def classMembers(sBody):
+    return set(re.findall(r"(?m)^\s*(?:public|internal)\s+(?:static\s+|override\s+|virtual\s+)*[\w<>\[\],\.]+\s+(\w+)\s*\(", sBody))
+
+
+def checkSharedCode():
+    """ONE COPY OF EVERY SHARED CLASS (1.65.0): an app's own source that duplicates a
+    kit module -- the same file name, or a C# class of the same name as a kit
+    class -- fails, unless it is a byte-identical copy the build made. FileDir
+    compiled its own drifted Media.cs and Mpv.cs; the kit's own wheel is the one
+    to use."""
+    try:
+        import kind
+        sKit = kind.findKit([sRoot])
+    except Exception:
+        sKit = ""
+    if not sKit or os.path.abspath(sKit) == os.path.abspath(sRoot):
+        return finding("shared", "skip", "no kit to compare with, or this is the kit")
+    dKitFiles, dKitClasses = {}, {}
+    for sLang in ("CSharp", "Python"):
+        sDir = os.path.join(sKit, "exec", sLang)
+        if not os.path.isdir(sDir): continue
+        for sName in os.listdir(sDir):
+            sPath = os.path.join(sDir, sName)
+            if not os.path.isfile(sPath): continue
+            dKitFiles[sName.lower()] = sPath
+            if sName.lower().endswith(".cs"):
+                for sClass in re.findall(r"(?m)^\s*(?:public\s+|internal\s+)?(?:static\s+|sealed\s+|partial\s+)*class\s+(\w+)", readText(sPath)):
+                    dKitClasses[sClass] = sName
+    lsBad = []
+    for sDir, lsDirs, lsFiles in os.walk(sRoot):
+        lsDirs[:] = [s for s in lsDirs if s.lower() not in (".git", "notes", "logs", "exec", "results", "__pycache__", ".claude")]
+        for sName in lsFiles:
+            sLower = sName.lower()
+            if not sLower.endswith((".cs", ".py")): continue
+            sPath = os.path.join(sDir, sName); sRel = os.path.relpath(sPath, sRoot)
+            if sRel.lower().startswith("scripts" + os.sep): continue   # the kit's tools, copied by the build
+            if sLower in dKitFiles:
+                if open(sPath, "rb").read() == open(dKitFiles[sLower], "rb").read(): continue
+                # A COPY, OR ONLY A NAME IN COMMON (1.65.2)? A file that shares a
+                # substantial part of its lines with the kit's file of the same name
+                # is a drifted copy; one that shares almost none is a different
+                # module with a clashing name -- logged, not failed as a copy.
+                # HomerView's own paths.py and elevate.py were first reported as copies.
+                nShared = sharedFraction(sPath, dKitFiles[sLower])
+                if nShared >= c_nCopyThreshold:
+                    lsBad.append((sRel.replace(os.sep, "/").lower(), "%s is a copy of the kit's %s that has drifted (%d%% of its lines shared)" % (sRel, sName, round(nShared * 100))))
+                else:
+                    logLine("NAME: %s has the name of the kit's %s but different code (%d%% of lines shared); a different name would avoid confusion" % (sRel, sName, round(nShared * 100)))
+                continue
+            if sLower.endswith(".cs"):
+                sText = readText(sPath)
+                for sClass in re.findall(r"(?m)^\s*(?:public\s+|internal\s+)?(?:static\s+|sealed\s+|partial\s+)*class\s+(\w+)", sText):
+                    if sClass not in dKitClasses or sClass in ("App", "Program"): continue
+                    # A COPY, OR ONLY A NAME IN COMMON (1.65.3), as for files: a class
+                    # sharing at least half its public members with the kit's class of
+                    # that name is a drifted copy; otherwise it is a different class
+                    # with a clashing name. EdSharp's MdiFrame is the editor itself,
+                    # over 14,000 lines sharing no member with the kit's Mdi.
+                    setApp = classMembers(classBody(sText, sClass))
+                    setKit = classMembers(classBody(readText(os.path.join(sKit, "exec", "CSharp", dKitClasses[sClass])), sClass))
+                    iSmaller = min(len(setApp), len(setKit))
+                    nShared = (len(setApp & setKit) / float(iSmaller)) if iSmaller else 0.0
+                    if nShared >= c_nCopyThreshold:
+                        lsBad.append(((sRel.replace(os.sep, "/") + ":" + sClass).lower(), "%s defines class %s, a drifted copy of the kit's %s (%d%% of members shared)" % (sRel, sClass, dKitClasses[sClass], round(nShared * 100))))
+                    else:
+                        logLine("NAME: %s defines class %s, a different class from the kit's %s (%d%% of members shared); a different name would avoid confusion" % (sRel, sClass, dKitClasses[sClass], round(nShared * 100)))
+    lsKnown, sPlan = knownDebt("shared")
+    lsListed = [s for k, s in lsBad if k in lsKnown]
+    lsBad = [s for k, s in lsBad if k not in lsKnown]
+    for s in lsListed: logLine("KNOWN: %s, in the kit's conformance backlog -- %s" % (s, sPlan))
+    for s in lsBad: logLine("SHARED: " + s)
+    if lsListed and not lsBad:
+        return finding("shared", "pass", "%d known duplicate%s of kit code, all in the kit's conformance backlog with a plan" % (len(lsListed), "" if len(lsListed) == 1 else "s"))
+    if lsBad:
+        return finding("shared", "fail", "%d duplicate%s of kit code; the log names each, and the kit's is the one to use" % (len(lsBad), "" if len(lsBad) == 1 else "s"))
+    return finding("shared", "pass", "no app source duplicates a kit module or class")
+
+
 def checkBuildName():
     """THE BUILD SCRIPT IS build.cmd (1.43.55). The folder already names the
     app, so build<App>.cmd said it twice. An old name fails the check and names
@@ -1118,6 +1288,7 @@ def main():
         checkLicense(sKind)
         checkEncoding()
         checkEmpty()
+        checkLayout(sKind)
         checkSkillChecks(sKind)
         if os.path.isdir(os.path.join(sRoot, ".git")): checkPublish()
         else: finding("publish", "skip", "not a git repository; post keeps a page's repository")
@@ -1134,6 +1305,8 @@ def main():
         checkNaming()
         checkLocal()
         checkFinishPage()
+        checkLayout("app")
+        checkSharedCode()
         checkInstallerNames()
         checkSkillChecks("app")
         checkBuildName()
