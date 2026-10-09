@@ -71,6 +71,16 @@ import sys
 import time
 import traceback
 
+# THE KIT'S kind.py, NOT AN APP'S COPY (1.65.5). Several apps' builds refreshed check.py from the kit but not
+# kind.py, which it imports, so their checks ran against an old kind.py and quietly skipped the layout and
+# installer findings ("kind.py has no standard folders", 9 October 2026). When the kit is on this computer, its
+# scripts folder comes first; an app's own copy is used only when there is no kit.
+for _sKitScripts in [os.path.join(os.environ.get("HomerDev", ""), "scripts"), r"C:\HomerDev\scripts"]:
+    if _sKitScripts.strip("\\/") and os.path.isfile(os.path.join(_sKitScripts, "kind.py")) \
+            and os.path.abspath(_sKitScripts) != os.path.dirname(os.path.abspath(__file__)):
+        sys.path.insert(0, os.path.abspath(_sKitScripts))
+        break
+
 # The standard document set. ReadMe and License sit at the top of the project;
 # everything else lives in help, which is where the Homer layout puts documents.
 c_lsDocumentsTop = ["License", "ReadMe"]
@@ -468,6 +478,35 @@ def checkDocumentsNotApp(sKind):
     """A page has one document named for the folder, with its .htm and a title
     in its front matter; a collection has a ReadMe and an .htm for every .md."""
     sApp = appName()
+    # A PROJECT OF SEVERAL PAGES (1.65.4): MyPages keeps a folder per GitHub Page in pages\, so its documents are
+    # judged there -- each folder holds one page -- and at the top only the ReadMe and License, each with its .htm.
+    # A page with no title is noted, not failed: posting names it after its folder, as postPage.ps1 did.
+    try:
+        import kind
+        bPages = kind.publishesPages(sRoot)
+    except Exception:
+        bPages = False
+    if sKind == "page" and bPages:
+        lsWrong, lsNoTitle, iPages = [], [], 0
+        for sDoc in ("ReadMe", "License"):
+            if not os.path.isfile(os.path.join(sRoot, sDoc + ".md")): lsWrong.append("no " + sDoc + ".md")
+            elif not os.path.isfile(os.path.join(sRoot, sDoc + ".htm")): lsWrong.append("no " + sDoc + ".htm")
+        sPages = os.path.join(sRoot, "pages")
+        for sName in sorted(os.listdir(sPages), key=str.lower):
+            sPage = os.path.join(sPages, sName)
+            if not os.path.isdir(sPage): continue
+            lsMd = [x for x in os.listdir(sPage) if x.lower().endswith(".md") and x.lower() not in ("readme.md", "index.md")]
+            if not lsMd:
+                lsWrong.append("pages\\%s holds no page" % sName)
+                continue
+            iPages += 1
+            if len(lsMd) > 1: logLine("PAGES: pages\\%s holds %d Markdown files; the first by name, %s, is the page" % (sName, len(lsMd), sorted(lsMd, key=str.lower)[0]))
+            sText = readText(os.path.join(sPage, sorted(lsMd, key=str.lower)[0])).replace("\r\n", "\n")
+            if not re.match(r"\A---\s*\n(?:.*\n)*?title:", sText): lsNoTitle.append(sName)
+        if lsNoTitle: logLine("PAGES: no title in the front matter of %s; each is posted under its folder's name" % ", ".join(lsNoTitle))
+        if lsWrong: return finding("documents", "fail", "; ".join(lsWrong))
+        return finding("documents", "pass", "%d page%s in pages\\, and the ReadMe and License with their .htm%s"
+                       % (iPages, "" if iPages == 1 else "s", ("; untitled, so named for their folders: " + ", ".join(lsNoTitle)) if lsNoTitle else ""))
     if sKind == "page":
         sMd = os.path.join(sRoot, sApp + ".md")
         if not os.path.isfile(sMd):
@@ -950,6 +989,7 @@ def checkLayout(sKind):
         import kind
         setStandard = kind.standardFolders(sKind)
         if kind.publishesBooks(sRoot): setStandard.add("books")   # the book tools' own folder, by convention
+        if kind.publishesPages(sRoot): setStandard.add("pages")   # a folder per GitHub Page, by convention (1.65.4)
     except Exception as oError:
         return finding("layout", "skip", "kind.py has no standard folders: %s" % oError)
     lsDeclared = declaredNames()
@@ -997,6 +1037,20 @@ def classBody(sText, sClass):
 
 def classMembers(sBody):
     return set(re.findall(r"(?m)^\s*(?:public|internal)\s+(?:static\s+|override\s+|virtual\s+)*[\w<>\[\],\.]+\s+(\w+)\s*\(", sBody))
+
+
+def checkIssComments():
+    """An installer script's [Code] lines that begin with ; stop Inno's compile (1.65.5)."""
+    try:
+        import kind
+    except Exception as oError:
+        return finding("isscode", "skip", "kind.py could not be read: %s" % oError)
+    lsBad = []
+    for sIss in glob.glob(os.path.join(sRoot, "*.iss")):
+        for iLine in kind.issCodeSemicolons(readText(sIss)): lsBad.append("%s line %d" % (os.path.basename(sIss), iLine))
+    if lsBad:
+        return finding("isscode", "fail", "a line inside [Code] begins with ;, which Inno does not take as a comment there (use //): " + ", ".join(lsBad[:6]))
+    return finding("isscode", "pass", "no [Code] line begins with ;")
 
 
 def checkSharedCode():
@@ -1307,6 +1361,7 @@ def main():
         checkFinishPage()
         checkLayout("app")
         checkSharedCode()
+        checkIssComments()
         checkInstallerNames()
         checkSkillChecks("app")
         checkBuildName()

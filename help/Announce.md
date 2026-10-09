@@ -6,8 +6,6 @@ author: Jamal Mazrui
 
 # What's New in EdSharp
 
-### A text and code editor rebuilt for the way screen reader users actually work
-
 - [EdSharp project page on GitHub](https://github.com/JamalMazrui/EdSharp)
 - [EdSharp installer for Windows](https://github.com/JamalMazrui/EdSharp/releases/latest/download/EdSharp_setup.exe)
 

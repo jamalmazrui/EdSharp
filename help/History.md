@@ -1,6 +1,12 @@
 ﻿# EdSharp History
 
 
+
+## 9 October 2026 -- from the build and release logs
+
+- **Every help page has a title.** History.md has no front matter, so its page was built with no title and Pandoc warned on every build. A document with no title now takes one from EdSharp and its file name, such as EdSharp History.
+- **The subtitle appears once.** Announce.md repeated its subtitle as a heading under the title, so the page said it twice, once as a heading that skipped a level.
+
 ## Unreleased -- 9 October 2026
 
 - **Two old folders retired.** The top-level Convert and Samples folders were left from the layout before configs\convert and templates\samples; EdSharp reads neither, and all but one of their nine files were already kept, word for word, where it does read. The build now moves them into notes\retired, file by file, logging each, and deletes nothing.
