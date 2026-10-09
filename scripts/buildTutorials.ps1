@@ -328,6 +328,11 @@ function runMake() {
 say "Writing the tutorials into Tutorials.md ..."
 if (-not (runMake)) { say "The documents could not be written. The log has why."; exit 1 }
 if ($bDocsOnly) { say "Documents only, as asked. Nothing was spoken."; exit 0 }
+# AN ACCEPTANCE BUILD SPEAKS NOTHING, IN EVERY APP (9 October 2026). check runs an app's build as an acceptance check
+# with HomerAcceptance set (kit 1.54.2), and DbDo's and EdSharp's builds skipped their walks then, but HomerView's and
+# HomerScribe's did not, so HomerView's acceptance build entered the voice queue and ran out its clock. The kit's
+# builder now honours the flag itself: the walks are written, and the audio the ordinary build left is what ships.
+if ($env:HomerAcceptance) { say "An acceptance build: the walks are written, and speaking is left to the ordinary build."; exit 0 }
 
 # ---- step 2 of 4: the voices ----
 
@@ -1344,7 +1349,13 @@ function speakingNow() {
   try { if (Test-Path -LiteralPath $sSpeakingFile) { return ([System.IO.File]::ReadAllText($sSpeakingFile)).Trim() } } catch { }
   return ""
 }
-try {
+# WAIT ONLY TO SPEAK (9 October 2026): the lock was taken before asking whether anything needed speaking, so a build
+# whose ten walks were all spoken and current waited 34 minutes behind another project's voices (HomerView behind
+# HomerScribe), and its acceptance check timed out. The same test the loop below uses decides first; with nothing to
+# speak, the lock is not taken at all.
+$iToSpeak = @($lsScripts | Where-Object { $bLive -or $sOnly -ne "" -or -not (spokenCurrent $_ (Join-Path $sAudioDir (audioName $_))) }).Count
+note ("walks needing speech: " + $iToSpeak + " of " + $lsScripts.Count)
+if ($iToSpeak -gt 0) { try {
   # The two-argument constructor: New-Object cannot bind an out parameter.
   $oMutex = New-Object System.Threading.Mutex($false, "Global\HomerTutorialsSpeaking")
   $iWaited = 0
@@ -1355,7 +1366,7 @@ try {
     else { say ("  still waiting, " + $iWaited + " minutes" + $(if ($sNow) { "; " + $sNow } else { "" })) }
   }
   if ($iWaited -gt 0) { say "The other build has finished; speaking now." }
-} catch { note ("tutorial mutex not available: " + $_); $oMutex = $null }
+} catch { note ("tutorial mutex not available: " + $_); $oMutex = $null } } else { note "every walk is already spoken and current, so no wait for the voices" }
 retireOldAudio
 $iWalk = 0
 foreach ($sScript in $lsScripts) {

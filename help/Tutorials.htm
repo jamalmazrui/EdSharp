@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>EdSharp Tutorials</title>
+  <title>Tutorials</title>
   <style>
     html {
       line-height: 1.5;
@@ -196,14 +196,14 @@ Developer</a></li>
 Operator</a></li>
 </ul>
 <h2 id="python-developer">Python Developer</h2>
-<p>Python is the language EdSharp supports most fully, because Python's
+<p>Python is the language EdSharp supports most fully, because Python’s
 whitespace is the hardest thing about writing code with a screen reader
 and EdSharp answers it from several directions at once.</p>
 <h3 id="setup">Setup</h3>
 <p>Press Control+Shift+F5, Pick Compiler, and choose Python. That one
 choice brings a working set of settings: Control+F5 runs your file with
 the official Python from python.org and jumps to the line and column of
-any error; Control+Shift+G opens Python's own prompt with your file
+any error; Control+Shift+G opens Python’s own prompt with your file
 already run, so the functions you just wrote are there to call;
 IndentUnit becomes four spaces, which is what PEP 8 asks and what
 collaborators expect; and the comment prefix becomes the number sign, so
@@ -214,35 +214,35 @@ matter what the compiler setting says. The setting only governs a file
 with no indentation yet.</p>
 <p>For wxPython, install the library once from a command prompt:</p>
 <pre><code>python -m pip install wxPython</code></pre>
-<p>Then open Samples\fruitBasket.py from the EdSharp program folder,
-which is a complete wxPython program written in the Camel Type style,
-and press Control+F5 to run it. Control+Shift+F2, Sample Programs, lists
-it and the others.</p>
+<p>Then open Samples.py from the EdSharp program folder, which is a
+complete wxPython program written in the Camel Type style, and press
+Control+F5 to run it. Control+Shift+F2, Sample Programs, lists it and
+the others.</p>
 <h3 id="working-with-indentation">Working with Indentation</h3>
-<p>Four commands make Python's structure audible.</p>
+<p>Four commands make Python’s structure audible.</p>
 <p>PyBrace, Alt+Shift+LeftBracket, rewrites the open document into a
 flat form where structure is spoken text rather than counted spaces: a
 compound statement ends with a brace, and every block closes with a line
-naming the keyword it closes, such as "brace end def". Edit in that form
+naming the keyword it closes, such as “brace end def”. Edit in that form
 if you find it easier. PyDent, Alt+LeftBracket, turns it back into
 indented Python, rebuilding the indentation and leaving a comment at the
 end of each block so the ends of functions and loops stay audible while
 you read. Dictionary literals, docstrings and line continuations survive
 the round trip untouched.</p>
 <p>Indent Mode, Alt+Shift+I, announces each change in indentation as you
-arrow through code: "in 1" when a line is one level deeper than the
-last, "out 2" when it is two levels shallower. It also swaps what Enter
+arrow through code: “in 1” when a line is one level deeper than the
+last, “out 2” when it is two levels shallower. It also swaps what Enter
 and Shift+Enter do, so Enter keeps the current indentation.</p>
 <p>Indentation, Alt+I, in the Query menu, says how many levels deep the
 current line is. Press it twice and it reads the whole chain of
-enclosing blocks, outermost first, such as "class Greeter, def greet, if
-loud, for i in range 3" -- which is the answer to "where am I?" that
+enclosing blocks, outermost first, such as “class Greeter, def greet, if
+loud, for i in range 3” – which is the answer to “where am I?” that
 sighted readers get from the layout at a glance.</p>
 <p>Next Indent and Prior Indent, Control+I and Control+Shift+I, move to
 the next and previous change of indentation. Next Block and Prior Block,
 Control+B and Control+Shift+B, move by whole blocks.</p>
 <p>Two more commands round it out. Format Code, Alt+F8, normalizes a
-Python file's indentation to the unit in force. Infer Indent,
+Python file’s indentation to the unit in force. Infer Indent,
 Alt+RightBracket, captures the indentation of the file in front of you
 into the setting.</p>
 <h3 id="key-reminders">Key Reminders</h3>
@@ -262,15 +262,15 @@ coding model when it is installed</li>
 applies. What differs is the shape of the project and the testing
 loop.</p>
 <h3 id="setup-1">Setup</h3>
-<p>Pick the Python compiler as above. NVDA's own code follows PEP 8 with
+<p>Pick the Python compiler as above. NVDA’s own code follows PEP 8 with
 four space indentation, so leave IndentUnit as the compiler sets it.</p>
 <p>An add-on is a folder of Python files plus a manifest, packaged as a
 zip with the .nvda-addon extension. EdSharp edits the parts; NVDA
 installs the whole. Keep a build script in the project and run it with
 Prompt Command, Alt+F5, which runs any command line and shows its output
 the same way Compile does, jumping to errors.</p>
-<p>Set GoToEnvironment to NVDA's own Python console if you use it, or
-leave it as the compiler's prompt for testing plain functions.</p>
+<p>Set GoToEnvironment to NVDA’s own Python console if you use it, or
+leave it as the compiler’s prompt for testing plain functions.</p>
 <p>EdSharp itself ships an add-on, EdSharp.nvda-addon in the program
 folder, which is a working example of the layout.</p>
 <h3 id="key-reminders-1">Key Reminders</h3>
@@ -279,7 +279,7 @@ folder, which is a working example of the layout.</p>
 single file</li>
 <li>Alt+Shift+F9 Run Code Blocks if your notes hold snippets to try</li>
 <li>Control+F12 Copy Log when reporting a problem: it puts this
-session's log on the clipboard as a file, ready to attach to a
+session’s log on the clipboard as a file, ready to attach to a
 message</li>
 </ul>
 <h2 id="jaws-script-developer">JAWS Script Developer</h2>
@@ -306,25 +306,24 @@ and SayString, which appear in the list marked as shipped.</p>
 compiler is chosen: a JScript prompt with the editor window as frm and
 its text box as rtb, so a line that works there works in a snippet</li>
 </ul>
-<h2 id="nodejs-and-web-developer">Node.js and Web Developer</h2>
+<h2 id="node.js-and-web-developer">Node.js and Web Developer</h2>
 <h3 id="setup-3">Setup</h3>
 <p>Press Control+Shift+F5 and choose JavaScript. Control+F5 then runs
 the open file with Node, and the error jump understands both forms Node
 reports: the plain line for a syntax error and the line with column
-inside a stack frame. Node's own frames are removed from what is spoken,
-so you hear your error rather than Node's internals. Control+Shift+G
-opens Node's read-evaluate-print shell. IndentUnit becomes two spaces,
+inside a stack frame. Node’s own frames are removed from what is spoken,
+so you hear your error rather than Node’s internals. Control+Shift+G
+opens Node’s read-evaluate-print shell. IndentUnit becomes two spaces,
 the prevailing JavaScript convention, and the comment prefix becomes two
 slashes.</p>
 <p>For web pages, Preview Markdown in Web Browser and the HTML commands
 matter more than the compiler. Control+H formats HTML; Control+F9
 previews the current Markdown in a window, and the browser preview draws
 Mermaid diagrams properly. Check Markdown, Alt+F9, reports images
-without alternative text, heading jumps and bare web addresses --
+without alternative text, heading jumps and bare web addresses –
 accessibility faults you would otherwise ship.</p>
-<p>Samples\Web in the program folder holds the fruit basket program
-written four ways for the browser, with a Node script that serves
-them:</p>
+<p>Samplesin the program folder holds the fruit basket program written
+four ways for the browser, with a Node script that serves them:</p>
 <pre><code>node serveFruitBasket.js</code></pre>
 <h3 id="key-reminders-3">Key Reminders</h3>
 <ul>
@@ -336,19 +335,19 @@ Node shell</li>
 <h2 id="c-developer">C# Developer</h2>
 <h3 id="setup-4">Setup</h3>
 <p>Press Control+Shift+F5 and choose C#. Control+F5 then compiles the
-open file with the C# compiler that ships inside Windows itself -- no
-Visual Studio, no SDK -- producing a 64-bit program, and jumps to the
+open file with the C# compiler that ships inside Windows itself – no
+Visual Studio, no SDK – producing a 64-bit program, and jumps to the
 exact line and column of the first error in the file. IndentUnit becomes
 four spaces, the Microsoft convention, and the comment prefix two
-slashes. Windows ships no C# console, so Control+Shift+G opens EdSharp's
+slashes. Windows ships no C# console, so Control+Shift+G opens EdSharp’s
 own JScript interpreter for trying expressions.</p>
 <p>Two things are worth knowing when writing Windows Forms code. First,
-Samples\fruitBasket.cs is a complete Windows Forms program in Camel Type
-with a build line in its comments; open it with Control+Shift+F2 and
-press Control+F5. Second, when you ask F12 for help with C#, say
-"targeting .NET Framework 4.8" in your question. Most C# written today
-targets the newer .NET, and a model that assumes it will hand you code
-that does not compile here.</p>
+Samples.cs is a complete Windows Forms program in Camel Type with a
+build line in its comments; open it with Control+Shift+F2 and press
+Control+F5. Second, when you ask F12 for help with C#, say “targeting
+.NET Framework 4.8” in your question. Most C# written today targets the
+newer .NET, and a model that assumes it will hand you code that does not
+compile here.</p>
 <h3 id="key-reminders-4">Key Reminders</h3>
 <ul>
 <li>Control+Shift+F5 Pick Compiler, Control+F5 Compile</li>
@@ -356,8 +355,8 @@ that does not compile here.</p>
 the compiler printed; fix it and press Control+F5 again</li>
 <li>Alt+F8 Format Code runs the C family through astyle</li>
 <li>Control+Shift+G opens the C# console: a prompt where frm is the
-editor window and rtb its text box, so "rtb.SelectedText.ToUpper()"
-prints the answer and "rtb.SelectedText = rtb.SelectedText.ToUpper();"
+editor window and rtb its text box, so “rtb.SelectedText.ToUpper()”
+prints the answer and “rtb.SelectedText = rtb.SelectedText.ToUpper();”
 changes the document. Each line is compiled, so expect about a second
 per line; a line ending in a semicolon is kept for the rest of the
 session</li>
@@ -375,10 +374,10 @@ no limit and no document leaving the machine.</p>
 whole document when nothing is selected. One dialog asks both languages,
 with your last pair already selected, and the translation opens in a new
 window so the original is untouched.</p>
-<p>Quality is good between the widely written languages -- Spanish,
-French, German, Portuguese, Italian -- and weaker for languages with
-less material behind them. A long document takes minutes, and EdSharp
-speaks a count every fifteen seconds so you know it is working.</p>
+<p>Quality is good between the widely written languages – Spanish,
+French, German, Portuguese, Italian – and weaker for languages with less
+material behind them. A long document takes minutes, and EdSharp speaks
+a count every fifteen seconds so you know it is working.</p>
 <p>TranslateModel names a different model if you install one.</p>
 <h3 id="key-reminders-5">Key Reminders</h3>
 <ul>
@@ -409,26 +408,27 @@ on a word for synonyms grouped by meaning.</p>
 <li>Alt+F9 Check Markdown, Control+F9 Preview, Alt+Shift+E Export
 Format</li>
 <li>F7 Spell Check, Shift+F7 Thesaurus</li>
-<li>F12 Chat with AI on a selection: "make this tighter", "ninth grade
-reading level"</li>
+<li>F12 Chat with AI on a selection: “make this tighter”, “ninth grade
+reading level”</li>
 </ul>
 <h2 id="journal-article-author">Journal Article Author</h2>
 <h3 id="setup-7">Setup</h3>
 <p>A journal article is a magazine article with citations and a required
 format, so start from the section above and add three things.</p>
 <p>Keep your references in a .bib file beside the article and name it in
-the document's own metadata block at the top:</p>
+the document’s own metadata block at the top:</p>
 <pre><code>---
 title: Your Title
 author: Your Name
 bibliography: references.bib
 csl: apa.csl
 ---</code></pre>
-<p>Cite in the text with a key in square brackets, such as [@smith2020].
-When you export with Alt+Shift+E, Pandoc formats the citations and
-builds the reference list in the style the .csl file names. Download the
-style your journal requires from the Zotero style repository and keep it
-beside the article.</p>
+<p>Cite in the text with a key in square brackets, such as <span
+class="citation" data-cites="smith2020">[@smith2020]</span>. When you
+export with Alt+Shift+E, Pandoc formats the citations and builds the
+reference list in the style the .csl file names. Download the style your
+journal requires from the Zotero style repository and keep it beside the
+article.</p>
 <p>Tables and figures deserve attention, since they are where
 accessibility is usually lost. Give every figure alternative text in the
 Markdown, and give every table a caption; Check Markdown, Alt+F9,
@@ -439,7 +439,7 @@ document so your export matches their layout.</p>
 <ul>
 <li>Alt+Shift+E Export Format for the submission file</li>
 <li>Alt+F9 Check Markdown before every submission</li>
-<li>Control+Shift+O Open Other Format converts a colleague's Word
+<li>Control+Shift+O Open Other Format converts a colleague’s Word
 document or a PDF into Markdown you can edit, keeping headings, lists
 and tables</li>
 </ul>
@@ -464,14 +464,14 @@ Presenter View and in handouts but never on the slide:</p>
 Mention that everything runs offline. Ask how many people use JAWS.
 :::</code></pre>
 <p>Export with Alt+Shift+E and choose pptx. To match a house style, make
-a copy of your organization's template and name it as the reference
+a copy of your organization’s template and name it as the reference
 document; Pandoc uses its theme, its fonts and its layouts, choosing a
-layout per slide by what the slide contains -- a title slide, a section
+layout per slide by what the slide contains – a title slide, a section
 header, a two-content slide when you use columns, and a plain title and
 content slide otherwise.</p>
 <p>Two accessibility points worth minding, since they are yours to get
-right and nobody else's: give every slide a unique title, because screen
-readers and PowerPoint's own outline use titles to navigate, and give
+right and nobody else’s: give every slide a unique title, because screen
+readers and PowerPoint’s own outline use titles to navigate, and give
 every image alternative text in the Markdown.</p>
 <p>You can also go the other way. Control+Shift+O opens an existing
 PowerPoint file as Markdown, which is the quickest way to read a deck
@@ -486,13 +486,13 @@ one; a notes div holds speaker notes</li>
 </ul>
 <h2 id="document-summarizer">Document Summarizer</h2>
 <h3 id="setup-9">Setup</h3>
-<p>Tick Ollama on the installer's last page so F12 has a model to talk
+<p>Tick Ollama on the installer’s last page so F12 has a model to talk
 to.</p>
-<p>The loop is short. Open the document -- Control+Shift+O converts a
+<p>The loop is short. Open the document – Control+Shift+O converts a
 PDF, Word file, slide deck or spreadsheet into Markdown with its
 headings and tables intact. Press F12, Chat with AI, and type an
-instruction such as "summarize in five bullet points" or "list the
-recommendations only". The summary opens in a new window, leaving the
+instruction such as “summarize in five bullet points” or “list the
+recommendations only”. The summary opens in a new window, leaving the
 original untouched.</p>
 <p>Two details make it work better. Select a section first if you want
 that section summarized; with nothing selected the whole document
@@ -520,18 +520,18 @@ into one document without ever leaving the keyboard.</p>
 <p>Web Download, Alt+Shift+W, picks files to download from a web page or
 from the addresses in the current document. Fetch an article as HTML and
 press Control+Shift+O, Open Other Format, to read it as Markdown with
-its headings and lists intact -- far quieter than a browser, and
+its headings and lists intact – far quieter than a browser, and
 searchable with Control+F.</p>
 <p>PDFs are the usual currency of research, and they open the same way:
 Control+Shift+O converts a PDF into Markdown with headings, lists and
 tables preserved, so Control+B walks it by block and Alt+F9 reports
-anything malformed. Tick the document tools on the installer's last page
+anything malformed. Tick the document tools on the installer’s last page
 so PDF conversion is available.</p>
 <p>The gathering itself is the clipboard. Alt+7, Append from Clipboard,
 turns the current window into a collector: everything you copy is added
 to it, so you can read three sources, copy a paragraph from each, and
-find them stacked in one document in order. EdSharp says "Append from
-clipboard" whenever focus returns to such a window, so the mode is never
+find them stacked in one document in order. EdSharp says “Append from
+clipboard” whenever focus returns to such a window, so the mode is never
 a surprise. Copy Line and Append to Clipboard, in the Edit menu, add a
 single line without leaving what you are reading.</p>
 <p>When the reading is done, F12, Chat with AI, summarizes what you
@@ -552,7 +552,7 @@ Control+Shift+B by block</li>
 <p>Two commands do bulk work, and they pair.</p>
 <p>File Find, Alt+Shift+F, searches folders and puts the matching file
 paths into a window, one per line. That list is the input to everything
-below, and you can edit it by hand -- delete the lines you do not want
+below, and you can edit it by hand – delete the lines you do not want
 converted.</p>
 <p>Transform Files, Alt+Equals, applies a set of search and replace
 tasks to every file named in the current window. Write the tasks first,
@@ -560,7 +560,7 @@ run them against a copy of the files first, and keep the task list as a
 document you can reuse.</p>
 <p>For format conversion in bulk, put the conversions in a script and
 run it with Prompt Command, Alt+F5, whose output appears the same way a
-compiler's does. EdSharp's own Convert folder holds the scripts it uses,
+compiler’s does. EdSharp’s own Convert folder holds the scripts it uses,
 which are worth reading as models: each takes a source and a target and
 reports what happened.</p>
 <p>Text Convert, Control+T, converts the open document between formats
@@ -588,7 +588,7 @@ editor.</p>
 <p>This tutorial is adapted, with thanks, from the <em>Using
 TextPal</em> tutorial originally written by Jim Homme for TextPal, a
 predecessor of EdSharp that contributed many of its ideas. The text here
-has been revised to match EdSharp's terminology, concepts, and key
+has been revised to match EdSharp’s terminology, concepts, and key
 bindings. For the complete reference, see the EdSharp User Guide (press
 F1 in EdSharp).</p>
 <h3 id="contents-1">Contents</h3>
@@ -649,7 +649,7 @@ when opened from Windows Explorer.</li>
 <li>Presents a checkbox for an optional set of JAWS scripts that
 fine-tune the EdSharp speech interface. If you install the scripts and
 later prefer default JAWS behavior, you can disable them from the JAWS
-"Manage Application Settings" dialog.</li>
+“Manage Application Settings” dialog.</li>
 <li>Presents a checkbox that sets Alt+Control+E as a system-wide hot key
 for the EdSharp shortcut placed on the Windows desktop. If that hot key
 conflicts with another shortcut, select either shortcut on the desktop,
@@ -662,7 +662,7 @@ after installation.</li>
 versions; your settings, Favorites and Recent Files lists, and bookmarks
 are preserved. To update an existing installation, just press F11
 (Elevate Version) and EdSharp downloads and installs the current version
-from the author's site. To check your version at any time, use the About
+from the author’s site. To check your version at any time, use the About
 command, Alt+F1; the History of Changes command, Shift+F1, summarizes
 fixes and improvements over time.</p>
 <h3 id="quick-start">Quick Start</h3>
@@ -774,7 +774,7 @@ section.</li>
 <li>F6 = Go to Section: jump from a table-of-contents line to its
 section. Shift+F6 = Go to Contents: jump from a section back to its
 table-of-contents line.</li>
-<li>Alt+T = Speak the current section's topic (its first line).</li>
+<li>Alt+T = Speak the current section’s topic (its first line).</li>
 <li>Alt+Shift+T = Text Contents: build a table of contents from the
 first line of each section.</li>
 <li>Control+F6 = Search for a topic by name. Alt+F6 = Search for that
@@ -789,7 +789,7 @@ topic again.</li>
 <ul>
 <li>Control+Space = Select Chunk. Good for grabbing a function call or
 header in one step. Shift+Backspace speaks the current chunk.</li>
-<li>Shift+Enter = Insert a new line indented to the current line's
+<li>Shift+Enter = Insert a new line indented to the current line’s
 level. Alt+Shift+Enter does the same but opens the line above.</li>
 <li>Tab = Indent the current or selected lines one level. Shift+Tab =
 Outdent them one level.</li>
@@ -801,7 +801,7 @@ string. You can set the prefix to match the comment string of your
 programming language to create comments, or use it for quoting
 email.</li>
 <li>Alt+PageDown and Alt+PageUp = Next and prior part: move to the next
-or previous function, method, or class, using the current compiler's
+or previous function, method, or class, using the current compiler’s
 NavigatePart pattern.</li>
 <li>Control+B and Control+Shift+B = Next and prior block: move by
 indentation, to the next or previous less-indented line.</li>
@@ -903,7 +903,7 @@ file, or the selection, contains.</li>
 the version on disk; press it again to hear the character encoding.</li>
 </ul>
 <h3 id="creating-an-address-book">Creating an Address Book</h3>
-<p>In this exercise we will use EdSharp's section feature to build a
+<p>In this exercise we will use EdSharp’s section feature to build a
 simple address book. Follow along to get a feel for how easily you can
 manipulate text in the program. We will create a section break and a
 template for the first entry, add a few fictitious entries, build and
@@ -955,14 +955,14 @@ section breaks to add more entries. Create a few until the process feels
 comfortable.</li>
 </ul>
 <p><strong>Build the table of contents.</strong> Press Alt+Shift+T (Text
-Contents). EdSharp adds a "Contents" line near the top of the file
+Contents). EdSharp adds a “Contents” line near the top of the file
 followed by the first line of each section, which here is the name line
 of each entry. A blank line in the table of contents means a section
 break is missing or misplaced.</p>
 <p><strong>Check the sections.</strong> Use Control+PageDown and
 Control+PageUp to confirm the cursor lands on the first line of each
 entry. If you land on a blank line, delete any text between the previous
-entry's last line and the new entry's first line, place the cursor on
+entry’s last line and the new entry’s first line, place the cursor on
 the first character of the new entry, and press Control+Enter to
 recreate the section break. When the sections are correct, make sure the
 table of contents has a line for each one.</p>
@@ -983,11 +983,10 @@ day-to-day work with text, and it has shown how the section feature lets
 you build and navigate a structured document such as an address book and
 convert it to HTML. For the complete set of commands and features,
 including programming, math, word processing, and scripting, press F1 in
-EdSharp to open the full User Guide. EdSharp's author welcomes feedback
+EdSharp to open the full User Guide. EdSharp’s author welcomes feedback
 and contributions toward its continued improvement.</p>
 <!-- walkthrough: written by makeTutorials.py, do not edit between the markers -->
-
-<h2 id="0---overview">0 - Overview</h2>
+<h2 id="overview">0 - Overview</h2>
 <p>What EdSharp is, in a paragraph; the two reader keys every walk
 assumes; then the table of contents, one line per walk.</p>
 <p><strong>Before you start:</strong> Nothing is needed; this walk is
@@ -1010,7 +1009,7 @@ command. The desktop key opens it, with an empty document ready.</p>
 </ul>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
 <h3 id="step-4-insertuparrow">Step 4: Insert+UpArrow</h3>
-<p>Two keys before anything else, both the reader's own. If a line goes
+<p>Two keys before anything else, both the reader’s own. If a line goes
 by too fast, Insert plus Up Arrow says it again.</p>
 <p>Screen reader:</p>
 <ul>
@@ -1031,7 +1030,7 @@ says what the walk covers.</p>
 <p>One, User Interface.</p>
 <p>Screen reader:</p>
 <ul>
-<li>EdSharp's one window, the edit box you hear, dialogs that all work
+<li>EdSharp’s one window, the edit box you hear, dialogs that all work
 one way, and where help is, each named and then shown by the reader;
 then the rules every key follows, so a key can be guessed before it is
 learned.</li>
@@ -1040,7 +1039,7 @@ learned.</li>
 <p>Two, Install and Launch.</p>
 <p>Screen reader:</p>
 <ul>
-<li>The download, the installer's last page and its boxes, and EdSharp
+<li>The download, the installer’s last page and its boxes, and EdSharp
 opening with Alt plus Control plus E.</li>
 </ul>
 <h3 id="step-9">Step 9</h3>
@@ -1097,8 +1096,8 @@ overview, the user interface, seven tasks, and the conclusion. They are
 a course, not a reference: each one assumes those before it.</p>
 <p><strong>Something to try:</strong> Listen to the walks in order; each
 one assumes the ones before it.</p>
-<h2 id="1---user-interface">1 - User Interface</h2>
-<p>EdSharp's one window, the edit box you hear, dialogs that all work
+<h2 id="user-interface">1 - User Interface</h2>
+<p>EdSharp’s one window, the edit box you hear, dialogs that all work
 one way, and where help is, each named and then shown by the reader;
 then the rules every key follows, so a key can be guessed before it is
 learned.</p>
@@ -1157,7 +1156,7 @@ it was saved.</p>
 </ul>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
 <h3 id="step-8-altz">Step 8: Alt+Z</h3>
-<p>Pressed twice, Alt plus Z says the file's character encoding, the way
+<p>Pressed twice, Alt plus Z says the file’s character encoding, the way
 its letters are stored.</p>
 <p>Screen reader:</p>
 <ul>
@@ -1166,8 +1165,8 @@ its letters are stored.</p>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
 <h3 id="step-9-insertpage-down">Step 9: Insert+Page Down</h3>
 <p>EdSharp speaks its own confirmations as they happen, such as
-Converting, or a bookmark's place. They are shown on the status line
-too, so a message missed can be read again with the reader's own key for
+Converting, or a bookmark’s place. They are shown on the status line
+too, so a message missed can be read again with the reader’s own key for
 that line.</p>
 <p>Screen reader:</p>
 <ul>
@@ -1355,8 +1354,8 @@ As.</p>
 ways: by key, by command, and by menu.</p>
 <p><strong>Something to try:</strong> Open EdSharp and name each thing
 as you reach it: the title, the edit box, the status line.</p>
-<h2 id="2---install-and-launch">2 - Install and Launch</h2>
-<p>The download, the installer's pages, the last page with its boxes and
+<h2 id="install-and-launch">2 - Install and Launch</h2>
+<p>The download, the installer’s pages, the last page with its boxes and
 its summary, and EdSharp opening by itself.</p>
 <p><strong>Before you start:</strong> The installer is downloaded, and
 your reader is running.</p>
@@ -1402,10 +1401,10 @@ open.</p>
 </ul>
 <h3 id="step-6-1">Step 6</h3>
 <p>What each box is for. Python runs the conversion tools and the spell
-checker's helpers; the document tools -- pandoc and its companions --
-turn Word, PDF and web pages into text and back. Together they are what
-makes Control plus Shift plus O and Alt plus Shift plus E rich rather
-than basic.</p>
+checker’s helpers; the document tools – pandoc and its companions – turn
+Word, PDF and web pages into text and back. Together they are what makes
+Control plus Shift plus O and Alt plus Shift plus E rich rather than
+basic.</p>
 <h3 id="step-7-1">Step 7</h3>
 <p>Git is for people who keep code in repositories; Node for web
 developers who run JavaScript tools; Ollama for the AI features, with a
@@ -1418,13 +1417,13 @@ does nothing. Nothing is installed twice.</p>
 <h3 id="step-9-1">Step 9</h3>
 <p>The screen reader scripts are offered too. Install when they are not
 there, Update when a newer set is available, Reinstall when they are
-current -- the word is the state, so you need not ask.</p>
+current – the word is the state, so you need not ask.</p>
 <h3 id="step-10-1">Step 10</h3>
 <p>Where things went. EdSharp itself is in Program Files; your settings,
 snippets and logs are under your local application data, in a folder
 named EdSharp. An update never touches them.</p>
 <h3 id="step-11-f11">Step 11: F11</h3>
-<p>F11, Elevate Version, is the installer's other half from now on: it
+<p>F11, Elevate Version, is the installer’s other half from now on: it
 asks the web for a newer EdSharp and offers to fetch and run it. Elevate
 sounds like eleven.</p>
 <p>Screen reader:</p>
@@ -1434,7 +1433,7 @@ sounds like eleven.</p>
 </ul>
 <h3 id="step-12-escape">Step 12: Escape</h3>
 <p>Escape. Alt plus F1 says the version at any time; Control plus F12
-copies the session log's path, ready to attach to a report of a
+copies the session log’s path, ready to attach to a report of a
 problem.</p>
 <p>Screen reader:</p>
 <ul>
@@ -1454,8 +1453,8 @@ the reader says the title, then the edit box, then blank; typing starts
 at once.</p>
 <h3 id="step-16-1">Step 16</h3>
 <p>What the screen reader scripts give. With them installed, the reader
-knows EdSharp's edit box and dialogs by name, and reads the status
-line's messages as they arrive without your asking.</p>
+knows EdSharp’s edit box and dialogs by name, and reads the status
+line’s messages as they arrive without your asking.</p>
 <h3 id="step-17-1">Step 17</h3>
 <p>What to try first. Type a sentence, Control plus S, give it a name,
 Alt plus A to hear where you are, F1 for the guide. Five minutes of that
@@ -1475,8 +1474,7 @@ does.</p>
 </ul>
 <p><strong>Something to try:</strong> Install EdSharp and open it with
 Alt plus Control plus E.</p>
-<h2 id="3---open-edit-and-save-a-file">3 - Open, Edit and Save a
-File</h2>
+<h2 id="open-edit-and-save-a-file">3 - Open, Edit and Save a File</h2>
 <p>One want: a letter to finish. Opening it, moving through it, changing
 it, hearing where you are and whether it is saved, checking the
 spelling, and saving. This walk assumes walks two to three.</p>
@@ -1494,7 +1492,7 @@ open dialog; type the name, or arrow the list.</p>
 <p>Screen reader:</p>
 <ul>
 <li>letter dot t x t, EdSharp</li>
-<li>Dear Ms. Alvarez,</li>
+<li>Dear Ms. Alvarez,</li>
 </ul>
 <h3 id="step-3-downarrow">Step 3: DownArrow</h3>
 <p>Arrow down through it as in any editor. Control plus Down Arrow is
@@ -1558,7 +1556,7 @@ word I had selected. Control plus Z, Undo, as everywhere in Windows.</p>
 </ul>
 <h3 id="step-11-1">Step 11</h3>
 <p>A new file starts with Control plus N, New; the first Save asks for a
-name, and the extension you give it decides what EdSharp will offer --
+name, and the extension you give it decides what EdSharp will offer –
 dot t x t for plain text, dot m d for Markdown.</p>
 <h3 id="step-12-1">Step 12</h3>
 <p>Control plus Shift plus S, Save As, saves under a new name, and the
@@ -1608,8 +1606,8 @@ does.</p>
 </ul>
 <p><strong>Something to try:</strong> Open a file of your own, change
 one line, check its spelling, and save it.</p>
-<h2 id="4---find-your-way-in-a-long-document">4 - Find Your Way in a
-Long Document</h2>
+<h2 id="find-your-way-in-a-long-document">4 - Find Your Way in a Long
+Document</h2>
 <p>One want: a place in a long report, found now and found again
 tomorrow. Finding a word, jumping to a line, setting a bookmark and
 returning to it, and hearing how big the document is. This walk assumes
@@ -1659,9 +1657,9 @@ down the document it is.</p>
 <li>Bookmark at percent 40</li>
 </ul>
 <h3 id="step-7-altk">Step 7: Alt+K</h3>
-<p>Move away -- Control plus Home to the top -- then Alt plus K, Go to
+<p>Move away – Control plus Home to the top – then Alt plus K, Go to
 Bookmark, brings you back. Bookmarks are kept with the file, so
-tomorrow's Alt plus K lands here too.</p>
+tomorrow’s Alt plus K lands here too.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Section four. Staffing.</li>
@@ -1674,7 +1672,7 @@ words and lines, for all the text or the selection.</p>
 <li>14,205 characters, 2,310 words, 188 lines</li>
 </ul>
 <h3 id="step-9-controlr">Step 9: Control+R</h3>
-<p>Control plus R, Replace, is Find's sibling: the text to find, the
+<p>Control plus R, Replace, is Find’s sibling: the text to find, the
 text to put in its place, in all the document or in the selection. Each
 replacement is counted and the count is said.</p>
 <p>Screen reader:</p>
@@ -1682,8 +1680,8 @@ replacement is counted and the count is said.</p>
 <li>Replace dialog, Find: edit combo</li>
 </ul>
 <h3 id="step-10-escape">Step 10: Escape</h3>
-<p>Escape. For a pattern rather than a word -- every number, every line
-that begins with a dash -- Control plus F3 finds with a regular
+<p>Escape. For a pattern rather than a word – every number, every line
+that begins with a dash – Control plus F3 finds with a regular
 expression, and Control plus Shift plus R replaces with one. The
 expressions are the dot NET kind, and the guide has a page on them.</p>
 <p>Screen reader:</p>
@@ -1691,7 +1689,7 @@ expressions are the dot NET kind, and the guide has a page on them.</p>
 <li>Section four. Staffing.</li>
 </ul>
 <h3 id="step-11-2">Step 11</h3>
-<p>The document's shape is a set of keys too. Control plus Down Arrow is
+<p>The document’s shape is a set of keys too. Control plus Down Arrow is
 the next paragraph; Alt plus Right Arrow the next chunk, read as you
 land on it; Control plus Right Arrow the next word.</p>
 <h3 id="step-12-alta">Step 12: Alt+A</h3>
@@ -1704,8 +1702,8 @@ you start to type.</p>
 </ul>
 <h3 id="step-13-altshiftf">Step 13: Alt+Shift+F</h3>
 <p>Alt plus Shift plus F, File Find, searches not this document but a
-folder of files for a string, and opens the one you pick from the list
--- for the day the place you want is in some other file.</p>
+folder of files for a string, and opens the one you pick from the list –
+for the day the place you want is in some other file.</p>
 <p>Screen reader:</p>
 <ul>
 <li>File Find dialog, Find: edit combo</li>
@@ -1733,7 +1731,7 @@ picked up again tomorrow, at the same place, with Alt plus K.</p>
 </ul>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
 <h3 id="step-17-controlf">Step 17: Control+F</h3>
-<p>And a find's last answers are remembered too: Control plus F offers
+<p>And a find’s last answers are remembered too: Control plus F offers
 budget again, so the next search for it is one key.</p>
 <p>Screen reader:</p>
 <ul>
@@ -1775,7 +1773,7 @@ does.</p>
 </ul>
 <p><strong>Something to try:</strong> Find a word in a document of your
 own, bookmark the place, go to the top, and come back.</p>
-<h2 id="5---convert-between-formats">5 - Convert Between Formats</h2>
+<h2 id="convert-between-formats">5 - Convert Between Formats</h2>
 <p>Two wants: a Word document read as text, and Markdown written out as
 a web page. Opening in another format, exporting to one, and the
 Markdown preview. This walk assumes walks three and five.</p>
@@ -1783,8 +1781,8 @@ Markdown preview. This walk assumes walks three and five.</p>
 is in your Documents folder.</p>
 <h3 id="step-1-controlshifto">Step 1: Control+Shift+O</h3>
 <p>The want: a Word document someone sent, read as text. Control plus
-Shift plus O, Open Other Format -- Shift widens Open -- converts it on
-the way in.</p>
+Shift plus O, Open Other Format – Shift widens Open – converts it on the
+way in.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Open Other Format dialog, File name: edit combo</li>
@@ -1813,7 +1811,7 @@ file beside it, and EdSharp says the file.</p>
 </ul>
 <h3 id="step-5-controlf9">Step 5: Control+F9</h3>
 <p>Control plus F9, Preview Markdown, shows the same thing as a
-formatted page in a window of EdSharp's own, for checking headings and
+formatted page in a window of EdSharp’s own, for checking headings and
 links without leaving the editor.</p>
 <p>Screen reader:</p>
 <ul>
@@ -1822,7 +1820,7 @@ links without leaving the editor.</p>
 <h3 id="step-6-escape">Step 6: Escape</h3>
 <p>Escape returns. PDF files, slide decks and spreadsheets open the same
 way, by Control plus Shift plus O; the document tools from the
-installer's last page are what make the richer ones possible.</p>
+installer’s last page are what make the richer ones possible.</p>
 <p>Screen reader:</p>
 <ul>
 <li>report dot d o c x, EdSharp</li>
@@ -1838,7 +1836,7 @@ becomes a text file beside it, ending in dot t x t.</p>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
 <h3 id="step-8-controlshiftt">Step 8: Control+Shift+T</h3>
 <p>Control plus Shift plus T, Text Combine, takes the same list but puts
-every file's text together in one new window, one after another.</p>
+every file’s text together in one new window, one after another.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Untitled, edit, multiline</li>
@@ -1846,7 +1844,7 @@ every file's text together in one new window, one after another.</p>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
 <h3 id="step-9-escape">Step 9: Escape</h3>
 <p>Escape. The formats on offer depend on what was installed: the
-document tools from the installer's last page add Word, PDF, EPUB and
+document tools from the installer’s last page add Word, PDF, EPUB and
 slide decks; without them, text, Markdown, HTML and RTF are always
 there.</p>
 <p>Screen reader:</p>
@@ -1854,9 +1852,9 @@ there.</p>
 <li>report dot d o c x, EdSharp</li>
 </ul>
 <h3 id="step-10-2">Step 10</h3>
-<p>A planned misstep. A PDF that is only a picture of a page -- a scan
--- opens as empty or as nonsense, because there is no text in it to
-convert. The guide's section on PDF says what to do: optical character
+<p>A planned misstep. A PDF that is only a picture of a page – a scan –
+opens as empty or as nonsense, because there is no text in it to
+convert. The guide’s section on PDF says what to do: optical character
 recognition, which the document tools can run on it.</p>
 <h3 id="step-11-3">Step 11</h3>
 <p>Encoding is the other kind of conversion. A file that opens as
@@ -1865,8 +1863,8 @@ Alt plus Shift plus Y, Yield Encoding, renders the text in the one you
 choose, and Alt plus Z twice says the encoding in use.</p>
 <h3 id="step-12-2">Step 12</h3>
 <p>Markdown to plain text, HTML to Markdown, a table in a document to
-lines you can read -- each is an export or an open-other-format away,
-and the preview, Control plus F9, is the check before you send.</p>
+lines you can read – each is an export or an open-other-format away, and
+the preview, Control plus F9, is the check before you send.</p>
 <h3 id="step-13-2">Step 13</h3>
 <p>Where converted files go. Open Other Format reads the original and
 makes a text copy in your temporary folder; Save puts it where you say.
@@ -1875,11 +1873,11 @@ does the same for files on disk.</p>
 <h3 id="step-14-2">Step 14</h3>
 <p>Tables come through as lines: each row is a line, each cell separated
 by a tab or a bar, which a reader reads better than a grid. Headings
-keep their level as Markdown's pound signs, so Control plus B and the
+keep their level as Markdown’s pound signs, so Control plus B and the
 heading keys still move by them.</p>
 <h3 id="step-15-3">Step 15</h3>
 <p>A planned misstep. Export to PDF with the document tools not
-installed, and EdSharp says so and names the box on the installer's last
+installed, and EdSharp says so and names the box on the installer’s last
 page that provides them; nothing hangs and nothing half-converts.</p>
 <p>Screen reader:</p>
 <ul>
@@ -1889,7 +1887,7 @@ Document tools.</li>
 <h3 id="step-16-3">Step 16</h3>
 <p>Images in a document are listed by their alternative text, when the
 author gave any; a document with none says image and its file name,
-which is itself a finding when you are checking someone's
+which is itself a finding when you are checking someone’s
 accessibility.</p>
 <h3 id="step-17-3">Step 17</h3>
 <p>Round trips are safe: a Markdown file exported to Word and opened
@@ -1918,7 +1916,7 @@ does.</p>
 </ul>
 <p><strong>Something to try:</strong> Open a Word document or a PDF as
 text, and export a Markdown file as a web page.</p>
-<h2 id="6---write-code">6 - Write Code</h2>
+<h2 id="write-code">6 - Write Code</h2>
 <p>One want: a program that will not run, fixed. Choosing the compiler
 once, compiling with the cursor landing on the error, moving by blocks
 of code, hearing indentation, and snippets. This walk assumes walks
@@ -1999,7 +1997,7 @@ one.</li>
 </ul>
 <h3 id="step-10-3">Step 10</h3>
 <p>Alt plus Shift plus right bracket, Say Braces, counts the braces on
-either side of the cursor -- the quickest answer to a parser's complaint
+either side of the cursor – the quickest answer to a parser’s complaint
 about an unmatched one.</p>
 <h3 id="step-11-4">Step 11</h3>
 <p>Indentation is spoken as structure. Alt plus Shift plus I, Indent
@@ -2008,11 +2006,11 @@ level as you arrow; Tab and Shift plus Tab indent and outdent a line or
 a selection by one unit.</p>
 <h3 id="step-12-3">Step 12</h3>
 <p>Shift plus F5, Run at Cursor, runs the web address or email address
-at the cursor -- a link in a comment, a URL in a string -- in the
-program Windows has for it.</p>
+at the cursor – a link in a comment, a URL in a string – in the program
+Windows has for it.</p>
 <h3 id="step-13-3">Step 13</h3>
 <p>Alt plus Shift plus F9, Run Code Blocks, runs the SQL and JScript
-blocks in a Markdown document and writes each block's result beneath it,
+blocks in a Markdown document and writes each block’s result beneath it,
 which turns a notes file into a small notebook.</p>
 <h3 id="step-14-3">Step 14</h3>
 <p>What this walk taught. I say the key; the reader says what it
@@ -2043,7 +2041,7 @@ does.</p>
 </ul>
 <p><strong>Something to try:</strong> Compile a program of your own, go
 to its first error, fix it, and run it.</p>
-<h2 id="7---ask-the-ai-on-your-own-computer">7 - Ask the AI on Your Own
+<h2 id="ask-the-ai-on-your-own-computer">7 - Ask the AI on Your Own
 Computer</h2>
 <p>One want: a question about a document, answered with nothing sent off
 the machine. Chatting about the document, chatting with no document, and
@@ -2103,8 +2101,8 @@ can be chosen. A small model answers in seconds; a large one answers
 better and slower.</p>
 <h3 id="step-9-3">Step 9</h3>
 <p>What makes a good question here is what makes one anywhere: say what
-you want back -- three bullet points, a one-paragraph summary, the dates
-mentioned -- and the answer takes that shape. A vague question gets a
+you want back – three bullet points, a one-paragraph summary, the dates
+mentioned – and the answer takes that shape. A vague question gets a
 vague answer, locally as much as online.</p>
 <h3 id="step-10-4">Step 10</h3>
 <p>The answer window is a document. Alt plus C, Copy Append, adds a
@@ -2147,7 +2145,7 @@ does.</p>
 </ul>
 <p><strong>Something to try:</strong> Ask a question about a document of
 your own, then translate a paragraph of it.</p>
-<h2 id="8---do-math">8 - Do Math</h2>
+<h2 id="do-math">8 - Do Math</h2>
 <p>One want: an answer to a sum without leaving the document. Control
 plus Equals works out the expression on the current line or in a
 selection; mathematics written the LaTeX way becomes real math in a web
@@ -2165,7 +2163,7 @@ line you are on.</p>
 <li>EdSharp</li>
 <li>Untitled, edit, multiline, blank</li>
 </ul>
-<h3 id="step-3-1250--12--300">Step 3: 1250 * 12 + 300</h3>
+<h3 id="step-3-1250-12-300">Step 3: 1250 * 12 + 300</h3>
 <p>I type a sum as I would write it in code: 1250 times 12, plus
 300.</p>
 <p>Screen reader:</p>
@@ -2182,7 +2180,7 @@ answer.</p>
 <h3 id="step-5">Step 5</h3>
 <p>The answer is spoken, and placed in the document after the sum, so
 the working stays on the page beside its result.</p>
-<h3 id="step-6-1250--12">Step 6: 1,250 * 12</h3>
+<h3 id="step-6-1250-12">Step 6: 1,250 * 12</h3>
 <p>A planned misstep: a sum with a comma in a number, as we write
 money.</p>
 <p>Screen reader:</p>
@@ -2205,7 +2203,7 @@ are written without commas.</p>
 <ul>
 <li>Undo</li>
 </ul>
-<h3 id="step-10-mathpow2-10">Step 10: Math.pow(2, 10)</h3>
+<h3 id="step-10-math.pow2-10">Step 10: Math.pow(2, 10)</h3>
 <p>Since the expression is JScript, more than arithmetic works. A power:
 2 to the 10th.</p>
 <p>Screen reader:</p>
@@ -2219,7 +2217,7 @@ are written without commas.</p>
 <li>1024</li>
 </ul>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
-<h3 id="step-12-mathsqrt144">Step 12: Math.sqrt(144)</h3>
+<h3 id="step-12-math.sqrt144">Step 12: Math.sqrt(144)</h3>
 <p>A square root, the same way.</p>
 <p>Screen reader:</p>
 <ul>
@@ -2232,7 +2230,7 @@ are written without commas.</p>
 <li>12</li>
 </ul>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
-<h3 id="step-14-mathround19987--100--100">Step 14: Math.round(19.987 *
+<h3 id="step-14-math.round19.987-100-100">Step 14: Math.round(19.987 *
 100) / 100</h3>
 <p>Rounding to cents: multiply by 100, round, and divide by 100.</p>
 <p>Screen reader:</p>
@@ -2255,7 +2253,7 @@ Equals works out each one, placing each answer beside its own line.</p>
 </ul>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
 <h3 id="step-17-controlshiftg">Step 17: Control+Shift+G</h3>
-<p>For more than a line's worth, Control plus Shift plus G opens a more
+<p>For more than a line’s worth, Control plus Shift plus G opens a more
 interactive environment, such as an interactive console, where each
 answer leads to the next question.</p>
 <p>Screen reader:</p>
@@ -2276,7 +2274,7 @@ treats it as Markdown.</p>
 <li>File name: edit combo</li>
 </ul>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
-<h3 id="step-20-the-area-of-a-circle-is-pi-r2">Step 20: The area of a
+<h3 id="step-20-the-area-of-a-circle-is-pi-r2.">Step 20: The area of a
 circle is <span
 class="math inline"><em>π</em><em>r</em><sup>2</sup></span>.</h3>
 <p>Then I write a sentence with a formula in it: the area of a circle
@@ -2304,7 +2302,7 @@ screen reader reads the formula as math, not as a row of symbols.</p>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
 <h3 id="step-23-1">Step 23</h3>
 <p>And in the browser, the formula can be explored a piece at a time, as
-a reader of math expects: the reader's own math mode takes you into
+a reader of math expects: the reader’s own math mode takes you into
 it.</p>
 <h3 id="step-24">Step 24</h3>
 <p>Nothing needs installing for this. Browsers draw MathML themselves,
@@ -2337,7 +2335,7 @@ Work out a sum.</p>
 </ul>
 <p><strong>Something to try:</strong> Write three sums of your own, one
 per line, and work each out with Control plus Equals.</p>
-<h2 id="9---conclusion">9 - Conclusion</h2>
+<h2 id="conclusion-1">9 - Conclusion</h2>
 <p>The conclusion and summary of the walks; the words EdSharp uses, in
 two voices; then more information: the help built into the program and
 where to learn more.</p>
@@ -2378,7 +2376,7 @@ becomes any format.</p>
 <li>Shift plus F12</li>
 </ul>
 <h3 id="step-7-3">Step 7</h3>
-<p>One thing kept from each task walk. Walk three: open, change, save --
+<p>One thing kept from each task walk. Walk three: open, change, save –
 and F7 for the spelling before anyone else reads it.</p>
 <p>Screen reader:</p>
 <ul>
@@ -2386,8 +2384,8 @@ and F7 for the spelling before anyone else reads it.</p>
 </ul>
 <h3 id="step-8-4">Step 8</h3>
 <p>Where the walks stop and the guide begins: scripting EdSharp in
-JScript, the Markdown code-block runner, the translator's quick start,
-the slide presenter's, the screen reader script writer's. F1 has all of
+JScript, the Markdown code-block runner, the translator’s quick start,
+the slide presenter’s, the screen reader script writer’s. F1 has all of
 it, and Control plus Shift plus F1 picks the quick start for your
 role.</p>
 <h3 id="step-9-4">Step 9</h3>
@@ -2432,7 +2430,7 @@ once by extension with Control plus Shift plus F5.</li>
 <p>configuration options.</p>
 <p>Screen reader:</p>
 <ul>
-<li>The one dialog of settings -- spell checker, font, speech, the AI
+<li>The one dialog of settings – spell checker, font, speech, the AI
 model. Alt plus Shift plus C.</li>
 </ul>
 <h3 id="step-16-6">Step 16</h3>
@@ -2467,14 +2465,14 @@ sounds like eleven.</li>
 <p>encoding.</p>
 <p>Screen reader:</p>
 <ul>
-<li>How a file's characters are stored. Alt plus Z twice says it; Alt
+<li>How a file’s characters are stored. Alt plus Z twice says it; Alt
 plus Shift plus Y renders the text in another one.</li>
 </ul>
 <h3 id="step-21-3">Step 21</h3>
 <p>export.</p>
 <p>Screen reader:</p>
 <ul>
-<li>Writing the document out as another format -- a web page, a Word
+<li>Writing the document out as another format – a web page, a Word
 document, plain text. Alt plus Shift plus E.</li>
 </ul>
 <h3 id="step-22-1">Step 22</h3>
@@ -2507,11 +2505,11 @@ role.</p>
 <p>The ReadMe is the short start; the guide is the reference; Hotkeys
 lists every key three ways; the FAQ holds the questions people actually
 ask. All are in the help folder of the installation, and on the
-project's GitHub page.</p>
+project’s GitHub page.</p>
 <h3 id="step-27-1">Step 27</h3>
 <p>F11 checks for a newer version and offers to install it. The project
 is at github dot com, slash JamalMazrui, slash EdSharp. Control plus F12
-copies this session's log to the clipboard, ready to attach to a report
+copies this session’s log to the clipboard, ready to attach to a report
 of a problem.</p>
 <h3 id="step-28-2">Step 28</h3>
 <p>EdSharp is one of the Homer Tools, free programs for working by ear:

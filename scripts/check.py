@@ -127,9 +127,23 @@ def loadKind():
         import ctypes
         lsDirs += [sLetter + ":\\HomerDev\\scripts" for sLetter in "CDEFGHIJKLMNOPQRSTUVWXYZ"
                    if ctypes.windll.kernel32.GetDriveTypeW(sLetter + ":\\") == 3]
+    # THE KIT BEFORE ANY COPY (9 October 2026). This list began with the folder beside this script, which in an app is
+    # the app's own scripts folder; when an app's build refreshed check.py but not kind.py, that stale copy was found
+    # first, put at the front of the path and imported, so the check crashed on a kind function it lacked (HomerScribe,
+    # EdSharp and FileDir, 9 October). Folders named HomerDev\scripts, and the HomerDev variable's, now come first; a
+    # copy beside this script or in the project serves only when no kit is found.
+    sKitVar = os.path.normcase(os.path.abspath(os.path.join(os.environ.get("HomerDev", ""), "scripts"))) if os.environ.get("HomerDev") else ""
+    def kitFirst(sDir):
+        sNorm = os.path.normcase(os.path.abspath(sDir)) if sDir else ""
+        if sKitVar and sNorm == sKitVar: return 0
+        return 1 if sNorm.endswith(os.path.normcase(os.path.join("HomerDev", "scripts"))) else 2
+    lsDirs = sorted(lsDirs, key=kitFirst)
     for sDir in lsDirs:
         if sDir and os.path.isfile(os.path.join(sDir, "kind.py")):
-            if sDir not in sys.path: sys.path.insert(0, sDir)
+            if sDir in sys.path: sys.path.remove(sDir)
+            sys.path.insert(0, sDir)
+            if "kind" in sys.modules and os.path.normcase(os.path.dirname(os.path.abspath(sys.modules["kind"].__file__))) != os.path.normcase(os.path.abspath(sDir)):
+                del sys.modules["kind"]
             import kind
             return kind.projectKind
     return lambda sFolder: ("app", "kind.py was not found, so taken to be an app")
@@ -274,24 +288,43 @@ def runCommand(lsArgs, sShell=""):
             import re as _re
             oCmd = _re.match(r"\s*cmd(?:\.exe)?\s+/c\s+(.*)$", sShell, _re.I | _re.S)
             if oCmd and os.name == "nt":
-                oResult = subprocess.run('cmd /s /c "' + oCmd.group(1).strip() + '"', shell=False, cwd=sRoot,
-                                         capture_output=True, text=True, timeout=900,
-                                         stdin=subprocess.DEVNULL, env=dEnv)
+                oResult = runTree('cmd /s /c "' + oCmd.group(1).strip() + '"', False, dEnv)
             else:
-                oResult = subprocess.run(sShell, shell=True, cwd=sRoot,
-                                         capture_output=True, text=True, timeout=900,
-                                         stdin=subprocess.DEVNULL, env=dEnv)
+                oResult = runTree(sShell, True, dEnv)
         else:
-            oResult = subprocess.run(lsArgs, cwd=sRoot,
-                                     capture_output=True, text=True, timeout=900,
-                                         stdin=subprocess.DEVNULL, env=dEnv)
+            oResult = runTree(lsArgs, False, dEnv)
     except Exception as oError:
-        logLine("ERROR run failed message=%s cmd=%s" % (logValue(str(oError)), logValue(sCmd)))
+        logLine("ERROR run failed message=%s cmd=%s ms=%d" % (logValue(str(oError)), logValue(sCmd), (time.time() - nStarted) * 1000))
         return (1, str(oError))
     logLine("run exit=%d ms=%d cmd=%s" % (oResult.returncode, (time.time() - nStarted) * 1000, logValue(sCmd)))
     sOut = (oResult.stdout or "") + (oResult.stderr or "")
     if sOut: logLine("OUTPUT:\n" + sOut[-4000:])
     return (oResult.returncode, sOut)
+
+
+def runTree(vCommand, bShell, dEnv, iTimeout=900):
+    """A command with a time limit that stops everything it started (9 October 2026). subprocess.run's timeout
+    ends only the process it launched; on Windows a build's own children kept the output pipes open, so a check
+    reported "timed out after 900 seconds" thirty-five minutes in (HomerView). On timeout the whole process tree is
+    ended -- taskkill /T on Windows, the process group elsewhere -- and TimeoutExpired is raised as before."""
+    import signal
+    dOptions = {"cwd": sRoot, "stdout": subprocess.PIPE, "stderr": subprocess.PIPE, "stdin": subprocess.DEVNULL,
+                "text": True, "env": dEnv, "shell": bShell, "encoding": "utf-8", "errors": "replace"}
+    if os.name == "nt": dOptions["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+    else: dOptions["start_new_session"] = True
+    oProcess = subprocess.Popen(vCommand, **dOptions)
+    try:
+        sOut, sErr = oProcess.communicate(timeout=iTimeout)
+    except subprocess.TimeoutExpired:
+        if os.name == "nt":
+            subprocess.run(["taskkill", "/T", "/F", "/PID", str(oProcess.pid)], capture_output=True)
+        else:
+            try: os.killpg(oProcess.pid, signal.SIGKILL)
+            except Exception: oProcess.kill()
+        try: oProcess.communicate(timeout=30)
+        except Exception: pass
+        raise subprocess.TimeoutExpired(vCommand, iTimeout)
+    return subprocess.CompletedProcess(vCommand, oProcess.returncode, sOut, sErr)
 
 
 # --- the app ----------------------------------------------------------------
@@ -995,7 +1028,9 @@ def checkLayout(sKind):
     lsDeclared = declaredNames()
     lsBad, lsDeclaredExtra = [], []
     for sName in sorted(os.listdir(sRoot), key=str.lower):
-        if not os.path.isdir(os.path.join(sRoot, sName)) or sName.lower() in setStandard: continue
+        # PYTHON'S OWN CACHE (9 October 2026): __pycache__ appears wherever Python runs a script and is never part of
+        # a project (every .gitignore excludes it); HomerView's check failed on one in its scripts folder.
+        if not os.path.isdir(os.path.join(sRoot, sName)) or sName.lower() in setStandard or sName.lower() == "__pycache__": continue
         if any(s == sName.lower() + "/" or s.startswith(sName.lower() + "/") for s in lsDeclared): lsDeclaredExtra.append(sName)
         else: lsBad.append(sName)
     for s in lsDeclaredExtra: logLine("LAYOUT: %s is not a standard Homer folder, but the project declares it; confirm it was wanted" % s)

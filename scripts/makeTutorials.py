@@ -52,6 +52,40 @@ c_sTarget = os.path.join(c_sHere, "Tutorials.md")
 
 c_sFeed = os.path.join(c_sHere, "TutorialFeed.xml")
 
+
+def findPandoc():
+    """Pandoc's path: on the PATH, or where its installer puts it machine-wide; "" when absent."""
+    import shutil
+    sFound = shutil.which("pandoc")
+    if sFound: return sFound
+    for sBase in (os.environ.get("ProgramFiles", ""), os.environ.get("LOCALAPPDATA", "")):
+        sPath = os.path.join(sBase, "Pandoc", "pandoc.exe") if sBase else ""
+        if sPath and os.path.isfile(sPath): return sPath
+    return ""
+
+
+def writeTutorialsHtm(sMarkdown):
+    """TUTORIALS.HTM BESIDE TUTORIALS.MD (9 October 2026). This script assumed the build converted Tutorials.md to
+    HTML afterward, but HomerView's build converts its documents before the tutorial step, so the guide was
+    rewritten after its HTML and check failed: "no .htm for: Tutorials". The page is now written here, with
+    Pandoc, in the Homer encoding (UTF-8 with a BOM, CRLF); a build that converts documents later writes the same
+    page again. Returns True when written."""
+    sPandoc = findPandoc()
+    if not sPandoc:
+        note("Tutorials.htm not written: Pandoc was not found; the build's document step converts it")
+        return False
+    sHtm = os.path.splitext(sMarkdown)[0] + ".htm"
+    lsCommand = [sPandoc, "-f", "markdown", "-t", "html5", "--standalone", "-o", sHtm, sMarkdown]
+    note("run: " + subprocess.list2cmdline(lsCommand))
+    oRun = subprocess.run(lsCommand, capture_output=True, text=True, timeout=120)
+    note("pandoc exit code: %d%s" % (oRun.returncode, ("; " + oRun.stderr.strip()[:400]) if oRun.stderr.strip() else ""))
+    if oRun.returncode != 0 or not os.path.isfile(sHtm): return False
+    with open(sHtm, "rb") as f: bData = f.read()
+    sText = bData.decode("utf-8-sig").replace("\r\n", "\n").replace("\n", "\r\n")
+    with open(sHtm + ".writing", "wb") as f: f.write(b"\xef\xbb\xbf" + sText.encode("utf-8"))
+    os.replace(sHtm + ".writing", sHtm)
+    return True
+
 # The least a document can be and still take a spliced walkthrough: a title, a
 # contents list, and a section 1 to splice in front of.
 c_sSkeleton = """# Tutorials
@@ -481,6 +515,11 @@ def main():
         return 1
 
     say("Wrote " + str(len(lsSources)) + " tutorials into Tutorials.md: " + str(iStepsAll) + " steps.")
+    try:
+        if writeTutorialsHtm(c_sTarget): say("Wrote Tutorials.htm from it.")
+    except Exception as oError:
+        note("Tutorials.htm failed: " + str(oError))
+        note(traceback.format_exc())
     try:
         iFeed = writeFeed(lsEpisodes, dFeed)
         if iFeed > 0:
