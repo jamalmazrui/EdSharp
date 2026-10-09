@@ -882,6 +882,27 @@ def checkSkillChecks(sKind):
     return finding("skills", "pass", "ran " + sRan + ((" -- " + "; ".join(lsNotes) + "; the log names each") if lsNotes else ""))
 
 
+def checkInstallerNames():
+    """ONE NAME, ONE DEFINITION (1.64.4): a function the app's installer script and the kit's
+    HomerComponents.iss would both compile stops the installer's compile, as HomerView's
+    did on 8 October 2026 (Duplicate identifier LABELJAWS). Checked here, before Inno."""
+    sIss = os.path.join(sRoot, appName() + "_setup.iss")
+    if not os.path.isfile(sIss): return finding("installer", "skip", "no %s_setup.iss" % appName())
+    sAppText = readText(sIss)
+    if "HomerComponents.iss" not in sAppText: return finding("installer", "pass", "does not include the kit's components")
+    try:
+        import kind
+        sKit = kind.findKit([sRoot])
+        sComponents = os.path.join(sKit, "Templates", "HomerComponents.iss") if sKit else ""
+        if not os.path.isfile(sComponents): return finding("installer", "skip", "the kit's HomerComponents.iss was not found")
+        lsClash = kind.issFunctionClashes(sAppText, readText(sComponents))
+    except Exception as oError:
+        return finding("installer", "skip", "could not compare: %s" % oError)
+    if lsClash:
+        return finding("installer", "fail", "%s defined both here and in the kit's components: %s; remove this copy, or #define the kit's guard name before the include" % (countNoun(len(lsClash), "function") if "countNoun" in globals() else str(len(lsClash)) + " functions", ", ".join(lsClash)))
+    return finding("installer", "pass", "no function is defined both here and in the kit's components")
+
+
 def checkBuildName():
     """THE BUILD SCRIPT IS build.cmd (1.43.55). The folder already names the
     app, so build<App>.cmd said it twice. An old name fails the check and names
@@ -1113,6 +1134,7 @@ def main():
         checkNaming()
         checkLocal()
         checkFinishPage()
+        checkInstallerNames()
         checkSkillChecks("app")
         checkBuildName()
         checkKeys()

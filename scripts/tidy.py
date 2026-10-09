@@ -173,15 +173,12 @@ c_lsStandingNames = [
     r"^readme\.(md|htm)$", r"^history\.(md|htm)$", r"^license\.(md|htm)$",
     r"^developer\.(md|htm)$", r"^hotkeys\.(md|htm)$", r"^announce\.(md|htm)$",
     r"^version\.txt$", r"^repofiles\.txt$", r"^\.gitignore$", r"^\.gitattributes$",
-    r"^build[a-z0-9_]*\.(cmd|ps1|py)$", r"^create[a-z0-9_]*repo\.(cmd|ps1)$",
-    r"^tagrelease\.(cmd|ps1)$", r"^homertidy\.(cmd|py)$",
-    r"^install[a-z0-9_]*\.(cmd|ps1)$", r"^get[a-z0-9_]*\.(cmd|ps1)$",
+    r"^tagrelease\.(cmd|ps1)$",
     # A project's own script logs are rewritten on every run and are already
     # ignored by git, so they stay where the script that writes them expects.
     r"^localfiles\.txt$", r"^keepencoding\.txt$", r"^self\.(md|htm)$",
     r"^(homertidy|tagrelease|summarizesetup)\.log$",
     r"^(build|create|new|clean|tidy)[a-z0-9_]*\.log$",
-    r"^[a-z0-9_+-]+\.(cs|py|js|iss|ico|inix|manifest|config|lua)$",
     # The fingerprint beside each tutorial's audio (1.60.3), 04_Open_and_Move.sha256: buildTutorials keeps it to know the
     # audio is current, and the repository carries it with the audio so a build elsewhere speaks nothing it need not.
     # One digit since the pattern of ten (1.62.0), 4_Open_and_Move.sha256; two-digit names are still kept until retired.
@@ -416,13 +413,28 @@ def placementFor(sRelative, lsNamed):
     return ""
 
 
+# THE PROJECT'S OWN LISTS DECIDE (1.64.8, convention over configuration). These
+# broad names were a fallback from before every project declared its files in
+# RepoFiles.txt and LocalFiles.txt: any .py, .cs, .inix or .js anywhere, and any
+# build*, get* or install* script, belonged. Once the lists existed they quietly
+# overruled them -- DbDo's top folder held twelve stray scripts and settings
+# files that no list named, and tidy moved none of them, reporting 0 to move. A
+# project with a RepoFiles.txt is now judged by its lists alone; one without
+# keeps the fallback.
+c_lsLegacyStandingNames = [
+    r"^build[a-z0-9_]*\.(cmd|ps1|py)$", r"^create[a-z0-9_]*repo\.(cmd|ps1)$",
+    r"^homertidy\.(cmd|py)$", r"^install[a-z0-9_]*\.(cmd|ps1)$", r"^get[a-z0-9_]*\.(cmd|ps1)$",
+    r"^[a-z0-9_+-]+\.(cs|py|js|iss|ico|inix|manifest|config|lua)$"]
+
+
 def belongsTo(sRelative, lsNamed):
     """Does this path belong to the project?"""
     sLower = sRelative.replace("\\", "/").lower()
     sName = os.path.basename(sLower)
 
     if sLower.startswith(".git/") or sLower.startswith(c_sNotes + "/"): return True
-    for sPattern in c_lsStandingNames:
+    bHasLists = os.path.isfile(os.path.join(sRoot, "RepoFiles.txt"))
+    for sPattern in c_lsStandingNames + ([] if bHasLists else c_lsLegacyStandingNames):
         if re.match(sPattern, sName): return True
     for sNamed in lsNamed:
         sNamedLower = sNamed.replace("\\", "/").lower()
