@@ -375,7 +375,9 @@ try {
   # word for word, where EdSharp does read, and the kit's layout check names
   # them as folders outside the Homer tree. Each file is moved into
   # notes\retired, never deleted, and each move is logged.
-  foreach ($sOld in @("Convert", "Samples")) {
+  # Snippets joined them on 9 October 2026: the installer ships templates\snippets, and the top-level Snippets
+  # folder the old layout used was found by the kit's layout check once that check stopped crashing.
+  foreach ($sOld in @("Convert", "Samples", "Snippets")) {
     $sOldDir = Join-Path $sScriptDir $sOld
     if (-not (Test-Path -LiteralPath $sOldDir -PathType Container)) { continue }
     $sRetired = Join-Path $sScriptDir ("notes\retired\" + $sOld)
@@ -395,8 +397,22 @@ try {
   # Hunspell dictionaries are two plain text files, an affix file and a
   # word list, published by the LibreOffice project. About one megabyte
   # for American English, fetched once and then left alone.
-  $sDictDir = Join-Path $sScriptDir "Dictionaries"
+  # WHERE EDSHARP READS THEM (9 October 2026): EdSharp opens data\dictionaries, and the installer ships
+  # data\dictionaries\*, but this step fetched into a top-level Dictionaries folder, so the installer found nothing
+  # to ship and the spell checker had no dictionary. They are fetched where they are read, and any already in the
+  # old folder are moved there rather than fetched again.
+  $sDictDir = Join-Path $sScriptDir "data\dictionaries"
   if (-not (Test-Path -LiteralPath $sDictDir)) { New-Item -ItemType Directory -Force -Path $sDictDir | Out-Null }
+  $sOldDictDir = Join-Path $sScriptDir "Dictionaries"
+  if (Test-Path -LiteralPath $sOldDictDir -PathType Container) {
+    foreach ($oFile in @(Get-ChildItem -LiteralPath $sOldDictDir -File)) {
+      $sTarget = Join-Path $sDictDir $oFile.Name
+      if (Test-Path -LiteralPath $sTarget) { writeLog ("Dictionary " + $oFile.Name + " already in data\dictionaries; the old copy is dropped") }
+      else { Move-Item -LiteralPath $oFile.FullName -Destination $sTarget -Force; writeLog ("Moved Dictionaries\" + $oFile.Name + " into data\dictionaries, where EdSharp reads it") }
+    }
+    Remove-Item -LiteralPath $sOldDictDir -Recurse -Force
+    writeLog "The top-level Dictionaries folder is gone; the dictionaries are in data\dictionaries."
+  }
   foreach ($sPair in @(@("en_US.aff", "https://raw.githubusercontent.com/LibreOffice/dictionaries/master/en/en_US.aff"),
                        @("en_US.dic", "https://raw.githubusercontent.com/LibreOffice/dictionaries/master/en/en_US.dic"))) {
     $sName = $sPair[0]

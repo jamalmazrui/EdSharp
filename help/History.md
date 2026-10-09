@@ -4,6 +4,10 @@
 
 ## 9 October 2026 -- from the build and release logs
 
+- **Two fixes from an outside audit (9 October 2026).** A .cmd or .bat file now saves without a byte order mark, which cmd can misread; and Replace now treats a $ in the replacement as the character typed, where $1 or $0 had been taken as regular-expression substitution. The audit's other findings are triaged in notes.
+
+- **The spelling dictionary ships again (9 October 2026).** The build fetched the dictionaries into a top-level Dictionaries folder, while EdSharp reads, and the installer ships, data\\dictionaries; so the installer found no dictionary to ship. The build now fetches them into data\\dictionaries and moves any already in the old folder there. The old top-level Snippets folder is retired into notes\\retired, like Convert and Samples; the installer ships templates\\snippets. Both were found by the kit's layout check once it stopped crashing.
+
 - **Every help page has a title.** History.md has no front matter, so its page was built with no title and Pandoc warned on every build. A document with no title now takes one from EdSharp and its file name, such as EdSharp History.
 - **The subtitle appears once.** Announce.md repeated its subtitle as a heading under the title, so the page said it twice, once as a heading that skipped a level.
 
