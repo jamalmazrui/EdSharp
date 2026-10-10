@@ -51,6 +51,10 @@
 
 [Setup]
 AppId={{9F4E2C7A-1B5D-4E8A-B6C3-2D7F0A9E5481}
+; A REINSTALL KEEPS ITS FOLDER (10 October 2026): the Homer installer pattern reuses the folder of an earlier
+; install and skips the folder page, so pressing Enter updates EdSharp where it is.
+UsePreviousAppDir=yes
+DisableDirPage=auto
 AppName=EdSharp
 AppVersion={#MyAppVersion}
 AppVerName=EdSharp {#MyAppVersion}
@@ -479,6 +483,15 @@ Type: files; Name: "{app}\configs\convert\Pandoc\pandoc.exe"
 Root: HKA; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\EdSharp.exe"; ValueType: string; ValueName: ""; ValueData: "{app}\EdSharp.exe"; Flags: uninsdeletekey
 
 [Code]
+// THE KIT'S COMPONENTS AND SCREEN READER FUNCTIONS (10 October 2026). EdSharp had its own copy of each; the
+// screen reader boxes are now worded and ticked by HomerComponents.iss, which asks EdSharp's installJawsScripts.cmd
+// the kit's question. The kit comes from the build as /DHomerDev=; compiled by hand, C:\HomerDev.
+#define HomerReaderScript "installJawsScripts.cmd"
+#ifndef HomerDev
+  #define HomerDev "C:\HomerDev"
+#endif
+#include HomerDev + "\Templates\HomerComponents.iss"
+
 // ---- Live Finish-page labels ----------------------------------------------
 // Each optional-install checkbox asks winget about its package when the
 // Finish page builds: not installed reads "Install ...", installed with
@@ -1225,58 +1238,8 @@ end;
 var
   gsTicked: string;
 
-{ ---- JAWS scripts and NVDA add-on, judged like any component ----
-  installJawsScripts.cmd -sState jaws|nvda answers none, install, update or
-  reinstall: the script sources' fingerprint against the one kept in each JAWS
-  version's settings, and the add-on's version against the installed one's.
-  Asked once per reader; -1 hides every box for that reader. }
-var
-  giJawsState, giNvdaState: Integer;
-  gbJawsRead, gbNvdaRead: Boolean;
+{ The JAWS scripts' and NVDA add-on's boxes are the kit's (10 October 2026): see the include above. }
 
-function readerState(sReader: string): Integer;
-var
-  sFile: string;
-  sAnswer: AnsiString;
-  iCode: Integer;
-begin
-  if (sReader = 'jaws') and gbJawsRead then begin Result := giJawsState; Exit; end;
-  if (sReader = 'nvda') and gbNvdaRead then begin Result := giNvdaState; Exit; end;
-  Result := -1;
-  sFile := ExpandConstant('{tmp}\edsharpReader_') + sReader + '.txt';
-  if Exec(ExpandConstant('{cmd}'), '/c ""' + ExpandConstant('{app}\scripts\installJawsScripts.cmd') + '" -sState ' + sReader + ' -pathStateFile "' + sFile + '""',
-          ExpandConstant('{app}'), SW_HIDE, ewWaitUntilTerminated, iCode) then
-    if LoadStringFromFile(sFile, sAnswer) then
-    begin
-      sAnswer := Trim(sAnswer);
-      if sAnswer = 'install' then Result := 0
-      else if sAnswer = 'update' then Result := 1
-      else if sAnswer = 'reinstall' then Result := 2;
-    end;
-  Log('Component ' + sReader + ': state ' + IntToStr(Result) + ' (-1 not offered, 0 Install, 1 Update, 2 Reinstall)');
-  if sReader = 'jaws' then begin giJawsState := Result; gbJawsRead := True; end
-  else begin giNvdaState := Result; gbNvdaRead := True; end;
-end;
-
-function readerLabel(sReader: string): string;
-begin
-  case readerState(sReader) of
-    1: Result := 'Update';
-    2: Result := 'Reinstall';
-  else Result := 'Install';
-  end;
-  if sReader = 'jaws' then Result := Result + ' JAWS scripts'
-  else Result := Result + ' NVDA add-on';
-end;
-
-function labelJaws(sParam: string): string;  begin Result := readerLabel('jaws'); end;
-function isInstallJaws(): Boolean;           begin Result := readerState('jaws') = 0; end;
-function isUpdateJaws(): Boolean;            begin Result := readerState('jaws') = 1; end;
-function isReinstallJaws(): Boolean;         begin Result := readerState('jaws') = 2; end;
-function labelNvda(sParam: string): string;  begin Result := readerLabel('nvda'); end;
-function isInstallNvda(): Boolean;           begin Result := readerState('nvda') = 0; end;
-function isUpdateNvda(): Boolean;            begin Result := readerState('nvda') = 1; end;
-function isReinstallNvda(): Boolean;         begin Result := readerState('nvda') = 2; end;
 
 function NextButtonClick(iCurPageID: Integer): Boolean;
 var

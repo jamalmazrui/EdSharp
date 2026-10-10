@@ -886,6 +886,30 @@ def removeStrayKitFiles(bRepo):
     return iRemoved
 
 
+def givePagesOneHeading():
+    """ONE LEVEL-ONE HEADING, AFTER EVERY BUILD (10 October 2026). The encoding pass repairs pages built from Markdown,
+    but not every build runs it last: HomerView's build.ps1 makes hotkeys.htm after it, and FileDir's build runs it
+    before refreshing the kit's scripts, so after a kit update its first build ran the old one. Tidy runs after every
+    build and before every push, by then refreshed itself, so it applies fixEncoding's own rule -- one copy of it -- to
+    each .htm beside a .md, skipping a library's folders as check does. Returns how many pages it put right."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import fixEncoding
+    iFixed = 0
+    for sDir, lsDirs, lsNames in os.walk(sRoot):
+        lsDirs[:] = [s for s in lsDirs if not s.startswith(".") and s.lower() not in ("logs", "notes", "node_modules", "packages", "work", "__pycache__", "venv", "site-packages")]
+        for sName in lsNames:
+            sPath = os.path.join(sDir, sName)
+            if not sName.lower().endswith(".htm") or not os.path.isfile(sPath[:-4] + ".md"): continue
+            with open(sPath, "rb") as f: binData = f.read()
+            binWanted = fixEncoding.wantedBytes(sPath, binData)
+            if binWanted is None or binWanted == binData: continue
+            with open(sPath, "wb") as f: f.write(binWanted)
+            iFixed += 1
+            logLine("ONE HEADING: %s" % os.path.relpath(sPath, sRoot))
+    if iFixed: sayLine("Gave %s one level-one heading, as check requires." % countNoun(iFixed, "page"))
+    return iFixed
+
+
 def removeKitSampleLeftovers(bRepo):
     """The kit's samples, unarchived into an app, leave what their build made beside the files removeStrayKitFiles
     takes away: the sample programs, PyInstaller's build and dist folders, their logs, the generated version files.
@@ -1000,6 +1024,8 @@ def main():
         except Exception as oError: logLine("stray kit files: skipped, " + str(oError))
         try: removeKitSampleLeftovers(isGitRepo() and not dArguments.folder_only)
         except Exception as oError: logLine("kit sample leftovers: skipped, " + str(oError))
+        try: givePagesOneHeading()
+        except Exception as oError: logLine("one heading per page: skipped, " + str(oError))
 
     # THE BUILD SCRIPT TAKES ITS SHORT NAME HERE (1.43.56). Since 1.43.55 an
     # app's build script is build.cmd, and check fails build<App>.cmd. Tidy runs

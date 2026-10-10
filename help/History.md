@@ -4,6 +4,8 @@
 
 ## 9 October 2026 -- from the build and release logs
 
+- **A reinstall keeps its folder, and the screen reader boxes are the kit's.** EdSharp's installer did not remember an earlier install's folder, so every reinstall asked for one; it now reuses it and skips that page, as every Homer installer does. It also had its own copy of the kit's screen reader code; it now includes HomerComponents.iss, whose functions word and tick the JAWS and NVDA boxes by asking installJawsScripts.cmd the kit's question, "state jaws <file>", which that script now answers.
+
 - **One level-one heading on every help page (9 October 2026).** build.ps1 converts the documents after the build's encoding pass, so their pages kept two level-one headings, the front matter's title and the document's own; the build now runs the pass again after build.ps1, and the kit's fixEncoding leaves each page with one.
 
 - **Two fixes from an outside audit (9 October 2026).** A .cmd or .bat file now saves without a byte order mark, which cmd can misread; and Replace now treats a $ in the replacement as the character typed, where $1 or $0 had been taken as regular-expression substitution. The audit's other findings are triaged in notes.

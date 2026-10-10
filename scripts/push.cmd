@@ -113,13 +113,22 @@ if exist "%~dp0..\LocalFiles.txt" (
   for /f "usebackq eol=# delims=" %%L in ("%~dp0..\LocalFiles.txt") do (
     for /f "delims=" %%F in ('git ls-files -- "%%L" 2^>nul') do (
       git rm --cached --quiet -- "%%F" >> "%log%" 2>&1
-      echo UNTRACKED, now local: %%F>> "%log%"
-      echo No longer pushed, kept on this disk: %%F
+      echo untracked for the whitelist to decide: %%F>> "%log%"
     )
   )
 )
 
 git add -A >> "%log%" 2>&1
+rem WHAT ACTUALLY LEAVES (10 October 2026): the step above untracks every file a
+rem LocalFiles.txt line names, and git add -A puts back each one the whitelist still
+rem includes -- 29 kit sources were announced as "no longer pushed" and were not.
+rem Only a file staged for removal that is still on this disk is named now.
+for /f "delims=" %%F in ('git diff --cached --name-only --diff-filter=D') do (
+  if exist "%%F" (
+    echo No longer pushed, kept on this disk: %%F
+    echo NOW LOCAL: %%F>> "%log%"
+  )
+)
 >> "%log%" echo ---- staged ----
 git diff --cached --stat >> "%log%" 2>&1
 

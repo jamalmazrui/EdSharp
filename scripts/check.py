@@ -1088,6 +1088,54 @@ def checkIssComments():
     return finding("isscode", "pass", "no [Code] line begins with ;")
 
 
+# THE HOMER INSTALLER PATTERN, CHECKED (1.65.21, 10 October 2026). Every installer was meant to share one Finish
+# page -- each component's verb (Install, Update, Reinstall) and tick decided by the kit, so pressing Enter installs
+# what is missing, updates what is stale and starts the app -- and to reuse the folder of an earlier install. The
+# rule lived only in the homer-installer skill, and DbDo, EdSharp and HomerView kept code of their own: DbDo's JAWS
+# box said Update on every new version though its scripts had not changed, and EdSharp asked for the folder again on
+# every reinstall. This check fails an installer that departs from the pattern, naming each departure.
+def installerFindings(sText):
+    """Departures from the Homer installer pattern (homer-installer skill), each a short sentence; empty when conformant."""
+    s = sText.replace("\r\n", "\n")
+    lBad = []
+    def setting(sName):
+        m = re.search(r"(?mi)^\s*%s\s*=\s*(.+?)\s*$" % sName, s)
+        return m.group(1) if m else ""
+    if not re.search(r'(?mi)^\s*#include\b.*HomerComponents\.iss', s):
+        lBad.append("does not include the kit's HomerComponents.iss")
+    if setting("UsePreviousAppDir").lower() not in ("yes", "true", "1"):
+        lBad.append("UsePreviousAppDir is not yes, so a reinstall may not reuse the folder")
+    if setting("DisableDirPage").lower() != "auto":
+        lBad.append("DisableDirPage is %s, not auto, so a reinstall asks for the folder again" % (setting("DisableDirPage") or "unset"))
+    sAppId = setting("AppId")
+    if not sAppId or "{#" in sAppId and "AppId" not in sAppId:
+        lBad.append("AppId is %s, so Inno cannot recognize an earlier install" % (sAppId or "unset"))
+    bReaders = bool(re.search(r"(?i)_JAWS\.zip|\bnvda\b.*addon|labelJaws|labelNvda|install-jaws-settings", s))
+    if bReaders:
+        if re.search(r"(?m)^\s*#define\s+HomerReaderWrappersInApp", s): lBad.append("defines HomerReaderWrappersInApp, so it uses its own screen reader wrappers, not the kit's")
+        if re.search(r"(?mi)^\s*function\s+readerState\b", s): lBad.append("has its own readerState in place of the kit's homerReaderState")
+        if re.search(r"(?mi)^\s*function\s+(labelJaws|labelNvda|isInstallJaws|isUpdateJaws|isReinstallJaws|isInstallNvda)\b", s): lBad.append("defines its own JAWS or NVDA label or check functions, which the kit supplies")
+        if "jawsSettings.version" in s: lBad.append("keeps its own JAWS version stamp instead of the kit's fingerprint")
+        mRun = re.search(r"(?ms)^\[Run\]\s*\n(.*?)(?=^\[[A-Za-z]+\]\s*$)", s)
+        if mRun and re.search(r"(?m)^\s*Parameters:.*--install-jaws-settings", mRun.group(1)): lBad.append("installs JAWS scripts with its own command instead of the kit's installScreenReaderSupport.cmd")
+        mScript = re.search(r'(?m)^\s*#define\s+HomerReaderScript\s+"([^"]+)"', s)
+        sScript = mScript.group(1) if mScript else "installScreenReaderSupport.cmd"
+        mRunAll = re.search(r"(?ms)^\[Run\]\s*\n(.*?)(?=^\[[A-Za-z]+\]\s*$)", s)
+        if not mRunAll or sScript not in mRunAll.group(1): lBad.append("never runs %s, the script whose state decides its screen reader boxes" % sScript)
+        if re.search(r"(?i)\b(jaws)\b", s) and not re.search(r"(?i)Check:\s*isInstallJaws", s): lBad.append("offers no Install box for the JAWS scripts")
+    return lBad
+
+def checkInstaller():
+    """The Homer installer pattern: the kit's HomerComponents.iss, its screen reader functions and script, and a
+    remembered install folder. Each departure is named."""
+    lsBad = []
+    for sIss in glob.glob(os.path.join(sRoot, "*_setup.iss")):
+        for sProblem in installerFindings(readText(sIss)): lsBad.append("%s %s" % (os.path.basename(sIss), sProblem))
+    if lsBad:
+        return finding("installer", "fail", "the installer departs from the Homer installer pattern (homer-installer skill): " + "; ".join(lsBad[:8]))
+    return finding("installer", "pass", "the installer follows the Homer installer pattern: the kit's components, screen reader functions and a remembered folder")
+
+
 def checkHeadings():
     """ONE LEVEL-ONE HEADING PER PAGE (1.65.14): every .htm beside a .md -- a page built from Markdown -- must have
     exactly one <h1>. Pandoc gave two when a Markdown file had a front-matter title and a "# " line, and many when
@@ -1421,6 +1469,7 @@ def main():
         checkHeadings()
         checkSharedCode()
         checkIssComments()
+        checkInstaller()
         checkInstallerNames()
         checkSkillChecks("app")
         checkBuildName()
