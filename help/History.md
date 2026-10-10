@@ -4,6 +4,8 @@
 
 ## 9 October 2026 -- from the build and release logs
 
+- **One level-one heading on every help page (9 October 2026).** build.ps1 converts the documents after the build's encoding pass, so their pages kept two level-one headings, the front matter's title and the document's own; the build now runs the pass again after build.ps1, and the kit's fixEncoding leaves each page with one.
+
 - **Two fixes from an outside audit (9 October 2026).** A .cmd or .bat file now saves without a byte order mark, which cmd can misread; and Replace now treats a $ in the replacement as the character typed, where $1 or $0 had been taken as regular-expression substitution. The audit's other findings are triaged in notes.
 
 - **The spelling dictionary ships again (9 October 2026).** The build fetched the dictionaries into a top-level Dictionaries folder, while EdSharp reads, and the installer ships, data\\dictionaries; so the installer found no dictionary to ship. The build now fetches them into data\\dictionaries and moves any already in the old folder there. The old top-level Snippets folder is retired into notes\\retired, like Convert and Samples; the installer ships templates\\snippets. Both were found by the kit's layout check once it stopped crashing.

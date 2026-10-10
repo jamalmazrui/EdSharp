@@ -165,13 +165,16 @@
   </style>
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">EdSharp History</h1>
-</header>
 <h1 id="edsharp-history">EdSharp History</h1>
 <h2 id="october-2026-from-the-build-and-release-logs">9 October 2026 –
 from the build and release logs</h2>
 <ul>
+<li><p><strong>One level-one heading on every help page (9 October
+2026).</strong> build.ps1 converts the documents after the build’s
+encoding pass, so their pages kept two level-one headings, the front
+matter’s title and the document’s own; the build now runs the pass again
+after build.ps1, and the kit’s fixEncoding leaves each page with
+one.</p></li>
 <li><p><strong>Two fixes from an outside audit (9 October
 2026).</strong> A .cmd or .bat file now saves without a byte order mark,
 which cmd can misread; and Replace now treats a $ in the replacement as

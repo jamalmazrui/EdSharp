@@ -191,11 +191,68 @@ def decodeText(binData):
     return None
 
 
+# ONE LEVEL-ONE HEADING PER PAGE (9 October 2026). A page built from Markdown by Pandoc held two level-one
+# headings when the Markdown gave its title both in front matter and as a "# " line, and many when it used "# "
+# for its sections; a screen reader user moving by heading met the title twice, or found no single title. Every
+# .htm beside a .md is put right here, after the build has converted it, so each page has exactly one: a repeated
+# title keeps one copy, section headings below the title move down a level, and a page with none gets its own
+# <title> as its heading. Pages not built from Markdown are left as they are.
+c_reTitleH1 = re.compile(r'(<header id="title-block-header">\s*)<h1 class="title">(.*?)</h1>\s*', re.S)
+c_reHeading = re.compile(r"<h([1-6])(\b[^>]*)>(.*?)</h\1>", re.S)
+
+
+def headingText(sHtml):
+    """The plain words of a heading, for comparing one with another."""
+    import html as oHtml
+    return re.sub(r"\s+", " ", oHtml.unescape(re.sub(r"<[^>]+>", "", sHtml))).strip().lower()
+
+
+def shiftHeadings(sHtml, iStart):
+    """Moves every heading from offset iStart on down one level; a level-six heading stays at six."""
+    def shift(oMatch):
+        iLevel = min(6, int(oMatch.group(1)) + 1)
+        return "<h%d%s>%s</h%d>" % (iLevel, oMatch.group(2), oMatch.group(3), iLevel)
+    return sHtml[:iStart] + c_reHeading.sub(shift, sHtml[iStart:])
+
+
+def oneTitleHeading(sHtml):
+    """The page with exactly one level-one heading (see above); unchanged when it already has one."""
+    if len(re.findall(r"(?i)<h1\b", sHtml)) == 1: return sHtml
+    oTitle = c_reTitleH1.search(sHtml)
+    iBody = oTitle.end() if oTitle else max(0, sHtml.find("<body"))
+    lBodyH1 = [m for m in c_reHeading.finditer(sHtml, iBody) if m.group(1) == "1"]
+    if oTitle and lBodyH1:
+        if len(lBodyH1) == 1 or headingText(lBodyH1[0].group(3)) == headingText(oTitle.group(2)):
+            # The title twice, or the author's own single "# " heading: that heading stays the page's one level-one
+            # heading, and the title block's copy goes (the <title> in the head still names the page). The title
+            # block can be a bare file name, as the kit's build once passed ("ReadMe").
+            sHtml = sHtml[:oTitle.start()] + oTitle.group(1) + sHtml[oTitle.end():]
+            sHtml = re.sub(r'<header id="title-block-header">\s*</header>\s*', "", sHtml)
+            lBodyH1 = [m for m in c_reHeading.finditer(sHtml) if m.group(1) == "1"]
+            # Only the extra level-one headings move down, each with the headings beneath it; what sits between
+            # the kept heading and the first extra one is already in its right place.
+            if len(lBodyH1) > 1: sHtml = shiftHeadings(sHtml, lBodyH1[1].start())
+        else:
+            # A title, then sections at level one: the title stays the only level-one heading, and the sections
+            # move down a level from the first of them.
+            sHtml = shiftHeadings(sHtml, lBodyH1[0].start())
+    elif not oTitle and len(lBodyH1) > 1:
+        sHtml = shiftHeadings(sHtml, lBodyH1[1].start())
+    elif not oTitle and not lBodyH1:
+        oPageTitle = re.search(r"(?is)<title>(.*?)</title>", sHtml)
+        oBody = re.search(r"(?i)<body[^>]*>\s*", sHtml)
+        if oPageTitle and oBody and oPageTitle.group(1).strip():
+            sHtml = sHtml[:oBody.end()] + "<h1>" + oPageTitle.group(1).strip() + "</h1>\n" + sHtml[oBody.end():]
+    return sHtml
+
+
 def wantedBytes(sPath, binData):
     """What the file should hold; None when it is not text we can decode."""
     sText = decodeText(binData)
     if sText is None: return None
-    sText = sText.replace("\r\n", "\n").replace("\r", "\n").replace("\n", "\r\n")
+    sText = sText.replace("\r\n", "\n").replace("\r", "\n")
+    if sPath.lower().endswith(".htm") and os.path.isfile(sPath[:-4] + ".md"): sText = oneTitleHeading(sText)
+    sText = sText.replace("\n", "\r\n")
     bBom = not sPath.lower().endswith(c_lsNoBom) and os.path.basename(sPath).lower() not in c_lsNoBomNames
     return (("\ufeff" + sText) if bBom else sText).encode("utf-8")
 

@@ -1088,6 +1088,28 @@ def checkIssComments():
     return finding("isscode", "pass", "no [Code] line begins with ;")
 
 
+def checkHeadings():
+    """ONE LEVEL-ONE HEADING PER PAGE (1.65.14): every .htm beside a .md -- a page built from Markdown -- must have
+    exactly one <h1>. Pandoc gave two when a Markdown file had a front-matter title and a "# " line, and many when
+    it used "# " for sections; fixEncoding repairs both when a build runs it after converting its documents, and
+    this check fails a page that escaped it."""
+    lsBad, iPages = [], 0
+    for sDir, lsDirs, lsNames in os.walk(sRoot):
+        # A library's own pages are not the project's (10 October 2026): a sample's .venv held wxPython's README and
+        # CHANGELOG, which failed the kit's release; folders starting with a dot, venv and site-packages are skipped.
+        lsDirs[:] = [s for s in lsDirs if not s.startswith(".") and s.lower() not in ("logs", "notes", "node_modules", "packages", "work", "__pycache__", "venv", "site-packages")]
+        for sName in lsNames:
+            sPath = os.path.join(sDir, sName)
+            if not sName.lower().endswith(".htm") or not os.path.isfile(sPath[:-4] + ".md"): continue
+            iPages += 1
+            iCount = len(re.findall(r"(?i)<h1\b", readText(sPath)))
+            if iCount != 1: lsBad.append("%s (%d)" % (os.path.relpath(sPath, sRoot), iCount))
+    if lsBad:
+        return finding("headings", "fail", "%s built from Markdown without exactly one level-one heading; run the build, whose encoding pass repairs them: %s"
+                       % (countNoun(len(lsBad), "page") if "countNoun" in globals() else str(len(lsBad)) + " pages", ", ".join(lsBad[:6])))
+    return finding("headings", "pass", "%s built from Markdown, each with one level-one heading" % (countNoun(iPages, "page") if "countNoun" in globals() else str(iPages) + " pages"))
+
+
 def checkSharedCode():
     """ONE COPY OF EVERY SHARED CLASS (1.65.0): an app's own source that duplicates a
     kit module -- the same file name, or a C# class of the same name as a kit
@@ -1378,6 +1400,7 @@ def main():
         checkEncoding()
         checkEmpty()
         checkLayout(sKind)
+        checkHeadings()
         checkSkillChecks(sKind)
         if os.path.isdir(os.path.join(sRoot, ".git")): checkPublish()
         else: finding("publish", "skip", "not a git repository; post keeps a page's repository")
@@ -1395,6 +1418,7 @@ def main():
         checkLocal()
         checkFinishPage()
         checkLayout("app")
+        checkHeadings()
         checkSharedCode()
         checkIssComments()
         checkInstallerNames()

@@ -103,6 +103,22 @@ if exist "%~dp0tidy.cmd" (
   )
 )
 
+rem A LOCAL FILE STOPS BEING TRACKED (10 October 2026): a file named in LocalFiles.txt
+rem is kept on this disk and out of the repository, but Git goes on staging a file it
+rem already tracks even once the .gitignore leaves it out, so DbDo's 77 MB RadioTrail
+rem catalog, tracked from its 14-station start, was staged again and refused. Each file
+rem LocalFiles.txt names that Git still tracks is untracked here; it stays on disk, and
+rem only files LocalFiles.txt names are ever untracked.
+if exist "%~dp0..\LocalFiles.txt" (
+  for /f "usebackq eol=# delims=" %%L in ("%~dp0..\LocalFiles.txt") do (
+    for /f "delims=" %%F in ('git ls-files -- "%%L" 2^>nul') do (
+      git rm --cached --quiet -- "%%F" >> "%log%" 2>&1
+      echo UNTRACKED, now local: %%F>> "%log%"
+      echo No longer pushed, kept on this disk: %%F
+    )
+  )
+)
+
 git add -A >> "%log%" 2>&1
 >> "%log%" echo ---- staged ----
 git diff --cached --stat >> "%log%" 2>&1

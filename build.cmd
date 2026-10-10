@@ -209,6 +209,13 @@ rem here and shown, and the exit code is recorded either way.
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0build.ps1" -HomerDev "!homerDev!" -Version "!ver!" -LogFile "%log%" 2>&1
 set "iCompile=!errorlevel!"
 echo build.ps1 exit code !iCompile!>> "%log%"
+rem THE PAGES BUILD.PS1 JUST MADE (9 October 2026): build.ps1 converts the
+rem documents after the encoding pass above, so the pass runs again for them,
+rem and fixEncoding gives each page built from Markdown one level-one heading.
+if exist "scripts\fixEncoding.cmd" (
+  call "scripts\fixEncoding.cmd" >> "%log%" 2>&1
+  echo Encoding, after the documents: fixEncoding exit code !errorlevel!>> "%log%"
+)
 if not "!iCompile!"=="0" (
   echo(
   echo ERROR: the build failed. The reason is in %log%.
