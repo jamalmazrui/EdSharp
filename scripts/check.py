@@ -971,7 +971,7 @@ def checkInstallerNames():
     except Exception as oError:
         return finding("installer", "skip", "could not compare: %s" % oError)
     if lsClash:
-        return finding("installer", "fail", "%s defined both here and in the kit's components: %s; remove this copy, or #define the kit's guard name before the include" % (countNoun(len(lsClash), "function") if "countNoun" in globals() else str(len(lsClash)) + " functions", ", ".join(lsClash)))
+        return finding("installer", "fail", "%s defined both here and in the kit's components: %s; remove this copy, since the kit's copy is the one every installer shares" % (countNoun(len(lsClash), "function") if "countNoun" in globals() else str(len(lsClash)) + " functions", ", ".join(lsClash)))
     return finding("installer", "pass", "no function is defined both here and in the kit's components")
 
 
@@ -1132,8 +1132,8 @@ def checkInstaller():
     for sIss in glob.glob(os.path.join(sRoot, "*_setup.iss")):
         for sProblem in installerFindings(readText(sIss)): lsBad.append("%s %s" % (os.path.basename(sIss), sProblem))
     if lsBad:
-        return finding("installer", "fail", "the installer departs from the Homer installer pattern (homer-installer skill): " + "; ".join(lsBad[:8]))
-    return finding("installer", "pass", "the installer follows the Homer installer pattern: the kit's components, screen reader functions and a remembered folder")
+        return finding("pattern", "fail", "the installer departs from the Homer installer pattern (homer-installer skill): " + "; ".join(lsBad[:8]))
+    return finding("pattern", "pass", "the installer follows the Homer installer pattern: the kit's components, screen reader functions and a remembered folder")
 
 
 def checkHeadings():

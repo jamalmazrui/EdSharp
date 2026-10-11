@@ -5,7 +5,7 @@
     <link>Tutorials.htm</link>
     <description>Spoken walks through EdSharp, the text and code editor for working by ear. Ten walks, each under five minutes, in the order a new person meets them.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 10 Oct 2026 22:46:38 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 11 Oct 2026 17:38:40 +0000</lastBuildDate>
     <itunes:author>Jamal Mazrui</itunes:author>
     <itunes:explicit>false</itunes:explicit>
     <itunes:category text="Technology"/>
@@ -15,8 +15,8 @@
       <description>Nothing is needed; this walk is listened to. Full transcript: Tutorials.htm#0-0-overview</description>
       <link>Tutorials.htm#0-0-overview</link>
       <guid isPermaLink="false">homer-tutorial_0_overview</guid>
-      <enclosure url="tutorials/0_Overview.mp3" length="1009889" type="audio/mpeg"/>
-      <itunes:duration>00:02:25</itunes:duration>
+      <enclosure url="tutorials/0_Overview.mp3" length="1082053" type="audio/mpeg"/>
+      <itunes:duration>00:02:34</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>
@@ -87,8 +87,8 @@
       <description>EdSharp is open with a new document. Full transcript: Tutorials.htm#0h-8-do-math</description>
       <link>Tutorials.htm#0h-8-do-math</link>
       <guid isPermaLink="false">homer-tutorial_8_do_math</guid>
-      <enclosure url="tutorials/8_Do_Math.mp3" length="1648822" type="audio/mpeg"/>
-      <itunes:duration>00:03:58</itunes:duration>
+      <enclosure url="tutorials/8_Do_Math.mp3" length="1680150" type="audio/mpeg"/>
+      <itunes:duration>00:04:02</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>

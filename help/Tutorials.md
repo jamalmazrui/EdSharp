@@ -754,27 +754,39 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 4: Insert+UpArrow
+### Step 4: Insert+Up Arrow
 
-Two keys before anything else, both the reader's own. If a line goes by too fast, Insert plus Up Arrow says it again.
+You know your screen reader's own keys already, and three of them are worth remembering whenever you feel lost or unsure. Insert plus Up Arrow says the line you are on again.
 
 Screen reader:
 
-- (the last line, read a second time)
+- Dear Pat,
 
 ### Step 5: Insert+Tab
 
-And if you lose your place, Insert plus Tab says where you are: the control, its state, its position, and any hint it carries. The walks are heard with those hints off, the way most people work.
+Insert plus Tab says what has the focus: its name, its role, and its value or state.
 
 Screen reader:
 
-- (the current control, with its state and position)
+- letter dot t x t, edit, multiline, Dear Pat,
 
-### Step 6
+### Step 6: Insert+T
+
+Insert plus T says the title of the window.
+
+Screen reader:
+
+- EdSharp, letter dot t x t
+
+### Step 7
+
+If you set your screen reader to use Caps Lock in place of Insert, Caps Lock works the same way for all three.
+
+### Step 8
 
 Now the table of contents. I say the number and the title; the reader says what the walk covers.
 
-### Step 7
+### Step 9
 
 One, User Interface.
 
@@ -782,7 +794,7 @@ Screen reader:
 
 - EdSharp's one window, the edit box you hear, dialogs that all work one way, and where help is, each named and then shown by the reader; then the rules every key follows, so a key can be guessed before it is learned.
 
-### Step 8
+### Step 10
 
 Two, Install and Launch.
 
@@ -790,7 +802,7 @@ Screen reader:
 
 - The download, the installer's last page and its boxes, and EdSharp opening with Alt plus Control plus E.
 
-### Step 9
+### Step 11
 
 Three, Open, Edit and Save a File.
 
@@ -798,7 +810,7 @@ Screen reader:
 
 - A file opened, a line changed, the document saved, and the two ways to hear where you are.
 
-### Step 10
+### Step 12
 
 Four, Find Your Way in a Long Document.
 
@@ -806,7 +818,7 @@ Screen reader:
 
 - Finding a word, jumping to a line, and bookmarks that bring you back.
 
-### Step 11
+### Step 13
 
 Five, Convert Between Formats.
 
@@ -814,7 +826,7 @@ Screen reader:
 
 - A Word document opened as text; Markdown written out as a web page.
 
-### Step 12
+### Step 14
 
 Six, Write Code.
 
@@ -822,7 +834,7 @@ Screen reader:
 
 - A program compiled from the editor, the cursor landing on the error, and blocks of code moved through.
 
-### Step 13
+### Step 15
 
 Seven, Ask the AI on Your Own Computer.
 
@@ -830,7 +842,7 @@ Screen reader:
 
 - A question answered and a document translated, with nothing sent off the machine.
 
-### Step 14
+### Step 16
 
 Eight, Do Math.
 
@@ -838,7 +850,7 @@ Screen reader:
 
 - One want: an answer to a sum without leaving the document.
 
-### Step 15
+### Step 17
 
 Nine, Conclusion.
 
@@ -846,7 +858,7 @@ Screen reader:
 
 - What to carry away, the words EdSharp uses, the help built in, and where to learn more.
 
-### Step 16
+### Step 18
 
 Ten walks, each under five minutes, under an hour together: the overview, the user interface, seven tasks, and the conclusion. They are a course, not a reference: each one assumes those before it.
 
@@ -2040,7 +2052,7 @@ I type a sum as I would write it in code: 1250 times 12, plus 300.
 
 Screen reader:
 
-- (each character echoed as it is typed)
+- 1250 times 12 plus 300
 
 ### Step 4: Control+Equals
 
@@ -2060,7 +2072,7 @@ A planned misstep: a sum with a comma in a number, as we write money.
 
 Screen reader:
 
-- (each character echoed as it is typed)
+- 1,250 times 12
 
 ### Step 7: Control+Equals
 
@@ -2088,7 +2100,7 @@ Since the expression is JScript, more than arithmetic works. A power: 2 to the 1
 
 Screen reader:
 
-- (each character echoed as it is typed)
+- Math.pow(2, 10)
 
 ### Step 11: Control+Equals
 
@@ -2106,7 +2118,7 @@ A square root, the same way.
 
 Screen reader:
 
-- (each character echoed as it is typed)
+- Math.sqrt(144)
 
 ### Step 13: Control+Equals
 
@@ -2124,7 +2136,7 @@ Rounding to cents: multiply by 100, round, and divide by 100.
 
 Screen reader:
 
-- (each character echoed as it is typed)
+- Math.round left paren 19.987 times 100 right paren divided by 100
 
 ### Step 15: Control+Equals
 
@@ -2177,7 +2189,7 @@ Then I write a sentence with a formula in it: the area of a circle is, dollar, b
 
 Screen reader:
 
-- (each character echoed as it is typed)
+- The area of a circle is $\pi r to the power of 2$.
 
 ### Step 21: Control+H
 

@@ -1,5 +1,5 @@
 ﻿#EXTM3U
-#EXTINF:145,EdSharp Walkthroughs
+#EXTINF:154,EdSharp Walkthroughs
 0_Overview.mp3
 #EXTINF:305,1 - User Interface
 1_User_Interface.mp3
@@ -15,7 +15,7 @@
 6_Write_Code.mp3
 #EXTINF:163,7 - Ask the AI on Your Own Computer
 7_Ask_the_AI_on_Your_Own_Computer.mp3
-#EXTINF:238,8 - Do Math
+#EXTINF:242,8 - Do Math
 8_Do_Math.mp3
 #EXTINF:221,9 - Conclusion
 9_Conclusion.mp3

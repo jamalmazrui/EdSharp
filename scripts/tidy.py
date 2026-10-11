@@ -149,7 +149,7 @@ c_lsNeverPushed = [
     # build generates beside its source. HomerView's NVDA add-on carries its
     # own homer\version.py, which the add-on imports, and a bare version.py
     # here untracked it.
-    "exec/", "logs/", "self.htm", "self.md", "release.cmd", "release.ps1", "/version.py",
+    "exec/", "logs/", "self.htm", "self.md", "release.cmd", "release.ps1", "build_release.bat", "/version.py",
 ]
 
 # Folders a build makes. The survey does not walk into them, because what is
@@ -832,6 +832,53 @@ c_lsNeverStray = ("scripts/", "License.md", "License.htm", ".gitattributes", ".g
 c_lsRetiredScripts = ("scripts/repairFileDir.cmd", "scripts/restoreFileDir.cmd", "scripts/retireRepair.cmd", "scripts/removeKitFiles.cmd")
 
 
+def kitPlaced():
+    """WHAT THE KIT PUTS IN A PROJECT IS NOT A STRAY (1.65.30). The kit's build writes build_release.bat at the top of
+    every project, and each project's build copies the kit's tools into its scripts folder. Neither is named by the
+    project's installer or lists, so tidy called them strays and moved them into notes -- build_release.bat while it
+    was running, which ended DbDo's cycle silently five times on 10 and 11 October, and scripts\\kind.cmd on every
+    run. These names belong in the folder survey; git's whitelist is decided as before."""
+    lsOut = ["build_release.bat"]
+    sKit = findKitFolder()
+    sScripts = os.path.join(sKit, "scripts") if sKit else ""
+    if sScripts and os.path.isdir(sScripts):
+        lsOut += ["scripts/" + s for s in sorted(os.listdir(sScripts)) if os.path.isfile(os.path.join(sScripts, s))]
+    return lsOut
+
+
+def selfTest():
+    """tidy --selftest: an audit gate the kit's build runs (1.65.30). In a scratch app folder, build_release.bat and a
+    kit tool in scripts must stay where they are, and a real stray must still go to notes. Returns 0 when all three
+    hold, 1 when any does not; each is logged."""
+    global sRoot
+    import tempfile
+    sKeep = sRoot
+    sTemp = tempfile.mkdtemp(prefix="homerTidyTest-")
+    try:
+        sRoot = sTemp
+        os.makedirs(os.path.join(sTemp, "scripts"))
+        for sRel, sText in (("build.cmd", "@echo off\r\n"), ("RepoFiles.txt", "build.cmd\r\nRepoFiles.txt\r\n"),
+                            ("build_release.bat", "@echo off\r\nrem the cycle\r\n"), ("scripts/kind.cmd", "@echo off\r\nrem kit tool\r\n"),
+                            ("stray.txt", "nobody names this file\r\n")):
+            open(os.path.join(sTemp, sRel.replace("/", os.sep)), "w", encoding="utf-8", newline="").write(sText)
+        sRoot = sKeep
+        lsPlaced = kitPlaced()
+        sRoot = sTemp
+        _, _, lsStrays, _ = surveyFolder(namedByRepoFiles() + lsPlaced)
+        lsStrays = [s.replace("\\", "/") for s in lsStrays]
+        lChecks = [("build_release.bat stays", "build_release.bat" not in lsStrays),
+                   ("scripts/kind.cmd stays", "scripts/kind.cmd" not in lsStrays or "scripts/kind.cmd" not in lsPlaced),
+                   ("a real stray still moves", "stray.txt" in lsStrays)]
+        if "scripts/kind.cmd" not in lsPlaced: logLine("selftest: no kit found, so the kit tool check was not run")
+        for sName, bOk in lChecks: logLine("selftest %s: %s" % ("PASS" if bOk else "FAIL", sName))
+        iFailed = len([1 for _, bOk in lChecks if not bOk])
+        sayLine("tidy self-test: %s passed, %s failed." % (countNoun(len(lChecks) - iFailed, "check"), countNoun(iFailed, "check")))
+        return 1 if iFailed else 0
+    finally:
+        sRoot = sKeep
+        shutil.rmtree(sTemp, ignore_errors=True)
+
+
 def removeStrayKitFiles(bRepo):
     """A HomerDev.zip unarchived into an app's folder leaves the kit's files
     beside the app's (6 October 2026: twice, into C:\\DbDo). A stray is a file
@@ -982,6 +1029,8 @@ def main():
                          help="leave the folder alone")
     oParser.add_argument("--gitignore", action="store_true",
                          help="write the whitelist .gitignore from RepoFiles.txt and stop")
+    oParser.add_argument("--selftest", action="store_true",
+                         help="prove in a scratch folder that tidy keeps what the kit places, and stop")
     oParser.add_argument("--path", default="",
                          help="the project folder; the current directory by default")
     dArguments = oParser.parse_args()
@@ -1006,6 +1055,11 @@ def main():
     logLine("settings no-push=%s folder-only=%s repo-only=%s" %
             (dArguments.no_push, dArguments.folder_only,
              dArguments.repo_only))
+
+    if dArguments.selftest:
+        iCode = selfTest()
+        logLine("tidy end")
+        return iCode
 
     bDoIt = True
     # FOUR KINDS OF HOMER RESOURCE (1.45.0). A page project that is not a git
@@ -1111,7 +1165,7 @@ def main():
 
     # ---- the folder ----
     if not dArguments.repo_only:
-        lsEmpty, ldDuplicates, lsStrays, ltPlace = surveyFolder(lsNamed)
+        lsEmpty, ldDuplicates, lsStrays, ltPlace = surveyFolder(lsNamed + kitPlaced())
         sayLine("Folder")
         sayLine("  %s to put in place" % countNoun(len(ltPlace), "file"))
         for sPath, sFolder in ltPlace: logLine("PLACE: %s -> %s/" % (sPath, sFolder))

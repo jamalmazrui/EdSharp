@@ -20,7 +20,7 @@ Hear=Untitled, edit, multiline, blank
 
 Say=I type a sum as I would write it in code: 1250 times 12, plus 300.
 Key=1250 * 12 + 300
-Hear=(each character echoed as it is typed)
+Hear=1250 times 12 plus 300
 [step]
 
 Say=Control plus Equals works it out: Equals, the sign that asks for an answer.
@@ -34,7 +34,7 @@ Key=
 
 Say=A planned misstep: a sum with a comma in a number, as we write money.
 Key=1,250 * 12
-Hear=(each character echoed as it is typed)
+Hear=1,250 times 12
 [step]
 
 Say=Control plus Equals.
@@ -53,7 +53,7 @@ Hear=Undo
 
 Say=Since the expression is JScript, more than arithmetic works. A power: 2 to the 10th.
 Key=Math.pow(2, 10)
-Hear=(each character echoed as it is typed)
+Hear=Math.pow(2, 10)
 [step]
 
 Say=Control plus Equals.
@@ -64,7 +64,7 @@ Note=Confirm the wording with a live run: buildTutorials -live.
 
 Say=A square root, the same way.
 Key=Math.sqrt(144)
-Hear=(each character echoed as it is typed)
+Hear=Math.sqrt(144)
 [step]
 
 Say=Control plus Equals.
@@ -75,7 +75,7 @@ Note=Confirm the wording with a live run: buildTutorials -live.
 
 Say=Rounding to cents: multiply by 100, round, and divide by 100.
 Key=Math.round(19.987 * 100) / 100
-Hear=(each character echoed as it is typed)
+Hear=Math.round left paren 19.987 times 100 right paren divided by 100
 [step]
 
 Say=Control plus Equals.
@@ -109,7 +109,7 @@ Note=Confirm the wording with a live run: buildTutorials -live.
 
 Say=Then I write a sentence with a formula in it: the area of a circle is, dollar, backslash pi r caret 2, dollar.
 Key=The area of a circle is $\pi r^2$.
-Hear=(each character echoed as it is typed)
+Hear=The area of a circle is $\pi r to the power of 2$.
 [step]
 
 Say=Control plus H, HTML Format, converts the document to a web page in a new window, and Pandoc turns the formula into MathML, the standard for math on the web.

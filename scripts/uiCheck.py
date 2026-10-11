@@ -55,7 +55,7 @@ USAGE
     uiCheck --path C:\JobDo         an app's own tests
     uiCheck --keep                  leave the program running at the end
 
-Writes evidence-ui-<yyyymmdd-hhmmss>.md and uiCheck.log beside this script.
+Writes logs\<Project>-evidence-ui-<yyyymmdd-hhmmss>.md and logs\<Project>-uiCheck-<stamp>.log.
 Exit code 0 when nothing failed, 1 when something did.
 """
 
@@ -73,7 +73,11 @@ c_fStartSeconds = 8.0        # how long a program may take to show its window
 c_fStepSeconds = 0.6         # settle time after a keystroke
 
 sScriptDir = os.path.dirname(os.path.abspath(__file__))
-sLogPath = os.path.join(sScriptDir, "uiCheck.log")
+# THE LOG AND REPORT GO IN logs (1.65.26), named for the project like every other, not beside this script.
+c_sProject = os.path.basename(os.path.dirname(os.path.abspath(sScriptDir)))
+c_sLogs = os.path.join(os.path.dirname(os.path.abspath(sScriptDir)), "logs")
+c_sRunStamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+sLogPath = os.path.join(c_sLogs, "%s-uiCheck-%s.log" % (c_sProject, c_sRunStamp))
 sRoot = sScriptDir
 oLog = None
 lsFindings = []              # (sTest, sStep, sVerdict, sEvidence)
@@ -197,14 +201,92 @@ def treeText(window):
             except Exception:
                 continue
             try:
-                # A list reports its items separately from its own name.
-                for sItem in control.texts():
+                # A list reports its items separately from its own name, and a list of lists, row by row, as lists
+                # (1.65.26): every item is flattened to text, so the report can join them.
+                lItems = list(control.texts())
+                while lItems:
+                    oItem = lItems.pop(0)
+                    if isinstance(oItem, (list, tuple)): lItems[0:0] = list(oItem); continue
+                    sItem = str(oItem) if oItem is not None else ""
                     if sItem and sItem not in lsText: lsText.append(sItem)
             except Exception:
                 continue
     except Exception as oError:
         logLine("TREE FAILED: %s" % oError)
     return lsText
+
+
+# THE PROGRAM BY NAME, NOT BY PROCESS (1.65.26). uiCheck held each sample by the process it launched. A program built
+# by PyInstaller as one file starts a launcher, which starts the program as a second process, so uiCheck never saw
+# the Python samples' windows, reported that none opened, and never closed them: the person closed them by hand. A
+# sample left open from an earlier run also took each new launch, by the one-copy rule, so the launched process ended
+# and every step after failed. Windows are now found by the name of the program that owns them, in any process, from
+# Windows' own list of top-level windows; every copy of the program is closed before a test and after it; and a
+# failure inside UI Automation is reported as one, since a screen reader reads the same tree.
+c_iComUnreachable = -2147220991
+
+
+def exeNameOf(iPid):
+    """The file name of the program a process runs, or "" when it cannot be read."""
+    import ctypes
+    from ctypes import wintypes
+    hProcess = ctypes.windll.kernel32.OpenProcess(0x1000, False, iPid)
+    if not hProcess: return ""
+    try:
+        oBuffer = ctypes.create_unicode_buffer(1024)
+        iSize = wintypes.DWORD(1024)
+        if ctypes.windll.kernel32.QueryFullProcessImageNameW(hProcess, 0, oBuffer, ctypes.byref(iSize)):
+            return os.path.basename(oBuffer.value)
+        return ""
+    finally:
+        ctypes.windll.kernel32.CloseHandle(hProcess)
+
+
+def windowsOf(sExe):
+    """Visible top-level windows with a title, owned by any process running the program sExe: [(handle, pid, title)]."""
+    import ctypes
+    from ctypes import wintypes
+    lFound = []
+    fnProc = ctypes.WINFUNCTYPE(ctypes.c_bool, wintypes.HWND, wintypes.LPARAM)
+    def onWindow(hWnd, lParam):
+        if not ctypes.windll.user32.IsWindowVisible(hWnd): return True
+        iLength = ctypes.windll.user32.GetWindowTextLengthW(hWnd)
+        if iLength == 0: return True
+        oTitle = ctypes.create_unicode_buffer(iLength + 1)
+        ctypes.windll.user32.GetWindowTextW(hWnd, oTitle, iLength + 1)
+        iPid = wintypes.DWORD()
+        ctypes.windll.user32.GetWindowThreadProcessId(hWnd, ctypes.byref(iPid))
+        if exeNameOf(iPid.value).lower() == sExe.lower(): lFound.append((hWnd, iPid.value, oTitle.value))
+        return True
+    ctypes.windll.user32.EnumWindows(fnProc(onWindow), 0)
+    return lFound
+
+
+def findWindow(Application, sExe, fSeconds):
+    """The program's main window as a UI Automation wrapper, waiting up to fSeconds for one to appear."""
+    fUntil = time.time() + fSeconds
+    while True:
+        lFound = windowsOf(sExe)
+        if lFound:
+            hWnd, iPid, sTitle = lFound[0]
+            logLine("window of %s: handle %s, process %d, title %r%s" % (sExe, hWnd, iPid, sTitle,
+                    (" (%d windows)" % len(lFound)) if len(lFound) > 1 else ""))
+            return Application(backend="uia").connect(handle=hWnd).window(handle=hWnd)
+        if time.time() > fUntil: raise RuntimeError("%s has no visible window with a title" % sExe)
+        time.sleep(0.3)
+
+
+def closeProgram(sExe):
+    """Ends every process running the program sExe, the launcher and the program alike, and says how it went."""
+    iCode = subprocess.call(["taskkill", "/F", "/T", "/IM", sExe], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    logLine("close %s: taskkill exit %d (0 means a copy was running and is ended, 128 that none was)" % (sExe, iCode))
+
+
+def failureText(oError):
+    """An error as the report says it: a COM failure inside UI Automation is named as one."""
+    if getattr(oError, "args", None) and oError.args and oError.args[0] == c_iComUnreachable:
+        return "UI Automation could not reach the window (%s), so a screen reader using it may not either" % (oError.args[1] if len(oError.args) > 1 else oError)
+    return str(oError)
 
 
 def titleExists(Application, sTitle):
@@ -262,22 +344,17 @@ def runTest(Application, dTest, bKeep):
                        "%s is not here; build it first" % sExe)
 
     sayLine("  %s" % sName)
-    app = None
+    closeProgram(sExe)
     try:
-        app = Application(backend="uia").start('"%s"' % sExePath,
-                                               work_dir=sRoot, timeout=c_fStartSeconds)
-        time.sleep(1.2)
-        window = app.top_window()
+        subprocess.Popen([sExePath], cwd=sRoot)
+        window = findWindow(Application, sExe, c_fStartSeconds)
         window.wait("visible ready", timeout=c_fStartSeconds)
         finding(sName, "start", "pass", "%s opened a window titled %r" %
                 (sExe, window.window_text()))
     except Exception as oError:
         logLine("START FAILED: %s" % traceback.format_exc())
-        finding(sName, "start", "fail", "%s did not open a window: %s" % (sExe, oError))
-        try:
-            if app is not None: app.kill()
-        except Exception:
-            pass
+        finding(sName, "start", "fail", "%s did not open a window: %s" % (sExe, failureText(oError)))
+        closeProgram(sExe)
         return False
 
     iStep = 0
@@ -286,6 +363,7 @@ def runTest(Application, dTest, bKeep):
         sStep = dStep.get("note", "step %d" % iStep)
         sKeys = dStep.get("keys", "")
         try:
+            window = findWindow(Application, sExe, c_fStepSeconds + 2)
             if sKeys:
                 window.set_focus()
                 window.type_keys(sKeys, with_spaces=True, set_foreground=True)
@@ -300,7 +378,7 @@ def runTest(Application, dTest, bKeep):
 
             sWants = dStep.get("wants", "")
             if sWants:
-                lsText = treeText(app.top_window())
+                lsText = treeText(findWindow(Application, sExe, c_fStepSeconds + 2))
                 logLine("TREE: " + " | ".join(lsText[:60]))
                 if any(sWants.lower() in s.lower() for s in lsText):
                     finding(sName, sStep, "pass",
@@ -319,12 +397,9 @@ def runTest(Application, dTest, bKeep):
                 time.sleep(c_fStepSeconds)
         except Exception as oError:
             logLine("STEP FAILED: %s" % traceback.format_exc())
-            finding(sName, sStep, "fail", str(oError))
+            finding(sName, sStep, "fail", failureText(oError))
 
-    try:
-        if not bKeep: app.kill()
-    except Exception:
-        pass
+    if not bKeep: closeProgram(sExe)
     return True
 
 
@@ -332,7 +407,7 @@ def runTest(Application, dTest, bKeep):
 
 def writeReport():
     sStamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    sPath = os.path.join(sScriptDir, "evidence-ui-%s.md" % sStamp)
+    sPath = os.path.join(c_sLogs, "%s-evidence-ui-%s.md" % (c_sProject, sStamp))
     lsPassed = [t for t in lsFindings if t[2] == "pass"]
     lsFailed = [t for t in lsFindings if t[2] == "fail"]
     lsSkipped = [t for t in lsFindings if t[2] == "skip"]
@@ -412,6 +487,8 @@ def main():
     oParser.add_argument("--path", default="", help="the folder holding uiTest.inix")
     dArguments = oParser.parse_args()
     if dArguments.path: sRoot = os.path.abspath(dArguments.path)
+
+    os.makedirs(c_sLogs, exist_ok=True)
 
     oLog = open(sLogPath, "w", encoding="utf-8")
     logLine("uiCheck start pid=%d" % os.getpid())

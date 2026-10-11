@@ -109,6 +109,30 @@ rem already tracks even once the .gitignore leaves it out, so DbDo's 77 MB Radio
 rem catalog, tracked from its 14-station start, was staged again and refused. Each file
 rem LocalFiles.txt names that Git still tracks is untracked here; it stays on disk, and
 rem only files LocalFiles.txt names are ever untracked.
+rem THE CHECK IS A GATE INSIDE PUSH (1.65.30). build_release ran check as a fifth step of its own; the cycle is four
+rem scripts -- build, tidy, push, release -- with every gate inside one of them. So push runs the project's check
+rem before it stages anything, and a failing check commits nothing. The kit's check is checkHomerDev, which builds
+rem the samples; any other project's is scripts\check. release runs its own check again before it tags.
+set "sGate="
+if exist "%CD%\checkHomerDev.cmd" (set "sGate=%CD%\checkHomerDev.cmd") else if exist "%CD%\scripts\check.cmd" set "sGate=%CD%\scripts\check.cmd"
+if defined sGate (
+  echo Checking before pushing ...
+  >> "%log%" echo Gate: !sGate!
+  set "sHereGate=!CD!"
+  call "!sGate!" >> "%log%" 2>&1
+  set "iGate=!errorlevel!"
+  cd /d "!sHereGate!"
+  >> "%log%" echo Gate exit code !iGate!
+  if not "!iGate!"=="0" (
+    echo The check failed, so nothing was pushed. Its own log in logs says why.
+    echo CHECK FAILED, nothing staged>> "%log%"
+    endlocal & exit /b 1
+  )
+  echo The check passed.
+) else (
+  >> "%log%" echo Gate: no check script in this project
+)
+
 if exist "%~dp0..\LocalFiles.txt" (
   for /f "usebackq eol=# delims=" %%L in ("%~dp0..\LocalFiles.txt") do (
     for /f "delims=" %%F in ('git ls-files -- "%%L" 2^>nul') do (

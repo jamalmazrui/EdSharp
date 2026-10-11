@@ -4,6 +4,8 @@
 
 ## 9 October 2026 -- from the build and release logs
 
+- **The walks' reader speaks concrete words.** The Overview gently reminds of three reader keys, Insert plus Up Arrow, Insert plus Tab and Insert plus T, each with what EdSharp's editor would say, and that Caps Lock serves in place of Insert where set up; the Do Math walk's reader says the expressions typed ("1250 times 12 plus 300") in place of "(each character echoed as it is typed)".
+
 - **A reinstall keeps its folder, and the screen reader boxes are the kit's.** EdSharp's installer did not remember an earlier install's folder, so every reinstall asked for one; it now reuses it and skips that page, as every Homer installer does. It also had its own copy of the kit's screen reader code; it now includes HomerComponents.iss, whose functions word and tick the JAWS and NVDA boxes by asking installJawsScripts.cmd the kit's question, "state jaws <file>", which that script now answers.
 
 - **One level-one heading on every help page (9 October 2026).** build.ps1 converts the documents after the build's encoding pass, so their pages kept two level-one headings, the front matter's title and the document's own; the build now runs the pass again after build.ps1, and the kit's fixEncoding leaves each page with one.

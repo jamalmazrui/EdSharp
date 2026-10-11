@@ -209,6 +209,27 @@ def checkOne(sScript, bFirst):
     for sName in c_lsReaderNames:
         if re.search(r"\b%s\b" % re.escape(sName), sWhole):
             problem(sScript, 0, "names a screen reader (%s); write \"the screen reader\"" % sName)
+    # THE READER SPEAKS CONCRETE WORDS (10 October 2026). The host may speak in general terms; the reader says what a
+    # screen reader would say at that moment -- a real control's name, role, value and state, a real title, the words
+    # typed -- never a description of it, such as "(the current control, with its state and position)". No walk uses
+    # one screen reader's own term for a voice ("message voice"), and none ships the template's CHANGE ME lines.
+    if re.search(r"(?i)\bmessage voice\b", sWhole):
+        problem(sScript, 0, "says \"message voice\", one screen reader's term; describe what is heard instead")
+    for iLine, sLine in enumerate(sWhole.replace("\r", "").split("\n"), 1):
+        if re.match(r"Hear=\s*\(", sLine):
+            problem(sScript, 0, "line %d: a reader line describes speech instead of speaking it: %s; write the words the reader says" % (iLine, sLine[5:80]))
+        if sLine.startswith("Hear=") and "CHANGE ME" in sLine:
+            problem(sScript, 0, "line %d: a reader line still holds the template's CHANGE ME; write what the reader says" % iLine)
+    # THE OVERVIEW'S GENTLE REMINDER (10 October 2026): a listener already knows the reader's own keys, so the
+    # Overview reminds, briefly, of three worth pressing when lost -- Insert plus Up Arrow, Insert plus Tab and Insert
+    # plus T, each answered by a concrete reader line -- and that Caps Lock serves in place of Insert where set up.
+    if re.match(r"Tutorial_0_", os.path.basename(sScript)):
+        for sKeyWant, sWhat in ((r"Insert\+Up ?Arrow", "Insert plus Up Arrow"), (r"Insert\+Tab", "Insert plus Tab"), (r"Insert\+T\b", "Insert plus T")):
+            mStep = re.search(r"(?ms)^Key=%s\s*$\n(?:Hear=(.*?)$)?" % sKeyWant, sWhole.replace("\r", ""))
+            if not mStep: problem(sScript, 0, "the Overview does not remind of %s, one of the three reader keys" % sWhat)
+            elif not (mStep.group(1) or "").strip(): problem(sScript, 0, "the Overview's %s step has no reader line" % sWhat)
+        if not re.search(r"(?i)caps ?lock", sWhole):
+            problem(sScript, 0, "the Overview does not say that Caps Lock can serve in place of Insert")
     for iAt, dStep in enumerate(lsSteps, 1):
         sSay = firstOf(dStep, "Say")
         sKey = firstOf(dStep, "Key")
