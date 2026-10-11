@@ -348,7 +348,7 @@ def installerExcludes():
                     sAll = ",".join(lsHave + lsAdd)
                     sEnd = "\r" if sLine.endswith("\r") else ""
                     sBody = sLine[:-1] if sEnd else sLine
-                    sNew = re.sub(r'(?i)Excludes:\s*"[^"]*"', 'Excludes: "' + sAll + '"', sBody) if oExcludes else sBody.rstrip() + '; Excludes: "' + sAll + '"'
+                    sNew = re.sub(r'(?i)Excludes:\s*"[^"]*"', lambda oMatch: 'Excludes: "' + sAll + '"', sBody) if oExcludes else sBody.rstrip() + '; Excludes: "' + sAll + '"'
                     logLine("Installer %s: added Excludes %s to: %s" % (sName, ", ".join(lsAdd), sBody.strip()))
                     sLine = sNew + sEnd
                     iChanged += 1

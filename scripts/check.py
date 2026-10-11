@@ -1330,8 +1330,12 @@ def checkAccept():
         sField, sValue = sLine.split("=", 1)
         dNow[sField.strip().lower()] = sValue.strip()
 
+    # AN ACCEPTANCE FILE THAT RUNS NOTHING FAILS (1.66.1, from an audit). FileDir's accept.inix stated what done means
+    # in prose, with no [check] section the checker can run, and was reported as "not checked" release after release,
+    # so the promise it made was never tested. A file present but holding no runnable check is now a failure; an app
+    # with no accept.inix at all is still reported as not checked.
     if not lsChecks:
-        return finding("accept", "skip", "accept.inix holds 0 checks")
+        return finding("accept", "fail", "accept.inix holds 0 runnable checks: each needs a [check] section with a Run line")
     iPassed = 0
     for dCheck in lsChecks:
         sName = dCheck.get("name", dCheck.get("run", "unnamed"))
@@ -1420,6 +1424,8 @@ def main():
                          help="build the app first, and count the build as evidence")
     oParser.add_argument("--path", default="", help="the app folder; this one by default")
     oParser.add_argument("--quiet", action="store_true", help="write the report, say little")
+    oParser.add_argument("--fresh", action="store_true",
+                         help="run every check even when a pass with exactly these files is on record")
     dArguments = oParser.parse_args()
     if dArguments.path: sRoot = os.path.abspath(dArguments.path)
 
@@ -1452,6 +1458,34 @@ def main():
         logLine("checkHomerDev exit code %d" % iCode)
         logLine("check end")
         return iCode
+
+    # A PASS IS REUSED FOR THE SAME FILES (1.65.34). push runs this check, and release runs it again a minute later
+    # with nothing changed between. Every file in the project is fingerprinted (logs, notes and git's own folder
+    # left out); a pass recorded with the same fingerprint is reused, and the report says so. --fresh and --build
+    # always run every check; a failure is never reused. The cache module is the kit's, so a project without the
+    # kit at hand simply runs every check.
+    oCache, sPrint = None, ""
+    try:
+        import kind
+        sKitForCache = kind.findKit([sRoot])
+        if sKitForCache:
+            sys.path.insert(0, os.path.join(sKitForCache, "scripts"))
+            import fingerprint
+            oCache = fingerprint.Cache(sRoot, logLine)
+            sPrint = oCache.fingerprint([sRoot], [sKind, platform.python_version()])
+    except Exception as oError:
+        logLine("fingerprint unavailable, so every check runs: %s" % oError)
+        oCache = None
+    bReusable = oCache is not None and not (dArguments.fresh or dArguments.build)
+    if bReusable and oCache.isCurrent("check pass", sPrint, []):
+        sWhen = oCache.d["jobs"]["check pass"].get("when", "?")
+        finding("reused", "pass", "%s passed this check at %s with exactly these files (fingerprint %s); not run again. check --fresh runs it in full" % (appName(), sWhen, sPrint[:12]))
+        sReport = writeReport()
+        if not dArguments.quiet:
+            sayLine("%s passed this check at %s, and none of its files has changed since; not run again." % (appName(), sWhen))
+            sayLine("check --fresh runs every check anyway. The report is %s." % os.path.basename(sReport))
+        logLine("check end, reused")
+        return 0
 
     if not dArguments.quiet: sayLine("Checking %s, %s %s, in %s" % (appName(), "an" if sKind[0] in "aeiou" else "a", sKind, sRoot))
 
@@ -1503,6 +1537,9 @@ def main():
         for sName, sVerdict, sEvidence in lsFindings:
             if sVerdict == "fail": sayLine("  failed: %s -- %s" % (sName, sEvidence))
         sayLine("The report is %s." % os.path.basename(sReport))
+    if oCache is not None:
+        if iFailed: oCache.forget("check pass")
+        elif bReusable: oCache.record("check pass", sPrint, [])
     logLine("check end")
     return 1 if iFailed else 0
 

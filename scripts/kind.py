@@ -117,13 +117,17 @@ def projectKind(sFolder):
     # very tidying that would have removed them (6 October 2026). An installer
     # script or a program source named for the folder settles it as an app
     # first; only then do the kit's marks make a kit.
-    lsIssFirst = glob.glob(os.path.join(sFolder, "*_setup.iss"))
-    bNamedProgram = any(os.path.isfile(os.path.join(sFolder, sName + sExt)) for sExt in (".cs", ".py", ".js", ".ps1"))
+    #
+    # THE KIT HAS A PROGRAM AND AN INSTALLER OF ITS OWN (1.66.0): HomerDev.cs and HomerDev_setup.iss, the HomerDev
+    # dialog and the installer that puts the kit in Program Files. Those two do not make the kit an app. Any other
+    # installer, or a program named for a folder not called HomerDev, still settles the folder as that app.
+    lsIssFirst = [s for s in glob.glob(os.path.join(sFolder, "*_setup.iss")) if os.path.basename(s).lower() != "homerdev_setup.iss"]
+    bNamedProgram = sName.lower() != "homerdev" and any(os.path.isfile(os.path.join(sFolder, sName + sExt)) for sExt in (".cs", ".py", ".js", ".ps1"))
     if (not lsIssFirst and not bNamedProgram
             and os.path.isfile(os.path.join(sFolder, "Templates", "HomerComponents.iss"))
             and os.path.isfile(os.path.join(sFolder, "exec", "CSharp", "Lbc.cs"))):
         return "kit", "Templates\\HomerComponents.iss and exec\\CSharp\\Lbc.cs are here, and no app's installer or program"
-    lsIss = glob.glob(os.path.join(sFolder, "*_setup.iss"))
+    lsIss = sorted(glob.glob(os.path.join(sFolder, "*_setup.iss")), key=lambda s: os.path.basename(s).lower() != (sName + "_setup.iss").lower())
     if lsIss: return "app", "%s is its installer script" % os.path.basename(lsIss[0])
     for sExt in (".cs", ".py"):
         if os.path.isfile(os.path.join(sFolder, sName + sExt)):
