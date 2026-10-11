@@ -8,7 +8,7 @@ folder; tidy swept the git repository. They asked the same question --
 meant two surveys, two plans, and two chances to disagree.
 
     tidy                   tidy everything: the folder and the repository.
-    tidy --no-push         tidy, committing locally; do not push.
+    tidy --no-push         accepted for old commands; tidy never commits or pushes (1.65.32).
     tidy --folder-only     tidy the folder, leaving git alone.
     tidy --repo-only       tidy the repository only.
     tidy --gitignore       write the whitelist .gitignore and stop.
@@ -1158,6 +1158,7 @@ def main():
     iChanges = 0
 
     # ---- the installer: no build leftovers in it ----
+    logLine("Checking the installer's folder lines")
     iInstaller = installerExcludes()
     if iInstaller:
         sayLine("Installer: %s now leave%s out build leftovers (.venv, __pycache__, compiled Python, .git)." % (countNoun(iInstaller, "folder line"), "s" if iInstaller == 1 else ""))
@@ -1165,7 +1166,11 @@ def main():
 
     # ---- the folder ----
     if not dArguments.repo_only:
-        lsEmpty, ldDuplicates, lsStrays, ltPlace = surveyFolder(lsNamed + kitPlaced())
+        # EACH PHASE LOGGED (1.65.32): a tidy that stopped after "Named by the project" left no clue where it was.
+        lsPlaced = kitPlaced()
+        logLine("Kit-placed names: %s; surveying the folder" % countNoun(len(lsPlaced), "entry", "entries"))
+        lsEmpty, ldDuplicates, lsStrays, ltPlace = surveyFolder(lsNamed + lsPlaced)
+        logLine("Folder survey done")
         sayLine("Folder")
         sayLine("  %s to put in place" % countNoun(len(ltPlace), "file"))
         for sPath, sFolder in ltPlace: logLine("PLACE: %s -> %s/" % (sPath, sFolder))
@@ -1257,18 +1262,20 @@ def main():
                 # The whitelist is rewritten on every pass, so RepoFiles.txt and
                 # .gitignore cannot drift apart.
                 writeWhitelistGitignore()
+            # TIDY NEVER COMMITS OR PUSHES (1.65.32, from an audit). With a tracked stray, tidy staged everything,
+            # committed and pushed, before push had run the project's check, so a failing check could not stop
+            # what tidy had already published; and a failed git step still let tidy report success. Tidy now only
+            # takes the stray out of git's index -- the file stays on disk -- and push commits it, after the check.
+            # A failed untrack fails tidy.
             if bDoIt and bWhitelist and lsTrackedStrays:
                 for sPath in lsTrackedStrays:
-                    runGit(["rm", "--cached", "--quiet", sPath])
+                    iCode, sOut = runGit(["rm", "--cached", "--quiet", sPath])
+                    if iCode != 0:
+                        sayLine("  Could not untrack %s, so tidy stopped; see the log." % sPath)
+                        logLine("tidy end, failed")
+                        return 1
                     iChanges += 1
-                runGit(["add", "-A"])
-                iCode, sOut = runGit(["diff", "--cached", "--quiet"])
-                if iCode != 0:
-                    runGit(["commit", "-m", "%s: tidy the repository" % appName()])
-                    if not dArguments.no_push:
-                        iCode, sOut = runGit(["push"])
-                        if iCode != 0:
-                            sayLine("  The push failed. Nothing local was lost; see the log.")
+                sayLine("  %s untracked; push commits that after the check." % countNoun(len(lsTrackedStrays), "file"))
             sayLine()
 
     sayLine("%s made. Anything moved is in notes, which git never takes; the log names each move." %

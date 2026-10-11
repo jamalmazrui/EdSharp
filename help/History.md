@@ -2,6 +2,10 @@
 
 
 
+## 11 October 2026 -- from an audit and a report
+
+- **Launch after setup works on a first install.** The installer's Launch box writes a marker file into %LOCALAPPDATA%\\<App>\\logs, but on a first install that folder did not exist yet -- it was made later, when setup kept its log -- so the marker could not be written, and the program did not start after setup. The marker line now makes the folder first. Found by an audit of bookFido by another AI, and fixed in every Homer installer.
+
 ## 9 October 2026 -- from the build and release logs
 
 - **The walks' reader speaks concrete words.** The Overview gently reminds of three reader keys, Insert plus Up Arrow, Insert plus Tab and Insert plus T, each with what EdSharp's editor would say, and that Caps Lock serves in place of Insert where set up; the Do Math walk's reader says the expressions typed ("1250 times 12 plus 300") in place of "(each character echoed as it is typed)".

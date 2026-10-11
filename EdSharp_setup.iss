@@ -445,7 +445,7 @@ Filename: "{cmd}"; \
 ; is not hidden behind the editor, and it starts as the ordinary user, not
 ; the elevated installer, so its settings go to the right profile.
 Filename: "{cmd}"; \
-  Parameters: "/c echo launch > ""{localappdata}\EdSharp\logs\EdSharp_launch.flag"""; \
+  Parameters: "/c md ""{localappdata}\EdSharp\logs"" 2>nul & echo launch > ""{localappdata}\EdSharp\logs\EdSharp_launch.flag"""; \
   Description: "Launch EdSharp (desktop hotkey Alt+Control+E)"; \
   Flags: postinstall skipifsilent runhidden runasoriginaluser
 
