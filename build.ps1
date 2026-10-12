@@ -105,6 +105,14 @@ $c_lExeReferences = @("System.dll", "System.Core.dll", "System.Data.dll", "Syste
 # /lib search path covering both the runtime directory and its WPF subfolder.
 $c_lUiaReferences = @("UIAutomationClient.dll", "UIAutomationProvider.dll", "UIAutomationTypes.dll", "WindowsBase.dll")
 $c_lLibTargetPreference = @("net48", "net472", "net462", "net461", "net46", "net45", "netstandard2.0")
+# DEPENDENCIES ARE FETCHED TOO (11 October 2026). Markdig 1.3.2 targets netstandard2.0 and needs System.Memory, which
+# needs System.Buffers, System.Runtime.CompilerServices.Unsafe and System.Numerics.Vectors; only Markdig.dll was
+# fetched, so Markdown to HTML failed with "Could not load file or assembly 'System.Memory, Version=4.0.5.0'". Each
+# package's .nuspec now names what it needs, for the lib target chosen; those are fetched in turn, recorded in the
+# package's .fetched note, copied into exec, shipped, and given binding redirects in EdSharp.exe.config.
+$script:lQueuedDeps = @()
+$script:lLastDeps = @()
+$script:lDependencyDlls = @()
 
 # ---- paths and log ----------------------------------------------------------
 $sScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -223,6 +231,29 @@ function fetchNugetPackage($sPackageId, $sVersion) {
     throw "$sPackageId $sVersion has no lib target usable for .NET Framework 4.8. Targets present: $($lFound -join ", ")"
   }
   writeLog "Chose lib target: $sChosenDir"
+  # What this package needs on that target, from its own .nuspec.
+  $script:lLastDeps = @()
+  $fNuspec = Get-ChildItem -LiteralPath $sUnpackDir -Filter "*.nuspec" -ErrorAction SilentlyContinue | Select-Object -First 1
+  if ($fNuspec) {
+    try {
+      [xml]$xNuspec = Get-Content -LiteralPath $fNuspec.FullName -Raw
+      $sLeaf = Split-Path $sChosenDir -Leaf
+      $sWanted = ""
+      if ($sLeaf -like "netstandard*") { $sWanted = ".NETStandard" + $sLeaf.Substring(11) }
+      elseif ($sLeaf -match '^net(\d)(\d)(\d)?$') { $sWanted = ".NETFramework" + $Matches[1] + "." + $Matches[2] + $(if ($Matches[3]) { "." + $Matches[3] } else { "" }) }
+      $oGroup = @($xNuspec.package.metadata.dependencies.group) | Where-Object { $_ -and $_.targetFramework -eq $sWanted } | Select-Object -First 1
+      if ($oGroup) {
+        foreach ($oDep in @($oGroup.dependency)) {
+          if (-not $oDep) { continue }
+          $sDepId = [string]$oDep.id
+          if ($sDepId -like "NETStandard.Library*" -or $sDepId -like "Microsoft.NETCore*") { continue }
+          $sDepVersion = ([regex]::Match([string]$oDep.version, '\d+(\.\d+)+')).Value
+          if ($sDepVersion -ne "") { $script:lLastDeps += "$sDepId $sDepVersion" }
+        }
+      }
+      writeLog "$sPackageId $sVersion needs on $sWanted`: $(if ($script:lLastDeps.Count) { $script:lLastDeps -join ', ' } else { 'nothing more' })"
+    } catch { writeLog "WARNING: the .nuspec of $sPackageId could not be read: $($_.Exception.Message)" }
+  }
 
   foreach ($fDll in Get-ChildItem -LiteralPath $sChosenDir -Filter "*.dll") {
     # A running EdSharp loads these libraries from this folder, and a locked
@@ -521,9 +552,15 @@ try {
       # The note left by the last fetch counts as proof, for the packages
       # whose assembly stamp does not match their package number.
       $sFetchedFile = Join-Path $sScriptDir "$sPackageId.fetched"
-      if ((-not $bMatch) -and (Test-Path -LiteralPath $sFetchedFile)) {
-        $sFetchedVersion = (Get-Content -LiteralPath $sFetchedFile -TotalCount 1).Trim()
+      # A note from before dependencies were recorded (no "deps:" line) is stale: fetch once more to learn them.
+      $lNote = @()
+      if (Test-Path -LiteralPath $sFetchedFile) { $lNote = @(Get-Content -LiteralPath $sFetchedFile) }
+      if ($bMatch -and $lNote.Count -ge 2 -and $lNote[1].Trim() -eq "deps:") { $script:lQueuedDeps += @($lNote | Select-Object -Skip 2 | Where-Object { $_.Trim() -ne "" }) }
+      elseif ($bMatch -and ($lNote.Count -lt 2 -or $lNote[1].Trim() -ne "deps:")) { writeLog "$sPackageId.fetched records no dependencies yet, so $sPackageId is fetched again to learn them."; $bMatch = $false }
+      if ((-not $bMatch) -and $lNote.Count -ge 2 -and $lNote[1].Trim() -eq "deps:") {
+        $sFetchedVersion = $lNote[0].Trim()
         if ($sFetchedVersion -eq $sPinVersion) {
+          $script:lQueuedDeps += @($lNote | Select-Object -Skip 2 | Where-Object { $_.Trim() -ne "" })
           writeLog "$sPackageId.dll stamps itself $sFound but was fetched as $sPinVersion; fetch skipped."
           $bMatch = $true
         }
@@ -546,9 +583,34 @@ try {
       # fetched, the version check above would find a mismatch and
       # download the same file on every build for ever. The note fixes
       # that, and deleting it forces a fresh fetch.
-      Set-Content -LiteralPath (Join-Path $sScriptDir "$sPackageId.fetched") -Value $sPinVersion
+      Set-Content -LiteralPath (Join-Path $sScriptDir "$sPackageId.fetched") -Value (@($sPinVersion, "deps:") + $script:lLastDeps)
+      $script:lQueuedDeps += $script:lLastDeps
     }
   }
+  # ---- 3b. What the pinned packages need, and what that needs ----
+  $dDone = @{}
+  while ($script:lQueuedDeps.Count -gt 0) {
+    $sEntry = $script:lQueuedDeps[0]
+    $script:lQueuedDeps = @($script:lQueuedDeps | Select-Object -Skip 1)
+    $sDepId, $sDepVersion = $sEntry.Trim().Split(" ", 2)
+    if ($dDone.ContainsKey($sDepId)) { continue }
+    $dDone[$sDepId] = $true
+    $sDepDll = Join-Path $sScriptDir "$sDepId.dll"
+    $sDepNote = Join-Path $sScriptDir "$sDepId.fetched"
+    $lDepNote = @()
+    if (Test-Path -LiteralPath $sDepNote) { $lDepNote = @(Get-Content -LiteralPath $sDepNote) }
+    if ((Test-Path -LiteralPath $sDepDll) -and $lDepNote.Count -ge 2 -and $lDepNote[0].Trim() -eq $sDepVersion -and $lDepNote[1].Trim() -eq "deps:") {
+      writeLog "Dependency $sDepId $sDepVersion present; fetch skipped."
+      $script:lQueuedDeps += @($lDepNote | Select-Object -Skip 2 | Where-Object { $_.Trim() -ne "" })
+    } else {
+      fetchNugetPackage $sDepId $sDepVersion
+      Set-Content -LiteralPath $sDepNote -Value (@($sDepVersion, "deps:") + $script:lLastDeps)
+      $script:lQueuedDeps += $script:lLastDeps
+      writeLog "Dependency $sDepId $sDepVersion fetched."
+    }
+    if (Test-Path -LiteralPath $sDepDll) { $script:lDependencyDlls += "$sDepId.dll" }
+  }
+  writeLog "Dependencies to ship: $(if ($script:lDependencyDlls.Count) { $script:lDependencyDlls -join ', ' } else { 'none' })"
 
   # ---- 4. NVDA controller client (optional) ----
   $sNvdaDllFile = Join-Path $sScriptDir "nvdaControllerClient.dll"
@@ -746,12 +808,36 @@ try {
   $lLibraries = @("HtmlAgilityPack.dll", "Markdig.dll", "ReverseMarkdown.dll", "Tektosyne.dll",
                   "Ude.dll", "WeCantSpell.Hunspell.dll", "nvdaControllerClient.dll",
                   "sqlean.dll", "sqlean.exe", "EdSharp.nvda-addon")
+  $lLibraries += $script:lDependencyDlls
   foreach ($sLibrary in $lLibraries) {
     $sFrom = Join-Path $sScriptDir $sLibrary
     if (Test-Path -LiteralPath $sFrom) {
       Copy-Item -LiteralPath $sFrom -Destination (Join-Path $sExecDir $sLibrary) -Force
       writeLog "Copied $sLibrary into exec."
     }
+  }
+  # ---- 6a2. Binding redirects for the dependencies (11 October 2026) ----
+  # Libraries built against different versions of the same dependency each ask for their own; on .NET Framework a
+  # redirect sends every request to the one shipped. Written from the shipped DLLs themselves, each build.
+  $sConfigFile = Join-Path $sScriptDir "EdSharp.exe.config"
+  if (Test-Path -LiteralPath $sConfigFile) {
+    $sConfig = [System.IO.File]::ReadAllText($sConfigFile)
+    $sConfig = [regex]::Replace($sConfig, '(?s)\s*<assemblyBinding.*?</assemblyBinding>', '')
+    $sbBinding = New-Object System.Text.StringBuilder
+    [void]$sbBinding.Append("`r`n    <assemblyBinding xmlns=""urn:schemas-microsoft-com:asm.v1"">")
+    foreach ($sLibrary in $script:lDependencyDlls) {
+      try {
+        $oName = [System.Reflection.AssemblyName]::GetAssemblyName((Join-Path $sScriptDir $sLibrary))
+        $sToken = (($oName.GetPublicKeyToken() | ForEach-Object { $_.ToString("x2") }) -join "")
+        if ($sToken -eq "") { continue }
+        [void]$sbBinding.Append("`r`n      <dependentAssembly>`r`n        <assemblyIdentity name=""$($oName.Name)"" publicKeyToken=""$sToken"" culture=""neutral"" />`r`n        <bindingRedirect oldVersion=""0.0.0.0-$($oName.Version)"" newVersion=""$($oName.Version)"" />`r`n      </dependentAssembly>")
+        writeLog "Binding redirect: $($oName.Name) to $($oName.Version)"
+      } catch { writeLog "WARNING: no redirect for $sLibrary`: $($_.Exception.Message)" }
+    }
+    [void]$sbBinding.Append("`r`n    </assemblyBinding>")
+    $sConfig = $sConfig.Replace("</runtime>", $sbBinding.ToString() + "`r`n  </runtime>")
+    [System.IO.File]::WriteAllText($sConfigFile, $sConfig, (New-Object System.Text.UTF8Encoding($true)))
+    writeLog "EdSharp.exe.config carries $($script:lDependencyDlls.Count) binding redirects."
   }
 
   # ---- 6b2. The NVDA add-on carries EdSharp's version (29 September 2026) ----

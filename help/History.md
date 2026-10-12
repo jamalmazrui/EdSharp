@@ -2,6 +2,11 @@
 
 
 
+## 11 October 2026 -- Markdown to HTML works again
+
+- **What Markdig needs is fetched, shipped and redirected.** Markdown to HTML stopped with "Could not load file or assembly 'System.Memory, Version=4.0.5.0'": Markdig 1.3.2 targets .NET Standard 2.0 and needs System.Memory, which needs System.Buffers, System.Runtime.CompilerServices.Unsafe and System.Numerics.Vectors, and the build fetched Markdig alone. The build now reads each package's own .nuspec for the lib target it chose, fetches what that names, and what those name in turn, records them in the package's .fetched note so a later build knows them without fetching, copies them into exec, and writes binding redirects for them into EdSharp.exe.config from the shipped DLLs; the installer ships exec\\System.*.dll. A .fetched note from before records no dependencies, so its package is fetched once more to learn them.
+- **The error is logged.** It was shown in a box but not written to EdSharp's log, which therefore could not say what went wrong; the full exception is logged now.
+
 ## 11 October 2026 -- from an audit and a report
 
 - **Launch after setup works on a first install.** The installer's Launch box writes a marker file into %LOCALAPPDATA%\\<App>\\logs, but on a first install that folder did not exist yet -- it was made later, when setup kept its log -- so the marker could not be written, and the program did not start after setup. The marker line now makes the folder first. Found by an audit of bookFido by another AI, and fixed in every Homer installer.

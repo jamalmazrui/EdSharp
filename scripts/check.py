@@ -160,7 +160,7 @@ lsFindings = []          # (sName, sVerdict, sEvidence)
 
 # --- saying things ----------------------------------------------------------
 
-def logLine(sText):
+def logLine(sText, sLevelGiven=None):
     """One event in the Homer log format (1.43.21), as log.py and Log.cs write:
     an ISO 8601 time with milliseconds and UTC offset, a five-character level,
     then the text; a line continuing the one above starts "| ", and no line is
@@ -172,6 +172,9 @@ def logLine(sText):
     import re as _re
     sLevel = ("ERROR" if _re.search(r"\b(ERROR|FAIL|FAILED)\b", sText)
               else "WARN" if _re.search(r"\bWARN(ING)?\b", sText) else "INFO")
+    # A LEVEL GIVEN IS THE LEVEL (1.69.2): a program's own output is quoted, not judged by its words, so extCheck's
+    # help, which lists its FAIL verdicts, no longer wrote 123 ERROR lines into a check that passed.
+    if sLevelGiven: sLevel = sLevelGiven
     # A LEADING LEVEL WORD IS THE LEVEL (1.43.33): "WARN: x" is written
     # "WARN  x", not "WARN  WARN: x".
     oLead = _re.match(r"(ERROR|WARN|WARNING)\b:?\s*", sText)
@@ -298,7 +301,7 @@ def runCommand(lsArgs, sShell=""):
         return (1, str(oError))
     logLine("run exit=%d ms=%d cmd=%s" % (oResult.returncode, (time.time() - nStarted) * 1000, logValue(sCmd)))
     sOut = (oResult.stdout or "") + (oResult.stderr or "")
-    if sOut: logLine("OUTPUT:\n" + sOut[-4000:])
+    if sOut: logLine("OUTPUT:\n" + sOut[-4000:], "INFO")
     return (oResult.returncode, sOut)
 
 

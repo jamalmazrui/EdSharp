@@ -14124,6 +14124,7 @@ sb.Append("</body>\r\n</html>\r\n");
 return sb.ToString();
 }
 catch (Exception ex) {
+Util.Log("Could not convert Markdown to HTML: " + ex.ToString());
 Dialog.Show("HTML Format", "Could not convert Markdown to HTML.\n" + ex.Message);
 return "";
 }

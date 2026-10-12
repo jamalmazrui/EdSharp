@@ -800,9 +800,27 @@ def addToGitignore(lsPaths):
     return True
 
 
+def isKitAt(sDir):
+    """True when sDir is a HomerDev kit itself: its own markers, which no app holds."""
+    if not sDir or not os.path.isfile(os.path.join(sDir, "version.txt")) or not os.path.isdir(os.path.join(sDir, "Templates")): return False
+    return any(os.path.exists(os.path.join(sDir, s)) for s in ("releaseHomerDev.cmd", "checkHomerDev.py", os.path.join("Templates", "HomerComponents.iss")))
+
+
+def kitVersion(sDir):
+    try: return tuple(int(s) for s in re.findall(r"\d+", open(os.path.join(sDir, "version.txt"), encoding="utf-8-sig").read())[:3])
+    except Exception: return (0,)
+
+
 def findKitFolder():
     """Where the kit is: the HomerDev variable, a HomerDev folder above or
-    beside the project, or one at the top of a fixed drive."""
+    beside the project, or one at the top of a fixed drive.
+
+    THE KIT IS NEVER ITS OWN STRAY (1.70.2). On 11 October tidy ran in C:\\HomerDev while the HomerDev variable named
+    the copy installed in Program Files; that copy was taken for the kit, and C:\\HomerDev's 235 files, being byte for
+    byte the same, were deleted as strays -- the shared classes, the skills, the help, build.cmd, checkHomerDev.cmd.
+    Now a folder that is a kit itself is its own kit, so every "this is the kit; skipped" test holds; and of several
+    kits the newest is taken, so an older installed copy never stands in for the one being developed."""
+    if isKitAt(os.path.abspath(sRoot)): return os.path.abspath(sRoot)
     lsDirs = [os.environ.get("HomerDev", "")]
     for sStart in (sRoot, os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
         sDir = os.path.abspath(sStart)
@@ -815,10 +833,12 @@ def findKitFolder():
         import ctypes
         lsDirs += [sLetter + ":\\HomerDev" for sLetter in "CDEFGHIJKLMNOPQRSTUVWXYZ"
                    if ctypes.windll.kernel32.GetDriveTypeW(sLetter + ":\\") == 3]
+    lsFound = []
     for sDir in lsDirs:
         if sDir and os.path.isfile(os.path.join(sDir, "version.txt")) and os.path.isdir(os.path.join(sDir, "Templates")):
-            return os.path.abspath(sDir)
-    return ""
+            if os.path.abspath(sDir).lower() not in [s.lower() for s in lsFound]: lsFound.append(os.path.abspath(sDir))
+    if not lsFound: return ""
+    return max(lsFound, key=lambda s: (kitVersion(s), -lsFound.index(s)))
 
 
 # Files an app may legitimately hold byte for byte as the kit holds them: the
@@ -887,7 +907,7 @@ def removeStrayKitFiles(bRepo):
     and logged; the folders left empty go too. The kit itself is never tidied
     this way."""
     sKit = findKitFolder()
-    if not sKit or os.path.abspath(sRoot).lower() == sKit.lower():
+    if not sKit or os.path.abspath(sRoot).lower() == sKit.lower() or isKitAt(os.path.abspath(sRoot)):
         logLine("stray kit files: no kit found or this is the kit; skipped")
         return 0
     lsKitFiles = []

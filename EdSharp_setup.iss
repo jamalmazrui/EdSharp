@@ -127,6 +127,9 @@ Source: "EdSharp.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "exec\ReverseMarkdown.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "exec\HtmlAgilityPack.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "exec\Markdig.dll";        DestDir: "{app}"; Flags: ignoreversion
+; What Markdig needs on .NET Framework -- System.Memory and its own dependencies -- fetched by the build from each
+; package's .nuspec (11 October 2026); without them Markdown to HTML failed to load System.Memory.
+Source: "exec\System.*.dll";       DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "exec\nvdaControllerClient.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 ; Source and build inputs (shipped so users can recompile, EdSharp-style).
 Source: "EdSharp.cs";         DestDir: "{app}"; Flags: ignoreversion
