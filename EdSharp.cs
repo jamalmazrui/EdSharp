@@ -879,14 +879,19 @@ string sKeepBackup = App.ReadOption("KeepBackup", "N").Trim().ToLower();
 if (sKeepBackup == "y" || sKeepBackup == "yes") sBak = sFile + ".bak";
 }
 
+// A SAVE THAT KEPT ITS FILE BUT NOT ITS BACKUP SAYS SO (14 October 2026, from an audit by another AI). The kit now
+// returns a warning when the file was saved but its .bak could not be kept, and throws only when the file was not
+// saved; and the staged copy is removed on a failure only while the file is still there, since otherwise it may be
+// the only complete copy of what was typed.
+string sWarn = "";
 if (Path.GetExtension(sFile).ToLower() == ".rtf") {
 string sStaged = Homer.Util.stagingPath(sFile);
 try {
 this.RTB.SaveFile(sStaged, RichTextBoxStreamType.RichText);
-Homer.Util.replaceFileSafely(sStaged, sFile, sBak);
+sWarn = Homer.Util.replaceFileSafely(sStaged, sFile, sBak);
 }
 catch {
-try { if (System.IO.File.Exists(sStaged)) System.IO.File.Delete(sStaged); } catch { }
+try { if (System.IO.File.Exists(sFile) && System.IO.File.Exists(sStaged)) System.IO.File.Delete(sStaged); } catch { }
 throw;
 }
 }
@@ -898,8 +903,9 @@ if (en == null) en = GetYieldEncoding();
 if (en == null) en = new UTF8Encoding(true);
 string sText = this.RTB.Text;
 if (!this.IsUnixLineBreak) sText = Util.Convert2WinLineBreak(sText);
-Homer.Util.writeTextSafely(sFile, sText, en, sBak);
+sWarn = Homer.Util.writeTextSafely(sFile, sText, en, sBak);
 }
+if (sWarn != "") { Util.Log("Save: " + sWarn); App.Frame.AddMessage(sWarn); }
 this.RTB.Modified = false;
 App.Frame.SetRecent(sFile);
 this.Text = Path.GetFileName(sFile);

@@ -2,6 +2,10 @@
 
 
 
+## 14 October 2026 -- a save that kept the file but not its backup says so
+
+- **When Save succeeds but the .bak cannot be kept, EdSharp says so,** in its messages and its log, rather than nothing; and the staged copy is kept when it may be the only complete copy of what was typed. This follows a change to the kit's safe replacement (from a second audit by another AI).
+
 ## 14 October 2026 -- every write of your files accounted for
 
 - **Writing a file is whole or not at all, wherever EdSharp writes your text.** Save was made safe earlier, but other paths still wrote straight over a file: the four text-writing utilities that many commands use, and export in another encoding or line-break style. They now write beside the file and swap it in, through the kit, with the same text and encoding as before, so the bytes written are unchanged (from an audit by another AI).
