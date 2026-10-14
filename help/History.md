@@ -2,6 +2,10 @@
 
 
 
+## 14 October 2026 -- the newest Pandoc for the help pages
+
+- **History.htm and the other pages are made by the newest Pandoc, not the first on the PATH,** which was Pandoc 2.19 in C:\bin while Pandoc 3.12.1 was installed in Program Files. The build asks the kit's newest.ps1, as the other apps' builds now do, running it as a process of its own so its answer can be read; the log names every copy found and its version (from an audit by another AI).
+
 ## 14 October 2026 -- the build checks its program where it is made
 
 - **No more ABSENT for files that are there.** The build's closing report looked for EdSharp.exe and its libraries in the project folder, while they are built into exec, so every build said they were ABSENT. Each is now looked for where it is made, the installer in the project folder, and a program or library that is truly missing stops the build instead of being noted (from an audit by another AI). The NVDA controller DLL stays optional.

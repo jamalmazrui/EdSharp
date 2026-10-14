@@ -952,9 +952,23 @@ try {
   # Convert\Pandoc, a folder the Homer layout no longer has, so the .htm pairs
   # had not been regenerated since the move: not the ReadMe, and never the
   # documents in help, which the rule below did not reach.
+  # THE NEWEST PANDOC, NOT THE FIRST ON THE PATH (14 October 2026, from an audit by another AI): this took the first
+  # pandoc on the PATH, which was Pandoc 2.19 in C:\bin while Pandoc 3.12.1 sat in Program Files, so History.htm was
+  # made by the old one. The kit's newest.ps1 runs every copy it finds, logs each with its version and prints the
+  # newest, as the other apps' builds now do; the PATH is the fallback without the kit.
   $sPandocFile = ""
-  $oPandoc = Get-Command pandoc -ErrorAction SilentlyContinue | Select-Object -First 1
-  if ($oPandoc) { $sPandocFile = $oPandoc.Source }
+  $sNewestScript = Join-Path $HomerDev "scripts\newest.ps1"
+  if ($HomerDev -ne "" -and (Test-Path -LiteralPath $sNewestScript)) {
+    # A process of its own: newest.ps1 writes its answer with [Console]::Out, which a call inside this script could not
+    # capture, while a separate process's output is captured here, as the batch builds capture it.
+    $sPandocFile = (& powershell -NoProfile -ExecutionPolicy Bypass -File $sNewestScript pandoc -Log $sLogFile | Select-Object -Last 1)
+    if ($null -eq $sPandocFile) { $sPandocFile = "" }
+    $sPandocFile = "$sPandocFile".Trim()
+  }
+  if ($sPandocFile -eq "") {
+    $oPandoc = Get-Command pandoc -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($oPandoc) { $sPandocFile = $oPandoc.Source }
+  }
   if ($sPandocFile -eq "") {
     writeLog "pandoc is not on the PATH, so the .htm documentation pairs are left as they are (run scripts\installPandoc to fetch it)."
   } else {

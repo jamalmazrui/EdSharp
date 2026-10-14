@@ -557,6 +557,18 @@ def main():
         sDocument = readFile(sTarget)
         sDocument = addToContents(spliceIntoTutorials(sDocument, sSection), sSection)
         writeFile(sTarget, sDocument)
+        # THE SECOND PASS CHANGES NOTHING (14 October 2026, from an audit by another AI). A splice that added a copy at
+        # every build grew DbDo's Tutorials.md to 80 walkthroughs before anyone noticed. The document as written is
+        # read back and given the same walkthrough again, in memory; if that would change it, writing is not settled,
+        # and the build stops here rather than ship a file that grows. Its fingerprint is logged to compare runs.
+        import hashlib
+        sWritten = readFile(sTarget)
+        sAgain = addToContents(spliceIntoTutorials(sWritten, sSection), sSection)
+        note("Tutorials.md written: %d characters, sha256 %s" % (len(sWritten), hashlib.sha256(sWritten.encode("utf-8")).hexdigest()[:16]))
+        if sAgain != sWritten:
+            note("SECOND PASS DIFFERS: %d characters, sha256 %s" % (len(sAgain), hashlib.sha256(sAgain.encode("utf-8")).hexdigest()[:16]))
+            say("Tutorials.md would change if written again, so its walkthrough is not settled; the build stops. The log has both fingerprints.")
+            return 1
     except Exception as oError:
         say("Tutorials.md could not be written.")
         note("write failed: " + str(oError))
