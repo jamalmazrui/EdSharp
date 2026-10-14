@@ -29,7 +29,7 @@ The log is logs\\<App>-encoding-yyyyMMdd-HHmmss.log; the console says how
 many files were fixed.
 """
 
-import datetime, glob, html, io, os, platform, re, sys, urllib.parse
+import datetime, glob, html, io, os, platform, re, sys, time, urllib.parse
 
 # THE HOMER ENCODING RULES, IN ONE PLACE (1.64.0, don't repeat yourself): this
 # file is their authoritative home. The homer-convert skill's toHomerEncoding.py
@@ -463,6 +463,24 @@ def main():
         return 0
     lsFiles = ownFiles(sRoot, lsNamed)
     logLine("Named entries: %d; text files covered: %d" % (len(lsNamed), len(lsFiles)))
+    # NO FILE IS DATED IN THE FUTURE (14 October 2026). Files unzipped from a delivery made on a clock running on UTC
+    # came out dated about seven hours ahead, since a zip records local time with no zone. Every "is this newer?" test
+    # then misfired: a page rebuilt from its .md moments before was still reported older than it. A file dated more
+    # than two minutes ahead is set to now; a page rebuilt earlier in this same build may read as stale once more, and
+    # the next build settles it.
+    if not bCheck:
+        nNow = time.time()
+        iFuture = 0
+        for sPath in lsFiles:
+            try:
+                nWhen = os.path.getmtime(sPath)
+                if nWhen > nNow + 120:
+                    os.utime(sPath, (nNow, nNow))
+                    iFuture += 1
+                    logLine("dated in the future by %d minutes, so set to now: %s" % (int((nWhen - nNow) / 60), os.path.relpath(sPath, sRoot)))
+            except OSError as oError:
+                logLine("could not read or set the date of %s: %s" % (sPath, oError))
+        if iFuture: print("%d file%s dated in the future, as unzipped, %s set to now." % (iFuture, "" if iFuture == 1 else "s", "was" if iFuture == 1 else "were"))
     iWrong = 0
     iFixed = 0
     for sPath in lsFiles:

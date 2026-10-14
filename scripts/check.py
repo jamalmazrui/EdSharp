@@ -998,7 +998,7 @@ def checkSkillChecks(sKind):
         if iCode is None: lsFailed.append("checkDb could not run on " + os.path.relpath(sDb, sRoot))
         elif iCode != 0: lsFailed.append("checkDb fails " + os.path.relpath(sDb, sRoot) + ("" if re.search(r"\b[1-9]\d* failures?\b", sOut) else " (exit code %d, no summary: a crash)" % iCode))
     if os.path.isdir(os.path.join(sRoot, "logs")) and glob.glob(os.path.join(sRoot, "logs", "*.log")):
-        runSkill("homer-build-release", "summarizeLogs.py", [os.path.join(sRoot, "logs")])
+        runSkill("homer-build-release", "summarizeLogs.py", [os.path.join(sRoot, "logs"), "--skip=" + os.path.basename(sLogPath)])
     sRan = "checkDocs" + (", checkDb on %d database%s" % (len(lsDatabases), "" if len(lsDatabases) == 1 else "s") if lsDatabases else "") + ", summarizeLogs"
     if lsFailed:
         return finding("skills", "fail", "; ".join(lsFailed) + "; the log has each finding")
