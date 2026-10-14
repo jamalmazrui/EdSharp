@@ -2,6 +2,11 @@
 
 
 
+## 14 October 2026 -- every write of your files accounted for
+
+- **Writing a file is whole or not at all, wherever EdSharp writes your text.** Save was made safe earlier, but other paths still wrote straight over a file: the four text-writing utilities that many commands use, and export in another encoding or line-break style. They now write beside the file and swap it in, through the kit, with the same text and encoding as before, so the bytes written are unchanged (from an audit by another AI).
+- **Export through a converter no longer loses the file it replaces.** The earlier file at the export path was deleted before the converter ran, so a conversion that failed lost it. It is now set aside, put back if no output comes, and removed only once the new file is there.
+- **The developer guide lists every place EdSharp writes, moves or deletes a file,** sorted into those that replace your file through the kit, the one that sets the old file aside, your own deliberate actions, and EdSharp's own files that hold nothing you wrote.
 ## 14 October 2026 -- the user guide in plainer words
 
 - **EdSharp.md reads at grade 9.0, down from 10.3,** within the ninth-grade target. About ninety of its densest paragraphs were rewritten, with every key, setting name, size and file type kept; reference blocks, code and lists of file types were left as they were. Two paragraphs that had run together on the page are separated, and two typos are fixed.

@@ -2565,7 +2565,8 @@ case "Other" :
 Encoding en = Encoding.GetEncoding(iCodePage);
 sText = rtb.Text;
 sText = Util.Convert2WinLineBreak(sText);
-File.WriteAllText(sFile, sText, en);
+// Written whole or not at all, through the kit (14 October 2026, from an audit by another AI).
+Homer.Util.writeTextSafely(sFile, sText, en, "");
 break;
 case "asc" :
 case "mac" :
@@ -2575,7 +2576,7 @@ if (sExt == "asc") sText = Util.Convert2Ascii(sText);
 else if (sExt == "mac") sText = Util.Convert2MacLineBreak(sText);
 else if (sExt == "unx") sText = Util.Convert2UnixLineBreak(sText);
 // Util.String2File(sText, sFile);
-File.WriteAllText(sFile, sText, Encoding.Default);
+Homer.Util.writeTextSafely(sFile, sText, Encoding.Default, "");
 break;
 case "rtf" :
 rtb.SaveFile(sFile, RichTextBoxStreamType.RichText);
@@ -13610,12 +13611,18 @@ return new UTF8Encoding(true);
 public static void String2FileHomer(string sBody, string sFile) {
 // Write a text file the Homer way: CRLF line endings, UTF-8, with a
 // byte-order mark unless the file is one the command interpreter runs.
-System.IO.File.WriteAllText(sFile, Util.Convert2WinLineBreak(sBody), HomerEncoding(sFile));
+// WRITTEN WHOLE OR NOT AT ALL (14 October 2026, from an audit by another AI): this wrote straight over the file, so an
+// interruption could leave half of it. It now writes beside it and swaps it in, through the kit's
+// Homer.Util.writeTextSafely, with the same text and the same encoding, so the bytes are as before.
+Homer.Util.writeTextSafely(sFile, Util.Convert2WinLineBreak(sBody), HomerEncoding(sFile), "");
 } // String2FileHomer method
 
 public static void String2FileU(string sBody, string sFile) {
 // bool bAppend = false;
-System.IO.File.WriteAllText(sFile, sBody, Encoding.UTF8);
+// WRITTEN WHOLE OR NOT AT ALL (14 October 2026, from an audit by another AI): this wrote straight over the file, so an
+// interruption could leave half of it. It now writes beside it and swaps it in, through the kit's
+// Homer.Util.writeTextSafely, with the same text and the same encoding, so the bytes are as before.
+Homer.Util.writeTextSafely(sFile, sBody, Encoding.UTF8, "");
 } // String2FileU method
 
 public static void StringAppend2File(string sBody, string sFile) {
@@ -13628,9 +13635,11 @@ String2FileA(sBody, sFile, en);
 } // String2FileA method
 
 public static void String2FileA(string sBody, string sFile, Encoding en) {
-StreamWriter textWriter = new StreamWriter(sFile);
-textWriter.Write(sBody);
-textWriter.Close();
+// WRITTEN WHOLE OR NOT AT ALL (14 October 2026, from an audit by another AI): this wrote straight over the file, so an
+// interruption could leave half of it. It now writes beside it and swaps it in, through the kit's
+// Homer.Util.writeTextSafely, with the same text and the same encoding, so the bytes are as before.
+// A StreamWriter with no encoding writes UTF-8 with no byte order mark, so that is the encoding passed on.
+Homer.Util.writeTextSafely(sFile, sBody, new UTF8Encoding(false), "");
 } // OldString2File method
 
 public static void String2File(string sBody, string sFile) {
@@ -13645,8 +13654,11 @@ if (en != null) {}
 else if (IsUnicode(sBody))en = Encoding.UTF8;
 else en = Encoding.Default;
 
+// WRITTEN WHOLE OR NOT AT ALL (14 October 2026, from an audit by another AI): this wrote straight over the file, so an
+// interruption could leave half of it. It now writes beside it and swaps it in, through the kit's
+// Homer.Util.writeTextSafely, with the same text and the same encoding, so the bytes are as before.
 // sBody = Util.Convert2WinLineBreak(sBody);
-File.WriteAllText(sFile, sBody, en);
+Homer.Util.writeTextSafely(sFile, sBody, en, "");
 } // String2File method
 
 public static string Quote(string sText) {
@@ -14428,7 +14440,11 @@ if (sCommand.Length > 0) {
 sCommand = Util.ExpandCommandLine(sCommand, sSource, sTarget);
 // Dialog.Show("show", sCommand);
 App.Frame.AddMessage("Converting");
-if (File.Exists(sTarget)) File.Delete(sTarget);
+// THE EARLIER FILE IS SET ASIDE, NOT DELETED (14 October 2026, from an audit by another AI): it was deleted before
+// the converter ran, so a conversion that failed lost the file it was to replace. It is now moved aside and put
+// back if no output comes, and removed only once the new file is there.
+string sKept = "";
+if (File.Exists(sTarget)) { sKept = Homer.Util.recoveryPath(sTarget); File.Move(sTarget, sKept); }
 Util.RunHideWait(sCommand);
 if (!File.Exists(sTarget)) {
 sCommand = "cmd.exe /c " + sCommand;
@@ -14438,8 +14454,11 @@ sText = "";
 if (File.Exists(sTarget)) sText = Util.ConvertedFile2String(sTarget);
 if (sText.Length == 0) {
 if (File.Exists(sTarget)) File.Delete(sTarget);
+if (sKept != "") { try { File.Move(sKept, sTarget); } catch (Exception oError) { Log("The earlier " + sTarget + " could not be put back; it is kept at " + sKept + ": " + oError.Message); } }
 Dialog.Show("Error", "The conversion produced no output.\nCommand line:\n" + sCommand + "\n\nThe run log records each step and its exit code:\n" + App.LogFile);
 }
+// Converted: the earlier file set aside is no longer needed.
+else if (sKept != "") { try { File.Delete(sKept); } catch (Exception oError) { Log("The earlier copy at " + sKept + " could not be removed: " + oError.Message); } }
 }
 else {
 COM.WordSource2TargetFormat(sSource, sTarget, sTargetFormat);

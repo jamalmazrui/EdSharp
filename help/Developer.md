@@ -199,3 +199,19 @@ wrote into the installer and publishes it. Releases before v5.0.20 include
 executables that cannot start and should not be installed.
 
 Jamal Mazrui
+
+## Where EdSharp writes files
+
+Every place EdSharp writes, moves or deletes a file falls into one of three groups (reviewed 14 October 2026, from an audit by another AI). A change that adds a new write should say which group it is in.
+
+**Replacing your file, through the kit.** These write beside the file and swap it in, through `Homer.Util.writeTextSafely` or `Homer.Util.replaceFileSafely`, so an interruption leaves the old file or the new one, never half of either:
+
+- Save, and the `.bak` copy it keeps (`SaveTextOrRtfFile`).
+- Export in another encoding or line-break style (the Export Format command).
+- `Util.String2File`, `String2FileA`, `String2FileHomer` and `String2FileU`, which every command that writes text through them uses.
+
+**Replacing your file, with the old one set aside.** Export through an external converter (`ConvertString2FileFormat`) moves the earlier file aside before the converter runs, puts it back if no output comes, and removes it only once the new file is there.
+
+**Your own deliberate action.** Delete File asks first and deletes; Rename moves, and fails rather than overwrite; and the script utilities `CopyFile`, `MoveFile` and `DeleteFile` do what a script asks of them.
+
+**Not your documents.** The session log and its pruning; the speech log; the indent-mode flag file; EdSharp's own temporary files, among them conversion targets, the formatter's copy and the C# console's scratch files; the settings file during Reset Configuration; the mail attachment's temporary copy; the user dictionary, which is appended to; and the one-time move of settings out of the roaming folder. These hold nothing a person wrote, so a plain write is enough.

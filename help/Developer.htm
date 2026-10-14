@@ -2,13 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
+  <meta name="generator" content="pandoc 3.12.1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Developer</title>
+  <title>EdSharp Developer</title>
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     html {
       color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
       background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
     }
     body {
       margin: 0 auto;
@@ -33,12 +39,16 @@
     }
     @media print {
       html {
-        background-color: white;
+        color-scheme: light only;
       }
-      body {
+      html, body, pre, code {
         background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
         color: black;
-        font-size: 12pt;
+      }
+      pre, code {
+        padding: 0;
       }
       p, h2, h3 {
         orphans: 3;
@@ -51,13 +61,14 @@
     p {
       margin: 1em 0;
     }
-    a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+    a, a:visited {
+      color: inherit;
     }
     img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
       max-width: 100%;
     }
     h1, h2, h3, h4, h5, h6 {
@@ -80,10 +91,14 @@
     blockquote {
       margin: 1em 0 1em 1.7em;
       padding-left: 1em;
-      border-left: 2px solid #e6e6e6;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
       color: #606060;
+      color: light-dark(#606060, #b6b6b6);
     }
     code {
+      white-space: pre-wrap;
       font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
@@ -103,8 +118,8 @@
      overflow: visible;
     }
     hr {
-      background-color: #1a1a1a;
       border: none;
+      border-top: 1px solid currentColor;
       height: 1px;
       margin: 1em 0;
     }
@@ -121,11 +136,11 @@
     }
     tbody {
       margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
     }
     th {
-      border-top: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
       padding: 0.25em 0.5em 0.25em 0.5em;
     }
     td {
@@ -147,10 +162,13 @@
     #TOC a:not(:hover) {
       text-decoration: none;
     }
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     /* The extra [class] is a hack that increases specificity enough to
        override a similar rule in reveal.js */
@@ -161,10 +179,32 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
 </head>
 <body>
+<nav id="TOC" role="doc-toc" aria-label="Contents">
+<ul>
+<li><a href="#edsharp-development" id="toc-edsharp-development">EdSharp
+Development</a>
+<ul>
+<li><a href="#building-edsharp" id="toc-building-edsharp">Building
+EdSharp</a></li>
+<li><a href="#building" id="toc-building">Building</a></li>
+<li><a href="#the-source-audit" id="toc-the-source-audit">The Source
+Audit</a></li>
+<li><a href="#how-the-program-is-put-together"
+id="toc-how-the-program-is-put-together">How the Program Is Put
+Together</a></li>
+<li><a href="#settings" id="toc-settings">Settings</a></li>
+<li><a href="#coding-style" id="toc-coding-style">Coding Style</a></li>
+<li><a href="#documentation"
+id="toc-documentation">Documentation</a></li>
+<li><a href="#releasing" id="toc-releasing">Releasing</a></li>
+<li><a href="#where-edsharp-writes-files"
+id="toc-where-edsharp-writes-files">Where EdSharp writes files</a></li>
+</ul></li>
+</ul>
+</nav>
 <main>
 <h1 id="edsharp-development">EdSharp Development</h1>
 <h2 id="building-edsharp">Building EdSharp</h2>
@@ -173,16 +213,16 @@ kit holds one copy of every class the Homer programs share -- Lbc, Say,
 Inix, KeyMap, Web, Elevate and the rest -- and EdSharp compiles them
 straight out of it. EdSharp carries no copies of its own. It did until
 September 2026, and every one of them had drifted from the kit's.</p>
-<p>Get the kit first: unzip HomerDev.zip into C:\HomerDev and run
-build. EdSharp asks for version 1.39.1 or later and stops with a
-plain message if the kit is older, rather than failing somewhere inside
-the compiler.</p>
+<p>Get the kit first: unzip HomerDev.zip into C:\HomerDev and run build.
+EdSharp asks for version 1.39.1 or later and stops with a plain message
+if the kit is older, rather than failing somewhere inside the
+compiler.</p>
 <p>Then, in C:\EdSharp:</p>
 <ol type="1">
-<li><strong>build</strong> -- steps version.txt, writes
-Version.cs, refreshes the kit's tools into scripts, puts the files into
-the Homer encoding, speaks any tutorial with no audio yet, then compiles
-into exec and builds EdSharp_Setup.exe at the top of the project.</li>
+<li><strong>build</strong> -- steps version.txt, writes Version.cs,
+refreshes the kit's tools into scripts, puts the files into the Homer
+encoding, speaks any tutorial with no audio yet, then compiles into exec
+and builds EdSharp_Setup.exe at the top of the project.</li>
 <li><strong>exec\EdSharp.exe</strong> -- the quick test.</li>
 <li><strong>scripts\check --build</strong> -- the checks that decide
 whether a release may happen.</li>
@@ -230,9 +270,9 @@ built installer's version resource. It used to live as AppVersion in the
 follows. For using EdSharp, see the user guide; for learning it by role,
 the tutorials.</p>
 <h2 id="building">Building</h2>
-<p>Clone the project and run <strong>Build.cmd</strong> from the
-project folder. It needs nothing installed beyond Windows itself, though
-it uses more when it is there.</p>
+<p>Clone the project and run <strong>Build.cmd</strong> from the project
+folder. It needs nothing installed beyond Windows itself, though it uses
+more when it is there.</p>
 <p>The build does these things in order, writing everything to
 Build.log:</p>
 <ol type="1">
@@ -357,6 +397,41 @@ the version the build wrote into the installer and publishes it.
 Releases before v5.0.20 include executables that cannot start and should
 not be installed.</p>
 <p>Jamal Mazrui</p>
+<h2 id="where-edsharp-writes-files">Where EdSharp writes files</h2>
+<p>Every place EdSharp writes, moves or deletes a file falls into one of
+three groups (reviewed 14 October 2026, from an audit by another AI). A
+change that adds a new write should say which group it is in.</p>
+<p><strong>Replacing your file, through the kit.</strong> These write
+beside the file and swap it in, through
+<code>Homer.Util.writeTextSafely</code> or
+<code>Homer.Util.replaceFileSafely</code>, so an interruption leaves the
+old file or the new one, never half of either:</p>
+<ul>
+<li>Save, and the <code>.bak</code> copy it keeps
+(<code>SaveTextOrRtfFile</code>).</li>
+<li>Export in another encoding or line-break style (the Export Format
+command).</li>
+<li><code>Util.String2File</code>, <code>String2FileA</code>,
+<code>String2FileHomer</code> and <code>String2FileU</code>, which every
+command that writes text through them uses.</li>
+</ul>
+<p><strong>Replacing your file, with the old one set aside.</strong>
+Export through an external converter
+(<code>ConvertString2FileFormat</code>) moves the earlier file aside
+before the converter runs, puts it back if no output comes, and removes
+it only once the new file is there.</p>
+<p><strong>Your own deliberate action.</strong> Delete File asks first
+and deletes; Rename moves, and fails rather than overwrite; and the
+script utilities <code>CopyFile</code>, <code>MoveFile</code> and
+<code>DeleteFile</code> do what a script asks of them.</p>
+<p><strong>Not your documents.</strong> The session log and its pruning;
+the speech log; the indent-mode flag file; EdSharp's own temporary
+files, among them conversion targets, the formatter's copy and the C#
+console's scratch files; the settings file during Reset Configuration;
+the mail attachment's temporary copy; the user dictionary, which is
+appended to; and the one-time move of settings out of the roaming
+folder. These hold nothing a person wrote, so a plain write is
+enough.</p>
 </main>
 </body>
 </html>
