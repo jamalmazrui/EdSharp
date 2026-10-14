@@ -2,6 +2,10 @@
 
 
 
+## 14 October 2026 -- the build checks its program where it is made
+
+- **No more ABSENT for files that are there.** The build's closing report looked for EdSharp.exe and its libraries in the project folder, while they are built into exec, so every build said they were ABSENT. Each is now looked for where it is made, the installer in the project folder, and a program or library that is truly missing stops the build instead of being noted (from an audit by another AI). The NVDA controller DLL stays optional.
+
 ## 14 October 2026 -- saves that never truncate the file
 
 - **A save writes a complete copy first, then swaps it in.** Text and RTF were written straight over the file, so a failed or interrupted save could leave it half written. The bytes saved are unchanged: the same encoding and line breaks (from an audit by another AI).

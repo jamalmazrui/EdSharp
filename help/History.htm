@@ -166,6 +166,18 @@
 <body>
 <main>
 <h1 id="edsharp-history">EdSharp History</h1>
+<h2
+id="14-october-2026----the-build-checks-its-program-where-it-is-made">14
+October 2026 -- the build checks its program where it is made</h2>
+<ul>
+<li><strong>No more ABSENT for files that are there.</strong> The
+build's closing report looked for EdSharp.exe and its libraries in the
+project folder, while they are built into exec, so every build said they
+were ABSENT. Each is now looked for where it is made, the installer in
+the project folder, and a program or library that is truly missing stops
+the build instead of being noted (from an audit by another AI). The NVDA
+controller DLL stays optional.</li>
+</ul>
 <h2 id="14-october-2026----saves-that-never-truncate-the-file">14
 October 2026 -- saves that never truncate the file</h2>
 <ul>

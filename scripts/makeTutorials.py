@@ -276,10 +276,31 @@ def spliceIntoTutorials(sDocument, sSection):
     Between the markers if they are there; after the contents list if they are
     not, which is where a first tutorial belongs.
     """
-    iStart = sDocument.find(sStartMark)
-    iEnd = sDocument.find(sEndMark)
-    if iStart >= 0 and iEnd > iStart:
-        return sDocument[:iStart] + sSection + sDocument[iEnd + len(sEndMark):]
+    # EVERY MARKED SECTION GOES, AND EXACTLY ONE IS WRITTEN (14 October 2026, from an audit by another AI). Only the
+    # first start and the first end marker were looked at, so one stray end marker ahead of the start made the markers
+    # look absent, and each build inserted a whole new walkthrough above the old ones: DbDo's Tutorials.md reached 80
+    # copies, 3.7 MB. Now every marked section and every stray marker is removed, and one walkthrough is written where the
+    # first one was, so a document that has grown is repaired by its next build.
+    iFirst = -1
+    iCopies = 0
+    while True:
+        iStart = sDocument.find(sStartMark)
+        if iStart < 0: break
+        iEnd = sDocument.find(sEndMark, iStart)
+        if iEnd < 0: break
+        if iFirst < 0: iFirst = iStart
+        sDocument = sDocument[:iStart] + sDocument[iEnd + len(sEndMark):]
+        iCopies += 1
+    for sMark in (sStartMark, sEndMark):
+        iStray = sDocument.count(sMark)
+        if iStray:
+            note("removed %d stray marker%s: %s" % (iStray, "" if iStray == 1 else "s", sMark))
+            if iFirst < 0: iFirst = sDocument.find(sMark)
+            sDocument = sDocument.replace(sMark, "")
+    if iCopies > 1: note("removed %d copies of the walkthrough; one is written" % iCopies)
+    if iFirst >= 0:
+        sBefore, sAfter = sDocument[:iFirst].rstrip("\n"), sDocument[iFirst:].lstrip("\n")
+        return sBefore + "\n\n" + sSection + "\n\n" + sAfter
 
     sAnchor = "\n## 1. "
     iAnchor = sDocument.find(sAnchor)
@@ -310,8 +331,12 @@ def addToContents(sDocument, sSection):
         return sDocument
 
     # Old generated lines go, so nothing accumulates across runs.
-    lsKept = [sLine for sLine in sDocument.split("\n")
-              if not (sLine.startswith("- [0") and "](#0" in sLine)]
+    # EVERY GENERATED ENTRY GOES BEFORE THE CURRENT ONES ARE ADDED (14 October 2026, from an audit by another AI). Only
+    # an entry for tutorial 0 was removed, so the entries for 1 to 9 were added again at every build: 16 to 78 copies of
+    # each in every app's contents list. A generated entry is "- [N - Title](#n-title)"; a hand-written one is
+    # "- [1. Title]", with a full stop, and is kept.
+    reGenerated = re.compile(r"^- \[\d+ - .*\]\(#\d+-[^)]*\)\s*$")
+    lsKept = [sLine for sLine in sDocument.split("\n") if not reGenerated.match(sLine)]
     sDocument = "\n".join(lsKept)
 
     # THE FIRST HAND-WRITTEN CONTENTS LINE, whatever it is called. This was

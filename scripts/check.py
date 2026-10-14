@@ -246,10 +246,13 @@ def countNoun(iCount, sSingular, sPlural=None):
 def finding(sName, sVerdict, sEvidence):
     """One check, its verdict, and what the verdict rests on.
 
-    Three verdicts and no others. "pass" means a check ran and succeeded;
-    "fail" means it ran and did not; "skip" means it could not run, and the
-    evidence says why. Nothing is ever recorded as passing because it was not
-    looked at.
+    Four verdicts and no others. "pass" means a check ran and succeeded;
+    "fail" means it ran and did not; "warn" means it ran and found things worth
+    reading that do not block a release, and the evidence says how many; "skip"
+    means it could not run, and the evidence says why. Nothing is ever recorded
+    as passing because it was not looked at, and nothing that found something is
+    recorded as passing (14 October 2026, from an audit by another AI: checkDocs
+    exited 1 with findings and its stage still said PASS).
     """
     lsFindings.append((sName, sVerdict, sEvidence))
     logLine("%-10s %-5s %s" % (sName, sVerdict.upper(), sEvidence))
@@ -975,7 +978,16 @@ def checkSkillChecks(sKind):
         return oDone.returncode, sOut
 
     iCode, sOut = runSkill("homer-docs", "checkDocs.py", [sRoot] + (["--app", appName()] if sKind == "app" else []))
-    if iCode == 1: lsNotes.append("checkDocs has findings on the documents")
+    # THE DOCUMENTS HAVE A VERDICT OF THEIR OWN (14 October 2026, from an audit by another AI). checkDocs' findings were
+    # a note on a PASS. Its findings -- a reading grade above the target, a long page with no contents list -- are advice,
+    # not a broken build, so they are a warning: counted, listed, never hidden, and not a reason to stop a release. A
+    # checkDocs that could not finish is a failure.
+    if iCode == 0: finding("docs", "pass", "checkDocs found nothing to report in the documents")
+    elif iCode == 1:
+        mCount = re.search(r"(\d+) findings? in (\d+) documents?", sOut)
+        finding("docs", "warn", (("%s in %s" % (countNoun(int(mCount.group(1)), "finding"), countNoun(int(mCount.group(2)), "document"))) if mCount else "findings")
+                + " from checkDocs, advice that does not block a release; the log names each")
+    elif iCode is not None: finding("docs", "fail", "checkDocs ended with exit code %d before it finished; the log has its output" % iCode)
     lsDatabases = [s for s in glob.glob(os.path.join(sRoot, "**", "*.db"), recursive=True) if "\\notes\\" not in s and "/notes/" not in s]
     # THE DATABASE CHECK FAILS CLOSED (1.65.32, from an audit). checkDb is required: it exits 1 on any failure and 0
     # otherwise, so its exit code decides, not a phrase matched in its output, which a crash before the summary
@@ -1411,6 +1423,7 @@ def writeReport():
     lsPassed = [t for t in lsFindings if t[1] == "pass"]
     lsFailed = [t for t in lsFindings if t[1] == "fail"]
     lsSkipped = [t for t in lsFindings if t[1] == "skip"]
+    lsWarned = [t for t in lsFindings if t[1] == "warn"]
 
     lsLines = [
         "---",
@@ -1429,6 +1442,8 @@ def writeReport():
     lsLines += ["- **%s** -- %s" % (s, e) for s, v, e in lsPassed] or ["- nothing"]
     lsLines += ["", "## What failed", ""]
     lsLines += ["- **%s** -- %s" % (s, e) for s, v, e in lsFailed] or ["- nothing"]
+    lsLines += ["", "## What deserves a look", ""]
+    lsLines += ["- **%s** -- %s" % (s, e) for s, v, e in lsWarned] or ["- nothing"]
     lsLines += ["", "## What was not checked", ""]
     lsLines += ["- **%s** -- %s" % (s, e) for s, v, e in lsSkipped] or ["- nothing"]
     lsLines += [
@@ -1530,7 +1545,7 @@ def main():
         if lsKept is None: finding("original coverage", "skip", "this pass was recorded before findings were kept, so which checks it skipped is not known; check --fresh runs every check")
         else:
             for sKeptName, sKeptVerdict, sKeptEvidence in lsKept:
-                if sKeptVerdict == "skip": finding(sKeptName, "skip", sKeptEvidence + " (in the run reused here)")
+                if sKeptVerdict in ("skip", "warn"): finding(sKeptName, sKeptVerdict, sKeptEvidence + " (in the run reused here)")
         sReport = writeReport()
         if not dArguments.quiet:
             sayLine("%s passed this check at %s, and none of its files has changed since; not run again." % (appName(), sWhen))
@@ -1582,13 +1597,17 @@ def main():
     iPassed = len([t for t in lsFindings if t[1] == "pass"])
     iFailed = len([t for t in lsFindings if t[1] == "fail"])
     iSkipped = len([t for t in lsFindings if t[1] == "skip"])
+    iWarned = len([t for t in lsFindings if t[1] == "warn"])
     if not dArguments.quiet:
         sayLine()
-        sayLine("%s passed, %s failed, %s not checked." %
+        # Warnings come after "failed", so "N passed, N failed" reads as it always has to anything that counts them.
+        sayLine("%s passed, %s failed, %s%s not checked." %
                 (countNoun(iPassed, "check"), countNoun(iFailed, "check"),
+                 ("%s with warnings, " % countNoun(iWarned, "check")) if iWarned else "",
                  countNoun(iSkipped, "check")))
         for sName, sVerdict, sEvidence in lsFindings:
             if sVerdict == "fail": sayLine("  failed: %s -- %s" % (sName, sEvidence))
+            if sVerdict == "warn": sayLine("  warning: %s -- %s" % (sName, sEvidence))
         sayLine("The report is %s." % os.path.basename(sReport))
     if oCache is not None:
         if iFailed: oCache.forget("check pass")

@@ -1030,12 +1030,23 @@ try {
     }
 
   # ---- 8. report ----
+  # EACH ARTIFACT WHERE IT IS MADE (14 October 2026, from an audit by another AI). The report looked for every file in
+  # the project's own folder, so it said EdSharp.exe and EdSharp.dll were ABSENT while they sat in exec, where they are
+  # built and where acceptance found them. The program and its libraries are looked for in exec, the installer in the
+  # project folder, where Inno Setup writes it. A program or library genuinely missing now stops the build; the
+  # installer may be missing only when Inno Setup was not found, which the build has already said, and the NVDA
+  # controller DLL is optional, as step 4 says.
   writeLog "Artifacts:"
+  $lMissing = @()
   foreach ($sArtifact in @("EdSharp.exe", "EdSharp.dll", "ReverseMarkdown.dll", "HtmlAgilityPack.dll", "Markdig.dll", "nvdaControllerClient.dll", "EdSharp_Setup.exe")) {
-    $sArtifactFile = Join-Path $sScriptDir $sArtifact
-    if (Test-Path -LiteralPath $sArtifactFile) { writeLog "  $sArtifact  $((Get-Item -LiteralPath $sArtifactFile).Length) bytes" }
-    else { writeLog "  $sArtifact  ABSENT" }
+    $sArtifactDir = if ($sArtifact -eq "EdSharp_Setup.exe") { $sScriptDir } else { $sExecDir }
+    $sArtifactFile = Join-Path $sArtifactDir $sArtifact
+    if (Test-Path -LiteralPath $sArtifactFile) { writeLog "  $sArtifact  $((Get-Item -LiteralPath $sArtifactFile).Length) bytes, in $sArtifactDir" }
+    elseif ($sArtifact -eq "EdSharp_Setup.exe") { writeLog "  $sArtifact  not built (Inno Setup was not found)" }
+    elseif ($sArtifact -eq "nvdaControllerClient.dll") { writeLog "  $sArtifact  not present (optional: NVDA speech falls back without it, as step 4 says)" }
+    else { writeLog "  $sArtifact  MISSING from $sArtifactDir"; $lMissing += $sArtifact }
   }
+  if ($lMissing.Count -gt 0) { throw "The build ended without $($lMissing -join ', ') in $sExecDir. Nothing was released; the log has each step." }
   writeLog "Build SUCCESS."
   exit 0
 } catch {
