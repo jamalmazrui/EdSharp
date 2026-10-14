@@ -166,6 +166,17 @@
 <body>
 <main>
 <h1 id="edsharp-history">EdSharp History</h1>
+<h2 id="14-october-2026----saves-that-never-truncate-the-file">14
+October 2026 -- saves that never truncate the file</h2>
+<ul>
+<li><strong>A save writes a complete copy first, then swaps it
+in.</strong> Text and RTF were written straight over the file, so a
+failed or interrupted save could leave it half written. The bytes saved
+are unchanged: the same encoding and line breaks (from an audit by
+another AI).</li>
+<li><strong>The old .bak is kept until the new one exists.</strong> It
+was deleted before the new backup was made.</li>
+</ul>
 <h2 id="11-october-2026----markdown-to-html-works-again">11 October 2026
 -- Markdown to HTML works again</h2>
 <ul>

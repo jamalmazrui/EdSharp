@@ -866,17 +866,30 @@ App.Frame.OpenOrActivateWindow(App.TempFile);
 // App.Frame.ApplyFileOptions(sFile);
 } // LoadTextFile method
 
+// A SAVE NEVER TRUNCATES THE FILE FIRST (14 October 2026, from an audit by another
+// AI): text was written straight over the file, so a failed or interrupted save
+// could leave it half written, and the backup rotation deleted the old .bak before
+// the new one existed. The file is now written to a staged copy beside it and
+// swapped in only when complete; the old .bak is kept until its successor exists.
+// The bytes written are the same as before: the same encoding and line breaks.
 public void SaveTextOrRtfFile(string sFile) {
+string sBak = "";
 if (System.IO.File.Exists(sFile)) {
 string sKeepBackup = App.ReadOption("KeepBackup", "N").Trim().ToLower();
-if (sKeepBackup == "y" || sKeepBackup == "yes") {
-string sBak = sFile + ".bak";
-if (System.IO.File.Exists(sBak)) System.IO.File.Delete(sBak);
-System.IO.File.Copy(sFile, sBak);
-}
+if (sKeepBackup == "y" || sKeepBackup == "yes") sBak = sFile + ".bak";
 }
 
-if (Path.GetExtension(sFile).ToLower() == ".rtf") this.RTB.SaveFile(sFile, RichTextBoxStreamType.RichText);
+if (Path.GetExtension(sFile).ToLower() == ".rtf") {
+string sStaged = Homer.Util.stagingPath(sFile);
+try {
+this.RTB.SaveFile(sStaged, RichTextBoxStreamType.RichText);
+Homer.Util.replaceFileSafely(sStaged, sFile, sBak);
+}
+catch {
+try { if (System.IO.File.Exists(sStaged)) System.IO.File.Delete(sStaged); } catch { }
+throw;
+}
+}
 //else if (Util.IsUnicode(this.RTB.Text)) Util.String2File(this.RTB.Text, sFile);
 //else this.RTB.SaveFile(sFile, RichTextBoxStreamType.PlainText);
 else {
@@ -885,7 +898,7 @@ if (en == null) en = GetYieldEncoding();
 if (en == null) en = new UTF8Encoding(true);
 string sText = this.RTB.Text;
 if (!this.IsUnixLineBreak) sText = Util.Convert2WinLineBreak(sText);
-Util.String2File(sText, sFile, ref en);
+Homer.Util.writeTextSafely(sFile, sText, en, sBak);
 }
 this.RTB.Modified = false;
 App.Frame.SetRecent(sFile);

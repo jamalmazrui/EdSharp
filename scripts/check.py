@@ -1149,6 +1149,14 @@ def installerFindings(sText):
     sAppId = setting("AppId")
     if not sAppId or "{#" in sAppId and "AppId" not in sAppId:
         lBad.append("AppId is %s, so Inno cannot recognize an earlier install" % (sAppId or "unset"))
+    # THE PROGRAM STARTS AS THE PERSON (14 October 2026, from an audit by another AI): eight apps' installers started
+    # the program with Exec, which, even through cmd, runs it with the installer's elevated rights. The kit's template
+    # had used ExecAsOriginalUser since 1.43.42; the apps never took it up, so the pattern now requires it.
+    mStart = re.search(r"(?mis)^procedure\s+startIfAsked\b.*?^end;", s)
+    if mStart and re.search(r"(?mi)^\s*Exec\s*\(", mStart.group(0)):
+        lBad.append("startIfAsked starts the program with Exec, which keeps the installer's elevated rights; use ExecAsOriginalUser")
+    if re.search(r"(?i)echo\s+launch\s*>", s) and not re.search(r'(?i)md\s+""\{localappdata\}', s):
+        lBad.append("writes its launch marker without creating the logs folder first, so on a first install the marker is never written")
     bReaders = bool(re.search(r"(?i)_JAWS\.zip|\bnvda\b.*addon|labelJaws|labelNvda|install-jaws-settings", s))
     if bReaders:
         if re.search(r"(?m)^\s*#define\s+HomerReaderWrappersInApp", s): lBad.append("defines HomerReaderWrappersInApp, so it uses its own screen reader wrappers, not the kit's")

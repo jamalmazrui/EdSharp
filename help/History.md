@@ -2,6 +2,11 @@
 
 
 
+## 14 October 2026 -- saves that never truncate the file
+
+- **A save writes a complete copy first, then swaps it in.** Text and RTF were written straight over the file, so a failed or interrupted save could leave it half written. The bytes saved are unchanged: the same encoding and line breaks (from an audit by another AI).
+- **The old .bak is kept until the new one exists.** It was deleted before the new backup was made.
+
 ## 11 October 2026 -- Markdown to HTML works again
 
 - **What Markdig needs is fetched, shipped and redirected.** Markdown to HTML stopped with "Could not load file or assembly 'System.Memory, Version=4.0.5.0'": Markdig 1.3.2 targets .NET Standard 2.0 and needs System.Memory, which needs System.Buffers, System.Runtime.CompilerServices.Unsafe and System.Numerics.Vectors, and the build fetched Markdig alone. The build now reads each package's own .nuspec for the lib target it chose, fetches what that names, and what those name in turn, records them in the package's .fetched note so a later build knows them without fetching, copies them into exec, and writes binding redirects for them into EdSharp.exe.config from the shipped DLLs; the installer ships exec\\System.*.dll. A .fetched note from before records no dependencies, so its package is fetched once more to learn them.
