@@ -2,6 +2,10 @@
 
 
 
+## 14 October 2026 -- the announcement in plainer words
+
+- **Announce.md now reads at grade 8.4, down from 9.8,** inside the ninth-grade target for documents shared publicly. Long sentences were split and dense phrases put plainly; every fact, key and link is kept, and first-person passages keep their author's own words. The section about the companion tools reads the same in each announcement that carries it, with the tools' hotkeys in alphabetical order.
+
 ## 14 October 2026 -- the newest Pandoc for the help pages
 
 - **History.htm and the other pages are made by the newest Pandoc, not the first on the PATH,** which was Pandoc 2.19 in C:\bin while Pandoc 3.12.1 was installed in Program Files. The build asks the kit's newest.ps1, as the other apps' builds now do, running it as a process of its own so its answer can be read; the log names every copy found and its version (from an audit by another AI).

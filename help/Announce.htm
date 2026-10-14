@@ -2,17 +2,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
+  <meta name="generator" content="pandoc 3.12.1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Jamal Mazrui" />
   <title>What's New in EdSharp</title>
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     html {
-      line-height: 1.5;
-      font-family: Georgia, serif;
-      font-size: 20px;
       color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
       background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
     }
     body {
       margin: 0 auto;
@@ -29,17 +32,24 @@
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 1em;
+        padding: 12px;
       }
       h1 {
         font-size: 1.8em;
       }
     }
     @media print {
-      body {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
         background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
         color: black;
-        font-size: 12pt;
+      }
+      pre, code {
+        padding: 0;
       }
       p, h2, h3 {
         orphans: 3;
@@ -52,13 +62,14 @@
     p {
       margin: 1em 0;
     }
-    a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+    a, a:visited {
+      color: inherit;
     }
     img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
       max-width: 100%;
     }
     h1, h2, h3, h4, h5, h6 {
@@ -81,13 +92,18 @@
     blockquote {
       margin: 1em 0 1em 1.7em;
       padding-left: 1em;
-      border-left: 2px solid #e6e6e6;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
       color: #606060;
+      color: light-dark(#606060, #b6b6b6);
     }
     code {
-      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
+      hyphens: manual;
     }
     pre {
       margin: 1em 0;
@@ -103,8 +119,8 @@
      overflow: visible;
     }
     hr {
-      background-color: #1a1a1a;
       border: none;
+      border-top: 1px solid currentColor;
       height: 1px;
       margin: 1em 0;
     }
@@ -121,11 +137,11 @@
     }
     tbody {
       margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
     }
     th {
-      border-top: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
       padding: 0.25em 0.5em 0.25em 0.5em;
     }
     td {
@@ -147,22 +163,24 @@
     #TOC a:not(:hover) {
       text-decoration: none;
     }
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
 <header id="title-block-header">
@@ -211,17 +229,16 @@ document between eighteen languages and opens the result in a new
 window. It runs on your own machine, so there is no account, no limit,
 and nothing sent anywhere.</p>
 <h2 id="if-you-program">If you program</h2>
-<p>The Pick Compiler command chooses your language, and that one choice
+<p>The Pick Compiler command chooses your language. That one choice
 brings the command to run, the way errors are read, the indentation the
 language uses, and its interactive shell. Python, Node.js, C#,
-PowerShell, JAWS script and JScript .NET are ready configured. The
-Compile command, Control+F5, then runs the file and lands the cursor on
-the earliest error, with your own path abbreviated out of the
-speech.</p>
+PowerShell, JAWS script and JScript .NET are set up and ready. The
+Compile command, Control+F5, then runs the file and puts the cursor on
+the first error. Your own folder path is left out of what is spoken.</p>
 <p>The Go to Environment command opens a console where the editor window
-and its text box are already in scope, so a line tried at the prompt is
-a line that works in a snippet. Chat with AI, F12, sends questions about
-a source file to a model trained on code.</p>
+and its text box are already at hand, so a line that works at the prompt
+also works in a snippet. Chat with AI, F12, sends questions about a
+source file to a model trained on code.</p>
 <h2 id="if-you-work-in-bulk">If you work in bulk</h2>
 <p>The File Find command lists matching file paths in a window you can
 edit, and the Transform Files command applies a set of search and
@@ -230,26 +247,25 @@ through find, replace, and two commands that pull matching text into a
 new document.</p>
 <h2 id="for-everyone">For everyone</h2>
 <p>EdSharp now leaves window titles and focus changes to your screen
-reader, which announces them anyway, and speaks only what it alone
-knows. The Key Describer command, Control+F1, describes every command in
-the program; press a key and hear what it does without doing it, and
-nothing answers "no description available" any more.</p>
-<p>Documentation comes with it and is meant to be read: a user guide
-covering every command and setting, the twelve tutorials by role, a
-hotkey reference listing every command by name and by key, a questions
-and answers file, a history of what changed and why, and a developer
-guide. Each is a web page the Help menu opens, and a Markdown file you
-can read in EdSharp itself.</p>
+reader, which announces them anyway. It speaks only what it alone knows.
+The Key Describer command, Control+F1, describes every command in the
+program: press a key to hear what it does, without doing it. No key
+answers "no description available" any more.</p>
+<p>The documentation comes with EdSharp and is meant to be read. There
+is a user guide to every command and setting, twelve tutorials by role,
+a hotkey reference that lists every command by name and by key,
+questions and answers, a history of what changed and why, and a
+developer guide. The Help menu opens each one as a web page, and each is
+also a Markdown file you can read in EdSharp itself.</p>
 <h2 id="getting-the-pieces">Getting the pieces</h2>
-<p>Everything optional is a checkbox on the installer's last page, each
-saying what it will do and how large it is, and each fetched and
-installed automatically: Python and the document tools, Git, Node.js,
-and the AI models for chat, translation and code. Nothing is a manual
+<p>Everything optional is a checkbox on the installer's last page. Each
+one says what it will do and how large it is, and each is fetched and
+installed for you: Python and the document tools, Git, Node.js, and the
+AI models for chat, translation and code. Nothing needs a manual
 download.</p>
-<p>The AI features trade installation size for local power and privacy.
-Several gigabytes of models buy translation, summarizing and coding help
-that ask no account, impose no limit, and never send a document
-anywhere.</p>
+<p>The AI features trade disk space for local power and privacy. Several
+gigabytes of models bring translation, summaries and coding help that
+need no account, have no limit, and never send a document anywhere.</p>
 <ul>
 <li><a href="https://github.com/JamalMazrui/EdSharp">EdSharp project
 page on GitHub</a></li>
@@ -257,7 +273,7 @@ page on GitHub</a></li>
 href="https://github.com/JamalMazrui/EdSharp/releases/latest/download/EdSharp_setup.exe">EdSharp
 installer for Windows</a></li>
 </ul>
-<p>I welcome feedback, by direct message if possible -- email, Facebook,
+<p>I welcome feedback, by direct message if possible: email, Facebook,
 LinkedIn or text. Tell me where it goes wrong.</p>
 <p>Jamal Mazrui</p>
 </main>
