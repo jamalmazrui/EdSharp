@@ -29,28 +29,28 @@ import re
 import sys
 import traceback
 
-c_sScript = os.path.abspath(__file__)
-c_sTool = os.path.dirname(c_sScript)
+sScript = os.path.abspath(__file__)
+sTool = os.path.dirname(sScript)
 # THE SCRIPTS LIVE IN help, THE TOOLING IN scripts. FileDir keeps both in one
 # folder; the Homer layout does not, and this file was copied from there. So
-# c_sHere is where the tutorials and their audio are, and the log stays with the
+# sHereFolder is where the tutorials and their audio are, and the log stays with the
 # tool that writes it.
-c_sHere = os.path.join(os.path.dirname(c_sTool), "help")
-if not os.path.isdir(c_sHere):
-    c_sHere = c_sTool
+sHereFolder = os.path.join(os.path.dirname(sTool), "help")
+if not os.path.isdir(sHereFolder):
+    sHereFolder = sTool
 import datetime as _dt
-c_sLogDir = os.path.join(os.path.dirname(c_sTool), "logs")
-os.makedirs(c_sLogDir, exist_ok=True)
-c_sLog = os.path.join(c_sLogDir, os.path.basename(os.path.dirname(c_sTool)) + "-tutorials-text-%s.log" % _dt.datetime.now().strftime("%Y%m%d-%H%M%S"))
+sLogDir = os.path.join(os.path.dirname(sTool), "logs")
+os.makedirs(sLogDir, exist_ok=True)
+sLog = os.path.join(sLogDir, os.path.basename(os.path.dirname(sTool)) + "-tutorials-text-%s.log" % _dt.datetime.now().strftime("%Y%m%d-%H%M%S"))
 import glob
 
 # EVERY SCRIPT IN THE FOLDER, in name order. Tutorial.inix is the first walk;
 # Tutorial_Tagging.inix, Tutorial_Zipping.inix and the rest are one task each.
 # Adding a tutorial means adding a file, and nothing else.
-c_sPattern = os.path.join(c_sHere, "Tutorial*.inix")
-c_sTarget = os.path.join(c_sHere, "Tutorials.md")
+sPattern = os.path.join(sHereFolder, "Tutorial*.inix")
+sTarget = os.path.join(sHereFolder, "Tutorials.md")
 
-c_sFeed = os.path.join(c_sHere, "TutorialFeed.xml")
+sFeed = os.path.join(sHereFolder, "TutorialFeed.xml")
 
 
 def findPandoc():
@@ -112,7 +112,7 @@ def writeTutorialsHtm(sMarkdown):
 
 # The least a document can be and still take a spliced walkthrough: a title, a
 # contents list, and a section 1 to splice in front of.
-c_sSkeleton = """# Tutorials
+sSkeleton = """# Tutorials
 
 ## Contents
 
@@ -123,14 +123,14 @@ c_sSkeleton = """# Tutorials
 Press F1 for the guide, Alt+Shift+H for the hotkey list, and Alt+F10 for every
 command in one window.
 """
-c_sStartMark = "<!-- walkthrough: written by makeTutorials.py, do not edit between the markers -->"
-c_sEndMark = "<!-- walkthrough ends -->"
+sStartMark = "<!-- walkthrough: written by makeTutorials.py, do not edit between the markers -->"
+sEndMark = "<!-- walkthrough ends -->"
 
 
 def note(sText):
     """One line to the log, and nothing to the screen unless it matters."""
     try:
-        with open(c_sLog, "a", encoding="utf-8") as oFile:
+        with open(sLog, "a", encoding="utf-8") as oFile:
             oFile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S  ") + sText + "\n")
     except Exception:
         pass
@@ -144,18 +144,18 @@ def say(sText):
 
 def startLog():
     try:
-        if os.path.isfile(c_sLog):
-            os.remove(c_sLog)
+        if os.path.isfile(sLog):
+            os.remove(sLog)
     except Exception:
         pass
     note("makeTutorial " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    note("script: " + c_sScript)
+    note("script: " + sScript)
     note("Python: " + platform.python_version())
     note("platform: " + sys.platform)
     note("working directory: " + os.getcwd())
     note("command line: " + " ".join(sys.argv))
-    note("scripts: " + c_sPattern)
-    note("target: " + c_sTarget)
+    note("scripts: " + sPattern)
+    note("target: " + sTarget)
 
 
 def readFile(sPath):
@@ -276,10 +276,10 @@ def spliceIntoTutorials(sDocument, sSection):
     Between the markers if they are there; after the contents list if they are
     not, which is where a first tutorial belongs.
     """
-    iStart = sDocument.find(c_sStartMark)
-    iEnd = sDocument.find(c_sEndMark)
+    iStart = sDocument.find(sStartMark)
+    iEnd = sDocument.find(sEndMark)
     if iStart >= 0 and iEnd > iStart:
-        return sDocument[:iStart] + sSection + sDocument[iEnd + len(c_sEndMark):]
+        return sDocument[:iStart] + sSection + sDocument[iEnd + len(sEndMark):]
 
     sAnchor = "\n## 1. "
     iAnchor = sDocument.find(sAnchor)
@@ -336,7 +336,7 @@ def secondsOf(sPath):
     shows it, and it is a lie. So the length is measured rather than guessed,
     and left out when it cannot be.
     """
-    sProbe = os.path.join(c_sTool, "ffprobe.exe")
+    sProbe = os.path.join(sTool, "ffprobe.exe")
     if not os.path.isfile(sProbe):
         sProbe = "ffprobe"
     try:
@@ -409,7 +409,7 @@ def writeFeed(lsEpisodes, dFeed):
         lsOut.append("    </item>")
     lsOut.append("  </channel>")
     lsOut.append("</rss>")
-    writeFile(c_sFeed, "\n".join(lsOut) + "\n")
+    writeFile(sFeed, "\n".join(lsOut) + "\n")
     return len(lsEpisodes)
 
 
@@ -454,22 +454,22 @@ def main():
     if sKind in ("collection", "page"):
         say("A %s has no program to walk through, so there are no tutorials to write." % sKind)
         return 0
-    lsSources = sorted(glob.glob(c_sPattern))
+    lsSources = sorted(glob.glob(sPattern))
     note("scripts found: " + str(len(lsSources)) + " -- " + ", ".join(os.path.basename(s) for s in lsSources))
     if len(lsSources) == 0:
         say("0 tutorial scripts here, so there is nothing to write.")
         return 1
-    if not os.path.isfile(c_sTarget):
+    if not os.path.isfile(sTarget):
         # A PROJECT WITH NO DOCUMENT YET GETS ONE, rather than an error.
         # The generated walkthroughs are spliced in ahead of section 1, so a
         # document has to exist and has to have a section 1 to aim at. Writing
         # a skeleton here means a new app needs no manual step before its first
         # tutorial builds -- which is the rule every Homer build script follows.
-        note("no target; writing a skeleton: " + c_sTarget)
+        note("no target; writing a skeleton: " + sTarget)
         say("Tutorials.md was not here, so a starting one was written.")
         try:
-            with open(c_sTarget, "wb") as oFile:
-                oFile.write(("\ufeff" + c_sSkeleton).replace("\n", "\r\n").encode("utf-8"))
+            with open(sTarget, "wb") as oFile:
+                oFile.write(("\ufeff" + sSkeleton).replace("\n", "\r\n").encode("utf-8"))
         except Exception as oError:
             say("Tutorials.md could not be written.")
             note("write failed: " + str(oError))
@@ -514,7 +514,7 @@ def main():
         # The audio lives in help\tutorials, one .mp3 per script (25 Sep 2026),
         # named like a chapter: the script's stem without its Tutorial_ prefix.
         sAudioStem = sStem[len("Tutorial_"):] if sStem.startswith("Tutorial_") else sStem
-        sAudio = os.path.join(c_sHere, "tutorials", sAudioStem + ".mp3")
+        sAudio = os.path.join(sHereFolder, "tutorials", sAudioStem + ".mp3")
         if os.path.isfile(sAudio):
             lsEpisodes.append({
                 "stem": sStem,
@@ -528,10 +528,10 @@ def main():
             note("no audio yet for " + sStem + "; it will join the feed once buildTutorials has run")
 
     try:
-        sSection = c_sStartMark + "\n\n" + "\n\n".join(lsBlocks) + "\n\n" + c_sEndMark
-        sDocument = readFile(c_sTarget)
+        sSection = sStartMark + "\n\n" + "\n\n".join(lsBlocks) + "\n\n" + sEndMark
+        sDocument = readFile(sTarget)
         sDocument = addToContents(spliceIntoTutorials(sDocument, sSection), sSection)
-        writeFile(c_sTarget, sDocument)
+        writeFile(sTarget, sDocument)
     except Exception as oError:
         say("Tutorials.md could not be written.")
         note("write failed: " + str(oError))
@@ -540,7 +540,7 @@ def main():
 
     say("Wrote " + str(len(lsSources)) + " tutorials into Tutorials.md: " + str(iStepsAll) + " steps.")
     try:
-        if writeTutorialsHtm(c_sTarget): say("Wrote Tutorials.htm from it.")
+        if writeTutorialsHtm(sTarget): say("Wrote Tutorials.htm from it.")
     except Exception as oError:
         note("Tutorials.htm failed: " + str(oError))
         note(traceback.format_exc())

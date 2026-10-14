@@ -29,25 +29,25 @@ logs\\<App>-tutorials-check-yyyyMMdd-HHmmss.log in the project.
 
 import datetime, glob, io, os, platform, re, sys
 
-c_lsReaderNames = ["JAWS", "NVDA", "Narrator", "VoiceOver", "Fusion", "ZoomText"]
-c_lsSilenceWords = ["nothing", "silent", "silence", "did not say", "says nothing"]
-c_lsModifierOrder = ["Alt", "Control", "Shift", "Windows"]
+lsReaderNames = ["JAWS", "NVDA", "Narrator", "VoiceOver", "Fusion", "ZoomText"]
+lsSilenceWords = ["nothing", "silent", "silence", "did not say", "says nothing"]
+lsModifierOrder = ["Alt", "Control", "Shift", "Windows"]
 # SHOW, THEN TELL (1.58.0). In a Homer walk the host names a concept and the
 # screen reader then shows it: the control that takes focus, read as name,
 # role, value and state, with the hint after; or the window that comes
 # forward, read by its title. The author heard the user-interface walk run on
 # with the host alone and found it far less instructive than an exchange. So in
 # that walk, 1_User_Interface (it was 02 and 03 before the pattern of ten), no
-# more than c_iMaxHostRun steps in a row may pass without the reader, and at
-# least c_nMinReaderShare of the steps must carry the reader. Other walks get a
+# more than iMaxHostRun steps in a row may pass without the reader, and at
+# least nMinReaderShare of the steps must carry the reader. Other walks get a
 # notice for a longer run. 0 is prose and a table of contents by design, so it
 # is not measured.
-c_dConceptWalks = {"1": "User Interface"}
-c_iLongSay = 60
-c_iMaxHostRun = 2
-c_iNoticeHostRun = 3
-c_lsUnmeasuredWalks = ["0"]
-c_nMinReaderShare = 0.5
+dConceptWalks = {"1": "User Interface"}
+iLongSay = 60
+iMaxHostRun = 2
+iNoticeHostRun = 3
+lsUnmeasuredWalks = ["0"]
+nMinReaderShare = 0.5
 
 lsProblems = []
 oLog = None
@@ -60,9 +60,9 @@ oLog = None
 # own walk 8, not used in the fit, measured 182 seconds and is predicted 188.
 # Words alone at 186 a minute had run 21% short on average, and up to 33%, on
 # walks of many short two-voice steps.
-c_nHostSecondsPerWord = 0.267
-c_nReaderSecondsPerWord = 0.104
-c_nSecondsPerStep = 3.63
+nHostSecondsPerWord = 0.267
+nReaderSecondsPerWord = 0.104
+nSecondsPerStep = 3.63
 
 def logLine(sText):
     """One event in the Homer log format (1.43.21), as log.py and Log.cs write:
@@ -176,8 +176,8 @@ def checkKeyName(sScript, iStep, sKey):
     if not sKey: return True
     if re.search(r"\bCtrl\b", sKey): problem(sScript, iStep, "Key writes Ctrl; Homer spells out Control: %s" % sKey)
     lsParts = [s.strip() for s in sKey.split("+")]
-    lsMods = [s for s in lsParts[:-1] if s in c_lsModifierOrder]
-    if lsMods != sorted(lsMods, key=c_lsModifierOrder.index):
+    lsMods = [s for s in lsParts[:-1] if s in lsModifierOrder]
+    if lsMods != sorted(lsMods, key=lsModifierOrder.index):
         problem(sScript, iStep, "Key modifiers are not in alphabetical order (Alt, Control, Shift, Windows): %s" % sKey)
     return True
 
@@ -206,7 +206,7 @@ def checkOne(sScript, bFirst):
         if not firstOf(dAbout, sKey): problem(sScript, 0, "[about] lacks %s" % sKey)
     if not lsSteps: problem(sScript, 0, "no [step] sections")
     sWhole = io.open(sScript, encoding="utf-8-sig").read()
-    for sName in c_lsReaderNames:
+    for sName in lsReaderNames:
         if re.search(r"\b%s\b" % re.escape(sName), sWhole):
             problem(sScript, 0, "names a screen reader (%s); write \"the screen reader\"" % sName)
     # THE READER SPEAKS CONCRETE WORDS (10 October 2026). The host may speak in general terms; the reader says what a
@@ -240,12 +240,12 @@ def checkOne(sScript, bFirst):
         if sKey and not lsHear:
             sNext = firstOf(lsSteps[iAt], "Say") if iAt < len(lsSteps) else ""
             sText = (sNote + " " + sNext).lower()
-            if not any(w in sText for w in c_lsSilenceWords):
+            if not any(w in sText for w in lsSilenceWords):
                 problem(sScript, iAt, "Key %s has no Hear line and nothing names the silence" % sKey)
         for sHear in lsHear: checkHear(sScript, iAt, sHear)
     oNumber = re.match(r"Tutorial_(\d)_", os.path.basename(sScript))
     sNumber = oNumber.group(1) if oNumber else ""
-    if sNumber and sNumber not in c_lsUnmeasuredWalks and lsSteps:
+    if sNumber and sNumber not in lsUnmeasuredWalks and lsSteps:
         iRun, iLongest, iAtLongest, iWithReader = 0, 0, 0, 0
         for iAt, dStep in enumerate(lsSteps, 1):
             if [s for s in dStep.get("Hear", []) if s]:
@@ -256,14 +256,14 @@ def checkOne(sScript, bFirst):
             if iRun > iLongest: iLongest, iAtLongest = iRun, iAt
         nShare = float(iWithReader) / len(lsSteps)
         logLine("%s: the reader speaks in %d of %d steps; the longest stretch of the host alone is %d step%s" % (os.path.basename(sScript), iWithReader, len(lsSteps), iLongest, "" if iLongest == 1 else "s"))
-        if sNumber in c_dConceptWalks:
-            if iLongest > c_iMaxHostRun: problem(sScript, iAtLongest, "%d steps in a row with the host alone; in the %s walk each concept is shown by the reader, its name, role, value, state and hint, right after it is named" % (iLongest, c_dConceptWalks[sNumber]))
-            if nShare < c_nMinReaderShare: problem(sScript, 0, "the reader speaks in only %d of %d steps; in the %s walk at least half the steps show a concept in the reader's voice" % (iWithReader, len(lsSteps), c_dConceptWalks[sNumber]))
-        elif iLongest > c_iNoticeHostRun:
+        if sNumber in dConceptWalks:
+            if iLongest > iMaxHostRun: problem(sScript, iAtLongest, "%d steps in a row with the host alone; in the %s walk each concept is shown by the reader, its name, role, value, state and hint, right after it is named" % (iLongest, dConceptWalks[sNumber]))
+            if nShare < nMinReaderShare: problem(sScript, 0, "the reader speaks in only %d of %d steps; in the %s walk at least half the steps show a concept in the reader's voice" % (iWithReader, len(lsSteps), dConceptWalks[sNumber]))
+        elif iLongest > iNoticeHostRun:
             notice("%s: %d steps in a row with the host alone, ending at step %d; let the reader show what the host has named" % (os.path.basename(sScript), iLongest, iAtLongest))
     for iAt, dStep in enumerate(lsSteps, 1):
         iWords = len(firstOf(dStep, "Say").split())
-        if iWords > c_iLongSay: notice("%s step %d: a Say line of %d words; say less, then let the reader show it" % (os.path.basename(sScript), iAt, iWords))
+        if iWords > iLongSay: notice("%s step %d: a Say line of %d words; say less, then let the reader show it" % (os.path.basename(sScript), iAt, iWords))
     if bFirst and not re.search(r"Insert (plus )?Up Arrow", sWhole):
         problem(sScript, 0, "the first script does not teach the repeat key, Insert plus Up Arrow")
     # The orientation key goes with the repeat key: the trainers teach both in
@@ -368,7 +368,7 @@ def main():
         iReaderWords = sum(len(sLine.split()) for sLine in re.findall(r"(?mi)^\s*Hear\s*=\s*(.*)$", sWalk))
         iWalkSteps = len(re.findall(r"(?mi)^\s*\[step\]\s*$", sWalk))
         iWords = iHostWords + iReaderWords
-        dMinutes = (iHostWords * c_nHostSecondsPerWord + iReaderWords * c_nReaderSecondsPerWord + iWalkSteps * c_nSecondsPerStep) / 60
+        dMinutes = (iHostWords * nHostSecondsPerWord + iReaderWords * nReaderSecondsPerWord + iWalkSteps * nSecondsPerStep) / 60
         # A notice outside 2.75 to 5.25 predicted minutes: the prediction errs by up to about 13%, so a walk
         # inside that band may land either side of three or five, and the tool's measurement after speaking settles it.
         if sNum and sNum not in ("0", "9") and dMinutes < 2.75:
@@ -385,8 +385,8 @@ def main():
     # hears on every build what the set lacks -- including a set still named
     # with two digits, which is told what each old walk becomes.
     if len(sys.argv) == 1:
-        c_dFixed = {"0": "Overview", "1": "User_Interface", "9": "Conclusion"}
-        c_dOld = {"00": "0_Overview", "01": "2_Install_and_Launch, the first task", "02": "1_User_Interface, with 03", "03": "1_User_Interface, with 02",
+        dFixed = {"0": "Overview", "1": "User_Interface", "9": "Conclusion"}
+        dOld = {"00": "0_Overview", "01": "2_Install_and_Launch, the first task", "02": "1_User_Interface, with 03", "03": "1_User_Interface, with 02",
                   "09": "9_Conclusion, with 10 and 11", "10": "9_Conclusion, with 09 and 11", "11": "9_Conclusion, with 09 and 10"}
         dHave, lsOld = {}, []
         for sScript in lsScripts:
@@ -396,8 +396,8 @@ def main():
             m2 = re.match(r"Tutorial_(\d\d)_(.+)\.inix$", sName)
             if m2: lsOld.append((m2.group(1), sName))
         for sNum, sName in lsOld:
-            notice("%s uses the old two-digit numbering; it becomes %s" % (sName, c_dOld.get(sNum, ("task walk %d, after 2_Install_and_Launch" % (int(sNum) - 1)) if 4 <= int(sNum) <= 8 else "part of the pattern of ten")))
-        for sNum, sName in sorted(c_dFixed.items()):
+            notice("%s uses the old two-digit numbering; it becomes %s" % (sName, dOld.get(sNum, ("task walk %d, after 2_Install_and_Launch" % (int(sNum) - 1)) if 4 <= int(sNum) <= 8 else "part of the pattern of ten")))
+        for sNum, sName in sorted(dFixed.items()):
             if dHave.get(sNum) != sName:
                 notice("the pattern wants Tutorial_%s_%s.inix%s" % (sNum, sName, (", not " + dHave[sNum]) if sNum in dHave else ""))
         # Tasks are 2 to 8: seven of them, every number used, so every set is

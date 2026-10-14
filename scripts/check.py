@@ -75,7 +75,17 @@ import traceback
 # kind.py, which it imports, so their checks ran against an old kind.py and quietly skipped the layout and
 # installer findings ("kind.py has no standard folders", 9 October 2026). When the kit is on this computer, its
 # scripts folder comes first; an app's own copy is used only when there is no kit.
-for _sKitScripts in [os.path.join(os.environ.get("HomerDev", ""), "scripts"), r"C:\HomerDev\scripts"]:
+# The development kit first (13 October 2026): beside or above the project, then C:\HomerDev; the HomerDev variable,
+# which names the installed kit and lags it, last.
+_lsKitPlaces = []
+_sUp = os.getcwd()
+while True:
+    _lsKitPlaces.append(os.path.join(_sUp, "HomerDev", "scripts"))
+    if os.path.basename(_sUp).lower() == "homerdev": _lsKitPlaces.append(os.path.join(_sUp, "scripts"))
+    if os.path.dirname(_sUp) == _sUp: break
+    _sUp = os.path.dirname(_sUp)
+_lsKitPlaces += [r"C:\HomerDev\scripts", os.path.join(os.environ.get("HomerDev", ""), "scripts")]
+for _sKitScripts in _lsKitPlaces:
     if _sKitScripts.strip("\\/") and os.path.isfile(os.path.join(_sKitScripts, "kind.py")) \
             and os.path.abspath(_sKitScripts) != os.path.dirname(os.path.abspath(__file__)):
         sys.path.insert(0, os.path.abspath(_sKitScripts))
@@ -83,15 +93,15 @@ for _sKitScripts in [os.path.join(os.environ.get("HomerDev", ""), "scripts"), r"
 
 # The standard document set. ReadMe and License sit at the top of the project;
 # everything else lives in help, which is where the Homer layout puts documents.
-c_lsDocumentsTop = ["License", "ReadMe"]
+lsDocumentsTop = ["License", "ReadMe"]
 # THE DEFAULT DOCUMENT SET (22 Aug 2026): ReadMe and License at the top; the
 # app's own guide, Developer, History and Hotkeys in help. Tutorials only when
 # the app has tutorial scripts. Announce and FAQ are welcome, never required:
 # a check that demanded FAQ refused a release on 25 Sep 2026.
-c_lsDocumentsHelp = ["Developer", "History", "Hotkeys"]
-c_lsSkipFolders = [".git", ".venv", "__pycache__", "build", "dist", "notes", "venv"]
-c_lsGeneratedFiles = ["version.py", "version.cs"]   # written by every build
-c_lsTextExt = (".cs", ".py", ".ps1", ".md", ".htm", ".inix", ".txt", ".iss", ".cmd", ".bat")
+lsDocumentsHelp = ["Developer", "History", "Hotkeys"]
+lsSkipFolders = [".git", ".venv", "__pycache__", "build", "dist", "notes", "venv"]
+lsGeneratedFiles = ["version.py", "version.cs"]   # written by every build
+lsTextExtensions = (".cs", ".py", ".ps1", ".md", ".htm", ".inix", ".txt", ".iss", ".cmd", ".bat")
 
 sScriptDir = os.path.dirname(os.path.abspath(__file__))
 
@@ -344,7 +354,7 @@ def sourceFiles():
     lsNamed = namedByProject()
     lsFiles = []
     for sDirPath, lsDirs, lsNames in os.walk(sRoot):
-        lsDirs[:] = [s for s in lsDirs if s.lower() not in c_lsSkipFolders]
+        lsDirs[:] = [s for s in lsDirs if s.lower() not in lsSkipFolders]
         for sName in sorted(lsNames):
             if sName.lower().endswith((".cs", ".py")):
                 sPath = os.path.join(sDirPath, sName)
@@ -391,9 +401,9 @@ def readText(sPath):
 
 def checkDocuments():
     sApp = appName()
-    lsHelp = sorted(c_lsDocumentsHelp + [sApp])
+    lsHelp = sorted(lsDocumentsHelp + [sApp])
     if glob.glob(os.path.join(sRoot, "help", "Tutorial_*.inix")): lsHelp.append("Tutorials")
-    lsWanted = ([(sRoot, s) for s in c_lsDocumentsTop] +
+    lsWanted = ([(sRoot, s) for s in lsDocumentsTop] +
                 [(os.path.join(sRoot, "help"), s) for s in lsHelp])
     lsMissing = [s for sFolder, s in lsWanted
                  if not os.path.exists(os.path.join(sFolder, s + ".md"))]
@@ -444,10 +454,10 @@ def checkEncoding():
     lsWrong = []
     iChecked = 0
     for sDirPath, lsDirs, lsNames in os.walk(sRoot):
-        lsDirs[:] = [s for s in lsDirs if s.lower() not in c_lsSkipFolders]
+        lsDirs[:] = [s for s in lsDirs if s.lower() not in lsSkipFolders]
         for sName in sorted(lsNames):
-            if sName.lower() in c_lsGeneratedFiles: continue
-            if not sName.lower().endswith(c_lsTextExt): continue
+            if sName.lower() in lsGeneratedFiles: continue
+            if not sName.lower().endswith(lsTextExtensions): continue
             sPath = os.path.join(sDirPath, sName)
             if lsNamed is not None and not isNamed(os.path.relpath(sPath, sRoot), lsNamed): continue
             if lsKeep and isNamed(os.path.relpath(sPath, sRoot), lsKeep): continue
@@ -473,13 +483,36 @@ def checkEncoding():
                    countNoun(iChecked, "file"))
 
 
+def checkBatchBlocks():
+    """BATCH BLOCKS (12 October 2026). push.cmd carried echo ... (under 100 MB). inside an if block from 1.72.5 on:
+    every push ended in a syntax error right after its staged list, took build_release with it before the cycle's
+    lock was released, and left nothing in either log to say why. Each project batch file is read for that mistake."""
+    lsBad = []
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from fixEncoding import blockBreakers
+    except Exception as oError:
+        return finding("batch", "skip", "the kit's fixEncoding.py, which holds the rule, could not be loaded: %s" % oError)
+    for sDirPath, lsDirs, lsNames in os.walk(sRoot):
+        lsDirs[:] = [s for s in lsDirs if s.lower() not in lsSkipFolders and s.lower() not in ("logs", "notes")]
+        for sName in sorted(lsNames):
+            if not sName.lower().endswith((".cmd", ".bat")): continue
+            sPath = os.path.join(sDirPath, sName)
+            for iLine, sText in blockBreakers(sPath):
+                lsBad.append("%s line %d" % (os.path.relpath(sPath, sRoot), iLine))
+                logLine("BATCH BLOCK BROKEN: %s line %d: %s" % (os.path.relpath(sPath, sRoot), iLine, sText))
+    if lsBad:
+        return finding("batch", "fail", "a bracket in an echo closes its block early, a syntax error when the file runs (escape it as ^( ^)): " + ", ".join(lsBad[:10]))
+    return finding("batch", "pass", "no batch file has a bracket that closes its block early")
+
+
 def checkEmpty():
     """Zero-byte files among the project's own. logs is passed over (1.43.22):
     a run's record is not part of the project, and the kit's release was
     refused over three empty logs; tidy deletes those."""
     lsEmpty = []
     for sDirPath, lsDirs, lsNames in os.walk(sRoot):
-        lsDirs[:] = [s for s in lsDirs if s.lower() not in c_lsSkipFolders and s.lower() != "logs"]
+        lsDirs[:] = [s for s in lsDirs if s.lower() not in lsSkipFolders and s.lower() != "logs"]
         for sName in sorted(lsNames):
             sPath = os.path.join(sDirPath, sName)
             try:
@@ -681,7 +714,7 @@ def desktopShortcut():
 
 
 # Words that can stand where a declaration's type does but begin a statement.
-c_lsNotTypes = ("await", "case", "catch", "else", "for", "foreach", "if", "lock", "new", "return",
+lsNotTypes = ("await", "case", "catch", "else", "for", "foreach", "if", "lock", "new", "return",
                 "sizeof", "switch", "throw", "typeof", "using", "while", "yield")
 
 
@@ -698,7 +731,7 @@ def checkLocal():
     lsNamed = namedByProject()
     lsBad = []
     for sDirPath, lsDirs, lsNames in os.walk(sRoot):
-        lsDirs[:] = [s for s in lsDirs if s.lower() not in c_lsSkipFolders]
+        lsDirs[:] = [s for s in lsDirs if s.lower() not in lsSkipFolders]
         for sName in sorted(lsNames):
             if not sName.lower().endswith((".cs", ".py", ".iss", ".ps1", ".cmd", ".js")): continue
             sPath = os.path.join(sDirPath, sName)
@@ -808,7 +841,7 @@ def checkKeys():
         # Up or Page Down moves a cursor inside a window and takes nothing from
         # the desktop, which uses letters. A desktop shortcut's own letter --
         # Alt+Control+D opens DbDo -- is the sanctioned use and is not in source.
-        c_lsNavigation = ("arrow", "arrows", "up", "down", "left", "right", "home", "end",
+        lsNavigation = ("arrow", "arrows", "up", "down", "left", "right", "home", "end",
                           "pageup", "pagedown", "uparrow", "downarrow", "leftarrow", "rightarrow")
         # THE WHOLE COMBINATION IS READ (1.43.18): Alt+Control+Shift+H, not
         # "Alt+Control+Shift" with Shift taken for the key. And in Python the
@@ -822,7 +855,7 @@ def checkKeys():
         else:
             lsCombos = re.findall(r"\b(?:Alt\+Control|Control\+Alt)(?:\+Shift)?\+\w+", sText)
         for sKey in lsCombos:
-            if sKey.rsplit("+", 1)[1].lower() in c_lsNavigation: continue
+            if sKey.rsplit("+", 1)[1].lower() in lsNavigation: continue
             # The app's own desktop shortcut, as its installer declares it,
             # is the sanctioned use: FileDir's Hotkeys.inix lists Alt+Control+F
             # because that is how FileDir is opened, and HomerView's NVDA
@@ -860,7 +893,7 @@ def checkKeys():
             # statement keyword, is a declaration.
             if not oDef:
                 oDecl = re.match(r"\s{0,8}([\w<>\[\],\.]+)\s+(\w+)\s*\(", sLine)
-                if oDecl and oDecl.group(1) not in c_lsNotTypes and "=" not in sLine[:oDecl.end()]:
+                if oDecl and oDecl.group(1) not in lsNotTypes and "=" not in sLine[:oDecl.end()]:
                     oDef = re.match(r"\s{0,8}[\w<>\[\],\.]+\s+(\w+)\s*\(", sLine)
             if oDef: sMethod = oDef.group(1)
             # A CAPTION IS SHORT. An ampersand inside a sentence of help text is
@@ -1051,7 +1084,7 @@ def checkLayout(sKind):
     return finding("layout", "pass", "every top-level folder is a standard one" + ("" if not lsDeclaredExtra else "; declared besides: " + ", ".join(lsDeclaredExtra)))
 
 
-c_nCopyThreshold = 0.5
+nCopyThreshold = 0.5
 
 
 def sharedFraction(sPathA, sPathB):
@@ -1128,7 +1161,7 @@ def installerFindings(sText):
         sScript = mScript.group(1) if mScript else "installScreenReaderSupport.cmd"
         mRunAll = re.search(r"(?ms)^\[Run\]\s*\n(.*?)(?=^\[[A-Za-z]+\]\s*$)", s)
         if not mRunAll or sScript not in mRunAll.group(1): lBad.append("never runs %s, the script whose state decides its screen reader boxes" % sScript)
-        if re.search(r"(?i)\b(jaws)\b", s) and not re.search(r"(?i)Check:\s*isInstallJaws", s): lBad.append("offers no Install box for the JAWS scripts")
+        if re.search(r"(?i)\b(jaws)\b", s) and not re.search(r"(?i)Check:\s*(?:homerFinishRuns\s+and\s+)?isInstallJaws", s): lBad.append("offers no Install box for the JAWS scripts")
     return lBad
 
 def checkInstaller():
@@ -1204,7 +1237,7 @@ def checkSharedCode():
                 # module with a clashing name -- logged, not failed as a copy.
                 # HomerView's own paths.py and elevate.py were first reported as copies.
                 nShared = sharedFraction(sPath, dKitFiles[sLower])
-                if nShared >= c_nCopyThreshold:
+                if nShared >= nCopyThreshold:
                     lsBad.append((sRel.replace(os.sep, "/").lower(), "%s is a copy of the kit's %s that has drifted (%d%% of its lines shared)" % (sRel, sName, round(nShared * 100))))
                 else:
                     logLine("NAME: %s has the name of the kit's %s but different code (%d%% of lines shared); a different name would avoid confusion" % (sRel, sName, round(nShared * 100)))
@@ -1222,7 +1255,7 @@ def checkSharedCode():
                     setKit = classMembers(classBody(readText(os.path.join(sKit, "exec", "CSharp", dKitClasses[sClass])), sClass))
                     iSmaller = min(len(setApp), len(setKit))
                     nShared = (len(setApp & setKit) / float(iSmaller)) if iSmaller else 0.0
-                    if nShared >= c_nCopyThreshold:
+                    if nShared >= nCopyThreshold:
                         lsBad.append(((sRel.replace(os.sep, "/") + ":" + sClass).lower(), "%s defines class %s, a drifted copy of the kit's %s (%d%% of members shared)" % (sRel, sClass, dKitClasses[sClass], round(nShared * 100))))
                     else:
                         logLine("NAME: %s defines class %s, a different class from the kit's %s (%d%% of members shared); a different name would avoid confusion" % (sRel, sClass, dKitClasses[sClass], round(nShared * 100)))
@@ -1483,6 +1516,13 @@ def main():
     if bReusable and oCache.isCurrent("check pass", sPrint, []):
         sWhen = oCache.d["jobs"]["check pass"].get("when", "?")
         finding("reused", "pass", "%s passed this check at %s with exactly these files (fingerprint %s); not run again. check --fresh runs it in full" % (appName(), sWhen, sPrint[:12]))
+        # WHAT THE REUSED RUN DID NOT CHECK STILL WAS NOT CHECKED (13 October 2026, from an audit). Its skips are restored
+        # with their reasons; a pass recorded before findings were kept says its coverage is unknown.
+        lsKept = oCache.d["jobs"]["check pass"].get("findings")
+        if lsKept is None: finding("original coverage", "skip", "this pass was recorded before findings were kept, so which checks it skipped is not known; check --fresh runs every check")
+        else:
+            for sKeptName, sKeptVerdict, sKeptEvidence in lsKept:
+                if sKeptVerdict == "skip": finding(sKeptName, "skip", sKeptEvidence + " (in the run reused here)")
         sReport = writeReport()
         if not dArguments.quiet:
             sayLine("%s passed this check at %s, and none of its files has changed since; not run again." % (appName(), sWhen))
@@ -1496,6 +1536,7 @@ def main():
         checkDocumentsNotApp(sKind)
         checkLicense(sKind)
         checkEncoding()
+        checkBatchBlocks()
         checkEmpty()
         checkLayout(sKind)
         checkHeadings()
@@ -1508,6 +1549,7 @@ def main():
         checkDocuments()
         checkLicense("app")
         checkEncoding()
+        checkBatchBlocks()
         checkEmpty()
         checkVersion()
         checkPublish()
@@ -1542,7 +1584,12 @@ def main():
         sayLine("The report is %s." % os.path.basename(sReport))
     if oCache is not None:
         if iFailed: oCache.forget("check pass")
-        elif bReusable: oCache.record("check pass", sPrint, [])
+        elif bReusable:
+            # THE PASS IS RECORDED FOR THE FILES AS THE CHECK LEFT THEM (12 October 2026). The print taken before the
+            # checks was recorded, but a passing check runs the app's acceptance build, which rewrites the program, the
+            # installer and generated pages; so release's check, a minute after push's, found "its inputs changed" and
+            # built DbDo a third time. The files as they stand after a pass are the ones that passed.
+            oCache.record("check pass", oCache.fingerprint([sRoot], [sKind, platform.python_version()]), [], lsFindings)
     logLine("check end")
     return 1 if iFailed else 0
 

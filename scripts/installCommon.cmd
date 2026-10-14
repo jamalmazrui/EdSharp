@@ -21,6 +21,8 @@ rem   diagnosed from a file rather than from a window that has closed.
 if /i "%~1"=="setup" goto :setup
 if /i "%~1"=="log" goto :writeLog
 if /i "%~1"=="say" goto :saySo
+if /i "%~1"=="wingetHas" goto :wingetHas
+if /i "%~1"=="wingetUpgrade" goto :wingetUpgrade
 exit /b 0
 
 :setup
@@ -81,3 +83,33 @@ rem One line on the console, and the same line in the log, so the two agree.
 echo %~2
 echo %~2>> "%log%" 2>nul
 exit /b 0
+
+:wingetHas
+rem wingetHas <id>: exit 0 when winget lists the package as installed, 1 when not (13 October 2026). It reads winget's
+rem answer, not its exit code: winget list exits 0 on some machines while printing "No installed package found", and
+rem trusting that made Node.js look installed under a package that was not there, so its update never happened.
+winget list --id %~2 --exact --accept-source-agreements --disable-interactivity > "%TEMP%\homerWingetList.txt" 2>&1
+findstr /i /c:"%~2" "%TEMP%\homerWingetList.txt" >nul 2>&1
+set "iHomerHas=%ERRORLEVEL%"
+del /q "%TEMP%\homerWingetList.txt" >nul 2>&1
+if not "%iHomerHas%"=="0" exit /b 1
+exit /b 0
+
+:wingetUpgrade
+rem wingetUpgrade <id> <name>: updates an installed package, says so, and tells the truth about the result. Setup has
+rem already decided a newer version exists, so this updates rather than checking. Only winget's own "no newer version"
+rem (-1978335189) counts as already current; any other non-zero result is a failure, reported as one, where every
+rem installer used to say "already the newest winget offers" and succeed.
+echo Updating %~3 to the newest release. Nothing is asked of you while it runs.
+winget upgrade --id %~2 --exact --silent --accept-source-agreements --accept-package-agreements --disable-interactivity >> "%log%" 2>&1
+set "iHomerUpgrade=%ERRORLEVEL%"
+>> "%log%" echo %date% %time% winget upgrade %~2 exit code %iHomerUpgrade%
+if "%iHomerUpgrade%"=="0" (
+  echo %~3 was updated.
+  exit /b 0
+)
+if "%iHomerUpgrade%"=="-1978335189" (
+  echo %~3 is already the newest release.
+  exit /b 0
+)
+exit /b 1

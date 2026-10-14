@@ -2017,7 +2017,7 @@ return 0;
 // Each line is the command name, a tab, then the key and the
 // description separated by a comma -- the same shape as the file, so the
 // two can be compared, and the audit script does compare them.
-static readonly string[] c_aCommandSummaries = new string[] {
+static readonly string[] aCommandSummaries = new string[] {
 "Launch EdSharp\tAlt+Control+E, Launch or activate the EdSharp application via a Windows desktop shortcut",
 "Hotkey Summary\tAlt+Shift+H, Display this list of command names, hot keys, and descriptions in a new window",
 "Documentation\tF1, Open Documentation in web browser",
@@ -2252,7 +2252,7 @@ static readonly string[] c_aCommandSummaries = new string[] {
 "Tutorials\tControl+Shift+F1, Open the role-based quick-start tutorials in your web browser: Python, NVDA add-ons, JAWS scripts, web development, C#, translation, article writing, slides, summarizing, and batch conversion",
 "Sample Programs\tControl+Shift+F2, List the sample programs that ship with EdSharp and open one",
 "Copy Log\tControl+F12, Copy this session's log path to the clipboard, as a file for pasting into a mail message and as text"
-}; // c_aCommandSummaries
+}; // aCommandSummaries
 
 static Dictionary<string, string> dCommandSummaries = null;
 
@@ -2260,7 +2260,7 @@ static Dictionary<string, string> dCommandSummaries = null;
 public static string builtInSummary(string sCommand) {
 if (dCommandSummaries == null) {
 dCommandSummaries = new Dictionary<string, string>();
-foreach (string sLine in c_aCommandSummaries) {
+foreach (string sLine in aCommandSummaries) {
 int iTab = sLine.IndexOf('\t');
 if (iTab <= 0) continue;
 string sName = sLine.Substring(0, iTab);
@@ -3562,7 +3562,7 @@ if (sText.Trim().Length == 0) { AddMessage("No text!"); return; }
 // One dialog rather than two: both languages are the same question
 // asked twice, and a person choosing a pair should see the pair.
 string[] aLanguages = new string[] {"Arabic", "Chinese", "Dutch", "English", "French", "German", "Hindi", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Spanish", "Swedish", "Turkish", "Ukrainian", "Vietnamese"};
-string[] aChosen = Dialog.PickLanguagePair(aLanguages, App.ReadData("TranslateFrom", Dialog.c_sDetectLanguage), App.ReadData("TranslateTo", "English"));
+string[] aChosen = Dialog.PickLanguagePair(aLanguages, App.ReadData("TranslateFrom", Dialog.sDetectLanguage), App.ReadData("TranslateTo", "English"));
 if (aChosen == null) return;
 string sFromLanguage = aChosen[0];
 string sToLanguage = aChosen[1];
@@ -3576,7 +3576,7 @@ App.WriteData("TranslateTo", sToLanguage);
 // the text and decides. Naming a source that is wrong is worse than
 // naming none: it tells the model the text is already in the target
 // language, and the reply comes back untranslated.
-bool bDetect = Util.Equiv(sFromLanguage, Dialog.c_sDetectLanguage);
+bool bDetect = Util.Equiv(sFromLanguage, Dialog.sDetectLanguage);
 string sPrompt = (bDetect
 ? "Translate the following text into " + sToLanguage + ", whatever language it is written in."
 : "Translate the following text from " + sFromLanguage + " into " + sToLanguage + ".")
@@ -6993,8 +6993,8 @@ return sbValue.ToString();
 } // jsonExtractString method
 
 public int runCodeBlocks() {
-const string c_sOutputBegins = "<!-- output begins -->";
-const string c_sOutputEnds = "<!-- output ends -->";
+const string sOutputBegins = "<!-- output begins -->";
+const string sOutputEnds = "<!-- output ends -->";
 HomerRichTextBox rtb = this.Child.RTB;
 string sDocFile = this.Child.File;
 string sDocDir = (sDocFile != null && sDocFile.Contains("\\")) ? Path.GetDirectoryName(sDocFile) : Directory.GetCurrentDirectory();
@@ -7033,16 +7033,16 @@ iBlocksRun++;
 // Replace an existing marked region right after the fence, or insert one.
 int iRegionStart = iClose + 1;
 int iRegionEnd = -1;
-if (iRegionStart < lsLines.Count && lsLines[iRegionStart].Trim() == c_sOutputBegins) {
+if (iRegionStart < lsLines.Count && lsLines[iRegionStart].Trim() == sOutputBegins) {
 for (int j = iRegionStart + 1; j < lsLines.Count; j++) {
-if (lsLines[j].Trim() == c_sOutputEnds) { iRegionEnd = j; break; }
+if (lsLines[j].Trim() == sOutputEnds) { iRegionEnd = j; break; }
 }
 }
 if (iRegionEnd >= 0) lsLines.RemoveRange(iRegionStart, iRegionEnd - iRegionStart + 1);
 List<string> lsRegion = new List<string>();
-lsRegion.Add(c_sOutputBegins);
+lsRegion.Add(sOutputBegins);
 foreach (string sOutputLine in sOutput.Replace("\r\n", "\n").TrimEnd('\n').Split('\n')) lsRegion.Add(sOutputLine);
-lsRegion.Add(c_sOutputEnds);
+lsRegion.Add(sOutputEnds);
 lsLines.InsertRange(iRegionStart, lsRegion);
 i = iRegionStart + lsRegion.Count;
 }
@@ -7110,7 +7110,7 @@ public List<string> checkMermaidDiagram(List<string> lsBlock, int iStartLine, bo
 // about the connections between its nodes, so the rendered diagram is never a
 // substitute for a description. The block's own source text remains the
 // accessible view, which is why EdSharp shows it rather than hiding it.
-const int c_iShortDescription = 40;
+const int iShortDescription = 40;
 List<string> lsFindings = new List<string>();
 string sBlock = String.Join("\n", lsBlock.ToArray());
 Regex rexAccTitle = new Regex(@"^\s*accTitle\s*[:{]", RegexOptions.Multiline);
@@ -7134,9 +7134,9 @@ if (sTrim.StartsWith("accDescr")) {
 int iColon = sTrim.IndexOf(':');
 if (iColon >= 0) sDescription = sTrim.Substring(iColon + 1).Trim();
 }
-else if (sDescription.Length > 0 && !sTrim.StartsWith("}") && sTrim.Length > 0 && sDescription.Length < c_iShortDescription) sDescription += " " + sTrim;
+else if (sDescription.Length > 0 && !sTrim.StartsWith("}") && sTrim.Length > 0 && sDescription.Length < iShortDescription) sDescription += " " + sTrim;
 }
-if (sDescription.Length > 0 && sDescription.Length < c_iShortDescription) {
+if (sDescription.Length > 0 && sDescription.Length < iShortDescription) {
 lsFindings.Add("Line " + iStartLine + ": the diagram's description is only " + Util.Pluralize(sDescription.Length, "character") + " long. The checklist asks for a detailed one, since it replaces the picture rather than labelling it.");
 }
 }
@@ -7342,14 +7342,14 @@ public string FillSnippetForm(string sText) {
 //
 // Returns the text with the answers in place, the text unchanged when
 // there is no block, or null when the form was cancelled.
-const string c_sFormOpen = "[[form]]";
-const string c_sFormEnd = "[[end]]";
-int iOpen = sText.IndexOf(c_sFormOpen);
+const string sFormOpen = "[[form]]";
+const string sFormEnd = "[[end]]";
+int iOpen = sText.IndexOf(sFormOpen);
 if (iOpen < 0) return sText;
-int iEnd = sText.IndexOf(c_sFormEnd, iOpen);
+int iEnd = sText.IndexOf(sFormEnd, iOpen);
 if (iEnd < 0) return sText;
-string sDefinition = sText.Substring(iOpen + c_sFormOpen.Length, iEnd - iOpen - c_sFormOpen.Length);
-string sRest = sText.Substring(iEnd + c_sFormEnd.Length).TrimStart('\r', '\n');
+string sDefinition = sText.Substring(iOpen + sFormOpen.Length, iEnd - iOpen - sFormOpen.Length);
+string sRest = sText.Substring(iEnd + sFormEnd.Length).TrimStart('\r', '\n');
 List<Homer.InixCodec.Section> lsSections = Homer.InixCodec.parseLines(sDefinition.Replace("\r\n", "\n").Split('\n'));
 Homer.LbcInixForm frmSnippet = new Homer.LbcInixForm(lsSections);
 if (frmSnippet.run(App.Frame).Length == 0) return null;
@@ -7548,10 +7548,10 @@ Util.Say(rtb.RowText);
 // the original, apart from normalized indentation and the spoken
 // "# end" markers PyDent adds at block ends.
 
-static readonly string[] c_aPythonBlockWords = new string[] {"def", "class", "if", "elif", "else", "for", "while", "try", "except", "finally", "with", "match", "case"};
+static readonly string[] aPythonBlockWords = new string[] {"def", "class", "if", "elif", "else", "for", "while", "try", "except", "finally", "with", "match", "case"};
 
 static bool isPythonBlockWord(string sWord) {
-foreach (string s in c_aPythonBlockWords) if (s == sWord) return true;
+foreach (string s in aPythonBlockWords) if (s == sWord) return true;
 return false;
 } // isPythonBlockWord method
 
@@ -7904,8 +7904,8 @@ if (sSubject.Trim().Length == 0) sSubject = "Document";
 
 if (!bAttach) {
 // mailto carries about 2000 characters safely across mail programs.
-const int c_iBodyLimit = 1800;
-if (sBody.Length > c_iBodyLimit) {
+const int iBodyLimit = 1800;
+if (sBody.Length > iBodyLimit) {
 if (Dialog.Confirm("Mail", "This document is longer than a mail link can carry (" + Util.Pluralize(sBody.Length, "character") + ").\n\nSend it as an attachment instead?", "Y") != "Y") return;
 bAttach = true;
 }
@@ -10629,7 +10629,7 @@ COM.InvokeVerb(sPath, "Properties");
 // Cancel and Help behave as they do everywhere else -- Control+Enter
 // accepts from anywhere, Escape cancels, F1 describes the fields.
 // Returns the two languages, or null when cancelled.
-public const string c_sDetectLanguage = "Detect";
+public const string sDetectLanguage = "Detect";
 
 public static string[] PickLanguagePair(string[] aLanguages, string sFrom, string sTo) {
 // The "from" list begins with Detect, and Detect is what a first use
@@ -10643,7 +10643,7 @@ public static string[] PickLanguagePair(string[] aLanguages, string sFrom, strin
 // found it. Asking the model to work out the source removes the whole
 // class of error, and it is what every translation tool does by default.
 List<string> lsFrom = new List<string>();
-lsFrom.Add(c_sDetectLanguage);
+lsFrom.Add(sDetectLanguage);
 lsFrom.AddRange(aLanguages);
 List<string> lsLanguages = new List<string>(aLanguages);
 LbcDialog dlg = new LbcDialog("Translate", App.Frame);
@@ -13754,8 +13754,8 @@ if (bWait && p != null) {
 // for a big document. A process still running after that is ended, and
 // the caller's own error dialog then shows the command line for
 // diagnosis, which beats a frozen editor with no explanation.
-const int c_iWaitMilliseconds = 120000;
-if (!p.WaitForExit(c_iWaitMilliseconds)) {
+const int iWaitMilliseconds = 120000;
+if (!p.WaitForExit(iWaitMilliseconds)) {
 Log("TIMEOUT after 120 seconds; process ended: " + sCommand);
 try { p.Kill(); }
 catch (Exception) {}

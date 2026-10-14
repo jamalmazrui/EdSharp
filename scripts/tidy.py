@@ -135,12 +135,12 @@ def homerLogPath(sScriptDir):
 
 
 
-c_iLargeBytes = 10 * 1024 * 1024        # what counts as large in the history
+iLargeBytes = 10 * 1024 * 1024        # what counts as large in the history
 
 # Never pushed, whatever RepoFiles.txt says. Alphabetical, as every list in
 # Homer code is. Each is either private to the developer, regenerated on every
 # build, or a product rather than a source.
-c_lsNeverPushed = [
+lsNeverPushed = [
     # *.jsb (1.43.38): a compiled JAWS script belongs to the JAWS version
     # that built it; the installer compiles on the user's machine.
     "*.exe", "*.jsb", "*.log", "*.obj", "*.pdb", "Version.cs", "__pycache__/",
@@ -154,7 +154,7 @@ c_lsNeverPushed = [
 
 # Folders a build makes. The survey does not walk into them, because what is
 # inside belongs to PyInstaller or the compiler rather than to the project.
-c_lsSkipFolders = [".git", ".venv", "__pycache__", "build", "dist", "exec", "logs", "notes", "venv"]
+lsSkipFolders = [".git", ".venv", "__pycache__", "build", "dist", "exec", "logs", "notes", "venv"]
 # THE LOG GOES IN logs\, WITH A TIMESTAMP IN ITS NAME. Homer convention:
 # <App>-<task>-yyyyMMdd-HHmmss.log, one per run, so an alphabetical sort is a
 # chronological one and the whole folder can be zipped and sent. A single
@@ -163,13 +163,13 @@ c_lsSkipFolders = [".git", ".venv", "__pycache__", "build", "dist", "exec", "log
 # <App>-<task>-yyyyMMdd-HHmmss.log, one per run, so an alphabetical sort is a
 # chronological one and the whole folder can be zipped and sent. A single
 # fixed name beside the script overwrites the evidence of the run before.
-c_lsInstallerExcludes = [".git", ".venv", "__pycache__", "*.pyc", "venv"]   # build leftovers no installer may ship
-c_sLogName = "tidy.log"
-c_sNotes = "notes"
+lsInstallerExcludes = [".git", ".venv", "__pycache__", "*.pyc", "venv"]   # build leftovers no installer may ship
+sLogName = "tidy.log"
+sNotesName = "notes"
 
 # The standing files of a Homer project, whether or not the installer names
 # them. Patterns are matched against the name, case-insensitively.
-c_lsStandingNames = [
+lsStandingNames = [
     r"^readme\.(md|htm)$", r"^history\.(md|htm)$", r"^license\.(md|htm)$",
     r"^developer\.(md|htm)$", r"^hotkeys\.(md|htm)$", r"^announce\.(md|htm)$",
     r"^version\.txt$", r"^repofiles\.txt$", r"^\.gitignore$", r"^\.gitattributes$",
@@ -186,7 +186,7 @@ c_lsStandingNames = [
 ]
 
 # Where an unnamed file goes when it is moved out of the way.
-c_ldFolders = [
+ldFolders = [
     ("archives", [".zip", ".7z", ".rar", ".gz", ".tar", ".cab", ".msi", ".exe"]),
     ("mail", [".eml", ".msg"]),
     ("drafts", [".md", ".htm", ".html", ".txt", ".docx", ".doc", ".rtf", ".pdf"]),
@@ -343,7 +343,7 @@ def installerExcludes():
             if oSource and re.search(r"(?i)\brecursesubdirs\b", sLine):
                 oExcludes = re.search(r'(?i)Excludes:\s*"([^"]*)"', sLine)
                 lsHave = [x.strip() for x in oExcludes.group(1).split(",") if x.strip()] if oExcludes else []
-                lsAdd = [x for x in c_lsInstallerExcludes if x.lower() not in [h.lower() for h in lsHave]]
+                lsAdd = [x for x in lsInstallerExcludes if x.lower() not in [h.lower() for h in lsHave]]
                 if lsAdd:
                     sAll = ",".join(lsHave + lsAdd)
                     sEnd = "\r" if sLine.endswith("\r") else ""
@@ -359,7 +359,13 @@ def installerExcludes():
 
 
 def namedByRepoFiles():
-    """Every line of RepoFiles.txt that is not blank or a comment."""
+    """Every line of RepoFiles.txt that is not blank or a comment, and every app source build.cmd compiles.
+
+    A SOURCE THE BUILD COMPILES IS NEVER A STRAY (12 October 2026). bookFido's build.cmd compiles PdfStructure.cs
+    beside bookFido.cs (its appSources line), but RepoFiles.txt did not name it: tidy moved it into notes\\other as a
+    stray, the repository never carried it, and the next build stopped on "Source file PdfStructure.cs could not be
+    found". A file build.cmd lists in appSources is now named whether or not RepoFiles.txt says so, and the omission
+    is reported so the line gets added."""
     sPath = os.path.join(sRoot, "RepoFiles.txt")
     if not os.path.exists(sPath): return []
     lsNames = []
@@ -367,7 +373,27 @@ def namedByRepoFiles():
         sLine = sLine.strip()
         if sLine == "" or sLine.startswith("#") or sLine.startswith(";"): continue
         lsNames.append(sLine)
+    setLower = set(s.replace("\\", "/").lower() for s in lsNames)
+    for sSource in appSourcesOfBuild():
+        if sSource.replace("\\", "/").lower() in setLower: continue
+        lsNames.append(sSource)
+        if sSource not in lsReportedSources:
+            lsReportedSources.append(sSource)
+            sayLine("%s is compiled by build.cmd but not named in RepoFiles.txt; it is kept and pushed anyway. Add it to RepoFiles.txt." % sSource)
     return lsNames
+
+
+lsReportedSources = []
+
+
+def appSourcesOfBuild():
+    """The files build.cmd's appSources line names (set "appSources=A.cs B.cs"), or none."""
+    sBuild = os.path.join(sRoot, "build.cmd")
+    if not os.path.isfile(sBuild): return []
+    try: sText = open(sBuild, "rb").read().decode("utf-8-sig", errors="replace")
+    except Exception: return []
+    oLine = re.search(r'(?im)^\s*set\s+"appSources=([^"]*)"', sText)
+    return [s for s in (oLine.group(1).split() if oLine else []) if s and "%" not in s]
 
 
 def namedByLocalFiles():
@@ -421,7 +447,7 @@ def placementFor(sRelative, lsNamed):
 # files that no list named, and tidy moved none of them, reporting 0 to move. A
 # project with a RepoFiles.txt is now judged by its lists alone; one without
 # keeps the fallback.
-c_lsLegacyStandingNames = [
+lsLegacyStandingNames = [
     r"^build[a-z0-9_]*\.(cmd|ps1|py)$", r"^create[a-z0-9_]*repo\.(cmd|ps1)$",
     r"^homertidy\.(cmd|py)$", r"^install[a-z0-9_]*\.(cmd|ps1)$", r"^get[a-z0-9_]*\.(cmd|ps1)$",
     r"^[a-z0-9_+-]+\.(cs|py|js|iss|ico|inix|manifest|config|lua)$"]
@@ -432,9 +458,9 @@ def belongsTo(sRelative, lsNamed):
     sLower = sRelative.replace("\\", "/").lower()
     sName = os.path.basename(sLower)
 
-    if sLower.startswith(".git/") or sLower.startswith(c_sNotes + "/"): return True
+    if sLower.startswith(".git/") or sLower.startswith(sNotesName + "/"): return True
     bHasLists = os.path.isfile(os.path.join(sRoot, "RepoFiles.txt"))
-    for sPattern in c_lsStandingNames + ([] if bHasLists else c_lsLegacyStandingNames):
+    for sPattern in lsStandingNames + ([] if bHasLists else lsLegacyStandingNames):
         if re.match(sPattern, sName): return True
     for sNamed in lsNamed:
         sNamedLower = sNamed.replace("\\", "/").lower()
@@ -454,7 +480,7 @@ def belongsTo(sRelative, lsNamed):
 # them into notes\other, and committed them. A thing the build fetches from
 # the web belongs in neither the folder nor the history: it is deleted, and
 # the log says so. The patterns are the engines and models the kit fetches.
-c_lsRefetchable = ["*.lib", "*.onnx", "*.onnx.json", "*.ort", "*.tar.bz2", "espeak-ng-data",
+lsRefetchable = ["*.lib", "*.onnx", "*.onnx.json", "*.ort", "*.tar.bz2", "espeak-ng-data",
                    "espeak-ng.dll", "kokoro-*", "onnxruntime*", "piper", "piper.exe",
                    "piper_phonemize.dll", "sherpa-onnx*", "voices"]
 
@@ -463,7 +489,7 @@ def isRefetchable(sRelative):
     """True when any part of the path names something the build fetches."""
     lsParts = re.split(r"[\\/]", sRelative)
     for sPart in lsParts:
-        for sPattern in c_lsRefetchable:
+        for sPattern in lsRefetchable:
             if fnmatch.fnmatch(sPart.lower(), sPattern.lower()): return True
     return False
 
@@ -483,7 +509,7 @@ def deleteRefetchable(sRelative):
 def noteFolderFor(sName):
     """Which notes subfolder an unnamed file goes to."""
     sExt = os.path.splitext(sName)[1].lower()
-    for sFolder, lsExts in c_ldFolders:
+    for sFolder, lsExts in ldFolders:
         if sExt in lsExts: return sFolder
     return "other"
 
@@ -518,7 +544,7 @@ def surveyFolder(lsNamed):
                 lsEmpty.append(os.path.relpath(sFull, sRoot))
 
     for sDirPath, lsDirs, lsFiles in os.walk(sRoot):
-        lsDirs[:] = [s for s in lsDirs if s.lower() not in c_lsSkipFolders]
+        lsDirs[:] = [s for s in lsDirs if s.lower() not in lsSkipFolders]
         for sName in sorted(lsFiles):
             sFull = os.path.join(sDirPath, sName)
             sRelative = os.path.relpath(sFull, sRoot)
@@ -577,7 +603,7 @@ def matchesAny(sRelative, lsNames):
 # 26 September found "0 files tracked that the project does not name" while
 # all four were tracked and RepoFiles.txt names none of them. A tracked file
 # now stays only when RepoFiles.txt names it and LocalFiles.txt does not.
-c_lsAlwaysTracked = [".gitattributes", ".gitignore", "KeepEncoding.txt", "LocalFiles.txt", "RepoFiles.txt"]
+lsAlwaysTracked = [".gitattributes", ".gitignore", "KeepEncoding.txt", "LocalFiles.txt", "RepoFiles.txt"]
 
 
 def exactNames(lsNames):
@@ -593,7 +619,7 @@ def carveOuts(lsRepo, lsLocal):
     is where the code that runs belongs (1.43.22). A RepoFiles.txt line that
     lies inside a folder LocalFiles.txt or the never-pushed list keeps off is
     a deliberate exception to that folder, and wins."""
-    lsFolders = [s.replace("\\", "/").strip("/").lower() + "/" for s in list(lsLocal) + c_lsNeverPushed
+    lsFolders = [s.replace("\\", "/").strip("/").lower() + "/" for s in list(lsLocal) + lsNeverPushed
                  if s.replace("\\", "/").endswith("/") and "*" not in s]
     lsCarve = []
     for sEntry in lsRepo:
@@ -612,13 +638,13 @@ def staysTracked(sRelative, lsRepo, lsLocal):
     EdSharp's LocalFiles.txt says *.dll, because the build fetches its
     libraries, and its RepoFiles.txt names Tektosyne.dll, which cannot be
     fetched and so must be carried. Named exactly, it stays. Anything else
-    LocalFiles.txt matches, or the kit never pushes (c_lsNeverPushed: the
+    LocalFiles.txt matches, or the kit never pushes (lsNeverPushed: the
     release scripts, Version.cs, any .exe), goes; so does anything
     RepoFiles.txt does not name at all.
     """
     if matchesAny(sRelative, exactNames(lsRepo)): return True
     if matchesAny(sRelative, carveOuts(lsRepo, lsLocal)): return True
-    if matchesAny(sRelative, c_lsNeverPushed): return False
+    if matchesAny(sRelative, lsNeverPushed): return False
     if matchesAny(sRelative, lsLocal): return False
     return matchesAny(sRelative, lsRepo)
 
@@ -627,7 +653,7 @@ def surveyRepo(lsNamed):
     """Return (lsTrackedStrays, lsLargeInHistory, sStatus)."""
     iCode, sOut = runGit(["ls-files"], True)
     lsTracked = [s.strip() for s in sOut.splitlines() if s.strip()]
-    lsRepo = namedByRepoFiles() + c_lsAlwaysTracked
+    lsRepo = namedByRepoFiles() + lsAlwaysTracked
     lsLocal = namedByLocalFiles()
     lsTrackedStrays = [s for s in lsTracked if not staysTracked(s, lsRepo, lsLocal)]
 
@@ -642,7 +668,7 @@ def surveyRepo(lsNamed):
         for sLine in sSizes.splitlines():
             lsParts = sLine.split()
             if len(lsParts) != 3 or lsParts[1] != "blob": continue
-            if int(lsParts[2]) >= c_iLargeBytes: dBig[lsParts[0]] = int(lsParts[2])
+            if int(lsParts[2]) >= iLargeBytes: dBig[lsParts[0]] = int(lsParts[2])
         if dBig:
             for sLine in sObjects.splitlines():
                 lsParts = sLine.split(" ", 1)
@@ -658,7 +684,7 @@ def surveyRepo(lsNamed):
 
 def moveToNotes(sRelative):
     sFrom = os.path.join(sRoot, sRelative)
-    sFolder = os.path.join(sRoot, c_sNotes, noteFolderFor(sRelative))
+    sFolder = os.path.join(sRoot, sNotesName, noteFolderFor(sRelative))
     os.makedirs(sFolder, exist_ok=True)
     sTo = os.path.join(sFolder, os.path.basename(sRelative))
     iSuffix = 2
@@ -676,7 +702,7 @@ def writeWhitelistGitignore():
 
     This is the whole publishing policy in one file: a whitelist, generated, so
     a file nobody named cannot be pushed by accident. Anything already ignored
-    by name in c_lsNeverPushed stays ignored even if RepoFiles.txt names it,
+    by name in lsNeverPushed stays ignored even if RepoFiles.txt names it,
     because those are private or generated and naming one is a mistake.
     """
     lsNamed = namedByRepoFiles()
@@ -747,7 +773,7 @@ def writeWhitelistGitignore():
             lsLines.append("")
     lsLines.append("# Never pushed, whatever RepoFiles.txt says: private notes, maintainer")
     lsLines.append("# scripts, logs, and anything a build makes.")
-    for sPattern in c_lsNeverPushed:
+    for sPattern in lsNeverPushed:
         lsLines.append(sPattern)
     lsLines.append("")
 
@@ -811,6 +837,30 @@ def kitVersion(sDir):
     except Exception: return (0,)
 
 
+def renameObsoleteConstants():
+    """CAMEL TYPE CONSTANTS, WITHOUT c_ (12 October 2026). A constant is named exactly like a variable; the earlier c_
+    prefix is obsolete. The kit's scripts\\camelType.py renames every constant written with that prefix in this project's
+    code, and every reference to it, unless its plain name is already taken in a file that uses it -- that one is kept,
+    and named, for a person to give a better name. The renamed code is compiled by push's check before anything is
+    staged, so a rename that broke a build would stop there."""
+    sKit = findKitFolder()
+    sScript = os.path.join(sKit, "scripts", "camelType.py") if sKit else ""
+    if not sScript or not os.path.isfile(sScript):
+        sScript = os.path.join(os.path.dirname(os.path.abspath(__file__)), "camelType.py")
+    if not os.path.isfile(sScript):
+        logLine("Camel Type constants: no camelType.py in the kit or beside tidy; skipped")
+        return False
+    import importlib.util
+    oSpec = importlib.util.spec_from_file_location("homerCamelType", sScript)
+    oModule = importlib.util.module_from_spec(oSpec)
+    oSpec.loader.exec_module(oModule)
+    iNames, iReferences, iFiles, dKept = oModule.run(sRoot, True, lambda s: logLine("camelType: " + s))
+    if iNames: sayLine("Renamed %s from the obsolete c_ form to Camel Type, in %s." % (countNoun(iNames, "constant"), countNoun(iFiles, "file")))
+    if dKept: sayLine("%s kept c_, because the plain name is already taken; the log names each." % countNoun(len(dKept), "constant"))
+    logLine("Camel Type constants: %d renamed, %d references in %d files, %d kept (%s)" % (iNames, iReferences, iFiles, len(dKept), sScript))
+    return True
+
+
 def findKitFolder():
     """Where the kit is: the HomerDev variable, a HomerDev folder above or
     beside the project, or one at the top of a fixed drive.
@@ -844,12 +894,12 @@ def findKitFolder():
 # Files an app may legitimately hold byte for byte as the kit holds them: the
 # shared scripts the build refreshes from the kit, the licence, the policy
 # files that are the same everywhere. Never taken for strays.
-c_lsNeverStray = ("scripts/", "License.md", "License.htm", ".gitattributes", ".gitignore", "KeepEncoding.txt", "version.txt")
+lsNeverStray = ("scripts/", "License.md", "License.htm", ".gitattributes", ".gitignore", "KeepEncoding.txt", "version.txt")
 
 # One-off repair scripts delivered during 5 and 6 October 2026, each of which
 # did its work once; the build retires them so the release check, which reads
 # scripts too, stops meeting their text.
-c_lsRetiredScripts = ("scripts/repairFileDir.cmd", "scripts/restoreFileDir.cmd", "scripts/retireRepair.cmd", "scripts/removeKitFiles.cmd")
+lsRetiredScripts = ("scripts/repairFileDir.cmd", "scripts/restoreFileDir.cmd", "scripts/retireRepair.cmd", "scripts/removeKitFiles.cmd")
 
 
 def kitPlaced():
@@ -924,7 +974,7 @@ def removeStrayKitFiles(bRepo):
     iRemoved = 0
     lsDirs = set()
     for sRel in sorted(lsKitFiles):
-        if any(sRel == s or (s.endswith("/") and sRel.startswith(s)) for s in c_lsNeverStray): continue
+        if any(sRel == s or (s.endswith("/") and sRel.startswith(s)) for s in lsNeverStray): continue
         sMine = os.path.join(sRoot, sRel.replace("/", os.sep))
         if not os.path.isfile(sMine): continue
         try:
@@ -936,7 +986,7 @@ def removeStrayKitFiles(bRepo):
         lsDirs.add(os.path.dirname(sMine))
         logLine("stray kit file removed: " + sRel)
         if bRepo: runGit(["rm", "-q", "--cached", sRel], bQuiet=True)
-    for sRel in c_lsRetiredScripts:
+    for sRel in lsRetiredScripts:
         sMine = os.path.join(sRoot, sRel.replace("/", os.sep))
         if os.path.isfile(sMine):
             os.remove(sMine); iRemoved += 1
@@ -988,9 +1038,9 @@ def removeKitSampleLeftovers(bRepo):
     if not sKit or os.path.abspath(sRoot).lower() == sKit.lower(): return 0
     sSamples = os.path.join(sRoot, "templates", "samples")
     if not os.path.isdir(sSamples): return 0
-    c_lsLeftovers = ["FruitBasket*", "build", "dist", "logs", ".venv", "venv", "__pycache__", "Version.cs", "version.py",
+    lsLeftovers = ["FruitBasket*", "build", "dist", "logs", ".venv", "venv", "__pycache__", "Version.cs", "version.py",
                      "version.txt", "accept.inix", "*.spec", "*.pyc", "evidence-*.md"]
-    lsOther = [s for s in os.listdir(sSamples) if not any(fnmatch.fnmatch(s.lower(), sPattern.lower()) for sPattern in c_lsLeftovers)]
+    lsOther = [s for s in os.listdir(sSamples) if not any(fnmatch.fnmatch(s.lower(), sPattern.lower()) for sPattern in lsLeftovers)]
     if lsOther:
         logLine("kit sample leftovers: templates\\samples kept, since it holds " + ", ".join(sorted(lsOther)[:5]) + ", not the kit's")
         return 0
@@ -1100,6 +1150,8 @@ def main():
         except Exception as oError: logLine("kit sample leftovers: skipped, " + str(oError))
         try: givePagesOneHeading()
         except Exception as oError: logLine("one heading per page: skipped, " + str(oError))
+        try: renameObsoleteConstants()
+        except Exception as oError: logLine("Camel Type constants: skipped, " + str(oError))
 
     # THE BUILD SCRIPT TAKES ITS SHORT NAME HERE (1.43.56). Since 1.43.55 an
     # app's build script is build.cmd, and check fails build<App>.cmd. Tidy runs

@@ -44,10 +44,10 @@ import os
 import shutil
 import sys
 
-c_sApp = "EdSharp"
+sApp = "EdSharp"
 
 # Folder moves: from, to. The destination's parent is made as needed.
-c_lFolderMoves = [
+lFolderMoves = [
     ("Convert",      os.path.join("configs", "convert")),
     ("Dictionaries", os.path.join("data", "dictionaries")),
     ("Samples",      os.path.join("templates", "samples")),
@@ -55,14 +55,14 @@ c_lFolderMoves = [
 ]
 
 # Documents that move into help, with their .htm partners.
-c_lHelpStems = ["Announce", "EdSharp", "FAQ", "History", "Hotkeys", "Tutorials"]
-c_lHelpFiles = ["history.txt", "lgpl.txt"]
+lHelpStems = ["Announce", "EdSharp", "FAQ", "History", "Hotkeys", "Tutorials"]
+lHelpFiles = ["history.txt", "lgpl.txt"]
 
 # Settings that move into configs.
-c_lConfigFiles = ["EdSharp.ini", "EdSharp.inix", "Hotkeys.ini", "Tools.inix"]
+lConfigFiles = ["EdSharp.ini", "EdSharp.inix", "Hotkeys.ini", "Tools.inix"]
 
 # Build products, which belong in exec and nowhere else.
-c_lExecFiles = [
+lExecFiles = [
     "EdSharp.dll", "EdSharp.exe", "EdSharp_Setup.exe", "EdSharp_setup.exe",
     "HtmlAgilityPack.dll", "Markdig.dll", "ReverseMarkdown.dll",
     "Tektosyne.dll", "Ude.dll", "WeCantSpell.Hunspell.dll",
@@ -72,11 +72,11 @@ c_lExecFiles = [
 
 # The shared classes. Deleted outright: a copy left here is how a build
 # silently compiles a different Lbc from the one every other app has.
-c_lClassCopies = ["Inix.cs", "KeyMap.cs", "Lbc.cs", "Say.cs", "Web.cs", "inixVert.cs"]
+lClassCopies = ["Inix.cs", "KeyMap.cs", "Lbc.cs", "Say.cs", "Web.cs", "inixVert.cs"]
 
 # Earlier editions of what the kit now does, and the odds and ends the new
 # layout leaves behind. To notes, not deleted.
-c_lRetired = [
+lRetired = [
     "Build.cmd", "Build.ps1",
     "CamelType_CSharp.htm", "CamelType_CSharp.md",
     "CamelType_JAWSScript.htm", "CamelType_JAWSScript.md",
@@ -100,7 +100,7 @@ c_lRetired = [
 
 # Install scripts, which the kit keeps in scripts and the installer ships
 # from there.
-c_lInstallScripts = [
+lInstallScripts = [
     "installCodeModel.cmd", "installGitHub.cmd", "installJawsScripts.cmd",
     "installJawsScripts.ps1", "installNode.cmd", "installOllama.cmd",
     "installPandoc.cmd", "installPandoc.ps1", "installPdfTools.cmd",
@@ -127,13 +127,13 @@ def startLog():
     pathLogs = os.path.join(pathRoot, "logs")
     try:
         os.makedirs(pathLogs, exist_ok=True)
-        pathLog = os.path.join(pathLogs, c_sApp + "-migrate-"
+        pathLog = os.path.join(pathLogs, sApp + "-migrate-"
                                + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + ".log")
         fileLog = open(pathLog, "w", encoding="utf-8")
     except Exception as oError:
         print("Could not open the log: " + str(oError))
         return
-    say(c_sApp + " migrate  " + datetime.datetime.now().isoformat(" ", "seconds"))
+    say(sApp + " migrate  " + datetime.datetime.now().isoformat(" ", "seconds"))
     say("  script:            " + os.path.abspath(__file__))
     say("  Python:            " + sys.version.split()[0])
     say("  platform:          " + sys.platform)
@@ -268,36 +268,36 @@ def main():
     say()
 
     say("Content folders:")
-    iFolders = sum(1 for sFrom, sTo in c_lFolderMoves if moveFolder(sFrom, sTo, bDo))
+    iFolders = sum(1 for sFrom, sTo in lFolderMoves if moveFolder(sFrom, sTo, bDo))
     if iFolders == 0:
         say("  already moved")
     say()
 
     say("Documents into help:")
     iHelp = 0
-    for sStem in c_lHelpStems:
+    for sStem in lHelpStems:
         for sExtension in (".md", ".htm"):
             iHelp += 1 if moveFile(sStem + sExtension, "help", bDo) else 0
-    for sName in c_lHelpFiles:
+    for sName in lHelpFiles:
         iHelp += 1 if moveFile(sName, "help", bDo) else 0
     if iHelp == 0:
         say("  already moved")
     say()
 
     say("Settings into configs:")
-    iConfigs = sum(1 for sName in c_lConfigFiles if moveFile(sName, "configs", bDo))
+    iConfigs = sum(1 for sName in lConfigFiles if moveFile(sName, "configs", bDo))
     if iConfigs == 0:
         say("  already moved")
     say()
 
     say("Build products into exec:")
-    iExec = sum(1 for sName in c_lExecFiles if moveFile(sName, "exec", bDo))
+    iExec = sum(1 for sName in lExecFiles if moveFile(sName, "exec", bDo))
     if iExec == 0:
         say("  already moved or not built yet")
     say()
 
     say("Install scripts into scripts:")
-    iInstall = sum(1 for sName in c_lInstallScripts if moveFile(sName, "scripts", bDo))
+    iInstall = sum(1 for sName in lInstallScripts if moveFile(sName, "scripts", bDo))
     if iInstall == 0:
         say("  already moved")
     say()
@@ -311,13 +311,13 @@ def main():
     say()
 
     say("Earlier editions of what the kit now does, into notes:")
-    iRetired = sum(1 for sName in c_lRetired if moveFile(sName, "notes", bDo))
+    iRetired = sum(1 for sName in lRetired if moveFile(sName, "notes", bDo))
     if iRetired == 0:
         say("  already retired")
     say()
 
     say("Copies of the shared Homer classes, deleted:")
-    iClasses = sum(1 for sName in c_lClassCopies if deleteFile(sName, bDo))
+    iClasses = sum(1 for sName in lClassCopies if deleteFile(sName, bDo))
     if iClasses == 0:
         say("  none left")
     say()

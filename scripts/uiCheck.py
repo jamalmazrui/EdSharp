@@ -69,15 +69,15 @@ import sys
 import time
 import traceback
 
-c_fStartSeconds = 8.0        # how long a program may take to show its window
-c_fStepSeconds = 0.6         # settle time after a keystroke
+fStartSeconds = 8.0        # how long a program may take to show its window
+fStepSeconds = 0.6         # settle time after a keystroke
 
 sScriptDir = os.path.dirname(os.path.abspath(__file__))
 # THE LOG AND REPORT GO IN logs (1.65.26), named for the project like every other, not beside this script.
-c_sProject = os.path.basename(os.path.dirname(os.path.abspath(sScriptDir)))
-c_sLogs = os.path.join(os.path.dirname(os.path.abspath(sScriptDir)), "logs")
-c_sRunStamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-sLogPath = os.path.join(c_sLogs, "%s-uiCheck-%s.log" % (c_sProject, c_sRunStamp))
+sProjectName = os.path.basename(os.path.dirname(os.path.abspath(sScriptDir)))
+sLogs = os.path.join(os.path.dirname(os.path.abspath(sScriptDir)), "logs")
+sRunStamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+sLogPath = os.path.join(sLogs, "%s-uiCheck-%s.log" % (sProjectName, sRunStamp))
 sRoot = sScriptDir
 oLog = None
 lsFindings = []              # (sTest, sStep, sVerdict, sEvidence)
@@ -223,7 +223,7 @@ def treeText(window):
 # and every step after failed. Windows are now found by the name of the program that owns them, in any process, from
 # Windows' own list of top-level windows; every copy of the program is closed before a test and after it; and a
 # failure inside UI Automation is reported as one, since a screen reader reads the same tree.
-c_iComUnreachable = -2147220991
+iComUnreachable = -2147220991
 
 
 def exeNameOf(iPid):
@@ -284,7 +284,7 @@ def closeProgram(sExe):
 
 def failureText(oError):
     """An error as the report says it: a COM failure inside UI Automation is named as one."""
-    if getattr(oError, "args", None) and oError.args and oError.args[0] == c_iComUnreachable:
+    if getattr(oError, "args", None) and oError.args and oError.args[0] == iComUnreachable:
         return "UI Automation could not reach the window (%s), so a screen reader using it may not either" % (oError.args[1] if len(oError.args) > 1 else oError)
     return str(oError)
 
@@ -347,8 +347,8 @@ def runTest(Application, dTest, bKeep):
     closeProgram(sExe)
     try:
         subprocess.Popen([sExePath], cwd=sRoot)
-        window = findWindow(Application, sExe, c_fStartSeconds)
-        window.wait("visible ready", timeout=c_fStartSeconds)
+        window = findWindow(Application, sExe, fStartSeconds)
+        window.wait("visible ready", timeout=fStartSeconds)
         finding(sName, "start", "pass", "%s opened a window titled %r" %
                 (sExe, window.window_text()))
     except Exception as oError:
@@ -363,11 +363,11 @@ def runTest(Application, dTest, bKeep):
         sStep = dStep.get("note", "step %d" % iStep)
         sKeys = dStep.get("keys", "")
         try:
-            window = findWindow(Application, sExe, c_fStepSeconds + 2)
+            window = findWindow(Application, sExe, fStepSeconds + 2)
             if sKeys:
                 window.set_focus()
                 window.type_keys(sKeys, with_spaces=True, set_foreground=True)
-            time.sleep(float(dStep.get("wait", c_fStepSeconds)))
+            time.sleep(float(dStep.get("wait", fStepSeconds)))
 
             sTitle = dStep.get("title", "")
             if sTitle:
@@ -378,7 +378,7 @@ def runTest(Application, dTest, bKeep):
 
             sWants = dStep.get("wants", "")
             if sWants:
-                lsText = treeText(findWindow(Application, sExe, c_fStepSeconds + 2))
+                lsText = treeText(findWindow(Application, sExe, fStepSeconds + 2))
                 logLine("TREE: " + " | ".join(lsText[:60]))
                 if any(sWants.lower() in s.lower() for s in lsText):
                     finding(sName, sStep, "pass",
@@ -394,7 +394,7 @@ def runTest(Application, dTest, bKeep):
 
             if dStep.get("escape", "").lower() in ("yes", "y", "1", "true"):
                 window.type_keys("{ESC}", set_foreground=True)
-                time.sleep(c_fStepSeconds)
+                time.sleep(fStepSeconds)
         except Exception as oError:
             logLine("STEP FAILED: %s" % traceback.format_exc())
             finding(sName, sStep, "fail", failureText(oError))
@@ -407,7 +407,7 @@ def runTest(Application, dTest, bKeep):
 
 def writeReport():
     sStamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    sPath = os.path.join(c_sLogs, "%s-evidence-ui-%s.md" % (c_sProject, sStamp))
+    sPath = os.path.join(sLogs, "%s-evidence-ui-%s.md" % (sProjectName, sStamp))
     lsPassed = [t for t in lsFindings if t[2] == "pass"]
     lsFailed = [t for t in lsFindings if t[2] == "fail"]
     lsSkipped = [t for t in lsFindings if t[2] == "skip"]
@@ -488,7 +488,7 @@ def main():
     dArguments = oParser.parse_args()
     if dArguments.path: sRoot = os.path.abspath(dArguments.path)
 
-    os.makedirs(c_sLogs, exist_ok=True)
+    os.makedirs(sLogs, exist_ok=True)
 
     oLog = open(sLogPath, "w", encoding="utf-8")
     logLine("uiCheck start pid=%d" % os.getpid())

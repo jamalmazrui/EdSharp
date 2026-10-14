@@ -34,6 +34,7 @@ rem
 rem The log is logs\<App>-push-yyyyMMdd-HHmmss.log in the project folder.
 cls
 setlocal enabledelayedexpansion
+set "bLargeUpload="
 rem THE PROJECT IS THE FOLDER THIS IS RUN IN -- unless that folder is the
 rem project's scripts or exec folder, in which case it is the parent. Every
 rem Homer tool follows this one rule, so "cd scripts" and "push" is the
@@ -156,16 +157,34 @@ for /f "delims=" %%F in ('git diff --cached --name-only --diff-filter=D') do (
 >> "%log%" echo ---- staged ----
 git diff --cached --stat >> "%log%" 2>&1
 
-rem Anything staged larger than 10 MB stops the commit.
+rem Anything staged larger than 10 MB stops the commit -- UNLESS RepoFiles.txt NAMES IT BY ITS EXACT PATH (12 October
+rem 2026). A file that large was fetched, built or recorded, and the guard exists because 480 fetched voices were once
+rem swept in by a folder line. But a project may mean to publish one: DbDo ships its 67 MB RadioTrail catalog, so the
+rem repository carries it too. A line naming that one file, not a folder holding it, is the deliberate choice, and it
+rem passes up to GitHub's own limit of 100 MB; over that, GitHub would refuse the push, so it stops here instead.
 set "sBig="
 for /f "delims=" %%F in ('git diff --cached --name-only --diff-filter=AM') do (
-  if exist "%%F" if %%~zF GTR 10485760 set "sBig=!sBig! "%%F""
+  if exist "%%F" if %%~zF GTR 10485760 (
+    set "bNamed="
+    if exist "RepoFiles.txt" findstr /x /i /c:"%%F" "RepoFiles.txt" >nul 2>&1 && set "bNamed=1"
+    if %%~zF GTR 104857600 (
+      set "bNamed="
+      echo OVER GITHUB'S 100 MB LIMIT: %%F, %%~zF bytes>> "%log%"
+    )
+    if defined bNamed (
+      set "bLargeUpload=1"
+      echo LARGE BY NAME, pushed as RepoFiles.txt says: %%F, %%~zF bytes>> "%log%"
+    ) else (
+      set "sBig=!sBig! "%%F""
+    )
+  )
 )
 if defined sBig (
   echo Stopped: something staged is larger than 10 MB, which means it was fetched,
   echo built or recorded rather than written, and belongs in LocalFiles.txt:
   for %%F in (!sBig!) do echo    %%~F
-  echo Nothing was committed. Add the line to LocalFiles.txt and run push again.
+  echo Nothing was committed. Add the line to LocalFiles.txt and run push again;
+  echo or, to publish it on purpose, name the file itself in RepoFiles.txt ^(under 100 MB^).
   echo LARGE STAGED, commit refused: !sBig!>> "%log%"
   git reset --quiet >> "%log%" 2>&1
   endlocal & exit /b 1
@@ -190,6 +209,12 @@ echo Nothing new to commit; pushing %sAhead% earlier commits.
 >> "%log%" echo NOTHING STAGED; PUSHING %sAhead% EARLIER COMMITS
 goto :push
 :commit
+rem A LONG UPLOAD SAYS SO (12 October 2026). A 67 MB catalog takes minutes to
+rem commit and upload, and push said nothing in that time, so a log copied while
+rem it ran read like a hang. The console now says a large file is going up, and
+rem the log stamps when the commit and the upload start and end.
+if defined bLargeUpload echo Committing and uploading a large file. This can take several minutes.
+>> "%log%" echo COMMIT START %date% %time%
 git commit -m "%message%" >> "%log%" 2>&1
 if errorlevel 1 (
   echo The commit failed. The log has why: %log%
@@ -197,12 +222,22 @@ if errorlevel 1 (
   endlocal & exit /b 1
 )
 :push
+>> "%log%" echo PUSH START %date% %time%
 git push >> "%log%" 2>&1
+if not errorlevel 1 goto :pushed
+rem A LARGE PUSH TIMES OUT; IT IS TRIED AGAIN, ONCE, BUILT FOR SIZE (13 October 2026). DbDo's push of 60 files -- the
+rem walks' audio and the 67 MB RadioTrail.db -- ended "RPC failed; HTTP 408 ... the remote end hung up unexpectedly".
+rem The second try sends with a 500 MB buffer, so git does not stream the pack in small pieces, and over HTTP/1.1, the
+rem usual remedy for large pushes to GitHub timing out. Only if that fails too is the push a failure.
+>> "%log%" echo The first push failed; trying again once with http.postBuffer=524288000 and http.version=HTTP/1.1
+echo The push did not go through the first time, so it is being tried again in a way suited to a large upload.
+git -c http.postBuffer=524288000 -c http.version=HTTP/1.1 push >> "%log%" 2>&1
 if errorlevel 1 (
   echo The push failed. The log has why: %log%
   echo PUSH FAILED>> "%log%"
   endlocal & exit /b 1
 )
+:pushed
 rem ORIGIN FOLLOWS A MOVE (1.42.1): when GitHub says the repository moved,
 rem point origin at the new location once, so it stops saying so. Placed
 rem after the push failure check, which must see git push's own errorlevel.

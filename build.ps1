@@ -63,28 +63,28 @@ $bConsole = ($sMode -ieq "console")
 # mismatched copy fails at runtime with a manifest-definition error the
 # moment any HTML-to-Markdown path runs (Scott's crash of 25 August 2026).
 # The pin therefore follows ReverseMarkdown's own reference.
-$c_sHtmlAgilityPackVersion = "1.12.1"
+$sHtmlAgilityPackVersion = "1.12.1"
 # Markdig is pinned at the latest release (decision of 24 August 2026):
 # the 1.x line still targets netstandard2.0, which .NET Framework 4.8
 # loads through the netstandard facade, so the newest Markdig runs in the
 # EdSharp binary. The core API used here (Markdown.ToHtml, ToPlainText,
 # MarkdownPipelineBuilder.UseAdvancedExtensions) is unchanged from 0.x.
-$c_sMarkdigVersion = "1.3.2"
-$c_sNvdaClientUrl = "https://download.nvaccess.org/releases/stable/nvda_2026.1_controllerClient.zip"
+$sMarkdigVersion = "1.3.2"
+$sNvdaClientUrl = "https://download.nvaccess.org/releases/stable/nvda_2026.1_controllerClient.zip"
 # ReverseMarkdown is pinned at the last line that supports .NET Framework:
 # the 4.x series ships netstandard2.0, which net48 consumes; 5.x and 6.x ship
 # only net8.0 and later, which net48 cannot reference at all (proved by the
 # 19 Aug 2026 build log). EdSharp.cs only ever compiled against a 4.x dll, so
 # this is the API it is written to. Do not raise this to 5.x or 6.x while
 # EdSharp targets .NET Framework 4.8.
-$c_sReverseMarkdownVersion = "4.7.1"
+$sReverseMarkdownVersion = "4.7.1"
 
 # Hunspell, the spell checking engine behind LibreOffice and Firefox, as
 # a managed C# port: no COM, no native library, and dictionaries that are
 # plain files. EdSharp's first attempt used the spell checker built into
 # Windows, which refused every interface offered to it on the developer's
 # own machine; this needs nothing from Windows at all.
-$c_sHunspellVersion = "7.0.1"
+$sHunspellVersion = "7.0.1"
 
 
 # The support sources; since the name-collision lesson they compile INTO
@@ -96,15 +96,15 @@ $c_sHunspellVersion = "7.0.1"
 # fix in the kit reaches EdSharp on its next build.
 # Elevate.cs travels with Lbc.cs: Lbc's Help box carries the version section
 # and the F11 update offer through it.
-$c_lDllSources = @("Elevate.cs", "Inix.cs", "KeyMap.cs", "KeyName.cs", "Lbc.cs", "Log.cs", "Mdi.cs", "Paths.cs", "Say.cs", "Util.cs", "Web.cs")
-$c_lExeReferences = @("System.dll", "System.Core.dll", "System.Data.dll", "System.Drawing.dll", "System.IO.Compression.dll", "System.Web.dll", "System.Windows.Forms.dll", "System.Xml.dll", "Microsoft.VisualBasic.dll")
+$lDllSources = @("Elevate.cs", "Inix.cs", "KeyMap.cs", "KeyName.cs", "Lbc.cs", "Log.cs", "Mdi.cs", "Paths.cs", "Say.cs", "Util.cs", "Web.cs")
+$lExeReferences = @("System.dll", "System.Core.dll", "System.Data.dll", "System.Drawing.dll", "System.IO.Compression.dll", "System.Web.dll", "System.Windows.Forms.dll", "System.Xml.dll", "Microsoft.VisualBasic.dll")
 # UI Automation, which the support sources use (System.Windows.Automation and
 # the provider interfaces such as IRawElementProviderSimple). On a machine
 # without the .NET Framework Developer Pack these assemblies live in the WPF
 # subfolder of the Framework runtime directory, so the compile steps add a
 # /lib search path covering both the runtime directory and its WPF subfolder.
-$c_lUiaReferences = @("UIAutomationClient.dll", "UIAutomationProvider.dll", "UIAutomationTypes.dll", "WindowsBase.dll")
-$c_lLibTargetPreference = @("net48", "net472", "net462", "net461", "net46", "net45", "netstandard2.0")
+$lUiaReferences = @("UIAutomationClient.dll", "UIAutomationProvider.dll", "UIAutomationTypes.dll", "WindowsBase.dll")
+$lLibTargetPreference = @("net48", "net472", "net462", "net461", "net46", "net45", "netstandard2.0")
 # DEPENDENCIES ARE FETCHED TOO (11 October 2026). Markdig 1.3.2 targets netstandard2.0 and needs System.Memory, which
 # needs System.Buffers, System.Runtime.CompilerServices.Unsafe and System.Numerics.Vectors; only Markdig.dll was
 # fetched, so Markdown to HTML failed with "Could not load file or assembly 'System.Memory, Version=4.0.5.0'". Each
@@ -222,7 +222,7 @@ function fetchNugetPackage($sPackageId, $sVersion) {
   writeLog "Unpacked to $sUnpackDir"
 
   $sChosenDir = ""
-  foreach ($sTarget in $c_lLibTargetPreference) {
+  foreach ($sTarget in $lLibTargetPreference) {
     $sCandidateDir = Join-Path $sUnpackDir "lib\$sTarget"
     if (Test-Path -LiteralPath $sCandidateDir) { $sChosenDir = $sCandidateDir; break }
   }
@@ -365,7 +365,7 @@ try {
   writeLog "Command line: $($MyInvocation.Line)"
   writeLog "PowerShell: $($PSVersionTable.PSVersion), platform: $([System.Environment]::OSVersion.VersionString), 64-bit process: $([System.Environment]::Is64BitProcess)"
   writeLog "Working directory: $(Get-Location)"
-  writeLog "Settings: ReverseMarkdown=$c_sReverseMarkdownVersion, HtmlAgilityPack=$c_sHtmlAgilityPackVersion, Markdig=$c_sMarkdigVersion, Hunspell=$c_sHunspellVersion, log=$sLogFile"
+  writeLog "Settings: ReverseMarkdown=$sReverseMarkdownVersion, HtmlAgilityPack=$sHtmlAgilityPackVersion, Markdig=$sMarkdigVersion, Hunspell=$sHunspellVersion, log=$sLogFile"
 
   # ---- version: bump the iss AppVersion past every released tag ----------
   # EdSharp's version lives in EdSharp_Setup.iss (the plain AppVersion=
@@ -525,10 +525,10 @@ try {
   # dll is now verified by the version stamped inside it: the wrong version
   # is deleted and the pinned one fetched.
   foreach ($lPin in @(
-      @("ReverseMarkdown", $c_sReverseMarkdownVersion),
-      @("HtmlAgilityPack", $c_sHtmlAgilityPackVersion),
-      @("Markdig", $c_sMarkdigVersion),
-      @("WeCantSpell.Hunspell", $c_sHunspellVersion))) {
+      @("ReverseMarkdown", $sReverseMarkdownVersion),
+      @("HtmlAgilityPack", $sHtmlAgilityPackVersion),
+      @("Markdig", $sMarkdigVersion),
+      @("WeCantSpell.Hunspell", $sHunspellVersion))) {
     $sPackageId = $lPin[0]
     $sPinVersion = $lPin[1]
     $sDllFile = Join-Path $sScriptDir "$sPackageId.dll"
@@ -625,10 +625,10 @@ try {
   if (Test-Path -LiteralPath $sNvdaDllFile) { writeLog "nvdaControllerClient.dll already present; fetch skipped." }
   else {
     try {
-      writeLog "Fetching NVDA controller client from $c_sNvdaClientUrl"
+      writeLog "Fetching NVDA controller client from $sNvdaClientUrl"
       $sNvdaZipFile = Join-Path $env:TEMP "nvdaControllerClient.zip"
       $sNvdaUnpackDir = Join-Path $env:TEMP "nvdaControllerClient.unpack"
-      Invoke-WebRequest -Uri $c_sNvdaClientUrl -OutFile $sNvdaZipFile -UseBasicParsing -ErrorAction Stop
+      Invoke-WebRequest -Uri $sNvdaClientUrl -OutFile $sNvdaZipFile -UseBasicParsing -ErrorAction Stop
       if (Test-Path -LiteralPath $sNvdaUnpackDir) { Remove-Item -LiteralPath $sNvdaUnpackDir -Recurse -Force }
       Expand-Archive -LiteralPath $sNvdaZipFile -DestinationPath $sNvdaUnpackDir -Force -ErrorAction Stop
       $fNvdaDll = Get-ChildItem -LiteralPath $sNvdaUnpackDir -Recurse -Filter "nvdaControllerClient64.dll" | Select-Object -First 1
@@ -745,8 +745,8 @@ try {
   $lArguments = @("/nologo", $sTarget, "/out:exec\\EdSharp.exe", "/platform:anycpu", "/optimize+", $sLibSearch)
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "EdSharp.ico")) { $lArguments += "/win32icon:EdSharp.ico" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "EdSharp.manifest")) { $lArguments += "/win32manifest:EdSharp.manifest" }
-  foreach ($sReference in $c_lExeReferences) { $lArguments += "/r:$sReference" }
-  foreach ($sReference in $c_lUiaReferences) { $lArguments += "/r:$sReference" }
+  foreach ($sReference in $lExeReferences) { $lArguments += "/r:$sReference" }
+  foreach ($sReference in $lUiaReferences) { $lArguments += "/r:$sReference" }
   if ($sFacadeFile -ne "") { $lArguments += "/r:$sFacadeFile" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "ReverseMarkdown.dll")) { $lArguments += "/r:ReverseMarkdown.dll" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "HtmlAgilityPack.dll")) { $lArguments += "/r:HtmlAgilityPack.dll" }
@@ -786,7 +786,7 @@ try {
   # One assembly: the main source, the support sources, and the generated
   # version, all inside EdSharp.exe.
   $lArguments += @("EdSharp.cs")
-  foreach ($sSourceFile in $c_lDllSources) {
+  foreach ($sSourceFile in $lDllSources) {
     # From the kit, by full path. A copy left in this folder is ignored on
     # purpose: the drifted copies are what this migration removed.
     $sKitSource = Join-Path $sHomerCSharp $sSourceFile

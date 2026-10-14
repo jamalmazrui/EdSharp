@@ -28,7 +28,7 @@
 
 param([switch]$bQuiet)
 
-$c_sWingetId = "JohnMacFarlane.Pandoc"
+$sWingetId = "JohnMacFarlane.Pandoc"
 
 $sLogDir = Join-Path $env:LOCALAPPDATA "EdSharp\logs"
 if (-not (Test-Path -LiteralPath $sLogDir)) { New-Item -ItemType Directory -Path $sLogDir -Force | Out-Null }
@@ -78,7 +78,7 @@ if (-not $sWinget) {
   writeLog "ERROR: winget is not available, so Pandoc could not be installed. Install it from pandoc.org and run EdSharp again."
   exit 1
 }
-$lOutput = & winget install --id $c_sWingetId --scope machine --silent --accept-source-agreements --accept-package-agreements 2>&1
+$lOutput = & winget install --id $sWingetId --scope machine --silent --accept-source-agreements --accept-package-agreements 2>&1
 foreach ($sLine in $lOutput) { writeLog "  winget | $sLine" }
 writeLog "winget exit code: $LASTEXITCODE"
 

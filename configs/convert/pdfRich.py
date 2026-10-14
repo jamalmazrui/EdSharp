@@ -23,10 +23,10 @@ import datetime
 import os
 import sys
 
-c_iExitBadArguments = 2
-c_iExitNoLibrary = 3
-c_iExitFailed = 4
-c_iExitNoOutput = 5
+iExitBadArguments = 2
+iExitNoLibrary = 3
+iExitFailed = 4
+iExitNoOutput = 5
 
 lLogLines = []
 
@@ -48,7 +48,7 @@ def writeLog(pathTarget):
 def main():
     if len(sys.argv) < 3:
         print(__doc__)
-        return c_iExitBadArguments
+        return iExitBadArguments
     pathSource = os.path.abspath(sys.argv[1])
     pathTarget = os.path.abspath(sys.argv[2])
 
@@ -61,7 +61,7 @@ def main():
     if not os.path.isfile(pathSource):
         say("FAILED: the source file was not found.")
         writeLog(pathTarget)
-        return c_iExitBadArguments
+        return iExitBadArguments
 
     try:
         import pymupdf4llm
@@ -70,7 +70,7 @@ def main():
         say("Run installPdfTools.cmd in the EdSharp program folder to install it.")
         say("It needs Python, which the EdSharp installer offers as a checkbox.")
         writeLog(pathTarget)
-        return c_iExitNoLibrary
+        return iExitNoLibrary
 
     try:
         say("Reading the PDF and building Markdown ...")
@@ -78,13 +78,13 @@ def main():
     except Exception as oError:
         say("FAILED: " + repr(oError))
         writeLog(pathTarget)
-        return c_iExitFailed
+        return iExitFailed
 
     if not sMarkdown or not sMarkdown.strip():
         say("FAILED: the PDF produced no text. It may be a scan of images,")
         say("which needs optical character recognition rather than conversion.")
         writeLog(pathTarget)
-        return c_iExitNoOutput
+        return iExitNoOutput
 
     try:
         if os.path.exists(pathTarget):
@@ -94,7 +94,7 @@ def main():
     except Exception as oError:
         say("FAILED writing the target: " + repr(oError))
         writeLog(pathTarget)
-        return c_iExitFailed
+        return iExitFailed
 
     iHeadings = sum(1 for sLine in sMarkdown.split("\n") if sLine.startswith("#"))
     iTables = sMarkdown.count("\n|")
@@ -120,4 +120,4 @@ if __name__ == "__main__":
             writeLog(os.path.abspath(sys.argv[2]) if len(sys.argv) > 2 else "pdfRich")
         except Exception:
             pass
-        sys.exit(c_iExitFailed)
+        sys.exit(iExitFailed)
