@@ -1530,7 +1530,9 @@ def main():
         if sKitForCache:
             sys.path.insert(0, os.path.join(sKitForCache, "scripts"))
             import fingerprint
-            oCache = fingerprint.Cache(sRoot, logLine)
+            # --FRESH MEANS EVERY FILE IS READ (14 October 2026, from an audit by another AI): a fresh check also verifies
+            # the fingerprint, so a file changed without changing its size or time is not trusted by them.
+            oCache = fingerprint.Cache(sRoot, logLine, True if dArguments.fresh else None)
             sPrint = oCache.fingerprint([sRoot], [sKind, platform.python_version()])
     except Exception as oError:
         logLine("fingerprint unavailable, so every check runs: %s" % oError)
