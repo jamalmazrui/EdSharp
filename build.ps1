@@ -987,7 +987,8 @@ try {
       if (-not $bMake) { continue }
       # A document with no title in its front matter -- History.md -- made a page with no <title>, and Pandoc
       # warned; such a page now takes its title from the program and the file's name (9 October 2026).
-      $lPandocArguments = @($sMdFile, "-f", "gfm", "-t", "html", "-s", "-o", $sHtmFile)
+      # EVERY PAGE HAS A CONTENTS LIST (14 October 2026): without --toc a long guide had no list of its sections.
+      $lPandocArguments = @($sMdFile, "-f", "gfm", "-t", "html", "-s", "--toc", "--toc-depth=2", "-o", $sHtmFile)
       if (-not ([System.IO.File]::ReadAllText($sMdFile) -match '(?m)^title:')) { $lPandocArguments += @("--metadata", ("pagetitle=EdSharp " + [System.IO.Path]::GetFileNameWithoutExtension($sMdFile))) }
       if ((runTool $sPandocFile $lPandocArguments "regenerate $([System.IO.Path]::GetFileName($sHtmFile))") -ne 0) {
         writeLog "WARNING: the .htm for $sMdName was not regenerated; pandoc's output above says why."

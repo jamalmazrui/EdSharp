@@ -2,13 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
+  <meta name="generator" content="pandoc 3.12.1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>EdSharp</title>
+  <title>EdSharp EdSharp</title>
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     html {
       color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
       background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
     }
     body {
       margin: 0 auto;
@@ -33,12 +39,16 @@
     }
     @media print {
       html {
-        background-color: white;
+        color-scheme: light only;
       }
-      body {
+      html, body, pre, code {
         background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
         color: black;
-        font-size: 12pt;
+      }
+      pre, code {
+        padding: 0;
       }
       p, h2, h3 {
         orphans: 3;
@@ -51,13 +61,14 @@
     p {
       margin: 1em 0;
     }
-    a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+    a, a:visited {
+      color: inherit;
     }
     img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
       max-width: 100%;
     }
     h1, h2, h3, h4, h5, h6 {
@@ -80,10 +91,14 @@
     blockquote {
       margin: 1em 0 1em 1.7em;
       padding-left: 1em;
-      border-left: 2px solid #e6e6e6;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
       color: #606060;
+      color: light-dark(#606060, #b6b6b6);
     }
     code {
+      white-space: pre-wrap;
       font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
@@ -103,8 +118,8 @@
      overflow: visible;
     }
     hr {
-      background-color: #1a1a1a;
       border: none;
+      border-top: 1px solid currentColor;
       height: 1px;
       margin: 1em 0;
     }
@@ -121,11 +136,11 @@
     }
     tbody {
       margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
     }
     th {
-      border-top: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
       padding: 0.25em 0.5em 0.25em 0.5em;
     }
     td {
@@ -147,10 +162,13 @@
     #TOC a:not(:hover) {
       text-decoration: none;
     }
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     /* The extra [class] is a hack that increases specificity enough to
        override a similar rule in reveal.js */
@@ -161,10 +179,38 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
 </head>
 <body>
+<nav id="TOC" role="doc-toc" aria-label="Contents">
+<ul>
+<li><a href="#edsharp-user-guide" id="toc-edsharp-user-guide">EdSharp
+User Guide</a>
+<ul>
+<li><a href="#contents" id="toc-contents">Contents</a></li>
+<li><a href="#description" id="toc-description">Description</a></li>
+<li><a href="#installation" id="toc-installation">Installation</a></li>
+<li><a href="#editing" id="toc-editing">Editing</a></li>
+<li><a href="#navigating" id="toc-navigating">Navigating</a></li>
+<li><a href="#querying" id="toc-querying">Querying</a></li>
+<li><a href="#managing-files" id="toc-managing-files">Managing
+Files</a></li>
+<li><a href="#invoking-snippets" id="toc-invoking-snippets">Invoking
+Snippets</a></li>
+<li><a href="#working-with-structured-text"
+id="toc-working-with-structured-text">Working with Structured
+Text</a></li>
+<li><a href="#word-processing" id="toc-word-processing">Word
+Processing</a></li>
+<li><a href="#doing-math" id="toc-doing-math">Doing Math</a></li>
+<li><a href="#programming" id="toc-programming">Programming</a></li>
+<li><a href="#scripting-add-ins" id="toc-scripting-add-ins">Scripting
+Add-Ins</a></li>
+<li><a href="#miscellaneous"
+id="toc-miscellaneous">Miscellaneous</a></li>
+</ul></li>
+</ul>
+</nav>
 <main>
 <h1 id="edsharp-user-guide">EdSharp User Guide</h1>
 <p>EdSharp<br />
@@ -203,14 +249,14 @@ manually interrogating the screen. Speech is delivered to JAWS or NVDA
 directly through the screen reader's own interface; otherwise EdSharp
 raises a standard accessibility notification, which Narrator and other
 compatible screen readers announce.</p>
-<p>Written in the C# (pronounced C Sharp) language, EdSharp implements
-the "Homer editor interface," which originally evolved with an editor
-called TextPal. The same interface was also implemented in the package
-of JAWS scripts and tools called HomerKit. EdSharp 5.0 is built AnyCPU
-on the .NET Framework 4.8, so it runs as a native 64-bit application on
-both Intel/AMD (x64) and ARM (ARM64) editions of Windows. The .NET
-Framework 4.8 is built into Windows 10 and 11 and is a free download
-from Microsoft for older systems.</p>
+<p>EdSharp is written in the C# language, pronounced C Sharp. It follows
+the "Homer editor interface," which first grew up with an editor called
+TextPal. The same interface was also built into HomerKit, a package of
+JAWS scripts and tools. EdSharp 5.0 is built AnyCPU on the .NET
+Framework 4.8, so it runs as a native 64-bit program on both the Intel
+and AMD (x64) and the ARM (ARM64) editions of Windows. The .NET
+Framework 4.8 comes with Windows 10 and 11, and is a free download from
+Microsoft for older systems.</p>
 <p>Almost every EdSharp command may be done through a mnemonic
 keystroke, as well as a menu or mouse operation. These commands begin
 with the standard keys available in Notepad or most Windows-based
@@ -218,58 +264,56 @@ editors. EdSharp then adds many beneficial features. Optional scripts
 for some screen readers provide further fine tuning of the speech
 interface for those users.</p>
 <h2 id="installation">Installation</h2>
-<p>The last page of the installer offers components as checkboxes,
-ticked or not according to what EdSharp itself gains from them. Python
-and the document tools, which give rich PDF conversion and the
-thesaurus, are ticked: together they cost about 155 megabytes and every
+<p>The last page of the installer offers optional parts as checkboxes.
+Each is ticked or not according to what EdSharp itself gains from it.
+Python and the document tools, which give rich PDF conversion and the
+thesaurus, are ticked: together they take about 155 megabytes, and every
 user benefits. Git with the GitHub command line, Node.js, and Ollama
-with its chat model are not ticked; each serves a real feature, but each
-serves some people and not others, and Ollama alone costs about three
-gigabytes. The boxes are ordered by what they will do: those that
-install something come first, then those that update something, and last
+with its chat model are not ticked. Each serves a real feature, but each
+serves some people and not others, and Ollama alone takes about three
+gigabytes.</p>
+<p>The boxes are in order of what they will do: those that install
+something come first, then those that update something, and last
 anything already current, offered only for repair. Each label says
-whether that tool is missing, out of date, or already current, with
+whether its tool is missing, out of date or already current, with
 version numbers. They run after you press Finish, each in its own window
-that shows progress and closes when it is done; none of them ever waits
-for a keypress. When they have all finished, a single Results box
-reports everything: the JAWS scripts, the NVDA add-on, pandoc, and each
-optional install by name, saying what is installed and which version, or
-what to run later for anything that is not. The summary is saved as
+that shows progress and closes when it is done. None of them ever waits
+for a key press. When they have all finished, one Results box reports
+everything: the JAWS scripts, the NVDA add-on, pandoc, and each optional
+install by name. It says what is installed and which version, or what to
+run later for anything that is not. The summary is saved as
 EdSharp_setup_summary.txt in the logs folder under your local
-application data, and you can see it again at any time by running
-summarizeSetup.cmd from the program folder. The installation program for
-EdSharp is called EdSharp_Setup.exe. When executed, it prompts for a
-program folder, the default being<br />
+application data. You can see it again at any time by running
+summarizeSetup.cmd from the program folder.</p>
+<p>The installation program for EdSharp is called EdSharp_Setup.exe.
+When run, it asks for a program folder, the default being<br />
 <code>C:\Program Files\EdSharp</code> The installer also creates a
-program group for EdSharp on the Windows start menu, containing choices
-to launch EdSharp, read Documentation, or uninstall. Additional choices
-either set or clear an association between EdSharp and files with a
-particular extension, such as .txt or ini. Binary formats such as `pdf
-or .pptx may also be associated with EdSharp, thus permitting automatic
-conversion to text when opened via Windows Explorer.</p>
-<p>After installing EdSharp, the setup program presents a list of
-several checkboxes. One checkbox offers an optional set of JAWS scripts
-to fine tune the EdSharp speech interface in a few ways that could not
-be accomplished otherwise. If the scripts were installed and you would
-later prefer default JAWS behavior instead, you can disable the scripts
-via the "Manage Application Settings" dialog from the "Options menu of
-JAWS.</p>
-<p>Another checkbox sets Alt+Control+E as a system-wide key associated
-with the EdSharp shortcut placed on the Windows desktop. If this hot key
-is found to conflict with an existing shortcut, navigate to either the
-EdSharp or other shortcut on the desktop, press Alt+Enter for
-properties, and then change the hot key to something else (or leave it
-blank).</p>
+program group for EdSharp on the Windows Start menu, with choices to
+launch EdSharp, read the documentation, or uninstall. Other choices set
+or clear a link between EdSharp and files with a particular extension,
+such as .txt or ini. Binary formats such as `pdf or .pptx may also be
+linked to EdSharp, so that they are converted to text when opened from
+Windows Explorer.</p>
+<p>After installing EdSharp, the setup program shows several checkboxes.
+One offers a set of JAWS scripts that fine-tune EdSharp's speech in a
+few ways nothing else could. If you installed the scripts and later want
+JAWS to behave as usual instead, turn them off in the "Manage
+Application Settings" dialog, on the Options menu of JAWS.</p>
+<p>Another checkbox sets Alt+Control+E as a key for the whole system,
+tied to the EdSharp shortcut on the Windows desktop. If this key clashes
+with another shortcut, go to the EdSharp shortcut or the other one on
+the desktop and press Alt+Enter for its properties. Then change its
+shortcut key to something else, or leave it blank.</p>
 <p>An additional checkbox opens this manual in the default web
 browser.</p>
 <p>EdSharp may be safely installed over previous versions. The About
 option from its Help menu, or Alt+F1 key, indicates the current version
 number and release date. The History of Changes command, Shift+F1,
 summarizes fixes and improvements over time.</p>
-<p>EdSharp features may be explained in the following categories of
-activity: editing, navigating, querying, managing files, invoking
-snippets, working with structured text, word processing, programming,
-doing math, and miscellaneous.</p>
+<p>EdSharp's features fall into these kinds of activity: editing,
+navigating, querying, managing files, invoking snippets, working with
+structured text, word processing, programming, doing math, and
+others.</p>
 <h2 id="editing">Editing</h2>
 <h3 id="selecting-copying-and-pasting">Selecting, Copying, and
 Pasting</h3>
@@ -297,20 +341,19 @@ A chunk is defined as a contiguous sequence of non-space characters. It
 may be more than what the hotkey Control+Shift+RightArrow selects, since
 such word movement commands stop at punctuation marks. Press
 Control+Space again to extend the selection to the next chunk.</p>
-<p>The Append From Clipboard command, Alt+7 (associate append with the
-ampersand character), is like the "paste board" feature of the NoteTab
-editor. When this mode is toggled on for a document, each snippet of
-text copied to the Windows clipboard -- whether from another application
-or from a different document open in EdSharp -- will also be pasted into
-the collecting document, which will then automatically be saved to disk.
-EdSharp beeps to confirm this is happening. Text copied within the
-collecting document itself is not appended, so copying part of that
-document does not copy it back into itself. Snippets are separated by a
-section break sequence, which makes it possible to navigate among them
-with the Control+PageDown and Control+PageUp commands. Thus the feature
-may be used to conveniently collect and save information from
-applications that do not have a built-in appending mechanism. When done,
-toggle off the mode with the same command, Alt+7.</p>
+<p>The Append From Clipboard command, Alt+7 (think of append and the
+ampersand on that key), is like the "paste board" feature of the NoteTab
+editor. When this mode is on for a document, each piece of text copied
+to the Windows clipboard is also pasted into that collecting document,
+whether it came from another program or from another document open in
+EdSharp. The document is then saved to disk automatically. EdSharp beeps
+to confirm it. Text copied within the collecting document itself is not
+appended, so copying part of that document does not copy it back into
+itself. The pieces are separated by a section break, so you can move
+among them with the Control+PageDown and Control+PageUp commands. So the
+feature is a handy way to collect and save information from programs
+that have no way to append on their own. When you are done, turn the
+mode off with the same command, Alt+7.</p>
 <p>Press Control+Z to undo the last editing operation, or
 Control+Shift+Z to redo it.</p>
 <p>Press Control+N to start a new document, or Control+Shift+N to
@@ -327,29 +370,27 @@ regular expressions of the .NET Framework, explained in <a
 href="https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference">Microsoft's
 .NET regular expression reference</a>.</p>
 <p>Press Alt+Shift+P to copy the full path of the current file to the
-clipboard, permitting it to be easily pasted into dialogs of other
-aplications. Use the Path List command, Control+Shift+P, to generate a
-list of files in a new editing window. You are prompted for the
-directory to open, and then the extensions to include based on what
-files EdSharp finds in the directory. The new window contains the full
-path of the first file, and then just file names on subsequent lines --
-since they are in the same directory.</p>
+clipboard, so you can paste it into other programs' dialogs. Use the
+Path List command, Control+Shift+P, to make a list of files in a new
+editing window. EdSharp asks for the folder to open, and then for the
+extensions to include, based on the files it finds there. The new window
+holds the full path of the first file, then just the file names on the
+lines after it, since they are all in the same folder.</p>
 <h3 id="changing-case">Changing Case</h3>
 <p>Press Control+U to convert the current character or selected text to
 upper case, or Control+Shift+U to lower case. Alt+U converts to proper
 case, putting the first letter of each word in upper case and the rest
 in lower case. Alt+Shift+U inverts case, converting lower case
 characters to upper case and vice versa.</p>
-<p>The Yield Encoding command, Alt+Shift+Y, may be used to convert all
-or selected text according to a particular character encoding. If text
-from a file or the clipboard appears to be rendered improperly in
-EdSharp, you can tell it to base its interpretation on a different
-encoding: ASCII, Latin 1, UTF-7, UTF-8, UTF-16, UTF-32, or another
-encoding that you pick from a list of over 100 available. You can also
-choose a conversion where the Unicode number of each character is put on
-a separate line. This may be used to identify non-printing characters in
-the document. The command replaces all or selected text, so put a copy
-in a new document window if you want to retain the original.</p>
+<p>The Yield Encoding command, Alt+Shift+Y, converts all or selected
+text by a particular character encoding. If text from a file or the
+clipboard looks wrong in EdSharp, you can tell it to read the text by a
+different encoding: ASCII, Latin 1, UTF-7, UTF-8, UTF-16, UTF-32, or one
+of over 100 others you pick from a list. You can also choose a
+conversion that puts the Unicode number of each character on a line of
+its own. This helps you find characters that do not print. The command
+replaces all or selected text, so copy it to a new document window first
+if you want to keep the original.</p>
 <p>Use the Quote command, Control+Q to add an email quote sequence (&gt;
 ) at the start of the current or selected lines. Control+Shift+Q removes
 this sequence, as well as any other leading space or tab characters.</p>
@@ -427,26 +468,24 @@ searching forward or backward. F3 or Shift+F3 searches forward or
 backward for the last target, which may be either standard text or a
 regular expression. If a search is successful, EdSharp reads the
 matching line automatically.</p>
-<p>The Text you enter in Find or Replace dialogs may include tokens that
-represent nonprinting characters. This syntax is available for strings
-in the C programming language and its variations. Common tokens are a
-pair of characters consisting of a backslash and letter, such as the
-following: \r for carriage return (ASCII 13), \n for line feed (ASCII
-10), \t for tab (ASCII 9), and \f for form feed (ASCII 12). Such tokens
-allow you to search for text, say, at the beginning or end of a line
-(use \n for a line break in EdSharp).</p>
-<p>The trade off for this flexibility is that backslash and quote
-characters must be preceded by a backslash when intended literally (not
-part of a token), i.e., \ for backslash and " for quote. Since this
-doubling of characters may be cumbersome with search terms such as a
-file path, however, EdSharp supports use of an initial @ character to
-indicate that the following characters should be interpreted literally
-rather than as possible tokens. For example, if searching for a file in
-the document, you could enter the term<br />
+<p>The text you type in the Find or Replace dialogs can include tokens
+that stand for characters that do not print. This is the syntax used for
+strings in the C programming language and its relatives. The common
+tokens are a backslash and a letter: \r for carriage return (ASCII 13),
+\n for line feed (ASCII 10), \t for tab (ASCII 9), and \f for form feed
+(ASCII 12). With them you can search for text at, say, the start or end
+of a line (use \n for a line break in EdSharp).</p>
+<p>The cost of this flexibility is that a backslash or a quote must have
+a backslash before it when you mean it literally, not as part of a
+token: \ for a backslash and " for a quote. Doubling characters can be
+awkward with search terms such as a file path, so EdSharp lets you start
+the term with an @ character. Everything after it is then taken
+literally, not as possible tokens. For example, to search for a file
+name in the document, you could enter<br />
 <code>@c:\temp\temp.txt</code> rather than<br />
-<code>c:\\temp\\temp.txt</code> If you need to search for a string that
-begins with the @ character, precede it with a backslash, e.g.,
-<code>\@domain.com</code> follows the user name of an email address.</p>
+<code>c:\\temp\\temp.txt</code> To search for text that itself begins
+with the @ character, put a backslash before it. For example,
+<code>\@domain.com</code> follows the user name in an email address.</p>
 <p>Press Control+G to go to a percentage point in the document, or Alt+G
 to repeat the command with the previous value. Similarly, press
 Control+J to jump to a line number, or Alt+J to repeat. A column number
@@ -489,16 +528,16 @@ Import section:<br />
 <p>To configure a converter, specify the command line for converting an
 extension from a source, non-text format to a target, text format. The
 following variables may be used:\</p>
-<p>EdSharp bundles the <code>2htm</code> utility (in
-<code>Convert\2htm</code>) and uses it, through the
-<code>Convert\any2txt.cmd</code> wrapper, to extract plain text from
-many document formats -- Word (<code>.docx</code>, <code>.doc</code>,
+<p>EdSharp comes with the <code>2htm</code> utility, in
+<code>Convert\2htm</code>. It uses it, through the
+<code>Convert\any2txt.cmd</code> wrapper, to get plain text out of many
+document formats: Word (<code>.docx</code>, <code>.doc</code>,
 <code>.rtf</code>, <code>.odt</code>), PDF, Excel (<code>.xlsx</code>,
 <code>.xls</code>), PowerPoint (<code>.pptx</code>, <code>.ppt</code>),
-HTML, CSV, JSON, and more. This replaces the older
-<code>GetText.exe</code>, which hung on modern Windows, along with the
-separate Office and HTML text converters. Markdown and other lightweight
-markup are still converted with Pandoc.</p>
+HTML, CSV, JSON and more. This replaces the older
+<code>GetText.exe</code>, which hung on modern Windows, and the separate
+converters for Office and HTML text. Markdown and other light markup are
+still converted with Pandoc.</p>
 <ul>
 <li>%ProgDir% = Full path of the directory containing the EdSharp.exe
 program</li>
@@ -569,21 +608,19 @@ is needed to represent it. If so, the file is saved with a UTF-8
 encoding, the most common form of Unicode for storing files on disk.
 Otherwise, the default encoding of the computer is used, e.g., Latin
 1.</p>
-<p>Alt+Shift+E exports a file to another format. Built-in options
-include ASCII format (characters with ANSI codes above 127 are removed),
-Mac format (line break is \r), and Unix format (line break is \n). Via
-Microsoft Word converters, additional formats include .doc, .htm, .rtf,
-and .xml. Other converters may be configured by editing the Export
-section through the Manual Options command, Alt+Shift+M. The syntax is
-like that in the Import section (explained elsewhere). The Other option
-lets you pick a character encoding for the target file from a list of
-over 100 available.</p>
-<p>Use the Run command, F5, to execute the current file as if its name
-had been entered in the Windows Start/Run dialog. The effect is also
-like pressing Enter on its name in Windows Explorer, opening it with the
-program associated with that extension. For example, pressing F5 when
-the current document has a .htm extension will open it in the default
-web browser.</p>
+<p>Alt+Shift+E saves a file in another format. The built-in choices are
+ASCII format, which removes characters with ANSI codes above 127; Mac
+format, whose line break is \r; and Unix format, whose line break is \n.
+Through Microsoft Word's converters, it also offers .doc, .htm, .rtf and
+.xml. You can add other converters by editing the Export section with
+the Manual Options command, Alt+Shift+M. The syntax is like that of the
+Import section, explained elsewhere. The Other choice lets you pick a
+character encoding for the new file, from a list of over 100.</p>
+<p>Use the Run command, F5, to run the current file as if you had typed
+its name in the Windows Start, Run dialog. It is also like pressing
+Enter on its name in Windows Explorer, which opens it with the program
+linked to its extension. For example, pressing F5 when the current
+document is a .htm file opens it in your web browser.</p>
 <p>Press Shift+F5 to execute a file path, email address, or web URL at
 the cursor position. If text is selected, it will be used instead --
 after removing any line break characters. You also have a chance to
@@ -594,12 +631,11 @@ commands invoke a Windows feature similar to the "Send To" feature of
 Microsoft Word.</p>
 <p>Press Alt+Shift+R to rename the current file, both in EdSharp and on
 disk. Press Alt+Shift+D to delete it.</p>
-<p>Press Alt+Backslash to open Windows Explorer in the directory
-containing the current file, or Control+Backslash to open a command
-prompt there. Besides the current folder as the default to open, the
-intervening dialog also lets you open the EdSharp program folder, data
-folder, or snippet folder. It also lets you create a new folder on
-disk.</p>
+<p>Press Alt+Backslash to open Windows Explorer in the folder of the
+current file, or Control+Backslash to open a command prompt there.
+Besides the current folder, which it offers first, the dialog that comes
+up also lets you open the EdSharp program folder, data folder or snippet
+folder. It also lets you create a new folder.</p>
 <p>Press Alt+0 to verify the current compiler and folder of EdSharp.
 Control+0 lets you change the current folder to one containing recent or
 favorite files, which are put in a list. Press Control+Shift+0 to change
@@ -621,25 +657,22 @@ folder, as well as those in the folder associated with a Compiler being
 used. This lets you have a set of snippets that are available regardless
 of the programming language in use.</p>
 <p>A snippet collection grows over the years, so each row in the list
-says where its snippet came from: a name alone means the Default folder,
-a name followed by a language in parentheses means that language's
-folder, and a name followed by "shipped" means a snippet that came with
-EdSharp rather than one you saved. The name still leads each row, so
-typing part of a name finds it exactly as before. Snippets are divided
-by compiler on purpose, which is what keeps a large collection
-manageable: save a snippet while a compiler is chosen and it belongs to
-that language; save it with no compiler chosen and it is available
-everywhere.</p>
-<p>Use the View Snippet command, Alt+Shift+V, to load a snippet file
-into EdSharp for viewing or editing rather than execution. You can also
-manage snippet files with the Explorer Folder command, Alt+Backslash,
-which lets you open Windows Explorer in the subfolder containing snippet
-files.</p>
-<p>EdSharp processes a snippet with a .js extension as JScript .NET code
-to be evaluated. Such a file can do almost anything in EdSharp, as
-explained in the section about EdSharp's scripting capability. For
-example, the "ul from selected.js" file generates an HTML unordered list
-from selected lines of text.</p>
+says where its snippet came from. A name alone means the Default folder.
+A name followed by a language in parentheses means that language's
+folder. A name followed by "shipped" means a snippet that came with
+EdSharp, not one you saved. The name still comes first in each row, so
+typing part of a name finds it as before. Snippets are divided by
+compiler on purpose, which keeps a large collection manageable. Save a
+snippet while a compiler is chosen, and it belongs to that language;
+save it with no compiler chosen, and it is available everywhere.</p>
+<p>Use the View Snippet command, Alt+Shift+V, to open a snippet file in
+EdSharp to read or edit it, rather than run it. You can also manage
+snippet files with the Explorer Folder command, Alt+Backslash, which
+opens Windows Explorer in the folder that holds them.</p>
+<p>EdSharp runs a snippet with a .js extension as JScript .NET code.
+Such a file can do almost anything in EdSharp, as the section about
+scripting explains. For example, the "ul from selected.js" file makes an
+HTML unordered list from the selected lines of text.</p>
 <p>A Non .js snippet may be either literal or an interpreted type. A
 literal snippet is pasted completely. An interpreted type is separated
 into an initial header line and remaining lines as its body. The header
@@ -671,34 +704,32 @@ tags and attributes to serve common needs in developing web sites. HTML
 and PHP page templates are also included. You can modify or add to
 these, and are encouraged to submit ones you think would be useful to
 others.</p>
-<p>New .txt and .js snippet files will be installed when upgrading
-EdSharp. Since the installer does not replace snippets with the same
-names, however, you need to manually clear the appropriate folder if you
-want to ensure a fresh set of snippets. You can do this by pressing
-Control+Shift+F5, picking the HTML Tidy compiler, then pressing
-Alt+Backslash and choosing the snippet folder to open in Windows
-Explorer. From that window, press Control+A and Delete to remove all
-files in the folder.</p>
-<p>With the text type of snippet, EdSharp pastes the whole body after
-making possible substitutions controlled by a keyword called "form."
-This lets you embed variable or constant tokens in the body. A variable
-has surrounding percent signs and an equals sign between the name and
-default value. For example, the variable %City=%Silver Spring% means a
-variable named City with a default value of Silver Spring. EdSharp
-creates a dialog that prompts for the value of each variable it finds in
-the snippet body. It then replaces the variable references with the
-values entered. You may repeat the same variable reference in a snippet
-so the user is prompted once for a value that is then used for multiple
-text insertions. Subsequent references should omit the default value
-after the equals sign, e.g., a %City=% token.</p>
-<p>Certain constant tokens are also defined: %Date% for the current
-date, %Time% for the time, %UserName% for the Windows user name,
-%UserFirstName% for the first part of that name, and %UserLastName% for
-the second part, if any. Date and Time formats may be customized as
-EdSharp configuration options, using the DateTime formatting syntax of
-the .NET Framework, explained in <a
+<p>New .txt and .js snippet files are installed when you upgrade
+EdSharp. The installer does not replace snippets that have the same
+names, though, so clear the folder yourself if you want a fresh set. To
+do so, press Control+Shift+F5 and pick the HTML Tidy compiler. Then
+press Alt+Backslash and choose to open the snippet folder in Windows
+Explorer. There, press Control+A and Delete to remove all the files in
+the folder.</p>
+<p>With a text snippet, EdSharp pastes the whole body, after making any
+substitutions a keyword called "form" calls for. This lets you put
+variable or constant tokens in the body. A variable has percent signs
+around it, and an equals sign between its name and its default value.
+For example, %City=%Silver Spring% is a variable named City, with the
+default value Silver Spring. EdSharp makes a dialog that asks for the
+value of each variable it finds in the snippet body. It then replaces
+the variables with the values you enter. A snippet can use the same
+variable more than once, so you are asked for it once, and the value is
+used in several places. Leave out the default value after the equals
+sign in the later uses, as in a %City=% token.</p>
+<p>A few tokens are always defined. %Date% is the current date and
+%Time% the time. %UserName% is your Windows user name, %UserFirstName%
+the first part of that name, and %UserLastName% the second part, if
+there is one. You can change the date and time formats in EdSharp's
+configuration options, using the .NET Framework's DateTime format codes,
+which <a
 href="https://learn.microsoft.com/en-us/dotnet/api/system.globalization.datetimeformatinfo">Microsoft's
-DateTimeFormatInfo reference</a>.</p>
+DateTimeFormatInfo reference</a> explains.</p>
 <p>If a snippet header contains the "caret" keyword, EdSharp looks for a
 double caret sequence (^^) in the body, and positions the cursor (think
 of blinking caret) in that location after pasting. An example text type
@@ -724,13 +755,13 @@ Tokens. Each of these user-defined tokens is an expression in Microsoft
 JScript .NET: a version of JavaScript explained in <a
 href="https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2010/72bd815a(v=vs.100)">Microsoft's
 JScript .NET reference</a>.</p>
-<p>Three token examples are currently provided in the EdSharp
-configuration file. The CurrentDirectory token illustrates a call to a
-static method in the .NET Framework Class Library (FCL) -- in this case,
-returning the current directory of the EdSharp process. The Signature
-token shows syntax for a literal string -- in this case, a signature
-block with multiple lines. The UnorderedList token refers to a JScript
-file called ul.js that is provided in the HTML snippet folder.</p>
+<p>The EdSharp configuration file has three example tokens. The
+CurrentDirectory token shows a call to a static method in the .NET
+Framework Class Library (FCL); this one returns the current folder of
+the EdSharp process. The Signature token shows how to write a literal
+string; this one is a signature block of several lines. The
+UnorderedList token refers to a JScript file called ul.js, which comes
+in the HTML snippet folder.</p>
 <p>When EdSharp finds that a token refers to a file in the current
 snippet folder, it interprets the content of that file as JScript. The
 ul.js example creates an unordered list element in HTML after prompting
@@ -746,13 +777,12 @@ i++
 }
 sTag += &quot;&lt;/ul&gt;\n&quot;
 [End Content of ul.js]</code></pre>
-<p>User-defined tokens may be included in a snippet that has the "form"
-keyword in its header. They may also be typed in a document being
-edited. A token expression may be tested with the Evaluate Expression
-command, Control+Equals, which evaluates the current line or selected
-text and places the result on the line below. The Replace Tokens
-command, Control+Shift+Equals, swaps token names with their computed
-results in all or selected text.</p>
+<p>User-defined tokens can go in a snippet that has the "form" keyword
+in its header. They can also be typed in a document you are editing. You
+can test a token with the Evaluate Expression command, Control+Equals,
+which works out the current line or selected text and puts the result on
+the line below. The Replace Tokens command, Control+Shift+Equals, swaps
+token names for their results in all or selected text.</p>
 <p>For example, you might press Alt+Shift+M for Manual Options and
 define a signature token as follows:</p>
 <pre><code>[Tokens]
@@ -787,28 +817,28 @@ the Text Contents command, Alt+Shift+T, to generate and prepend a table
 of contents to the current document. The first line of the document
 becomes the first topic in the table of contents. Each line of text
 after a section break becomes another topic.</p>
-<p>You can adjust the LimitItem configuration setting to perform
-comparison operations on sections rather than lines of text. For
-example, press Alt+Shift+C for Configuration Options, and Alt+S for the
-SectionBreak setting. Since the text is initially selected, press
-Control+C to copy it to the clipboard. Then press Alt+L for LimitItem,
-Control+V to paste, and Enter to save settings. Now you can sort
-sections alphabetically with the Order Items command (Alt+Shift+O),
-reverse them with the Reverse Items command (Alt+Shift+Z), or eliminate
-duplicates with the Keep Unique Items command (Alt+Shift+U).</p>
+<p>You can change the LimitItem setting so that comparisons work on
+sections rather than lines of text. For example, press Alt+Shift+C for
+Configuration Options, then Alt+S for the SectionBreak setting. The text
+starts out selected, so press Control+C to copy it. Then press Alt+L for
+LimitItem, Control+V to paste, and Enter to save the settings. Now you
+can sort sections alphabetically with the Order Items command
+(Alt+Shift+O), reverse them with the Reverse Items command
+(Alt+Shift+Z), or remove duplicates with the Keep Unique Items command
+(Alt+Shift+U).</p>
 <h3 id="mermaid-diagrams">Mermaid Diagrams</h3>
 <p>A fenced code block whose language is mermaid holds a diagram written
-as plain text: flowcharts, sequence diagrams, pie charts, and more. The
-block text is itself the accessible view, since it reads as structured
-text under a screen reader. When you convert or preview such a document
+as plain text: flowcharts, sequence diagrams, pie charts and more. The
+text of the block is itself the accessible view, since a screen reader
+reads it as structured text. When you convert or preview such a document
 as HTML, EdSharp includes the mermaid script, so a real web browser
-draws the diagram for sighted readers. The embedded preview window uses
-the older browser engine inside Windows, which cannot run current
-mermaid; there the block appears as its source text. Ten shipped
-snippets insert ready skeletons -- flowchart, sequence diagram, pie
-chart, class diagram, state diagram, entity relationship diagram, Gantt
-chart, mindmap, timeline and XY chart. Press Alt+V, pick one, and answer
-the prompts.</p>
+draws the diagram for sighted readers. The preview window inside EdSharp
+uses the older browser engine built into Windows, which cannot run
+current mermaid, so there the block shows as its source text. Ten
+snippets that come with EdSharp insert ready outlines: flowchart,
+sequence diagram, pie chart, class diagram, state diagram, entity
+relationship diagram, Gantt chart, mindmap, timeline and XY chart. Press
+Alt+V, pick one, and answer the prompts.</p>
 <h3 id="variables-in-a-snippet">Variables in a Snippet</h3>
 <p>A snippet asks you for the parts that change. Write a variable as a
 label and a default between percent signs:</p>
@@ -964,11 +994,11 @@ opened, so the mathematics did not read at all without a connection. The
 conversion now asks for MathML, which is part of the page itself.</p>
 <h2 id="programming">Programming</h2>
 <h3 id="the-settings-follow-the-file">The Settings Follow the File</h3>
-<p>Open a Python file and EdSharp becomes a Python editor: F5 runs it
-through Python, Alt+PageDown steps definition to definition, a quoted
-line begins with a number sign, indentation is four spaces, and Alt+V
-offers the Python snippets. Open an XML file in the next window and all
-five change again.</p>
+<p>Open a Python file, and EdSharp becomes a Python editor. F5 runs it
+through Python, Alt+PageDown steps from one definition to the next, a
+quoted line starts with a number sign, indentation is four spaces, and
+Alt+V offers the Python snippets. Open an XML file in the next window,
+and all five change again.</p>
 <p>Until August 2026 they did not. The compiler was one setting for the
 whole program, changed only by the Pick Compiler command,
 Control+Shift+F5. With C# chosen, a Python file compiled with the C#
@@ -990,61 +1020,60 @@ section of your own EdSharp.inix, such as <code>pyw=Python</code> or
 <h3 id="checking-without-running">Checking Without Running</h3>
 <p>F5 reports what is wrong before anything runs, where the language
 allows it. Seven languages use a compiler that is already on a Windows
-machine or comes with the program: C#, Visual Basic .NET and JScript
-.NET through the .NET Framework, PowerShell through itself, and XML and
-JSON through the readers Windows already carries. Six more use the
-checker their language ships with, when it is installed: Python,
+machine or comes with the program. They are C#, Visual Basic .NET and
+JScript .NET, through the .NET Framework; PowerShell, through itself;
+and XML and JSON, through readers Windows already has. Six more use the
+checker that comes with their language, when it is installed: Python,
 JavaScript through node, Perl, PHP and Ruby through their own
-syntax-only switches, and LaTeX through MiKTeX. Markdown has its own
-command instead, Check Markdown, Alt+F9.</p>
+syntax-only switches, and LaTeX through MiKTeX. Markdown has a command
+of its own instead, Check Markdown, Alt+F9.</p>
 <p>Three have no check, and it is worth knowing why rather than
 wondering. The Windows command interpreter offers none. VBScript has
 none that does not also run the program, and running a script to find
 out whether it parses is not a check. HTML has none worth having,
 because a browser accepts almost anything.</p>
 <h3 id="moving-by-blocks">Moving by Blocks</h3>
-<p>Alt+PageDown goes to the next meaningful block and Alt+PageUp to the
-previous one, and what counts as a block depends on the language. In C#
-it is a declaration, in Python a def or class, in HTML a heading or a
+<p>Alt+PageDown goes to the next meaningful block, and Alt+PageUp to the
+one before, and what counts as a block depends on the language. In C# it
+is a declaration, in Python a def or class, in HTML a heading or a
 landmark, in Markdown a heading, in a settings file a section, in a
-batch file a label, in SQL a statement, in LaTeX a sectioning command.
-All nineteen languages have one.</p>
+batch file a label, in SQL a statement, and in LaTeX a sectioning
+command. All nineteen languages have one.</p>
 <p>Press Tab to indent the current line of text, or Shift+Tab to outdent
 it. If multiple lines of text are selected, these commands are applied
 to all of them. The Trim Blanks command, Control+Shift+Enter, removes
 all indentation and trailing spaces at once, as well as removing more
 than two consecutive blank lines (when multiple lines are selected).</p>
-<p>Press Alt+I to hear the number of indentation levels of the current
-line. Press it twice to hear the whole chain of enclosing blocks,
-outermost first: in Python, the class, the function, and each nested
-statement the cursor sits inside; in a brace language, each enclosing
-opener. Alt+Shift+I toggles a mode in which you are alerted to changes
-in indentation level, such as when using the up and down arrow keys.
-EdSharp will say how many levels in or out the indentation has changed,
-speaking directly to whichever screen reader is running: JAWS, NVDA, or
-Narrator. No screen reader script is needed for these announcements.
-This mode also reverses the roles of the Enter and Shift+Enter keys. A
-hyphen anywhere in the ExtraSpeech setting silences the announcements
-for anyone who prefers quiet.</p>
-<p>When Indent Mode is off, you can start a new line of text with the
-same indentation as the current one by pressing Shift+Enter. EdSharp
-detects the indentation unit of the current document automatically, from
-its first indented line, so a four space Python file, a two space file,
-and a tab indented file all report true levels and all get the right
-unit when you press Tab. When a document has no indentation yet, the
-IndentUnit setting applies; its default is a single tab per level, and
-it may be changed with the Configuration Options command, Alt+Shift+C,
-or captured from a file with Infer Indent. The tab default is a
-deliberate choice for screen reader productivity: one keystroke makes a
-level, one character stands for it when arrowing through a line, and the
-level count is always the character count. Style guides written for
-sighted readers, such as PEP 8's four spaces, optimize a visual layout;
-EdSharp optimizes the coder's own efficiency, and the interpreter
-accepts both. The NVDA screen reader's own source code makes the same
-choice of tab indentation for the same reason. When you share code with
-a project that requires spaces, open it and EdSharp follows its unit
-automatically, or convert on the way out with Format Code after setting
-IndentUnit to the project's style.</p>
+<p>Press Alt+I to hear how many levels the current line is indented.
+Press it twice to hear the whole chain of blocks around it, outermost
+first. In Python, that is the class, the function and each statement the
+cursor is inside; in a brace language, each opening brace around it.
+Alt+Shift+I turns on a mode that tells you when the indentation level
+changes, such as when you use the Up and Down arrow keys. EdSharp says
+how many levels in or out the indentation moved, speaking straight to
+whichever screen reader is running: JAWS, NVDA or Narrator. No screen
+reader script is needed for this. The mode also swaps the jobs of the
+Enter and Shift+Enter keys. A hyphen anywhere in the ExtraSpeech setting
+turns these announcements off, for anyone who prefers quiet.</p>
+<p>When Indent Mode is off, press Shift+Enter to start a new line with
+the same indentation as the current one. EdSharp finds the indentation
+unit of the current document by itself, from its first indented line. So
+a Python file indented by four spaces, a file indented by two, and a
+file indented with tabs all report their true levels, and all get the
+right unit when you press Tab. When a document has no indentation yet,
+the IndentUnit setting applies. Its default is one tab per level, and
+you can change it with the Configuration Options command, Alt+Shift+C,
+or take it from a file with Infer Indent.</p>
+<p>The tab is the default on purpose, for screen reader productivity.
+One key press makes a level, one character stands for it as you arrow
+through a line, and the number of levels is always the number of
+characters. Style guides written for sighted readers, such as PEP 8's
+four spaces, are made for how code looks on screen. EdSharp is made for
+the coder's own speed, and the interpreter accepts both. The NVDA screen
+reader's own source code uses tabs, for the same reason. When you share
+code with a project that requires spaces, open it, and EdSharp follows
+its unit by itself. Or convert as you finish, with Format Code, after
+setting IndentUnit to the project's style.</p>
 <p>To go to the first character of the current line after any
 indentation, press Alt+Home. To go to the last non-white space
 character, press Alt+End.</p>
@@ -1058,55 +1087,55 @@ easy to use the same indentation style as a file you have opened.</p>
 <p>Two commands send the open document by mail, and neither needs
 Microsoft Word. Mail Body opens a new message in whatever mail program
 this computer uses, with the document as the message text and its name
-as the subject; a document too long for a mail link is offered as an
-attachment instead, since a truncated message helps nobody. Mail Attach
-writes the document to a temporary file, opens a new message, and also
+as the subject. A document too long for a mail link is offered as an
+attachment instead, since a cut-off message helps nobody. Mail Attach
+writes the document to a temporary file and opens a new message. It also
 puts the file on the clipboard as a file, so pressing Control+V in the
-message attaches it even with mail programs that ignore attachments on a
-link. If you prefer the old behavior and have Word, set the Mailer
-option to Word.</p>
+message attaches it, even in mail programs that ignore attachments on a
+link. If you prefer the old way and have Word, set the Mailer option to
+Word.</p>
 <h3 id="thesaurus">Thesaurus</h3>
 <p>Press Shift+F7 on a word, or with a word selected, to see synonyms.
 EdSharp uses WordNet, a free lexical database, so Microsoft Word is not
 needed; the same installPdfTools.cmd that installs the PDF reader
 installs the thesaurus.</p>
 <p>The list is grouped by meaning, which is what makes a thesaurus worth
-having: each entry reads as the word, its part of speech, and a short
-definition of the sense it belongs to, so choosing a synonym for light
-as in weight never offers you words about illumination. Pick an entry
-and choose Replace to put it in the document, keeping your original
-capitalization, or Copy to put it on the clipboard. If you prefer the
-Microsoft Word thesaurus and have Word, set the Thesaurus option to Word
-with Configuration Options, Alt+Shift+C.</p>
+having. Each entry gives the word, its part of speech, and a short
+definition of the sense it belongs to. So when you look for a word for
+light, as in weight, you are never offered words about illumination.
+Pick an entry and choose Replace to put it in the document, keeping your
+own capitalization, or Copy to put it on the clipboard. If you prefer
+the Microsoft Word thesaurus and have Word, set the Thesaurus option to
+Word with Configuration Options, Alt+Shift+C.</p>
 <h3 id="sample-programs">Sample Programs</h3>
 <p>Press Control+Shift+F2, Sample Programs, for a list of them, or find
-them in the Samples folder of the EdSharp program directory. The list is
-built from the folder itself, so each row reads as the file's name, the
-folder it sits in, and a short description taken from the program's own
-first line; choosing Open reads a program into EdSharp, where Control+F5
-compiles or runs it, while a web page opens in your browser, and
-choosing Folder shows the file in Windows Explorer. The Samples folder
-holds the fruit basket program written three ways: in C# with Windows
-Forms, in standard HTML and JavaScript, and in Python with wxPython. The
-fruit basket is a small exercise from a listserv project of blind
-programmers, just large enough to show how a language handles the things
-that decide whether a program is pleasant with a screen reader: labels
-tied to fields, a real list control, a default button, keyboard access
-to every action, and messages that arrive where you are.</p>
-<p>A Web folder inside it holds browser versions as well: React, Vue,
-and a framework-free custom element, each needing nothing installed,
-with a small Node script that serves them and opens your browser. All of
-them obey the same rules and are written in Camel Type, so reading one
-after another shows what changes between languages and frameworks and
-what does not. Open any of them in EdSharp and press Control+F5: the C#
-one compiles with the compiler built into Windows, and the Python one
-runs if wxPython is installed. The folder's ReadMe explains each.</p>
+them in the Samples folder of the EdSharp program folder. The list is
+built from the folder itself. Each row gives the file's name, the folder
+it is in, and a short description taken from the program's own first
+line. Choosing Open reads a program into EdSharp, where Control+F5
+compiles or runs it; a web page opens in your browser instead. Choosing
+Folder shows the file in Windows Explorer. The Samples folder holds the
+fruit basket program written three ways: in C# with Windows Forms, in
+standard HTML and JavaScript, and in Python with wxPython. The fruit
+basket is a small exercise from a mailing list project of blind
+programmers. It is just large enough to show how a language handles what
+decides whether a program is pleasant with a screen reader: labels tied
+to fields, a real list control, a default button, keyboard access to
+every action, and messages that arrive where you are.</p>
+<p>A Web folder inside it also holds browser versions: React, Vue, and a
+custom element with no framework. None needs anything installed, and a
+small Node script serves them and opens your browser. All of them follow
+the same rules and are written in Camel Type. So reading one after
+another shows what changes between languages and frameworks, and what
+does not. Open any of them in EdSharp and press Control+F5. The C# one
+compiles with the compiler built into Windows, and the Python one runs
+if wxPython is installed. The folder's ReadMe explains each.</p>
 <h3 id="converting-pdf-files">Converting PDF Files</h3>
-<p>EdSharp converts a PDF to Markdown, HTML, a Word document, or plain
-text with its structure intact: headings stay headings, lists stay
-lists, tables stay tables, and bold and italic survive. This matters
-more with a screen reader than it does on paper, because headings and
-lists are how you move through a document.</p>
+<p>EdSharp turns a PDF into Markdown, HTML, a Word document or plain
+text, with its structure kept: headings stay headings, lists stay lists,
+tables stay tables, and bold and italic remain. This matters more with a
+screen reader than on paper, because headings and lists are how you move
+through a document.</p>
 <p>The work is done by a free PDF reader that EdSharp can install for
 you. Tick the PDF box on the last page of the installer, or run
 installPdfTools.cmd in the EdSharp program folder at any time; it needs
@@ -1121,48 +1150,48 @@ no converter can help; that needs optical character recognition
 first.</p>
 <h3 id="spell-check">Spell Check</h3>
 <p>Press F7 to check spelling. EdSharp uses Hunspell, the free spelling
-engine behind LibreOffice and Firefox, with a dictionary that ships in
+engine behind LibreOffice and Firefox, with a dictionary that comes in
 the Dictionaries folder beside the program. Nothing is registered with
-Windows and no Microsoft Word is needed. Words you add go in
+Windows, and Microsoft Word is not needed. Words you add go in
 Dictionary.txt in your EdSharp settings folder, a plain list you can
-edit by hand. The SpellChecker setting chooses a different engine:
-"Windows" for the checker built into Windows, which knows the words you
-have taught Windows in other programs, or "Word" for the Microsoft Word
-dialog. If text is selected, only that text is checked; otherwise the
-whole document is.</p>
-<p>The check walks the document the way Compile walks errors: the first
-misspelling in the text comes first, then the next, in the order they
-appear. At each stop EdSharp selects the word in the document, so you
-can read around it with your usual reading keys after the dialog closes,
-and opens a small dialog that says the word and spells it out, tells you
-how far along you are, and shows the sentence it sits in. The first
-control is a box holding the best suggestion. Press Down and Up to walk
-the other suggestions, or type your own correction. Then choose a
-button: Replace puts the correction in and moves on, and is the default,
-so pressing Enter accepts the top suggestion; Skip leaves the word
-alone; Add to Dictionary teaches Windows the word, for every program on
-the computer; Cancel stops the pass and leaves the rest of the document
-untouched. Each button has its own letter, so Alt with R, S, A, or C
-chooses one directly. At the end EdSharp says how many words were
-changed, skipped, and added.</p>
+edit by hand. The SpellChecker setting chooses a different engine.
+"Windows" uses the checker built into Windows, which knows the words you
+taught Windows in other programs. "Word" uses the Microsoft Word dialog.
+If text is selected, only that text is checked; otherwise the whole
+document is.</p>
+<p>The check goes through the document the way Compile goes through
+errors: the first misspelling in the text comes first, then the next, in
+the order they appear. At each stop EdSharp selects the word in the
+document, so you can read around it with your usual keys after the
+dialog closes. It also opens a small dialog that says the word and
+spells it, tells you how far along you are, and shows the sentence it is
+in. The first control is a box holding the best suggestion. Press Down
+and Up to go through the other suggestions, or type your own correction.
+Then choose a button. Replace puts the correction in and moves on; it is
+the default, so pressing Enter accepts the top suggestion. Skip leaves
+the word alone. Add to Dictionary teaches Windows the word, for every
+program on the computer. Cancel stops the check and leaves the rest of
+the document untouched. Each button has its own letter, so Alt with R,
+S, A or C chooses one directly. At the end EdSharp says how many words
+were changed, skipped and added.</p>
 <p>Two settings shape the check. SpellLanguage names the language,
 "en-US" unless you change it. SpellChecker chooses the checker:
 "Windows" by default, or "Word" to use the Microsoft Word dialog as
 older versions of EdSharp did, which needs Word installed.</p>
 <h3 id="asking-about-code">Asking About Code</h3>
 <p>When the window holds a source file, F12 sends your question to a
-model trained on code rather than the general chat model, in the same
-way Compile picks a compiler by the kind of file you are editing. The
+model trained on code, not the general chat model. It works the same way
+Compile picks a compiler by the kind of file you are editing. The
 installer offers qwen2.5-coder:7b as a checkbox, about five gigabytes,
-beside the Ollama box; tick it and the change happens by itself.</p>
-<p>What it is good at is anything about the file in front of you:
-explain this error message, what does this method do, write a function
-that does such and such, review this for mistakes, convert this loop to
-the other style, add comments. That is work where the whole subject fits
-in the question, which is where a model this size does well. What it
-cannot do is reason about a program spread over many files, because it
-sees only what you send it, and a large file may not fit at once; a
-method or a class is the practical unit.</p>
+beside the Ollama box. Tick it, and the switch happens by itself.</p>
+<p>It is good at anything about the file in front of you: explain this
+error message, what does this method do, write a function that does such
+and such, review this for mistakes, change this loop to the other style,
+or add comments. In that kind of work the whole subject fits in the
+question, which is where a model this size does well. It cannot reason
+about a program spread over many files, because it sees only what you
+send it, and a large file may not fit at once. A method or a class is
+the practical unit.</p>
 <p>Say which framework you are targeting when it matters. Most C#
 written today targets .NET rather than the .NET Framework that EdSharp
 itself uses, so a question that does not say so may come back with code
@@ -1175,95 +1204,96 @@ and the one you are translating to, and the translation opens in a new
 window, leaving the original untouched. Your last pair of languages is
 remembered.</p>
 <p>The work is done by the same AI model on your computer that Chat with
-AI uses, so nothing is sent over the internet, there is no account, and
-there are no limits on how much you translate. Quality is good between
-the widely written languages, Spanish, French, German, Portuguese and
-Italian among them, and useful but less reliable for languages with less
-material behind them.</p>
+AI uses. So nothing is sent over the internet, there is no account, and
+there is no limit on how much you translate. Quality is good between
+widely written languages, such as Spanish, French, German, Portuguese
+and Italian. It is useful, but less reliable, for languages with less
+written material behind them.</p>
 <p>A larger model translates better, at the cost of disk space and time.
 The installer offers qwen2.5:7b as a checkbox, about five gigabytes,
-beside the Ollama box; tick it and translation uses it automatically,
-while Chat with AI keeps llama3.2, the smaller and quicker model.
-Nothing needs setting. If you prefer a different model, name it in the
+beside the Ollama box. Tick it, and translation uses it by itself, while
+Chat with AI keeps llama3.2, the smaller and quicker model. Nothing
+needs setting. If you would rather use another model, name it in the
 TranslateModel option with Configuration Options, Alt+Shift+C.</p>
 <h3 id="chat-with-ai">Chat with AI</h3>
 <p>Press F12 to talk with an AI model running on your own computer.
-Whatever is selected, or the whole document when nothing is selected, is
-sent along with the instruction you type, and you type the prompt in a
-box that keeps its lines -- Enter starts a new line, Control+Enter
-submits -- and the answer opens in a plain new window, titled by EdSharp
-like any unnamed document. The original window is never changed, and the
-answer arrives as an ordinary document: read it with your usual keys,
-save it, or convert it. This one command covers both conversation, by
-asking a question in an empty document, and transformation, by selecting
-text and saying what to do with it, such as summarize this, translate
-this to Spanish, or add docstrings to these functions. Everything runs
-locally through Ollama: your text never leaves the machine, there is no
-account and no charge, and one Ollama installation is shared by every
-application that uses it. The last page of EdSharp's installer offers
-Ollama and a starter chat model as a checkbox; the OllamaModel setting
-picks a different model whenever you like.</p>
+Whatever is selected, or the whole document when nothing is, is sent
+with the instruction you type. You type the prompt in a box that keeps
+its lines: Enter starts a new line, and Control+Enter sends it. The
+answer opens in a plain new window, titled by EdSharp like any unnamed
+document. The original window is never changed, and the answer arrives
+as an ordinary document: read it with your usual keys, save it or
+convert it. This one command covers both conversation and changing text.
+Ask a question in an empty document, or select text and say what to do
+with it, such as summarize this, translate this to Spanish, or add
+docstrings to these functions. Everything runs on your own computer
+through Ollama. Your text never leaves the machine, there is no account
+and no charge, and one Ollama installation is shared by every program
+that uses it. The last page of EdSharp's installer offers Ollama and a
+starter chat model as a checkbox, and the OllamaModel setting picks a
+different model whenever you like.</p>
 <h3 id="compilers">Compilers</h3>
-<p>Press Control+Shift+F5 to pick the compiler for your work. The
-shipped set covers what Windows developers realistically use today: C#,
-Python, JavaScript through Node.js, PowerShell, JAWS Script, VBScript,
-JScript .NET, and HTML Tidy for checking web pages, plus Default for
-plain editing. Each compiler is defined by a section named Compiler
-followed by its name in EdSharp.inix, with one clearly named key per
-setting: CompileCommand, JumpPosition, AbbreviateOutput, NavigatePart,
-QuotePrefix, ExtensionDefault, IndentUnit, and GoToEnvironment. Picking
-a compiler brings all of them, so choosing Python also brings four space
-indentation and Python's own prompt, while choosing JavaScript brings
-two spaces and Node's shell; a document that already has indentation of
-its own still governs itself. Control+Shift+G opens that shell: Python's
-interpreter with your file already run, Node's read-evaluate-print
-shell, or PowerShell left open after running the file. Two of them are
-built into EdSharp, for the languages Windows gives no interpreter: a
-JScript console for writing snippets and a C# console, both opening with
-the editor window in scope as frm and its text box as rtb, so a line
-tried at the prompt does to your document exactly what the same line
-does in a snippet. The C# one compiles each line with the compiler named
-in the compiler settings and loads it into EdSharp, which is why it can
-reach the live document; a line ending in a semicolon is kept for the
-rest of the session, and anything else is printed. A language with no
-such shell, JAWS script for one, says so rather than starting something
-unrelated. Values are kept exactly as written and may span multiple
-lines, so regular expressions are easy to read and edit. Every
-expression in the shipped set was checked against the tool's real
-message format, so Compile, Control+F5, jumps to the true error line and
-column. Two things make that practical to work with. Noise is removed
-before you hear anything, so the announcement starts with an error
-rather than with your own file path, which Python and most compilers
-repeat in every message. And when a tool reports several problems,
-EdSharp goes to the one earliest in the file, whatever order the tool
-printed them in, and begins speaking there: fix it, press Control+F5
-again, and the next problem is waiting, so you work down the file from
-the top. The full output, including anything skipped, is always
-available with Review Output. Older compilers that no longer earn a
-place, such as Perl, Ruby, and PowerBASIC, were retired from the shipped
-list; any of them can return as a private section, and old-style packed
-entries still work for compilers that have no section.</p>
-<p>EdSharp aims to be the most friendly and productive editor for screen
-reader users writing Python. The pieces working together: the PyBrace
-command, Alt+Shift+LeftBracket, converts indented Python to a flat form
-in which structure is spoken text rather than counted spaces, and
-PyDent, Alt+LeftBracket, converts back, rebuilding clean indentation and
-leaving a # end comment at the close of every block so the ends of
-functions, classes, and loops are audible while you read. Both
-directions now track strings and brackets character by character, so
-dictionary literals, docstrings, f-strings, and line continuations
-survive the round trip exactly. The Format Code command routes a .py
-file through this same engine to normalize its indentation. Compile,
-Control+F5, runs a Python file with the python on your path even before
-any compiler is picked, jumping to the traceback's line number; the
-installer offers the latest official Python for Windows as an optional
-checkbox. That is the build from python.org, not the Microsoft Store
-edition, which installs into a sandboxed folder and behaves differently
-in ways that break tools. Windows also puts a stub named python on your
-path that only advertises the Store; EdSharp ignores it and looks for
-the real Python by its own location, and installPython.cmd does the
-same. Indent Mode, block navigation, and Infer Indent complete the
-set.</p>
+<p>Press Control+Shift+F5 to pick the compiler for your work. The set
+that comes with EdSharp covers what Windows developers really use today:
+C#, Python, JavaScript through Node.js, PowerShell, JAWS Script,
+VBScript, JScript .NET, and HTML Tidy for checking web pages, plus
+Default for plain editing. Each compiler is defined in EdSharp.inix by a
+section named Compiler followed by its name. It has one clearly named
+key for each setting: CompileCommand, JumpPosition, AbbreviateOutput,
+NavigatePart, QuotePrefix, ExtensionDefault, IndentUnit and
+GoToEnvironment. Picking a compiler brings all of them. So choosing
+Python also brings four-space indentation and Python's own prompt, and
+choosing JavaScript brings two spaces and Node's shell. A document that
+already has indentation of its own still follows its own.</p>
+<p>Control+Shift+G opens that shell: Python's interpreter with your file
+already run, Node's read-evaluate-print shell, or PowerShell left open
+after running the file. Two shells are built into EdSharp, for languages
+Windows gives no interpreter for: a JScript console for writing
+snippets, and a C# console. Both open with the editor window ready as
+frm and its text box as rtb. So a line tried at the prompt does to your
+document exactly what the same line does in a snippet. The C# console
+compiles each line with the compiler named in the compiler settings and
+loads it into EdSharp, which is why it can reach the live document. A
+line ending in a semicolon is kept for the rest of the session, and
+anything else is printed. A language with no such shell, such as JAWS
+script, says so rather than starting something unrelated.</p>
+<p>Values are kept exactly as written and may span several lines, so
+regular expressions are easy to read and edit. Every expression in the
+set was checked against the tool's real message format, so Compile,
+Control+F5, goes to the true line and column of the error. Two things
+make that easy to work with. First, noise is removed before you hear
+anything, so you hear the error first, not your own file path, which
+Python and most compilers repeat in every message. Second, when a tool
+reports several problems, EdSharp goes to the one earliest in the file,
+whatever order the tool printed them in, and starts speaking there. Fix
+it and press Control+F5 again, and the next problem is waiting, so you
+work down the file from the top. The full output, including anything
+skipped, is always there with Review Output.</p>
+<p>Older compilers that no longer earn a place, such as Perl, Ruby and
+PowerBASIC, were retired from the list. Any of them can come back as a
+private section, and old-style packed entries still work for compilers
+that have no section.</p>
+<p>EdSharp aims to be the friendliest and most productive editor for
+screen reader users who write Python. Several parts work together. The
+PyBrace command, Alt+Shift+LeftBracket, turns indented Python into a
+flat form, in which structure is spoken text rather than counted spaces.
+PyDent, Alt+LeftBracket, turns it back. It rebuilds clean indentation
+and leaves a # end comment at the close of every block, so you can hear
+the ends of functions, classes and loops as you read. Both directions
+now follow strings and brackets character by character, so dictionary
+literals, docstrings, f-strings and line continuations survive the round
+trip exactly. The Format Code command sends a .py file through the same
+engine to tidy its indentation.</p>
+<p>Compile, Control+F5, runs a Python file with the python on your path
+even before any compiler is picked, and goes to the line number in the
+traceback. The installer offers the latest official Python for Windows
+as an optional checkbox. That is the build from python.org, not the
+Microsoft Store edition, which installs into a closed-off folder and
+behaves differently in ways that break tools. Windows also puts a
+stand-in named python on your path that only advertises the Store.
+EdSharp ignores it and looks for the real Python where it is installed,
+and installPython.cmd does the same. Indent Mode, block navigation and
+Infer Indent complete the set.</p>
 <p>Press Control+B to go to the next code block, or Control+Shift+B to
 go to the previous one. A block is defined as lines with the same or
 greater indentation/nesting. Control+I and Control+Shift+I have a
@@ -1287,11 +1317,10 @@ it reads the text of the preceding line with less indentation, which is
 typically the statement that introduced the current block, e.g., an if,
 for, or while statement. These commands are best learned by
 experimenting with familiar code.</p>
-<p>The Quote and Unquote commands, Control+Q and Control+Shift+Q, may be
-used to add or remove comment symbols at the start of lines. The default
-quote prefix may be changed from &gt; to a comment sequence appropriate
-for the language in use, e.g., ' for Visual Basic, * for Xbase, ; for
-AutoIt, or # for Ruby.</p>
+<p>The Quote and Unquote commands, Control+Q and Control+Shift+Q, add or
+remove comment symbols at the start of lines. You can change the quote
+prefix from its default, &gt;, to the comment mark of the language you
+use: ' for Visual Basic, * for Xbase, ; for AutoIt, or # for Ruby.</p>
 <p>Curly brace characters delimit code structures in a number of
 languages. Press Control+Shift+RightBracket to find the matching right
 brace (}) character from the current location. Press
@@ -1305,30 +1334,27 @@ that character and its opposite when searching, regardless of the
 current setting. In addition, Control+Shift+. (think of the &gt; symbol)
 goes to the matching end tag of an HTML element, and Control+Shift+,
 goes to the start tag.</p>
-<p>Two commands specifically aid programming in the Python language with
-speech. This language requires indentation for subordinate code blocks,
-and the indentation, itself, rather than words or punctuation, is how
-such structure is specified. The indentation is helpful to sighted
-programmers, and often to users of large print or braille, but generally
-inefficient for speech users, since such access tends to be serial
-rather than two dimensional in nature. The PyBrace command
-(Alt+Shift+LeftBracket) converts indented structure to a form explicitly
-indicated by opening and closing braces, similar to C-like languages.
-The PyDent command (Alt+LeftBracket) does the reverse, converting from
-PyBrace to indented format that is understood by the Python interpreter
-(using the current IndentUnit setting).</p>
-<p>The PyBrace and PyDent formats include comments that indicate when a
-block has closed , e.g., "# end for" on the line after a "for" block. If
-text is selected, these commands replace it with the alternate format;
-otherwise, they create a new editing window so the original file is
-still available.</p>
-<p>A scripting language allows a program to be run as a text file
-associated by extension with its interpreter, e.g., .py for Python, .au3
-for AutoIt, or .rb for Ruby. Press F5 to run the current file with its
-associated interpreter. If the current file name has a complete path,
-EdSharp saves to disk before running the file to ensure the latest
-version is being used. Otherwise, EdSharp saves to a file in a temporary
-folder and runs that file.</p>
+<p>Two commands help in particular with writing Python by speech. Python
+requires indentation for blocks of code inside other code, and the
+indentation itself, not words or punctuation, is how that structure is
+shown. Indentation helps sighted programmers, and often users of large
+print or braille. But it is usually slow for speech users, who hear a
+line at a time rather than seeing the page as a whole. The PyBrace
+command, Alt+Shift+LeftBracket, turns the indented structure into a form
+marked by opening and closing braces, like C-like languages. The PyDent
+command, Alt+LeftBracket, does the reverse: it turns PyBrace back into
+the indented form the Python interpreter understands, using the current
+IndentUnit setting.</p>
+<p>The PyBrace and PyDent forms include comments that show where a block
+closes, such as "# end for" on the line after a "for" block. If text is
+selected, these commands replace it with the other form. Otherwise they
+open a new editing window, so the original file is still there.</p>
+<p>A scripting language lets a program be run as a text file, linked by
+its extension to its interpreter, such as .py for Python, .au3 for
+AutoIt, or .rb for Ruby. Press F5 to run the current file with its
+interpreter. If the current file has a full path, EdSharp saves it
+first, so the latest version runs. Otherwise EdSharp saves it to a file
+in a temporary folder and runs that.</p>
 <p>The Alt+F5 command prompts for a command to run and speaks its
 standard output. The path of the current file may be passed via the
 syntax described for EdSharp's Import and Export capability. The command
@@ -1340,54 +1366,51 @@ involves compiling source code to binary form. For example, a C# program
 in a .cs file may be compiled to a .exe file. This command may also be
 used for interpreters that report syntax errors via the standard output
 or standard error streams.</p>
-<p>These tool commands typically begin with the file name of the
-compiler or interpreter. Any parameters may be specified thereafter. If
-the token %SourceDir% is included, EdSharp temporarily changes to the
-directory containing the source file before running the tool.</p>
-<p>The first line and column position mentioned in the output, if any,
-is assumed to be the position of a compilation error in the source code.
-EdSharp uses the JumpPosition setting to find the position in the output
-based on a regular expression. The regular expression should be defined
-so that the first number of a matching string is the line number and the
-second number, if any, is the column number. EdSharp automatically jumps
-to that position. It is also saved so that the Jump Again command,
-Alt+J, returns there.</p>
+<p>These tool commands usually start with the file name of the compiler
+or interpreter. Any parameters can follow. If the command includes the
+token %SourceDir%, EdSharp first changes to the folder of the source
+file, just while the tool runs.</p>
+<p>The first line and column number in the output, if there is one, is
+taken to be the place of a compile error in the source code. EdSharp
+finds that place in the output with a regular expression, the
+JumpPosition setting. The expression should be written so that the first
+number it matches is the line number, and the second number, if any, is
+the column number. EdSharp goes to that place by itself. It also
+remembers it, so the Jump Again command, Alt+J, goes back there.</p>
 <p>Another regular expression may be configured for navigating among
 routines in source code. The NavigatePart setting is used by
 Alt+PageDown and Alt+PageUp to go to the next or previous function,
 method, or class definition. The Go to Part command, Alt+Shift+G, lets
 you pick one of these locations from a list.</p>
-<p>Thus, the Compile command, Control+F5, combines debugging steps
-efficiently by compiling, saying output without a modal message box, and
-automatically jumping to the first error position, if found in the
-output. The output spoken may be abbreviated by means of a regular
-expression setting that specifies the pattern of text to remove. The
-Pick Compiler command, Control+Shift+F5, lets you conveniently configure
-the CompileCommand , AbbreviateOutput, JumpPosition, NavigatePart, and
-QuotePrefix ssettings for a particular compiler or interpreter. EdSharp
-offers settings for the following languages: Boo, C#, HTML, Java, JAWS
-Script, JScript .NET, LaTeX, Perl, PHP, PowerBASIC, PowerShell, Python,
-Ruby, and Visual Basic .NET.</p>
-<p>The name of a tool to be run should either include its directory
-location or be available on the Windows search path. This may be
-adjusted by editing the Path environment variable in the Advanced tab
-page of the System applet in Control Panel. If the tool is a long file
-name enclosed in quotes then either prefix the command line with the @
-symbol or enclose the whole thing in quotes. This is necessary to
-prevent .ini file manipulation functions of Windows from losing the
-opening quote before the tool.</p>
+<p>So the Compile command, Control+F5, combines debugging steps: it
+compiles, says the output without a message box you must close, and goes
+to the first error it finds in the output. The spoken output can be
+shortened by a regular expression setting that names the text to remove.
+The Pick Compiler command, Control+Shift+F5, sets the CompileCommand,
+AbbreviateOutput, JumpPosition, NavigatePart and QuotePrefix settings
+for a particular compiler or interpreter. EdSharp has settings for these
+languages: C#, Python, JavaScript through Node.js, PowerShell, JAWS
+Script, VBScript, JScript .NET, and HTML Tidy for checking web
+pages.</p>
+<p>The name of a tool to run should include its folder, or be on the
+Windows search path. You can change the search path by editing the Path
+environment variable, on the Advanced tab of the System settings in
+Control Panel. If the tool has a long file name in quotes, either start
+the command line with the @ symbol or put the whole thing in quotes.
+Otherwise the Windows functions that handle .ini files lose the opening
+quote before the tool.</p>
 <p>For HTML, the HTML Tidy utility is configured by default and
 distributed with EdSharp. After eliminating coding errors found with
 Control+F5, use Alt+Shift+E to export to a target file containing clean
 HTML. More information is available at the <a
 href="http://tidy.sourceforge.net">HTML Tidy project page</a>.</p>
-<p>For PowerBASIC, a batch file is needed (in the EdSharp program
-folder), which refers to the default location of PowerBASIC for Windows
-version 10.0. The path to the JAWS script compiler is also hard coded
-for the latest version. JAWS scripting is additionally supported by
-EdSharp's own scripts: Control+I is a hot key for inserting the path to
-the user script folder, and Control+Shift+I is for the All Users script
-folder, when focus is in the Open or Save Dialog of EdSharp.</p>
+<p>For PowerBASIC, a batch file is needed, in the EdSharp program
+folder. It refers to the default location of PowerBASIC for Windows
+version 10.0. The path to the JAWS script compiler is also written in,
+for the latest version. EdSharp's own scripts help with JAWS scripting
+too. When focus is in EdSharp's Open or Save dialog, Control+I inserts
+the path to your user script folder, and Control+Shift+I the path to the
+All Users script folder.</p>
 <p>Compiler settings are stored in the [Compilers] section of the
 EdSharp.ini file. Only current compiler settings appear in the
 configuration options dialog, Alt+Shift+C. Other settings may be edited,
@@ -1400,22 +1423,21 @@ settings.</p>
 exposed to add-in code in the JScript .NET language, explained in <a
 href="https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2010/72bd815a(v=vs.100)">Microsoft's
 JScript .NET reference</a>.</p>
-<p>JScript.NET is a version of JavaScript with access to the huge
-library of the .NET Framework. In EdSharp, JScript code may be used in
-the Evaluate Expression command (Control+Equals), Replace Tokens command
-(Control+Shift+Equals), and Paste Snippet command (Alt+V). Stand-alone
-JScript executables may also be created with the JScript .NET compiler
-(jsc.exe), which is included with free .NET developer tools.</p>
-<p>Using the Compile command (Control+F5) is the best way to debug
-JScript code even if you want to use it as an add-in rather than
-stand-alone executable. This is because the JScript compiler provides
-error information that is not available when add-in code fails to
-execute due to syntax errors. When writing code in this way, you will
-probably want to import one or more namespaces to abbreviate .NET
-references, e.g., by copying statements at the top of the Eval.js file
-in the EdSharp program folder. Comment out such import statements in the
-debugged, add-in version of the code, since EdSharp already calls them
-internally.</p>
+<p>JScript.NET is a version of JavaScript that can use the huge library
+of the .NET Framework. In EdSharp, JScript code can be used in the
+Evaluate Expression command (Control+Equals), the Replace Tokens command
+(Control+Shift+Equals) and the Paste Snippet command (Alt+V). You can
+also make JScript programs that run on their own, with the JScript .NET
+compiler (jsc.exe), which comes with the free .NET developer tools.</p>
+<p>The Compile command, Control+F5, is the best way to debug JScript
+code, even code you mean to use as an add-in rather than as a program of
+its own. That is because the JScript compiler gives error information
+you do not get when add-in code fails to run because of a syntax error.
+When writing code this way, you will probably want to import one or more
+namespaces, to shorten .NET references. You can copy the statements at
+the top of the Eval.js file in the EdSharp program folder. Comment out
+those import statements in the finished add-in version of the code,
+since EdSharp already calls them itself.</p>
 <p>The EdSharp object model includes a hierarchy of classes
 corresponding to the overall application, multiple document interface
 (MDI) frame, MDI child windows, and RichTextBox (RTB) within each
@@ -1429,58 +1451,59 @@ variables as follows:</p>
 <pre><code>var frame = App.Frame
 var child = frame.Child
 var rtb = child.RTB</code></pre>
-<p>By convention, .NET properties are initially capitalized, whereas
-field and local variables are not. Methods of the frame object can
-invoke menu items, e.g., a new editing window could be created with the
-following statement:<br />
-<code>frame.menuFileNew.PerformClick()</code> Methods and properties of
-an RTB (RichTextBox) object are explained in <a
+<p>By convention, .NET properties start with a capital letter, while
+fields and local variables do not. Methods of the frame object can run
+menu items. For example, this statement would create a new editing
+window:<br />
+<code>frame.menuFileNew.PerformClick()</code> The methods and properties
+of an RTB (RichTextBox) object are explained in <a
 href="https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.richtextbox">Microsoft's
 RichTextBox members reference</a>.</p>
-<p>EdSharp also adds some methods and properties in its inherited
-version of the RichTextBox class, e.g., the ReplaceRange method for
-replacing text between two points in the current document. Other EdSharp
-classes provide convenient scripting methods, e.g., Dialog.Pick gets a
-user choice from a listbox and Util.String2File saves a string of text
-to a file on disk.</p>
-<p>These classes will be further documented based on questions received.
-At present, the best way to learn them is to examine code in sample .js
-snippet files and the main EdSharp.cs program file, which implement
-behavior you experience when running the application. Although the .cs
-code is in the C# language, its syntax is similar to JScript, and the
-names of classes, methods, and properties are the same.</p>
+<p>EdSharp also adds some methods and properties to its own version of
+the RichTextBox class. One is the ReplaceRange method, which replaces
+the text between two points in the current document. Other EdSharp
+classes give handy methods for scripts. For example, Dialog.Pick gets a
+choice from a list box, and Util.String2File saves a string of text to a
+file on disk.</p>
+<p>These classes will be documented further as questions come in. For
+now, the best way to learn them is to read the code in the sample .js
+snippet files and the main EdSharp.cs program file, which carry out what
+you see when you run the program. The .cs code is in the C# language,
+but its syntax is like JScript, and the names of classes, methods and
+properties are the same.</p>
 <h2 id="miscellaneous">Miscellaneous</h2>
-<p>The developer folder holds auditEdSharp.cmd, which checks the things
-a compiler cannot: two commands claiming one shortcut, dialog buttons
-sharing an access key, patterns in the compiler table that are not legal
-expressions, conversion entries pointing at scripts that no longer
-exist, unbalanced braces, and which features still reach for Microsoft
-Office. The build runs it automatically and stops if a check fails.</p>
+<p>The developer folder holds auditEdSharp.cmd, which checks what a
+compiler cannot. It finds two commands claiming one shortcut, dialog
+buttons sharing an access key, and patterns in the compiler table that
+are not valid expressions. It also finds conversion entries pointing at
+scripts that no longer exist, unbalanced braces, and features that still
+rely on Microsoft Office. The build runs it automatically and stops if a
+check fails.</p>
 <p>EdSharp speaks only what your screen reader cannot already tell you.
-Window titles, and the name, role and value of whatever has keyboard
-focus, are announced by JAWS, NVDA or Narrator on their own, so EdSharp
-stays quiet about them; what it does speak is the answer to a command,
-such as a count, a level, or the text a navigation command reached. Each
-message goes to one voice only: JAWS if it is running, otherwise NVDA,
+JAWS, NVDA and Narrator announce window titles on their own, and the
+name, role and value of whatever has keyboard focus, so EdSharp stays
+quiet about them. What it does speak is the answer to a command, such as
+a count, a level, or the text a navigation command reached. Each message
+goes to one voice only: JAWS if it is running, otherwise NVDA, and
 otherwise a system notification that Narrator reads.</p>
 <p>EdSharp writes a log for each session, named EdSharp followed by a
 time stamp, in the logs folder under your local application data, beside
 the setup log. It records the version, the environment, and every
-outside command EdSharp runs with its exit code, so a failed conversion
+outside command EdSharp runs with its exit code. So a failed conversion
 or compile can be diagnosed from the log rather than guessed at. The
 newest thirty session logs are kept. Everything EdSharp records goes in
 this one folder: the setup log, the session logs, the setup summary, and
-the small files the installer and its helper scripts use to talk to each
-other. Each line is written the moment it happens rather than held in
+the small files the installer and its helper scripts use to pass
+messages. Each line is written the moment it happens rather than held in
 memory, so a log is complete even when the thing being logged is what
 went wrong. Press Control+F12, Copy Log, to put the current log's path
 on the clipboard as both a file and text, ready to paste as a mail
-attachment. Extra speech messages may be toggled off -- or reactivated
--- with Control+Shift+X. When off, such messages are redirected to a
-text file in the EdSharp data directory called Speech.log, which may be
-examined in an editing window with Alt+Shift+X. This file is initialized
-when EdSharp starts, and the Extra Speech setting is remembered from the
-previous session.</p>
+attachment.</p>
+<p>Extra speech messages may be turned off, or back on, with
+Control+Shift+X. When they are off, they go to a text file called
+Speech.log in the EdSharp data folder, which you can open in an editing
+window with Alt+Shift+X. The file is started fresh when EdSharp starts,
+and the Extra Speech setting is remembered from the session before.</p>
 <p>With the optional JAWS scripts, you can toggle a speech setting of
 reading all or no punctuation using JAWSKey plus the grave accent at the
 top left of the main keypad (U.S. keyboard). All punctuation is useful
@@ -1500,11 +1523,10 @@ until you save or reload it.</p>
 line directly below it. The cursor is placed at the start of the new
 line. This is useful for creating a new line of text by editing a
 previous line that is similar.</p>
-<p>Press Control+Equals to evaluate either the current line or selected
-text as an expression in the JScript.NET language. This command is
-useful for mathematical calculations. For example, the following algebra
-calculates the cumulative total of an initial 100 deposit compounded for
-10 years at an annual rate of 5% interest:\</p>
+<p>Press Control+Equals to work out the current line or selected text as
+an expression in the JScript.NET language. This is useful for math. For
+example, the following works out the total of a starting deposit of 100,
+growing for 10 years at 5% yearly interest, compounded:\</p>
 <pre><code>var interest = 1.15
 var deposit = 100
 var years = 10
@@ -1513,36 +1535,36 @@ Math.Pow(interest, years) * deposit
 <p>The result, about $163, was placed on the line below the previously
 selected text, and the cursor was placed at the start of that line.</p>
 <p>The Transform Files command, Alt+Equals, applies a saved job of
-search and replace tasks to one or more files -- typically to massage
-data or formatting in predictable ways. The current document holds the
-list of files to process, one path per line, and EdSharp prompts for the
-job file. A job is an .inix file (it may carry a .ini or .inix
-extension) with one bracketed section per task. Each section has a Find
-key (the regular expression to match) and then either replaces or
-extracts. A Replace key gives the replacement text, in which \n, \t, and
-similar escapes are honored, the usual .NET group references such as $1
-work, and $# inserts the running match count. To delete the matched
-text, simply leave the Replace key out of the section: a task with a
-Find but no Replace removes every match. If you prefer to state the
-empty replacement explicitly, write Replace="" -- a pair of double
-quotes with nothing between them. Do not write a bare Replace= with
-nothing after the equals sign, since that begins a multi-line value
-rather than an empty one. Alternatively, an Extract key set to true
-collects each match to the clipboard without changing the file,
-separated by the optional Divider key (a form feed and newline by
-default). An optional Options key takes a comma-separated list of .NET
-regular expression option names such as multiline, ignorecase, or
-singleline. Any single-line value may be surrounded by double quotes, as
-in traditional .ini files. The quotes are delimiters rather than
-content, and everything between them is kept exactly, so quoting is how
-you preserve a space that would otherwise be trimmed away: Replace="
-dog" keeps the leading space, and Replace="dog " keeps the trailing one.
-Quoting is optional; an unquoted value works as before. Because the
-.inix format supports multi-line values, a Find or Replace expression
-may span several lines. This is the same job format processed by the
-companion Regexer tool. When you run a job, EdSharp offers Test (count
-matches only), Run (apply the changes), and Verbose (apply with per-task
-detail) modes.</p>
+search and replace tasks to one or more files, usually to change data or
+formatting in predictable ways. The current document holds the list of
+files to process, one path per line, and EdSharp asks for the job file.
+A job is an .inix file, with a .ini or .inix extension, with one
+bracketed section per task. Each section has a Find key, the regular
+expression to match, and then either replaces or extracts.</p>
+<p>A Replace key gives the replacement text. In it, \n, \t and similar
+escapes work, the usual .NET group references such as $1 work, and $#
+inserts the running count of matches. To delete the matched text, leave
+the Replace key out of the section: a task with a Find but no Replace
+removes every match. If you would rather state the empty replacement,
+write Replace="" -- two double quotes with nothing between them. Do not
+write a bare Replace= with nothing after the equals sign, since that
+starts a value of several lines rather than an empty one. Instead of
+replacing, an Extract key set to true copies each match to the clipboard
+without changing the file. The matches are separated by the optional
+Divider key, which is a form feed and a new line by default. An optional
+Options key takes a list, separated by commas, of .NET regular
+expression options such as multiline, ignorecase or singleline.</p>
+<p>Any single-line value may be put in double quotes, as in traditional
+.ini files. The quotes mark where the value begins and ends; they are
+not part of it, and everything between them is kept exactly. So quoting
+is how you keep a space that would otherwise be trimmed: Replace=" dog"
+keeps the leading space, and Replace="dog " keeps the trailing one.
+Quoting is optional, and an unquoted value works as before. Because the
+.inix format allows values of several lines, a Find or Replace
+expression may span several lines. This is the same job format the
+companion Regexer tool uses. When you run a job, EdSharp offers three
+modes: Test counts matches only, Run applies the changes, and Verbose
+applies them with detail for each task.</p>
 <p>Before invoking this command, the current editing window should
 contain the list of files to process, one per line. Such a list could be
 typed manually or generated via the Path List command (Control+Shift+P).
@@ -1611,19 +1633,17 @@ in the current editing window to text files with the same names except
 for .txt extensions. Press Control+Shift+T to convert and append source
 files to text in a new document instead.</p>
 <p>The Web Download command, Alt+Shift+W, lets you pick one or more
-files to download from a page whose address you specify. If Internet
-Explorer is open, EdSharp uses the value in its address bar as the
-default. Each item of the resulting checked listbox shows both the
-clickable text of the url and its target file name. Press Spacebar to
-toggle the checked state of an item. After picking files, you are
-prompted for the target folder on disk. If the URL of a link does not
-end in a valid file name, EdSharp creates a file name for the target on
-disk based on other characters in the URL. If a file with the same name
-already exists, a unique name is created by adding a numeric suffix,
-e.g., page_001.htm, page_002.htm, etc.</p>
-<p>To make navigation more flexible and efficient in a listbox with many
-items, EdSharp adds the following features to its list-based
-dialogs.</p>
+files to download from a page whose address you give. If Internet
+Explorer is open, EdSharp offers the address in its address bar. Each
+item in the list of checkboxes shows both the link's text and the name
+of the file it leads to. Press Spacebar to check or uncheck an item.
+After you pick files, EdSharp asks for the folder to save them in. If a
+link's address does not end in a valid file name, EdSharp makes a name
+from other characters in the address. If a file with that name already
+exists, it adds a number to make the name unique, such as page_001.htm,
+page_002.htm and so on.</p>
+<p>To make moving through a long list quicker and easier, EdSharp adds
+these features to its dialogs that show lists.</p>
 <p>Control+J prompts for text within an item, going to the first match
 if a new search, or the next match if the previous value is accepted.
 Alt+J goes to the next match without prompting for a value. The item
@@ -1631,15 +1651,14 @@ with focus when the dialog is closed -- but not canceled -- becomes the
 current item the next time that the same list dialog is invoked (you are
 notified when it is not the first item). The Jump value of that dialog
 is also remembered.</p>
-<p>Control+F sets a filter to restrict what items are shown via
-wildcards (* to match any sequence of characters or ? to match a single
-one). For example, you could browse replace-related commands in the
-Alternate Menu, Alt+F10, by pressing Control+F after invoking that list
-and then entering <em>replace</em> as the filter expression.
-Control+Shift+F clears the filter so all items are shown again. The
-order of items may also be changed: Alt+A for alpha order, Alt+Shift+A
-for reverse alpha order, Alt+D for default order, or Alt+Shift+D for
-reverse default order.</p>
+<p>Control+F sets a filter, so only matching items are shown. Use
+wildcards: * matches any run of characters, and ? matches a single one.
+For example, to browse the commands about replacing in the Alternate
+Menu, Alt+F10, press Control+F in that list and type <em>replace</em> as
+the filter. Control+Shift+F clears the filter, so all items show again.
+You can also change the order of items: Alt+A for alphabetical order,
+Alt+Shift+A for reverse alphabetical order, Alt+D for the default order,
+or Alt+Shift+D for the default order reversed.</p>
 <p>Multiple commands support flexible checking or unchecking in a
 checked listbox such as the Web Download dialog. Press Space to toggle
 the checked state of the current item, Control+A to check all items, or
@@ -1663,117 +1682,109 @@ the address of the current item in the list, e.g., 11 of 42.</p>
 <p>Press Alt+Shift+C to adjust configuration options of EdSharp through
 a dialog. Each option has a unique access key in its label, so you can
 jump directly to it with an Alt plus letter combination.</p>
-<p>You can configure whether EdSharp's application window is maximized
-at startup, and whether an editing window is word wrapped when created
--- the default is Yes for these options. When a file is saved without
-giving it an extension, .rtf is added as a configurable default. If a
-file would be overwritten, the original may be optionally saved with
-.bak added (default is No). The OpenPrevious option determines whether
-files open at the end of the previous session are automatically opened
-at the start of the next one (default is No). Another option limits the
-number of files shown with the Recent Files command, Alt+R (default is
-100).</p>
-<p>The HardPageAddress option determines whether the Address command,
-Alt+A, gives a page number instead of document percentage (default is
-No). A form feed character specifies a hard page break. It is part of
-the sequence inserted by the Section Break command, Control+Enter, which
-is configurable via the SectionBreak option of the configuration dialog.
-Use the Control+PageDown and Control+PageUp commands to navigate by
-page. Pressing Alt+A a second time in a row gives the alternate type of
-address information, so you can still get a page number without changing
-the HardPageAddress setting.</p>
+<p>You can choose whether EdSharp's window starts maximized, and whether
+a new editing window wraps its words. Both are Yes by default. When a
+file is saved without an extension, .rtf is added, a default you can
+change. If saving would overwrite a file, the original can be kept with
+.bak added; the default is No. The OpenPrevious option decides whether
+the files open at the end of one session open again at the start of the
+next; the default is No. Another option limits how many files the Recent
+Files command, Alt+R, shows; the default is 100.</p>
+<p>The HardPageAddress option decides whether the Address command,
+Alt+A, gives a page number instead of a percentage of the document. The
+default is No. A form feed character marks a hard page break. It is part
+of what the Section Break command, Control+Enter, inserts, which you can
+change with the SectionBreak option of the configuration dialog. Use the
+Control+PageDown and Control+PageUp commands to move by page. Pressing
+Alt+A twice in a row gives the other kind of address, so you can still
+get a page number without changing the HardPageAddress setting.</p>
 <p>The ViewLevels option controls whether EdSharp converts a file when
-it is opened from outside the editor -- through Windows Explorer, the
+it is opened from outside the editor: through Windows Explorer, the
 "Open with" menu, the command line, or the Recent Files command. (The
 ordinary Open command, Control+O, always opens a file raw, and Open
-Other Format, Control+Shift+O, always converts; ViewLevels affects only
-the outside-the-editor paths.) By default EdSharp opens files raw, with
-one exception: binary and document formats whose raw bytes are not
-readable -- Word (.doc, .docx), Excel (.xls, .xlsx), PowerPoint (.ppt,
-.pptx), PDF (.pdf), EPUB (.epub, .epub3), WordPerfect (.wpd), WinHelp
-(.hlp), and rich text (.rtf) -- are converted to text (or, for .rtf,
-shown as rich text). Every text, markup, data, source-code, or otherwise
-unrecognized format opens raw, so no text format is ever auto-converted.
-Braille files (.brl, .brf) are treated as text and therefore open raw,
-showing the braille content as it is stored rather than back-translating
-it. Use ViewLevels to override any extension: a value of 0 opens that
-type raw and 1 converts it. For example, "docx:0" would open Word files
-raw and "rst:1" would auto-convert reStructuredText. (Braille
-back-translation was retired in August 2026 along with its converter
-tools, so .brl and .brf files always open raw, showing the stored
-braille.) The option is a single space-separated list, as in
-ViewLevels="docx:0 rst:1".</p>
+Other Format, Control+Shift+O, always converts. ViewLevels affects only
+opening from outside the editor.) By default EdSharp opens files raw,
+with one exception. Binary and document formats whose raw bytes cannot
+be read are converted to text: Word (.doc, .docx), Excel (.xls, .xlsx),
+PowerPoint (.ppt, .pptx), PDF (.pdf), EPUB (.epub, .epub3), WordPerfect
+(.wpd) and WinHelp (.hlp). Rich text (.rtf) is shown as rich text. Every
+text, markup, data, source-code or unrecognized format opens raw, so no
+text format is ever converted automatically. Braille files (.brl, .brf)
+are treated as text, so they open raw and show the braille as it is
+stored, without translating it back. Use ViewLevels to override any
+extension: a value of 0 opens that type raw, and 1 converts it. For
+example, "docx:0" would open Word files raw, and "rst:1" would convert
+reStructuredText automatically. (Braille back-translation was retired in
+August 2026 along with its converter tools, so .brl and .brf files
+always open raw, showing the stored braille.) The option is a single
+list separated by spaces, as in ViewLevels="docx:0 rst:1".</p>
 <p>The UseIndentModeDefault setting determines the state of indent mode
 when a new document window is opened. This mode may be toggled on a
 per-window basis with Alt+Shift+I. The configuration setting determines
 whether it is initially on or off when a file is opened (default is
 No).</p>
-<p>The YieldEncoding setting determines the character encoding EdSharp
-will use when opeing a file from disk. EdSharp ignores this setting if
-the file has a .rtf extension indicating rich text format, or has an
-initial byte order mark (BOM) indicating Unicode format (e.g., UTF-8 or
-UTF-16). An encoding may be indicated by either its name or number. A
-list of those available may be found by choosing the Other option in the
-Yield Encoding command, Alt+Shift+Y, or Export Format command,
-Alt+Shift+E. If no YieldEncoding setting is configured, EdSharp uses the
-default encoding configured in the regional settings applet of Windows
-Control Panel. Typically, the setting is Western European. Use the
-Status command, Alt+Z, pressed twice in order to check the encoding that
-EdSharp used to open the current document. EdSharp will save the
-document with the same encoding.</p>
-<p>A separate dialog invoked with Alt+Shift+Equals is available for
-setting the font and color of text in an editing window. The default
-font was chosen for friendliness to low vision users, and you can adjust
-this subjective choice. Use the Manual Options command, Alt+Shift+M, to
-directly edit the main configuration file, EdSharp.ini, located in the
-EdSharp data folder. This is a subfolder of the Windows path to
-Application Data, typically named something like<br />
+<p>The YieldEncoding setting decides the character encoding EdSharp uses
+when opening a file from disk. EdSharp ignores the setting if the file
+has a .rtf extension, meaning rich text format, or starts with a byte
+order mark (BOM), meaning a Unicode format such as UTF-8 or UTF-16. You
+can name an encoding by its name or its number. To see the list, choose
+the Other option in the Yield Encoding command, Alt+Shift+Y, or the
+Export Format command, Alt+Shift+E. With no YieldEncoding setting,
+EdSharp uses the default encoding in the region settings of Windows
+Control Panel, usually Western European. To check which encoding EdSharp
+used to open the current document, press the Status command, Alt+Z,
+twice. EdSharp saves the document in the same encoding.</p>
+<p>A separate dialog, opened with Alt+Shift+Equals, sets the font and
+color of text in an editing window. The default font was chosen to suit
+people with low vision, and you can change it to suit yourself. Use the
+Manual Options command, Alt+Shift+M, to edit the main configuration file
+directly. It is EdSharp.ini, in the EdSharp data folder. That folder is
+inside the Windows Application Data path, usually something like<br />
 \C:\users\UserName\appdata\roaming\EdSharp\`</p>
 <p>To change key assignments, edit the Keys section of the configuration
-file, e.g., the line<br />
+file. For example, the line<br />
 <code>Replace=Control+R</code> could be changed to<br />
-<code>Replace=Control+H</code> Since Control+H is assigned to the the
-HTML Format command by default, however, EdSharp will alert you to a
-conflict when loading unless that command is also reassigned or detached
-from a key as follows:<br />
+<code>Replace=Control+H</code> Control+H is assigned to the HTML Format
+command by default, though, so EdSharp warns you of a conflict when it
+loads, unless that command is also reassigned or set to no key, like
+this:<br />
 <code>HTML Format=None</code></p>
 <p>A command without a hot key may still be invoked via the regular menu
 system or Alternate Menu (Alt+F10). The terms used to identify available
 keys are listed in <a
 href="https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.keys">Microsoft's
 Keys enumeration reference</a>.</p>
-<p>Certain configuration options are associated with the current
-compiler rather than being global . Specifically, favorites, bookmarks,
-and user-defined tokens apply to the current compiler (picked via
-Control+Shift+F5), so you can work with items more relevant to each
-coding project. The Reset Configuration command, Alt+Shift+0, lets you
-easily remove custom settings and restore defaults of EdSharp. This
-command lets you choose whether to reset the main configuration, current
-compiler configuration, or create a new compiler configuration. The New
-choice prompts for the compiler name, command line, AbbreviateOutput,
-NavigatePart, QuotePrefix, and ExtensionDefault settings.</p>
-<p>A compiler configuration file is stored in the EdSharp data folder in
-a file having the compiler name and a .ini extension. For example, if
-you created settings for the "Delphi" compiler, EdSharp would create a
-Delphi entry in the Compilers section of EdSharp.ini, and then store
-related favorites, bookmarks, and user-defined tokens in Delphi.ini.
-Press Alt+0 to query the current compiler and directory.</p>
-<p>Press F4 to activate an editing window from a list of those currently
-open. Press Control+F4 to close the current window, or Control+Shift+F4
-to close all windows except the current one. EdSharp windows may be
-visually organized according to common MDI (multiple document interface)
-patterns. The Window menu includes the following commands: Arrange
-Icons, Alt+F11; Cascade, Control+F11; Tile Horizontal, Alt+Shift+F11;
-and Tile Vertical, Control+Shift+F11.</p>
+<p>Some configuration options belong to the current compiler rather than
+to EdSharp as a whole. Favorites, bookmarks and user-defined tokens go
+with the compiler you picked with Control+Shift+F5. So you work with the
+items that matter to each coding project. The Reset Configuration
+command, Alt+Shift+0, removes your own settings and restores EdSharp's
+defaults. It offers three choices: reset the main settings, reset the
+current compiler's settings, or make settings for a new compiler. The
+New choice asks for the compiler's name and command line, and for its
+AbbreviateOutput, NavigatePart, QuotePrefix and ExtensionDefault
+settings.</p>
+<p>A compiler's configuration is stored in the EdSharp data folder, in a
+file with the compiler's name and a .ini extension. For example, if you
+made settings for the "Delphi" compiler, EdSharp would add a Delphi
+entry to the Compilers section of EdSharp.ini. It would then keep that
+compiler's favorites, bookmarks and user-defined tokens in Delphi.ini.
+Press Alt+0 to hear the current compiler and folder.</p>
+<p>Press F4 to switch to one of the editing windows that are open, from
+a list. Press Control+F4 to close the current window, or
+Control+Shift+F4 to close all the others. EdSharp's windows can be
+arranged on screen in the usual ways for programs with several document
+windows. The Window menu has these commands: Arrange Icons, Alt+F11;
+Cascade, Control+F11; Tile Horizontal, Alt+Shift+F11; and Tile Vertical,
+Control+Shift+F11.</p>
 <p>Use the Alternate Menu command, Alt+F10, to execute a command from a
 single, alphebetized list.</p>
-<p>The Context Menu command, Shift+F10, lets you choose an action to
-perform on the current file based on those available for its
-type/extension (in the Windows registry). Also included is the OpenWith
-action, by which a default program may be associated with files of this
-type. The Send To Menu, Control+F10, lets you choose among SendTo
-shortcuts (installed by various applications) to perform on the current
-file.</p>
+<p>The Context Menu command, Shift+F10, lets you choose an action for
+the current file from those Windows offers for its type, as set in the
+registry. It includes the OpenWith action, which sets the default
+program for files of this type. The Send To Menu, Control+F10, lets you
+pick one of the SendTo shortcuts, put there by various programs, to use
+on the current file.</p>
 <h3 id="online-help">Online Help</h3>
 <p>Press Alt+Shift+H for a summary of EdSharp hot keys. Press F1 to load
 this documentation, or Alt+F1 to simply confirm the version. Control+F1
@@ -2088,16 +2099,15 @@ language</a>.</p>
 <p>EdSharp 5.0 targets the .NET Framework 4.8 and is compiled AnyCPU, so
 the same build runs as native 64-bit on x64 and ARM64 Windows. To
 rebuild it from source, open a command prompt in the program folder and
-run <code>Build.cmd</code>. That script locates the C# compiler
-(preferring the newest Roslyn <code>csc.exe</code>, otherwise the
-framework <code>csc.exe</code> that ships with .NET), compiles
-<code>EdSharp.exe</code> and <code>EdSharp.dll</code>, and -- on a
-best-effort basis -- fetches the few files it needs: the
-<code>Ude.dll</code> encoding-detection library and current portable
-builds of the Convert tools (Pandoc, HTML Tidy, liblouis, Xpdf, and
-Artistic Style). A clean clone therefore needs nothing but
-<code>Build.cmd</code>; everything generated or downloaded is
-reproduced on demand.</p>
+run <code>Build.cmd</code>. That script finds the C# compiler,
+preferring the newest Roslyn <code>csc.exe</code> and otherwise the
+framework <code>csc.exe</code> that comes with .NET. It compiles
+<code>EdSharp.exe</code> and <code>EdSharp.dll</code>. Where it can, it
+also fetches the few files it needs: the <code>Ude.dll</code> library
+for detecting encodings, and current portable builds of the Convert
+tools (Pandoc, HTML Tidy, liblouis, Xpdf and Artistic Style). So a fresh
+copy of the source needs nothing but <code>Build.cmd</code>; everything
+made or downloaded is produced again when needed.</p>
 <p>To build the Windows installer, <code>EdSharp_Setup.exe</code>,
 install <a href="https://jrsoftware.org/isinfo.php">Inno Setup</a> and
 compile <code>EdSharp_Setup.iss</code> with it (after a successful
@@ -2105,8 +2115,8 @@ compile <code>EdSharp_Setup.iss</code> with it (after a successful
 <p>Because the built and fetched files are reproducible, they are kept
 out of source control by <code>.gitignore</code>:
 <code>EdSharp.exe</code>, <code>EdSharp.dll</code>,
-<code>EdSharp_Setup.exe</code>, <code>Build.log</code>, the
-fetched <code>Ude.dll</code>, and the downloaded tool folders under
+<code>EdSharp_Setup.exe</code>, <code>Build.log</code>, the fetched
+<code>Ude.dll</code>, and the downloaded tool folders under
 <code>Convert</code>. Committed binaries that are not produced by the
 build, such as <code>Tektosyne.dll</code>,
 <code>nvdaControllerClient.dll</code>, and <code>EdSharp.ico</code>,

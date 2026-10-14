@@ -2,6 +2,15 @@
 
 
 
+## 14 October 2026 -- the user guide in plainer words
+
+- **EdSharp.md reads at grade 9.0, down from 10.3,** within the ninth-grade target. About ninety of its densest paragraphs were rewritten, with every key, setting name, size and file type kept; reference blocks, code and lists of file types were left as they were. Two paragraphs that had run together on the page are separated, and two typos are fixed.
+- **One out-of-date passage is corrected:** a paragraph still listed Boo, Java, Perl, PHP, PowerBASIC and Ruby among the compilers EdSharp has settings for; it now gives the current set, as the Compilers section already did.
+- **Passages that may be out of date, kept as written for the author to decide:** a PowerBASIC batch file, though PowerBASIC left the compiler list; EdSharp.ini, Delphi.ini and a Roaming data folder, where other passages say EdSharp.inix; Keep Unique Items given as Alt+Shift+U in one place and Alt+Shift+K in the command list; Web Download taking its address from Internet Explorer; and the build fetching liblouis, though braille back-translation and its converter tools were retired in August.
+## 14 October 2026 -- contents lists, and plainer guides
+
+- **Every help page has a contents list.** The build ran Pandoc without --toc, so a long guide had no list of its sections. Pages are now built with one, and a page that lacks one is built again once to gain it.
+
 ## 14 October 2026 -- the announcement in plainer words
 
 - **Announce.md now reads at grade 8.4, down from 9.8,** inside the ninth-grade target for documents shared publicly. Long sentences were split and dense phrases put plainly; every fact, key and link is kept, and first-person passages keep their author's own words. The section about the companion tools reads the same in each announcement that carries it, with the tools' hotkeys in alphabetical order.
