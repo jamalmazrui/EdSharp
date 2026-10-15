@@ -36,6 +36,11 @@ Hear=EdSharp, Untitled, edit, multiline, blank
 Note=Confirm the wording with a live run: buildTutorials -live.
 
 [step]
+Say=Two voices take these walks. I am the host; the other voice plays the screen reader. It is a simulation, so your own reader's words may differ a little.
+Key=
+Hear=
+
+[step]
 
 Say=You know your screen reader's own keys already, and three of them are worth remembering whenever you feel lost or unsure. Insert plus Up Arrow says the line you are on again.
 Key=Insert+Up Arrow
@@ -55,7 +60,7 @@ Hear=EdSharp, letter dot t x t
 
 [step]
 
-Say=If you set your screen reader to use Caps Lock in place of Insert, Caps Lock works the same way for all three.
+Say=On a laptop keyboard, Caps Lock usually stands in for Insert, though in some laptop layouts the line command moves to a letter, such as Caps Lock plus L. And if speech goes by before you catch it, your reader can replay it: Insert plus X in some readers, a speech history in others.
 Key=
 Hear=
 
@@ -64,51 +69,61 @@ Hear=
 Say=Now the table of contents. I say the number and the title; the reader says what the walk covers.
 Key=
 Hear=
+
 [step]
 
 Say=One, User Interface.
 Key=
 Hear=EdSharp's one window, the edit box you hear, dialogs that all work one way, and where help is, each named and then shown by the reader; then the rules every key follows, so a key can be guessed before it is learned.
+
 [step]
 
 Say=Two, Install and Launch.
 Key=
 Hear=The download, the installer's last page and its boxes, and EdSharp opening with Alt plus Control plus E.
+
 [step]
 
 Say=Three, Open, Edit and Save a File.
 Key=
 Hear=A file opened, a line changed, the document saved, and the two ways to hear where you are.
+
 [step]
 
 Say=Four, Find Your Way in a Long Document.
 Key=
 Hear=Finding a word, jumping to a line, and bookmarks that bring you back.
+
 [step]
 
 Say=Five, Convert Between Formats.
 Key=
 Hear=A Word document opened as text; Markdown written out as a web page.
+
 [step]
 
 Say=Six, Write Code.
 Key=
 Hear=A program compiled from the editor, the cursor landing on the error, and blocks of code moved through.
+
 [step]
 
 Say=Seven, Ask the AI on Your Own Computer.
 Key=
 Hear=A question answered and a document translated, with nothing sent off the machine.
+
 [step]
 
 Say=Eight, Do Math.
 Key=
 Hear=One want: an answer to a sum without leaving the document.
+
 [step]
 
 Say=Nine, Conclusion.
 Key=
 Hear=What to carry away, the words EdSharp uses, the help built in, and where to learn more.
+
 [step]
 
 Say=Ten walks, each under five minutes, under an hour together: the overview, the user interface, seven tasks, and the conclusion. They are a course, not a reference: each one assumes those before it.

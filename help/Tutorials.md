@@ -754,7 +754,11 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 4: Insert+Up Arrow
+### Step 4
+
+Two voices take these walks. I am the host; the other voice plays the screen reader. It is a simulation, so your own reader's words may differ a little.
+
+### Step 5: Insert+Up Arrow
 
 You know your screen reader's own keys already, and three of them are worth remembering whenever you feel lost or unsure. Insert plus Up Arrow says the line you are on again.
 
@@ -762,7 +766,7 @@ Screen reader:
 
 - Dear Pat,
 
-### Step 5: Insert+Tab
+### Step 6: Insert+Tab
 
 Insert plus Tab says what has the focus: its name, its role, and its value or state.
 
@@ -770,7 +774,7 @@ Screen reader:
 
 - letter dot t x t, edit, multiline, Dear Pat,
 
-### Step 6: Insert+T
+### Step 7: Insert+T
 
 Insert plus T says the title of the window.
 
@@ -778,15 +782,15 @@ Screen reader:
 
 - EdSharp, letter dot t x t
 
-### Step 7
-
-If you set your screen reader to use Caps Lock in place of Insert, Caps Lock works the same way for all three.
-
 ### Step 8
+
+On a laptop keyboard, Caps Lock usually stands in for Insert, though in some laptop layouts the line command moves to a letter, such as Caps Lock plus L. And if speech goes by before you catch it, your reader can replay it: Insert plus X in some readers, a speech history in others.
+
+### Step 9
 
 Now the table of contents. I say the number and the title; the reader says what the walk covers.
 
-### Step 9
+### Step 10
 
 One, User Interface.
 
@@ -794,7 +798,7 @@ Screen reader:
 
 - EdSharp's one window, the edit box you hear, dialogs that all work one way, and where help is, each named and then shown by the reader; then the rules every key follows, so a key can be guessed before it is learned.
 
-### Step 10
+### Step 11
 
 Two, Install and Launch.
 
@@ -802,7 +806,7 @@ Screen reader:
 
 - The download, the installer's last page and its boxes, and EdSharp opening with Alt plus Control plus E.
 
-### Step 11
+### Step 12
 
 Three, Open, Edit and Save a File.
 
@@ -810,7 +814,7 @@ Screen reader:
 
 - A file opened, a line changed, the document saved, and the two ways to hear where you are.
 
-### Step 12
+### Step 13
 
 Four, Find Your Way in a Long Document.
 
@@ -818,7 +822,7 @@ Screen reader:
 
 - Finding a word, jumping to a line, and bookmarks that bring you back.
 
-### Step 13
+### Step 14
 
 Five, Convert Between Formats.
 
@@ -826,7 +830,7 @@ Screen reader:
 
 - A Word document opened as text; Markdown written out as a web page.
 
-### Step 14
+### Step 15
 
 Six, Write Code.
 
@@ -834,7 +838,7 @@ Screen reader:
 
 - A program compiled from the editor, the cursor landing on the error, and blocks of code moved through.
 
-### Step 15
+### Step 16
 
 Seven, Ask the AI on Your Own Computer.
 
@@ -842,7 +846,7 @@ Screen reader:
 
 - A question answered and a document translated, with nothing sent off the machine.
 
-### Step 16
+### Step 17
 
 Eight, Do Math.
 
@@ -850,7 +854,7 @@ Screen reader:
 
 - One want: an answer to a sum without leaving the document.
 
-### Step 17
+### Step 18
 
 Nine, Conclusion.
 
@@ -858,7 +862,7 @@ Screen reader:
 
 - What to carry away, the words EdSharp uses, the help built in, and where to learn more.
 
-### Step 18
+### Step 19
 
 Ten walks, each under five minutes, under an hour together: the overview, the user interface, seven tasks, and the conclusion. They are a course, not a reference: each one assumes those before it.
 
@@ -1264,7 +1268,7 @@ Before the installer, the download: the ReadMe on the project page has one link,
 
 ### Step 14
 
-A planned misstep. Run the installer while EdSharp is open and it asks you to close it first, by name; close it, press Retry, and the installer carries on. Nothing is half-installed.
+A planned misstep. Run the installer while EdSharp is open and it asks you to close it first, by name; close it, press Retry, and the installer carries on.
 
 ### Step 15
 
@@ -1928,7 +1932,7 @@ One want: a question about a document, answered with nothing sent off the machin
 
 ### Step 1
 
-The want: a question about the document, answered without sending it anywhere. The model runs on your own computer, through Ollama, which the installer offered; nothing leaves the machine.
+The want: a question about the document, answered without sending it anywhere. The model runs on your own computer, through Ollama, which the installer offered; the document is not sent anywhere for an answer. A model can be wrong, so its answers are worth checking against the document.
 
 ### Step 2: Shift+F12
 
@@ -2080,11 +2084,11 @@ Control plus Equals.
 
 Screen reader:
 
-- 15000
+- 3000
 
 ### Step 8
 
-Not the answer I meant. The expression is JScript, and in code a comma separates two expressions, of which only the last counts. Numbers are written without commas.
+Three thousand: not the answer I meant. The expression is JScript, and in code a comma separates two expressions, of which only the last counts, so this was 250 times 12. Numbers are written without commas.
 
 ### Step 9: Control+Z
 
@@ -2094,7 +2098,17 @@ Screen reader:
 
 - Undo
 
-### Step 10: Math.pow(2, 10)
+### Step 10: Control+Equals
+
+With the comma gone, Control plus Equals again.
+
+Screen reader:
+
+- 15000
+
+Confirm the wording with a live run: buildTutorials -live.
+
+### Step 11: Math.pow(2, 10)
 
 Since the expression is JScript, more than arithmetic works. A power: 2 to the 10th.
 
@@ -2102,7 +2116,7 @@ Screen reader:
 
 - Math.pow(2, 10)
 
-### Step 11: Control+Equals
+### Step 12: Control+Equals
 
 Control plus Equals.
 
@@ -2112,7 +2126,7 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 12: Math.sqrt(144)
+### Step 13: Math.sqrt(144)
 
 A square root, the same way.
 
@@ -2120,7 +2134,7 @@ Screen reader:
 
 - Math.sqrt(144)
 
-### Step 13: Control+Equals
+### Step 14: Control+Equals
 
 Control plus Equals.
 
@@ -2130,7 +2144,7 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 14: Math.round(19.987 * 100) / 100
+### Step 15: Math.round(19.987 * 100) / 100
 
 Rounding to cents: multiply by 100, round, and divide by 100.
 
@@ -2138,7 +2152,7 @@ Screen reader:
 
 - Math.round left paren 19.987 times 100 right paren divided by 100
 
-### Step 15: Control+Equals
+### Step 16: Control+Equals
 
 Control plus Equals.
 
@@ -2148,7 +2162,7 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 16: Control+Equals
+### Step 17: Control+Equals
 
 A selection works too. Select several lines of sums, and Control plus Equals works out each one, placing each answer beside its own line.
 
@@ -2158,7 +2172,7 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 17: Control+Shift+G
+### Step 18: Control+Shift+G
 
 For more than a line's worth, Control plus Shift plus G opens a more interactive environment, such as an interactive console, where each answer leads to the next question.
 
@@ -2168,11 +2182,11 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 18
+### Step 19
 
 Now the second half of math: mathematics to be read by others. Written the LaTeX way, between dollar signs, in a Markdown document, it becomes real math in a web page.
 
-### Step 19: Control+Shift+S
+### Step 20: Control+Shift+S
 
 I save a new document as a Markdown file, math dot m d, so EdSharp treats it as Markdown.
 
@@ -2183,7 +2197,7 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 20: The area of a circle is $\pi r^2$.
+### Step 21: The area of a circle is $\pi r^2$.
 
 Then I write a sentence with a formula in it: the area of a circle is, dollar, backslash pi r caret 2, dollar.
 
@@ -2191,7 +2205,7 @@ Screen reader:
 
 - The area of a circle is $\pi r to the power of 2$.
 
-### Step 21: Control+H
+### Step 22: Control+H
 
 Control plus H, HTML Format, converts the document to a web page in a new window, and Pandoc turns the formula into MathML, the standard for math on the web.
 
@@ -2201,7 +2215,7 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 22: F5
+### Step 23: F5
 
 Saved as a dot h t m file, F5 opens it in the browser, where the screen reader reads the formula as math, not as a row of symbols.
 
@@ -2211,15 +2225,15 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 23
+### Step 24
 
 And in the browser, the formula can be explored a piece at a time, as a reader of math expects: the reader's own math mode takes you into it.
 
-### Step 24
-
-Nothing needs installing for this. Browsers draw MathML themselves, and current screen readers read it, so a page made this way works for every reader.
-
 ### Step 25
+
+Nothing needs installing for this. Current browsers draw MathML themselves, and current screen readers can read it, so most listeners need nothing more; try a page with your own reader and browser before sharing it widely.
+
+### Step 26
 
 What this walk taught. I say what I want; the reader says the key. Work out a sum.
 
@@ -2227,7 +2241,7 @@ Screen reader:
 
 - Control plus Equals
 
-### Step 26
+### Step 27
 
 Undo an answer you did not want.
 
@@ -2235,7 +2249,7 @@ Screen reader:
 
 - Control plus Z
 
-### Step 27
+### Step 28
 
 Open the more interactive environment.
 
@@ -2243,7 +2257,7 @@ Screen reader:
 
 - Control plus Shift plus G
 
-### Step 28
+### Step 29
 
 Make a web page with real math from Markdown.
 
@@ -2297,7 +2311,7 @@ Screen reader:
 
 ### Step 6
 
-And the AI is on your own machine; nothing leaves it.
+And the AI runs on your own machine, so your documents are not sent anywhere for an answer.
 
 Screen reader:
 

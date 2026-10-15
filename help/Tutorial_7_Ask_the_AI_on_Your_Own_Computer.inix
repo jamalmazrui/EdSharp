@@ -6,7 +6,7 @@ Homework=Ask a question about a document of your own, then translate a paragraph
 
 [step]
 
-Say=The want: a question about the document, answered without sending it anywhere. The model runs on your own computer, through Ollama, which the installer offered; nothing leaves the machine.
+Say=The want: a question about the document, answered without sending it anywhere. The model runs on your own computer, through Ollama, which the installer offered; the document is not sent anywhere for an answer. A model can be wrong, so its answers are worth checking against the document.
 Key=
 Hear=
 

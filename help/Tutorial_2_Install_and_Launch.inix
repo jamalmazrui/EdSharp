@@ -87,7 +87,7 @@ Hear=
 
 [step]
 
-Say=A planned misstep. Run the installer while EdSharp is open and it asks you to close it first, by name; close it, press Retry, and the installer carries on. Nothing is half-installed.
+Say=A planned misstep. Run the installer while EdSharp is open and it asks you to close it first, by name; close it, press Retry, and the installer carries on.
 Key=
 Hear=
 

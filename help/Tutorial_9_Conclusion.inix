@@ -36,7 +36,7 @@ Hear=Control plus Shift plus O
 
 [step]
 
-Say=And the AI is on your own machine; nothing leaves it.
+Say=And the AI runs on your own machine, so your documents are not sent anywhere for an answer.
 Key=
 Hear=Shift plus F12
 

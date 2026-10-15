@@ -5,7 +5,7 @@
     <link>Tutorials.htm</link>
     <description>Spoken walks through EdSharp, the text and code editor for working by ear. Ten walks, each under five minutes, in the order a new person meets them.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 14 Oct 2026 16:29:39 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 15 Oct 2026 18:57:09 +0000</lastBuildDate>
     <itunes:author>Jamal Mazrui</itunes:author>
     <itunes:explicit>false</itunes:explicit>
     <itunes:category text="Technology"/>
@@ -15,8 +15,8 @@
       <description>Nothing is needed; this walk is listened to. Full transcript: Tutorials.htm#0-0-overview</description>
       <link>Tutorials.htm#0-0-overview</link>
       <guid isPermaLink="false">homer-tutorial_0_overview</guid>
-      <enclosure url="tutorials/0_Overview.mp3" length="1082053" type="audio/mpeg"/>
-      <itunes:duration>00:02:34</itunes:duration>
+      <enclosure url="tutorials/0_Overview.mp3" length="1205151" type="audio/mpeg"/>
+      <itunes:duration>00:02:51</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>
@@ -33,8 +33,8 @@
       <description>The installer is downloaded, and your reader is running. Full transcript: Tutorials.htm#0b-2-install-and-launch</description>
       <link>Tutorials.htm#0b-2-install-and-launch</link>
       <guid isPermaLink="false">homer-tutorial_2_install_and_launch</guid>
-      <enclosure url="tutorials/2_Install_and_Launch.mp3" length="1654504" type="audio/mpeg"/>
-      <itunes:duration>00:03:46</itunes:duration>
+      <enclosure url="tutorials/2_Install_and_Launch.mp3" length="1642989" type="audio/mpeg"/>
+      <itunes:duration>00:03:44</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>
@@ -78,8 +78,8 @@
       <description>EdSharp is open on a document, and Ollama with a model was ticked when EdSharp was installed, or installed since. Full transcript: Tutorials.htm#0g-7-ask-the-ai-on-your-own-computer</description>
       <link>Tutorials.htm#0g-7-ask-the-ai-on-your-own-computer</link>
       <guid isPermaLink="false">homer-tutorial_7_ask_the_ai_on_your_own_computer</guid>
-      <enclosure url="tutorials/7_Ask_the_AI_on_Your_Own_Computer.mp3" length="1172851" type="audio/mpeg"/>
-      <itunes:duration>00:02:43</itunes:duration>
+      <enclosure url="tutorials/7_Ask_the_AI_on_Your_Own_Computer.mp3" length="1210301" type="audio/mpeg"/>
+      <itunes:duration>00:02:48</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>
@@ -87,8 +87,8 @@
       <description>EdSharp is open with a new document. Full transcript: Tutorials.htm#0h-8-do-math</description>
       <link>Tutorials.htm#0h-8-do-math</link>
       <guid isPermaLink="false">homer-tutorial_8_do_math</guid>
-      <enclosure url="tutorials/8_Do_Math.mp3" length="1680150" type="audio/mpeg"/>
-      <itunes:duration>00:04:02</itunes:duration>
+      <enclosure url="tutorials/8_Do_Math.mp3" length="1774254" type="audio/mpeg"/>
+      <itunes:duration>00:04:15</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>
@@ -96,8 +96,8 @@
       <description>Nothing is needed. Full transcript: Tutorials.htm#0i-9-conclusion</description>
       <link>Tutorials.htm#0i-9-conclusion</link>
       <guid isPermaLink="false">homer-tutorial_9_conclusion</guid>
-      <enclosure url="tutorials/9_Conclusion.mp3" length="1537693" type="audio/mpeg"/>
-      <itunes:duration>00:03:41</itunes:duration>
+      <enclosure url="tutorials/9_Conclusion.mp3" length="1543488" type="audio/mpeg"/>
+      <itunes:duration>00:03:42</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
   </channel>
