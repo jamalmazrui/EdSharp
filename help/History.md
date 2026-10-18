@@ -2,6 +2,18 @@
 
 
 
+## 19 October 2026 -- EdSharp on the Homer framework's key router
+
+- **Every key goes through the Homer suite's one router.** Each command EdSharp declares is now also a command in the kit's KeyMap, and EdSharp hands its keys to KeyMap.route, as every app on the Homer framework does. The document is marked as EdSharp's editor, so its own keys -- Shift+Space, Control+C and the rest -- still work while it has focus, and an unbound key still types. A quick second press of a key is counted the same way in every Homer app, and the kit's checks see EdSharp's keys like the others'.
+- **Menus are quicker to open.** Each menu item's status-line handler used to scan every item of every menu each time it was drawn. An item now looks only at itself.
+- **Bookmarks are on the B keys, as in DbDo:**
+  - Control+B sets a bookmark;
+  - Alt+B goes to it;
+  - Control+Shift+B clears it.
+  
+  K was a letter from the middle of "bookmark", which the Homer key rule does not allow.
+- **Block movement is gone.** Next Block, Prior Block and Say Block, which nothing used, left the menus and the tutorials. Next Indent and Prior Indent (Control+I and Control+Shift+I) move by indentation as before.
+
 ## 14 October 2026 -- a save that kept the file but not its backup says so
 
 - **When Save succeeds but the .bak cannot be kept, EdSharp says so,** in its messages and its log, rather than nothing; and the staged copy is kept when it may be the only complete copy of what was typed. This follows a change to the kit's safe replacement (from a second audit by another AI).

@@ -188,6 +188,10 @@
 History</a>
 <ul>
 <li><a
+href="#19-october-2026----edsharp-on-the-homer-frameworks-key-router"
+id="toc-19-october-2026----edsharp-on-the-homer-frameworks-key-router">19
+October 2026 -- EdSharp on the Homer framework's key router</a></li>
+<li><a
 href="#14-october-2026----a-save-that-kept-the-file-but-not-its-backup-says-so"
 id="toc-14-october-2026----a-save-that-kept-the-file-but-not-its-backup-says-so">14
 October 2026 -- a save that kept the file but not its backup says
@@ -270,6 +274,34 @@ id="toc-earlier-in-august-2026">Earlier in August 2026</a></li>
 </nav>
 <main>
 <h1 id="edsharp-history">EdSharp History</h1>
+<h2
+id="19-october-2026----edsharp-on-the-homer-frameworks-key-router">19
+October 2026 -- EdSharp on the Homer framework's key router</h2>
+<ul>
+<li><p><strong>Every key goes through the Homer suite's one
+router.</strong> Each command EdSharp declares is now also a command in
+the kit's KeyMap, and EdSharp hands its keys to KeyMap.route, as every
+app on the Homer framework does. The document is marked as EdSharp's
+editor, so its own keys -- Shift+Space, Control+C and the rest -- still
+work while it has focus, and an unbound key still types. A quick second
+press of a key is counted the same way in every Homer app, and the kit's
+checks see EdSharp's keys like the others'.</p></li>
+<li><p><strong>Menus are quicker to open.</strong> Each menu item's
+status-line handler used to scan every item of every menu each time it
+was drawn. An item now looks only at itself.</p></li>
+<li><p><strong>Bookmarks are on the B keys, as in DbDo:</strong></p>
+<ul>
+<li>Control+B sets a bookmark;</li>
+<li>Alt+B goes to it;</li>
+<li>Control+Shift+B clears it.</li>
+</ul>
+<p>K was a letter from the middle of "bookmark", which the Homer key
+rule does not allow.</p></li>
+<li><p><strong>Block movement is gone.</strong> Next Block, Prior Block
+and Say Block, which nothing used, left the menus and the tutorials.
+Next Indent and Prior Indent (Control+I and Control+Shift+I) move by
+indentation as before.</p></li>
+</ul>
 <h2
 id="14-october-2026----a-save-that-kept-the-file-but-not-its-backup-says-so">14
 October 2026 -- a save that kept the file but not its backup says

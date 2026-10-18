@@ -555,6 +555,9 @@ public MdiChild(MdiFrame frame, string sTitle) {
 this.SuspendLayout();
 this.MdiParent = frame;
 HomerRichTextBox rtb = new HomerRichTextBox();
+// The document is EdSharp's editor: the kit's router lets its bound keys
+// work in it, and leaves every other key to typing.
+KeyMap.markEditor(rtb);
 rtb.GotFocus += CheckFileTime;
 rtb.AccessibleRole = AccessibleRole.Text;
 rtb.AutoWordSelection = false;
@@ -1073,9 +1076,9 @@ menuNavigateJumpToLineAgain = CreateMenuItem("Jump to Line Again", "Alt+J", menu
 menuNavigateGoToPercent = CreateMenuItem("&Go to Percent ...", "Control+G", menuItem_Click, "child silent");
 menuNavigateGoToPercentAgain = CreateMenuItem("Go to Percent Again", "Alt+G", menuItem_Click, "child silent");
 menuNavigateGoToPart = CreateMenuItem("Go to Part", "Alt+Shift+G", menuItem_Click, "child silent");
-menuNavigateSetBookmark = CreateMenuItem("Set Bookmar&k", "Control+K", menuItem_Click, "child speak");
-menuNavigateClearBookmark = CreateMenuItem("Clear Bookmark", "Control+Shift+K", menuItem_Click, "child speak");
-menuNavigateGoToBookmark = CreateMenuItem("Go to Bookmark", "Alt+K", menuItem_Click, "child speak");
+menuNavigateSetBookmark = CreateMenuItem("Set Bookmar&k", "Control+B", menuItem_Click, "child speak");
+menuNavigateClearBookmark = CreateMenuItem("Clear Bookmark", "Control+Shift+B", menuItem_Click, "child speak");
+menuNavigateGoToBookmark = CreateMenuItem("Go to Bookmark", "Alt+B", menuItem_Click, "child speak");
 menuNavigateHomeCharacter = CreateMenuItem("Home Character", "Alt+Home", menuItem_Click, "child silent");
 menuNavigateEndCharacter = CreateMenuItem("End Character", "Alt+End", menuItem_Click, "child silent");
 menuNavigateStartTag = CreateMenuItem("Start Tag", "Control+Shift+Oemcomma", menuItem_Click, "child silent");
@@ -1090,8 +1093,6 @@ menuNavigateNextFont = CreateMenuItem("Next Font", "Control+OemMinus", menuItem_
 menuNavigatePriorFont = CreateMenuItem("Prior Font", "Control+Shift+OemMinus", menuItem_Click, "child silent");
 menuNavigateRightBrace = CreateMenuItem("Right Brace", "Control+Shift+OemCloseBrackets", menuItem_Click, "child silent");
 menuNavigateLeftBrace = CreateMenuItem("Left Brace", "Control+Shift+OemOpenBrackets", menuItem_Click, "child silent");
-menuNavigateNextBlock = CreateMenuItem("Next Block", "Control+B", menuItem_Click, "child silent");
-menuNavigatePriorBlock = CreateMenuItem("Prior Block", "Control+Shift+B", menuItem_Click, "child silent");
 menuNavigateNextIndent = CreateMenuItem("Next Indent", "Control+I", menuItem_Click, "child silent");
 menuNavigatePriorIndent = CreateMenuItem("Prior Indent", "Control+Shift+I", menuItem_Click, "child silent");
 menuNavigateNextChunk = CreateMenuItem("Next Chunk", "Alt+Right", menuItem_Click, "child silent");
@@ -1109,13 +1110,12 @@ menuNavigateGoToContents = CreateMenuItem("Go to Contents", "Shift+F6", menuItem
 menuNavigateSearchForTopic = CreateMenuItem("Search for Topic ...", "Control+F6", menuItem_Click, "child silent");
 menuNavigateSearchForTopicAgain = CreateMenuItem("Search for Topic Again", "Alt+F6", menuItem_Click, "child silent");
 menuNavigateGoToStartOfSelection = CreateMenuItem("Go to Start of Selection", "Alt+Shift+F8", menuItem_Click, "child speak");
-menuNavigate.DropDownItems.AddRange(new ToolStripItem[] {menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateNextBlock, menuNavigatePriorBlock, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateSearchForTopicAgain, menuNavigateGoToStartOfSelection});
+menuNavigate.DropDownItems.AddRange(new ToolStripItem[] {menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateSearchForTopicAgain, menuNavigateGoToStartOfSelection});
 //Dialog.Show("Navigate.", menuNavigate.DropDownItems.Count);
 
 menuQuery = CreateMenu("&Query");
 menuQueryAddress = CreateMenuItem("Address", "Alt+A", menuItem_Click, "child silent");
 menuQueryBraces = CreateMenuItem("Braces", "Alt+Shift+OemCloseBrackets", menuItem_Click, "child silent");
-menuQueryBlock = CreateMenuItem("Block", "Alt+B", menuItem_Click, "child silent");
 menuQueryIndent = CreateMenuItem("Indentation", "Alt+I", menuItem_Click, "child silent");
 menuQueryPath = CreateMenuItem("Path", "Alt+P", menuItem_Click, "child silent");
 menuQueryTopic = CreateMenuItem("Topic", "Alt+T", menuItem_Click, "child speak");
@@ -1130,7 +1130,7 @@ menuQueryClipboard = CreateMenuItem("Clipboard", "Alt+OemQuotes", menuItem_Click
 menuQueryTime = CreateMenuItem("Time", "Alt+OemSemicolon", menuItem_Click, "frame silent");
 menuQueryStyles = CreateMenuItem("Styles", "Alt+OemQuestion", menuItem_Click, "child silent");
 menuQueryFont = CreateMenuItem("Font", "Alt+OemMinus", menuItem_Click, "child silent");
-menuQuery.DropDownItems.AddRange(new ToolStripItem[] {menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles, menuQueryFont});
+menuQuery.DropDownItems.AddRange(new ToolStripItem[] {menuQueryAddress, menuQueryBraces, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles, menuQueryFont});
 //Dialog.Show("Query.", menuQuery.DropDownItems.Count);
 
 menuMisc = CreateMenu("&Misc");
@@ -1344,11 +1344,14 @@ else if (keyData == (Keys.Insert)) {
 return true;
 }
 
-else if (hashKey.TryGetValue(keyData, out menuItem)) {
-//if (this.Child != null && !this.Child.RTB.IndentMode && menuItem == menuEditEnterNewLine) return base.ProcessCmdKey (ref msg, keyData);
-this.bCommandComplete = false;
-menuItem.PerformClick();
-this.bCommandComplete = true;
+// THE HOMER KEY ROUTER (19 October 2026). Every key now goes to the kit's
+// KeyMap.route, the one router of every Homer app: it runs the command
+// declared for the key (CreateMenuItem declares each one), keeps typing keys
+// for any text box that is not the document, says why a command cannot run,
+// and counts a quick second press. The document is marked as EdSharp's
+// editor, so its own keys -- Shift+Space, Control+C and the rest -- still
+// work while it has focus, and an unbound key still types.
+else if (KeyMap.route(this, ref msg, keyData)) {
 return true;
 }
 else return base.ProcessCmdKey (ref msg, keyData);
@@ -1424,24 +1427,37 @@ hashKey.Add(keyData, menuItem);
 // speak"). Additive -- hashKey above is unchanged; KeyMap becomes the
 // single table the status bar, Key Describer, and Alternate Menu read.
 KeyMap.register(sCommand, keyData, menuItem, sOptions);
+if (keyData != Keys.None && !KeyMap.dCommands.ContainsKey(KeyMap.toId(sCommand))) {
+KeyMap.Command oCommand = new KeyMap.Command();
+oCommand.sName = sCommand;
+oCommand.sId = KeyMap.toId(sCommand);
+oCommand.oItem = menuItem;
+oCommand.lsKeys.Add(keyData);
+oCommand.fRun = delegate() {
+App.Frame.bCommandComplete = false;
+menuItem.PerformClick();
+App.Frame.bCommandComplete = true;
+return true;
+};
+KeyMap.addCommand(oCommand);
+}
 
+// THE STATUS LINE FOR THE SELECTED ITEM (19 October 2026). Every item's Paint
+// handler used to scan every item of every menu on each repaint, so opening a
+// menu of forty items did forty times the whole menu bar's work. An item now
+// looks only at itself: when it is the selected one, it shows its own summary.
 menuItem.Paint += delegate(object oSender, PaintEventArgs e) {
-// if (!App.Frame.KeyDescriber) return;
-foreach (ToolStripMenuItem menu in App.Frame.menuMain.Items) {
-foreach (object o in menu.DropDownItems) {
-ToolStripMenuItem item = o as ToolStripMenuItem;
-if (item == null) continue;
-if (!item.Selected) continue;
+if (!menuItem.Selected) return;
+{
+{
+ToolStripMenuItem item = menuItem;
 string[] aSummary = App.Frame.GetKeySummary(item);
 string sSummary = aSummary[0] + " = " + aSummary[1] + ", " + aSummary[2];
 string sDescription = aSummary[2];
 if (sDescription != App.Frame.LastDescription) {
-// System.Threading.Thread.Sleep(1000);
-// Util.Say(sDescription);
 App.Frame.SetStatus(sDescription);
 App.Frame.LastDescription = sDescription;
 }
-break;
 }
 }
 };
@@ -2058,7 +2074,6 @@ static readonly string[] aCommandSummaries = new string[] {
 "Copy All\tControl+F8, Copy all text to clipboard",
 "Read All\tAlt+F8, Say all text (without moving cursor)",
 "Say Address\tAlt+A, Say line, column, and percent position of cursor",
-"Say Block\tAlt+B, Say the rest of the current code block, or the whole block if repeated",
 "Say Braces\tAlt+Shift+], Say number of braces on either side of cursor",
 "Say Indentation\tAlt+I, Say the indentation level of the current line, or the preceding line with less indentation if repeated",
 "Say Yield\tAlt+Y, Say number of characters, words, and lines in all or selected text",
@@ -2112,9 +2127,9 @@ static readonly string[] aCommandSummaries = new string[] {
 "Go to Percent Again\tAlt+G, Repeat Go command",
 "Jump to Line\tControl+J, Jump to line number or to line, column position",
 "Jump to Line Again\tAlt+J, Repeat Jump command",
-"Set Bookmark\tControl+K, Set bookmark at cursor position",
-"Clear Bookmark\tControl+Shift+K, Clear bookmark at cursor position",
-"Go to Bookmark\tAlt+K, Go to bookmark in current file",
+"Set Bookmark\tControl+B, Set bookmark at cursor position",
+"Clear Bookmark\tControl+Shift+B, Clear bookmark at cursor position",
+"Go to Bookmark\tAlt+B, Go to bookmark in current file",
 "Set Favorite\tControl+L, Add current file to the list of favorites",
 "Clear Favorite\tControl+Shift+L, Clear current file from the list of favorites",
 "List Favorites\tAlt+L, Open a file from the list of favorites",
@@ -2222,8 +2237,6 @@ static readonly string[] aCommandSummaries = new string[] {
 "Indent\tTab, Indent current line or selected text by one unit",
 "Outdent\tShift+Tab, Reduce indentation of current or selected lines by one unit",
 "Align\tAlt+Shift+A, Adjust indentation of current or selected lines according to prior line",
-"Next Block\tControl+B, Go to the next block of code, having the same or less indentation",
-"Prior Block\tControl+Shift+B, Go to the previous block of code, having the same or less indentation",
 "Next Indent\tControl+I, Go to the next change in indentation",
 "Prior Indent\tControl+Shift+I, Go to the previous change in indentation",
 "Right Brace\tControl+Shift+RightBracket, Search forward for matching right brace character",

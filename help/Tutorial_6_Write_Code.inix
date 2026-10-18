@@ -21,13 +21,13 @@ Say=The cursor is on line twelve, where the colon is missing.
 
 [step]
 
-Say=Code is moved through by its shape. Control plus B, Next Block, goes to the next block of code with the same or less indentation; Control plus Shift plus B the previous.
-Key=Control+B
+Say=Code is moved through by its shape. Control plus I, Next Indent, goes to the next line where the indentation changes; Control plus Shift plus I the previous.
+Key=Control+I
 Hear=def total(items):
 
 [step]
 
-Say=Alt plus I, Say Indentation, says the level of the current line; Alt plus B, Say Block, reads the rest of the block, so you hear a loop or a function whole.
+Say=Alt plus I, Say Indentation, says the level of the current line, so you hear where a loop or a function begins and ends.
 Key=Alt+I
 Hear=Indent 1
 
@@ -106,9 +106,9 @@ Hear=Choose Compiler
 
 [step]
 
-Say=Control plus B.
+Say=Control plus I.
 Key=
-Hear=Next Block
+Hear=Next Indent
 
 [step]
 

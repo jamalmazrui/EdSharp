@@ -123,7 +123,7 @@ Hear=Notes dot txt, edit, multiline
 Note=Confirm the wording with a live run: buildTutorials -live.
 [step]
 
-Say=Every key is named for a word in its command: Control plus O for Open, Control plus F for Find, Control plus K for bookmark. A key never comes from the middle of a word.
+Say=Every key is named for a word in its command: Control plus O for Open, Control plus F for Find, Control plus B for bookmark. A key never comes from the middle of a word.
 Key=
 [step]
 

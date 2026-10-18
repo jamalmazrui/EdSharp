@@ -69,15 +69,9 @@ Hear=Every command in one list you type into, with its key beside it. Alt plus F
 
 [step]
 
-Say=block.
-Key=
-Hear=A stretch of code at one indentation. Control plus B goes to the next; Alt plus B reads the rest of this one.
-
-[step]
-
 Say=bookmark.
 Key=
-Hear=A place in a file, kept with the file. Control plus K sets one; Alt plus K returns to it.
+Hear=A place in a file, kept with the file. Control plus B sets one; Alt plus B returns to it.
 
 [step]
 

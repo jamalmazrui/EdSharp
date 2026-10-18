@@ -89,8 +89,7 @@ range 3" -- which is the answer to "where am I?" that sighted readers get
 from the layout at a glance.
 
 Next Indent and Prior Indent, Control+I and Control+Shift+I, move to the
-next and previous change of indentation. Next Block and Prior Block,
-Control+B and Control+Shift+B, move by whole blocks.
+next and previous change of indentation.
 
 Two more commands round it out. Format Code, Alt+F8, normalizes a
 Python file's indentation to the unit in force. Infer Indent, Alt+RightBracket, captures the indentation of the file in
@@ -576,7 +575,7 @@ Here is a list of hot keys you will use often. Where EdSharp differs from what y
 - Arrow keys, Page Up, and Page Down = Move through text. Add Shift to select.
 - Alt+Down and Alt+Up = Next and prior sentence (EdSharp speaks the sentence).
 - Control+Down and Control+Up = Next and prior paragraph (EdSharp speaks the paragraph).
-- Control+K = Set a bookmark. Alt+K = Go to a bookmark. Control+Shift+K = Clear the bookmark (the cursor must be on the exact marked character).
+- Control+B = Set a bookmark. Alt+B = Go to a bookmark. Control+Shift+B = Clear the bookmark (the cursor must be on the exact marked character).
 - Control+J = Jump to a line number. Alt+J = Jump again. You may add a `+` or `-` before the number to jump that many lines forward or backward from the current line.
 - Control+G = Go to a percentage point in the file. Alt+G = Go to that percentage again.
 
@@ -629,7 +628,6 @@ EdSharp lets you divide a document into named sections, which is the basis of th
 - Alt+Shift+I = Indent Mode: toggle the spoken indentation alert on and off.
 - Control+Q = Quote the selected text or whole document with a prefix string. You can set the prefix to match the comment string of your programming language to create comments, or use it for quoting email.
 - Alt+PageDown and Alt+PageUp = Next and prior part: move to the next or previous function, method, or class, using the current compiler's NavigatePart pattern.
-- Control+B and Control+Shift+B = Next and prior block: move by indentation, to the next or previous less-indented line.
 - Control+F5 = Compile the current file, speak the output, and jump to the first error. With no compiler configured, a `.cs` file is compiled with the latest available .NET C# compiler automatically. Control+Shift+F5 picks or configures a compiler.
 
 ### The EdSharp Window
@@ -1065,7 +1063,7 @@ Confirm the wording with a live run: buildTutorials -live.
 
 ### Step 21
 
-Every key is named for a word in its command: Control plus O for Open, Control plus F for Find, Control plus K for bookmark. A key never comes from the middle of a word.
+Every key is named for a word in its command: Control plus O for Open, Control plus F for Find, Control plus B for bookmark. A key never comes from the middle of a word.
 
 ### Step 22: Control+F1
 
@@ -1495,17 +1493,17 @@ Screen reader:
 
 - Section four. Staffing.
 
-### Step 6: Control+K
+### Step 6: Control+B
 
-Control plus K, Set Bookmark, marks the place; EdSharp says how far down the document it is.
+Control plus B, Set Bookmark, marks the place; EdSharp says how far down the document it is.
 
 Screen reader:
 
 - Bookmark at percent 40
 
-### Step 7: Alt+K
+### Step 7: Alt+B
 
-Move away -- Control plus Home to the top -- then Alt plus K, Go to Bookmark, brings you back. Bookmarks are kept with the file, so tomorrow's Alt plus K lands here too.
+Move away -- Control plus Home to the top -- then Alt plus B, Go to Bookmark, brings you back. Bookmarks are kept with the file, so tomorrow's Alt plus B lands here too.
 
 Screen reader:
 
@@ -1573,9 +1571,9 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 16: Alt+K
+### Step 16: Alt+B
 
-A bookmark stays with the file, so a long report can be left and picked up again tomorrow, at the same place, with Alt plus K.
+A bookmark stays with the file, so a long report can be left and picked up again tomorrow, at the same place, with Alt plus B.
 
 Screen reader:
 
@@ -1623,7 +1621,7 @@ Screen reader:
 
 ### Step 22
 
-Control plus K.
+Control plus B.
 
 Screen reader:
 
@@ -1631,7 +1629,7 @@ Screen reader:
 
 ### Step 23
 
-Alt plus K.
+Alt plus B.
 
 Screen reader:
 
@@ -1813,9 +1811,9 @@ Screen reader:
 - line 12, SyntaxError: expected colon
 - for item in items
 
-### Step 3: Control+B
+### Step 3: Control+I
 
-Code is moved through by its shape. Control plus B, Next Block, goes to the next block of code with the same or less indentation; Control plus Shift plus B the previous.
+Code is moved through by its shape. Control plus I, Next Indent, goes to the next line where the indentation changes; Control plus Shift plus I the previous.
 
 Screen reader:
 
@@ -1823,7 +1821,7 @@ Screen reader:
 
 ### Step 4: Alt+I
 
-Alt plus I, Say Indentation, says the level of the current line; Alt plus B, Say Block, reads the rest of the block, so you hear a loop or a function whole.
+Alt plus I, Say Indentation, says the level of the current line, so you hear where a loop or a function begins and ends.
 
 Screen reader:
 
@@ -1908,11 +1906,11 @@ Screen reader:
 
 ### Step 17
 
-Control plus B.
+Control plus I.
 
 Screen reader:
 
-- Next Block
+- Next Indent
 
 ### Step 18
 
@@ -2343,21 +2341,13 @@ Screen reader:
 
 ### Step 11
 
-block.
-
-Screen reader:
-
-- A stretch of code at one indentation. Control plus B goes to the next; Alt plus B reads the rest of this one.
-
-### Step 12
-
 bookmark.
 
 Screen reader:
 
-- A place in a file, kept with the file. Control plus K sets one; Alt plus K returns to it.
+- A place in a file, kept with the file. Control plus B sets one; Alt plus B returns to it.
 
-### Step 13
+### Step 12
 
 chunk.
 
@@ -2365,7 +2355,7 @@ Screen reader:
 
 - A run of characters with no space in it. Alt plus Right Arrow goes to the next; Control plus Space selects it.
 
-### Step 14
+### Step 13
 
 compiler.
 
@@ -2373,7 +2363,7 @@ Screen reader:
 
 - The program EdSharp hands your file to with Control plus F5, chosen once by extension with Control plus Shift plus F5.
 
-### Step 15
+### Step 14
 
 configuration options.
 
@@ -2381,7 +2371,7 @@ Screen reader:
 
 - The one dialog of settings -- spell checker, font, speech, the AI model. Alt plus Shift plus C.
 
-### Step 16
+### Step 15
 
 convert file format.
 
@@ -2389,7 +2379,7 @@ Screen reader:
 
 - Converting a file on disk without opening it, one or many at a time. Control plus Shift plus V.
 
-### Step 17
+### Step 16
 
 current windows.
 
@@ -2397,7 +2387,7 @@ Screen reader:
 
 - The list of open documents, to pick one. F4; Shift plus F4 says their titles.
 
-### Step 18
+### Step 17
 
 document.
 
@@ -2405,7 +2395,7 @@ Screen reader:
 
 - One file open in EdSharp, in a window of its own; Control plus Tab moves to the next, F4 lists them.
 
-### Step 19
+### Step 18
 
 Elevate Version.
 
@@ -2413,7 +2403,7 @@ Screen reader:
 
 - Checking for a newer EdSharp and installing it. F11, because elevate sounds like eleven.
 
-### Step 20
+### Step 19
 
 encoding.
 
@@ -2421,7 +2411,7 @@ Screen reader:
 
 - How a file's characters are stored. Alt plus Z twice says it; Alt plus Shift plus Y renders the text in another one.
 
-### Step 21
+### Step 20
 
 export.
 
@@ -2429,7 +2419,7 @@ Screen reader:
 
 - Writing the document out as another format -- a web page, a Word document, plain text. Alt plus Shift plus E.
 
-### Step 22
+### Step 21
 
 file find.
 
@@ -2437,7 +2427,7 @@ Screen reader:
 
 - Searching a folder of files for a string and opening the one you pick. Alt plus Shift plus F.
 
-### Step 23
+### Step 22
 
 hotkey summary.
 
@@ -2445,7 +2435,7 @@ Screen reader:
 
 - Every command with its key and description, in a new window. Alt plus Shift plus H.
 
-### Step 24
+### Step 23
 
 Key Describer.
 
@@ -2453,19 +2443,19 @@ Screen reader:
 
 - A mode in which every key says what it does instead of doing it. Control plus F1 turns it on and off.
 
-### Step 25
+### Step 24
 
 F1 opens the guide, the whole of EdSharp in one document, from inside the program. Shift plus F1 opens the history of changes. Alt plus F1 says the version. Control plus Shift plus F1 opens the quick starts by role.
 
-### Step 26
+### Step 25
 
 The ReadMe is the short start; the guide is the reference; Hotkeys lists every key three ways; the FAQ holds the questions people actually ask. All are in the help folder of the installation, and on the project's GitHub page.
 
-### Step 27
+### Step 26
 
 F11 checks for a newer version and offers to install it. The project is at github dot com, slash JamalMazrui, slash EdSharp. Control plus F12 copies this session's log to the clipboard, ready to attach to a report of a problem.
 
-### Step 28
+### Step 27
 
 EdSharp is one of the Homer Tools, free programs for working by ear: EdSharp for text, FileDir for files, DbDo for data. They share their keys and their player, so learning one is most of learning the next.
 

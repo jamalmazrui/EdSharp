@@ -5,7 +5,7 @@
     <link>Tutorials.htm</link>
     <description>Spoken walks through EdSharp, the text and code editor for working by ear. Ten walks, each under five minutes, in the order a new person meets them.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 18 Oct 2026 22:23:29 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 18 Oct 2026 23:22:11 +0000</lastBuildDate>
     <itunes:author>Jamal Mazrui</itunes:author>
     <itunes:explicit>false</itunes:explicit>
     <itunes:category text="Technology"/>
@@ -24,8 +24,8 @@
       <description>EdSharp is open, with an empty document. Full transcript: Tutorials.htm#0a-1-user-interface</description>
       <link>Tutorials.htm#0a-1-user-interface</link>
       <guid isPermaLink="false">homer-tutorial_1_user_interface</guid>
-      <enclosure url="tutorials/1_User_Interface.mp3" length="2098291" type="audio/mpeg"/>
-      <itunes:duration>00:05:05</itunes:duration>
+      <enclosure url="tutorials/1_User_Interface.mp3" length="2089615" type="audio/mpeg"/>
+      <itunes:duration>00:05:04</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>
@@ -51,7 +51,7 @@
       <description>A long document is open in EdSharp. Full transcript: Tutorials.htm#0d-4-find-your-way-in-a-long-document</description>
       <link>Tutorials.htm#0d-4-find-your-way-in-a-long-document</link>
       <guid isPermaLink="false">homer-tutorial_4_find_your_way_in_a_long_document</guid>
-      <enclosure url="tutorials/4_Find_Your_Way_in_a_Long_Document.mp3" length="1509983" type="audio/mpeg"/>
+      <enclosure url="tutorials/4_Find_Your_Way_in_a_Long_Document.mp3" length="1513457" type="audio/mpeg"/>
       <itunes:duration>00:03:43</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
@@ -69,8 +69,8 @@
       <description>EdSharp is open on a short Python file with one mistake, and Python was ticked when EdSharp was installed. Full transcript: Tutorials.htm#0f-6-write-code</description>
       <link>Tutorials.htm#0f-6-write-code</link>
       <guid isPermaLink="false">homer-tutorial_6_write_code</guid>
-      <enclosure url="tutorials/6_Write_Code.mp3" length="1249063" type="audio/mpeg"/>
-      <itunes:duration>00:02:59</itunes:duration>
+      <enclosure url="tutorials/6_Write_Code.mp3" length="1241287" type="audio/mpeg"/>
+      <itunes:duration>00:02:57</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>
@@ -96,8 +96,8 @@
       <description>Nothing is needed. Full transcript: Tutorials.htm#0i-9-conclusion</description>
       <link>Tutorials.htm#0i-9-conclusion</link>
       <guid isPermaLink="false">homer-tutorial_9_conclusion</guid>
-      <enclosure url="tutorials/9_Conclusion.mp3" length="1543488" type="audio/mpeg"/>
-      <itunes:duration>00:03:42</itunes:duration>
+      <enclosure url="tutorials/9_Conclusion.mp3" length="1509447" type="audio/mpeg"/>
+      <itunes:duration>00:03:35</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
   </channel>

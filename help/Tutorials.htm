@@ -258,8 +258,7 @@ enclosing blocks, outermost first, such as “class Greeter, def greet, if
 loud, for i in range 3” – which is the answer to “where am I?” that
 sighted readers get from the layout at a glance.</p>
 <p>Next Indent and Prior Indent, Control+I and Control+Shift+I, move to
-the next and previous change of indentation. Next Block and Prior Block,
-Control+B and Control+Shift+B, move by whole blocks.</p>
+the next and previous change of indentation.</p>
 <p>Two more commands round it out. Format Code, Alt+F8, normalizes a
 Python file’s indentation to the unit in force. Infer Indent,
 Alt+RightBracket, captures the indentation of the file in front of you
@@ -742,8 +741,8 @@ select.</li>
 sentence).</li>
 <li>Control+Down and Control+Up = Next and prior paragraph (EdSharp
 speaks the paragraph).</li>
-<li>Control+K = Set a bookmark. Alt+K = Go to a bookmark.
-Control+Shift+K = Clear the bookmark (the cursor must be on the exact
+<li>Control+B = Set a bookmark. Alt+B = Go to a bookmark.
+Control+Shift+B = Clear the bookmark (the cursor must be on the exact
 marked character).</li>
 <li>Control+J = Jump to a line number. Alt+J = Jump again. You may add a
 <code>+</code> or <code>-</code> before the number to jump that many
@@ -822,8 +821,6 @@ email.</li>
 <li>Alt+PageDown and Alt+PageUp = Next and prior part: move to the next
 or previous function, method, or class, using the current compiler’s
 NavigatePart pattern.</li>
-<li>Control+B and Control+Shift+B = Next and prior block: move by
-indentation, to the next or previous less-indented line.</li>
 <li>Control+F5 = Compile the current file, speak the output, and jump to
 the first error. With no compiler configured, a <code>.cs</code> file is
 compiled with the latest available .NET C# compiler automatically.
@@ -1296,7 +1293,7 @@ Play Tutorials, which plays these walks.</p>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
 <h3 id="step-21">Step 21</h3>
 <p>Every key is named for a word in its command: Control plus O for
-Open, Control plus F for Find, Control plus K for bookmark. A key never
+Open, Control plus F for Find, Control plus B for bookmark. A key never
 comes from the middle of a word.</p>
 <h3 id="step-22-controlf1">Step 22: Control+F1</h3>
 <p>Control plus F1 is the Key Describer. While it is on, every key says
@@ -1684,17 +1681,17 @@ column.</p>
 <ul>
 <li>Section four. Staffing.</li>
 </ul>
-<h3 id="step-6-controlk">Step 6: Control+K</h3>
-<p>Control plus K, Set Bookmark, marks the place; EdSharp says how far
+<h3 id="step-6-controlb">Step 6: Control+B</h3>
+<p>Control plus B, Set Bookmark, marks the place; EdSharp says how far
 down the document it is.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Bookmark at percent 40</li>
 </ul>
-<h3 id="step-7-altk">Step 7: Alt+K</h3>
-<p>Move away – Control plus Home to the top – then Alt plus K, Go to
+<h3 id="step-7-altb">Step 7: Alt+B</h3>
+<p>Move away – Control plus Home to the top – then Alt plus B, Go to
 Bookmark, brings you back. Bookmarks are kept with the file, so
-tomorrow’s Alt plus K lands here too.</p>
+tomorrow’s Alt plus B lands here too.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Section four. Staffing.</li>
@@ -1757,9 +1754,9 @@ plus End to the very bottom; Alt plus A then says where you landed.</p>
 <li>Thank you for reading.</li>
 </ul>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
-<h3 id="step-16-altk">Step 16: Alt+K</h3>
+<h3 id="step-16-altb">Step 16: Alt+B</h3>
 <p>A bookmark stays with the file, so a long report can be left and
-picked up again tomorrow, at the same place, with Alt plus K.</p>
+picked up again tomorrow, at the same place, with Alt plus B.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Section four. Staffing.</li>
@@ -1795,13 +1792,13 @@ does.</p>
 <li>Jump to Line</li>
 </ul>
 <h3 id="step-22">Step 22</h3>
-<p>Control plus K.</p>
+<p>Control plus B.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Set Bookmark</li>
 </ul>
 <h3 id="step-23">Step 23</h3>
-<p>Alt plus K.</p>
+<p>Alt plus B.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Go to Bookmark</li>
@@ -1976,18 +1973,17 @@ the output is spoken, and the cursor lands on the first error.</p>
 <li>line 12, SyntaxError: expected colon</li>
 <li>for item in items</li>
 </ul>
-<h3 id="step-3-controlb">Step 3: Control+B</h3>
-<p>Code is moved through by its shape. Control plus B, Next Block, goes
-to the next block of code with the same or less indentation; Control
-plus Shift plus B the previous.</p>
+<h3 id="step-3-controli">Step 3: Control+I</h3>
+<p>Code is moved through by its shape. Control plus I, Next Indent, goes
+to the next line where the indentation changes; Control plus Shift plus
+I the previous.</p>
 <p>Screen reader:</p>
 <ul>
 <li>def total(items):</li>
 </ul>
 <h3 id="step-4-alti">Step 4: Alt+I</h3>
-<p>Alt plus I, Say Indentation, says the level of the current line; Alt
-plus B, Say Block, reads the rest of the block, so you hear a loop or a
-function whole.</p>
+<p>Alt plus I, Say Indentation, says the level of the current line, so
+you hear where a loop or a function begins and ends.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Indent 1</li>
@@ -2063,10 +2059,10 @@ does.</p>
 <li>Choose Compiler</li>
 </ul>
 <h3 id="step-17-5">Step 17</h3>
-<p>Control plus B.</p>
+<p>Control plus I.</p>
 <p>Screen reader:</p>
 <ul>
-<li>Next Block</li>
+<li>Next Indent</li>
 </ul>
 <h3 id="step-18-4">Step 18</h3>
 <p>Alt plus V.</p>
@@ -2448,119 +2444,112 @@ the reader says what it means.</p>
 plus F10.</li>
 </ul>
 <h3 id="step-11-6">Step 11</h3>
-<p>block.</p>
-<p>Screen reader:</p>
-<ul>
-<li>A stretch of code at one indentation. Control plus B goes to the
-next; Alt plus B reads the rest of this one.</li>
-</ul>
-<h3 id="step-12-5">Step 12</h3>
 <p>bookmark.</p>
 <p>Screen reader:</p>
 <ul>
-<li>A place in a file, kept with the file. Control plus K sets one; Alt
-plus K returns to it.</li>
+<li>A place in a file, kept with the file. Control plus B sets one; Alt
+plus B returns to it.</li>
 </ul>
-<h3 id="step-13-5">Step 13</h3>
+<h3 id="step-12-5">Step 12</h3>
 <p>chunk.</p>
 <p>Screen reader:</p>
 <ul>
 <li>A run of characters with no space in it. Alt plus Right Arrow goes
 to the next; Control plus Space selects it.</li>
 </ul>
-<h3 id="step-14-5">Step 14</h3>
+<h3 id="step-13-5">Step 13</h3>
 <p>compiler.</p>
 <p>Screen reader:</p>
 <ul>
 <li>The program EdSharp hands your file to with Control plus F5, chosen
 once by extension with Control plus Shift plus F5.</li>
 </ul>
-<h3 id="step-15-6">Step 15</h3>
+<h3 id="step-14-5">Step 14</h3>
 <p>configuration options.</p>
 <p>Screen reader:</p>
 <ul>
 <li>The one dialog of settings – spell checker, font, speech, the AI
 model. Alt plus Shift plus C.</li>
 </ul>
-<h3 id="step-16-6">Step 16</h3>
+<h3 id="step-15-6">Step 15</h3>
 <p>convert file format.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Converting a file on disk without opening it, one or many at a time.
 Control plus Shift plus V.</li>
 </ul>
-<h3 id="step-17-7">Step 17</h3>
+<h3 id="step-16-6">Step 16</h3>
 <p>current windows.</p>
 <p>Screen reader:</p>
 <ul>
 <li>The list of open documents, to pick one. F4; Shift plus F4 says
 their titles.</li>
 </ul>
-<h3 id="step-18-5">Step 18</h3>
+<h3 id="step-17-7">Step 17</h3>
 <p>document.</p>
 <p>Screen reader:</p>
 <ul>
 <li>One file open in EdSharp, in a window of its own; Control plus Tab
 moves to the next, F4 lists them.</li>
 </ul>
-<h3 id="step-19-6">Step 19</h3>
+<h3 id="step-18-5">Step 18</h3>
 <p>Elevate Version.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Checking for a newer EdSharp and installing it. F11, because elevate
 sounds like eleven.</li>
 </ul>
-<h3 id="step-20-3">Step 20</h3>
+<h3 id="step-19-6">Step 19</h3>
 <p>encoding.</p>
 <p>Screen reader:</p>
 <ul>
 <li>How a file’s characters are stored. Alt plus Z twice says it; Alt
 plus Shift plus Y renders the text in another one.</li>
 </ul>
-<h3 id="step-21-3">Step 21</h3>
+<h3 id="step-20-3">Step 20</h3>
 <p>export.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Writing the document out as another format – a web page, a Word
 document, plain text. Alt plus Shift plus E.</li>
 </ul>
-<h3 id="step-22-1">Step 22</h3>
+<h3 id="step-21-3">Step 21</h3>
 <p>file find.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Searching a folder of files for a string and opening the one you
 pick. Alt plus Shift plus F.</li>
 </ul>
-<h3 id="step-23-1">Step 23</h3>
+<h3 id="step-22-1">Step 22</h3>
 <p>hotkey summary.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Every command with its key and description, in a new window. Alt
 plus Shift plus H.</li>
 </ul>
-<h3 id="step-24-1">Step 24</h3>
+<h3 id="step-23-1">Step 23</h3>
 <p>Key Describer.</p>
 <p>Screen reader:</p>
 <ul>
 <li>A mode in which every key says what it does instead of doing it.
 Control plus F1 turns it on and off.</li>
 </ul>
-<h3 id="step-25-1">Step 25</h3>
+<h3 id="step-24-1">Step 24</h3>
 <p>F1 opens the guide, the whole of EdSharp in one document, from inside
 the program. Shift plus F1 opens the history of changes. Alt plus F1
 says the version. Control plus Shift plus F1 opens the quick starts by
 role.</p>
-<h3 id="step-26-1">Step 26</h3>
+<h3 id="step-25-1">Step 25</h3>
 <p>The ReadMe is the short start; the guide is the reference; Hotkeys
 lists every key three ways; the FAQ holds the questions people actually
 ask. All are in the help folder of the installation, and on the
 project’s GitHub page.</p>
-<h3 id="step-27-1">Step 27</h3>
+<h3 id="step-26-1">Step 26</h3>
 <p>F11 checks for a newer version and offers to install it. The project
 is at github dot com, slash JamalMazrui, slash EdSharp. Control plus F12
 copies this session’s log to the clipboard, ready to attach to a report
 of a problem.</p>
-<h3 id="step-28-2">Step 28</h3>
+<h3 id="step-27-1">Step 27</h3>
 <p>EdSharp is one of the Homer Tools, free programs for working by ear:
 EdSharp for text, FileDir for files, DbDo for data. They share their
 keys and their player, so learning one is most of learning the next.</p>
