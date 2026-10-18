@@ -228,15 +228,30 @@ if not errorlevel 1 goto :pushed
 rem A LARGE PUSH TIMES OUT; IT IS TRIED AGAIN, ONCE, BUILT FOR SIZE (13 October 2026). DbDo's push of 60 files -- the
 rem walks' audio and the 67 MB RadioTrail.db -- ended "RPC failed; HTTP 408 ... the remote end hung up unexpectedly".
 rem The second try sends with a 500 MB buffer, so git does not stream the pack in small pieces, and over HTTP/1.1, the
-rem usual remedy for large pushes to GitHub timing out. Only if that fails too is the push a failure.
->> "%log%" echo The first push failed; trying again once with http.postBuffer=524288000 and http.version=HTTP/1.1
+rem usual remedy for large pushes to GitHub timing out.
+rem A TIMEOUT CAN ALSO BE THE NETWORK, NOT THE SIZE (15 October 2026). extCheck's push of three tutorial MP3s, about
+rem 4 MB, timed out on both tries, and the same afternoon a git fetch for BlindCreators was reset mid-transfer: a
+rem connection that is briefly unwell. So after the second try, two more follow, 30 and then 60 seconds later, each
+rem logged. Only when all four fail is the push a failure; the commit stays, and push sends it next time.
+>> "%log%" echo The first push failed; trying again with http.postBuffer=524288000 and http.version=HTTP/1.1
 echo The push did not go through the first time, so it is being tried again in a way suited to a large upload.
+set "iPushTry=2"
+:pushAgain
+>> "%log%" echo PUSH TRY %iPushTry% START %date% %time%
 git -c http.postBuffer=524288000 -c http.version=HTTP/1.1 push >> "%log%" 2>&1
-if errorlevel 1 (
-  echo The push failed. The log has why: %log%
+if not errorlevel 1 goto :pushed
+if %iPushTry% GEQ 4 (
+  echo The push failed 4 times. The commit is kept and goes with the next push. The log has why: %log%
   echo PUSH FAILED>> "%log%"
   endlocal & exit /b 1
 )
+set /a iPushWait=iPushTry*30-30
+if %iPushWait% LSS 30 set "iPushWait=30"
+>> "%log%" echo Push try %iPushTry% failed; waiting %iPushWait% seconds before the next
+echo The push failed again; waiting %iPushWait% seconds, then trying once more.
+timeout /t %iPushWait% /nobreak >nul
+set /a iPushTry+=1
+goto :pushAgain
 :pushed
 rem ORIGIN FOLLOWS A MOVE (1.42.1): when GitHub says the repository moved,
 rem point origin at the new location once, so it stops saying so. Placed

@@ -1027,6 +1027,73 @@ def givePagesOneHeading():
     return iFixed
 
 
+def sweepStrayFolders(sKind):
+    """A TOP-LEVEL FOLDER OUTSIDE THE HOMER TREE GOES TO NOTES (1.73.7). check's layout rule fails a folder at the top
+    that is neither standard for the project's kind (kind.standardFolders), declared in RepoFiles.txt or
+    LocalFiles.txt, nor listed in the kit's conformance backlog. EdSharp's push stopped on one named "l;ogs", most
+    likely "logs" mistyped. Nothing is deleted: the folder is moved whole into notes, which git never takes, under its
+    own name, and the log names it. Same rule as check, so a folder tidy leaves is one check passes. Returns the
+    folders moved."""
+    import kind
+    setStandard = kind.standardFolders(sKind)
+    if kind.publishesBooks(sRoot): setStandard.add("books")
+    if kind.publishesPages(sRoot): setStandard.add("pages")
+    lsDeclared = []
+    for sList in ("RepoFiles.txt", "LocalFiles.txt"):
+        sPath = os.path.join(sRoot, sList)
+        if os.path.isfile(sPath):
+            for sLine in open(sPath, "rb").read().decode("utf-8-sig", "replace").splitlines():
+                sLine = sLine.strip()
+                if sLine and not sLine.startswith("#"): lsDeclared.append(sLine.replace("\\", "/").lower())
+    lsBacklog = []
+    sKit = kind.findKit([sRoot]) or ""
+    sBacklog = os.path.join(sKit, "scripts", "conformanceBacklog.inix") if sKit else ""
+    if sBacklog and os.path.isfile(sBacklog):
+        sSection = ""
+        for sLine in open(sBacklog, "rb").read().decode("utf-8-sig", "replace").splitlines():
+            sLine = sLine.strip()
+            if not sLine or sLine.startswith(";"): continue
+            if sLine.startswith("[") and sLine.endswith("]"): sSection = sLine[1:-1].lower(); continue
+            if sSection == appName().lower() and sLine.lower().startswith("folders") and "=" in sLine:
+                lsBacklog += [s.strip().lower() for s in sLine.split("=", 1)[1].split(",") if s.strip()]
+    lsMoved = []
+    for sName in sorted(os.listdir(sRoot), key=str.lower):
+        sFull = os.path.join(sRoot, sName)
+        if not os.path.isdir(sFull) or sName.lower() in setStandard or sName.lower() == "__pycache__": continue
+        if any(s == sName.lower() + "/" or s.startswith(sName.lower() + "/") for s in lsDeclared): continue
+        if sName.lower() in lsBacklog: continue
+        sTo = os.path.join(sRoot, sNotesName, sName)
+        iSuffix = 2
+        while os.path.exists(sTo):
+            sTo = os.path.join(sRoot, sNotesName, "%s_%d" % (sName, iSuffix))
+            iSuffix += 1
+        os.makedirs(os.path.dirname(sTo), exist_ok=True)
+        shutil.move(sFull, sTo)
+        logLine("MOVED FOLDER: %s -> %s, being outside the Homer tree and declared nowhere" % (sName, os.path.relpath(sTo, sRoot)))
+        lsMoved.append(sName)
+    if lsMoved:
+        sayLine("Moved %s outside the Homer tree into notes: %s." % (countNoun(len(lsMoved), "folder"), ", ".join(lsMoved)))
+    return lsMoved
+
+
+def keepJawsKeys():
+    """THE APP'S JAWS PASS-THROUGH KEYS (1.73.5). An app's scripts\\jaws\\<App>.jkm hands on the keys the suite
+    allows (data\\KeyOwnership.inix, passThrough=yes) that the app really binds -- Alt+Delete, Say Position, instead
+    of JAWS's pixel coordinates -- in a marked block tidy writes, and names any bracket key a bare "[" would turn into
+    a section. The work is the kit's scripts\\jawsKeys.py, found through kind.findKit, so an app never needs a copy of
+    its own. Tidy runs after every build and before every push, and push commits what changed. Returns what was done."""
+    import kind
+    sKit = kind.findKit([sRoot])
+    if not sKit: return []
+    sKitScripts = os.path.join(sKit, "scripts")
+    if sKitScripts not in sys.path: sys.path.insert(0, sKitScripts)
+    import jawsKeys
+    lsDone = jawsKeys.ensure(sRoot, appName(), sKit)
+    for sDone in lsDone: logLine("JAWS KEY MAP: %s" % sDone)
+    if lsDone: sayLine("The JAWS key map %s." % "; ".join(lsDone))
+    return lsDone
+
+
 def removeKitSampleLeftovers(bRepo):
     """The kit's samples, unarchived into an app, leave what their build made beside the files removeStrayKitFiles
     takes away: the sample programs, PyInstaller's build and dist folders, their logs, the generated version files.
@@ -1152,6 +1219,12 @@ def main():
         except Exception as oError: logLine("one heading per page: skipped, " + str(oError))
         try: renameObsoleteConstants()
         except Exception as oError: logLine("Camel Type constants: skipped, " + str(oError))
+        if sKind == "app":
+            try: keepJawsKeys()
+            except Exception as oError: logLine("JAWS key map: skipped, " + str(oError))
+        if sKind != "kit":
+            try: sweepStrayFolders(sKind)
+            except Exception as oError: logLine("stray folders: skipped, " + str(oError))
 
     # THE BUILD SCRIPT TAKES ITS SHORT NAME HERE (1.43.56). Since 1.43.55 an
     # app's build script is build.cmd, and check fails build<App>.cmd. Tidy runs

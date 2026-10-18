@@ -112,4 +112,17 @@ if "%iHomerUpgrade%"=="-1978335189" (
   echo %~3 is already the newest release.
   exit /b 0
 )
-exit /b 1
+rem INSTALLED WITHOUT WINGET, UPDATED BY INSTALLING (15 October 2026). Setup now reads the version of a program it
+rem finds by its file, so it can offer Update for a copy winget never installed, such as an mpv unpacked by hand.
+rem winget upgrade answers such a copy with "no installed package found" (-1978335212), so the newest release is
+rem installed in its default machine-wide folder instead, and the result is reported like any other.
+rem Labels rather than a parenthesized block, so the exit code is read when it is set whether or not the calling
+rem script turned on delayed expansion.
+if not "%iHomerUpgrade%"=="-1978335212" exit /b 1
+>> "%log%" echo %date% %time% winget knows no installed %~2, so the newest release is installed instead
+winget install --id %~2 --exact --silent --accept-source-agreements --accept-package-agreements --disable-interactivity >> "%log%" 2>&1
+set "iHomerUpgrade=%ERRORLEVEL%"
+>> "%log%" echo %date% %time% winget install %~2 exit code %iHomerUpgrade%
+if not "%iHomerUpgrade%"=="0" exit /b 1
+echo %~3 was updated.
+exit /b 0

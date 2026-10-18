@@ -1355,18 +1355,64 @@ function speakingNow() {
 # speak, the lock is not taken at all.
 $iToSpeak = @($lsScripts | Where-Object { $bLive -or $sOnly -ne "" -or -not (spokenCurrent $_ (Join-Path $sAudioDir (audioName $_))) }).Count
 note ("walks needing speech: " + $iToSpeak + " of " + $lsScripts.Count)
+# FIRST COME, FIRST SERVED (15 October 2026). A mutex is not handed to the build that has waited longest: whichever
+# waiting build happened to check first took it. HomerScribe began waiting at 11:20 and spoke at 14:17, after eight
+# builds that arrived later -- 177 minutes of waiting for 32 minutes of speaking. Each waiting build now writes a
+# ticket named for the moment it arrived and its process number; only the build whose ticket is oldest waits on the
+# lock, and the others sleep a minute at a time, so the lock goes to the builds in the order they came. A ticket
+# whose process has ended is removed, so a build that stopped while waiting cannot hold up the line.
+$sQueueDir = Join-Path ([System.IO.Path]::GetTempPath()) "HomerTutorialsQueue"
+$sTicket = ""
+function buildsAhead() {
+  $iAhead = 0
+  foreach ($oTicket in @(Get-ChildItem -LiteralPath $sQueueDir -Filter "*.txt" -ErrorAction SilentlyContinue | Sort-Object Name)) {
+    if ($oTicket.FullName -eq $sTicket) { break }
+    $sOwner = ($oTicket.BaseName -split "-")[-1]
+    if (-not (Get-Process -Id $sOwner -ErrorAction SilentlyContinue)) {
+      try { Remove-Item -LiteralPath $oTicket.FullName -Force; note ("removed a queue ticket left by a build that has ended: " + $oTicket.Name) } catch { }
+      continue
+    }
+    $iAhead = $iAhead + 1
+  }
+  return $iAhead
+}
+function aheadWords([int] $iAhead) {
+  if ($iAhead -eq 0) { return "" }
+  return "; " + $iAhead + $(if ($iAhead -eq 1) { " build" } else { " builds" }) + " waiting ahead of this one"
+}
 if ($iToSpeak -gt 0) { try {
   # The two-argument constructor: New-Object cannot bind an out parameter.
   $oMutex = New-Object System.Threading.Mutex($false, "Global\HomerTutorialsSpeaking")
+  try {
+    New-Item -ItemType Directory -Force -Path $sQueueDir | Out-Null
+    $sTicket = Join-Path $sQueueDir ((Get-Date -Format "yyyyMMddHHmmssfff") + "-" + $PID + ".txt")
+    [System.IO.File]::WriteAllText($sTicket, $sThisProject)
+    note ("queue ticket " + $sTicket)
+  } catch { note ("no queue ticket, so this build waits on the lock alone: " + $_); $sTicket = "" }
   $iWaited = 0
-  while (-not $oMutex.WaitOne(60000)) {
+  while ($true) {
+    $iAhead = $(if ($sTicket) { buildsAhead } else { 0 })
+    if ($iAhead -eq 0) {
+      $bGot = $false
+      try { $bGot = $oMutex.WaitOne(60000) }
+      catch {
+        # PowerShell may wrap the .NET exception, so the exception and the one inside it are both tested.
+        if ($_.Exception -is [System.Threading.AbandonedMutexException] -or $_.Exception.InnerException -is [System.Threading.AbandonedMutexException]) {
+          $bGot = $true; note "the lock was left by a build that ended while speaking; taken"
+        } else { throw }
+      }
+      if ($bGot) { break }
+    } else {
+      Start-Sleep -Seconds 60
+    }
     $iWaited = $iWaited + 1
     $sNow = speakingNow
-    if ($iWaited -eq 1) { say ("Another Homer build is speaking its tutorials" + $(if ($sNow) { ": " + $sNow } else { "" }) + ". Waiting for it to finish, so neither crawls.") }
-    else { say ("  still waiting, " + $iWaited + " minutes" + $(if ($sNow) { "; " + $sNow } else { "" })) }
+    if ($iWaited -eq 1) { say ("Another Homer build is speaking its tutorials" + $(if ($sNow) { ": " + $sNow } else { "" }) + (aheadWords $iAhead) + ". Waiting, so neither crawls; builds speak in the order they arrived.") }
+    else { say ("  still waiting, " + $iWaited + " minutes" + $(if ($sNow) { "; " + $sNow } else { "" }) + (aheadWords $iAhead)) }
   }
-  if ($iWaited -gt 0) { say "The other build has finished; speaking now." }
-} catch { note ("tutorial mutex not available: " + $_); $oMutex = $null } } else { note "every walk is already spoken and current, so no wait for the voices" }
+  if ($sTicket) { try { Remove-Item -LiteralPath $sTicket -Force } catch { } }
+  if ($iWaited -gt 0) { say ("Its turn has come after " + $iWaited + $(if ($iWaited -eq 1) { " minute" } else { " minutes" }) + "; speaking now.") }
+} catch { note ("tutorial mutex not available: " + $_); $oMutex = $null; if ($sTicket) { try { Remove-Item -LiteralPath $sTicket -Force } catch { } } } } else { note "every walk is already spoken and current, so no wait for the voices" }
 retireOldAudio
 $iWalk = 0
 foreach ($sScript in $lsScripts) {

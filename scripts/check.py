@@ -36,6 +36,8 @@ WHAT IT CHECKS
   version     version.txt present and agreeing with the installer script
   publish     RepoFiles.txt present and .gitignore generated from it
   logging     the program opens a log at startup
+  mainthread  a WinForms program's Main carries [STAThread], with nothing between
+  shipped     every program the installer runs is one it installs
   naming      no accessible name set to a caption a screen reader already reads
   keys        no Alt+Control binding, no letter claimed twice in one dialog
   build       the build script runs and returns zero            (--build)
@@ -62,6 +64,7 @@ project folder or in its scripts folder; both mean the project.
 
 import argparse
 import datetime
+import fnmatch
 import glob
 import os
 import platform
@@ -820,6 +823,114 @@ def checkFinishPage():
     return finding("finish", "pass", "every finish-page box follows the rules")
 
 
+# THE MAIN THREAD OF A WINDOWS PROGRAM IS A SINGLE-THREADED APARTMENT (1.72.55, 15 October 2026). DbDo's Copy Cell
+# said "Clipboard error: Current thread must be set to single thread apartment" because a function added between
+# [STAThread] and Main took the attribute for itself, and Main ran without it. The compiler accepts that; the
+# clipboard and the common file dialogs do not. So a WinForms source fails here when Main lacks the attribute or the
+# attribute sits on anything but Main.
+def checkMainThread():
+    """[STAThread] directly on Main, in every C# source that uses Windows Forms."""
+    lsBad, iMains = [], 0
+    for sPath in sourceFiles():
+        if not sPath.lower().endswith(".cs"): continue
+        sText = readText(sPath)
+        if "System.Windows.Forms" not in sText: continue
+        sShown = os.path.relpath(sPath, sRoot)
+        lsLines = sText.splitlines()
+        for iAt, sLine in enumerate(lsLines):
+            sTrim = sLine.strip()
+            if sTrim.startswith("//"): continue
+            if re.search(r"\bstatic\s+(?:int|void)\s+Main\s*\(", sTrim):
+                iMains += 1
+                iBack, bSta = iAt - 1, False
+                while iBack >= 0:
+                    sBack = lsLines[iBack].strip()
+                    if not sBack or sBack.startswith("//"): iBack -= 1; continue
+                    if sBack.startswith("["):
+                        if re.match(r"\[\s*(?:System\.)?STAThread", sBack): bSta = True
+                        iBack -= 1; continue
+                    break
+                if not bSta: lsBad.append("%s line %d: Main has no [STAThread]" % (sShown, iAt + 1))
+            if re.match(r"\[\s*(?:System\.)?STAThread(?:Attribute)?\s*\]$", sTrim):
+                iNext = iAt + 1
+                while iNext < len(lsLines):
+                    sNext = lsLines[iNext].strip()
+                    if not sNext or sNext.startswith("//") or sNext.startswith("["): iNext += 1; continue
+                    break
+                if iNext >= len(lsLines) or not re.search(r"\bMain\s*\(", lsLines[iNext]):
+                    lsBad.append("%s line %d: [STAThread] is on something other than Main" % (sShown, iAt + 1))
+    for sLine in lsBad: logLine("MAIN THREAD: " + sLine)
+    if lsBad:
+        return finding("mainthread", "fail", "the clipboard and file dialogs need Main to carry [STAThread] directly: " + "; ".join(lsBad[:4]))
+    if not iMains: return finding("mainthread", "skip", "no Windows Forms program with a Main method")
+    return finding("mainthread", "pass", "%s with [STAThread] directly on it" % countNoun(iMains, "Main method"))
+
+
+def issSectionEntries(sText, sSection):
+    """Each entry of one section of an installer script, its continued lines joined."""
+    oStart = re.search(r"(?mi)^\[%s\]\s*$" % re.escape(sSection), sText)
+    if not oStart: return []
+    oEnd = re.search(r"(?m)^\[[A-Za-z]+\]\s*$", sText[oStart.end():])
+    sBody = sText[oStart.end(): oStart.end() + oEnd.start()] if oEnd else sText[oStart.end():]
+    lsEntries, sCurrent = [], ""
+    for sLine in sBody.splitlines():
+        sStrip = sLine.strip()
+        if not sStrip or sStrip.startswith(";") or sStrip.startswith("#"):
+            continue
+        sCurrent += " " + sStrip.rstrip("\\")
+        if not sStrip.endswith("\\"): lsEntries.append(sCurrent.strip()); sCurrent = ""
+    if sCurrent.strip(): lsEntries.append(sCurrent.strip())
+    return lsEntries
+
+
+def issField(sEntry, sName):
+    oMatch = re.search(r"(?i)(?:^|;)\s*" + sName + r':\s*("(?:[^"]|"")*"|[^;]+)', sEntry)
+    return oMatch.group(1).strip().strip('"') if oMatch else ""
+
+
+# WHAT THE INSTALLER RUNS, IT INSTALLS (1.72.55, 15 October 2026). DbDo 1.0.287's finish page never offered the JAWS
+# scripts, on a computer with JAWS running: its installer asked installScreenReaderSupport.cmd for their state, and no
+# Source: line installed that script, so the question had no one to answer it and both screen reader boxes were hidden.
+# Its mpv box ran installMpv.cmd, which the build never copied from the kit. HomerScribe failed the same way on 24
+# September. Every Filename under {app} in [Icons], [Run] and [UninstallRun] must match a Source: line's installed path, and a
+# script it names must be in the project.
+def checkShipped():
+    """Every program the installer runs is one the installer puts there."""
+    lsBad, iRuns = [], 0
+    for sIss in glob.glob(os.path.join(sRoot, "*_setup.iss")):
+        sText = readText(sIss)
+        dDefines = dict(re.findall(r'(?m)^\s*#define\s+(\w+)\s+"([^"]*)"', sText))
+        def resolve(sValue):
+            return re.sub(r"\{#(\w+)\}", lambda oMatch: dDefines.get(oMatch.group(1), oMatch.group(0)), sValue)
+        lsInstalled = []
+        for sEntry in issSectionEntries(sText, "Files"):
+            sSource, sDest = resolve(issField(sEntry, "Source")), resolve(issField(sEntry, "DestDir"))
+            if not sSource or not sDest or "external" in issField(sEntry, "Flags").lower(): continue
+            sSource = sSource.replace("/", "\\")
+            lsInstalled.append((sDest.rstrip("\\") + "\\" + sSource.split("\\")[-1], sSource))
+        # [Icons] too (15 October 2026): HomerScribe's documentation shortcut named {app}\help\ReadMe.htm, which no
+        # Source: line installs, so it was never made.
+        for sSection in ("Icons", "Run", "UninstallRun"):
+            for sEntry in issSectionEntries(sText, sSection):
+                sFile = resolve(issField(sEntry, "Filename")).replace("/", "\\")
+                if not sFile.lower().startswith("{app}\\"): continue
+                iRuns += 1
+                lsMatch = [sSource for sPattern, sSource in lsInstalled if fnmatch.fnmatch(sFile.lower(), sPattern.lower())]
+                if not lsMatch:
+                    lsBad.append("%s runs %s, but no Source: line installs it" % (os.path.basename(sIss), sFile))
+                    continue
+                sRelative = sFile[len("{app}\\"):]
+                # The installer writes backslashes; the path is built with os.sep so the test reads the same anywhere.
+                if sRelative.lower().startswith("scripts\\") and not os.path.isfile(os.path.join(sRoot, *sRelative.split("\\"))):
+                    lsBad.append("%s runs %s, but %s is not in the project (the build copies kit scripts it names)" % (os.path.basename(sIss), sFile, sRelative))
+    lsBad = sorted(set(lsBad), key=str.lower)
+    for sLine in lsBad: logLine("SHIPPED: " + sLine)
+    if lsBad:
+        return finding("shipped", "fail", "%s: %s" % (countNoun(len(lsBad), "program the installer runs is", "programs the installer runs are") + " not installed", "; ".join(lsBad[:4])))
+    if not iRuns: return finding("shipped", "skip", "the installer runs nothing from its own folder")
+    return finding("shipped", "pass", "%s, each installed by a Source: line" % countNoun(iRuns, "program the installer runs", "programs the installer runs"))
+
+
 def checkKeys():
     """Alt+Control is reserved, and one dialog must not claim a letter twice."""
     lsBad = []
@@ -942,6 +1053,72 @@ def checkKeys():
         return finding("keys", "fail", "%s; every one is in the log" %
                        countNoun(len(lsBad), "key problem"))
     return finding("keys", "pass", "0 reserved combinations, 0 access keys claimed twice")
+
+
+def checkSuite():
+    """The Homer Suite's command and key contract, for this app (1.73.1).
+
+    Runs the kit's scripts\\checkKeys.py with --app and --gate. An app on the
+    Homer frame (its source calls MdiFrame.runOrExport) is first started with
+    /exportkeys, which writes every command and key it declares and ends
+    before any window appears, so what is checked is what the program really
+    does. A key bound twice with no reviewed exception, a key Windows or a
+    screen reader takes, or a clash the program reported fails the check.
+    An app neither in the suite manifest nor on the frame is skipped.
+    """
+    sApp = os.path.basename(os.path.normpath(sRoot))
+    # THE DEVELOPMENT KIT, FOUND AS TIDY FINDS IT (1.73.7). This took the folder of the kind.py already loaded, which
+    # can be the installed kit's in Program Files, older than the development kit and without checkKeys.py, so every
+    # app's suite check skipped. kind.findKit prefers the development kit beside or above the project.
+    try:
+        import kind
+        sKit = kind.findKit([sRoot]) or ""
+    except Exception:
+        sKit = ""
+    sKitScripts = os.path.join(sKit, "scripts") if sKit else ""
+    sChecker = os.path.join(sKitScripts, "checkKeys.py") if sKitScripts else ""
+    if not sChecker or not os.path.isfile(sChecker):
+        return finding("suite", "skip", "the kit's checkKeys.py was not found")
+    sManifest = os.path.join(os.path.dirname(sKitScripts), "data", "SuiteCommands.inix")
+    bInManifest = os.path.isfile(sManifest) and ("[" + sApp.lower() + " ") in readText(sManifest).lower()
+    bOnFrame = any("MdiFrame.runOrExport" in readText(sPath) for sPath in sourceFiles() if sPath.lower().endswith(".cs"))
+    if not bInManifest and not bOnFrame:
+        return finding("suite", "skip", "%s is not in the suite manifest and not on the Homer frame" % sApp)
+    lsArgs = [sys.executable, sChecker, "--gate", "--app", sApp]
+    if bOnFrame:
+        sExe = next((s for s in (os.path.join(sRoot, "exec", sApp + ".exe"), os.path.join(sRoot, sApp + ".exe")) if os.path.isfile(s)), "")
+        if not sExe:
+            return finding("suite", "fail", "%s is on the Homer frame but %s.exe was not found to export its keys; build first" % (sApp, sApp))
+        sExport = os.path.join(sLogDir, "%s-keys-%s.inix" % (sApp, datetime.datetime.now().strftime("%Y%m%d-%H%M%S")))
+        try:
+            oRun = subprocess.run([sExe, "/exportkeys", sExport], cwd=os.path.dirname(sExe), capture_output=True, text=True, timeout=120)
+            logLine("suite: %s /exportkeys exit %d" % (sExe, oRun.returncode))
+        except Exception as oError:
+            return finding("suite", "fail", "%s could not export its keys: %s" % (sApp, oError))
+        if oRun.returncode != 0 or not os.path.isfile(sExport):
+            return finding("suite", "fail", "%s did not export its keys (exit %d)" % (sApp, oRun.returncode))
+        lsArgs.append(sExport)
+    try:
+        oResult = subprocess.run(lsArgs, cwd=sRoot, capture_output=True, text=True, timeout=300)
+    except Exception as oError:
+        return finding("suite", "fail", "checkKeys could not run: %s" % oError)
+    for sLine in (oResult.stdout + oResult.stderr).splitlines():
+        logLine("suite: " + sLine)
+    sSummary = next((s for s in oResult.stdout.splitlines() if s.startswith("checkKeys")), "checkKeys gave no summary")
+    if oResult.returncode != 0:
+        return finding("suite", "fail", sSummary + " The checkKeys log in the kit's logs folder names each one.")
+    # THE JAWS KEY MAP HANDS ON WHAT THE SUITE ALLOWS (1.73.5). Tidy writes those lines before every push, so a key
+    # still missing here means tidy could not, and the log of that tidy says why.
+    try:
+        if sKitScripts not in sys.path: sys.path.insert(0, sKitScripts)
+        import jawsKeys
+        lsMissing = jawsKeys.missing(sRoot, sApp, os.path.dirname(sKitScripts))
+    except Exception as oError:
+        lsMissing = []
+        logLine("suite: the JAWS key map could not be read: %s" % oError)
+    if lsMissing:
+        return finding("suite", "fail", "%s The JAWS key map does not hand on %s; tidy writes it, so its log says why it could not." % (sSummary, ", ".join(lsMissing)))
+    return finding("suite", "pass", sSummary)
 
 
 def checkSkillChecks(sKind):
@@ -1588,9 +1765,12 @@ def main():
         checkIssComments()
         checkInstaller()
         checkInstallerNames()
+        checkShipped()
+        checkMainThread()
         checkSkillChecks("app")
         checkBuildName()
         checkKeys()
+        checkSuite()
         checkBuild(dArguments.build)
         checkSmoke(dArguments.build)
         checkAccept()
