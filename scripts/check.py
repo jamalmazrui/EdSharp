@@ -1055,6 +1055,48 @@ def checkKeys():
     return finding("keys", "pass", "0 reserved combinations, 0 access keys claimed twice")
 
 
+def checkConversions():
+    """ONE COPY OF EVERY CONVERSION (1.74.0): an app converts files only through the kit's Conversion.
+
+    Scans the app's own .cs files for private conversion code -- its own Pandoc finder, a 2htm call, an
+    Office COM object, pymupdf4llm -- which the kit's Conversion.cs and exec\\conversions.inix replace.
+    An app the manifest lists in conversionsMoved= (data\\SuiteCommands.inix, [Suite]) fails on any such
+    line; any other app gets a warning that counts them, until its move. 2htm's own COM converters stay,
+    as its last resort, until it too moves.
+    """
+    sApp = os.path.basename(os.path.normpath(sRoot))
+    try:
+        import kind
+        sKit = kind.findKit([sRoot]) or ""
+    except Exception:
+        sKit = ""
+    if not sKit or os.path.normcase(os.path.abspath(sKit)) == os.path.normcase(os.path.abspath(sRoot)):
+        return finding("conversion", "skip", "this is the kit, whose Conversion.cs is the shared copy" if sKit else "the kit was not found")
+    lsMoved = []
+    sManifest = os.path.join(sKit, "data", "SuiteCommands.inix")
+    if os.path.isfile(sManifest):
+        oMatch = re.search(r"(?im)^\s*conversionsMoved\s*=\s*(.*)$", readText(sManifest))
+        if oMatch: lsMoved = [s.strip().lower() for s in oMatch.group(1).split(",") if s.strip()]
+    lsPatterns = [(r"pandoc\.exe", "its own Pandoc finder"), (r"2htm\.exe", "a 2htm call"),
+                  (r"\"(Word|Excel|PowerPoint)\.Application\"", "an Office COM object"), (r"pymupdf4llm", "its own PDF reader")]
+    lsHits = []
+    for sPath in sourceFiles():
+        if not sPath.lower().endswith(".cs"): continue
+        if os.path.dirname(os.path.abspath(sPath)) != os.path.abspath(sRoot): continue
+        for iLine, sLine in enumerate(readText(sPath).splitlines(), 1):
+            if sLine.strip().startswith("//"): continue
+            for sPattern, sWhat in lsPatterns:
+                if re.search(sPattern, sLine, re.I):
+                    lsHits.append("%s line %d: %s" % (os.path.basename(sPath), iLine, sWhat))
+    for sHit in lsHits: logLine("conversion: " + sHit)
+    if not lsHits:
+        return finding("conversion", "pass", "every conversion goes through the kit's Conversion")
+    sCount = countNoun(len(lsHits), "line") + " of private conversion code"
+    if sApp.lower() in lsMoved:
+        return finding("conversion", "fail", sCount + "; the kit's Conversion replaces it, and the log names each one")
+    return finding("conversion", "warn", sCount + ", to move to the kit's Conversion; the log names each one")
+
+
 def checkSuite():
     """The Homer Suite's command and key contract, for this app (1.73.1).
 
@@ -1773,6 +1815,7 @@ def main():
         checkBuildName()
         checkKeys()
         checkSuite()
+        checkConversions()
         checkBuild(dArguments.build)
         checkSmoke(dArguments.build)
         checkAccept()
