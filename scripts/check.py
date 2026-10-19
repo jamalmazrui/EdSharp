@@ -1329,7 +1329,42 @@ def checkLayout(sKind):
         return finding("layout", "pass", "%d folder%s outside the tree, all in the kit's conformance backlog: %s" % (len(lsListed), "" if len(lsListed) == 1 else "s", ", ".join(lsListed)))
     if lsBad:
         return finding("layout", "fail", "%s outside the Homer tree and declared nowhere: %s" % (countNoun(len(lsBad), "folder") if "countNoun" in globals() else str(len(lsBad)) + " folders", ", ".join(lsBad)))
-    return finding("layout", "pass", "every top-level folder is a standard one" + ("" if not lsDeclaredExtra else "; declared besides: " + ", ".join(lsDeclaredExtra)))
+    # A DECLARED EXTRA FOLDER IS A WARNING, NOT A PASS (1.80.0). Declaring a folder let a project opt out of
+    # "no new folders" silently: ChatGPT's BatCon declared kit and third-party and the check passed it. It now
+    # warns, so the author sees the folders and confirms them; it does not fail, since he may have approved one.
+    if lsDeclaredExtra:
+        return finding("layout", "warn", "%s outside the standard Homer tree, declared by the project; confirm each was wanted: %s"
+                       % (countNoun(len(lsDeclaredExtra), "folder"), ", ".join(lsDeclaredExtra)))
+    return finding("layout", "pass", "every top-level folder is a standard one")
+
+
+def checkKitUse():
+    """THE KIT IS USED, NEVER COPIED (1.80.0). A project builds against the installed kit (C:\\HomerDev or
+    wherever kind.findKit finds it). A copy of the kit inside a project fails: it drifts from the real kit, its
+    changes never reach the other apps, and it hides the project from every check that compares it with the kit --
+    ChatGPT's BatCon carried one, and the shared, installer, skills, suite and conversion checks all skipped. A kit
+    that cannot be found fails too, rather than letting those checks skip unseen."""
+    if os.path.isfile(os.path.join(sRoot, "exec", "CSharp", "Lbc.cs")):
+        return finding("kituse", "skip", "this is the kit")
+    lsCopies = []
+    for sTop, lsDirs, lsFiles in os.walk(sRoot):
+        lsDirs[:] = [s for s in lsDirs if s.lower() not in (".git", "notes", "logs", "__pycache__", ".venv", "venv")]
+        if os.path.isfile(os.path.join(sTop, "exec", "CSharp", "Lbc.cs")) and os.path.isfile(os.path.join(sTop, "exec", "conversions.inix")) \
+                and os.path.normcase(os.path.abspath(sTop)) != os.path.normcase(os.path.abspath(sRoot)):
+            lsCopies.append(os.path.relpath(sTop, sRoot)); lsDirs[:] = []
+    if lsCopies:
+        for s in lsCopies: logLine("KIT COPY: %s holds a copy of the HomerDev kit; build against the installed kit instead" % s)
+        return finding("kituse", "fail", "%s a copy of the HomerDev kit: %s; build against the installed kit, and deliver any kit change as HomerDev.zip"
+                       % ("this project holds" if len(lsCopies) == 1 else "these folders hold", ", ".join(lsCopies)))
+    try:
+        import kind
+        sKit = kind.findKit([sRoot]) or ""
+    except Exception:
+        sKit = ""
+    if not sKit:
+        return finding("kituse", "fail", "the HomerDev kit was not found, so the checks that compare this project with it cannot run; "
+                       "install HomerDev or set the HomerDev variable")
+    return finding("kituse", "pass", "built against the kit at %s, with no copy of it in the project" % sKit)
 
 
 nCopyThreshold = 0.5
@@ -1819,6 +1854,7 @@ def main():
         checkLocal()
         checkFinishPage()
         checkLayout("app")
+        checkKitUse()
         checkHeadings()
         checkSharedCode()
         checkIssComments()

@@ -4,6 +4,7 @@
 
 ## 19 October 2026 -- The old converters retire
 
+- **Setup writes one log per run,** dated, as every Homer log is, instead of one ever-growing EdSharp_setup.log: EdSharp-setup-<date>.log for the installer's record, and one for each script it runs.
 - **EdSharp's private converters are retired,** now that the Homer kit's conversions do their work: any2htm, any2md, any2txt, doc2txt, pdf2md, sheet2md, the Office converters and EdSharp's own copy of 2htm. The build moves them into notes\retired\convert, never deleting them, and the installer removes them from an earlier installation.
 - **The Import and Export settings keep only what the kit does not do,** such as MediaWiki, LaTeX and MDX; 63 entries the kit serves were removed, since none could be reached.
 - **The build needs HomerDev 1.79.1 or later,** for the kit's routes from old PowerPoint and Excel files.

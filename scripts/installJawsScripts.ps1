@@ -38,6 +38,8 @@
 
 param([switch]$bQuiet, [switch]$bUninstall, [string]$pathLogFile = "", [string]$pathResultFile = "",
       [string]$sState = "", [string]$pathStateFile = "", [switch]$bNvda)
+# One log per run (19 October 2026), as help\Logging.md has it: EdSharp-installJawsScripts-<stamp>.log.
+$script:sRunLogName = "EdSharp-installJawsScripts-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log"
 
 $sScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
@@ -135,7 +137,7 @@ function nvdaLogLines([string] $sName) {
 # add-on's installTasks.py would do on install does not run this way, so its
 # presence is logged.
 function nvdaInstallAddon() {
-  $sSetupLog = Join-Path $env:LOCALAPPDATA "EdSharp\logs\EdSharp_setup.log"
+  $sSetupLog = Join-Path $env:LOCALAPPDATA ("EdSharp\logs\" + $script:sRunLogName)
   $lsLines = @("==== NVDA add-on, installed directly  " + (Get-Date -Format "yyyy-MM-dd HH:mm:ss") + " ====")
   $iExit = 0
   try {
@@ -253,7 +255,7 @@ if ($sState -ne "") {
   }
   $lsFacts += "state ${sState}: $sAnswer"
   try {
-    $sSetupLog = Join-Path $env:LOCALAPPDATA "EdSharp\logs\EdSharp_setup.log"
+    $sSetupLog = Join-Path $env:LOCALAPPDATA ("EdSharp\logs\" + $script:sRunLogName)
     Add-Content -LiteralPath $sSetupLog -Value $lsFacts -Encoding UTF8
   } catch { }
   Set-Content -LiteralPath $pathStateFile -Value $sAnswer -Encoding ASCII
@@ -265,7 +267,7 @@ if ($pathLogFile -eq "") {
   # The consolidated log: pandoc, JAWS, and Inno Setup all append to this
   # one file under dated banners. -pathLogFile still redirects it, which the
   # uninstaller uses because this folder does not survive an uninstall.
-  $pathLogFile = Join-Path $sLogDir "EdSharp_setup.log"
+  $pathLogFile = Join-Path $sLogDir $script:sRunLogName
 } else {
   $sLogDir = Split-Path -Parent $pathLogFile
 }

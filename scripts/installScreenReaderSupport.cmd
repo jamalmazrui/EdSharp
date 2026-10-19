@@ -19,7 +19,7 @@ rem AI NOTE FOR CUSTOMIZING: nothing here is app-specific. The app name comes
 rem from the folder. If an app's scripts need compiling rather than copying, add
 rem that step after the unpack and log its exit code.
 rem
-rem NOTHING PAUSES. LOG: %LOCALAPPDATA%\<App>\logs\<App>_setup.log.
+rem NOTHING PAUSES. LOG: %LOCALAPPDATA%\<App>\logs\<App>-<script>-<yyyymmdd-hhmmss>.log.
 setlocal EnableExtensions EnableDelayedExpansion
 
 rem The app name comes from the folder this script is installed into, climbing
@@ -31,7 +31,11 @@ for %%d in ("%~dp0.") do set "sApp=%%~nxd"
 if /i "%sApp%"=="exec" for %%d in ("%~dp0..") do set "sApp=%%~nxd"
 if /i "%sApp%"=="scripts" for %%d in ("%~dp0..") do set "sApp=%%~nxd"
 set "sLogDir=%LOCALAPPDATA%\%sApp%\logs"
-set "sLog=%sLogDir%\%sApp%_setup.log"
+rem ONE LOG PER RUN (kit 1.79.2): <App>-<script>-<yyyymmdd-hhmmss>.log, as installCommon.cmd and
+rem help\Logging.md have it, rather than one <App>-<script>-<yyyymmdd-hhmmss>.log that every run appended to.
+for /f %%T in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd-HHmmss" 2^>nul') do set "sNow=%%T"
+if not defined sNow set "sNow=unknown-time"
+set "sLog=%sLogDir%\%sApp%-installScreenReaderSupport-%sNow%.log"
 rem What the installer's Results box reports about the screen readers, one line
 rem each; the installer clears it when Finish is pressed, before this runs.
 set "sResult=%sLogDir%\%sApp%_screenReaders.txt"

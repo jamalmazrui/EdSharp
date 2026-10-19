@@ -560,6 +560,17 @@ begin
   end;
 end;
 
+// ONE LOG PER RUN (19 October 2026, help\Logging.md): this run's lines go to a file dated once per run,
+// <App>-<task>-<yyyymmdd-hhmmss>.log, rather than to one <App>_setup.log that every install appended to.
+var
+  gsLogStamp: String;
+
+function logStamp(): String;
+begin
+  if gsLogStamp = '' then gsLogStamp := GetDateTimeString('yyyymmdd-hhnnss', #0, #0);
+  Result := gsLogStamp;
+end;
+
 procedure logLine(sLogDir: string; sText: string);
 var
   lsLine: TArrayOfString;
@@ -567,7 +578,7 @@ begin
   try
     SetArrayLength(lsLine, 1);
     lsLine[0] := sText;
-    SaveStringsToFile(sLogDir + '\EdSharp_setup.log', lsLine, True);
+    SaveStringsToFile(sLogDir + '\EdSharp-setupSteps-' + logStamp() + '.log', lsLine, True);
   except
   end;
 end;
@@ -1220,7 +1231,7 @@ end;
 var
   gbInstalled: boolean;
 
-{ Inno's own record joins the consolidated EdSharp_setup.log under a dated
+{ Inno's own record goes to this run's EdSharp-setup-<stamp>.log under a dated
   banner, beside the pandoc and JAWS sections the scripts already appended --
   one file to read, one file to send. }
 procedure appendSetupLog(sFolder: string);
@@ -1242,8 +1253,8 @@ begin
   SetArrayLength(lBanner, 2);
   lBanner[0] := '';
   lBanner[1] := '==== EdSharp installer (Inno Setup)  ' + GetDateTimeString('yyyy/mm/dd hh:nn:ss', '-', ':') + ' ====';
-  SaveStringsToFile(AddBackslash(sFolder) + 'EdSharp_setup.log', lBanner, True);
-  SaveStringsToFile(AddBackslash(sFolder) + 'EdSharp_setup.log', lSetupLines, True);
+  SaveStringsToFile(AddBackslash(sFolder) + 'EdSharp-setup-' + logStamp() + '.log', lBanner, True);
+  SaveStringsToFile(AddBackslash(sFolder) + 'EdSharp-setup-' + logStamp() + '.log', lSetupLines, True);
 end;
 
 { THE RESULTS BOX REPORTS WHAT WAS TICKED (29 September 2026), as every

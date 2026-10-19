@@ -16,7 +16,7 @@ rem The Results box is a PowerShell message box, which a screen reader reads as
 rem an ordinary dialog. It reports only what was done in this session: an action
 rem that did not run is not mentioned, and a count always matches its noun.
 rem
-rem LOG: %LOCALAPPDATA%\<App>\logs\<App>_setup.log, the same log the install
+rem LOG: %LOCALAPPDATA%\<App>\logs\<App>-<script>-<yyyymmdd-hhmmss>.log, the same log the install
 rem scripts write to, since a program under Program Files cannot write beside
 rem its own .exe. The app name comes from the folder this script is installed
 rem into, so nothing here is hardcoded.
@@ -32,7 +32,11 @@ shift
 set "sArgs=%1 %2 %3 %4 %5 %6 %7 %8 %9"
 
 set "sLogDir=%LOCALAPPDATA%\%sApp%\logs"
-set "sLog=%sLogDir%\%sApp%_setup.log"
+rem ONE LOG PER RUN (kit 1.79.2): <App>-<script>-<yyyymmdd-hhmmss>.log, as installCommon.cmd and
+rem help\Logging.md have it, rather than one <App>-<script>-<yyyymmdd-hhmmss>.log that every run appended to.
+for /f %%T in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd-HHmmss" 2^>nul') do set "sNow=%%T"
+if not defined sNow set "sNow=unknown-time"
+set "sLog=%sLogDir%\%sApp%-finish-%sNow%.log"
 if not exist "%sLogDir%" mkdir "%sLogDir%" >nul 2>&1
 
 echo finish started %DATE% %TIME%>> "%sLog%"
