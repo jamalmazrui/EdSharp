@@ -934,6 +934,8 @@ value.Activate();
 } // Child property
 
 public bool FindWithRegExp = false;
+// True after Search for Topic, so Search Next (F3) finds the next topic rather than the last find.
+public bool bLastSearchTopic = false;
 public bool bCommandComplete = true;
 public static string CR = "\r";
 public static string LF = "\n";
@@ -948,13 +950,13 @@ public static string EOD = LB + DD + LB + "End of Document" + LB;
 public static Dictionary<Keys, ToolStripMenuItem> hashKey = new Dictionary<Keys, ToolStripMenuItem>();
 public MenuStrip menuMain;
 public ToolStripMenuItem menuFile, menuFileNew, menuFileNewFromClipboard, menuFileOpen, menuFileOpenOtherFormat, menuFileOpenAgain, menuFileRecent, menuFileSetFavorite, menuFileClearFavorite, menuFileListFavorites, menuFileFind, menuFileSave, menuFileSaveAs, menuFileSaveCopy, menuFileExport, menuFileRename, menuFileProperties, menuFileMailBody, menuFileMailAttach, menuFilePrint, menuFileRun, menuFileCurrentWindows, menuFileClose, menuFileCloseAllButCurrentWindow, menuFileExit;
-public ToolStripMenuItem menuEdit, menuEditSelectAll, menuEditUnselectAll, menuEditCopy, menuEditCopyAppend, menuEditCopyRichText, menuEditCut, menuEditCutAppend, menuEditPaste, menuEditPasteFile, menuEditUndo, menuEditRedo, menuEditStartSelection, menuEditCompleteSelection, menuEditReselect, menuEditCopyAll, menuEditSelectChunk, menuEditAppendFromClipboard, menuEditQuote, menuEditUnquote, menuEditUpperCase, menuEditLowerCase, menuEditProperCase, menuEditSwapCase, menuEditYieldEncoding, menuEditJoinLines, menuEditHardLineBreak, menuEditEnterNewLine, menuEditIndentNewLine, menuEditIndentNewLinePrior, menuEditIndent, menuEditOutdent, menuEditAlign, menuEditIndentMode, menuEditJustify, menuEditStyle, menuEditBaseline, menuEditSetSelectionFont;
+public ToolStripMenuItem menuEdit, menuEditSelectAll, menuEditUnselectAll, menuEditCopy, menuEditCopyAppend, menuEditCopyRichText, menuEditCut, menuEditCutAppend, menuEditPaste, menuEditPasteFile, menuEditUndo, menuEditRedo, menuEditStartSelection, menuEditCompleteSelection, menuEditReselect, menuEditCopyAll, menuEditSelectChunk, menuEditAppendFromClipboard, menuEditQuote, menuEditUnquote, menuEditUpperCase, menuEditLowerCase, menuEditProperCase, menuEditSwapCase, menuEditYieldEncoding, menuEditJoinLines, menuEditHardLineBreak, menuEditEnterNewLine, menuEditIndentNewLine, menuEditIndentNewLinePrior, menuEditIndent, menuEditOutdent, menuEditAlign, menuEditIndentMode, menuEditJustify, menuEditStyle, menuEditBaseline, menuEditSetSelectionFont, menuEditSaveClipboard, menuEditAppendClipboard, menuEditClearClipboard;
 public ToolStripMenuItem menuDelete, menuDeleteReplaceRegular, menuDeleteReplaceWithRegExp, menuDeleteHardLine, menuDeleteParagraph, menuDeleteLine, menuDeleteRight, menuDeleteLeft, menuDeleteDown, menuDeleteUp, menuDeleteFile, menuDeleteTrimBlanks;
-public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateNextBlock, menuNavigatePriorBlock, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateSearchForTopicAgain, menuNavigateGoToStartOfSelection;
-public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles, menuQueryFont;
+public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateNextBlock, menuNavigatePriorBlock, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateGoToStartOfSelection;
+public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles;
 public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
 public ToolStripMenuItem menuWindow, menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
-public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
+public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
 public StatusStrip statusBar;
 public ToolStripStatusLabel lblStatus;
 
@@ -980,8 +982,8 @@ menuFileFind = CreateMenuItem("File Find ...", "Alt+Shift+F", menuItem_Click, "f
 menuFileSave = CreateMenuItem("&Save", "Control+S", menuItem_Click, "child speak");
 menuFileSaveAs = CreateMenuItem("Save &As ...", "Control+Shift+S", menuItem_Click, "child silent");
 menuFileSaveCopy = CreateMenuItem("Save Copy ...", "Alt+Shift+S", menuItem_Click, "child speak");
-menuFileExport = CreateMenuItem("Export Format ...", "Alt+Shift+E", menuItem_Click, "child silent");
-menuFileRename = CreateMenuItem("Rename ...", "Alt+Shift+R", menuItem_Click, "child silent");
+menuFileExport = CreateMenuItem("Export Format ...", "Alt+Shift+X", menuItem_Click, "child silent");
+menuFileRename = CreateMenuItem("Rename ...", "Shift+F2", menuItem_Click, "child silent");
 menuFileProperties = CreateMenuItem("Properties", "Alt+Enter", menuItem_Click, "child speak");
 menuFileMailBody = CreateMenuItem("&Mail Body ...", "Control+M", menuItem_Click, "child speak");
 menuFileMailAttach = CreateMenuItem("Mail Attachment ...", "Control+Shift+M", menuItem_Click, "child speak");
@@ -1012,6 +1014,10 @@ menuEditReselect = CreateMenuItem("Reselect", "Control+Shift+F8", menuItem_Click
 menuEditCopyAll = CreateMenuItem("Copy All", "Control+F8", menuItem_Click, "child speak");
 menuEditSelectChunk = CreateMenuItem("Select Chunk", "Control+Space", menuItem_Click, "child silent");
 menuEditAppendFromClipboard = CreateMenuItem("Append from Clipboard", "Alt+D7", menuItem_Click, "child silent");
+// The suite's clipboard family (kit SuiteCommands), the same in every Homer app.
+menuEditSaveClipboard = CreateMenuItem("Save Clipboard", "Control+OemQuotes", menuItem_Click, "frame silent");
+menuEditAppendClipboard = CreateMenuItem("Append Clipboard", "Control+Shift+OemQuotes", menuItem_Click, "frame silent");
+menuEditClearClipboard = CreateMenuItem("Clear Clipboard", "Alt+Shift+OemQuotes", menuItem_Click, "frame silent");
 menuEditQuote = CreateMenuItem("&Quote", "Control+Q", menuItem_Click, "child speak");
 menuEditUnquote = CreateMenuItem("Unquote", "Control+Shift+Q", menuItem_Click, "child speak");
 menuEditUpperCase = CreateMenuItem("&Upper Case", "Control+U", menuItem_Click, "child speak");
@@ -1023,7 +1029,7 @@ menuEditJoinLines = CreateMenuItem("Join Lines", "Control+Shift+J", menuItem_Cli
 menuEditHardLineBreak = CreateMenuItem("Hard Line Break ...", "Control+Shift+H", menuItem_Click, "child silent");
 menuEditEnterNewLine = CreateMenuItem("Enter New Line", "Enter", menuItem_Click, "child silent");
 menuEditIndentNewLine = CreateMenuItem("Indent New Line", "Shift+Enter", menuItem_Click, "child silent");
-menuEditIndentNewLinePrior = CreateMenuItem("Indent New Line Prior", "Alt+Shift+Enter", menuItem_Click, "child speak");
+menuEditIndentNewLinePrior = CreateMenuItem("Indent New Line Previous", "Alt+Shift+Enter", menuItem_Click, "child speak");
 menuEditIndent = CreateMenuItem("Indent", "Tab", menuItem_Click, "child silent");
 menuEditOutdent = CreateMenuItem("Outdent", "Shift+Tab", menuItem_Click, "child silent");
 menuEditAlign = CreateMenuItem("Align", "Alt+Shift+A", menuItem_Click, "child speak");
@@ -1032,12 +1038,12 @@ menuEditJustify = CreateMenuItem("Justify ...", "Alt+Shift+J", menuItem_Click, "
 menuEditStyle = CreateMenuItem("Style ...", "Alt+Shift+OemQuestion", menuItem_Click, "child silent");
 menuEditBaseline = CreateMenuItem("Baseline ...", "Alt+Shift+D6", menuItem_Click, "child silent");
 menuEditSetSelectionFont = CreateMenuItem("Set Selection Font ...", "Alt+Shift+OemMinus", menuItem_Click, "child speak");
-menuEdit.DropDownItems.AddRange(new ToolStripItem[] {menuEditSelectAll, menuEditUnselectAll, menuEditCopy, menuEditCopyAppend, menuEditCopyRichText, menuEditCut, menuEditCutAppend, menuEditPaste, menuEditPasteFile, menuEditUndo, menuEditRedo, menuEditStartSelection, menuEditCompleteSelection, menuEditReselect, menuEditCopyAll, menuEditSelectChunk, menuEditAppendFromClipboard, menuEditQuote, menuEditUnquote, menuEditUpperCase, menuEditLowerCase, menuEditProperCase, menuEditSwapCase, menuEditYieldEncoding, menuEditJoinLines, menuEditHardLineBreak, menuEditEnterNewLine, menuEditIndentNewLine, menuEditIndentNewLinePrior, menuEditIndent, menuEditOutdent, menuEditAlign, menuEditIndentMode, menuEditJustify, menuEditStyle, menuEditBaseline, menuEditSetSelectionFont});
+menuEdit.DropDownItems.AddRange(new ToolStripItem[] {menuEditSelectAll, menuEditUnselectAll, menuEditCopy, menuEditCopyAppend, menuEditCopyRichText, menuEditCut, menuEditCutAppend, menuEditPaste, menuEditPasteFile, menuEditUndo, menuEditRedo, menuEditStartSelection, menuEditCompleteSelection, menuEditReselect, menuEditCopyAll, menuEditSelectChunk, menuEditAppendFromClipboard, menuEditSaveClipboard, menuEditAppendClipboard, menuEditClearClipboard, menuEditQuote, menuEditUnquote, menuEditUpperCase, menuEditLowerCase, menuEditProperCase, menuEditSwapCase, menuEditYieldEncoding, menuEditJoinLines, menuEditHardLineBreak, menuEditEnterNewLine, menuEditIndentNewLine, menuEditIndentNewLinePrior, menuEditIndent, menuEditOutdent, menuEditAlign, menuEditIndentMode, menuEditJustify, menuEditStyle, menuEditBaseline, menuEditSetSelectionFont});
 //Dialog.Show("Edit.", menuEdit.DropDownItems.Count);
 
 menuDelete = CreateMenu("&Delete");
 menuDeleteReplaceRegular = CreateMenuItem("&Replace ...", "Control+R", menuItem_Click, "child silent");
-menuDeleteReplaceWithRegExp = CreateMenuItem("Replace with Regular Expression ...", "Control+Shift+R", menuItem_Click, "child silent");
+menuDeleteReplaceWithRegExp = CreateMenuItem("Replace with Regex ...", "Control+Shift+R", menuItem_Click, "child silent");
 menuDeleteHardLine = CreateMenuItem("Delete Hard Line", "Control+D", menuItem_Click, "child silent");
 menuDeleteParagraph = CreateMenuItem("Delete Paragraph", "Control+Shift+D", menuItem_Click, "child silent");
 menuDeleteLine = CreateMenuItem("Delete Line", "Alt+Back", menuItem_Click, "child silent");
@@ -1053,52 +1059,54 @@ menuDelete.DropDownItems.AddRange(new ToolStripMenuItem[] {menuDeleteReplaceRegu
 menuNavigate = CreateMenu("&Navigate");
 menuNavigateForwardFind = CreateMenuItem("Forward &Find ...", "Control+F", menuItem_Click, "child silent");
 menuNavigateReverseFind = CreateMenuItem("Reverse Find ...", "Control+Shift+F", menuItem_Click, "child silent");
-menuNavigateForwardFindWithRegExp = CreateMenuItem("Forward Find with Regular Expression ...", "Control+F3", menuItem_Click, "child silent");
-menuNavigateReverseFindWithRegExp = CreateMenuItem("Reverse Find with Regular Expression ...", "Control+Shift+F3", menuItem_Click, "child silent");
+menuNavigateForwardFindWithRegExp = CreateMenuItem("Forward Find with Regex ...", "Control+F3", menuItem_Click, "child silent");
+menuNavigateReverseFindWithRegExp = CreateMenuItem("Reverse Find with Regex ...", "Control+Shift+F3", menuItem_Click, "child silent");
 menuNavigateForwardFindAtCursor = CreateMenuItem("Forward Find at Cursor", "Alt+F3", menuItem_Click, "child silent");
 menuNavigateReverseFindAtCursor = CreateMenuItem("Reverse Find at Cursor", "Alt+Shift+F3", menuItem_Click, "child silent");
-menuNavigateForwardFindAgain = CreateMenuItem("Forward Find Again", "F3", menuItem_Click, "child silent");
-menuNavigateReverseFindAgain = CreateMenuItem("Reverse Find Again", "Shift+F3", menuItem_Click, "child silent");
+menuNavigateForwardFindAgain = CreateMenuItem("Search Next", "F3", menuItem_Click, "child silent");
+menuNavigateReverseFindAgain = CreateMenuItem("Search Previous", "Shift+F3", menuItem_Click, "child silent");
 menuNavigateJumpToLine = CreateMenuItem("&Jump to Line ...", "Control+J", menuItem_Click, "child silent");
 menuNavigateJumpToLineAgain = CreateMenuItem("Jump to Line Again", "Alt+J", menuItem_Click, "child silent");
 menuNavigateGoToPercent = CreateMenuItem("&Go to Percent ...", "Control+G", menuItem_Click, "child silent");
 menuNavigateGoToPercentAgain = CreateMenuItem("Go to Percent Again", "Alt+G", menuItem_Click, "child silent");
 menuNavigateGoToPart = CreateMenuItem("Go to Part", "Alt+Shift+G", menuItem_Click, "child silent");
-menuNavigateSetBookmark = CreateMenuItem("Set Bookmar&k", "Control+B", menuItem_Click, "child speak");
+menuNavigateSetBookmark = CreateMenuItem("Save &Bookmark", "Control+B", menuItem_Click, "child speak");
 menuNavigateClearBookmark = CreateMenuItem("Clear Bookmark", "Control+Shift+B", menuItem_Click, "child speak");
-menuNavigateGoToBookmark = CreateMenuItem("Go to Bookmark", "Alt+B", menuItem_Click, "child speak");
+menuNavigateGoToBookmark = CreateMenuItem("List Bookmarks", "Alt+B", menuItem_Click, "child speak");
 menuNavigateHomeCharacter = CreateMenuItem("Home Character", "Alt+Home", menuItem_Click, "child silent");
 menuNavigateEndCharacter = CreateMenuItem("End Character", "Alt+End", menuItem_Click, "child silent");
 menuNavigateStartTag = CreateMenuItem("Start Tag", "Control+Shift+Oemcomma", menuItem_Click, "child silent");
 menuNavigateEndTag = CreateMenuItem("End Tag", "Control+Shift+OemPeriod", menuItem_Click, "child silent");
 menuNavigateNextJustify = CreateMenuItem("Next Alignment", "Control+OemCloseBrackets", menuItem_Click, "child silent");
-menuNavigatePriorJustify = CreateMenuItem("Prior Alignment", "Control+OemOpenBrackets", menuItem_Click, "child silent");
+menuNavigatePriorJustify = CreateMenuItem("Previous Alignment", "Control+OemOpenBrackets", menuItem_Click, "child silent");
 menuNavigateNextStyle = CreateMenuItem("Next Style", "Control+OemQuestion", menuItem_Click, "child silent");
-menuNavigatePriorStyle = CreateMenuItem("Prior Style", "Control+Shift+OemQuestion", menuItem_Click, "child silent");
+menuNavigatePriorStyle = CreateMenuItem("Previous Style", "Control+Shift+OemQuestion", menuItem_Click, "child silent");
 menuNavigateNextBaseline = CreateMenuItem("Next Baseline", "Control+D6", menuItem_Click, "child silent");
-menuNavigatePriorBaseline = CreateMenuItem("Prior Baseline", "Control+Shift+D6", menuItem_Click, "child silent");
+menuNavigatePriorBaseline = CreateMenuItem("Previous Baseline", "Control+Shift+D6", menuItem_Click, "child silent");
 menuNavigateNextFont = CreateMenuItem("Next Font", "Control+OemMinus", menuItem_Click, "child silent");
-menuNavigatePriorFont = CreateMenuItem("Prior Font", "Control+Shift+OemMinus", menuItem_Click, "child silent");
+menuNavigatePriorFont = CreateMenuItem("Previous Font", "Control+Shift+OemMinus", menuItem_Click, "child silent");
 menuNavigateRightBrace = CreateMenuItem("Right Brace", "Control+Shift+OemCloseBrackets", menuItem_Click, "child silent");
 menuNavigateLeftBrace = CreateMenuItem("Left Brace", "Control+Shift+OemOpenBrackets", menuItem_Click, "child silent");
 menuNavigateNextIndent = CreateMenuItem("Next Indent", "Control+I", menuItem_Click, "child silent");
-menuNavigatePriorIndent = CreateMenuItem("Prior Indent", "Control+Shift+I", menuItem_Click, "child silent");
+menuNavigatePriorIndent = CreateMenuItem("Previous Indent", "Control+Shift+I", menuItem_Click, "child silent");
 menuNavigateNextChunk = CreateMenuItem("Next Chunk", "Alt+Right", menuItem_Click, "child silent");
-menuNavigatePriorChunk = CreateMenuItem("Prior Chunk", "Alt+Left", menuItem_Click, "child silent");
+menuNavigatePriorChunk = CreateMenuItem("Previous Chunk", "Alt+Left", menuItem_Click, "child silent");
 menuNavigateNextSentence = CreateMenuItem("Next Sentence", "Alt+Down", menuItem_Click, "child silent");
-menuNavigatePriorSentence = CreateMenuItem("Prior Sentence", "Alt+Up", menuItem_Click, "child silent");
+menuNavigatePriorSentence = CreateMenuItem("Previous Sentence", "Alt+Up", menuItem_Click, "child silent");
 menuNavigateNextParagraph = CreateMenuItem("Next Paragraph", "Control+Down", menuItem_Click, "child silent");
-menuNavigatePriorParagraph = CreateMenuItem("Prior Paragraph", "Control+Up", menuItem_Click, "child silent");
+menuNavigatePriorParagraph = CreateMenuItem("Previous Paragraph", "Control+Up", menuItem_Click, "child silent");
 menuNavigateNextPart= CreateMenuItem("Next Part", "Alt+PageDown", menuItem_Click, "child silent");
-menuNavigatePriorPart= CreateMenuItem("Prior Part", "Alt+PageUp", menuItem_Click, "child silent");
+menuNavigatePriorPart= CreateMenuItem("Previous Part", "Alt+PageUp", menuItem_Click, "child silent");
 menuNavigateNextSection= CreateMenuItem("Next Section", "Control+PageDown", menuItem_Click, "child silent");
-menuNavigatePriorSection= CreateMenuItem("Prior Section", "Control+PageUp", menuItem_Click, "child silent");
+menuNavigatePriorSection= CreateMenuItem("Previous Section", "Control+PageUp", menuItem_Click, "child silent");
+// The F6 cycle as well (suite manifest): Control+F6 and Control+Shift+F6 move by section, as in the other apps.
+KeyMap.addAlias(KeyMap.toId("Next Section"), "Control+F6");
+KeyMap.addAlias(KeyMap.toId("Previous Section"), "Control+Shift+F6");
 menuNavigateGoToSection= CreateMenuItem("Go to Section", "F6", menuItem_Click, "child speak");
 menuNavigateGoToContents = CreateMenuItem("Go to Contents", "Shift+F6", menuItem_Click, "child speak");
-menuNavigateSearchForTopic = CreateMenuItem("Search for Topic ...", "Control+F6", menuItem_Click, "child silent");
-menuNavigateSearchForTopicAgain = CreateMenuItem("Search for Topic Again", "Alt+F6", menuItem_Click, "child silent");
+menuNavigateSearchForTopic = CreateMenuItem("Search for Topic ...", "Alt+F6", menuItem_Click, "child silent");
 menuNavigateGoToStartOfSelection = CreateMenuItem("Go to Start of Selection", "Alt+Shift+F8", menuItem_Click, "child speak");
-menuNavigate.DropDownItems.AddRange(new ToolStripItem[] {menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateSearchForTopicAgain, menuNavigateGoToStartOfSelection});
+menuNavigate.DropDownItems.AddRange(new ToolStripItem[] {menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateGoToStartOfSelection});
 //Dialog.Show("Navigate.", menuNavigate.DropDownItems.Count);
 
 menuQuery = CreateMenu("&Query");
@@ -1113,25 +1121,24 @@ menuQueryCompiler = CreateMenuItem("Compiler", "Alt+D0", menuItem_Click, "frame 
 menuQuerySelected = CreateMenuItem("Selected", "Shift+Space", menuItem_Click, "child silent");
 menuQueryChunk = CreateMenuItem("Chunk", "Shift+Back", menuItem_Click, "child silent");
 menuQueryReadAll = CreateMenuItem("Read All", "Alt+F8", menuItem_Click, "child speak");
-menuQueryWindowsOpen = CreateMenuItem("Windows Open", "Shift+F4", menuItem_Click, "child speak");
+menuQueryWindowsOpen = CreateMenuItem("Say Windows Open", "Shift+F4", menuItem_Click, "child speak");
 menuQueryClipboard = CreateMenuItem("Clipboard", "Alt+OemQuotes", menuItem_Click, "frame silent");
 menuQueryTime = CreateMenuItem("Time", "Alt+OemSemicolon", menuItem_Click, "frame silent");
 menuQueryStyles = CreateMenuItem("Styles", "Alt+OemQuestion", menuItem_Click, "child silent");
-menuQueryFont = CreateMenuItem("Font", "Alt+OemMinus", menuItem_Click, "child silent");
-menuQuery.DropDownItems.AddRange(new ToolStripItem[] {menuQueryAddress, menuQueryBraces, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles, menuQueryFont});
+menuQuery.DropDownItems.AddRange(new ToolStripItem[] {menuQueryAddress, menuQueryBraces, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles});
 //Dialog.Show("Query.", menuQuery.DropDownItems.Count);
 
 menuMisc = CreateMenu("&Misc");
 menuMiscSetDefaultFont = CreateMenuItem("Set Default Font and Color ...", "Alt+Shift+Oemplus", menuItem_Click, "child speak");
-menuMiscConfigurationOptions = CreateMenuItem("Configuration Options ...", "Alt+Shift+C", menuItem_Click, "frame silent");
-menuMiscManualOptions = CreateMenuItem("Manual Options", "Alt+Shift+M", menuItem_Click, "frame silent");
+menuMiscConfigurationOptions = CreateMenuItem("Edit Settings ...", "Alt+Shift+E", menuItem_Click, "frame silent");
+menuMiscManualOptions = CreateMenuItem("Edit Settings File", "Alt+Shift+F2", menuItem_Click, "frame silent");
 menuMiscResetConfiguration = CreateMenuItem("Reset Configuration", "Alt+Shift+D0", menuItem_Click, "frame silent");
 menuMiscGoToFolder = CreateMenuItem("Go to Folder", "Control+D0", menuItem_Click, "frame silent");
-menuMiscGoToSpecialFolder = CreateMenuItem("Go to Special Folder", "Control+Shift+D0", menuItem_Click, "frame silent");
+menuMiscGoToSpecialFolder = CreateMenuItem("Go to Special Folder", "Control+Shift+G", menuItem_Click, "frame silent");
 menuMiscWordWrap = CreateMenuItem("&Word Wrap", "Control+W", menuItem_Click, "child speak");
 menuMiscUnwrap = CreateMenuItem("Unwrap", "Control+Shift+W", menuItem_Click, "child speak");
-menuMiscExtraSpeechToggle = CreateMenuItem("Extra Speech Toggle", "Control+Shift+X", menuItem_Click, "frame silent");
-menuMiscExtraSpeechLog = CreateMenuItem("Extra Speech Log", "Alt+Shift+X", menuItem_Click, "frame speak");
+menuMiscExtraSpeechToggle = CreateMenuItem("Extra Speech Toggle", "Alt+Shift+Z", menuItem_Click, "frame silent");
+menuMiscExtraSpeechLog = CreateMenuItem("Extra Speech Log", "Alt+Shift+F12", menuItem_Click, "frame speak");
 menuMiscEnvironmentVariables = CreateMenuItem("&Environment Variables ...", "Control+E", menuItem_Click, "frame speak");
 menuMiscSpellCheck = CreateMenuItem("Spell Check", "F7", menuItem_Click, "child speak");
 menuMiscThesaurus = CreateMenuItem("Thesaurus", "Shift+F7", menuItem_Click, "child speak");
@@ -1162,15 +1169,15 @@ menuMiscChatWithDocument = CreateMenuItem("Chat about Document", "Shift+F12", me
 menuMiscTextConvert = CreateMenuItem("&Text Convert", "Control+T", menuItem_Click, "child speak");
 menuMiscTextCombine = CreateMenuItem("Text Combine", "Control+Shift+T", menuItem_Click, "child speak");
 menuMiscTextContents = CreateMenuItem("Text Contents", "Alt+Shift+T", menuItem_Click, "child speak");
-menuMiscYieldWithRegExp = CreateMenuItem("Yield with Regular Expression ...", "Control+Shift+Y", menuItem_Click, "child silent");
+menuMiscYieldWithRegExp = CreateMenuItem("Yield with Regex ...", "Control+Shift+Y", menuItem_Click, "child silent");
 //menuMiscYieldWithRegExp.ShortcutKeys = Util.String2Key("Control+Shift+Y");
-menuMiscExtractWithRegExp = CreateMenuItem("Extract with Regular Expression ...", "Control+Shift+E", menuItem_Click, "child silent");
+menuMiscExtractWithRegExp = CreateMenuItem("Extract with Regex ...", "Control+Shift+E", menuItem_Click, "child silent");
 menuMiscRunAtCursor = CreateMenuItem("Run at Cursor ...", "Shift+F5", menuItem_Click, "child silent");
 menuMiscSpecialCharacter = CreateMenuItem("Special Character ...", "F2", menuItem_Click, "child silent");
 menuMiscEvaluateExpression = CreateMenuItem("Evaluate Expression", "Control+Oemplus", menuItem_Click, "child speak");
 menuMiscReplaceTokens = CreateMenuItem("Replace Tokens", "Control+Shift+Oemplus", menuItem_Click, "child silent");
 menuMiscTransformFiles = CreateMenuItem("Transform Files", "Alt+Oemplus", menuItem_Click, "child speak");
-menuMiscGoToEnvironment = CreateMenuItem("Go to Environment", "Control+Shift+G", menuItem_Click, "frame speak");
+menuMiscGoToEnvironment = CreateMenuItem("Go to Environment", "Control+Shift+F12", menuItem_Click, "frame speak");
 menuMiscCompile = CreateMenuItem("Compile", "Control+F5", menuItem_Click, "child speak");
 menuMiscPickCompiler = CreateMenuItem("Pick Compiler", "Control+Shift+F5", menuItem_Click, "frame silent");
 menuMiscPromptCommand = CreateMenuItem("Prompt Command", "Alt+F5", menuItem_Click, "child silent");
@@ -1181,11 +1188,11 @@ menuMiscViewSnippet = CreateMenuItem("View Snippet", "Alt+Shift+V", menuItem_Cli
 menuMiscKeepUniqueItems = CreateMenuItem("Keep Unique Items", "Alt+Shift+K", menuItem_Click, "child speak");
 menuMiscNumberItems = CreateMenuItem("Number Items ...", "Alt+Shift+N", menuItem_Click, "child silent");
 menuMiscOrderItems = CreateMenuItem("Order Items", "Alt+Shift+O", menuItem_Click, "child speak");
-menuMiscReverseItems = CreateMenuItem("Reverse Items", "Alt+Shift+Z", menuItem_Click, "child speak");
+menuMiscReverseItems = CreateMenuItem("Reverse Items", "Alt+Shift+R", menuItem_Click, "child speak");
 menuMiscListDifferentItems = CreateMenuItem("List Different Items", "Alt+Shift+L", menuItem_Click, "child speak");
 menuMiscQueryCommonItems = CreateMenuItem("Query Common Items", "Alt+Shift+Q", menuItem_Click, "child speak");
-menuMiscExplorerFolder = CreateMenuItem("Explorer Folder", "Alt+Oem5", menuItem_Click, "frame speak");
-menuMiscCommandPrompt = CreateMenuItem("Command Prompt", "Control+Oem5", menuItem_Click, "frame speak");
+menuMiscExplorerFolder = CreateMenuItem("Open in Explorer", "Alt+Oem5", menuItem_Click, "frame speak");
+menuMiscCommandPrompt = CreateMenuItem("Open Command Prompt", "Control+Oem5", menuItem_Click, "frame speak");
 menuMiscBurnToCD = CreateMenuItem("Burn to CD", "Alt+Shift+B", menuItem_Click, "child speak");
 menuMiscWebDownload = CreateMenuItem("Web Download", "Alt+Shift+W", menuItem_Click, "frame speak");
 menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload});
@@ -1193,28 +1200,36 @@ menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, men
 
 menuWindow = CreateMenu("&Window");
 menuWindowNext = CreateMenuItem("Next Window", "Control+Tab", menuItem_Click, "child speak");
-menuWindowPrior = CreateMenuItem("Prior Window", "Control+Shift+Tab", menuItem_Click, "child speak");
+menuWindowPrior = CreateMenuItem("Previous Window", "Control+Shift+Tab", menuItem_Click, "child speak");
 menuWindowArrangeIcons = CreateMenuItem("Arrange Icons", "Alt+F11", menuItem_Click, "child speak");
 menuWindowCascade = CreateMenuItem("Cascade", "Control+F11", menuItem_Click, "child speak");
 menuWindowTileHorizontal = CreateMenuItem("Tile Horizontal", "Alt+Shift+F11", menuItem_Click, "child speak");
-menuWindowTileVertical = CreateMenuItem("Tile Vertical", "Control+Shift+F11", menuItem_Click, "child speak");
+menuWindowTileVertical = CreateMenuItem("Tile Vertical", "Shift+F11", menuItem_Click, "child speak");
 menuWindow.DropDownItems.AddRange(new ToolStripMenuItem[] {menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical});
 //Dialog.Show("Window.", menuWindow.DropDownItems.Count);
 
 menuHelp = CreateMenu("&Help");
 menuHelpAbout = CreateMenuItem("&About ...", "Alt+F1", menuItem_Click, "frame silent");
 menuHelpDocumentation = CreateMenuItem("Documentation", "F1", menuItem_Click, "frame speak");
-menuHelpTutorial = CreateMenuItem("Tutorials", "Control+Shift+F1", menuItem_Click, "frame speak");
+menuHelpTutorial = CreateMenuItem("Play Tutorials", "Alt+F12", menuItem_Click, "frame speak");
 menuHelpHistoryOfChanges = CreateMenuItem("History of Changes", "Shift+F1", menuItem_Click, "frame speak");
+// KEY DECISIONS OF 19 OCTOBER 2026, each with the key it replaced so any one can be rolled back on its own
+// line; the reasons are in the kit's help\KeyDecisions.md and the suite manifest:
+//   Play Tutorials Alt+F12 (was Control+Shift+F1, now Hotkeys, the suite Help key); Rename Shift+F2 (was
+//   Alt+Shift+R); Reverse Items Alt+Shift+R (was Alt+Shift+Z); Extra Speech Toggle Alt+Shift+Z (was
+//   Control+Shift+X); Go to Special Folder Control+Shift+G (was Control+Shift+0); Go to Environment
+//   Control+Shift+F12 (was Control+Shift+G); Say Font joined Say Styles (was Alt+Dash).
+menuHelpReadMe = CreateMenuItem("ReadMe", "Alt+Shift+F1", menuItem_Click, "frame speak");
+menuHelpHotkeys = CreateMenuItem("Hotkeys", "Control+Shift+F1", menuItem_Click, "frame speak");
 menuHelpSamplePrograms = CreateMenuItem("Sample Programs ...", "Control+Shift+F2", menuItem_Click, "frame speak");
 menuHelpCopyLog = CreateMenuItem("Copy Log", "Control+F12", menuItem_Click, "frame speak");
-menuHelpKeyDescriber = CreateMenuItem("Key Describer", "Control+F1", menuItem_Click, "frame silent");
+menuHelpKeyDescriber = CreateMenuItem("Key Describer Toggle", "Control+F1", menuItem_Click, "frame silent");
 menuHelpHotKeySummary = CreateMenuItem("Hotkey Summary", "Alt+Shift+H", menuItem_Click, "frame speak");
 menuHelpAlternateMenu= CreateMenuItem("Alternate Menu ...", "Alt+F10", menuItem_Click, "frame silent");
 menuHelpContextMenu= CreateMenuItem("Context Menu ...", "Shift+F10", menuItem_Click, "child silent");
 menuHelpSendToMenu= CreateMenuItem("SendTo Menu ...", "Control+F10", menuItem_Click, "child silent");
 menuHelpElevateVersion = CreateMenuItem("Elevate Version", "F11", menuItem_Click, "frame speak");
-menuHelp.DropDownItems.AddRange(new ToolStripItem[] {menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion});
+menuHelp.DropDownItems.AddRange(new ToolStripItem[] {menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion});
 //Dialog.Show("Help.", menuHelp.DropDownItems.Count);
 
 menuMain.Items.AddRange(new ToolStripItem[] {menuFile, menuEdit, menuDelete, menuNavigate, menuQuery, menuMisc, menuWindow, menuHelp});
@@ -2046,7 +2061,7 @@ static readonly string[] aCommandSummaries = new string[] {
 "Documentation\tF1, Open Documentation in web browser",
 "About\tAlt+F1, Display version and release date",
 "History of Changes\tShift+F1, Display list of fixes and improvements",
-"Key Describer\tControl+F1, Toggle a mode in which pressing a key describes its action",
+"Key Describer Toggle\tControl+F1, Toggle a mode in which pressing a key describes its action",
 "Alternate Menu\tAlt+F10, Present all commands in a single, alphabetized list",
 "Context Menu\tShift+F10, Pick a command from those available to Windows Explorer for the current file extension",
 "SendTo Menu\tControl+F10, Pick a command from those available as Windows \"Send To\" options",
@@ -2070,9 +2085,9 @@ static readonly string[] aCommandSummaries = new string[] {
 "Say Time\tAlt+Semi-colon, Say current time and date",
 "Insert Time\tAlt+Shift+Semi-colon, Insert current time and date",
 "Calculate Date\tControl+Shift+Semi-colon, Calculate and insert date",
-"Configuration Options\tAlt+Shift+C, Adjust configuration options through a dialog",
+"Edit Settings\tAlt+Shift+E, Adjust configuration options through a dialog",
 "Set Default Font and Color\tAlt+Shift+Equals, Set default font and color for editing window",
-"Manual Options\tAlt+Shift+M, Adjust options by directly editing the main configuration file",
+"Edit Settings File\tAlt+Shift+F2, Adjust options by directly editing the main configuration file",
 "Reset Configuration\tAlt+Shift+0, Revert to default options, or define a new compiler configuration",
 "Copy\tControl+C, Copy selected text to clipboard, or copy current line if no selection",
 "Copy Append\tAlt+C, Append selected text to clipboard, or append current line if no selection",
@@ -2087,19 +2102,19 @@ static readonly string[] aCommandSummaries = new string[] {
 "Save Snippet\tAlt+S, Save all or selected text to a snippet file",
 "Invoke Snippet\tAlt+V, Pick snippet file to paste or execute",
 "View Snippet\tAlt+Shift+V, Pick snippet file to view or edit",
-"Yield with Regular Expression\tControl+Shift+Y, Count parts of text matching a regular expression",
-"Extract with Regular Expression\tControl+Shift+E, Extract text matching a regular expression, putting matches in a new window",
-"Replace with Regular Expression\tControl+Shift+R, Search and replace regular expression in all or selected text",
+"Yield with Regex\tControl+Shift+Y, Count parts of text matching a regular expression",
+"Extract with Regex\tControl+Shift+E, Extract text matching a regular expression, putting matches in a new window",
+"Replace with Regex\tControl+Shift+R, Search and replace regular expression in all or selected text",
 "Replace\tControl+R, Search and replace string in all or selected text",
 "File Find\tAlt+Shift+F, Open file from list of files containing a search string",
 "Forward Find\tControl+F, Search forward for string in all or selected text",
 "Reverse Find\tControl+Shift+F, Search backward for string",
-"Forward Find with Regular Expression\tControl+F3, Search forward for regular expression in all or selected text",
-"Reverse Find with Regular Expression\tControl+Shift+F3, Search forward for regular expression in all or selected text",
+"Forward Find with Regex\tControl+F3, Search forward for regular expression in all or selected text",
+"Reverse Find with Regex\tControl+Shift+F3, Search forward for regular expression in all or selected text",
 "Forward Find at Cursor\tAlt+F3, Search forward for chunk or selected text",
 "Reverse Find at Cursor\tAlt+Shift+F3, Search backward for chunk or selected text",
-"Forward Find Again\tF3, Search forward for next match",
-"Reverse Find Again\tShift+F3, Search backward for previous match",
+"Search Next\tF3, Search forward for next match",
+"Search Previous\tShift+F3, Search backward for previous match",
 "Word Wrap\tControl+W, Word wrap lines",
 "Unwrap\tControl+Shift+W, Unwrap lines",
 "Guard Document\tControl+F7, Make document read-only",
@@ -2109,15 +2124,15 @@ static readonly string[] aCommandSummaries = new string[] {
 "Voice Softer\tAlt+Shift+Grave, Decrease JAWS voice volume by 5%",
 "Voice Faster\tControl+Grave, Increase JAWS voice rate by 5%",
 "Voice Slower\tControl+Shift+Grave, Decrease JAWS voice rate by 5%",
-"Extra Speech Toggle\tControl+Shift+X, Toggle extra speech messages on or off, redirecting to Speech.log file",
-"Extra Speech Log\tAlt+Shift+X, Open speech.log file in a new window",
+"Extra Speech Toggle\tAlt+Shift+Z, Toggle extra speech messages on or off, redirecting to Speech.log file",
+"Extra Speech Log\tAlt+Shift+F12, Open speech.log file in a new window",
 "Go to Percent\tControl+G, Go to percentage point in document",
 "Go to Percent Again\tAlt+G, Repeat Go command",
 "Jump to Line\tControl+J, Jump to line number or to line, column position",
 "Jump to Line Again\tAlt+J, Repeat Jump command",
-"Set Bookmark\tControl+B, Set bookmark at cursor position",
+"Save Bookmark\tControl+B, Save a bookmark at the cursor position",
 "Clear Bookmark\tControl+Shift+B, Clear bookmark at cursor position",
-"Go to Bookmark\tAlt+B, Go to bookmark in current file",
+"List Bookmarks\tAlt+B, Go to bookmark in current file",
 "Set Favorite\tControl+L, Add current file to the list of favorites",
 "Clear Favorite\tControl+Shift+L, Clear current file from the list of favorites",
 "List Favorites\tAlt+L, Open a file from the list of favorites",
@@ -2131,7 +2146,7 @@ static readonly string[] aCommandSummaries = new string[] {
 "Save\tControl+S, Save",
 "Save As\tControl+Shift+S, Save As",
 "Save Copy\tAlt+Shift+S, Save copy of document using a different name",
-"Export Format\tAlt+Shift+E, Export document to another format",
+"Export Format\tAlt+Shift+X, Export document to another format",
 "Print\tControl+P, Print current file",
 "Mail Body\tControl+M, Mail current file as body of an email message",
 "Mail Attachment\tControl+Shift+M, Mail current file as an email attachment",
@@ -2146,8 +2161,8 @@ static readonly string[] aCommandSummaries = new string[] {
 "Pick Compiler\tControl+Shift+F5, Pick a compiler or interpreter from the list of those configured",
 "Say Compiler\tAlt+0, Say current compiler and folder",
 "Go to Folder\tControl+0, Go to folder containing recent or favorite files",
-"Go to Special Folder\tControl+Shift+0, Go to special folder of Windows",
-"Go to Environment\tControl+Shift+G, Go to interactive environment of current compiler",
+"Go to Special Folder\tControl+Shift+G, Go to special folder of Windows",
+"Go to Environment\tControl+Shift+F12, Go to interactive environment of current compiler",
 "Spell Check\tF7, Spell check all or selected text",
 "Thesaurus\tShift+F7, Look up synonyms for word at cursor",
 "Lookup Term\tAlt+F7, Look up information from dictionary.com, thesaurus.com, and wikipedia.org",
@@ -2174,13 +2189,13 @@ static readonly string[] aCommandSummaries = new string[] {
 "End Character\tAlt+End, Go to last non-blank character of line and read it",
 "Home Character\tAlt+Home, Go to first non-blank character of line and read it",
 "Next Word\tControl+RightArrow, Go to next word and read it",
-"Prior Word\tControl+LeftArrow, Go to previous word and read it",
+"Previous Word\tControl+LeftArrow, Go to previous word and read it",
 "Next Chunk\tAlt+RightArrow, Go to next chunk and read it",
-"Prior Chunk\tAlt+LeftArrow, Go to previous chunk and read it",
+"Previous Chunk\tAlt+LeftArrow, Go to previous chunk and read it",
 "Next Sentence\tAlt+DownArrow, Go to next sentence and read it",
-"Prior Sentence\tAlt+UpArrow, Go to previous sentence and read it",
+"Previous Sentence\tAlt+UpArrow, Go to previous sentence and read it",
 "Next Paragraph\tControl+DownArrow, Go to next paragraph and read it",
-"Prior Paragraph\tControl+UpArrow, Go to previous paragraph and read it",
+"Previous Paragraph\tControl+UpArrow, Go to previous paragraph and read it",
 "Delete Right\tControl+Shift+Delete, Delete from cursor to end of line",
 "Delete Left\tControl+Shift+Backspace, Delete from cursor to start of line",
 "Delete Down\tAlt+Shift+Delete, Delete from cursor to bottom of file",
@@ -2189,13 +2204,12 @@ static readonly string[] aCommandSummaries = new string[] {
 "Delete Hard Line\tControl+D, Delete line ending in hard line break",
 "Delete Paragraph\tControl+Shift+D, Delete past one or more blank lines",
 "Delete File\tAlt+Shift+D, Delete current file on disk",
-"Rename\tAlt+Shift+R, Rename current file on disk",
-"Next Section\tControl+PageDown, Go to next section",
-"Prior Section\tControl+PageUp, Go to Prior Section",
+"Rename\tShift+F2, Rename current file on disk",
+"Next Section\tControl+F6 or Control+PageDown, Go to next section",
+"Previous Section\tControl+Shift+F6 or Control+PageUp, Go to previous section",
 "Go to Section\tF6, Go to section in body from topic in table of contents",
 "Go to Contents\tShift+F6, Go to topic in table of contents from section in body",
-"Search for Topic\tControl+F6, Search for a topic based on text in its heading",
-"Search for Topic Again\tAlt+F6, Search again for the next matching topic",
+"Search for Topic\tAlt+F6, Search for a topic based on text in its heading; Search Next (F3) finds the next one",
 "Topic\tAlt+T, Say topic of current section",
 "Text Contents\tAlt+Shift+T, Generate and prepend a table of contents to the current document",
 "Section Break\tControl+Enter, Insert a section break at the cursor position",
@@ -2207,35 +2221,34 @@ static readonly string[] aCommandSummaries = new string[] {
 "Baseline\tAlt+Shift+6, Set vertical alignment of cursor or selected text",
 "Set Selection Font\tAlt+Shift+Dash, Set font of cursor or selected text",
 "Next Alignment\tControl+RightBracket, Go to next change in justification",
-"Prior Alignment\tControl+LeftBracket, Go to previous change in justification",
+"Previous Alignment\tControl+LeftBracket, Go to previous change in justification",
 "Next Style\tControl+Slash, Go to next change in style",
-"Prior Style\tControl+Shift+Slash, Go to previous change in style",
+"Previous Style\tControl+Shift+Slash, Go to previous change in style",
 "Next Baseline\tControl+6, Go to next change in baseline",
-"Prior Baseline\tControl+Shift+6, Go to previous change in baseline",
+"Previous Baseline\tControl+Shift+6, Go to previous change in baseline",
 "Next Font\tControl+Dash, Go to next change in font",
-"Prior Font\tControl+Shift+Dash, Go to previous change in font",
-"Say Font\tAlt+Dash, Say current font and color",
-"Say Styles\tAlt+Slash, Say current justification and styles",
+"Previous Font\tControl+Shift+Dash, Go to previous change in font",
+"Say Styles\tAlt+Slash, Say the style, alignment and baseline that differ from normal, then the font and color",
 "Infer Indent\tAlt+RightBracket, Infer the indent unit of the current document, or configure EdSharp accordingly if repeated",
-"Toggle Indentation\tWindows+Grave, Toggle announcement of indentation by JAWS",
+"Toggle Indentation\tJAWSKey+Shift+GraveAccent, Toggle announcement of indentation by JAWS",
 "Indent Mode\tAlt+Shift+I, Toggle auto indent with Enter, and announcement of indentation changes",
 "Enter New Line\tEnter, Start new line at left margin",
 "Indent New Line\tShift+Enter, Start new line with same indentation as current one",
-"Indent New Line Prior\tAlt+Shift+Enter, insert prior line with same indentation as current one",
+"Indent New Line Previous\tAlt+Shift+Enter, insert prior line with same indentation as current one",
 "Indent\tTab, Indent current line or selected text by one unit",
 "Outdent\tShift+Tab, Reduce indentation of current or selected lines by one unit",
 "Align\tAlt+Shift+A, Adjust indentation of current or selected lines according to prior line",
 "Next Indent\tControl+I, Go to the next change in indentation",
-"Prior Indent\tControl+Shift+I, Go to the previous change in indentation",
+"Previous Indent\tControl+Shift+I, Go to the previous change in indentation",
 "Right Brace\tControl+Shift+RightBracket, Search forward for matching right brace character",
 "Left Brace\tControl+Shift+LeftBracket, Search backward for matching left brace character",
 "End Tag\tControl+Shift+Period, go to closing tag of HTML element",
 "Start Tag\tControl+Shift+Comma, Go to opening tag of HTML element",
 "Next Part\tAlt+PageDown, Go to next match of NavigatePart setting",
-"Prior Part\tAlt+PageUp, Go to previous match of NavigatePart setting",
+"Previous Part\tAlt+PageUp, Go to previous match of NavigatePart setting",
 "Go to Part\tAlt+Shift+G, Pick a part to go to",
 "Order Items\tAlt+Shift+O, Sort items alphabetically in all or selected text",
-"Reverse Items\tAlt+Shift+Z, Reverse order of all or selected items of text",
+"Reverse Items\tAlt+Shift+R, Reverse order of all or selected items of text",
 "Keep Unique Items\tAlt+Shift+K, Discard repetitive items in all or selected text",
 "Number Items\tAlt+Shift+N, Insert numbers at the start of items in all or selected text",
 "List Different Items\tAlt+Shift+L, Compare two lists and put non-overlapping items in a new window",
@@ -2244,12 +2257,12 @@ static readonly string[] aCommandSummaries = new string[] {
 "PyBrace\tAlt+Shift+LeftBracket, Convert from PyDent format, or reformat typical Python code, using braces instead of indentation and adding comments at ends of blocks",
 "Insert Script Path\tControl+I, Insert JAWS script path in Open or Save Dialog",
 "Insert All Users Path\tControl+Shift+I, Insert JAWS All Users path in Open or Save Dialog",
-"Explorer Folder\tAlt+Backslash, Open Windows Explorer in the EdSharp program folder, data folder, or current folder",
-"Command Prompt\tControl+Backslash, Open a command prompt in the EdSharp program folder, data folder, or current folder",
+"Open in Explorer\tAlt+Backslash, Open Windows Explorer in the EdSharp program folder, data folder, or current folder",
+"Open Command Prompt\tControl+Backslash, Open a command prompt in the EdSharp program folder, data folder, or current folder",
 "Environment Variables\tControl+E, Change Windows environment variables for the current process, user, or system",
 "Next Window\tControl+Tab, Cycle to next editing window",
-"Prior Window\tControl+Shift+Tab, Cycle to previous editing window",
-"Windows Open\tShift+F4, Say titles of current editing windows",
+"Previous Window\tControl+Shift+Tab, Cycle to previous editing window",
+"Say Windows Open\tShift+F4, Say titles of current editing windows",
 "Current Windows\tF4, Activate an editing window from a list of those currently open",
 "Close Window\tControl+F4, Close current editing window",
 "Close All but Current Window\tControl+Shift+F4, Close all editing windows except the current one",
@@ -2257,7 +2270,7 @@ static readonly string[] aCommandSummaries = new string[] {
 "Arrange Icons\tAlt+F11, Arrange open windows",
 "Cascade\tControl+F11, Cascade open windows",
 "Tile Horizontal\tAlt+Shift+F11, Tile open windows horizontally",
-"Tile Vertical\tControl+Shift+F11, Tile open windows vertically",
+"Tile Vertical\tShift+F11, Tile open windows vertically",
 "Elevate Version\tF11, Download latest EdSharp version and run installer (after confirming)",
 "Set on Favorite List\tControl+L, Add or remove the current file on the favorites list",
 "Markdown to Plain Text\t, Convert the Markdown in this window to plain text",
@@ -2269,8 +2282,13 @@ static readonly string[] aCommandSummaries = new string[] {
 "Run Code Blocks\tAlt+Shift+F9, Run this document's sql and jscript code blocks and put each block's results below it",
 "Chat with AI\tF12, Ask an AI model on this computer a question; the answer opens in a new window, and the document travels with the question when your wording refers to it",
 "Chat about Document\tShift+F12, Ask an AI model on this computer about the open text: the selection when text is selected, the whole document when it is not",
-"Tutorials\tControl+Shift+F1, Open the role-based quick-start tutorials in your web browser: Python, NVDA add-ons, JAWS scripts, web development, C#, translation, article writing, slides, summarizing, and batch conversion",
+"Play Tutorials\tAlt+F12, Open the role-based quick-start tutorials in your web browser: Python, NVDA add-ons, JAWS scripts, web development, C#, translation, article writing, slides, summarizing, and batch conversion",
 "Sample Programs\tControl+Shift+F2, List the sample programs that ship with EdSharp and open one",
+"Save Clipboard\tControl+Apostrophe, Save the clipboard text to a file you name",
+"Append Clipboard\tControl+Shift+Apostrophe, Add the clipboard text to the end of a file you name",
+"Clear Clipboard\tAlt+Shift+Apostrophe, Empty the clipboard",
+"ReadMe\tAlt+Shift+F1, Open the ReadMe, the quick start, in your web browser",
+"Hotkeys\tControl+Shift+F1, Open the Hotkeys page, every command and key sorted several ways, in your web browser",
 "Copy Log\tControl+F12, Copy this session's log path to the clipboard, as a file for pasting into a mail message and as text"
 }; // aCommandSummaries
 
@@ -2319,6 +2337,9 @@ else {
 sKey = sValue.Substring(0, iComma);
 sDescription = sValue.Substring(iComma + 1);
 }
+// THE REAL KEY WINS (19 October 2026): a Hotkeys.ini kept from an earlier install names the keys of
+// that release, so the key shown is the menu item's own, and only the description comes from the file.
+if (item.ShortcutKeyDisplayString != null && item.ShortcutKeyDisplayString.Length > 0) sKey = item.ShortcutKeyDisplayString;
 return new string[] {sCommand, sKey, sDescription};
 } // GetKeySummary method
 
@@ -4090,7 +4111,10 @@ rtb.Index = iStart;
 Util.Say(rtb.RowText);
 }
 
-if (menuItem == menuNavigateForwardFind || menuItem == menuNavigateForwardFindAtCursor || (!this.FindWithRegExp && menuItem == menuNavigateForwardFindAgain)) {
+// SEARCH NEXT REPEATS THE LAST SEARCH, WHICHEVER IT WAS (19 October 2026, suite manifest): after Search for Topic,
+// F3 finds the next matching topic, which is why Search for Topic Again could go. Any find makes F3 a find again.
+if (menuItem == menuNavigateForwardFind || menuItem == menuNavigateReverseFind || menuItem == menuNavigateForwardFindWithRegExp || menuItem == menuNavigateReverseFindWithRegExp || menuItem == menuNavigateForwardFindAtCursor || menuItem == menuNavigateReverseFindAtCursor) bLastSearchTopic = false;
+if (menuItem == menuNavigateForwardFind || menuItem == menuNavigateForwardFindAtCursor || (!this.FindWithRegExp && !bLastSearchTopic && menuItem == menuNavigateForwardFindAgain)) {
 iIndex = rtb.Index;
 iStart = 0;
 sText = App.ReadData("Find", "");
@@ -4178,7 +4202,7 @@ Util.Say(rtb.RowText);
 else AddMessage("Not found!");
 }
 
-if (menuItem == menuNavigateForwardFindWithRegExp || (this.FindWithRegExp && menuItem == menuNavigateForwardFindAgain)) {
+if (menuItem == menuNavigateForwardFindWithRegExp || (this.FindWithRegExp && !bLastSearchTopic && menuItem == menuNavigateForwardFindAgain)) {
 sMatch = App.ReadData("Pattern", "");
 if (menuItem == menuNavigateForwardFindWithRegExp) sMatch = Dialog.Input("Forward Find with Regular Expression", "Pattern", sMatch, "FindRegExp");
 if (sMatch.Length == 0) return;
@@ -4272,7 +4296,8 @@ Dialog.Show("Error", "Invalid position!");
 return;
 }
 }
-if (menuItem == menuNavigateSearchForTopic || menuItem == menuNavigateSearchForTopicAgain) {
+if (menuItem == menuNavigateSearchForTopic || (bLastSearchTopic && menuItem == menuNavigateForwardFindAgain)) {
+bLastSearchTopic = true;
 sText = App.ReadData("Topic", "");
 if (menuItem == menuNavigateSearchForTopic) {
 sText = Dialog.Input("Search For", "Topic", sText, "SearchTopic");
@@ -5346,6 +5371,12 @@ if (menuItem == menuQueryClipboard) {
 Homer.SuiteCommands.sayClipboard();
 }
 
+if (menuItem == menuEditSaveClipboard) Homer.SuiteCommands.saveClipboard(this);
+if (menuItem == menuEditAppendClipboard) Homer.SuiteCommands.appendClipboard(this);
+if (menuItem == menuEditClearClipboard) Homer.SuiteCommands.clearClipboard();
+if (menuItem == menuHelpReadMe) Homer.SuiteCommands.openReadMe();
+if (menuItem == menuHelpHotkeys) Homer.SuiteCommands.openHotkeys(this);
+
 if (menuItem == menuQueryTime || menuItem == menuMiscInsertTime) {
 string sDate, sTime;
 GetDateAndTime(out sDate, out sTime);
@@ -5370,12 +5401,13 @@ sText += GetBaselineText() + " ";
 sText = sText.Replace("Regular ", "");
 sText = sText.Replace("Left ", "");
 sText = sText.Replace("Flat ", "");
-if (sText.Trim().Length == 0) sText = "Default";
-AddMessage(sText);
-}
-
-if (menuItem == menuQueryFont) {
-sText = GetFontText(rtb.SelectionFont, rtb.SelectionColor);
+// SAY STYLES SAYS THE FONT TOO (19 October 2026, key decision 5): Say Font's key, Alt+Dash, opens a
+// document window's system menu, which the kit's KeyOwnership.inix says never to bind in an MDI app,
+// and every other key in the Dash font family was taken. So Say Styles, already the command for how
+// text looks, now ends with the font and color, and nothing Say Font did is lost.
+sText = sText.Trim();
+if (sText.Length > 0) sText += ", ";
+sText += GetFontText(rtb.SelectionFont, rtb.SelectionColor);
 AddMessage(sText);
 }
 
@@ -5678,7 +5710,7 @@ aDefaults[i] = App.ReadDefaultOption(aResults[i], "");
 aValues[i] = App.ReadOption(aResults[i], aDefaults[i]);
 }
 
-string[] a = Dialog.MultiInput("Configuration Options", aLabels, aValues);
+string[] a = Dialog.MultiInput("Edit Settings", aLabels, aValues);
 if (a.Length == 0) return;
 for (int i = 0; i < a.Length; i++) App.WriteOption(aResults[i], a[i]);
 }
@@ -5688,7 +5720,7 @@ if (menuItem == menuMiscManualOptions) {
 string sCompiler = App.ReadData("Compiler", "Default");
 //sText = sCompiler + " Compiler";
 //sResult = Dialog.Choose("Manual Options", "", new string[] {"&Main", "&" + sText}, 0);
-sResult = Dialog.Choose("Manual Options", "", new string[] {"&Main", "&" + sCompiler}, 0);
+sResult = Dialog.Choose("Edit Settings File", "", new string[] {"&Main", "&" + sCompiler}, 0);
 if (sResult.Length == 0) return;
 
 if (sResult == "&Main") sFile = App.IniFile;
@@ -8446,7 +8478,7 @@ List<SpellingProblem> lsProblems = null;
 if (sEngine != "windows") lsProblems = findSpellingProblemsHunspell(sText, sLanguage);
 if (lsProblems == null) lsProblems = findSpellingProblems(sText, sLanguage);
 if (lsProblems == null) {
-Dialog.Show("Spell Check", "No spell checker could be started.\n\nThe dictionary should be here:\n" + Path.Combine(App.ProgramDir, @"data\dictionaries\en_US.dic") + "\n\nThe Windows checker also refused: \n\n" + App.SpellCheckError + "\n\nThe run log has the detail:\n" + App.LogFile + "\n\nIf Microsoft Word is installed, set the SpellChecker option to Word with Configuration Options, Alt+Shift+C.");
+Dialog.Show("Spell Check", "No spell checker could be started.\n\nThe dictionary should be here:\n" + Path.Combine(App.ProgramDir, @"data\dictionaries\en_US.dic") + "\n\nThe Windows checker also refused: \n\n" + App.SpellCheckError + "\n\nThe run log has the detail:\n" + App.LogFile + "\n\nIf Microsoft Word is installed, set the SpellChecker option to Word with Edit Settings, Alt+Shift+E.");
 return;
 }
 if (lsProblems.Count == 0) { AddMessage("No spelling problems"); return; }
@@ -8634,7 +8666,7 @@ string sOutput = Util.GetProgramOutput("python", "\"" + sHelper + "\" \"" + sWor
 if (sOutput == null) sOutput = "";
 sOutput = sOutput.Trim();
 if (sOutput.StartsWith("NOTINSTALLED")) {
-Dialog.Show("Thesaurus", "The free thesaurus database is not installed yet.\n\nRun installPdfTools.cmd in the EdSharp program folder -- it installs the thesaurus as well -- or set the Thesaurus option to Word with Configuration Options, Alt+Shift+C, to use the Microsoft Word thesaurus instead.");
+Dialog.Show("Thesaurus", "The free thesaurus database is not installed yet.\n\nRun installPdfTools.cmd in the EdSharp program folder -- it installs the thesaurus as well -- or set the Thesaurus option to Word with Edit Settings, Alt+Shift+E, to use the Microsoft Word thesaurus instead.");
 return;
 }
 if (sOutput.StartsWith("NOWORD") || sOutput.Length == 0) { AddMessage("No entry for " + sWord); return; }

@@ -21,8 +21,8 @@ Say=The document is text now: headings are lines, tables are lines, and every ke
 
 [step]
 
-Say=The other direction: writing out as something else. Alt plus Shift plus E, Export Format, offers the formats this document can become.
-Key=Alt+Shift+E
+Say=The other direction: writing out as something else. Alt plus Shift plus X, Export Format, offers the formats this document can become.
+Key=Alt+Shift+X
 Hear=Export Format dialog, Format: list box, Web page, 1 of 8
 
 [step]
@@ -125,7 +125,7 @@ Hear=Open Other Format
 
 [step]
 
-Say=Alt plus Shift plus E.
+Say=Alt plus Shift plus X.
 Key=
 Hear=Export Format
 

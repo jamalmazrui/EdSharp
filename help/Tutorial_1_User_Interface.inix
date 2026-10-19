@@ -111,7 +111,7 @@ Hear=EdSharp Guide
 Note=Confirm the wording with a live run: buildTutorials -live.
 [step]
 
-Say=Shift plus F1 opens the history of changes; Alt plus F1 says the version, and offers a newer one if there is one; Control plus Shift plus F1 opens the quick starts, one for each kind of work.
+Say=Shift plus F1 opens the history of changes; Alt plus F1 says the version, and offers a newer one if there is one; Alt plus F12 opens the quick starts, one for each kind of work.
 Key=Alt+F1
 Hear=About EdSharp dialog
 Note=Confirm the wording with a live run: buildTutorials -live.
@@ -158,7 +158,7 @@ Hear=Text Convert, Control plus T, 1 of 9
 Note=Confirm the wording with a live run: buildTutorials -live.
 [step]
 
-Say=Escape closes the list without running anything. Configuration Options, Alt plus Shift plus C, holds every setting, each a labelled control, so a setting is found by its name.
+Say=Escape closes the list without running anything. Edit Settings, Alt plus Shift plus E, holds every setting, each a labelled control, so a setting is found by its name.
 Key=Escape
 Hear=Notes dot txt, edit, multiline
 Note=Confirm the wording with a live run: buildTutorials -live.

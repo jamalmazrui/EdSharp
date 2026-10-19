@@ -112,8 +112,8 @@ Note=Confirm the wording with a live run: buildTutorials -live.
 
 [step]
 
-Say=For more than a line's worth, Control plus Shift plus G opens a more interactive environment, such as an interactive console, where each answer leads to the next question.
-Key=Control+Shift+G
+Say=For more than a line's worth, Control plus Shift plus F12 opens a more interactive environment, such as an interactive console, where each answer leads to the next question.
+Key=Control+Shift+F12
 Hear=Interactive console
 Note=Confirm the wording with a live run: buildTutorials -live.
 
@@ -176,7 +176,7 @@ Hear=Control plus Z
 
 Say=Open the more interactive environment.
 Key=
-Hear=Control plus Shift plus G
+Hear=Control plus Shift plus F12
 
 [step]
 

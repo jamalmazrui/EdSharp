@@ -52,7 +52,7 @@ Hear=
 
 [step]
 
-Say=Which model answers is a setting: Alt plus Shift plus C, Configuration Options, names the model, and any model Ollama has pulled can be chosen. A small model answers in seconds; a large one answers better and slower.
+Say=Which model answers is a setting: Alt plus Shift plus E, Edit Settings, names the model, and any model Ollama has pulled can be chosen. A small model answers in seconds; a large one answers better and slower.
 Key=
 Hear=
 

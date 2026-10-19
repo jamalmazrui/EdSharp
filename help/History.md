@@ -2,6 +2,29 @@
 
 
 
+## 19 October 2026 -- The last key decisions
+
+- **Hotkeys (Control+Shift+F1)** opens the Hotkeys page in your web browser, as in every Homer app. **Play Tutorials** moves to Alt+F12, beside the log and the AI chat in the F12 family.
+- **Extra Speech Toggle is Alt+Shift+Z,** Z for toggles, as in DbDo and FileDir. **Reverse Items is Alt+Shift+R,** joining the other item commands on Alt+Shift with their first letter. **Rename is Shift+F2,** in the F2 family for renaming; plain F2 stays Special Character.
+- **Go to Special Folder is Control+Shift+G,** as in FileDir. Control+Shift+0 is taken by Windows on many computers with more than one keyboard language. **Go to Environment** moves to Control+Shift+F12, beside Chat about Document.
+- **Say Styles (Alt+Slash) also says the font and color,** so Say Font is no longer needed; its key, Alt+Dash, opens a document window's system menu in Windows.
+- **Toggle Indentation is JAWS+Shift+GraveAccent** in EdSharp's JAWS scripts, beside Toggle Punctuation, instead of a Windows key.
+- **Every choice can be taken back on its own.** The reasons and the old keys are in the HomerDev kit's KeyDecisions page.
+
+## 19 October 2026 -- Suite names and keys
+
+- **Commands now have the names they carry in every Homer app.** Prior becomes Previous throughout, such as Previous Paragraph and Previous Section; the regular expression commands say Regex, such as Forward Find with Regex; Forward and Reverse Find Again are Search Next and Search Previous. Configuration Options is Edit Settings, Manual Options is Edit Settings File, Set Bookmark is Save Bookmark, Go to Bookmark is List Bookmarks, Explorer Folder is Open in Explorer, Command Prompt is Open Command Prompt, Key Describer is Key Describer Toggle, and Tutorials is Play Tutorials.
+- **Some keys moved, so the same key means the same thing in every Homer app:**
+  - Edit Settings is Alt+Shift+E, as in DbDo, and Edit Settings File is Alt+Shift+F2.
+  - Export Format is Alt+Shift+X, X for export.
+  - Extra Speech Log is Alt+Shift+F12, beside Copy Log on Control+F12.
+  - Search for Topic is Alt+F6.
+  - Tile Vertical is Shift+F11, since Control+Shift+F11 belongs to JAWS.
+  - Next Section and Previous Section also answer Control+F6 and Control+Shift+F6.
+- **Search Next, F3, repeats Search for Topic** when that was your last search, so Search for Topic Again is gone.
+- **New, as in the other apps:** Save Clipboard (Control+Apostrophe), Append Clipboard (Control+Shift+Apostrophe), Clear Clipboard (Alt+Shift+Apostrophe), and ReadMe (Alt+Shift+F1).
+- **The key you hear is the key the command has.** A Hotkeys.ini kept from an earlier install could name an old key; the key now always comes from the command itself.
+
 ## 19 October 2026 -- Files convert through the Homer kit
 
 - **Open Other Format, Text Convert and Export use the kit's shared conversions,** the same code as FileDir and the other Homer apps. Text comes straight out of Word, OpenDocument, Excel and PowerPoint files, Pandoc handles the markup formats, and a PDF keeps its headings, lists and tables through the kit's PDF route, as before. Microsoft Office is the last resort, with one Alert box when it is missing.

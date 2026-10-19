@@ -36,13 +36,13 @@ Hear=Section four. Staffing.
 
 [step]
 
-Say=Control plus B, Set Bookmark, marks the place; EdSharp says how far down the document it is.
+Say=Control plus B, Save Bookmark, marks the place; EdSharp says how far down the document it is.
 Key=Control+B
 Hear=Bookmark at percent 40
 
 [step]
 
-Say=Move away -- Control plus Home to the top -- then Alt plus B, Go to Bookmark, brings you back. Bookmarks are kept with the file, so tomorrow's Alt plus B lands here too.
+Say=Move away -- Control plus Home to the top -- then Alt plus B, List Bookmarks, brings you back. Bookmarks are kept with the file, so tomorrow's Alt plus B lands here too.
 Key=Alt+B
 Hear=Section four. Staffing.
 
@@ -137,10 +137,10 @@ Hear=Jump to Line
 
 Say=Control plus B.
 Key=
-Hear=Set Bookmark
+Hear=Save Bookmark
 
 [step]
 
 Say=Alt plus B.
 Key=
-Hear=Go to Bookmark
+Hear=List Bookmarks

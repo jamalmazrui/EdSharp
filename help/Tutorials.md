@@ -7,7 +7,7 @@ they do not depend on each other.
 
 Two things are worth knowing before any of them.
 
-Settings live in Configuration Options, Alt+Shift+C. Anything named
+Settings live in Edit Settings, Alt+Shift+E. Anything named
 below in capitals, such as IndentUnit, is a setting you will find there.
 
 Every command has a name and a key. Press Control+F1 to turn on Key
@@ -42,7 +42,7 @@ and EdSharp answers it from several directions at once.
 Press Control+Shift+F5, Pick Compiler, and choose Python. That one
 choice brings a working set of settings: Control+F5 runs your file with
 the official Python from python.org and jumps to the line and column of
-any error; Control+Shift+G opens Python's own prompt with your file
+any error; Control+Shift+F12 opens Python's own prompt with your file
 already run, so the functions you just wrote are there to call;
 IndentUnit becomes four spaces, which is what PEP 8 asks and what
 collaborators expect; and the comment prefix becomes the number sign, so
@@ -88,7 +88,7 @@ outermost first, such as "class Greeter, def greet, if loud, for i in
 range 3" -- which is the answer to "where am I?" that sighted readers get
 from the layout at a glance.
 
-Next Indent and Prior Indent, Control+I and Control+Shift+I, move to the
+Next Indent and Previous Indent, Control+I and Control+Shift+I, move to the
 next and previous change of indentation.
 
 Two more commands round it out. Format Code, Alt+F8, normalizes a
@@ -97,7 +97,7 @@ front of you into the setting.
 
 ### Key Reminders
 
-- Control+Shift+F5 Pick Compiler, Control+F5 Compile, Control+Shift+G Go
+- Control+Shift+F5 Pick Compiler, Control+F5 Compile, Control+Shift+F12 Go
   to Environment
 - Alt+Shift+LeftBracket PyBrace, Alt+LeftBracket PyDent
 - Alt+Shift+I Indent Mode, Alt+I Indentation (press twice for the chain)
@@ -148,7 +148,7 @@ the cursor lands there. The comment prefix becomes the semicolon and
 IndentUnit becomes one tab, which is what the JAWS script files
 themselves use.
 
-JAWS script has no interactive prompt, so Control+Shift+G says so
+JAWS script has no interactive prompt, so Control+Shift+F12 says so
 rather than opening something unrelated.
 
 Snippets help here more than anywhere. Alt+S saves the selection as a
@@ -161,7 +161,7 @@ and SayString, which appear in the list marked as shipped.
 - Control+Shift+F5 Pick Compiler, Control+F5 Compile
 - Alt+S Save Snippet, Alt+V Invoke Snippet
 - Alt+PageDown and Alt+PageUp move between scripts and functions
-- Control+Shift+G opens the snippet console when the JScript .NET
+- Control+Shift+F12 opens the snippet console when the JScript .NET
   compiler is chosen: a JScript prompt with the editor window as frm and
   its text box as rtb, so a line that works there works in a snippet
 
@@ -174,7 +174,7 @@ open file with Node, and the error jump understands both forms Node
 reports: the plain line for a syntax error and the line with column
 inside a stack frame. Node's own frames are removed from what is spoken,
 so you hear your error rather than Node's internals.
-Control+Shift+G opens Node's read-evaluate-print shell. IndentUnit
+Control+Shift+F12 opens Node's read-evaluate-print shell. IndentUnit
 becomes two spaces, the prevailing JavaScript convention, and the
 comment prefix becomes two slashes.
 
@@ -192,7 +192,7 @@ four ways for the browser, with a Node script that serves them:
 
 ### Key Reminders
 
-- Control+Shift+F5 Pick Compiler, Control+F5 Compile, Control+Shift+G
+- Control+Shift+F5 Pick Compiler, Control+F5 Compile, Control+Shift+F12
   Node shell
 - Alt+F9 Check Markdown, Control+F9 Preview Markdown
 - Control+Shift+F2 Sample Programs lists the web samples
@@ -206,7 +206,7 @@ file with the C# compiler that ships inside Windows itself -- no Visual
 Studio, no SDK -- producing a 64-bit program, and jumps to the exact
 line and column of the first error in the file. IndentUnit becomes four
 spaces, the Microsoft convention, and the comment prefix two slashes.
-Windows ships no C# console, so Control+Shift+G opens EdSharp's own
+Windows ships no C# console, so Control+Shift+F12 opens EdSharp's own
 JScript interpreter for trying expressions.
 
 Two things are worth knowing when writing Windows Forms code. First,
@@ -223,7 +223,7 @@ that does not compile here.
 - Compile jumps to the earliest error in the file, not the first one the
   compiler printed; fix it and press Control+F5 again
 - Alt+F8 Format Code runs the C family through astyle
-- Control+Shift+G opens the C# console: a prompt where frm is the editor
+- Control+Shift+F12 opens the C# console: a prompt where frm is the editor
   window and rtb its text box, so "rtb.SelectedText.ToUpper()" prints the
   answer and "rtb.SelectedText = rtb.SelectedText.ToUpper();" changes the
   document. Each line is compiled, so expect about a second per line; a
@@ -272,7 +272,7 @@ Three commands carry an article from draft to delivery. Check Markdown,
 Alt+F9, reports the faults an editor will send back: headings that skip
 a level, images without alternative text, bare web addresses, unclosed
 code fences. Preview Markdown, Control+F9, shows it formatted;
-Control+Shift+F9 opens it in your browser. Export Format, Alt+Shift+E,
+Control+Shift+F9 opens it in your browser. Export Format, Alt+Shift+X,
 writes the article as a Word document, HTML, or whatever the magazine
 wants, using Pandoc.
 
@@ -284,7 +284,7 @@ word for synonyms grouped by meaning.
 
 ### Key Reminders
 
-- Alt+F9 Check Markdown, Control+F9 Preview, Alt+Shift+E Export Format
+- Alt+F9 Check Markdown, Control+F9 Preview, Alt+Shift+X Export Format
 - F7 Spell Check, Shift+F7 Thesaurus
 - F12 Chat with AI on a selection: "make this tighter", "ninth grade
   reading level"
@@ -307,7 +307,7 @@ the document's own metadata block at the top:
     ---
 
 Cite in the text with a key in square brackets, such as [@smith2020].
-When you export with Alt+Shift+E, Pandoc formats the citations and
+When you export with Alt+Shift+X, Pandoc formats the citations and
 builds the reference list in the style the .csl file names. Download the
 style your journal requires from the Zotero style repository and keep it
 beside the article.
@@ -322,7 +322,7 @@ document so your export matches their layout.
 
 ### Key Reminders
 
-- Alt+Shift+E Export Format for the submission file
+- Alt+Shift+X Export Format for the submission file
 - Alt+F9 Check Markdown before every submission
 - Control+Shift+O Open Other Format converts a colleague's Word document
   or a PDF into Markdown you can edit, keeping headings, lists and
@@ -354,7 +354,7 @@ Presenter View and in handouts but never on the slide:
     Mention that everything runs offline. Ask how many people use JAWS.
     :::
 
-Export with Alt+Shift+E and choose pptx. To match a house style, make a
+Export with Alt+Shift+X and choose pptx. To match a house style, make a
 copy of your organization's template and name it as the reference
 document; Pandoc uses its theme, its fonts and its layouts, choosing a
 layout per slide by what the slide contains -- a title slide, a section
@@ -373,7 +373,7 @@ lists.
 
 ### Key Reminders
 
-- Alt+Shift+E Export Format, choosing pptx
+- Alt+Shift+X Export Format, choosing pptx
 - Control+Shift+O Open Other Format to read a deck as Markdown
 - Second level headings start slides; three hyphens start an untitled
   one; a notes div holds speaker notes
@@ -471,7 +471,7 @@ which are worth reading as models: each takes a source and a target and
 reports what happened.
 
 Text Convert, Control+T, converts the open document between formats one
-at a time, and Export Format, Alt+Shift+E, writes it out as something
+at a time, and Export Format, Alt+Shift+X, writes it out as something
 else. Control+Shift+O converts on the way in.
 
 Every job leaves a record. The session log in the logs folder under your
@@ -612,7 +612,7 @@ EdSharp lets you divide a document into named sections, which is the basis of th
 - F6 = Go to Section: jump from a table-of-contents line to its section. Shift+F6 = Go to Contents: jump from a section back to its table-of-contents line.
 - Alt+T = Speak the current section's topic (its first line).
 - Alt+Shift+T = Text Contents: build a table of contents from the first line of each section.
-- Control+F6 = Search for a topic by name. Alt+F6 = Search for that topic again.
+- Alt+F6 = Search for a topic by name. F3, Search Next, finds that topic again.
 
 #### Spell Checker and Thesaurus
 
@@ -1043,7 +1043,7 @@ Confirm the wording with a live run: buildTutorials -live.
 
 ### Step 19: Alt+F1
 
-Shift plus F1 opens the history of changes; Alt plus F1 says the version, and offers a newer one if there is one; Control plus Shift plus F1 opens the quick starts, one for each kind of work.
+Shift plus F1 opens the history of changes; Alt plus F1 says the version, and offers a newer one if there is one; Alt plus F12 opens the quick starts, one for each kind of work.
 
 Screen reader:
 
@@ -1118,7 +1118,7 @@ Confirm the wording with a live run: buildTutorials -live.
 
 ### Step 27: Escape
 
-Escape closes the list without running anything. Configuration Options, Alt plus Shift plus C, holds every setting, each a labelled control, so a setting is found by its name.
+Escape closes the list without running anything. Edit Settings, Alt plus Shift plus E, holds every setting, each a labelled control, so a setting is found by its name.
 
 Screen reader:
 
@@ -1225,7 +1225,7 @@ Screen reader:
 
 ### Step 6
 
-What each box is for. Python runs the conversion tools and the spell checker's helpers; the document tools -- pandoc and its companions -- turn Word, PDF and web pages into text and back. Together they are what makes Control plus Shift plus O and Alt plus Shift plus E rich rather than basic.
+What each box is for. Python runs the conversion tools and the spell checker's helpers; the document tools -- pandoc and its companions -- turn Word, PDF and web pages into text and back. Together they are what makes Control plus Shift plus O and Alt plus Shift plus X rich rather than basic.
 
 ### Step 7
 
@@ -1495,7 +1495,7 @@ Screen reader:
 
 ### Step 6: Control+B
 
-Control plus B, Set Bookmark, marks the place; EdSharp says how far down the document it is.
+Control plus B, Save Bookmark, marks the place; EdSharp says how far down the document it is.
 
 Screen reader:
 
@@ -1503,7 +1503,7 @@ Screen reader:
 
 ### Step 7: Alt+B
 
-Move away -- Control plus Home to the top -- then Alt plus B, Go to Bookmark, brings you back. Bookmarks are kept with the file, so tomorrow's Alt plus B lands here too.
+Move away -- Control plus Home to the top -- then Alt plus B, List Bookmarks, brings you back. Bookmarks are kept with the file, so tomorrow's Alt plus B lands here too.
 
 Screen reader:
 
@@ -1625,7 +1625,7 @@ Control plus B.
 
 Screen reader:
 
-- Set Bookmark
+- Save Bookmark
 
 ### Step 23
 
@@ -1633,7 +1633,7 @@ Alt plus B.
 
 Screen reader:
 
-- Go to Bookmark
+- List Bookmarks
 
 **Something to try:** Find a word in a document of your own, bookmark the place, go to the top, and come back.
 
@@ -1661,9 +1661,9 @@ Screen reader:
 - report dot d o c x, EdSharp
 - Quarterly Report
 
-### Step 3: Alt+Shift+E
+### Step 3: Alt+Shift+X
 
-The other direction: writing out as something else. Alt plus Shift plus E, Export Format, offers the formats this document can become.
+The other direction: writing out as something else. Alt plus Shift plus X, Export Format, offers the formats this document can become.
 
 Screen reader:
 
@@ -1771,7 +1771,7 @@ Screen reader:
 
 ### Step 20
 
-Alt plus Shift plus E.
+Alt plus Shift plus X.
 
 Screen reader:
 
@@ -1977,7 +1977,7 @@ All of it waits on the machine, not on a service: the first answer from a model 
 
 ### Step 8
 
-Which model answers is a setting: Alt plus Shift plus C, Configuration Options, names the model, and any model Ollama has pulled can be chosen. A small model answers in seconds; a large one answers better and slower.
+Which model answers is a setting: Alt plus Shift plus E, Edit Settings, names the model, and any model Ollama has pulled can be chosen. A small model answers in seconds; a large one answers better and slower.
 
 ### Step 9
 
@@ -2170,9 +2170,9 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 18: Control+Shift+G
+### Step 18: Control+Shift+F12
 
-For more than a line's worth, Control plus Shift plus G opens a more interactive environment, such as an interactive console, where each answer leads to the next question.
+For more than a line's worth, Control plus Shift plus F12 opens a more interactive environment, such as an interactive console, where each answer leads to the next question.
 
 Screen reader:
 
@@ -2253,7 +2253,7 @@ Open the more interactive environment.
 
 Screen reader:
 
-- Control plus Shift plus G
+- Control plus Shift plus F12
 
 ### Step 29
 
@@ -2325,7 +2325,7 @@ Screen reader:
 
 ### Step 8
 
-Where the walks stop and the guide begins: scripting EdSharp in JScript, the Markdown code-block runner, the translator's quick start, the slide presenter's, the screen reader script writer's. F1 has all of it, and Control plus Shift plus F1 picks the quick start for your role.
+Where the walks stop and the guide begins: scripting EdSharp in JScript, the Markdown code-block runner, the translator's quick start, the slide presenter's, the screen reader script writer's. F1 has all of it, and Alt plus F12 picks the quick start for your role.
 
 ### Step 9
 
@@ -2369,7 +2369,7 @@ configuration options.
 
 Screen reader:
 
-- The one dialog of settings -- spell checker, font, speech, the AI model. Alt plus Shift plus C.
+- The one dialog of settings -- spell checker, font, speech, the AI model. Alt plus Shift plus E.
 
 ### Step 15
 
@@ -2417,7 +2417,7 @@ export.
 
 Screen reader:
 
-- Writing the document out as another format -- a web page, a Word document, plain text. Alt plus Shift plus E.
+- Writing the document out as another format -- a web page, a Word document, plain text. Alt plus Shift plus X.
 
 ### Step 21
 
@@ -2445,7 +2445,7 @@ Screen reader:
 
 ### Step 24
 
-F1 opens the guide, the whole of EdSharp in one document, from inside the program. Shift plus F1 opens the history of changes. Alt plus F1 says the version. Control plus Shift plus F1 opens the quick starts by role.
+F1 opens the guide, the whole of EdSharp in one document, from inside the program. Shift plus F1 opens the history of changes. Alt plus F1 says the version. Alt plus F12 opens the quick starts by role.
 
 ### Step 25
 

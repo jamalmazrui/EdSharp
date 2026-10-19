@@ -283,7 +283,8 @@ Alt+Shift+End=TypeCurrentScriptKey
 Shift+NumPad5=TypeCurrentScriptKey
 Alt+Shift+NumPad5=TypeCurrentScriptKey
 ;JAWSKey+I=ToggleIndentation
-Windows+`=ToggleIndentation
+; Toggle Indentation left Windows+` on 19 October 2026: Windows keys belong to Windows (kit key decision 6).
+JAWSKey+Shift+`=ToggleIndentation
 JAWSKey+`=TogglePunctuation
 Control+`=SpeedFaster
 Control+Shift+`=SpeedSlower

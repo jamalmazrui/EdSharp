@@ -187,6 +187,19 @@
 <li><a href="#edsharp-history" id="toc-edsharp-history">EdSharp
 History</a>
 <ul>
+<li><a href="#19-october-2026----the-last-key-decisions"
+id="toc-19-october-2026----the-last-key-decisions">19 October 2026 --
+The last key decisions</a></li>
+<li><a href="#19-october-2026----suite-names-and-keys"
+id="toc-19-october-2026----suite-names-and-keys">19 October 2026 --
+Suite names and keys</a></li>
+<li><a href="#19-october-2026----files-convert-through-the-homer-kit"
+id="toc-19-october-2026----files-convert-through-the-homer-kit">19
+October 2026 -- Files convert through the Homer kit</a></li>
+<li><a
+href="#19-october-2026----the-suites-shared-commands-and-the-kits-log"
+id="toc-19-october-2026----the-suites-shared-commands-and-the-kits-log">19
+October 2026 -- The suite's shared commands and the kit's log</a></li>
 <li><a
 href="#19-october-2026----edsharp-on-the-homer-frameworks-key-router"
 id="toc-19-october-2026----edsharp-on-the-homer-frameworks-key-router">19
@@ -274,6 +287,117 @@ id="toc-earlier-in-august-2026">Earlier in August 2026</a></li>
 </nav>
 <main>
 <h1 id="edsharp-history">EdSharp History</h1>
+<h2 id="19-october-2026----the-last-key-decisions">19 October 2026 --
+The last key decisions</h2>
+<ul>
+<li><strong>Hotkeys (Control+Shift+F1)</strong> opens the Hotkeys page
+in your web browser, as in every Homer app. <strong>Play
+Tutorials</strong> moves to Alt+F12, beside the log and the AI chat in
+the F12 family.</li>
+<li><strong>Extra Speech Toggle is Alt+Shift+Z,</strong> Z for toggles,
+as in DbDo and FileDir. <strong>Reverse Items is Alt+Shift+R,</strong>
+joining the other item commands on Alt+Shift with their first letter.
+<strong>Rename is Shift+F2,</strong> in the F2 family for renaming;
+plain F2 stays Special Character.</li>
+<li><strong>Go to Special Folder is Control+Shift+G,</strong> as in
+FileDir. Control+Shift+0 is taken by Windows on many computers with more
+than one keyboard language. <strong>Go to Environment</strong> moves to
+Control+Shift+F12, beside Chat about Document.</li>
+<li><strong>Say Styles (Alt+Slash) also says the font and
+color,</strong> so Say Font is no longer needed; its key, Alt+Dash,
+opens a document window's system menu in Windows.</li>
+<li><strong>Toggle Indentation is JAWS+Shift+GraveAccent</strong> in
+EdSharp's JAWS scripts, beside Toggle Punctuation, instead of a Windows
+key.</li>
+<li><strong>Every choice can be taken back on its own.</strong> The
+reasons and the old keys are in the HomerDev kit's KeyDecisions
+page.</li>
+</ul>
+<h2 id="19-october-2026----suite-names-and-keys">19 October 2026 --
+Suite names and keys</h2>
+<ul>
+<li><strong>Commands now have the names they carry in every Homer
+app.</strong> Prior becomes Previous throughout, such as Previous
+Paragraph and Previous Section; the regular expression commands say
+Regex, such as Forward Find with Regex; Forward and Reverse Find Again
+are Search Next and Search Previous. Configuration Options is Edit
+Settings, Manual Options is Edit Settings File, Set Bookmark is Save
+Bookmark, Go to Bookmark is List Bookmarks, Explorer Folder is Open in
+Explorer, Command Prompt is Open Command Prompt, Key Describer is Key
+Describer Toggle, and Tutorials is Play Tutorials.</li>
+<li><strong>Some keys moved, so the same key means the same thing in
+every Homer app:</strong>
+<ul>
+<li>Edit Settings is Alt+Shift+E, as in DbDo, and Edit Settings File is
+Alt+Shift+F2.</li>
+<li>Export Format is Alt+Shift+X, X for export.</li>
+<li>Extra Speech Log is Alt+Shift+F12, beside Copy Log on
+Control+F12.</li>
+<li>Search for Topic is Alt+F6.</li>
+<li>Tile Vertical is Shift+F11, since Control+Shift+F11 belongs to
+JAWS.</li>
+<li>Next Section and Previous Section also answer Control+F6 and
+Control+Shift+F6.</li>
+</ul></li>
+<li><strong>Search Next, F3, repeats Search for Topic</strong> when that
+was your last search, so Search for Topic Again is gone.</li>
+<li><strong>New, as in the other apps:</strong> Save Clipboard
+(Control+Apostrophe), Append Clipboard (Control+Shift+Apostrophe), Clear
+Clipboard (Alt+Shift+Apostrophe), and ReadMe (Alt+Shift+F1).</li>
+<li><strong>The key you hear is the key the command has.</strong> A
+Hotkeys.ini kept from an earlier install could name an old key; the key
+now always comes from the command itself.</li>
+</ul>
+<h2 id="19-october-2026----files-convert-through-the-homer-kit">19
+October 2026 -- Files convert through the Homer kit</h2>
+<ul>
+<li><strong>Open Other Format, Text Convert and Export use the kit's
+shared conversions,</strong> the same code as FileDir and the other
+Homer apps. Text comes straight out of Word, OpenDocument, Excel and
+PowerPoint files, Pandoc handles the markup formats, and a PDF keeps its
+headings, lists and tables through the kit's PDF route, as before.
+Microsoft Office is the last resort, with one Alert box when it is
+missing.</li>
+<li><strong>Your Import and Export commands still work</strong> for
+targets the kit does not cover, such as MediaWiki, LaTeX and
+braille.</li>
+<li><strong>Export's .doc choice goes through the kit.</strong> It still
+needs Microsoft Word, the only program that writes a 1997 Word file. A
+document of a type the kit does not know, such as a .cs file, is
+exported as plain text.</li>
+<li><strong>Export to Word 2003 XML is retired.</strong> The format was
+replaced by .docx in 2007, which EdSharp exports through Pandoc.</li>
+<li><strong>The old Word text readers are gone,</strong> with their code
+for PowerPoint and Excel, which nothing used.</li>
+<li><strong>The build needs HomerDev 1.76.0 or later.</strong></li>
+</ul>
+<h2
+id="19-october-2026----the-suites-shared-commands-and-the-kits-log">19
+October 2026 -- The suite's shared commands and the kit's log</h2>
+<ul>
+<li><strong>Four commands now run the same code as every Homer
+app,</strong> the kit's SuiteCommands:
+<ul>
+<li><strong>Say Clipboard</strong> (Alt+Apostrophe) says the text, or
+how many files are copied and their names. One press speaks, a quick
+second press spells, and a third shows the answer in a window you can
+review and copy.</li>
+<li><strong>Say Time</strong> (Alt+SemiColon) says the time, then the
+date.</li>
+<li><strong>History of Changes</strong> (Shift+F1) opens this history as
+a web page, as in the other apps, instead of a text file in an EdSharp
+window.</li>
+<li><strong>Copy Log</strong> (Control+F12) puts the log on the
+clipboard as a file and as its path, as before.</li>
+</ul></li>
+<li><strong>The session log is written by the kit.</strong> It is now
+named EdSharp-yyyyMMdd-HHmmss.log, as every Homer app's log is. It opens
+with the full environment, including whether JAWS and NVDA are running.
+EdSharp's own lines about the outside commands it runs still go into
+it.</li>
+<li><strong>EdSharp needs HomerDev 1.74.0 or later to
+build.</strong></li>
+</ul>
 <h2
 id="19-october-2026----edsharp-on-the-homer-frameworks-key-router">19
 October 2026 -- EdSharp on the Homer framework's key router</h2>

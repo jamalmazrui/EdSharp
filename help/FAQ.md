@@ -43,7 +43,7 @@ than handing you an empty file.
 
 ### How do I save as something else?
 
-Alt+Shift+E, Export Format, writes the document out as a Word document, a web
+Alt+Shift+X, Export Format, writes the document out as a Word document, a web
 page, a slide deck, plain text, and more. Control+T converts the document in
 place.
 
@@ -61,8 +61,8 @@ slide. The slide presenter tutorial has the details.
 The message names the file it looked for. The dictionary lives in the
 Dictionaries folder beside EdSharp, and the installer puts it there;
 reinstalling restores it. If you have Microsoft Word and would rather use its
-checker, set the SpellChecker option to Word with Configuration Options,
-Alt+Shift+C.
+checker, set the SpellChecker option to Word with Edit Settings,
+Alt+Shift+E.
 
 ### Does the spell checker learn words?
 
@@ -105,7 +105,7 @@ it and press Control+F5 again.
 
 ### What is the snippet console?
 
-Control+Shift+G opens a prompt where the editor window is in scope as frm and
+Control+Shift+F12 opens a prompt where the editor window is in scope as frm and
 its text box as rtb. Type an expression to see its value, or a statement to
 change the document. Whatever works there works in a snippet, which is the
 point. There are two, JScript and C#, chosen by which compiler you have

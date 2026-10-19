@@ -160,7 +160,7 @@ Three files, in increasing order of authority:
 - **EdSharp.inix** in the data folder holds personal overrides in the same
   format. Upgrades never touch it.
 - **EdSharp.ini** in the data folder holds settings changed through
-  Configuration Options.
+  Edit Settings.
 
 A compiler is a section named Compiler followed by its name, with one named
 key per setting: the compile command, the pattern locating an error, the

@@ -275,6 +275,12 @@ function runVoice([string] $sExe, [string[]] $lsArgs, [object] $oInput, [string]
     note ("  " + $sLabel + " skipped: nothing to say")
     return 0
   }
+  # FFMPEG NEVER WAITS ON THE KEYBOARD (kit 1.77.1). Without -nostdin, ffmpeg
+  # watches its standard input for an interactive "q", and run from a script
+  # with no input given it inherits the console and can wait there for good.
+  # That is how EdSharp's build of 18 October 2026 stopped after "pieces: 128",
+  # in the join that turns a walk's pieces into its mp3, and never finished.
+  if ([System.IO.Path]::GetFileNameWithoutExtension($sExe) -ieq "ffmpeg") { $lsArgs = @("-nostdin") + $lsArgs }
   $sOut = ""
   $sPrevious = $ErrorActionPreference
   $ErrorActionPreference = "Continue"
@@ -1268,6 +1274,7 @@ function buildOne([string] $sScript) {
   if ($bLive) { say ($sStem + " was spoken live. No file was written."); return $true }
 
   note ("pieces: " + $script:lsPieces.Count)
+  note ("joining the pieces into " + [System.IO.Path]::GetFileName($sOut) + " with ffmpeg")
   $sList = Join-Path $sWork "pieces.txt"
   $lsLines = $script:lsPieces | ForEach-Object { "file '" + $_.Replace("'", "'\''") + "'" }
   Set-Content -LiteralPath $sList -Value $lsLines -Encoding ASCII

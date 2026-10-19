@@ -48,7 +48,7 @@ Hear=F7
 
 [step]
 
-Say=Where the walks stop and the guide begins: scripting EdSharp in JScript, the Markdown code-block runner, the translator's quick start, the slide presenter's, the screen reader script writer's. F1 has all of it, and Control plus Shift plus F1 picks the quick start for your role.
+Say=Where the walks stop and the guide begins: scripting EdSharp in JScript, the Markdown code-block runner, the translator's quick start, the slide presenter's, the screen reader script writer's. F1 has all of it, and Alt plus F12 picks the quick start for your role.
 Key=
 Hear=
 
@@ -89,7 +89,7 @@ Hear=The program EdSharp hands your file to with Control plus F5, chosen once by
 
 Say=configuration options.
 Key=
-Hear=The one dialog of settings -- spell checker, font, speech, the AI model. Alt plus Shift plus C.
+Hear=The one dialog of settings -- spell checker, font, speech, the AI model. Alt plus Shift plus E.
 
 [step]
 
@@ -125,7 +125,7 @@ Hear=How a file's characters are stored. Alt plus Z twice says it; Alt plus Shif
 
 Say=export.
 Key=
-Hear=Writing the document out as another format -- a web page, a Word document, plain text. Alt plus Shift plus E.
+Hear=Writing the document out as another format -- a web page, a Word document, plain text. Alt plus Shift plus X.
 
 [step]
 
@@ -150,7 +150,7 @@ Hear=A mode in which every key says what it does instead of doing it. Control pl
 
 [step]
 
-Say=F1 opens the guide, the whole of EdSharp in one document, from inside the program. Shift plus F1 opens the history of changes. Alt plus F1 says the version. Control plus Shift plus F1 opens the quick starts by role.
+Say=F1 opens the guide, the whole of EdSharp in one document, from inside the program. Shift plus F1 opens the history of changes. Alt plus F1 says the version. Alt plus F12 opens the quick starts by role.
 Key=
 Hear=
 

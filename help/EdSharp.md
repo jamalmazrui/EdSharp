@@ -86,9 +86,9 @@ Press Control+Shift+J to join lines of all or selected text.  A sequence of any 
 The reverse command is Hard Line Break, Control+Shift+H.  It lets you specify the maximum width of lines in all or selected text.  EdSharp prompts for the number of characters allowed before a line break, defaulting to the number currently found as the width of text.  Generally, the purpose is to format text for a display that does not automatically word wrap.
 
 ### Comparing and Sorting
-Several commands help you compare and sort textual items.  The LimitItem setting in the Configuration Options dialog specifies the divider between items, which is a hard line break by default (\n) -- lines are unwrapped for this purpose.  Use the Trim Blanks command, Control+Shift+Enter, to eliminate space or tab characters at the start and end of a line in the current line or selected text.  Consecutive blank lines are also reduced to a maximum of two.
+Several commands help you compare and sort textual items.  The LimitItem setting in the Edit Settings dialog specifies the divider between items, which is a hard line break by default (\n) -- lines are unwrapped for this purpose.  Use the Trim Blanks command, Control+Shift+Enter, to eliminate space or tab characters at the start and end of a line in the current line or selected text.  Consecutive blank lines are also reduced to a maximum of two.
 
-Use the Order Items command, Alt+Shift+O, to alphebetically sort lines in all or selected text.  Press Alt+Shift+Z to reverse the order of all or selected lines (you may think of a reverse order from Z to A).  Use the Keep Unique Items command, Alt+Shift+K, to eliminate duplicate lines from all or selected text.  EdSharp ignores case when comparing lines in these commands.  
+Use the Order Items command, Alt+Shift+O, to alphebetically sort lines in all or selected text.  Press Alt+Shift+R to reverse the order of all or selected lines (you may think of a reverse order from Z to A).  Use the Keep Unique Items command, Alt+Shift+K, to eliminate duplicate lines from all or selected text.  EdSharp ignores case when comparing lines in these commands.  
 
 Press Alt+Shift+N to number lines in all or selected text.  EdSharp prompts for the starting number, defaulting to 1.  Each line is then prefixed by a consecutive number, period, and space.  Blank lines are ignored.
 
@@ -128,7 +128,7 @@ Press Control+Shift+Y for the "yield," or number of results matching a regular e
 ## Managing Files
 As usual, press Control+O to open a file.  Press Control+Shift+O to open a file in a format other than plain text.  A converter is invoked based on the file extension.
 
-File converters may be configured through the Manual Options command, Alt+Shift+M.  For example, an open source PDF converter is distributed with EdSharp and configured, by default, with the following line in the Import section:\
+File converters may be configured through the Edit Settings File command, Alt+Shift+F2.  For example, an open source PDF converter is distributed with EdSharp and configured, by default, with the following line in the Import section:\
 `pdf=%ProgDir%\pdftotext.exe %Source% %Target%`
 
 To configure a converter, specify the command line for converting an extension from a source, non-text format to a target, text format.  The following variables may be used:\
@@ -164,7 +164,7 @@ As usual, press Control+S to save.  Press Control+Shift+S to Save As, giving the
 
 When saving text to a file, EdSharp checks whether any character has a Unicode number greater than 255, which means that more than one byte is needed to represent it.  If so, the file is saved with a UTF-8 encoding, the most common form of Unicode for storing files on disk.  Otherwise, the default encoding of the computer is used, e.g., Latin 1.
 
-Alt+Shift+E saves a file in another format.  The built-in choices are ASCII format, which removes characters with ANSI codes above 127; Mac format, whose line break is \r; and Unix format, whose line break is \n.  It also offers .htm and .rtf, and .doc, the 1997 Word format, through the kit's shared conversions; only Microsoft Word can write a .doc file, so that choice needs Word.  You can add other converters by editing the Export section with the Manual Options command, Alt+Shift+M.  The syntax is like that of the Import section, explained elsewhere.  The Other choice lets you pick a character encoding for the new file, from a list of over 100.
+Alt+Shift+X saves a file in another format.  The built-in choices are ASCII format, which removes characters with ANSI codes above 127; Mac format, whose line break is \r; and Unix format, whose line break is \n.  It also offers .htm and .rtf, and .doc, the 1997 Word format, through the kit's shared conversions; only Microsoft Word can write a .doc file, so that choice needs Word.  You can add other converters by editing the Export section with the Edit Settings File command, Alt+Shift+F2.  The syntax is like that of the Import section, explained elsewhere.  The Other choice lets you pick a character encoding for the new file, from a list of over 100.
 
 Use the Run command, F5, to run the current file as if you had typed its name in the Windows Start, Run dialog.  It is also like pressing Enter on its name in Windows Explorer, which opens it with the program linked to its extension.  For example, pressing F5 when the current document is a .htm file opens it in your web browser.
 
@@ -172,11 +172,11 @@ Press Shift+F5 to execute a file path, email address, or web URL at the cursor p
 
 Use the Mail command, Control+M, to send the current file as the body of a message, or Control+Shift+M to send it as an attachment.  These commands invoke a Windows feature similar to the "Send To" feature of Microsoft Word.
 
-  Press Alt+Shift+R to rename the current file, both in EdSharp and on disk.  Press Alt+Shift+D to delete it.
+  Press Shift+F2 to rename the current file, both in EdSharp and on disk.  Press Alt+Shift+D to delete it.
 
 Press Alt+Backslash to open Windows Explorer in the folder of the current file, or Control+Backslash to open a command prompt there.  Besides the current folder, which it offers first, the dialog that comes up also lets you open the EdSharp program folder, data folder or snippet folder.  It also lets you create a new folder.
 
-Press Alt+0 to verify the current compiler and folder of EdSharp.  Control+0 lets you change the current folder to one containing recent or favorite files, which are put in a list.  Press Control+Shift+0 to change to a special folder of Windows, e.g., My Documents.  These commands may be more efficient than navigating the standard Windows open file dialog, invoked with Control+O.
+Press Alt+0 to verify the current compiler and folder of EdSharp.  Control+0 lets you change the current folder to one containing recent or favorite files, which are put in a list.  Press Control+Shift+G to change to a special folder of Windows, e.g., My Documents.  These commands may be more efficient than navigating the standard Windows open file dialog, invoked with Control+O.
 
 ## Invoking Snippets
 Press Alt+S to save all or selected text to a file that may be conveniently pasted into other documents.  You may give the file a descriptive name and an extension appropriate for its content.  It is saved in a subfolder of the EdSharp data folder.  Each programming compiler or interpreter may have its own set of snippets.  The subfolder name is the same as the current value of the Pick Compiler command, Control+Shift+F5.  If no compiler has been chosen, the "Default" subfolder is used.
@@ -185,7 +185,7 @@ Press Alt+V to pick one of the available snippets and paste it into the current 
 
 A snippet collection grows over the years, so each row in the list says where its snippet came from. A name alone means the Default folder. A name followed by a language in parentheses means that language's folder. A name followed by "shipped" means a snippet that came with EdSharp, not one you saved. The name still comes first in each row, so typing part of a name finds it as before. Snippets are divided by compiler on purpose, which keeps a large collection manageable. Save a snippet while a compiler is chosen, and it belongs to that language; save it with no compiler chosen, and it is available everywhere.
 
-Use the View Snippet command, Alt+Shift+V, to open a snippet file in EdSharp to read or edit it, rather than run it.  You can also manage snippet files with the Explorer Folder command, Alt+Backslash, which opens Windows Explorer in the folder that holds them.
+Use the View Snippet command, Alt+Shift+V, to open a snippet file in EdSharp to read or edit it, rather than run it.  You can also manage snippet files with the Open in Explorer command, Alt+Backslash, which opens Windows Explorer in the folder that holds them.
 
 EdSharp runs a snippet with a .js extension as JScript .NET code.  Such a file can do almost anything in EdSharp, as the section about scripting explains.  For example, the "ul from selected.js" file makes an HTML unordered list from the selected lines of text.
 
@@ -253,7 +253,7 @@ sTag += "</ul>\n"
 
 User-defined tokens can go in a snippet that has the "form" keyword in its header.  They can also be typed in a document you are editing.  You can test a token with the Evaluate Expression command, Control+Equals, which works out the current line or selected text and puts the result on the line below.  The Replace Tokens command, Control+Shift+Equals, swaps token names for their results in all or selected text.
 
-For example, you might press Alt+Shift+M for Manual Options and define a signature token as follows:
+For example, you might press Alt+Shift+F2 for Edit Settings File and define a signature token as follows:
 
 ```
 [Tokens]
@@ -266,11 +266,11 @@ Then type %Signature% in your document where you want that to appear, and use th
 Several commands work with a structured text document consisting of a table of contents that lists topics at the beginning of the document, followed by a section for each topic in the body.  Each topic in the table of contents is a line with the same text as the heading of its corresponding section.  A divider sequence of characters -- a line of 10 dashes followed by a form feed and line break, separates each section.  The next line after such a section break is the topic heading of the next section.  For an example of this structure, examine the EdSharp.txt file in the EdSharp program folder.  The default location is\
 `C:\Program Files\EdSharp\EdSharp.txt`
 
-Press Control+PageDown to go to the next section and read its heading, or Control+PageUp to go to the previous one.  When the cursor is on a topic in the table of contents, press F6 to go to its corresponding section in the body.  Press Shift+F6 to go from a section in the body to its topic in the table of contents.  Press Control+F6 to search for a topic based on text within its heading.   The search starts at the beginning of the document.  Press Alt+F6 to search again for the next match.
+Press Control+PageDown or Control+F6 to go to the next section and read its heading, or Control+PageUp or Control+Shift+F6 to go to the previous one.  When the cursor is on a topic in the table of contents, press F6 to go to its corresponding section in the body.  Press Shift+F6 to go from a section in the body to its topic in the table of contents.  Press Control+F6 to search for a topic based on text within its heading.   The search starts at the beginning of the document.  Press Alt+F6 to search again for the next match.
 
 To create a structured text document, press Control+Enter to insert a section break at the cursor position, then type the heading of the next section.  Alt+T verbally confirms the topic of the current section.  Use the Text Contents command, Alt+Shift+T, to generate and prepend a table of contents to the current document.  The first line of the document becomes the first topic in the table of contents.  Each line of text after a section break becomes another topic.
 
-You can change the LimitItem setting so that comparisons work on sections rather than lines of text.  For example, press Alt+Shift+C for Configuration Options, then Alt+S for the SectionBreak setting.  The text starts out selected, so press Control+C to copy it.  Then press Alt+L for LimitItem, Control+V to paste, and Enter to save the settings.  Now you can sort sections alphabetically with the Order Items command (Alt+Shift+O), reverse them with the Reverse Items command (Alt+Shift+Z), or remove duplicates with the Keep Unique Items command (Alt+Shift+U).
+You can change the LimitItem setting so that comparisons work on sections rather than lines of text.  For example, press Alt+Shift+E for Edit Settings, then Alt+S for the SectionBreak setting.  The text starts out selected, so press Control+C to copy it.  Then press Alt+L for LimitItem, Control+V to paste, and Enter to save the settings.  Now you can sort sections alphabetically with the Order Items command (Alt+Shift+O), reverse them with the Reverse Items command (Alt+Shift+R), or remove duplicates with the Keep Unique Items command (Alt+Shift+U).
 
 ### Mermaid Diagrams
 
@@ -380,10 +380,10 @@ Use the Style command, Alt+Slash, to set or clear bold, italic, or underline for
 
 Navigation commands let you move forward or backward to a change in formatting.  Control+RightBracket goes to the next justification change, and Control+LeftBracket goes to the previous one.  Control+6 goes to the next baseline change, and Control+Shift+6 goes to the previous one.  Control+Slash goes to the next style change, and Control+Shift+Slash goes to the previous one.  Control+Dash goes to the next font change and Control+Shift+Dash goes to the previous one.  The cursor stops at the character with different formatting.  The new formatting is announced and current context is read.
 
-To query the current font and color, press Alt+Dash.  For styles, baseline, and justification, press Alt+Slash.
+Press Alt+Slash, Say Styles, to hear how the text at the cursor looks: any style, alignment or baseline that differs from normal, then the font and color.
 
 ## Doing Math
-You can press Control+Equals to evaluate mathematical expressions in JScript code, either on the current line or in selected text.  Control+Shift+G goes to another, more interactive environment, such as the interactive console of Python or iPython.  The latter is particularly useful for learning the library of the .NET Framework and testing expressions that may be incorporated in programming code, including EdSharp snippets.  It may also be used as a simple, speech-friendly calculator.
+You can press Control+Equals to evaluate mathematical expressions in JScript code, either on the current line or in selected text.  Control+Shift+F12 goes to another, more interactive environment, such as the interactive console of Python or iPython.  The latter is particularly useful for learning the library of the .NET Framework and testing expressions that may be incorporated in programming code, including EdSharp snippets.  It may also be used as a simple, speech-friendly calculator.
 
 Alternatively, the GoToEnvironment setting could be configured for a computer algebra system such as [Maxima](<http://Maxima.SourceForge.net>),
 or [Axiom](<http://Axiom.SourceForge.net>).
@@ -463,7 +463,7 @@ Press Tab to indent the current line of text, or Shift+Tab to outdent it.  If mu
 
 Press Alt+I to hear how many levels the current line is indented.  Press it twice to hear the whole chain of blocks around it, outermost first. In Python, that is the class, the function and each statement the cursor is inside; in a brace language, each opening brace around it.  Alt+Shift+I turns on a mode that tells you when the indentation level changes, such as when you use the Up and Down arrow keys.  EdSharp says how many levels in or out the indentation moved, speaking straight to whichever screen reader is running: JAWS, NVDA or Narrator.  No screen reader script is needed for this.  The mode also swaps the jobs of the Enter and Shift+Enter keys.  A hyphen anywhere in the ExtraSpeech setting turns these announcements off, for anyone who prefers quiet.
 
-When Indent Mode is off, press Shift+Enter to start a new line with the same indentation as the current one.  EdSharp finds the indentation unit of the current document by itself, from its first indented line. So a Python file indented by four spaces, a file indented by two, and a file indented with tabs all report their true levels, and all get the right unit when you press Tab.  When a document has no indentation yet, the IndentUnit setting applies. Its default is one tab per level, and you can change it with the Configuration Options command, Alt+Shift+C, or take it from a file with Infer Indent.
+When Indent Mode is off, press Shift+Enter to start a new line with the same indentation as the current one.  EdSharp finds the indentation unit of the current document by itself, from its first indented line. So a Python file indented by four spaces, a file indented by two, and a file indented with tabs all report their true levels, and all get the right unit when you press Tab.  When a document has no indentation yet, the IndentUnit setting applies. Its default is one tab per level, and you can change it with the Edit Settings command, Alt+Shift+E, or take it from a file with Infer Indent.
 
 The tab is the default on purpose, for screen reader productivity. One key press makes a level, one character stands for it as you arrow through a line, and the number of levels is always the number of characters. Style guides written for sighted readers, such as PEP 8's four spaces, are made for how code looks on screen. EdSharp is made for the coder's own speed, and the interpreter accepts both. The NVDA screen reader's own source code uses tabs, for the same reason. When you share code with a project that requires spaces, open it, and EdSharp follows its unit by itself. Or convert as you finish, with Format Code, after setting IndentUnit to the project's style.
 
@@ -479,7 +479,7 @@ Two commands send the open document by mail, and neither needs Microsoft Word. M
 
 Press Shift+F7 on a word, or with a word selected, to see synonyms. EdSharp uses WordNet, a free lexical database, so Microsoft Word is not needed; the same installPdfTools.cmd that installs the PDF reader installs the thesaurus.
 
-The list is grouped by meaning, which is what makes a thesaurus worth having. Each entry gives the word, its part of speech, and a short definition of the sense it belongs to. So when you look for a word for light, as in weight, you are never offered words about illumination. Pick an entry and choose Replace to put it in the document, keeping your own capitalization, or Copy to put it on the clipboard. If you prefer the Microsoft Word thesaurus and have Word, set the Thesaurus option to Word with Configuration Options, Alt+Shift+C.
+The list is grouped by meaning, which is what makes a thesaurus worth having. Each entry gives the word, its part of speech, and a short definition of the sense it belongs to. So when you look for a word for light, as in weight, you are never offered words about illumination. Pick an entry and choose Replace to put it in the document, keeping your own capitalization, or Copy to put it on the clipboard. If you prefer the Microsoft Word thesaurus and have Word, set the Thesaurus option to Word with Edit Settings, Alt+Shift+E.
 
 ### Sample Programs
 
@@ -517,7 +517,7 @@ Press Alt+Shift+F7 to translate the selection, or the whole document when nothin
 
 The work is done by the same AI model on your computer that Chat with AI uses. So nothing is sent over the internet, there is no account, and there is no limit on how much you translate. Quality is good between widely written languages, such as Spanish, French, German, Portuguese and Italian. It is useful, but less reliable, for languages with less written material behind them.
 
-A larger model translates better, at the cost of disk space and time. The installer offers qwen2.5:7b as a checkbox, about five gigabytes, beside the Ollama box. Tick it, and translation uses it by itself, while Chat with AI keeps llama3.2, the smaller and quicker model. Nothing needs setting. If you would rather use another model, name it in the TranslateModel option with Configuration Options, Alt+Shift+C.
+A larger model translates better, at the cost of disk space and time. The installer offers qwen2.5:7b as a checkbox, about five gigabytes, beside the Ollama box. Tick it, and translation uses it by itself, while Chat with AI keeps llama3.2, the smaller and quicker model. Nothing needs setting. If you would rather use another model, name it in the TranslateModel option with Edit Settings, Alt+Shift+E.
 
 ### Chat with AI
 
@@ -527,7 +527,7 @@ Press F12 to talk with an AI model running on your own computer. Whatever is sel
 
 Press Control+Shift+F5 to pick the compiler for your work. The set that comes with EdSharp covers what Windows developers really use today: C#, Python, JavaScript through Node.js, PowerShell, JAWS Script, VBScript, JScript .NET, and HTML Tidy for checking web pages, plus Default for plain editing. Each compiler is defined in EdSharp.inix by a section named Compiler followed by its name. It has one clearly named key for each setting: CompileCommand, JumpPosition, AbbreviateOutput, NavigatePart, QuotePrefix, ExtensionDefault, IndentUnit and GoToEnvironment. Picking a compiler brings all of them. So choosing Python also brings four-space indentation and Python's own prompt, and choosing JavaScript brings two spaces and Node's shell. A document that already has indentation of its own still follows its own.
 
-Control+Shift+G opens that shell: Python's interpreter with your file already run, Node's read-evaluate-print shell, or PowerShell left open after running the file. Two shells are built into EdSharp, for languages Windows gives no interpreter for: a JScript console for writing snippets, and a C# console. Both open with the editor window ready as frm and its text box as rtb. So a line tried at the prompt does to your document exactly what the same line does in a snippet. The C# console compiles each line with the compiler named in the compiler settings and loads it into EdSharp, which is why it can reach the live document. A line ending in a semicolon is kept for the rest of the session, and anything else is printed. A language with no such shell, such as JAWS script, says so rather than starting something unrelated.
+Control+Shift+F12 opens that shell: Python's interpreter with your file already run, Node's read-evaluate-print shell, or PowerShell left open after running the file. Two shells are built into EdSharp, for languages Windows gives no interpreter for: a JScript console for writing snippets, and a C# console. Both open with the editor window ready as frm and its text box as rtb. So a line tried at the prompt does to your document exactly what the same line does in a snippet. The C# console compiles each line with the compiler named in the compiler settings and loads it into EdSharp, which is why it can reach the live document. A line ending in a semicolon is kept for the rest of the session, and anything else is printed. A language with no such shell, such as JAWS script, says so rather than starting something unrelated.
 
 Values are kept exactly as written and may span several lines, so regular expressions are easy to read and edit. Every expression in the set was checked against the tool's real message format, so Compile, Control+F5, goes to the true line and column of the error. Two things make that easy to work with. First, noise is removed before you hear anything, so you hear the error first, not your own file path, which Python and most compilers repeat in every message. Second, when a tool reports several problems, EdSharp goes to the one earliest in the file, whatever order the tool printed them in, and starts speaking there. Fix it and press Control+F5 again, and the next problem is waiting, so you work down the file from the top. The full output, including anything skipped, is always there with Review Output.
 
@@ -567,11 +567,11 @@ So the Compile command, Control+F5, combines debugging steps: it compiles, says 
 
 The name of a tool to run should include its folder, or be on the Windows search path.  You can change the search path by editing the Path environment variable, on the Advanced tab of the System settings in Control Panel.  If the tool has a long file name in quotes, either start the command line with the @ symbol or put the whole thing in quotes.  Otherwise the Windows functions that handle .ini files lose the opening quote before the tool.
 
-For HTML, the HTML Tidy utility is configured by default and distributed with EdSharp.  After eliminating coding errors found with Control+F5, use Alt+Shift+E to export to a target file containing clean HTML.  More information is available at the [HTML Tidy project page](<http://tidy.sourceforge.net>).
+For HTML, the HTML Tidy utility is configured by default and distributed with EdSharp.  After eliminating coding errors found with Control+F5, use Alt+Shift+X to export to a target file containing clean HTML.  More information is available at the [HTML Tidy project page](<http://tidy.sourceforge.net>).
 
 For PowerBASIC, a batch file is needed, in the EdSharp program folder. It refers to the default location of PowerBASIC for Windows version 10.0.  The path to the JAWS script compiler is also written in, for the latest version.  EdSharp's own scripts help with JAWS scripting too. When focus is in EdSharp's Open or Save dialog, Control+I inserts the path to your user script folder, and Control+Shift+I the path to the All Users script folder.
 
-Compiler settings are stored in the [Compilers] section of the EdSharp.ini file.  Only current compiler settings appear in the configuration options dialog, Alt+Shift+C.  Other settings may be edited, however, using the Manual Options command, Alt+Shift+M.  You can adjust command line parameters of configured compilers, or add others.  Installing a new version of EdSharp does not change existing compiler settings.
+Compiler settings are stored in the [Compilers] section of the EdSharp.ini file.  Only current compiler settings appear in the Edit Settings dialog, Alt+Shift+E.  Other settings may be edited, however, using the Edit Settings File command, Alt+Shift+F2.  You can adjust command line parameters of configured compilers, or add others.  Installing a new version of EdSharp does not change existing compiler settings.
 
 ## Scripting Add-Ins
 Almost the complete object model of the EdSharp application has been exposed to add-in code in the JScript .NET language, explained in [Microsoft's JScript .NET reference](<https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2010/72bd815a(v=vs.100)>).
@@ -606,7 +606,7 @@ EdSharp speaks only what your screen reader cannot already tell you. JAWS, NVDA 
 
 EdSharp writes a log for each session, named EdSharp followed by a time stamp, in the logs folder under your local application data, beside the setup log. It records the version, the environment, and every outside command EdSharp runs with its exit code. So a failed conversion or compile can be diagnosed from the log rather than guessed at. The newest thirty session logs are kept. Everything EdSharp records goes in this one folder: the setup log, the session logs, the setup summary, and the small files the installer and its helper scripts use to pass messages. Each line is written the moment it happens rather than held in memory, so a log is complete even when the thing being logged is what went wrong. Press Control+F12, Copy Log, to put the current log's path on the clipboard as both a file and text, ready to paste as a mail attachment.
 
-Extra speech messages may be turned off, or back on, with Control+Shift+X.  When they are off, they go to a text file called Speech.log in the EdSharp data folder, which you can open in an editing window with Alt+Shift+X.  The file is started fresh when EdSharp starts, and the Extra Speech setting is remembered from the session before.
+Extra speech messages may be turned off, or back on, with Alt+Shift+Z.  When they are off, they go to a text file called Speech.log in the EdSharp data folder, which you can open in an editing window with Extra Speech Log, Alt+Shift+F12.  The file is started fresh when EdSharp starts, and the Extra Speech setting is remembered from the session before.
 
 With the optional JAWS scripts, you can toggle a speech setting of reading all or no punctuation using JAWSKey plus the grave accent at the top left of the main keypad (U.S. keyboard).  All punctuation is useful when reading carefully for details whereas no punctuation is useful when reading quickly for concepts.
 
@@ -706,7 +706,7 @@ Other arrow keypad actions navigate among checkged items.  Control+Home goes to 
 
 Shift+Space tells you what items are currently checked.  Alt+A says the address of the current item in the list, e.g., 11 of 42.
 
-Press Alt+Shift+C to adjust configuration options of EdSharp through a dialog.  Each option has a unique access key in its label, so you can jump directly to it with an Alt plus letter combination.
+Press Alt+Shift+E, Edit Settings, to adjust configuration options of EdSharp through a dialog.  Each option has a unique access key in its label, so you can jump directly to it with an Alt plus letter combination.
 
 You can choose whether EdSharp's window starts maximized, and whether a new editing window wraps its words. Both are Yes by default.  When a file is saved without an extension, .rtf is added, a default you can change.  If saving would overwrite a file, the original can be kept with .bak added; the default is No.  The OpenPrevious option decides whether the files open at the end of one session open again at the start of the next; the default is No.  Another option limits how many files the Recent Files command, Alt+R, shows; the default is 100.
 
@@ -718,7 +718,7 @@ The UseIndentModeDefault setting determines the state of indent mode when a new 
 
 The YieldEncoding setting decides the character encoding EdSharp uses when opening a file from disk.  EdSharp ignores the setting if the file has a .rtf extension, meaning rich text format, or starts with a byte order mark (BOM), meaning a Unicode format such as UTF-8 or UTF-16.  You can name an encoding by its name or its number.  To see the list, choose the Other option in the Yield Encoding command, Alt+Shift+Y, or the Export Format command, Alt+Shift+E.  With no YieldEncoding setting, EdSharp uses the default encoding in the region settings of Windows Control Panel, usually Western European.  To check which encoding EdSharp used to open the current document, press the Status command, Alt+Z, twice.  EdSharp saves the document in the same encoding.
 
-A separate dialog, opened with Alt+Shift+Equals, sets the font and color of text in an editing window.  The default font was chosen to suit people with low vision, and you can change it to suit yourself.  Use the Manual Options command, Alt+Shift+M, to edit the main configuration file directly. It is EdSharp.ini, in the EdSharp data folder. That folder is inside the Windows Application Data path, usually something like\
+A separate dialog, opened with Alt+Shift+Equals, sets the font and color of text in an editing window.  The default font was chosen to suit people with low vision, and you can change it to suit yourself.  Use the Edit Settings File command, Alt+Shift+F2, to edit the main configuration file directly. It is EdSharp.ini, in the EdSharp data folder. That folder is inside the Windows Application Data path, usually something like\
 \C:\users\UserName\appdata\roaming\EdSharp\\`
 
 To change key assignments, edit the Keys section of the configuration file. For example, the line\
@@ -734,7 +734,7 @@ Some configuration options belong to the current compiler rather than to EdSharp
 
 A compiler's configuration is stored in the EdSharp data folder, in a file with the compiler's name and a .ini extension.  For example, if you made settings for the "Delphi" compiler, EdSharp would add a Delphi entry to the Compilers section of EdSharp.ini. It would then keep that compiler's favorites, bookmarks and user-defined tokens in Delphi.ini.  Press Alt+0 to hear the current compiler and folder.
 
-Press F4 to switch to one of the editing windows that are open, from a list.  Press Control+F4 to close the current window, or Control+Shift+F4 to close all the others.  EdSharp's windows can be arranged on screen in the usual ways for programs with several document windows.  The Window menu has these commands: Arrange Icons, Alt+F11; Cascade, Control+F11; Tile Horizontal, Alt+Shift+F11; and Tile Vertical, Control+Shift+F11.
+Press F4 to switch to one of the editing windows that are open, from a list.  Press Control+F4 to close the current window, or Control+Shift+F4 to close all the others.  EdSharp's windows can be arranged on screen in the usual ways for programs with several document windows.  The Window menu has these commands: Arrange Icons, Alt+F11; Cascade, Control+F11; Tile Horizontal, Alt+Shift+F11; and Tile Vertical, Shift+F11.
 
 Use the Alternate Menu command, Alt+F10, to execute a command from a single, alphebetized list.
 
@@ -763,12 +763,12 @@ The following are EdSharp commands listed in related groups.
 Launch EdSharp=Alt+Control+E, Launch or activate the EdSharp application via a Windows desktop shortcut
 Documentation=F1, Open Documentation in web browser
 About=Alt+F1, Display version and release date
-Tutorial=Control+Shift+F1, Open the step-by-step tutorial
+Tutorial=Alt+F12, Open the step-by-step tutorial
 Hotkey Summary=Alt+Shift+H, Show the hotkeys summarized and sorted in different ways
 History of Changes=Shift+F1, Display list of fixes and improvements
 Sample Programs ...=Control+Shift+F2, List the sample programs that ship with EdSharp and open one, in EdSharp for a program or in the browser for a web page
 Copy Log=Control+F12, Copy the full path of this session's run log to the clipboard in two formats at once: as a file, so pasting into a new mail message attaches the log itself, and as plain text, for programs that read clipboard text; handy when sending the log to the developer
-Key Describer=Control+F1, Toggle a mode in which pressing a key describes its action
+Key Describer Toggle=Control+F1, Toggle a mode in which pressing a key describes its action
 Alternate Menu=Alt+F10, Present all commands in a single, alphabetized list
 Context Menu=Shift+F10, Pick a command from those available to Windows Explorer for the current file extension
 SendTo Menu=Control+F10, Pick a command from those available as Windows "Send To" options
@@ -798,9 +798,9 @@ Say Time=Alt+Semi-colon, Say current time and date
 Insert Time=Alt+Shift+Semi-colon, Insert current time and date
 Calculate Date=Control+Shift+Semi-colon, Calculate and insert date
 
-Configuration Options=Alt+Shift+C, Adjust configuration options through a dialog
+Edit Settings=Alt+Shift+E, Adjust configuration options through a dialog
 Set Default Font and Color=Alt+Shift+Equals, Set default font and color for editing window
-Manual Options=Alt+Shift+M, Adjust options by directly editing the main configuration file
+Edit Settings File=Alt+Shift+F2, Adjust options by directly editing the main configuration file
 Reset Configuration=Alt+Shift+0, Revert to default options, or define a new compiler configuration
 
 Copy=Control+C, Copy selected text to clipboard, or copy current line if no selection
@@ -819,37 +819,37 @@ Save Snippet=Alt+S, Save all or selected text to a snippet file
 Invoke Snippet=Alt+V, Pick snippet file to paste or execute
 View Snippet=Alt+Shift+V, Pick snippet file to view or edit
 
-Yield with Regular Expression=Control+Shift+Y, Count parts of text matching a regular expression
-Extract with Regular Expression=Control+Shift+E, Extract text matching a regular expression, putting matches in a new window
-Replace with Regular Expression=Control+Shift+R, Search and replace regular expression in all or selected text
+Yield with Regex=Control+Shift+Y, Count parts of text matching a regular expression
+Extract with Regex=Control+Shift+E, Extract text matching a regular expression, putting matches in a new window
+Replace with Regex=Control+Shift+R, Search and replace regular expression in all or selected text
 Replace=Control+R, Search and replace string in all or selected text
 
 File Find=Alt+Shift+F, Open file from list of files containing a search string
 Forward Find=Control+F, Search forward for string in all or selected text
 Reverse Find=Control+Shift+F, Search backward for string
-Forward Find with Regular Expression=Control+F3, Search forward for regular expression in all or selected text
-Reverse Find with Regular Expression=Control+Shift+F3, Search forward for regular expression in all or selected text
+Forward Find with Regex=Control+F3, Search forward for regular expression in all or selected text
+Reverse Find with Regex=Control+Shift+F3, Search forward for regular expression in all or selected text
 Forward Find at Cursor=Alt+F3, Search forward for chunk or selected text
 Reverse Find at Cursor=Alt+Shift+F3, Search backward for chunk or selected text
-Forward Find Again=F3, Search forward for next match
-Reverse Find Again=Shift+F3, Search backward for previous match
+Search Next=F3, Search forward for next match
+Search Previous=Shift+F3, Search backward for previous match
 
 Word Wrap=Control+W, Word wrap lines
 Unwrap=Control+Shift+W, Unwrap lines
 Guard Document=Control+F7, Make document read-only
 No Guard=Control+Shift+F7, Clear read-only status
 
-Extra Speech Toggle=Control+Shift+X, Toggle extra speech messages on or off, redirecting to Speech.log file
-Extra Speech Log=Alt+Shift+X, Open speech.log file in a new window
+Extra Speech Toggle=Alt+Shift+Z, Toggle extra speech messages on or off, redirecting to Speech.log file
+Extra Speech Log=Alt+Shift+F12, Open speech.log file in a new window
 
 Go to Percent=Control+G, Go to percentage point in document
 Go to Percent Again=Alt+G, Repeat Go command
 Jump to Line=Control+J, Jump to line number or to line, column position
 Jump to Line Again=Alt+J, Repeat Jump command
 
-Set Bookmark=Control+K, Set bookmark at cursor position
+Save Bookmark=Control+K, Set bookmark at cursor position
 Clear Bookmark=Control+Shift+K, Clear bookmark at cursor position
-Go to Bookmark=Alt+K, Go to bookmark in current file
+List Bookmarks=Alt+K, Go to bookmark in current file
 
 Set Favorite=Control+L, Add current file to the list of favorites
 Clear Favorite=Control+Shift+L, Clear current file from the list of favorites
@@ -867,7 +867,7 @@ Properties=Alt+Enter, display Windows properties dialog for current file
 Save=Control+S, Save
 Save As=Control+Shift+S, Save As
 Save Copy=Alt+Shift+S, Save copy of document using a different name
-Export Format=Alt+Shift+E, Export document to another format
+Export Format=Alt+Shift+X, Export document to another format
 
 Print=Control+P, Print current file
 Mail Body=Control+M, Mail current file as body of an email message
@@ -883,8 +883,8 @@ Compile=Control+F5, Compile source code, say output, and jump to error position
 Pick Compiler=Control+Shift+F5, Pick a compiler or interpreter from the list of those configured
 Say Compiler=Alt+0, Say current compiler and folder
 Go to Folder=Control+0, Go to folder containing recent or favorite files
-Go to Special Folder=Control+Shift+0, Go to special folder of Windows
-Go to Environment=Control+Shift+G, Go to interactive environment of current compiler
+Go to Special Folder=Control+Shift+G, Go to special folder of Windows
+Go to Environment=Control+Shift+F12, Go to interactive environment of current compiler
 
 Spell Check=F7, Check spelling with the checker built into Windows, walking the document one misspelling at a time in the order they appear; each stop selects the word in the document and opens a small dialog that names and spells the word, shows the sentence around it, and offers an editable box of suggestions with Replace, Skip, Add to Dictionary, and Cancel; no Microsoft Word needed
 Thesaurus=Shift+F7, Look up synonyms for word at cursor
@@ -927,13 +927,13 @@ Translate Language=Alt+Shift+F7, Translate the selected or current text to anoth
 End Character=Alt+End, Go to last non-blank character of line and read it
 Home Character=Alt+Home, Go to first non-blank character of line and read it
 Next Word=Control+RightArrow, Go to next word and read it
-Prior Word=Control+LeftArrow, Go to previous word and read it
+Previous Word=Control+LeftArrow, Go to previous word and read it
 Next Chunk=Alt+RightArrow, Go to next chunk and read it
-Prior Chunk=Alt+LeftArrow, Go to previous chunk and read it
+Previous Chunk=Alt+LeftArrow, Go to previous chunk and read it
 Next Sentence=Alt+DownArrow, Go to next sentence and read it
-Prior Sentence=Alt+UpArrow, Go to previous sentence and read it
+Previous Sentence=Alt+UpArrow, Go to previous sentence and read it
 Next Paragraph=Control+DownArrow, Go to next paragraph and read it
-Prior Paragraph=Control+UpArrow, Go to previous paragraph and read it
+Previous Paragraph=Control+UpArrow, Go to previous paragraph and read it
 
 Delete Right=Control+Shift+Delete, Delete from cursor to end of line
 Delete Left=Control+Shift+Backspace, Delete from cursor to start of line
@@ -943,14 +943,13 @@ Delete Line=Alt+Backspace, Delete current line
 Delete Hard Line=Control+D, Delete line ending in hard line break
 Delete Paragraph=Control+Shift+D, Delete past one or more blank lines
 Delete File=Alt+Shift+D, Delete current file on disk
-Rename=Alt+Shift+R, Rename current file on disk
+Rename=Shift+F2, Rename current file on disk
 
-Next Section=Control+PageDown, Go to next section
-Prior Section=Control+PageUp, Go to Prior Section
+Next Section=Control+F6 or Control+PageDown, Go to next section
+Previous Section=Control+Shift+F6 or Control+PageUp, Go to Previous Section
 Go to Section=F6, Go to section in body from topic in table of contents
 Go to Contents=Shift+F6, Go to topic in table of contents from section in body
-Search for Topic=Control+F6, Search for a topic based on text in its heading
-Search for Topic Again=Alt+F6, Search again for the next matching topic
+Search for Topic=Alt+F6, Search for a topic based on text in its heading
 
 Topic=Alt+T, Say topic of current section
 Text Contents=Alt+Shift+T, Generate and prepend a table of contents to the current document
@@ -965,39 +964,38 @@ Style=Alt+Shift+Slash, Set style of cursor or selected text
 Baseline=Alt+Shift+6, Set vertical alignment of cursor or selected text
 Set Selection Font=Alt+Shift+Dash, Set font of cursor or selected text
 Next Alignment=Control+RightBracket, Go to next change in justification
-Prior Alignment=Control+LeftBracket, Go to previous change in justification
+Previous Alignment=Control+LeftBracket, Go to previous change in justification
 Next Style=Control+Slash, Go to next change in style
-Prior Style=Control+Shift+Slash, Go to previous change in style
+Previous Style=Control+Shift+Slash, Go to previous change in style
 Next Baseline=Control+6, Go to next change in baseline
-Prior Baseline=Control+Shift+6, Go to previous change in baseline
+Previous Baseline=Control+Shift+6, Go to previous change in baseline
 Next Font=Control+Dash, Go to next change in font
-Prior Font=Control+Shift+Dash, Go to previous change in font
-Say Font=Alt+Dash, Say current font and color
-Say Styles=Alt+Slash, Say current justification and styles
+Previous Font=Control+Shift+Dash, Go to previous change in font
+Say Styles=Alt+Slash, Say the style, alignment and baseline that differ from normal, then the font and color
 
 Infer Indent=Alt+RightBracket, Infer the indent unit of the current document, or configure EdSharp accordingly if repeated
-Toggle Indentation=Windows+Grave, Toggle announcement of indentation by JAWS
+Toggle Indentation=JAWSKey+Shift+GraveAccent, Toggle announcement of indentation by JAWS
 Indent Mode=Alt+Shift+I, Toggle auto indent with Enter, and announcement of indentation changes
 Enter New Line=Enter, Start new line at left margin
 Indent New Line=Shift+Enter, Start new line with same indentation as current one
-Indent New Line Prior=Alt+Shift+Enter, insert prior line with same indentation as current one
+Indent New Line Previous=Alt+Shift+Enter, insert prior line with same indentation as current one
 Indent=Tab, Indent current line or selected text by one unit
 Outdent=Shift+Tab, Reduce indentation of current or selected lines by one unit
 Align=Alt+Shift+A, Adjust indentation of current or selected lines according to prior line
 Next Block=Control+B, Go to the next block of code, having the same or less indentation
 Prior Block=Control+Shift+B, Go to the previous block of code, having the same or less indentation
 Next Indent=Control+I, Go to the next change in indentation
-Prior Indent=Control+Shift+I, Go to the previous change in indentation
+Previous Indent=Control+Shift+I, Go to the previous change in indentation
 Right Brace=Control+Shift+RightBracket, Search forward for matching right brace character
 Left Brace=Control+Shift+LeftBracket, Search backward for matching left brace character
 End Tag=Control+Shift+Period, go to closing tag of HTML element
 Start Tag=Control+Shift+Comma, Go to opening tag of HTML element
 Next Part=Alt+PageDown, Go to next match of NavigatePart setting
-Prior Part=Alt+PageUp, Go to previous match of NavigatePart setting
+Previous Part=Alt+PageUp, Go to previous match of NavigatePart setting
 Go to Part=Alt+Shift+G, Pick a part to go to
 
 Order Items=Alt+Shift+O, Sort items alphabetically in all or selected text
-Reverse Items=Alt+Shift+Z, Reverse order of all or selected items of text
+Reverse Items=Alt+Shift+R, Reverse order of all or selected items of text
 Keep Unique Items=Alt+Shift+K, Discard repetitive items in all or selected text
 Number Items=Alt+Shift+N, Insert numbers at the start of items in all or selected text
 List Different Items=Alt+Shift+L, Compare two lists and put non-overlapping items in a new window
@@ -1006,13 +1004,13 @@ Query Common Items=Alt+Shift+Q, Compare two lists and put overlapping items in a
 PyDent=Alt+LeftBracket, Convert from PyBrace format back to indented Python, rebuilding indentation from the IndentUnit setting (four spaces when unset) and writing a spoken # end comment at the close of every block; dictionary literals, docstrings, and braces inside strings pass through untouched
 PyBrace=Alt+Shift+LeftBracket, Convert indented Python to the flat PyBrace form, where block structure is spoken text: a compound statement ends with a brace and every block closes with a brace end line naming its keyword; the file's own indent unit is detected, and dictionary literals, docstrings, and braces inside strings pass through untouched
 
-Explorer Folder=Alt+Backslash, Open Windows Explorer in the EdSharp program folder, data folder, or current folder
-Command Prompt=Control+Backslash, Open a command prompt in the EdSharp program folder, data folder, or current folder
+Open in Explorer=Alt+Backslash, Open Windows Explorer in the EdSharp program folder, data folder, or current folder
+Open Command Prompt=Control+Backslash, Open a command prompt in the EdSharp program folder, data folder, or current folder
 Environment Variables=Control+E, Change Windows environment variables for the current process, user, or system
 
 Next Window=Control+Tab, Cycle to next editing window
-Prior Window=Control+Shift+Tab, Cycle to previous editing window
-Windows Open=Shift+F4, Say titles of current editing windows
+Previous Window=Control+Shift+Tab, Cycle to previous editing window
+Say Windows Open=Shift+F4, Say titles of current editing windows
 Current Windows=F4, Activate an editing window from a list of those currently open
 Close Window=Control+F4, Close current editing window
 Close All but Current Window=Control+Shift+F4, Close all editing windows except the current one
@@ -1021,7 +1019,7 @@ Exit EdSharp=Alt+F4, Exit the EdSharp application
 Arrange Icons=Alt+F11, Arrange open windows
 Cascade=Control+F11, Cascade open windows
 Tile Horizontal=Alt+Shift+F11, Tile open windows horizontally
-Tile Vertical=Control+Shift+F11, Tile open windows vertically
+Tile Vertical=Shift+F11, Tile open windows vertically
 
 Elevate Version=F11, Download latest EdSharp version and run installer (after confirming)
 

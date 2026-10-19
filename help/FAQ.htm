@@ -2,16 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
+  <meta name="generator" content="pandoc 3.12.1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>FAQ</title>
+  <title>EdSharp FAQ</title>
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     html {
-      line-height: 1.5;
-      font-family: Georgia, serif;
-      font-size: 20px;
       color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
       background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
     }
     body {
       margin: 0 auto;
@@ -28,17 +31,24 @@
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 1em;
+        padding: 12px;
       }
       h1 {
         font-size: 1.8em;
       }
     }
     @media print {
-      body {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
         background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
         color: black;
-        font-size: 12pt;
+      }
+      pre, code {
+        padding: 0;
       }
       p, h2, h3 {
         orphans: 3;
@@ -51,13 +61,14 @@
     p {
       margin: 1em 0;
     }
-    a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+    a, a:visited {
+      color: inherit;
     }
     img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
       max-width: 100%;
     }
     h1, h2, h3, h4, h5, h6 {
@@ -80,13 +91,18 @@
     blockquote {
       margin: 1em 0 1em 1.7em;
       padding-left: 1em;
-      border-left: 2px solid #e6e6e6;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
       color: #606060;
+      color: light-dark(#606060, #b6b6b6);
     }
     code {
-      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
+      hyphens: manual;
     }
     pre {
       margin: 1em 0;
@@ -102,8 +118,8 @@
      overflow: visible;
     }
     hr {
-      background-color: #1a1a1a;
       border: none;
+      border-top: 1px solid currentColor;
       height: 1px;
       margin: 1em 0;
     }
@@ -120,11 +136,11 @@
     }
     tbody {
       margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
     }
     th {
-      border-top: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
       padding: 0.25em 0.5em 0.25em 0.5em;
     }
     td {
@@ -146,24 +162,44 @@
     #TOC a:not(:hover) {
       text-decoration: none;
     }
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
+<nav id="TOC" role="doc-toc" aria-label="Contents">
+<ul>
+<li><a href="#edsharp-questions-and-answers"
+id="toc-edsharp-questions-and-answers">EdSharp Questions and Answers</a>
+<ul>
+<li><a href="#getting-started" id="toc-getting-started">Getting
+Started</a></li>
+<li><a href="#documents" id="toc-documents">Documents</a></li>
+<li><a href="#writing" id="toc-writing">Writing</a></li>
+<li><a href="#code" id="toc-code">Code</a></li>
+<li><a href="#the-ai-features" id="toc-the-ai-features">The AI
+Features</a></li>
+<li><a href="#screen-readers" id="toc-screen-readers">Screen
+Readers</a></li>
+<li><a href="#problems" id="toc-problems">Problems</a></li>
+</ul></li>
+</ul>
+</nav>
 <main>
 <h1 id="edsharp-questions-and-answers">EdSharp Questions and
 Answers</h1>
@@ -204,7 +240,7 @@ help with that; it needs optical character recognition first. EdSharp
 says so rather than handing you an empty file.</p>
 <h3 id="how-do-i-save-as-something-else">How do I save as something
 else?</h3>
-<p>Alt+Shift+E, Export Format, writes the document out as a Word
+<p>Alt+Shift+X, Export Format, writes the document out as a Word
 document, a web page, a slide deck, plain text, and more. Control+T
 converts the document in place.</p>
 <h3 id="can-i-make-powerpoint-slides">Can I make PowerPoint slides?</h3>
@@ -219,8 +255,8 @@ spell checker could be started. What now?</h3>
 <p>The message names the file it looked for. The dictionary lives in the
 Dictionaries folder beside EdSharp, and the installer puts it there;
 reinstalling restores it. If you have Microsoft Word and would rather
-use its checker, set the SpellChecker option to Word with Configuration
-Options, Alt+Shift+C.</p>
+use its checker, set the SpellChecker option to Word with Edit Settings,
+Alt+Shift+E.</p>
 <h3 id="does-the-spell-checker-learn-words">Does the spell checker learn
 words?</h3>
 <p>Yes. Add to Dictionary in the spell check dialog puts the word in a
@@ -256,9 +292,9 @@ wrong error.</h3>
 first one the compiler printed — compilers group warnings and errors as
 they please. Fix it and press Control+F5 again.</p>
 <h3 id="what-is-the-snippet-console">What is the snippet console?</h3>
-<p>Control+Shift+G opens a prompt where the editor window is in scope as
-frm and its text box as rtb. Type an expression to see its value, or a
-statement to change the document. Whatever works there works in a
+<p>Control+Shift+F12 opens a prompt where the editor window is in scope
+as frm and its text box as rtb. Type an expression to see its value, or
+a statement to change the document. Whatever works there works in a
 snippet, which is the point. There are two, JScript and C#, chosen by
 which compiler you have picked.</p>
 <h3
