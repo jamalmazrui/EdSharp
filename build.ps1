@@ -96,8 +96,9 @@ $sHunspellVersion = "7.0.1"
 # fix in the kit reaches EdSharp on its next build.
 # Elevate.cs travels with Lbc.cs: Lbc's Help box carries the version section
 # and the F11 update offer through it.
-$lDllSources = @("Elevate.cs", "Inix.cs", "KeyMap.cs", "KeyName.cs", "Lbc.cs", "Log.cs", "Mdi.cs", "Paths.cs", "Say.cs", "Util.cs", "Web.cs")
-$lExeReferences = @("System.dll", "System.Core.dll", "System.Data.dll", "System.Drawing.dll", "System.IO.Compression.dll", "System.Web.dll", "System.Windows.Forms.dll", "System.Xml.dll", "Microsoft.VisualBasic.dll")
+# Conversion.cs and Table.cs (kit 1.76.0): every file conversion goes through the kit.
+$lDllSources = @("Conversion.cs", "Elevate.cs", "Inix.cs", "KeyMap.cs", "KeyName.cs", "Lbc.cs", "Log.cs", "Mdi.cs", "Paths.cs", "Say.cs", "Table.cs", "Util.cs", "Web.cs")
+$lExeReferences = @("System.dll", "System.Core.dll", "System.Data.dll", "System.Drawing.dll", "System.IO.Compression.dll", "System.IO.Compression.FileSystem.dll", "System.Web.dll", "System.Windows.Forms.dll", "System.Xml.dll", "Microsoft.VisualBasic.dll")
 # UI Automation, which the support sources use (System.Windows.Automation and
 # the provider interfaces such as IRawElementProviderSimple). On a machine
 # without the .NET Framework Developer Pack these assemblies live in the WPF
@@ -183,6 +184,13 @@ foreach ($sShared in @("buildTutorials.cmd", "buildTutorials.ps1", "check.cmd", 
 $sExecDir = Join-Path $sScriptDir "exec"
 if (-not (Test-Path -LiteralPath $sExecDir)) { New-Item -ItemType Directory -Path $sExecDir -Force | Out-Null }
 writeLog "Output folder: $sExecDir"
+# THE KIT'S ROUTING TABLE GOES BESIDE THE PROGRAM (kit 1.76.0): Conversion reads
+# exec\conversions.inix to choose the way for each conversion. Without it
+# nothing converts, so a missing table stops the build here.
+$sTableFrom = Join-Path $HomerDev "exec\conversions.inix"
+if (-not (Test-Path -LiteralPath $sTableFrom)) { throw "The kit has no exec\conversions.inix at $HomerDev. Run build in the kit, then build again." }
+Copy-Item -LiteralPath $sTableFrom -Destination (Join-Path $sExecDir "conversions.inix") -Force
+writeLog "Copied conversions.inix from the kit into exec."
 
 
 function runTool($sExeFile, $lArguments, $sPurpose) {

@@ -143,6 +143,8 @@ Source: "EdSharp.ico";        DestDir: "{app}"; Flags: ignoreversion skipifsourc
 ; EdSharp.js by the build, loaded by reflection at run time. It is NOT a
 ; C# support library -- those sources compile into EdSharp.exe itself.
 Source: "exec\EdSharp.dll";        DestDir: "{app}"; Flags: ignoreversion
+; The kit's conversion routes, read by Conversion beside the program (kit 1.76.0).
+Source: "exec\conversions.inix";   DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp.js";         DestDir: "{app}"; Flags: ignoreversion
 Source: "EdSharp.manifest";   DestDir: "{app}"; Flags: ignoreversion
 Source: "build.cmd";   DestDir: "{app}"; Flags: ignoreversion

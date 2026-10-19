@@ -2,6 +2,15 @@
 
 
 
+## 19 October 2026 -- Files convert through the Homer kit
+
+- **Open Other Format, Text Convert and Export use the kit's shared conversions,** the same code as FileDir and the other Homer apps. Text comes straight out of Word, OpenDocument, Excel and PowerPoint files, Pandoc handles the markup formats, and a PDF keeps its headings, lists and tables through the kit's PDF route, as before. Microsoft Office is the last resort, with one Alert box when it is missing.
+- **Your Import and Export commands still work** for targets the kit does not cover, such as MediaWiki, LaTeX and braille.
+- **Export's .doc choice goes through the kit.** It still needs Microsoft Word, the only program that writes a 1997 Word file. A document of a type the kit does not know, such as a .cs file, is exported as plain text.
+- **Export to Word 2003 XML is retired.** The format was replaced by .docx in 2007, which EdSharp exports through Pandoc.
+- **The old Word text readers are gone,** with their code for PowerPoint and Excel, which nothing used.
+- **The build needs HomerDev 1.76.0 or later.**
+
 ## 19 October 2026 -- The suite's shared commands and the kit's log
 
 - **Four commands now run the same code as every Homer app,** the kit's SuiteCommands:

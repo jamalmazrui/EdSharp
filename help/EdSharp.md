@@ -133,7 +133,7 @@ File converters may be configured through the Manual Options command, Alt+Shift+
 
 To configure a converter, specify the command line for converting an extension from a source, non-text format to a target, text format.  The following variables may be used:\
 
-EdSharp comes with the `2htm` utility, in `Convert\2htm`. It uses it, through the `Convert\any2txt.cmd` wrapper, to get plain text out of many document formats: Word (`.docx`, `.doc`, `.rtf`, `.odt`), PDF, Excel (`.xlsx`, `.xls`), PowerPoint (`.pptx`, `.ppt`), HTML, CSV, JSON and more.  This replaces the older `GetText.exe`, which hung on modern Windows, and the separate converters for Office and HTML text.  Markdown and other light markup are still converted with Pandoc.
+EdSharp converts documents with the shared conversion code of the Homer kit, the same code every Homer app uses. A table beside the program, conversions.inix, picks the way for each kind of file. Text comes straight out of Word, OpenDocument, Excel and PowerPoint files with no other program. Pandoc handles Markdown, web pages, e-books and rich text. A free PDF reader handles PDF. Microsoft Office is used only as the last resort, and an Alert box says so when it is missing. The Import section of your settings still adds targets the kit does not cover, such as MediaWiki and LaTeX, and any commands of your own.
 
 - %ProgDir% = Full path of the directory containing the EdSharp.exe program
 - %Source% = Full path of the source file
@@ -164,7 +164,7 @@ As usual, press Control+S to save.  Press Control+Shift+S to Save As, giving the
 
 When saving text to a file, EdSharp checks whether any character has a Unicode number greater than 255, which means that more than one byte is needed to represent it.  If so, the file is saved with a UTF-8 encoding, the most common form of Unicode for storing files on disk.  Otherwise, the default encoding of the computer is used, e.g., Latin 1.
 
-Alt+Shift+E saves a file in another format.  The built-in choices are ASCII format, which removes characters with ANSI codes above 127; Mac format, whose line break is \r; and Unix format, whose line break is \n.  Through Microsoft Word's converters, it also offers .doc, .htm, .rtf and .xml.  You can add other converters by editing the Export section with the Manual Options command, Alt+Shift+M.  The syntax is like that of the Import section, explained elsewhere.  The Other choice lets you pick a character encoding for the new file, from a list of over 100.
+Alt+Shift+E saves a file in another format.  The built-in choices are ASCII format, which removes characters with ANSI codes above 127; Mac format, whose line break is \r; and Unix format, whose line break is \n.  It also offers .htm and .rtf, and .doc, the 1997 Word format, through the kit's shared conversions; only Microsoft Word can write a .doc file, so that choice needs Word.  You can add other converters by editing the Export section with the Manual Options command, Alt+Shift+M.  The syntax is like that of the Import section, explained elsewhere.  The Other choice lets you pick a character encoding for the new file, from a list of over 100.
 
 Use the Run command, F5, to run the current file as if you had typed its name in the Windows Start, Run dialog.  It is also like pressing Enter on its name in Windows Explorer, which opens it with the program linked to its extension.  For example, pressing F5 when the current document is a .htm file opens it in your web browser.
 
@@ -1050,7 +1050,7 @@ I thank Jaffer for contributing C++ and PHP snippets.
 ### Third Party Utilities
 PDF conversions use the open source [Xpdf](<http://www.foolabs.com/xpdf/home.html>) software.
 
-Text extraction from document formats uses the open source [2htm](<https://github.com/JamalMazrui/2htm>) utility, bundled in the EdSharp\Convert\2htm folder with its license.  Markdown and other lightweight markup are converted with [Pandoc](<https://pandoc.org>).
+File conversions use the Homer kit's shared conversion code, built on [Pandoc](<https://pandoc.org>) and free readers, with Microsoft Office only as the last resort.
 
 I welcome feedback, which helps EdSharp improve over time.  When reporting a problem, the more specifics the better, including steps to reproduce it, if possible.
 

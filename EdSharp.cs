@@ -2527,7 +2527,7 @@ hl.RemoveLike(sMatch);
 sMatch = "^" + sExt + @"2\w+";
 hl2 = hl2.FindLike(sMatch);
 hl.AddRange(hl2);
-hl.AddRange("asc|doc|htm|mac|rtf|unx|xml");
+hl.AddRange("asc|doc|htm|mac|rtf|unx");
 // do not offer original format, since already available with Control+O
 if (sExt.Length > 0 && !hl.Contains(sExt)) hl.Add(sExt + "2" + sExt);
 // hl.Add("Other");
@@ -11091,9 +11091,8 @@ public override string ToString() { return sText; }
 
 // VB: convenience methods ported from the former VB.vb support module,
 // translated to C# with late-bound COM through dynamic so no separate
-// VB.dll is needed. The Office text extractors (Xls2Txt, Ppt2Txt) and the
-// Word automation are legacy COM, and are candidates to be replaced by
-// Pandoc in a later stage. LookupTerm and GetLinks drive Internet Explorer,
+// VB.dll is needed. Converting files is the kit's Conversion (1.76.0); the
+// Word automation left here serves spelling, the thesaurus and mail. LookupTerm and GetLinks drive Internet Explorer,
 // which is removed from current Windows; they are kept only for source
 // compatibility and will likely be retired.
 public class VB {
@@ -11187,143 +11186,6 @@ catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); }
 } // WordQuit method
 
 // ---- Office text extractors (legacy COM) ----
-public static object Ppt2Txt(string sSource, string sTarget) {
-dynamic app = null;
-bool bGet = false;
-int iAlerts = 0;
-try { app = Marshal.GetActiveObject("PowerPoint.Application"); iAlerts = (int) app.DisplayAlerts; bGet = true; }
-catch { app = Activator.CreateInstance(Type.GetTypeFromProgID("PowerPoint.Application")); bGet = false; }
-app.Visible = true; // must be visible for COM automation
-app.DisplayAlerts = false;
-dynamic ppts = app.Presentations;
-dynamic ppt = PowerPointOpen(ppts, sSource);
-
-string s = ppt.Name;
-string sText = Path.GetFileNameWithoutExtension(s);
-dynamic slides = ppt.Slides;
-int iSlideCount = (int) slides.Count;
-sText = sText + "\r\n" + iSlideCount.ToString() + " Slide" + (iSlideCount == 1 ? "" : "s");
-
-int iSlide = 1;
-while (iSlide <= iSlideCount) {
-dynamic slide = slides.Item(iSlide);
-sText = sText + "\r\n" + "\r\n" + "----------" + "\r\n" + sFormFeed + "\r\n" + "Slide " + iSlide.ToString();
-
-dynamic notes = slide.NotesPage;
-int iNoteCount = (int) notes.Count;
-bool bNoteLabel = true;
-int iNote = 1;
-while (iNote <= iNoteCount) {
-dynamic note = notes.Item(iNote);
-dynamic ships = note.Shapes;
-int iShipCount = (int) ships.Count;
-int iShip = 1;
-while (iShip <= iShipCount) {
-dynamic ship = ships.Item(iShip);
-if ((int) ship.HasTextFrame != 0) {
-dynamic frame = ship.TextFrame;
-dynamic text = frame.TextRange;
-s = text.Text;
-if (s != "") {
-if (bNoteLabel) { sText = sText + "\r\n" + "Notes:" + "\r\n" + s; bNoteLabel = false; }
-else sText = sText + "\r\n" + s;
-}
-}
-iShip = iShip + 1;
-}
-sText = sText.Trim();
-iNote = iNote + 1;
-}
-
-dynamic shapes = slide.Shapes;
-int iShapeCount = (int) shapes.Count;
-bool bOutlineLabel = true;
-int iShape = 1;
-while (iShape <= iShapeCount) {
-dynamic shape = shapes.Item(iShape);
-s = "";
-if ((int) shape.HasTextFrame != 0) {
-dynamic textFrame = shape.TextFrame;
-dynamic textRange = textFrame.TextRange;
-s = textRange.Text;
-if (s != "" && s.ToLower() != "outline") {
-if (bOutlineLabel) { sText = sText + "\r\n" + "Outline:" + "\r\n" + s; bOutlineLabel = false; }
-else sText = sText + "\r\n" + s;
-}
-}
-if ((int) shape.HasTextFrame == 0 || s == "") {
-s = shape.AlternativeText;
-if (s != "") sText = sText + "\r\n" + s;
-int iType = (int) shape.Type;
-if (iType == iMsoTextEffect) {
-dynamic textEffect = shape.TextEffect;
-s = textEffect.Text;
-if (s != "" && s != (string) shape.AlternativeText) sText = sText + "\r\n" + "Text Effect: " + s;
-}
-}
-sText = sText.Trim();
-iShape = iShape + 1;
-}
-sText = sText.Trim();
-iSlide = iSlide + 1;
-}
-
-File.WriteAllText(sTarget, sText);
-ppt.Saved = true;
-PowerPointClose(ppt);
-Marshal.ReleaseComObject(ppt);
-Marshal.ReleaseComObject(ppts);
-if (bGet) { app.DisplayAlerts = iAlerts; }
-else PowerPointQuit(app);
-Marshal.ReleaseComObject(app);
-return File.Exists(sTarget);
-} // Ppt2Txt method
-
-public static bool Xls2Txt(string sSource, string sTarget) {
-dynamic app = null;
-bool bGet = false;
-int iAlerts = 0, iUpdating = 0, iVisible = 0;
-try {
-app = Marshal.GetActiveObject("Excel.Application");
-bGet = true;
-iVisible = (int) app.Visible;
-iAlerts = (int) app.DisplayAlerts;
-iUpdating = (int) app.ScreenUpdating;
-}
-catch { app = Activator.CreateInstance(Type.GetTypeFromProgID("Excel.Application")); bGet = false; }
-app.Visible = false;
-app.DisplayAlerts = false;
-app.ScreenUpdating = false;
-dynamic xlss = app.Workbooks;
-dynamic xls = ExcelOpen(xlss, sSource);
-dynamic sheets = xls.Sheets;
-int iSheetCount = (int) sheets.Count;
-int iSheet = 1;
-string sBook = "";
-while (iSheet <= iSheetCount) {
-dynamic sheet = sheets.Item(iSheet);
-if (File.Exists(sTarget)) File.Delete(sTarget);
-ExcelSaveAs(xls, sTarget, iXlTextFormat);
-string sName = "Sheet " + iSheet.ToString();
-if (((string) sheet.Name).Length > 0) sName = sName + ": " + sheet.Name;
-ExcelClose(xls);
-string s = sName + "\r\n" + File.ReadAllText(sTarget).Trim();
-sBook = sBook + (iSheet > 1 ? "\r\n" + "----------" + "\r\n" + sFormFeed + "\r\n" : "") + s;
-xls = ExcelOpen(xlss, sSource);
-sheets = xls.Sheets;
-iSheet = iSheet + 1;
-}
-if (File.Exists(sTarget)) File.Delete(sTarget);
-File.WriteAllText(sTarget, sBook);
-ExcelClose(xls);
-Marshal.ReleaseComObject(xls);
-Marshal.ReleaseComObject(xlss);
-if (bGet) { app.Visible = iVisible; app.DisplayAlerts = iAlerts; app.ScreenUpdating = iUpdating; }
-else ExcelQuit(app);
-Marshal.ReleaseComObject(app);
-return File.Exists(sTarget);
-} // Xls2Txt method
-
 // ---- Web helpers ----
 // DownloadFile: simple authenticated download. Modern WebClient replaces
 // the former My.Computer.Network.DownloadFile.
@@ -11788,6 +11650,15 @@ string sExt = Path.GetExtension(sSource).ToLower().TrimStart('.');
 string sMatch = "^" + sExt + @"(2\w+)?$";
 if (bTextOnly) sMatch = "^" + sExt + @"2txt$";
 hl.KeepLike(sMatch);
+// THE KIT'S ROUTES ARE OFFERED TOO (kit 1.76.0). Every Homer app converts
+// through the kit's Conversion and exec\conversions.inix, so a PDF, Word,
+// slide, sheet or e-book file is read the same way in EdSharp as in FileDir.
+// [Import] keeps the targets the kit does not cover, such as MediaWiki, LaTeX
+// and braille, and the user's own commands.
+foreach (string sKitTo in new string[] {"txt", "md", "htm", "rtf", "csv"}) {
+if (bTextOnly && sKitTo != "txt") continue;
+if (sKitTo != sExt && Homer.Conversion.hasRoute("x." + sExt, sKitTo)) hl.AddUniqueRange(sExt + "2" + sKitTo);
+}
 // The bare extension entry and a real <ext>2txt converter both display
 // as "txt", and choosing the bare one opens the file RAW -- a duplicated
 // row whose twin quietly does something different (the Open Other Format
@@ -11848,6 +11719,19 @@ if (sTempExt != sResult) sTargetExt = sTempExt;
 else sResult = sExt;
 // Remember the chosen target so the next import's list starts there.
 if (sTargetExt != null && sTargetExt.Length > 0) App.WriteData("ImportTarget", sTargetExt);
+// THE KIT FIRST, where it has a way: the one copy of every conversion. Only a
+// target it does not know runs the [Import] command below.
+if (sResult != sExt && sTargetExt != null && sTargetExt.Length > 0 && Homer.Conversion.hasRoute(sSource, "x." + sTargetExt)) {
+string sKitTarget = Path.ChangeExtension(sTarget, "." + sTargetExt);
+if (File.Exists(sKitTarget)) File.Delete(sKitTarget);
+App.TempFiles.Add(sKitTarget);
+App.Frame.AddMessage("Converting");
+string sKitError;
+if (Homer.Conversion.convert(sSource, sKitTarget, out sKitError) && File.Exists(sKitTarget)) sText = Util.ConvertedFile2String(sKitTarget);
+else Dialog.Show("Error", "The conversion did not work: " + sKitError + "\n\nThe run log records each step:\n" + App.LogFile);
+App.Frame.Activate();
+return Util.Convert2UnixLineBreak(sText);
+}
 string sCommand = Ini.ReadValue(App.IniFile, "Import", sResult, "");
 if (sCommand.Length > 0) {
 // Dialog.Show(sTargetExt, "target extension");
@@ -11974,26 +11858,6 @@ switch (sExt) {
 case "rtf" :
 if (iConvert > 0) iConvert = -1;
 break;
-//Use OfficeConvert utilities
-/*
-case "doc" :
-case "docx" :
-App.Frame.AddMessage("Converting");
-sText = WordFile2String(sSource);
-break;
-case "ppt" :
-case "pptx" :
-App.Frame.AddMessage("Converting");
-VB.Ppt2Txt(sSource, sTarget);
-sText = Util.File2String(sTarget);
-break;
-case "xls" :
-case "xlsx" :
-App.Frame.AddMessage("Converting");
-VB.Xls2Txt(sSource, sTarget);
-sText = Util.File2String(sTarget);
-break;
-*/
 default :
 // Disable Word conversions of unknown extensions
 // if (iConvert == 1) {
@@ -12003,7 +11867,13 @@ iConvert = 0;
 }
 else {
 App.Frame.AddMessage("Converting");
-sText = WordFile2String(sSource);
+// Through the kit (1.76.0), which uses Pandoc for rtf and Word only as its
+// last resort, with an Alert box when Word is missing.
+string sRtfText = Path.ChangeExtension(Path.GetTempFileName(), ".txt");
+App.TempFiles.Add(sRtfText);
+string sRtfError;
+if (Homer.Conversion.convert(sSource, sRtfText, out sRtfError) && File.Exists(sRtfText)) sText = Util.ConvertedFile2String(sRtfText);
+else Dialog.Show("Error", "The conversion did not work: " + sRtfError + "\n\nThe run log records each step:\n" + App.LogFile);
 }
 break;
 }
@@ -12013,53 +11883,6 @@ App.Frame.Activate();
 sText = Util.Convert2UnixLineBreak(sText);
 return sText;
 } // ConvertFile2String method
-
-public static string WordFile2String(string sSource) {
-bool bCreate, bVisible;
-int iDisplayAlerts;
-bool bAppVisible = false;
-//object oApp = COM.GetOrCreateObject("Word.Application", out bCreate);
-object oApp = COM.WordAccess(out bCreate);
-bVisible = (bool) COM.GetProperty(oApp, "Visible");
-iDisplayAlerts = (int) COM.GetProperty(oApp, "DisplayAlerts");
-COM.SetProperty(oApp, "Visible", bAppVisible);
-COM.SetProperty(oApp, "DisplayAlerts", 0);
-object oDocs =COM.GetProperty(oApp, "Documents");
-object oDoc = VB.WordOpen(oDocs, sSource, bAppVisible);
-string sTarget = Path.GetTempFileName();
-if (File.Exists(sTarget)) File.Delete(sTarget);
-object oSelection = COM.GetProperty(oApp, "Selection");
-int iLength = (int) COM.GetProperty(oSelection, "StoryLength");
-COM.CallMethod(oSelection, "SetRange", new object[] {0, iLength});
-string sText = (string) COM.GetProperty(oSelection, "Text");
-COM.Release(ref oSelection);
-sText = sText.Trim();
-sText = Util.RegExpReplaceCase(sText, "\r\f", "\f\r");
-sText = Util.Convert2UnixLineBreak(sText);
-sText = Util.RegExpReplaceCase(sText, MdiFrame.SB, MdiFrame.SectionBreak);
-//sText = Util.Convert2WinLineBreak(sText);
-Util.String2File(sText, sTarget);
-//VB.WordSaveAs(oDoc, sTarget, 2);
-VB.WordClose(oDoc);
-COM.Release(ref oDoc);
-COM.Release(ref oDocs);
-
-if (bCreate) {
-//VB.WordQuit(oApp);
-}
-else {
-COM.SetProperty(oApp, "Visible", bVisible);
-COM.SetProperty(oApp, "DisplayAlerts", iDisplayAlerts);
-}
-
-COM.Release(ref oApp);
-if (File.Exists(sTarget)) {
-string sReturn = Util.File2String(sTarget);
-File.Delete(sTarget);
-return sReturn;
-}
-else return "";
-} // WordFile2String();
 
 public static object WordOpen(object oDocs, string sFile, bool bAppVisible) {
 bool bConfirmConversions = false;
@@ -12167,7 +11990,7 @@ o = null;
 
 public static object WordAccess(out bool bCreate) {
 string sMessage = "Initializing Microsoft Word";
-object oApp = GetOrCreateObject("Word.Application", out bCreate, sMessage);
+object oApp = GetOrCreateObject("Word.Application", out bCreate, sMessage); // homer: not a conversion -- Word's spelling, thesaurus and mail
 if (bCreate) App.WordCreated = true;
 return oApp;
 } // WordAccess method
@@ -12177,7 +12000,7 @@ object oApp = null;
 bool bLoop = true;
 while (bLoop) {
 try {
-oApp = GetObject("Word.Application");
+oApp = GetObject("Word.Application"); // homer: not a conversion -- closing the Word that spelling or mail started
 //Util.Say("quit");
 //WordQuit(oApp);
 //break;
@@ -12190,39 +12013,6 @@ break;
 }
 Util.TerminateProcess("WinWord");
 } // WordExit method;
-
-public static bool WordSource2TargetFormat(string sSource, string sTarget, string sFormat) {
-int iFormat = 2; // text;
-if (sFormat == "doc") iFormat = 0;
-else if (sFormat == "htm") iFormat = 10;
-else if (sFormat == "xml") iFormat = 11;
-bool bAppVisible = false;
-bool bCreate;
-object oApp = COM.WordAccess(out bCreate);
-bool bVisible = (bool) COM.GetProperty(oApp, "Visible");
-int iDisplayAlerts = (int) COM.GetProperty(oApp, "DisplayAlerts");
-COM.SetProperty(oApp, "Visible", bAppVisible);
-COM.SetProperty(oApp, "DisplayAlerts", 0);
-object oDocs = COM.GetProperty(oApp, "Documents");
-object oDoc = VB.WordOpen(oDocs, sSource, bAppVisible);
-object oSelection = COM.GetProperty(oApp, "Selection");
-//object oRange = COM.GetProperty(oSelection, "Range");
-int iLength = (int) COM.GetProperty(oSelection, "StoryLength");
-object oRange = COM.CallMethod(oDoc, "Range", new object[] {0, iLength});
-COM.CallMethod(oRange, "AutoFormat");
-VB.WordSaveAs(oDoc, sTarget, iFormat);
-COM.Release(ref oRange);
-VB.WordClose(oDoc);
-COM.Release(ref oDoc);
-COM.Release(ref oDocs);
-if (!bCreate) {
-COM.SetProperty(oApp, "Visible", bVisible);
-COM.SetProperty(oApp, "DisplayAlerts", iDisplayAlerts);
-}
-COM.Release(ref oApp);
-App.Frame.Activate();
-return File.Exists(sTarget);
-} // WordSource2TargetFormat method
 
 public static string GetUrl() {
 string sUrl = "";
@@ -14413,6 +14203,40 @@ if (sSourceFormat.Length > 0) sSource = Path.ChangeExtension(sSource, sSourceFor
 
 Util.String2FileA(sText, sSource);
 sSource = Win32.GetShortPath(sSource);
+// THE KIT FIRST (1.76.0). A built-in choice (doc, htm, the document's own
+// format) or an [Export] entry the kit can serve goes through Conversion; Word
+// is reached only through the kit's officecom, its last resort. A document
+// whose own type has no route, such as a .cs file, goes as plain text.
+string sKeyTo = Util.RegExpReplaceCase(sTargetFormat, @"^\w+2", "");
+bool bKeyed = sKeyTo != sTargetFormat;
+if (!bKeyed || Util.Equiv(sKeyTo, Path.GetExtension(sTarget).TrimStart('.'))) {
+string sKitSource = sSource;
+if (!Homer.Conversion.hasRoute(sKitSource, sTarget) && !bKeyed && !Util.Equiv(Path.GetExtension(sSource), ".rtf")) {
+string sAsText = Path.ChangeExtension(sSource, ".txt");
+if (Homer.Conversion.typeOf(sSource) == Homer.Conversion.typeOf(sTarget) || Homer.Conversion.hasRoute(sAsText, sTarget)) {
+if (!Util.Equiv(sAsText, sSource)) File.Copy(sSource, sAsText, true);
+sKitSource = sAsText;
+}
+}
+bool bSame = Homer.Conversion.typeOf(sKitSource) == Homer.Conversion.typeOf(sTarget);
+if (bSame || Homer.Conversion.hasRoute(sKitSource, sTarget)) {
+App.Frame.AddMessage("Converting");
+string sKitKept = "";
+if (File.Exists(sTarget)) { sKitKept = Homer.Util.recoveryPath(sTarget); File.Move(sTarget, sKitKept); }
+string sKitError = "";
+bool bMade;
+if (bSame) { File.Copy(sKitSource, sTarget, true); bMade = true; }
+else bMade = Homer.Conversion.convert(sKitSource, sTarget, out sKitError) && File.Exists(sTarget);
+if (bMade && sKitKept != "") { try { File.Delete(sKitKept); } catch (Exception) {} }
+if (!bMade) {
+if (File.Exists(sTarget)) File.Delete(sTarget);
+if (sKitKept != "") { try { File.Move(sKitKept, sTarget); } catch (Exception oError) { Log("The earlier " + sTarget + " could not be put back; it is kept at " + sKitKept + ": " + oError.Message); } }
+Dialog.Show("Error", "The conversion did not work: " + sKitError + "\n\nThe run log records each step:\n" + App.LogFile);
+}
+App.Frame.Activate();
+return File.Exists(sTarget);
+}
+}
 // Dialog.Show(sSource, Util.File2String(sSource));
 string sCommand = Ini.ReadValue(App.IniFile, "Export", sTargetFormat, "");
 //Dialog.Show(sCommand);
@@ -14440,9 +14264,7 @@ Dialog.Show("Error", "The conversion produced no output.\nCommand line:\n" + sCo
 // Converted: the earlier file set aside is no longer needed.
 else if (sKept != "") { try { File.Delete(sKept); } catch (Exception oError) { Log("The earlier copy at " + sKept + " could not be removed: " + oError.Message); } }
 }
-else {
-COM.WordSource2TargetFormat(sSource, sTarget, sTargetFormat);
-}
+else Dialog.Show("Error", "No way to export to ." + sKeyTo + " is known. The [Export] section of EdSharp.inix can name a command for it.");
 //Dialog.Show("Error", "Command line:\n" + sCommand);
 App.Frame.Activate();
 return File.Exists(sTarget);

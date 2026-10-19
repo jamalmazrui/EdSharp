@@ -1085,6 +1085,12 @@ def checkConversions():
         if os.path.dirname(os.path.abspath(sPath)) != os.path.abspath(sRoot): continue
         for iLine, sLine in enumerate(readText(sPath).splitlines(), 1):
             if sLine.strip().startswith("//"): continue
+            # NOT A CONVERSION (1.76.0): Office used for something else, such as Word's spelling or thesaurus, is
+            # marked "// homer: not a conversion -- <why>" on its line. It is logged with its reason, never counted.
+            oKept = re.search(r"//\s*homer:\s*not a conversion\b(.*)$", sLine, re.I)
+            if oKept:
+                logLine("conversion: %s line %d kept, not a conversion%s" % (os.path.basename(sPath), iLine, oKept.group(1).rstrip()))
+                continue
             for sPattern, sWhat in lsPatterns:
                 if re.search(sPattern, sLine, re.I):
                     lsHits.append("%s line %d: %s" % (os.path.basename(sPath), iLine, sWhat))
