@@ -2,6 +2,16 @@
 
 
 
+## 19 October 2026 -- The suite's shared commands and the kit's log
+
+- **Four commands now run the same code as every Homer app,** the kit's SuiteCommands:
+  - **Say Clipboard** (Alt+Apostrophe) says the text, or how many files are copied and their names. One press speaks, a quick second press spells, and a third shows the answer in a window you can review and copy.
+  - **Say Time** (Alt+SemiColon) says the time, then the date.
+  - **History of Changes** (Shift+F1) opens this history as a web page, as in the other apps, instead of a text file in an EdSharp window.
+  - **Copy Log** (Control+F12) puts the log on the clipboard as a file and as its path, as before.
+- **The session log is written by the kit.** It is now named EdSharp-yyyyMMdd-HHmmss.log, as every Homer app's log is. It opens with the full environment, including whether JAWS and NVDA are running. EdSharp's own lines about the outside commands it runs still go into it.
+- **EdSharp needs HomerDev 1.74.0 or later to build.**
+
 ## 19 October 2026 -- EdSharp on the Homer framework's key router
 
 - **Every key goes through the Homer suite's one router.** Each command EdSharp declares is now also a command in the kit's KeyMap, and EdSharp hands its keys to KeyMap.route, as every app on the Homer framework does. The document is marked as EdSharp's editor, so its own keys -- Shift+Space, Control+C and the rest -- still work while it has focus, and an unbound key still types. A quick second press of a key is counted the same way in every Homer app, and the kit's checks see EdSharp's keys like the others'.

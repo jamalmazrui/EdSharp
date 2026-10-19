@@ -1084,7 +1084,9 @@ def checkSuite():
     bOnFrame = any("MdiFrame.runOrExport" in readText(sPath) for sPath in sourceFiles() if sPath.lower().endswith(".cs"))
     if not bInManifest and not bOnFrame:
         return finding("suite", "skip", "%s is not in the suite manifest and not on the Homer frame" % sApp)
-    lsArgs = [sys.executable, sChecker, "--gate", "--app", sApp]
+    # The project folder goes along, so checkKeys can confirm that each command
+    # the manifest marks shared= really calls the kit's SuiteCommands (1.74.0).
+    lsArgs = [sys.executable, sChecker, "--gate", "--app", sApp, "--source", sRoot]
     if bOnFrame:
         sExe = next((s for s in (os.path.join(sRoot, "exec", sApp + ".exe"), os.path.join(sRoot, sApp + ".exe")) if os.path.isfile(s)), "")
         if not sExe:

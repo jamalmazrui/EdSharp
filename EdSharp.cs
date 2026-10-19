@@ -103,28 +103,16 @@ MessageBox.Show(sReport, "EdSharp JAWS scripts: " + iCopied + " copied, " + iCom
 return;
 }
 }
-// Runtime log, in the Homer Tools convention: one file per session,
-// EdSharp_<timestamp>.log, beside the setup log. It opens with the
-// version and environment, and Util.Log adds a line for every outside
-// command EdSharp runs, with its exit code -- so a failed conversion
-// can be diagnosed from the log instead of guessed at. The newest
-// thirty session logs are kept; older ones are pruned.
+// RUNTIME LOG, BY THE KIT (kit 1.74.0). The kit's Homer.Log writes this
+// session's log as every Homer app does: %LOCALAPPDATA%\EdSharp\logs\
+// EdSharp-yyyyMMdd-HHmmss.log, opening with the version and the environment --
+// Windows, the CLR, JAWS and NVDA -- and pruning old sessions itself. Util.Log
+// adds a line through it for every outside command EdSharp runs, with its exit
+// code, so a failed conversion can be diagnosed from the log instead of guessed
+// at. App.LogFile keeps the path for Copy Log.
 try {
-string sLogDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"EdSharp\logs");
-Directory.CreateDirectory(sLogDir);
-App.LogFile = Path.Combine(sLogDir, "EdSharp_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".log");
-StringBuilder sbHeader = new StringBuilder();
-sbHeader.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")).Append("  EdSharp ").Append(BuildVersion.Version).Append(" starting.\r\n");
-sbHeader.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")).Append("  Program: ").Append(Application.ExecutablePath).Append("\r\n");
-sbHeader.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")).Append("  Arguments: ").Append(String.Join(" ", cmdLineArgs)).Append("\r\n");
-sbHeader.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")).Append("  Windows: ").Append(Environment.OSVersion.ToString()).Append(", 64-bit process: ").Append(Environment.Is64BitProcess).Append("\r\n");
-sbHeader.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")).Append("  Working directory: ").Append(Environment.CurrentDirectory).Append("\r\n");
-File.AppendAllText(App.LogFile, sbHeader.ToString());
-string[] aOldLogs = Directory.GetFiles(sLogDir, "EdSharp_2*.log");
-Array.Sort(aOldLogs);
-for (int iLog = 0; iLog < aOldLogs.Length - 30; iLog++) {
-try { File.Delete(aOldLogs[iLog]); } catch (Exception) {}
-}
+Homer.Log.start("EdSharp");
+App.LogFile = Homer.Log.path;
 }
 catch (Exception) { App.LogFile = ""; }
 
@@ -5351,14 +5339,11 @@ if (menuItem == menuQueryWindowsOpen) {
 WindowsOpen();
 }
 
+// THE SUITE'S SHARED COMMANDS (kit 1.74.0). Say Clipboard, Say Time, Copy Log
+// and History of Changes run the kit's Homer.SuiteCommands, the same code as in
+// every Homer app: one press speaks, two spell, three show a review window.
 if (menuItem == menuQueryClipboard) {
-sText = Util.GetClipboardText();
-if (sText.Length == 0) sText = "No text!";
-if (this.KeyRepeat % 2 == 0) AddMessage(sText);
-else {
-Util.Spell(sText);
-// SetStatus(sText);
-}
+Homer.SuiteCommands.sayClipboard();
 }
 
 if (menuItem == menuQueryTime || menuItem == menuMiscInsertTime) {
@@ -5370,8 +5355,7 @@ sText = sTime;
 if (sTime.Length > 0 && sDate.Length > 0) sText += " ";
 sText += sDate;
 if (menuItem == menuQueryTime) {
-if (sTime.Length > 0) AddMessage(sTime);
-if (sDate.Length > 0) AddMessage(sDate);
+Homer.SuiteCommands.sayTime();
 }
 else {
 rtb.ReplaceRange(rtb.Index, rtb.Index, sText);
@@ -6632,8 +6616,7 @@ if (!File.Exists(sFile)) { AddMessage("No tutorials are installed"); return; }
 Process.Start(sFile);
 }
 if (menuItem == menuHelpHistoryOfChanges) {
-sFile = Path.Combine(App.ProgramDir, "History.txt");
-OpenOrActivateWindow(sFile, 1);
+Homer.SuiteCommands.openHistory();
 }
 
 if (menuItem == menuHelpSamplePrograms) {
@@ -6682,28 +6665,7 @@ OpenOrActivateWindow(sPicked, 0);
 }
 
 if (menuItem == menuHelpCopyLog) {
-// Put this session's run log path on the clipboard in BOTH formats at
-// once, the way HomerView and FileDir's Copy command do: a file drop
-// list, so Control+V in a new mail message attaches the log file
-// itself, and plain text, so any program that just reads clipboard
-// text gets the path. Both matter; a DataObject carries the two
-// formats together.
-if (App.LogFile == null || App.LogFile.Length == 0 || !File.Exists(App.LogFile)) {
-AddMessage("No log for this session!");
-return;
-}
-try {
-DataObject dataLog = new DataObject();
-System.Collections.Specialized.StringCollection colLogFiles = new System.Collections.Specialized.StringCollection();
-colLogFiles.Add(App.LogFile);
-dataLog.SetFileDropList(colLogFiles);
-dataLog.SetText(App.LogFile);
-Clipboard.SetDataObject(dataLog, true);
-AddMessage("Log path copied");
-}
-catch (Exception ex) {
-Dialog.Show("Copy Log", ex.Message);
-}
+Homer.SuiteCommands.copyLog(App.LogFile);
 }
 
 if (menuItem == menuHelpKeyDescriber) {
@@ -13743,11 +13705,10 @@ sText = Util.RegExpReplaceCase(sText, sMatch, sReplace);
 return sText;
 } // Convert2WinLineBreakMethod
 
-// One line to the session log, timestamped. Never throws; a missing or
-// locked log must not affect the work being logged.
+// One line to the session log, through the kit's Homer.Log, which stamps it.
+// Never throws; a missing or locked log must not affect the work being logged.
 public static void Log(string sMessage) {
-if (App.LogFile == null || App.LogFile.Length == 0) return;
-try { File.AppendAllText(App.LogFile, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "  " + sMessage + "\r\n"); }
+try { Homer.Log.info(sMessage); }
 catch (Exception) {}
 } // Log method
 
