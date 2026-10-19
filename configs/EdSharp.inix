@@ -74,76 +74,40 @@
 ;   * PDF targets use Pandoc's documented method (the .pdf output
 ;     extension selects PDF) and need a LaTeX engine like MiKTeX.
 [Import]
+; THE KIT CONVERTS FIRST (19 October 2026): the entries here are only for targets the Homer kit's
+; conversions do not cover, such as MediaWiki, LaTeX and MDX. Entries the kit serves were removed;
+; a line here for one of its routes would never be reached.
 adoc2htm=pandoc "%SourceLong%" -f asciidoc -t html -s -o %Target%
 adoc2md=pandoc "%SourceLong%" -f asciidoc -t gfm -o %Target%
 adoc2txt=pandoc "%SourceLong%" -f asciidoc -t plain -o %Target%
-csv2inix=%ProgDir%\configs\convert\inixVert.exe "%SourceLong%" %Target% /quiet
-doc2htm=%ProgDir%\configs\convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-doc2html=%ProgDir%\configs\convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-doc2md=%ProgDir%\configs\convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-doc2txt=%ProgDir%\configs\convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-docx2htm=pandoc "%SourceLong%" -f docx -t html -s -o %Target%
-docx2html=pandoc "%SourceLong%" -f docx -t html -s -o %Target%
-docx2md=pandoc "%SourceLong%" -f docx -t gfm -o %Target%
 docx2mw=pandoc "%SourceLong%" -f docx -t mediawiki -o %Target%
 docx2rst=pandoc "%SourceLong%" -f docx -t rst -o %Target%
 docx2tex=pandoc "%SourceLong%" -f docx -t latex -s -o %Target%
-docx2txt=pandoc "%SourceLong%" -f docx -t plain -o %Target%
-epub2htm=pandoc "%SourceLong%" -f epub -t html -s -o %Target%
-epub2html=pandoc "%SourceLong%" -f epub -t html -s -o %Target%
-epub2md=pandoc "%SourceLong%" -f epub -t gfm -o %Target%
 epub2mw=pandoc "%SourceLong%" -f epub -t mediawiki -o %Target%
 epub2tex=pandoc "%SourceLong%" -f epub -t latex -s -o %Target%
-epub2txt=pandoc "%SourceLong%" -f epub -t plain -o %Target%
-htm2md=pandoc "%SourceLong%" -f html -t gfm -o %Target%
 htm2mw=pandoc "%SourceLong%" -f html -t mediawiki -o %Target%
 htm2rst=pandoc "%SourceLong%" -f html -t rst -o %Target%
 htm2tex=pandoc "%SourceLong%" -f html -t latex -s -o %Target%
-htm2txt=pandoc "%SourceLong%" -f html -t plain -o %Target%
-html2md=pandoc "%SourceLong%" -f html -t gfm -o %Target%
 html2mw=pandoc "%SourceLong%" -f html -t mediawiki -o %Target%
 html2rst=pandoc "%SourceLong%" -f html -t rst -o %Target%
 html2tex=pandoc "%SourceLong%" -f html -t latex -s -o %Target%
-html2txt=pandoc "%SourceLong%" -f html -t plain -o %Target%
-md2htm=pandoc "%SourceLong%" -f gfm -t html -s -o %Target%
-md2html=pandoc "%SourceLong%" -f gfm -t html -s -o %Target%
 md2mw=pandoc "%SourceLong%" -f gfm -t mediawiki -o %Target%
 md2rst=pandoc "%SourceLong%" -f gfm -t rst -o %Target%
-md2rtf=pandoc "%SourceLong%" -f gfm -t rtf -s -o %Target%
 md2tex=pandoc "%SourceLong%" -f gfm -t latex -s -o %Target%
-md2txt=pandoc "%SourceLong%" -f gfm -t plain -o %Target%
 md2inix=%ProgDir%\configs\convert\inixVert.exe "%SourceLong%" %Target% /quiet
 mdx2htm=%ProgDir%\configs\convert\mdx2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
 mdx2md=%ProgDir%\configs\convert\inixVert.exe "%SourceLong%" %Target% /quiet
-odt2htm=pandoc "%SourceLong%" -f odt -t html -s -o %Target%
-odt2html=pandoc "%SourceLong%" -f odt -t html -s -o %Target%
-odt2md=pandoc "%SourceLong%" -f odt -t gfm -o %Target%
-odt2txt=pandoc "%SourceLong%" -f odt -t plain -o %Target%
 ; PDF conversion goes one way for every target: pdf2md.cmd reads the
 ; PDF with the free PyMuPDF reader and writes RICH Markdown -- headings,
 ; lists, tables, emphasis -- and EdSharp turns that into HTML or plain
 ; text in the binary, or into a Word document with Pandoc. Nothing here
 ; needs Microsoft Word, and no target is a bare text dump.
-pdf2htm=%ProgDir%\configs\convert\pdf2md.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-pdf2html=%ProgDir%\configs\convert\pdf2md.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-pdf2md=%ProgDir%\configs\convert\pdf2md.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-pdf2txt=%ProgDir%\configs\convert\pdf2md.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-ppt2htm=%ProgDir%\configs\convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-ppt2md=%ProgDir%\configs\convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-ppt2txt=%ProgDir%\configs\convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-pptx2htm=pandoc "%SourceLong%" -f pptx -t html -s -o %Target%
-pptx2md=pandoc "%SourceLong%" -f pptx -t gfm -o %Target%
-pptx2txt=pandoc "%SourceLong%" -f pptx -t plain -o %Target%
 rst2htm=pandoc "%SourceLong%" -f rst -t html -s -o %Target%
 rst2html=pandoc "%SourceLong%" -f rst -t html -s -o %Target%
 rst2md=pandoc "%SourceLong%" -f rst -t gfm -o %Target%
 rst2mw=pandoc "%SourceLong%" -f rst -t mediawiki -o %Target%
 rst2tex=pandoc "%SourceLong%" -f rst -t latex -s -o %Target%
 rst2txt=pandoc "%SourceLong%" -f rst -t plain -o %Target%
-rtf2htm=pandoc "%SourceLong%" -f rtf -t html -s -o %Target%
-rtf2html=pandoc "%SourceLong%" -f rtf -t html -s -o %Target%
-rtf2md=pandoc "%SourceLong%" -f rtf -t gfm -o %Target%
-rtf2txt=pandoc "%SourceLong%" -f rtf -t plain -o %Target%
 typ2htm=pandoc "%SourceLong%" -f typst -t html -s -o %Target%
 typ2md=pandoc "%SourceLong%" -f typst -t gfm -o %Target%
 typ2txt=pandoc "%SourceLong%" -f typst -t plain -o %Target%
@@ -159,15 +123,6 @@ tt2md=pandoc "%SourceLong%" -f t2t -t gfm -o %Target%
 tt2mw=pandoc "%SourceLong%" -f t2t -t mediawiki -o %Target%
 tt2rst=pandoc "%SourceLong%" -f t2t -t rst -o %Target%
 tt2txt=pandoc "%SourceLong%" -f t2t -t plain -o %Target%
-xls2csv=%ProgDir%\configs\convert\OfficeConvert\XlVert.exe "%SourceLong%" %Target%
-xls2htm=%ProgDir%\configs\convert\any2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-xls2md=%ProgDir%\configs\convert\sheet2md.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-xls2txt=%ProgDir%\configs\convert\any2txt.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
-xlsx2htm=pandoc "%SourceLong%" -f xlsx -t html -s -o %Target%
-xlsx2csv=%ProgDir%\configs\convert\inixVert.exe "%SourceLong%" %Target% /quiet
-xlsx2inix=%ProgDir%\configs\convert\inixVert.exe "%SourceLong%" %Target% /quiet
-xlsx2txt=pandoc "%SourceLong%" -f xlsx -t plain -o %Target%
-xlsx2md=pandoc "%SourceLong%" -f xlsx -t gfm -o %Target%
 ; Tombstones: an empty value disables and hides the entry everywhere,
 ; including stale copies in a user's old EdSharp.ini. hlp2txt and
 ; wpd2txt lost their reader when GetText retired; the epub32 entries
@@ -189,36 +144,21 @@ wpd2txt=
 ; Tombstones for the retired Tidy tool:
 htm2tidy=
 html2tidy=
-htm2md=pandoc "%SourceLong%" -f html -t gfm -o %Target%
 htm2mw=pandoc "%SourceLong%" -f html -t mediawiki -o %Target%
 htm2rst=pandoc "%SourceLong%" -f html -t rst -o %Target%
 htm2tex=pandoc "%SourceLong%" -f html -t latex -s -o %Target%
-htm2txt=pandoc "%SourceLong%" -f html -t plain -o %Target%
-html2md=pandoc "%SourceLong%" -f html -t gfm -o %Target%
 html2mw=pandoc "%SourceLong%" -f html -t mediawiki -o %Target%
 html2rst=pandoc "%SourceLong%" -f html -t rst -o %Target%
 html2tex=pandoc "%SourceLong%" -f html -t latex -s -o %Target%
-html2txt=pandoc "%SourceLong%" -f html -t plain -o %Target%
-md2docx=pandoc "%SourceLong%" -f gfm -t docx -o %Target%
 md2docxrefs=pandoc "%SourceLong%" -f markdown -t docx --citeproc -o %Target%
-md2pptx=pandoc "%SourceLong%" -f markdown -t pptx -o %Target%
-inix2csv=%ProgDir%\configs\convert\inixVert.exe "%SourceLong%" %Target% /quiet
-inix2md=%ProgDir%\configs\convert\inixVert.exe "%SourceLong%" %Target% /quiet
 inix2xlsx=%ProgDir%\configs\convert\inixVert.exe "%SourceLong%" %Target% /quiet
 mdx2docx=%ProgDir%\configs\convert\mdx2docx.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
 mdx2htm=%ProgDir%\configs\convert\mdx2htm.cmd "%ProgDirLong%" "%SourceLong%" "%TargetLong%"
 mdx2md=%ProgDir%\configs\convert\inixVert.exe "%SourceLong%" %Target% /quiet
-md2epub=pandoc "%SourceLong%" -f gfm -t epub -o %Target%
 md2epub3=pandoc "%SourceLong%" -f gfm -t epub3 -o %Target%
-md2htm=pandoc "%SourceLong%" -f gfm -t html -s --mathml -o %Target%
-md2html=pandoc "%SourceLong%" -f gfm -t html -s --mathml -o %Target%
 md2mw=pandoc "%SourceLong%" -f gfm -t mediawiki -o %Target%
-md2pdf=pandoc "%SourceLong%" -f gfm -o %Target%
 md2rst=pandoc "%SourceLong%" -f gfm -t rst -o %Target%
-md2rtf=pandoc "%SourceLong%" -f gfm -t rtf -s -o %Target%
 md2tex=pandoc "%SourceLong%" -f gfm -t latex -s -o %Target%
-md2txt=pandoc "%SourceLong%" -f gfm -t plain -o %Target%
-rtf2docx=pandoc "%SourceLong%" -f rtf -t docx -o %Target%
 rst2docx=pandoc "%SourceLong%" -f rst -t docx -o %Target%
 rst2epub=pandoc "%SourceLong%" -f rst -t epub -o %Target%
 rst2epub3=pandoc "%SourceLong%" -f rst -t epub3 -o %Target%

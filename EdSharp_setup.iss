@@ -260,6 +260,17 @@ Type: filesandordirs; Name: "{app}\scripts\jaws"
 ; The loose handshake file older versions left in C:\temp; the logs
 ; folder is its home now.
 Type: files; Name: "C:\temp\EdSharp_jaws.result"
+; The converters the Homer kit replaced (19 October 2026), removed from an earlier installation.
+Type: files; Name: "{app}\configs\convert\any2htm.cmd"
+Type: files; Name: "{app}\configs\convert\any2md.cmd"
+Type: files; Name: "{app}\configs\convert\any2txt.cmd"
+Type: files; Name: "{app}\configs\convert\doc2txt.bat"
+Type: files; Name: "{app}\configs\convert\doc2txt.cmd"
+Type: files; Name: "{app}\configs\convert\pdf2md.cmd"
+Type: files; Name: "{app}\configs\convert\pdfRich.py"
+Type: files; Name: "{app}\configs\convert\sheet2md.cmd"
+Type: filesandordirs; Name: "{app}\configs\convert\2htm"
+Type: filesandordirs; Name: "{app}\configs\convert\OfficeConvert"
 ; Clear out any pre-existing EdSharp desktop shortcut before the [Icons] section
 ; recreates the single hot-key shortcut below.  This matters because EdSharp --
 ; unlike DbDo, which is a brand-new app -- has a legacy installer that placed an

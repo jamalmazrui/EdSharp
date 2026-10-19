@@ -2,6 +2,17 @@
 
 
 
+## 19 October 2026 -- The old converters retire
+
+- **EdSharp's private converters are retired,** now that the Homer kit's conversions do their work: any2htm, any2md, any2txt, doc2txt, pdf2md, sheet2md, the Office converters and EdSharp's own copy of 2htm. The build moves them into notes\retired\convert, never deleting them, and the installer removes them from an earlier installation.
+- **The Import and Export settings keep only what the kit does not do,** such as MediaWiki, LaTeX and MDX; 63 entries the kit serves were removed, since none could be reached.
+- **The build needs HomerDev 1.79.1 or later,** for the kit's routes from old PowerPoint and Excel files.
+
+## 19 October 2026 -- Key Describer, and command names said by the suite's rule
+
+- **Control+F1 turns Key Describer off again,** a fault from the rename to Key Describer Toggle: the check that lets it through still looked for its old name. It now finds the command itself.
+- **A command's name is said by the suite's rule,** as in DbDo and FileDir: not for a Say command, a dialog, whose title says it, or a move the screen reader announces. Commands whose handlers speak for themselves stay quiet, as before.
+
 ## 19 October 2026 -- The last key decisions
 
 - **Hotkeys (Control+Shift+F1)** opens the Hotkeys page in your web browser, as in every Homer app. **Play Tutorials** moves to Alt+F12, beside the log and the AI chat in the F12 family.

@@ -2367,7 +2367,9 @@ AddMessage("No Key Describer");
 }
 // Everything else is described instead of done -- except Key Describer
 // itself, or the mode could not be switched off.
-if (this.KeyDescriber && sLabel != "Key Describer") {
+// The toggle itself is found by the item, not its name (19 October 2026): renaming it Key Describer
+// Toggle broke a comparison with "Key Describer", so Control+F1 could not switch the mode off.
+if (this.KeyDescriber && menuItem != menuHelpKeyDescriber) {
 string[] aSummary = GetKeySummary(menuItem);
 SetMessage(aSummary[0]);
 AddMessage(aSummary[1]);
@@ -2375,8 +2377,13 @@ AddMessage(aSummary[2]);
 return;
 }
 
-if (sOptions.Contains(" silent ")) SetStatus(sLabel);
-else SetMessage(sLabel);
+// ECHO BY THE SUITE'S RULE (19 October 2026), as in DbDo and FileDir: a command's name is said if and
+// only if nothing else would tell you it is under way -- not for a Say command, a dialog (whose title
+// says it), or a move the screen reader announces (help\CommandEcho.md). The status bar always shows
+// it. An item marked silent keeps that mark: it records that its handler speaks for itself, as
+// EdSharp's Query commands do, whose names lack the word Say that the rule looks for.
+SetStatus(sLabel);
+if (!sOptions.Contains(" silent ") && Homer.KeyMap.shouldEcho(sLabel, menuItem.Text.Contains("..."))) SetMessage(sLabel);
 
 MdiChild child = this.Child;
 if (child == null) {

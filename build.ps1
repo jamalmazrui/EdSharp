@@ -432,6 +432,23 @@ try {
     writeLog ("Retired: the top-level " + $sOld + " folder, which nothing reads, is gone; its files are in notes\retired\" + $sOld)
   }
 
+  # ---- 2e. Retire the converters the Homer kit replaced (19 October 2026) ----
+  # Open Other Format, Text Convert and Export use the kit's conversions first, so these scripts and
+  # tools in configs\convert are reached by nothing: any2htm, any2md, any2txt, doc2txt, pdf2md with its
+  # pdfRich.py, sheet2md, OfficeConvert and the copy of 2htm. As in 2d, each is moved into
+  # notes\retired\convert, never deleted, and each move is logged. ROLLBACK: move them back.
+  $sConvertDir = Join-Path $sScriptDir "configs\convert"
+  $sRetiredConvert = Join-Path $sScriptDir "notes\retired\convert"
+  foreach ($sName in @("2htm", "any2htm.cmd", "any2md.cmd", "any2txt.cmd", "doc2txt.bat", "doc2txt.cmd", "OfficeConvert", "pdf2md.cmd", "pdfRich.py", "sheet2md.cmd")) {
+    $sOldPath = Join-Path $sConvertDir $sName
+    if (-not (Test-Path -LiteralPath $sOldPath)) { continue }
+    New-Item -ItemType Directory -Force -Path $sRetiredConvert | Out-Null
+    $sTarget = Join-Path $sRetiredConvert $sName
+    if (Test-Path -LiteralPath $sTarget) { Remove-Item -LiteralPath $sTarget -Recurse -Force }
+    Move-Item -LiteralPath $sOldPath -Destination $sTarget -Force
+    writeLog ("Retired: configs\convert\" + $sName + " moved into notes\retired\convert; the kit's conversions replace it")
+  }
+
   # ---- 2c. The spelling dictionary ----
   # Hunspell dictionaries are two plain text files, an affix file and a
   # word list, published by the LibreOffice project. About one megabyte

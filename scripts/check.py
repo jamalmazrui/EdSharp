@@ -817,6 +817,15 @@ def checkFinishPage():
                     lsBad.append("%s: box without Install, Update or Reinstall: %s" % (sRel, sWhat))
                 if re.search(r"nvda-addon|nvda\.exe|GetNvdaPath", sFile, re.I): lsBad.append("%s: box starts NVDA: %s" % (sRel, sFile))
                 if re.search(r"must be running", sDesc, re.I): lsBad.append("%s: label says NVDA must be running" % sRel)
+                # A SCRIPT ON THE FINISH PAGE IS TOLD noPause (1.78.1). Inno runs these after the wizard has closed, so a
+                # script that pauses at its end leaves a console waiting for a key with no installer behind it: DbDo's
+                # Ollama and model entries did, on 19 October 2026, through cmd /c with no noPause and no wait.
+                sParams = field("Parameters")
+                oScript = re.search(r"install\w*\.cmd", sFile + " " + sParams, re.I)
+                if oScript and not re.search(r"\bnoPause\b|-bQuiet\b", sParams, re.I):  # installJawsScripts takes -bQuiet and never pauses
+                    lsBad.append("%s: %s runs without noPause, so its console can wait for a key after the wizard closes" % (sRel, oScript.group(0)))
+                if oScript and "nowait" in sFlags:
+                    lsBad.append("%s: %s runs with nowait, so nothing waits for it to finish" % (sRel, oScript.group(0)))
     for sLine in lsBad: logLine("FINISH PAGE: " + sLine)
     if lsBad:
         return finding("finish", "fail", "%s on the finish page" % countNoun(len(lsBad), "rule broken", "rules broken"))

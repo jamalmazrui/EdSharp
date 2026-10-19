@@ -1,15 +1,15 @@
 ﻿#EXTM3U
 #EXTINF:171,EdSharp Walkthroughs
 0_Overview.mp3
-#EXTINF:303,1 - User Interface
+#EXTINF:304,1 - User Interface
 1_User_Interface.mp3
-#EXTINF:225,2 - Install and Launch
+#EXTINF:224,2 - Install and Launch
 2_Install_and_Launch.mp3
 #EXTINF:176,3 - Open, Edit and Save a File
 3_Open_Edit_and_Save_a_File.mp3
-#EXTINF:222,4 - Find Your Way in a Long Document
+#EXTINF:223,4 - Find Your Way in a Long Document
 4_Find_Your_Way_in_a_Long_Document.mp3
-#EXTINF:238,5 - Convert Between Formats
+#EXTINF:237,5 - Convert Between Formats
 5_Convert_Between_Formats.mp3
 #EXTINF:177,6 - Write Code
 6_Write_Code.mp3
@@ -17,5 +17,5 @@
 7_Ask_the_AI_on_Your_Own_Computer.mp3
 #EXTINF:256,8 - Do Math
 8_Do_Math.mp3
-#EXTINF:213,9 - Conclusion
+#EXTINF:214,9 - Conclusion
 9_Conclusion.mp3
