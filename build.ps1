@@ -97,7 +97,8 @@ $sHunspellVersion = "7.0.1"
 # Elevate.cs travels with Lbc.cs: Lbc's Help box carries the version section
 # and the F11 update offer through it.
 # Conversion.cs and Table.cs (kit 1.76.0): every file conversion goes through the kit.
-$lDllSources = @("Conversion.cs", "Elevate.cs", "Inix.cs", "KeyMap.cs", "KeyName.cs", "Lbc.cs", "Log.cs", "Mdi.cs", "Paths.cs", "Say.cs", "Table.cs", "Util.cs", "Web.cs")
+# ConversionPage.cs (kit 1.87.1): every web page in the Homer page form, as in every app.
+$lDllSources = @("Conversion.cs", "ConversionPage.cs", "Elevate.cs", "Inix.cs", "KeyMap.cs", "KeyName.cs", "Lbc.cs", "Log.cs", "Mdi.cs", "Paths.cs", "Say.cs", "Table.cs", "Util.cs", "Web.cs")
 $lExeReferences = @("System.dll", "System.Core.dll", "System.Data.dll", "System.Drawing.dll", "System.IO.Compression.dll", "System.IO.Compression.FileSystem.dll", "System.Web.dll", "System.Windows.Forms.dll", "System.Xml.dll", "Microsoft.VisualBasic.dll")
 # UI Automation, which the support sources use (System.Windows.Automation and
 # the provider interfaces such as IRawElementProviderSimple). On a machine
