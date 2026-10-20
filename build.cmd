@@ -82,7 +82,12 @@ rem The last published tag is the app's own number: when version.txt's first two
 rem parts differ from the tag's, the tag wins, and the log says so.
 set "tagVer="
 for /f "usebackq delims=" %%t in (`git describe --tags --abbrev^=0 2^>nul`) do set "tagVer=%%t"
-set "tagVer=!tagVer:v=!"
+rem A NEW APP HAS NO TAG YET (1.80.3): with tagVer undefined, cmd turns !tagVer:v=!
+rem into the literal "v=", which then won over version.txt and made the version
+rem "v=.0.1" (the first BatCon's build, 19 October 2026). So the v is stripped only
+rem from a tag that exists, and a tag of anything but digits and dots is ignored.
+if defined tagVer set "tagVer=!tagVer:v=!"
+if defined tagVer for /f "delims=0123456789." %%x in ("!tagVer!") do set "tagVer="
 if not "!tagVer!"=="" (
   for /f "tokens=1,2 delims=." %%a in ("!ver!") do set "verSeries=%%a.%%b"
   for /f "tokens=1,2 delims=." %%a in ("!tagVer!") do set "tagSeries=%%a.%%b"

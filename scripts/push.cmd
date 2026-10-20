@@ -78,9 +78,22 @@ if errorlevel 1 (
     echo PAGE PROJECT, not a repository: nothing to push>> "%log%"
     endlocal & exit /b 0
   )
-  echo This folder is not a git repository. Run create^<App^>Repo first.
   echo NOT A REPOSITORY>> "%log%"
-  endlocal & exit /b 1
+  rem A NEW APP'S FIRST PUSH MAKES ITS REPOSITORY (1.82.0): createRepo, a kit script, runs the app's
+  rem create^<App^>Repo, writing it first from the kit's local-only template when the app has none.
+  if not exist "%~dp0createRepo.cmd" (
+    echo This folder is not a git repository, and scripts\createRepo.cmd is not here to make one.
+    endlocal & exit /b 1
+  )
+  call "%~dp0createRepo.cmd" >> "%log%" 2>&1
+  git rev-parse --is-inside-work-tree >nul 2>&1
+  if errorlevel 1 (
+    echo This folder is not a git repository, and createRepo could not make one. Its log is in logs.
+    echo createRepo did not make a repository>> "%log%"
+    endlocal & exit /b 1
+  )
+  echo The repository was made, so the push goes on.
+  echo Repository made by createRepo; going on>> "%log%"
 )
 
 if not exist "%CD%\RepoFiles.txt" (
