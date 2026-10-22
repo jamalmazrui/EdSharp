@@ -520,14 +520,6 @@ Control+Shift+R to replace text or Control+Shift+E to extract it.</p>
 <p>As usual, press Control+O to open a file. Press Control+Shift+O to
 open a file in a format other than plain text. A converter is invoked
 based on the file extension.</p>
-<p>File converters may be configured through the Edit Settings File
-command, Alt+Shift+F2. For example, an open source PDF converter is
-distributed with EdSharp and configured, by default, with the following
-line in the Import section:<br />
-<code>pdf=%ProgDir%\pdftotext.exe %Source% %Target%</code></p>
-<p>To configure a converter, specify the command line for converting an
-extension from a source, non-text format to a target, text format. The
-following variables may be used:\</p>
 <p>EdSharp converts documents with the shared conversion code of the
 Homer kit, the same code every Homer app uses. A table beside the
 program, conversions.inix, picks the way for each kind of file. Text
@@ -537,6 +529,13 @@ rich text. A free PDF reader handles PDF. Microsoft Office is used only
 as the last resort, and an Alert box says so when it is missing. The
 Import section of your settings still adds targets the kit does not
 cover, such as MediaWiki and LaTeX, and any commands of your own.</p>
+<p>For a format the kit does not cover, you can name a converter of your
+own in the Import or Export section of the settings file, through the
+Edit Settings File command, Alt+Shift+F2. EdSharp runs it only when the
+kit has no way to convert that file.</p>
+<p>To configure a converter, specify the command line for converting an
+extension from a source, non-text format to a target, text format. The
+following variables may be used:\</p>
 <ul>
 <li>%ProgDir% = Full path of the directory containing the EdSharp.exe
 program</li>

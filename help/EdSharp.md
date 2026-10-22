@@ -128,12 +128,11 @@ Press Control+Shift+Y for the "yield," or number of results matching a regular e
 ## Managing Files
 As usual, press Control+O to open a file.  Press Control+Shift+O to open a file in a format other than plain text.  A converter is invoked based on the file extension.
 
-File converters may be configured through the Edit Settings File command, Alt+Shift+F2.  For example, an open source PDF converter is distributed with EdSharp and configured, by default, with the following line in the Import section:\
-`pdf=%ProgDir%\pdftotext.exe %Source% %Target%`
+EdSharp converts documents with the shared conversion code of the Homer kit, the same code every Homer app uses. A table beside the program, conversions.inix, picks the way for each kind of file. Text comes straight out of Word, OpenDocument, Excel and PowerPoint files with no other program. Pandoc handles Markdown, web pages, e-books and rich text. A free PDF reader handles PDF. Microsoft Office is used only as the last resort, and an Alert box says so when it is missing. The Import section of your settings still adds targets the kit does not cover, such as MediaWiki and LaTeX, and any commands of your own.
+
+For a format the kit does not cover, you can name a converter of your own in the Import or Export section of the settings file, through the Edit Settings File command, Alt+Shift+F2. EdSharp runs it only when the kit has no way to convert that file.
 
 To configure a converter, specify the command line for converting an extension from a source, non-text format to a target, text format.  The following variables may be used:\
-
-EdSharp converts documents with the shared conversion code of the Homer kit, the same code every Homer app uses. A table beside the program, conversions.inix, picks the way for each kind of file. Text comes straight out of Word, OpenDocument, Excel and PowerPoint files with no other program. Pandoc handles Markdown, web pages, e-books and rich text. A free PDF reader handles PDF. Microsoft Office is used only as the last resort, and an Alert box says so when it is missing. The Import section of your settings still adds targets the kit does not cover, such as MediaWiki and LaTeX, and any commands of your own.
 
 - %ProgDir% = Full path of the directory containing the EdSharp.exe program
 - %Source% = Full path of the source file

@@ -4,6 +4,7 @@
 
 ## 19 October 2026 -- The old converters retire
 
+- **The guide describes opening other formats as EdSharp does it:** through the Homer kit first, with your own converter in the settings file used only for a format the kit does not cover. It no longer says a PDF converter is configured by default.
 - **The guide's keys are the program's keys.** Its Hotkey Summary was a copy of an older key list, which still gave the bookmark commands Control+K, Control+Shift+K and Alt+K and gave the block commands keys they no longer have; it now points to the Hotkeys document, which is made from the program each build, and to the four ways to find a key inside EdSharp. Export Format is Alt+Shift+X, as the guide now says.
 - **Recordings and speech, as in every Homer app:** a recording converts to a transcript, and a document to spoken audio, through the Homer kit. The build needs HomerDev 1.87.5 or later.
 - **Web pages in the Homer page form,** as every Homer app makes them: one heading for the title, the page's parts marked for a screen reader, and pictures carried inside the page. The build needs HomerDev 1.87.1 or later.
