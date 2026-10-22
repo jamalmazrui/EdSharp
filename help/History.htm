@@ -298,6 +298,12 @@ id="toc-earlier-in-august-2026">Earlier in August 2026</a></li>
 <h2 id="19-october-2026----the-old-converters-retire">19 October 2026 --
 The old converters retire</h2>
 <ul>
+<li><strong>PDFs are read with the Homer kit's own PDF reader,</strong>
+as in every Homer app, keeping a tagged PDF's structure and reading an
+untagged one by its layout. The build fetches PdfPig by itself; where
+PdfPig and Markdig need the same library, the newer one is kept, and
+EdSharp.exe.config redirects every signed library to the version
+installed. It needs HomerDev 1.88.2 or later.</li>
 <li><strong>The guide describes opening other formats as EdSharp does
 it:</strong> through the Homer kit first, with your own converter in the
 settings file used only for a format the kit does not cover. It no

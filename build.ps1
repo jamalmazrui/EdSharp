@@ -99,7 +99,7 @@ $sHunspellVersion = "7.0.1"
 # Conversion.cs and Table.cs (kit 1.76.0): every file conversion goes through the kit.
 # ConversionPage.cs (kit 1.87.1): every web page in the Homer page form, as in every app.
 # The whole conversion bundle (kit 1.87.5): media, transcripts and speech as in every app.
-$lDllSources = @("Conversion.cs", "ConversionMedia.cs", "ConversionPage.cs", "Elevate.cs", "Inix.cs", "KeyMap.cs", "KeyName.cs", "Lbc.cs", "Log.cs", "Mdi.cs", "Media.cs", "Paths.cs", "Say.cs", "Table.cs", "Util.cs", "Voice.cs", "Web.cs")
+$lDllSources = @("Conversion.cs", "ConversionMedia.cs", "ConversionPage.cs", "ConversionPdf.cs", "Elevate.cs", "Inix.cs", "KeyMap.cs", "KeyName.cs", "Lbc.cs", "Log.cs", "Mdi.cs", "Media.cs", "Paths.cs", "PdfReader.cs", "Say.cs", "Table.cs", "Util.cs", "Voice.cs", "Web.cs")
 $lExeReferences = @("System.dll", "System.Core.dll", "System.Data.dll", "System.Drawing.dll", "System.IO.Compression.dll", "System.IO.Compression.FileSystem.dll", "System.Web.dll", "System.Windows.Forms.dll", "System.Xml.dll", "Microsoft.VisualBasic.dll")
 # UI Automation, which the support sources use (System.Windows.Automation and
 # the provider interfaces such as IRawElementProviderSimple). On a machine
@@ -778,6 +778,24 @@ try {
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "ReverseMarkdown.dll")) { $lArguments += "/r:ReverseMarkdown.dll" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "HtmlAgilityPack.dll")) { $lArguments += "/r:HtmlAgilityPack.dll" }
   if (Test-Path -LiteralPath (Join-Path $sScriptDir "Markdig.dll")) { $lArguments += "/r:Markdig.dll" }
+  # PDFPIG, FOR THE KIT'S OWN PDFREADER (22 October 2026), as every converting Homer app reads PDFs.
+  # The kit's getPdfPig fetches PdfPig, pinned, with every assembly its packages name, into exec;
+  # its libraries are referenced by full path. PdfPig and Markdig share companions (System.Memory
+  # and its kin): the copy into exec below never replaces a newer one with an older, and the
+  # redirects in EdSharp.exe.config cover every strong-named library in exec, each to the version
+  # on disk, so whichever version is there is the one that loads.
+  $sKitPdfPig = Join-Path $HomerDev "scripts\getPdfPig.ps1"
+  if (-not (Test-Path -LiteralPath $sKitPdfPig)) { throw "The kit has no scripts\getPdfPig.ps1. Update HomerDev to 1.88.2 or later." }
+  Push-Location $sScriptDir
+  try { $iPdfPig = runTool "powershell" @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $sKitPdfPig, "-App", "EdSharp") "fetch PdfPig" }
+  finally { Pop-Location }
+  if (-not (Test-Path -LiteralPath (Join-Path $sExecDir "pdfpig.name"))) { throw "PdfPig could not be found or fetched, so PDFs could not be read. The log says what was tried." }
+  foreach ($oPdfLib in @(Get-ChildItem -LiteralPath $sExecDir -Filter "UglyToad.PdfPig*.dll")) { $lArguments += "/r:$($oPdfLib.FullName)" }
+  foreach ($sCompanion in @("Microsoft.Bcl.HashCode.dll", "System.Buffers.dll", "System.Memory.dll", "System.Numerics.Vectors.dll", "System.Runtime.CompilerServices.Unsafe.dll", "System.ValueTuple.dll")) {
+    $sCompanionPath = Join-Path $sExecDir $sCompanion
+    if (Test-Path -LiteralPath $sCompanionPath) { $lArguments += "/r:$sCompanionPath" }
+  }
+  writeLog "PdfPig referenced from exec for the kit's PdfReader."
   # TEKTOSYNE CANNOT BE FETCHED. It is a 2007-era library with no NuGet
   # package and no download, which makes it the one library the repository
   # must carry -- RepoFiles.txt names it, and the reason the "nothing
@@ -839,8 +857,20 @@ try {
   foreach ($sLibrary in $lLibraries) {
     $sFrom = Join-Path $sScriptDir $sLibrary
     if (Test-Path -LiteralPath $sFrom) {
-      Copy-Item -LiteralPath $sFrom -Destination (Join-Path $sExecDir $sLibrary) -Force
-      writeLog "Copied $sLibrary into exec."
+      $sTo = Join-Path $sExecDir $sLibrary
+      # Never an older over a newer (22 October 2026): PdfPig's companions may already be here.
+      $bKeep = $false
+      if ((Test-Path -LiteralPath $sTo) -and $sLibrary.EndsWith(".dll")) {
+        try {
+          $vThere = [System.Reflection.AssemblyName]::GetAssemblyName($sTo).Version
+          $vHere = [System.Reflection.AssemblyName]::GetAssemblyName($sFrom).Version
+          if ($vThere -gt $vHere) { $bKeep = $true; writeLog "Kept exec\$sLibrary $vThere over the older $vHere." }
+        } catch { }
+      }
+      if (-not $bKeep) {
+        Copy-Item -LiteralPath $sFrom -Destination $sTo -Force
+        writeLog "Copied $sLibrary into exec."
+      }
     }
   }
   # ---- 6a2. Binding redirects for the dependencies (11 October 2026) ----
@@ -852,9 +882,11 @@ try {
     $sConfig = [regex]::Replace($sConfig, '(?s)\s*<assemblyBinding.*?</assemblyBinding>', '')
     $sbBinding = New-Object System.Text.StringBuilder
     [void]$sbBinding.Append("`r`n    <assemblyBinding xmlns=""urn:schemas-microsoft-com:asm.v1"">")
-    foreach ($sLibrary in $script:lDependencyDlls) {
+    # Every strong-named library in exec, each to the version on disk (22 October 2026): PdfPig's
+    # companions as well as Markdig's, at whichever version the copy left there.
+    foreach ($sLibrary in @(Get-ChildItem -LiteralPath $sExecDir -Filter "*.dll" | ForEach-Object { $_.Name })) {
       try {
-        $oName = [System.Reflection.AssemblyName]::GetAssemblyName((Join-Path $sScriptDir $sLibrary))
+        $oName = [System.Reflection.AssemblyName]::GetAssemblyName((Join-Path $sExecDir $sLibrary))
         $sToken = (($oName.GetPublicKeyToken() | ForEach-Object { $_.ToString("x2") }) -join "")
         if ($sToken -eq "") { continue }
         [void]$sbBinding.Append("`r`n      <dependentAssembly>`r`n        <assemblyIdentity name=""$($oName.Name)"" publicKeyToken=""$sToken"" culture=""neutral"" />`r`n        <bindingRedirect oldVersion=""0.0.0.0-$($oName.Version)"" newVersion=""$($oName.Version)"" />`r`n      </dependentAssembly>")
