@@ -1070,8 +1070,11 @@ def checkConversions():
     Scans the app's own .cs files for private conversion code -- its own Pandoc finder, a 2htm call, an
     Office COM object, pymupdf4llm -- which the kit's Conversion.cs and exec\\conversions.inix replace.
     An app the manifest lists in conversionsMoved= (data\\SuiteCommands.inix, [Suite]) fails on any such
-    line; any other app gets a warning that counts them, until its move. 2htm's own COM converters stay,
-    as its last resort, until it too moves.
+    line; any other app gets a warning that counts them, until its move.
+
+    THE WHOLE CONVERSION BUNDLE (1.87.5): an app whose build compiles Conversion compiles all of
+    ConversionMedia, ConversionPage, Media, Table and Voice too, so the same conversion is the same in
+    every app -- a transcript, speech, the page form -- rather than missing where a file was left out.
     """
     sApp = os.path.basename(os.path.normpath(sRoot))
     try:
@@ -1104,8 +1107,20 @@ def checkConversions():
                 if re.search(sPattern, sLine, re.I):
                     lsHits.append("%s line %d: %s" % (os.path.basename(sPath), iLine, sWhat))
     for sHit in lsHits: logLine("conversion: " + sHit)
+    sBuildText = ""
+    for sName in ("build.cmd", "build.ps1"):
+        sPath = os.path.join(sRoot, sName)
+        if os.path.isfile(sPath): sBuildText += readText(sPath) + "\n"
+    sBuildText = "\n".join(l for l in sBuildText.splitlines() if not re.match(r"\s*(rem\b|::|#)", l, re.I))
+    lsMissing = []
+    if re.search(r"\bConversion(\.cs)?\b", sBuildText):
+        for sModule in ("ConversionMedia", "ConversionPage", "Media", "Table", "Voice"):
+            if not re.search(r"\b" + sModule + r"(\.cs)?\b", sBuildText): lsMissing.append(sModule)
+    if lsMissing:
+        logLine("conversion: the build compiles Conversion but not " + ", ".join(lsMissing))
+        return finding("conversion", "fail", "the build compiles Conversion without the rest of the bundle: " + ", ".join(lsMissing))
     if not lsHits:
-        return finding("conversion", "pass", "every conversion goes through the kit's Conversion")
+        return finding("conversion", "pass", "every conversion goes through the kit's Conversion, with the whole bundle")
     sCount = countNoun(len(lsHits), "line") + " of private conversion code"
     if sApp.lower() in lsMoved:
         return finding("conversion", "fail", sCount + "; the kit's Conversion replaces it, and the log names each one")
