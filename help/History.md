@@ -4,6 +4,7 @@
 
 ## 19 October 2026 -- The old converters retire
 
+- **The window commands are the Homer suite's own:** Next Window, Previous Window, Say Windows Open and Close All but Current Window run the same code as every Homer app with windows inside. Close All but Current now says how many windows closed and how many were kept open for unsaved work, and Say Windows Open follows the suite's one, two or three presses.
 - **PDFs are read with the Homer kit's own PDF reader,** as in every Homer app, keeping a tagged PDF's structure and reading an untagged one by its layout. The build fetches PdfPig by itself; where PdfPig and Markdig need the same library, the newer one is kept, and EdSharp.exe.config redirects every signed library to the version installed. It needs HomerDev 1.88.2 or later.
 - **The guide describes opening other formats as EdSharp does it:** through the Homer kit first, with your own converter in the settings file used only for a format the kit does not cover. It no longer says a PDF converter is configured by default.
 - **The guide's keys are the program's keys.** Its Hotkey Summary was a copy of an older key list, which still gave the bookmark commands Control+K, Control+Shift+K and Alt+K and gave the block commands keys they no longer have; it now points to the Hotkeys document, which is made from the program each build, and to the four ways to find a key inside EdSharp. Export Format is Alt+Shift+X, as the guide now says.

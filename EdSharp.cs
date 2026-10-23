@@ -9166,62 +9166,23 @@ catch {}
 return bReturn;
 } // SetCursorPosition method
 
+// THE WINDOW FAMILY IS THE KIT'S (22 October 2026, stage 4 of the Homer plan): Homer.MdiWindows, the
+// same code in every Homer app with windows inside -- counts said the same way, and Close All but
+// Current says how many closed and how many were kept open for unsaved work.
 public void NextWindow() {
-object[] children = this.MdiChildren;
-if (children.Length == 0) AddMessage("No windows!");
-else if (children.Length == 1) AddMessage("Only this window!");
-else {
-MdiChild child = this.Child;
-int iPosition = Array.IndexOf(children, child);
-iPosition++;
-if (iPosition == children.Length) iPosition = 0;
-((MdiChild) children[iPosition]).Activate();
-}
+Homer.MdiWindows.step(this, 1);
 } // NextWindow method
 
 public void PriorWindow() {
-object[] children = this.MdiChildren;
-if (children.Length == 0) AddMessage("No windows!");
-else if (children.Length == 1) AddMessage("Only this window!");
-else {
-MdiChild child = this.Child;
-int iPosition = Array.IndexOf(children, child);
-iPosition--;
-if (iPosition == -1) iPosition = children.Length - 1;
-((MdiChild) children[iPosition]).Activate();
-}
+Homer.MdiWindows.step(this, -1);
 } // PriorWindow method
 
 public void CloseAllButCurrentWindow() {
-MdiChild child = this.Child;
-if (child == null) return;
-
-object[] children = this.MdiChildren;
-int iCount = 0;
-foreach (MdiChild o in children) {
-if (o != child) {
-o.Close();
-iCount++;
-}
-}
+Homer.MdiWindows.closeOthers(this);
 } // CloseAllButCurrent method
 
 public void WindowsOpen() {
-object[] children = this.MdiChildren;
-int iCount = children.Length;
-if (iCount == 0) AddMessage("No windows!");
-else {
-//string s = Util.Pluralize(iCount, "window");
-AddMessage(iCount);
-foreach (MdiChild child in children) {
-string sTitle = child.Text;
-string sText = sTitle;
-if (this.KeyRepeat % 2 == 0) AddMessage(sText);
-else {
-Util.Spell(sText);
-}
-}
-}
+Homer.MdiWindows.sayOpen(this);
 } // WindowsOpen method
 
 public void NavigateNextMatch(string sMatch) {
