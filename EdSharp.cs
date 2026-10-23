@@ -165,6 +165,7 @@ App.TempFile = GetTempFile();
 App.DefaultIniFile = GetDefaultIniFile();
 App.HotkeyIniFile = Path.Combine(App.ProgramDir, "Hotkeys.ini");
 App.IniFile = GetIniFile();
+Inix.migrateFromIni();
 
 App.BomDictionary = Util.GetBomDictionary();
 SetConfigurationValues();
@@ -507,7 +508,9 @@ string sCommand = aCommands[i];
 string sKey = aKeys[i];
 //if (sSection == "Import" || sSection == "Export") Ini.WriteValue(App.IniFile, sSection, sCommand, sKey);
 //else Ini.WriteQuote(App.IniFile, sSection, sCommand, sKey);
-Ini.WriteQuote(App.IniFile, sSection, sCommand, sKey);
+// .inix only (22 October 2026): only a key your .inix lacks is written, so a start does not rewrite
+// the whole file once for every key, as writing each one through would.
+if (Inix.isRedirected(sSection) || !Inix.userHas(sSection, sCommand)) Ini.WriteQuote(App.IniFile, sSection, sCommand, sKey);
 }
 }
 } // SetConfigurationValues method
@@ -5730,7 +5733,11 @@ string sCompiler = App.ReadData("Compiler", "Default");
 sResult = Dialog.Choose("Edit Settings File", "", new string[] {"&Main", "&" + sCompiler}, 0);
 if (sResult.Length == 0) return;
 
-if (sResult == "&Main") sFile = App.IniFile;
+// .inix only (22 October 2026): your settings are your EdSharp.inix, made if it is not there yet.
+if (sResult == "&Main") {
+sFile = Inix.userPath();
+if (!File.Exists(sFile)) File.WriteAllText(sFile, "; Your EdSharp settings. A value here overrides the shipped one.\r\n", new UTF8Encoding(true));
+}
 else sFile = Path.Combine(App.DataDir, sCompiler + ".ini");
 OpenOrActivateWindow(sFile, 0);
 }
@@ -5749,8 +5756,10 @@ sResult = Dialog.Choose("Reset Configuration", "", new string[] {"&Main", "&" + 
 if (sResult.Length == 0) return;
 
 if (sResult == "&Main" || sResult == "&Both") {
+// .inix only: clearing your settings lets the shipped defaults show through.
 if (System.IO.File.Exists(App.IniFile)) System.IO.File.Delete(App.IniFile);
-System.IO.File.Copy(App.DefaultIniFile, App.IniFile);
+if (Inix.userPath() != null && System.IO.File.Exists(Inix.userPath())) System.IO.File.Delete(Inix.userPath());
+Inix.reload();
 }
 
 if (sResult == sCompiler || sResult == "&Both") {
@@ -12061,9 +12070,19 @@ if (String.IsNullOrEmpty(App.ProgramDir)) return null;
 return Path.Combine(App.ProgramDir, App.GetAppName() + ".inix");
 } // getProgramPath method
 
+static DateTime dtUserLoaded = DateTime.MinValue;
 static void ensureLoaded() {
-if (bLoaded) return;
+// A settings file edited by hand and saved takes effect at once, as the .ini always did.
+if (bLoaded) {
+string sUser = getPath();
+DateTime dtNow = DateTime.MinValue;
+try { if (sUser != null && File.Exists(sUser)) dtNow = File.GetLastWriteTimeUtc(sUser); } catch { }
+if (dtNow == dtUserLoaded) return;
+}
 bLoaded = true;
+try { string sUserNow = getPath(); dtUserLoaded = (sUserNow != null && File.Exists(sUserNow)) ? File.GetLastWriteTimeUtc(sUserNow) : DateTime.MinValue; } catch { dtUserLoaded = DateTime.MinValue; }
+lSections = null;
+lProgram = null;
 try {
 string sPath = getPath();
 if (sPath != null && File.Exists(sPath)) lSections = Homer.InixCodec.read(sPath);
@@ -12128,6 +12147,100 @@ catch {}
 } // syncWrite method
 
 public static void reload() { bLoaded = false; lSections = null; lProgram = null; } // reload method
+
+// ---- .INIX ONLY (22 October 2026, stage 4 of the Homer plan) ----
+// Your settings live in your EdSharp.inix alone. Reads take your .inix, then the shipped
+// EdSharp.inix, then the shipped EdSharp.ini, which stays as the read-only defaults beneath; writes
+// and deletions touch your .inix only. Favorites and Recent keep their own files. The first start
+// copies an existing EdSharp.ini into your .inix, a value at a time, never over a value already
+// there, and keeps the old file as EdSharp.ini.migrated. ROLLBACK: rename it back to EdSharp.ini.
+public static string userPath() { return getPath(); } // userPath method
+
+// userHas: whether your .inix has the key at all -- an empty value counts, which readValue's
+// default for an empty value would hide.
+public static bool userHas(string sSection, string sKey) {
+ensureLoaded();
+if (lSections == null) return false;
+foreach (Homer.InixCodec.Section sec in lSections) {
+if (!Util.Equiv(sec.Name, sSection)) continue;
+foreach (Homer.InixCodec.Pair pair in sec.Pairs) if (Util.Equiv(pair.Key, sKey)) return true;
+}
+return false;
+} // userHas method
+
+public static bool isRedirected(string sSection) {
+return Util.Equiv(sSection, "Favorites") || Util.Equiv(sSection, "Recent");
+} // isRedirected method
+
+static bool bMigrated = false;
+public static void migrateFromIni() {
+if (bMigrated) return;
+bMigrated = true;
+string sIni = App.IniFile;
+string sInix = getPath();
+if (String.IsNullOrEmpty(sIni) || sInix == null || !File.Exists(sIni)) return;
+int iCopied = 0, iKept = 0;
+try {
+string sSection = "";
+foreach (string sRaw in File.ReadAllLines(sIni, Encoding.Default)) {
+string sLine = sRaw.Trim();
+if (sLine.Length == 0 || sLine.StartsWith(";")) continue;
+if (sLine.StartsWith("[") && sLine.EndsWith("]")) { sSection = sLine.Substring(1, sLine.Length - 2).Trim(); continue; }
+int iEqual = sLine.IndexOf('=');
+if (iEqual <= 0 || sSection.Length == 0 || isRedirected(sSection)) continue;
+string sKey = sLine.Substring(0, iEqual).Trim();
+string sValue = sLine.Substring(iEqual + 1).Trim();
+// As Windows' own reader did: one pair of quotes around a value is not part of it.
+if (sValue.Length >= 2 && sValue.StartsWith("\"") && sValue.EndsWith("\"")) sValue = sValue.Substring(1, sValue.Length - 2);
+if (userHas(sSection, sKey)) { iKept++; continue; }
+Homer.InixCodec.writeValue(sInix, sSection, sKey, sValue);
+reload();
+iCopied++;
+}
+string sBackup = sIni + ".migrated";
+if (File.Exists(sBackup)) sBackup = sIni + "." + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".migrated";
+File.Move(sIni, sBackup);
+Homer.Log.info("Settings moved to " + sInix + ": " + iCopied + " value(s) copied from " + sIni + ", " + iKept + " already there; the old file is " + sBackup);
+}
+catch (Exception oError) {
+Homer.Log.error("The settings could not be moved from " + sIni + " to " + sInix + ": " + oError.Message + "; " + iCopied + " value(s) were copied, and the old file is left in place");
+}
+reload();
+} // migrateFromIni method
+
+// sectionNames: every section the .inix layers define.
+public static List<string> sectionNames() {
+List<string> lReturn = new List<string>();
+ensureLoaded();
+foreach (List<Homer.InixCodec.Section> lLayer in new List<Homer.InixCodec.Section>[] { lSections, lProgram }) {
+if (lLayer == null) continue;
+foreach (Homer.InixCodec.Section sec in lLayer) {
+if (String.IsNullOrEmpty(sec.Name)) continue;
+bool bHave = false;
+foreach (string sOne in lReturn) if (Util.Equiv(sOne, sec.Name)) { bHave = true; break; }
+if (!bHave) lReturn.Add(sec.Name);
+}
+}
+return lReturn;
+} // sectionNames method
+
+// removeUser: a key, or with sKey null a whole section, removed from your .inix.
+public static bool removeUser(string sSection, string sKey) {
+string sPath = getPath();
+if (sPath == null || !File.Exists(sPath)) return true;
+try {
+List<Homer.InixCodec.Section> lAll = Homer.InixCodec.read(sPath);
+for (int i = lAll.Count - 1; i >= 0; i--) {
+if (!Util.Equiv(lAll[i].Name, sSection)) continue;
+if (sKey == null) { lAll.RemoveAt(i); continue; }
+lAll[i].Pairs.RemoveAll(delegate(Homer.InixCodec.Pair oPair) { return Util.Equiv(oPair.Key, sKey); });
+}
+Homer.InixCodec.writeAsConfig(sPath, lAll);
+reload();
+return true;
+}
+catch { return false; }
+} // removeUser method
 } // Inix class
 
 public class Ini {
@@ -12141,6 +12254,8 @@ public static extern int GetPrivateProfileString(string sSection, string sKey, s
 public static String ReadValue(String sFile, String sSection, String sKey, string sDefault) {
 string sInix;
 if (Util.Equiv(sFile, App.IniFile) && Inix.tryGet(sSection, sKey, out sInix)) return sInix;
+// .inix only: what your .inix and the shipped one lack comes from the shipped defaults.
+if (Util.Equiv(sFile, App.IniFile) && !Inix.isRedirected(sSection) && !File.Exists(App.IniFile)) sFile = App.DefaultIniFile;
 sFile = RedirectFile(sFile, sSection);
 StringBuilder sb = new StringBuilder(260);
 if (GetPrivateProfileString(sSection, sKey, sDefault, sb, sb.Capacity, sFile) > 0) return sb.ToString();
@@ -12160,6 +12275,12 @@ return WriteValue(sFile, sSection, sKey, sValue, bQuote);
 } // WriteValue method
 
 public static bool WriteValue(String sFile, String sSection, String sKey, String sValue, bool bQuote) {
+// .inix only: your settings are written to your EdSharp.inix and nowhere else.
+if (Util.Equiv(sFile, App.IniFile) && !Inix.isRedirected(sSection) && Inix.userPath() != null) {
+bool bWritten = Homer.InixCodec.writeValue(Inix.userPath(), sSection, sKey, sValue);
+Inix.reload();
+return bWritten;
+}
 sFile = RedirectFile(sFile, sSection);
 string sRaw = sValue;
 if (bQuote) sValue = "\"" + sValue + "\"";
@@ -12172,6 +12293,7 @@ return bReturn;
 [DllImport("kernel32.dll")]
 public static extern bool WritePrivateProfileString(string sSection, string sKey, int iValue, string sFile);
 public static bool DeleteKey(String sFile, String sSection, String sKey) {
+if (Util.Equiv(sFile, App.IniFile) && !Inix.isRedirected(sSection)) return Inix.removeUser(sSection, sKey);
 sFile = RedirectFile(sFile, sSection);
 int iValue = 0;
 bool bReturn = WritePrivateProfileString(sSection, sKey, iValue, sFile);
@@ -12182,6 +12304,7 @@ return bReturn;
 [DllImport("kernel32.dll")]
 public static extern bool WritePrivateProfileString(string sSection, int iKey, int iValue, string sFile);
 public static bool DeleteSection(String sFile, String sSection) {
+if (Util.Equiv(sFile, App.IniFile) && !Inix.isRedirected(sSection)) return Inix.removeUser(sSection, null);
 int iKey = 0;
 int iValue = 0;
 bool bReturn = WritePrivateProfileString(sSection, iKey, iValue, sFile);
@@ -12205,6 +12328,8 @@ return ReadSectionKeys(sFile, sSection, bIncludeComments);
 
 public static string[] ReadSectionKeys(string sFile, string sSection, bool bIncludeComments) {
 string sFileOriginal = sFile;
+// .inix only: the shipped defaults supply the keys your old file used to hold a copy of.
+if (Util.Equiv(sFile, App.IniFile) && !Inix.isRedirected(sSection) && !File.Exists(App.IniFile)) sFile = App.DefaultIniFile;
 sFile = RedirectFile(sFile, sSection);
 string[] aDefault = new string[] {};
 if (!File.Exists(sFile)) return mergeInixKeys(sFileOriginal, sSection, bIncludeComments, aDefault);
@@ -12256,6 +12381,16 @@ return lReturn.ToArray();
 
 public static string[] ReadSections(string sFile) {
 string[] aDefault = new string[] {};
+// .inix only: the shipped defaults' sections, and any your .inix or the shipped one adds.
+if (Util.Equiv(sFile, App.IniFile) && !File.Exists(App.IniFile)) {
+List<string> lAll = new List<string>(ReadSections(App.DefaultIniFile));
+foreach (string sOne in Inix.sectionNames()) {
+bool bHave = false;
+foreach (string sHave in lAll) if (Util.Equiv(sHave, sOne)) { bHave = true; break; }
+if (!bHave) lAll.Add(sOne);
+}
+return lAll.ToArray();
+}
 if (!File.Exists(sFile)) return aDefault;
 
 string sText = Util.File2String(sFile);

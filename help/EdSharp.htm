@@ -1413,13 +1413,13 @@ for the latest version. EdSharp's own scripts help with JAWS scripting
 too. When focus is in EdSharp's Open or Save dialog, Control+I inserts
 the path to your user script folder, and Control+Shift+I the path to the
 All Users script folder.</p>
-<p>Compiler settings are stored in the [Compilers] section of the
-EdSharp.ini file. Only current compiler settings appear in the Edit
-Settings dialog, Alt+Shift+E. Other settings may be edited, however,
-using the Edit Settings File command, Alt+Shift+F2. You can adjust
-command line parameters of configured compilers, or add others.
-Installing a new version of EdSharp does not change existing compiler
-settings.</p>
+<p>Compiler settings are stored in the [Compilers] section of your
+settings, the EdSharp.inix file in your EdSharp data folder. Only
+current compiler settings appear in the Edit Settings dialog,
+Alt+Shift+E. Other settings may be edited, however, using the Edit
+Settings File command, Alt+Shift+F2. You can adjust command line
+parameters of configured compilers, or add others. Installing a new
+version of EdSharp does not change existing compiler settings.</p>
 <h2 id="scripting-add-ins">Scripting Add-Ins</h2>
 <p>Almost the complete object model of the EdSharp application has been
 exposed to add-in code in the JScript .NET language, explained in <a
@@ -1742,7 +1742,7 @@ twice. EdSharp saves the document in the same encoding.</p>
 color of text in an editing window. The default font was chosen to suit
 people with low vision, and you can change it to suit yourself. Use the
 Edit Settings File command, Alt+Shift+F2, to edit the main configuration
-file directly. It is EdSharp.ini, in the EdSharp data folder. That
+file directly. It is EdSharp.inix, in the EdSharp data folder. That
 folder is inside the Windows Application Data path, usually something
 like<br />
 \C:\users\UserName\appdata\roaming\EdSharp\`</p>
@@ -1772,9 +1772,9 @@ settings.</p>
 <p>A compiler's configuration is stored in the EdSharp data folder, in a
 file with the compiler's name and a .ini extension. For example, if you
 made settings for the "Delphi" compiler, EdSharp would add a Delphi
-entry to the Compilers section of EdSharp.ini. It would then keep that
-compiler's favorites, bookmarks and user-defined tokens in Delphi.ini.
-Press Alt+0 to hear the current compiler and folder.</p>
+entry to the Compilers section of your EdSharp.inix. It would then keep
+that compiler's favorites, bookmarks and user-defined tokens in
+Delphi.ini. Press Alt+0 to hear the current compiler and folder.</p>
 <p>Press F4 to switch to one of the editing windows that are open, from
 a list. Press Control+F4 to close the current window, or
 Control+Shift+F4 to close all the others. EdSharp's windows can be

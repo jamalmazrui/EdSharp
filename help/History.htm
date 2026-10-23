@@ -298,6 +298,16 @@ id="toc-earlier-in-august-2026">Earlier in August 2026</a></li>
 <h2 id="19-october-2026----the-old-converters-retire">19 October 2026 --
 The old converters retire</h2>
 <ul>
+<li><strong>Your settings live in EdSharp.inix alone.</strong> The first
+start copies your EdSharp.ini into your EdSharp.inix, in your EdSharp
+data folder, a value at a time and never over a value already there, and
+keeps the old file as EdSharp.ini.migrated; the log says how many values
+moved. From then on every setting is read from and written to the .inix,
+over the shipped defaults. Edit Settings File opens it, and an edit you
+save takes effect at once. Reset Configuration clears it, so the
+defaults show through. To go back, rename EdSharp.ini.migrated to
+EdSharp.ini. Favorites, Recent, the hotkey list and each compiler's own
+file are unchanged.</li>
 <li><strong>The window commands are the Homer suite's own:</strong> Next
 Window, Previous Window, Say Windows Open and Close All but Current
 Window run the same code as every Homer app with windows inside. Close
