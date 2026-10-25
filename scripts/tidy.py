@@ -975,6 +975,12 @@ def removeStrayKitFiles(bRepo):
     lsDirs = set()
     for sRel in sorted(lsKitFiles):
         if any(sRel == s or (s.endswith("/") and sRel.startswith(s)) for s in lsNeverStray): continue
+        # WHAT A BUILD PUTS IN EXEC IS NOT A STRAY (1.92.5). An app's build copies the kit's route table,
+        # exec\conversions.inix, and fetches PdfPig's libraries into exec, each byte for byte the kit's, so this pass
+        # deleted them from every app that converts: BatCon's acceptance run on 24 October then read the installed
+        # kit's 1.77.6 table from Program Files, found no Edge way for a PDF, and fell back to Word. A file directly in
+        # exec is never a stray; a kit unarchived by mistake still leaves exec\CSharp and the like, which are.
+        if sRel.startswith("exec/") and sRel.count("/") == 1: continue
         sMine = os.path.join(sRoot, sRel.replace("/", os.sep))
         if not os.path.isfile(sMine): continue
         try:

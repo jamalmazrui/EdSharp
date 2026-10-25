@@ -99,7 +99,7 @@ $sHunspellVersion = "7.0.1"
 # Conversion.cs and Table.cs (kit 1.76.0): every file conversion goes through the kit.
 # ConversionPage.cs (kit 1.87.1): every web page in the Homer page form, as in every app.
 # The whole conversion bundle (kit 1.87.5): media, transcripts and speech as in every app.
-$lDllSources = @("Conversion.cs", "ConversionMedia.cs", "ConversionPage.cs", "ConversionPdf.cs", "Elevate.cs", "Inix.cs", "KeyMap.cs", "KeyName.cs", "Lbc.cs", "Log.cs", "Mdi.cs", "Media.cs", "Paths.cs", "PdfReader.cs", "Say.cs", "Table.cs", "Util.cs", "Voice.cs", "Web.cs")
+$lDllSources = @("Conversion.cs", "ConversionMedia.cs", "ConversionPage.cs", "ConversionPdf.cs", "Elevate.cs", "Inix.cs", "KeyMap.cs", "KeyName.cs", "Lbc.cs", "Log.cs", "Mdi.cs", "Media.cs", "Paths.cs", "PdfReader.cs", "Quality.cs", "Say.cs", "Table.cs", "Util.cs", "Voice.cs", "Web.cs")
 $lExeReferences = @("System.dll", "System.Core.dll", "System.Data.dll", "System.Drawing.dll", "System.IO.Compression.dll", "System.IO.Compression.FileSystem.dll", "System.Web.dll", "System.Windows.Forms.dll", "System.Xml.dll", "Microsoft.VisualBasic.dll")
 # UI Automation, which the support sources use (System.Windows.Automation and
 # the provider interfaces such as IRawElementProviderSimple). On a machine
@@ -149,10 +149,17 @@ function writeLog($sText) {
 # ---- the Homer Development Kit ----------------------------------------------
 # After the log exists, so a kit that cannot be found is recorded rather than
 # printed to a console that scrolls away.
+# THE NEWEST KIT FOUND IS USED (HomerDev 1.92.5), as build.cmd chooses it: the HomerDev variable, C:\HomerDev and
+# this folder are each considered, and the highest version.txt wins. build.cmd passes its choice; this is for a run
+# of build.ps1 on its own.
 if ($HomerDev -eq "") {
-  if ($env:HomerDev -and (Test-Path -LiteralPath (Join-Path $env:HomerDev "exec\CSharp\Lbc.cs"))) { $HomerDev = $env:HomerDev }
-  elseif (Test-Path -LiteralPath "C:\HomerDev\exec\CSharp\Lbc.cs") { $HomerDev = "C:\HomerDev" }
-  elseif (Test-Path -LiteralPath (Join-Path $sScriptDir "exec\CSharp\Lbc.cs")) { $HomerDev = $sScriptDir }
+  $nBest = [version]"0.0.0"
+  foreach ($sTry in @($env:HomerDev, "C:\HomerDev", $sScriptDir)) {
+    if (-not $sTry -or -not (Test-Path -LiteralPath (Join-Path $sTry "exec\CSharp\Lbc.cs"))) { continue }
+    $nVersion = [version]"0.0.0"
+    try { $nVersion = [version]((Get-Content -Raw -LiteralPath (Join-Path $sTry "version.txt")).Trim([char]0xFEFF, ' ', [char]13, [char]10)) } catch { }
+    if ($HomerDev -eq "" -or $nVersion -gt $nBest) { $HomerDev = $sTry; $nBest = $nVersion }
+  }
 }
 if ($HomerDev -eq "" -or -not (Test-Path -LiteralPath (Join-Path $HomerDev "exec\CSharp\Lbc.cs"))) {
   writeLog "ERROR: the Homer Development Kit was not found."

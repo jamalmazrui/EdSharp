@@ -34,9 +34,14 @@ echo Command line: %0 %*>> "%log%"
 echo Build log: %log%
 
 rem ---- the Homer Development Kit -------------------------------------
+rem THE NEWEST KIT FOUND IS USED (HomerDev 1.92.5). The HomerDev variable and C:\HomerDev are each considered
+rem and the higher version wins; the log names both. Names in cmd ignore case, so the variable is read before
+rem homerDev is emptied. Taken first as it stood, the variable named an installed kit at 1.77.6 in Program Files.
+set "sKitFromEnv=%HomerDev%"
 set "homerDev="
-if defined HomerDev if exist "%HomerDev%\exec\CSharp\Lbc.cs" set "homerDev=%HomerDev%"
-if not defined homerDev if exist "C:\HomerDev\exec\CSharp\Lbc.cs" set "homerDev=C:\HomerDev"
+set "sKitVersion="
+call :considerKit "%sKitFromEnv%"
+call :considerKit "C:\HomerDev"
 if not defined homerDev if exist "%CD%\exec\CSharp\Lbc.cs" set "homerDev=%CD%"
 if not defined homerDev (
   echo EdSharp needs the Homer Development Kit and cannot find it.
@@ -46,7 +51,7 @@ if not defined homerDev (
 )
 set "homerVer=0.0.0"
 if exist "!homerDev!\version.txt" set /p homerVer=<"!homerDev!\version.txt"
-set "kitNeeded=1.88.2"
+set "kitNeeded=1.92.5"
 powershell -NoProfile -Command "if ([version]'!homerVer!' -lt [version]'!kitNeeded!') { exit 1 } else { exit 0 }" >nul
 if errorlevel 1 (
   echo EdSharp needs HomerDev !kitNeeded! or later, and the kit is !homerVer!.
@@ -312,4 +317,21 @@ if not defined new (
   goto :eof
 )
 set "ver=!new!"
+goto :eof
+
+:considerKit
+rem One kit candidate (24 October 2026, from the kit's templates): used when it is a kit -- HomerDev.cs at its
+rem top, exec\CSharp\Lbc.cs inside -- and newer than the kit chosen so far, so an installed kit in Program Files
+rem that lags C:\HomerDev is never the one compiled against.
+set "sTry=%~1"
+if not defined sTry goto :eof
+if "!sTry:~-1!"=="\" set "sTry=!sTry:~0,-1!"
+if not exist "!sTry!\HomerDev.cs" goto :eof
+if not exist "!sTry!\exec\CSharp\Lbc.cs" goto :eof
+set "sTryVersion=0.0.0"
+if exist "!sTry!\version.txt" for /f "usebackq delims=" %%v in (`powershell -NoProfile -Command "(Get-Content -Raw -LiteralPath '!sTry!\version.txt').Trim([char]0xFEFF, ' ', [char]13, [char]10)"`) do set "sTryVersion=%%v"
+>> "%log%" echo Kit candidate: !sTry! version !sTryVersion!
+if not defined homerDev (set "homerDev=!sTry!" & set "sKitVersion=!sTryVersion!" & goto :eof)
+powershell -NoProfile -Command "try { if ([version]'!sTryVersion!' -gt [version]'!sKitVersion!') { exit 0 } else { exit 1 } } catch { exit 1 }"
+if not errorlevel 1 (set "homerDev=!sTry!" & set "sKitVersion=!sTryVersion!")
 goto :eof

@@ -2,6 +2,11 @@
 
 
 
+## 25 October 2026 -- the newest kit, and extCheck's rules
+
+- **The build uses the newest Homer kit it finds,** and logs each one: your HomerDev variable and C:\HomerDev. The variable named an older installed kit in Program Files (1.77.6), which a build took first.
+- **Files it makes are judged by extCheck's rules,** from the kit's Quality.cs, now compiled in (HomerDev 1.92.5). A route table the build puts in exec is no longer removed by tidy, so conversions use the kit's current ways.
+
 ## 19 October 2026 -- The old converters retire
 
 - **Your settings live in EdSharp.inix alone.** The first start copies your EdSharp.ini into your EdSharp.inix, in your EdSharp data folder, a value at a time and never over a value already there, and keeps the old file as EdSharp.ini.migrated; the log says how many values moved. From then on every setting is read from and written to the .inix, over the shipped defaults. Edit Settings File opens it, and an edit you save takes effect at once. Reset Configuration clears it, so the defaults show through. To go back, rename EdSharp.ini.migrated to EdSharp.ini. Favorites, Recent, the hotkey list and each compiler's own file are unchanged.
