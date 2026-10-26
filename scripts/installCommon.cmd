@@ -23,6 +23,7 @@ if /i "%~1"=="log" goto :writeLog
 if /i "%~1"=="say" goto :saySo
 if /i "%~1"=="wingetHas" goto :wingetHas
 if /i "%~1"=="wingetUpgrade" goto :wingetUpgrade
+if /i "%~1"=="runLong" goto :runLong
 exit /b 0
 
 :setup
@@ -101,7 +102,8 @@ rem already decided a newer version exists, so this updates rather than checking
 rem (-1978335189) counts as already current; any other non-zero result is a failure, reported as one, where every
 rem installer used to say "already the newest winget offers" and succeed.
 echo Updating %~3 to the newest release. Nothing is asked of you while it runs.
-winget upgrade --id %~2 --exact --silent --accept-source-agreements --accept-package-agreements --disable-interactivity >> "%log%" 2>&1
+set "sHomerRunLong=winget upgrade --id %~2 --exact --silent --accept-source-agreements --accept-package-agreements --disable-interactivity"
+call :runLongAs "%~3"
 set "iHomerUpgrade=%ERRORLEVEL%"
 >> "%log%" echo %date% %time% winget upgrade %~2 exit code %iHomerUpgrade%
 if "%iHomerUpgrade%"=="0" (
@@ -120,9 +122,64 @@ rem Labels rather than a parenthesized block, so the exit code is read when it i
 rem script turned on delayed expansion.
 if not "%iHomerUpgrade%"=="-1978335212" exit /b 1
 >> "%log%" echo %date% %time% winget knows no installed %~2, so the newest release is installed instead
-winget install --id %~2 --exact --silent --accept-source-agreements --accept-package-agreements --disable-interactivity >> "%log%" 2>&1
+set "sHomerRunLong=winget install --id %~2 --exact --silent --accept-source-agreements --accept-package-agreements --disable-interactivity"
+call :runLongAs "%~3"
 set "iHomerUpgrade=%ERRORLEVEL%"
 >> "%log%" echo %date% %time% winget install %~2 exit code %iHomerUpgrade%
 if not "%iHomerUpgrade%"=="0" exit /b 1
 echo %~3 was updated.
 exit /b 0
+
+:runLong
+rem runLong <label>: runs the command in sHomerRunLong, which the caller sets, for a step that takes a while.
+call :runLongAs "%~2"
+exit /b %ERRORLEVEL%
+
+:runLongAs
+rem A LONG STEP IS NEVER SILENT (HomerDev 1.93.7, the author's report of 25 October 2026: during long stretches the
+rem installer evidently worked with nothing on the console). Install scripts sent each long step's whole output -- a
+rem winget install, an ollama pull of several gigabytes, a pip install -- to the log alone, so after one line saying
+rem what was starting, the console said nothing for minutes. runLong keeps the log's detail and gives the console a
+rem short line now and then: "Pandoc: still working, 2 min, 45%" -- the percentage when the tool reports one -- first
+rem after 20 seconds, then every 30, while the log gets the full output and a progress line each time. The PowerShell
+rem that does it is at the end of this file, after the last exit, where cmd never runs it; it is read from here, so
+rem every app that copies installCommon.cmd has it, with no change to any app's build.
+set "sHomerRunLabel=%~1"
+set "sHomerRunLog=%log%"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$s = [IO.File]::ReadAllText('%~f0'); $i = $s.LastIndexOf('#HOMER-RUNLONG'); Invoke-Expression $s.Substring($i)"
+exit /b %ERRORLEVEL%
+
+rem Nothing below this line is batch.
+#HOMER-RUNLONG
+$sCommand = $env:sHomerRunLong; $sLabel = $env:sHomerRunLabel; $sLog = $env:sHomerRunLog
+if (-not $sLabel) { $sLabel = 'Working' }
+function logLine($sText) { if ($sLog) { Add-Content -LiteralPath $sLog -Value ((Get-Date -Format 'yyyy-MM-dd HH:mm:ss') + ' ' + $sText) -Encoding UTF8 } }
+function spoken($nSeconds) { if ($nSeconds -lt 60) { return ([int]$nSeconds).ToString() + ' seconds' }; return ([int][Math]::Round($nSeconds / 60)).ToString() + ' min' }
+function cleaned($sText) { $sText = [regex]::Replace($sText, "\x1B\[[0-9;?]*[A-Za-z]", ''); $l = @(); foreach ($sLine in ($sText -split "`n")) { $a = $sLine -split "`r"; $t = ($a | Where-Object { $_.Trim() -ne '' } | Select-Object -Last 1); if ($t) { $l += $t.TrimEnd() } }; return $l }
+function readNew($sPath, [ref]$iAt) { try { $f = [IO.File]::Open($sPath, 'Open', 'Read', 'ReadWrite'); $f.Position = $iAt.Value; $r = New-Object IO.StreamReader($f); $t = $r.ReadToEnd(); $iAt.Value = $f.Position; $r.Close(); return $t } catch { return '' } }
+$sOut = [IO.Path]::GetTempFileName(); $sErr = [IO.Path]::GetTempFileName()
+logLine ('run: ' + $sCommand)
+$dtStart = Get-Date
+$p = Start-Process -FilePath $env:ComSpec -ArgumentList ('/d /s /c "' + $sCommand + '"') -RedirectStandardOutput $sOut -RedirectStandardError $sErr -NoNewWindow -PassThru
+$null = $p.Handle
+$iOut = 0; $iErr = 0; $nNext = 20; $sLast = ''
+while (-not $p.HasExited) {
+  Start-Sleep -Milliseconds 500
+  $nSeconds = ((Get-Date) - $dtStart).TotalSeconds
+  if ($nSeconds -ge $nNext) {
+    $sNew = (readNew $sOut ([ref]$iOut)) + (readNew $sErr ([ref]$iErr))
+    $lNew = @(cleaned $sNew); if ($lNew.Count -gt 0) { $sLast = $lNew[-1] }
+    $oPercent = [regex]::Matches($sNew, '(\d{1,3}(?:\.\d)?)\s?%') | Select-Object -Last 1
+    $sPercent = ''; if ($oPercent) { $sPercent = ', ' + [int][double]$oPercent.Groups[1].Value + '%' }
+    Write-Host ($sLabel + ': still working, ' + (spoken $nSeconds) + $sPercent)
+    logLine ('progress after ' + [int]$nSeconds + ' s' + $sPercent + ': ' + $sLast)
+    $nNext += 30
+  }
+}
+$p.WaitForExit()
+$iCode = $p.ExitCode; if ($null -eq $iCode) { $iCode = 1 }
+$sAll = (readNew $sOut ([ref]$iOut)) + (readNew $sErr ([ref]$iErr))
+foreach ($sLine in @(cleaned ((Get-Content -Raw -LiteralPath $sOut -ErrorAction SilentlyContinue) + "`n" + (Get-Content -Raw -LiteralPath $sErr -ErrorAction SilentlyContinue)))) { logLine ('| ' + $sLine) }
+logLine ('exit code ' + $iCode + ' after ' + [int]((Get-Date) - $dtStart).TotalSeconds + ' s: ' + $sCommand)
+Remove-Item -LiteralPath $sOut, $sErr -ErrorAction SilentlyContinue
+exit $iCode

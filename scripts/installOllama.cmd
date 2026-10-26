@@ -92,7 +92,8 @@ echo(
 if /i "%sVerb%"=="reinstall" goto :reinstall
 echo Updating Ollama to the newest version: about 1 GB, and a few minutes.
 echo Nothing is asked of you while it runs.
-winget upgrade --id Ollama.Ollama --exact --silent --accept-source-agreements --accept-package-agreements >> "%log%" 2>&1
+set "sHomerRunLong=winget upgrade --id Ollama.Ollama --exact --silent --accept-source-agreements --accept-package-agreements"
+call "%~dp0installCommon.cmd" runLong "Ollama"
 set "iUp=%ERRORLEVEL%"
 call "%~dp0installCommon.cmd" log "winget upgrade exit code %iUp%"
 if "%iUp%"=="0" echo Ollama was updated.
@@ -102,7 +103,8 @@ goto :afterChange
 :reinstall
 echo Reinstalling Ollama: about 1 GB, and a few minutes. Nothing is asked of you
 echo while it runs.
-winget install --id Ollama.Ollama --exact --force --silent --accept-source-agreements --accept-package-agreements >> "%log%" 2>&1
+set "sHomerRunLong=winget install --id Ollama.Ollama --exact --force --silent --accept-source-agreements --accept-package-agreements"
+call "%~dp0installCommon.cmd" runLong "Ollama"
 set "iUp=%ERRORLEVEL%"
 call "%~dp0installCommon.cmd" log "winget install --force exit code %iUp%"
 if "%iUp%"=="0" echo Ollama was reinstalled.

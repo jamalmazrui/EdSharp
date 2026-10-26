@@ -145,12 +145,20 @@ def loadKind():
     # first, put at the front of the path and imported, so the check crashed on a kind function it lacked (HomerScribe,
     # EdSharp and FileDir, 9 October). Folders named HomerDev\scripts, and the HomerDev variable's, now come first; a
     # copy beside this script or in the project serves only when no kit is found.
-    sKitVar = os.path.normcase(os.path.abspath(os.path.join(os.environ.get("HomerDev", ""), "scripts"))) if os.environ.get("HomerDev") else ""
-    def kitFirst(sDir):
-        sNorm = os.path.normcase(os.path.abspath(sDir)) if sDir else ""
-        if sKitVar and sNorm == sKitVar: return 0
-        return 1 if sNorm.endswith(os.path.normcase(os.path.join("HomerDev", "scripts"))) else 2
-    lsDirs = sorted(lsDirs, key=kitFirst)
+    # THE NEWEST KIT'S KIND.PY (1.93.4). The HomerDev variable's folder came first, and it names the installed kit in
+    # Program Files, 1.77.6, whose kind.findKit took any folder with exec\\CSharp\\Lbc.cs for the kit; one was left at
+    # the top of C:\\, so every app's check of 25 October was built "against the kit at C:\\" and could not find the
+    # skills' scripts there, though C:\\HomerDev held 1.93.3. The folders are now ranked as the build scripts, tidy and
+    # kind.findKit rank kits: a real kit (HomerDev.cs at the top of its scripts folder's parent) before any copy, then
+    # the highest version.txt, then a folder named HomerDev, then a git repository.
+    def kitRank(sDir):
+        if not sDir: return (False, (), False, False)
+        sParent = os.path.dirname(os.path.abspath(sDir))
+        bKit = os.path.isfile(os.path.join(sParent, "HomerDev.cs"))
+        try: tVersion = tuple(int(s) for s in re.findall(r"\d+", open(os.path.join(sParent, "version.txt"), encoding="utf-8-sig").read())[:3]) if bKit else ()
+        except (OSError, ValueError): tVersion = ()
+        return (bKit, tVersion, os.path.basename(sParent).lower() == "homerdev", os.path.isdir(os.path.join(sParent, ".git")))
+    lsDirs = sorted(lsDirs, key=kitRank, reverse=True)
     for sDir in lsDirs:
         if sDir and os.path.isfile(os.path.join(sDir, "kind.py")):
             if sDir in sys.path: sys.path.remove(sDir)

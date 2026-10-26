@@ -189,9 +189,15 @@ def publishesPages(sFolder):
 
 
 def isKit(sFolder):
-    """Does this folder hold the kit's shared classes?"""
-    return bool(sFolder) and (os.path.isfile(os.path.join(sFolder, "exec", "CSharp", "Lbc.cs"))
-                              or os.path.isfile(os.path.join(sFolder, "exec", "Python", "lbc.py")))
+    """Does this folder hold the kit? Its shared classes, and HomerDev.cs at its top.
+
+    HOMERDEV.CS AT THE TOP (1.92.6). The shared classes alone were taken as the kit, so the climb from C:\\DbDo
+    stopped at C:\\, which holds kit files left by an unarchiving, before reaching C:\\HomerDev; DbDo's check of
+    24 October then found no HomerComponents.iss and no checkKeys.py there, and checkDb could not run, which stopped
+    its release. The build scripts already ask for HomerDev.cs (1.89.1); a stray copy of exec has no such file."""
+    return bool(sFolder) and os.path.isfile(os.path.join(sFolder, "HomerDev.cs")) and (
+        os.path.isfile(os.path.join(sFolder, "exec", "CSharp", "Lbc.cs"))
+        or os.path.isfile(os.path.join(sFolder, "exec", "Python", "lbc.py")))
 
 
 def fixedDrives():
@@ -218,20 +224,38 @@ def findKit(lsStarts=None):
     # development kit until it is installed; looked at first, it gave MyBooks the installed kdpSubmit, version 38,
     # which knew nothing of --book. The kit beside or above the project, then on any drive, comes first; the
     # variable is the last resort, for a machine with no development kit.
+    # THE NEWEST KIT FOUND (1.93.1), as tidy and the build scripts choose. The first kit the climb met was taken, and
+    # C:\\ holds a whole kit, HomerDev.cs and all, so the climb from C:\\DbDo stopped there before C:\\HomerDev, and
+    # every app's check compared it with that copy. Every kit found -- above or beside the start, a HomerDev at the top
+    # of a fixed drive, the HomerDev variable -- is a candidate, and the highest version.txt wins; of equals, the first
+    # found, so a kit the project sits in is still preferred to a distant one of the same version.
     lsStarts = list(lsStarts or []) + [os.getcwd(), os.path.dirname(os.path.abspath(__file__))]
+    lsFound = []
+    def consider(sFolder):
+        if sFolder and isKit(sFolder) and os.path.abspath(sFolder).lower() not in [s.lower() for s in lsFound]: lsFound.append(os.path.abspath(sFolder))
     for sStart in lsStarts:
         sDir = os.path.abspath(sStart)
         while True:
-            if isKit(sDir): return sDir
-            if isKit(os.path.join(sDir, "HomerDev")): return os.path.join(sDir, "HomerDev")
+            consider(sDir)
+            consider(os.path.join(sDir, "HomerDev"))
             sUp = os.path.dirname(sDir)
             if sUp == sDir: break
             sDir = sUp
-    for sRoot in fixedDrives():
-        if isKit(os.path.join(sRoot, "HomerDev")): return os.path.join(sRoot, "HomerDev")
-    sEnv = os.environ.get("HomerDev", "")
-    if isKit(sEnv): return os.path.abspath(sEnv)
-    return ""
+    for sRoot in fixedDrives(): consider(os.path.join(sRoot, "HomerDev"))
+    consider(os.environ.get("HomerDev", ""))
+    if not lsFound: return ""
+    def version(sFolder):
+        try: return tuple(int(s) for s in re.findall(r"\d+", open(os.path.join(sFolder, "version.txt"), encoding="utf-8-sig").read())[:3])
+        except (OSError, ValueError): return ()
+    # A TIE GOES TO THE REAL KIT (1.93.3). The copy unarchived at the top of C:\\ came from a recent kit zip, so its
+    # version.txt equalled C:\\HomerDev's, and the first found -- the drive's top, met first by the climb -- won the tie.
+    # Of equal versions, a folder named HomerDev wins, then one that is a git repository, as the kit being developed is.
+    def rank(sFolder):
+        return (version(sFolder), os.path.basename(os.path.normpath(sFolder)).lower() == "homerdev", os.path.isdir(os.path.join(sFolder, ".git")))
+    sBest = lsFound[0]
+    for sFolder in lsFound[1:]:
+        if rank(sFolder) > rank(sBest): sBest = sFolder
+    return sBest
 
 
 def issFunctions(sText, setDefines):
