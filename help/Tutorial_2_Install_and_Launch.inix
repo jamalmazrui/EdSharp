@@ -34,6 +34,10 @@ Say=EdSharp opens by itself. From then on, Alt plus Control plus E opens it from
 Key=Alt+Control+E
 Hear=EdSharp
 Hear=Untitled, edit, multiline, blank
+
+
+[step]
+
 Say=The window title first, then the edit box you type in. Blank means the document is empty.
 
 [step]

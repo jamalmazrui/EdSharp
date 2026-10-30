@@ -16,6 +16,10 @@ Say=letter dot t x t, and Enter.
 Key=Enter
 Hear=letter dot t x t, EdSharp
 Hear=Dear Ms. Alvarez,
+
+
+[step]
+
 Say=The title is the file's name now, and the first line is read.
 
 [step]

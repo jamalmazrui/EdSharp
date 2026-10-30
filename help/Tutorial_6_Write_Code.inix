@@ -17,6 +17,10 @@ Key=Control+F5
 Hear=Compiler Python
 Hear=line 12, SyntaxError: expected colon
 Hear=for item in items
+
+
+[step]
+
 Say=The cursor is on line twelve, where the colon is missing.
 
 [step]

@@ -11666,7 +11666,7 @@ hl.KeepLike(sMatch);
 // and braille, and the user's own commands.
 foreach (string sKitTo in new string[] {"txt", "md", "htm", "rtf", "csv"}) {
 if (bTextOnly && sKitTo != "txt") continue;
-if (sKitTo != sExt && Homer.Conversion.hasRoute("x." + sExt, sKitTo)) hl.AddUniqueRange(sExt + "2" + sKitTo);
+if (sKitTo != sExt && Homer.Conversion.canConvert("x." + sExt, sKitTo)) hl.AddUniqueRange(sExt + "2" + sKitTo);
 }
 // The bare extension entry and a real <ext>2txt converter both display
 // as "txt", and choosing the bare one opens the file RAW -- a duplicated
@@ -11730,7 +11730,10 @@ else sResult = sExt;
 if (sTargetExt != null && sTargetExt.Length > 0) App.WriteData("ImportTarget", sTargetExt);
 // THE KIT FIRST, where it has a way: the one copy of every conversion. Only a
 // target it does not know runs the [Import] command below.
-if (sResult != sExt && sTargetExt != null && sTargetExt.Length > 0 && Homer.Conversion.hasRoute(sSource, "x." + sTargetExt)) {
+// canConvert, not hasRoute (30 October 2026, from an audit by another AI): hasRoute
+// knows only a direct way, so a conversion the kit makes through a hub or the media
+// half fell to the old commands; canConvert asks the kit whether it can, by any way.
+if (sResult != sExt && sTargetExt != null && sTargetExt.Length > 0 && Homer.Conversion.canConvert(sSource, "x." + sTargetExt)) {
 string sKitTarget = Path.ChangeExtension(sTarget, "." + sTargetExt);
 if (File.Exists(sKitTarget)) File.Delete(sKitTarget);
 App.TempFiles.Add(sKitTarget);
@@ -14346,25 +14349,31 @@ string sKeyTo = Util.RegExpReplaceCase(sTargetFormat, @"^\w+2", "");
 bool bKeyed = sKeyTo != sTargetFormat;
 if (!bKeyed || Util.Equiv(sKeyTo, Path.GetExtension(sTarget).TrimStart('.'))) {
 string sKitSource = sSource;
-if (!Homer.Conversion.hasRoute(sKitSource, sTarget) && !bKeyed && !Util.Equiv(Path.GetExtension(sSource), ".rtf")) {
+if (!Homer.Conversion.canConvert(sKitSource, sTarget) && !bKeyed && !Util.Equiv(Path.GetExtension(sSource), ".rtf")) {
 string sAsText = Path.ChangeExtension(sSource, ".txt");
-if (Homer.Conversion.typeOf(sSource) == Homer.Conversion.typeOf(sTarget) || Homer.Conversion.hasRoute(sAsText, sTarget)) {
+if (Homer.Conversion.typeOf(sSource) == Homer.Conversion.typeOf(sTarget) || Homer.Conversion.canConvert(sAsText, sTarget)) {
 if (!Util.Equiv(sAsText, sSource)) File.Copy(sSource, sAsText, true);
 sKitSource = sAsText;
 }
 }
 bool bSame = Homer.Conversion.typeOf(sKitSource) == Homer.Conversion.typeOf(sTarget);
-if (bSame || Homer.Conversion.hasRoute(sKitSource, sTarget)) {
+if (bSame || Homer.Conversion.canConvert(sKitSource, sTarget)) {
 App.Frame.AddMessage("Converting");
 string sKitKept = "";
 if (File.Exists(sTarget)) { sKitKept = Homer.Util.recoveryPath(sTarget); File.Move(sTarget, sKitKept); }
 string sKitError = "";
 bool bMade;
+// AN ERROR PUTS THE EARLIER FILE BACK TOO (30 October 2026, from an audit by another
+// AI). Only a conversion that answered false restored the file set aside; one that
+// threw -- a locked target, a full disk on the copy -- left the earlier file under its
+// recovery name and the target missing. An error now counts as not made.
+try {
 if (bSame) { File.Copy(sKitSource, sTarget, true); bMade = true; }
 else bMade = Homer.Conversion.convert(sKitSource, sTarget, out sKitError) && File.Exists(sTarget);
+} catch (Exception oError) { bMade = false; sKitError = oError.Message; Log("The conversion to " + sTarget + " stopped with an error: " + oError.Message); }
 if (bMade && sKitKept != "") { try { File.Delete(sKitKept); } catch (Exception) {} }
 if (!bMade) {
-if (File.Exists(sTarget)) File.Delete(sTarget);
+try { if (File.Exists(sTarget)) File.Delete(sTarget); } catch (Exception oError) { Log("The unfinished " + sTarget + " could not be removed: " + oError.Message); }
 if (sKitKept != "") { try { File.Move(sKitKept, sTarget); } catch (Exception oError) { Log("The earlier " + sTarget + " could not be put back; it is kept at " + sKitKept + ": " + oError.Message); } }
 Dialog.Show("Error", "The conversion did not work: " + sKitError + "\n\nThe run log records each step:\n" + App.LogFile);
 }

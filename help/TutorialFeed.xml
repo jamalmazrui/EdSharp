@@ -5,7 +5,7 @@
     <link>Tutorials.htm</link>
     <description>Spoken walks through EdSharp, the text and code editor for working by ear. Ten walks, each under five minutes, in the order a new person meets them.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 26 Oct 2026 14:19:34 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 30 Oct 2026 20:10:41 +0000</lastBuildDate>
     <itunes:author>Jamal Mazrui</itunes:author>
     <itunes:explicit>false</itunes:explicit>
     <itunes:category text="Technology"/>
@@ -33,8 +33,8 @@
       <description>The installer is downloaded, and your reader is running. Full transcript: Tutorials.htm#0b-2-install-and-launch</description>
       <link>Tutorials.htm#0b-2-install-and-launch</link>
       <guid isPermaLink="false">homer-tutorial_2_install_and_launch</guid>
-      <enclosure url="tutorials/2_Install_and_Launch.mp3" length="1645661" type="audio/mpeg"/>
-      <itunes:duration>00:03:44</itunes:duration>
+      <enclosure url="tutorials/2_Install_and_Launch.mp3" length="1680865" type="audio/mpeg"/>
+      <itunes:duration>00:03:50</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>
@@ -42,8 +42,8 @@
       <description>EdSharp is open, and letter.txt is in your Documents folder. Full transcript: Tutorials.htm#0c-3-open-edit-and-save-a-file</description>
       <link>Tutorials.htm#0c-3-open-edit-and-save-a-file</link>
       <guid isPermaLink="false">homer-tutorial_3_open_edit_and_save_a_file</guid>
-      <enclosure url="tutorials/3_Open_Edit_and_Save_a_File.mp3" length="1205966" type="audio/mpeg"/>
-      <itunes:duration>00:02:56</itunes:duration>
+      <enclosure url="tutorials/3_Open_Edit_and_Save_a_File.mp3" length="1231761" type="audio/mpeg"/>
+      <itunes:duration>00:02:59</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>
@@ -60,8 +60,8 @@
       <description>EdSharp is open, and report.docx is in your Documents folder. Full transcript: Tutorials.htm#0e-5-convert-between-formats</description>
       <link>Tutorials.htm#0e-5-convert-between-formats</link>
       <guid isPermaLink="false">homer-tutorial_5_convert_between_formats</guid>
-      <enclosure url="tutorials/5_Convert_Between_Formats.mp3" length="1720722" type="audio/mpeg"/>
-      <itunes:duration>00:03:57</itunes:duration>
+      <enclosure url="tutorials/5_Convert_Between_Formats.mp3" length="1773661" type="audio/mpeg"/>
+      <itunes:duration>00:04:04</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>
@@ -69,8 +69,8 @@
       <description>EdSharp is open on a short Python file with one mistake, and Python was ticked when EdSharp was installed. Full transcript: Tutorials.htm#0f-6-write-code</description>
       <link>Tutorials.htm#0f-6-write-code</link>
       <guid isPermaLink="false">homer-tutorial_6_write_code</guid>
-      <enclosure url="tutorials/6_Write_Code.mp3" length="1241287" type="audio/mpeg"/>
-      <itunes:duration>00:02:57</itunes:duration>
+      <enclosure url="tutorials/6_Write_Code.mp3" length="1260353" type="audio/mpeg"/>
+      <itunes:duration>00:02:59</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>
@@ -78,8 +78,8 @@
       <description>EdSharp is open on a document, and Ollama with a model was ticked when EdSharp was installed, or installed since. Full transcript: Tutorials.htm#0g-7-ask-the-ai-on-your-own-computer</description>
       <link>Tutorials.htm#0g-7-ask-the-ai-on-your-own-computer</link>
       <guid isPermaLink="false">homer-tutorial_7_ask_the_ai_on_your_own_computer</guid>
-      <enclosure url="tutorials/7_Ask_the_AI_on_Your_Own_Computer.mp3" length="1204243" type="audio/mpeg"/>
-      <itunes:duration>00:02:47</itunes:duration>
+      <enclosure url="tutorials/7_Ask_the_AI_on_Your_Own_Computer.mp3" length="1239732" type="audio/mpeg"/>
+      <itunes:duration>00:02:51</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>

@@ -236,6 +236,11 @@ def checkOne(sScript, bFirst):
         lsHear = [s for s in dStep.get("Hear", []) if s]
         sNote = firstOf(dStep, "Note")
         if not sSay: problem(sScript, iAt, "no Say line")
+        # ONE SAY A STEP (1.94.1, from an audit by another AI). A step's first Say is spoken before its key and
+        # reader lines; a second one, after the reader, was read by the parser but neither spoken nor written into
+        # the transcript. Put what follows the reader in a step of its own.
+        if len([s for s in dStep.get("Say", []) if s]) > 1:
+            problem(sScript, iAt, "more than one Say line; only the first is spoken, so give the next its own [step]")
         checkKeyName(sScript, iAt, sKey)
         if sKey and not lsHear:
             sNext = firstOf(lsSteps[iAt], "Say") if iAt < len(lsSteps) else ""

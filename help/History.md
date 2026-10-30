@@ -2,6 +2,15 @@
 
 
 
+## 30 October 2026 -- every conversion the kit can do
+
+- **Import and export use every conversion the Homer kit can make.** EdSharp asked only whether the kit had a direct way between two formats, so one it makes through an in-between format fell to EdSharp's older commands. It now asks whether the kit can convert by any way (from an audit by another AI).
+
+## 30 October 2026 -- fixes from an audit by another AI
+
+- **A failed export puts your earlier file back.** Only a conversion that reported failure restored the file set aside; one that stopped with an error, such as a locked or full disk, left it under a recovery name and the target missing. Now an error restores it too.
+- **Each tutorial explanation is spoken.** Five steps had a second explanation after the screen reader's lines, which was never spoken or written into the transcript. Each now has a step of its own.
+
 ## 25 October 2026 -- the newest kit, and extCheck's rules
 
 - **The build uses the newest Homer kit it finds,** and logs each one: your HomerDev variable and C:\HomerDev. The variable named an older installed kit in Program Files (1.77.6), which a build took first.

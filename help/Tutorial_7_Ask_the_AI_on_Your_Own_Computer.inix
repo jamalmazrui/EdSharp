@@ -23,6 +23,10 @@ Key=Enter
 Hear=Asking llama3.2
 Hear=Answer - EdSharp
 Hear=The report makes three points. First,
+
+
+[step]
+
 Say=The answer is a document like any other: arrow it, copy from it, save it.
 
 [step]
