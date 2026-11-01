@@ -187,6 +187,16 @@
 <li><a href="#edsharp-history" id="toc-edsharp-history">EdSharp
 History</a>
 <ul>
+<li><a href="#1-november-2026----section-break-types-the-break-again"
+id="toc-1-november-2026----section-break-types-the-break-again">1
+November 2026 -- Section Break types the break again</a></li>
+<li><a href="#31-october-2026----one-search-syntax"
+id="toc-31-october-2026----one-search-syntax">31 October 2026 -- One
+search syntax</a></li>
+<li><a
+href="#30-october-2026-later----the-first-tutorial-under-five-minutes"
+id="toc-30-october-2026-later----the-first-tutorial-under-five-minutes">30
+October 2026, later -- the first tutorial under five minutes</a></li>
 <li><a href="#30-october-2026----every-conversion-the-kit-can-do"
 id="toc-30-october-2026----every-conversion-the-kit-can-do">30 October
 2026 -- every conversion the kit can do</a></li>
@@ -304,6 +314,43 @@ id="toc-earlier-in-august-2026">Earlier in August 2026</a></li>
 </nav>
 <main>
 <h1 id="edsharp-history">EdSharp History</h1>
+<h2 id="1-november-2026----section-break-types-the-break-again">1
+November 2026 -- Section Break types the break again</h2>
+<ul>
+<li><strong>Control+Enter inserts the section break, not an error
+message.</strong> The SectionBreak setting was turned into text by a
+script engine, which answers a fault with the words "ERROR: Unterminated
+string constant" -- and EdSharp typed those words into the document.
+Escapes such as \n and \f are now read directly, so the setting can
+never become an error message; the same goes for Find and every other
+place that reads escapes.</li>
+</ul>
+<h2 id="31-october-2026----one-search-syntax">31 October 2026 -- One
+search syntax</h2>
+<ul>
+<li><strong>Search for Topic takes the Homer search syntax</strong> -- a
+word anywhere in the heading, <code>*</code> and <code>?</code>,
+<code>&amp;</code> all, <code>|</code> any, <code>!</code> not, quotes
+for exact text -- where your words went into a regular expression, so
+C++ broke it.</li>
+<li><strong>Shift+F3 after Search for Topic finds the previous
+topic,</strong> where it looked for the last Find text.</li>
+<li><strong>File Find's Contains and Filter take the syntax,</strong>
+and pick lists filter and jump with it. Their Jump now has F3 and
+Shift+F3, and finds capital letters, which it never did.</li>
+<li><strong>Find in a document stays exact,</strong> because in a
+document &amp;&amp; or * must be found as typed.</li>
+</ul>
+<h2
+id="30-october-2026-later----the-first-tutorial-under-five-minutes">30
+October 2026, later -- the first tutorial under five minutes</h2>
+<ul>
+<li><strong>The User Interface tutorial is shorter.</strong> It ran 5
+minutes 3 seconds, over the five minutes the tutorials promise. Three
+explanations are trimmed, about 30 words, which should bring it under
+five minutes; the build measures it (found by ChatGPT's audit of the
+logs).</li>
+</ul>
 <h2 id="30-october-2026----every-conversion-the-kit-can-do">30 October
 2026 -- every conversion the kit can do</h2>
 <ul>

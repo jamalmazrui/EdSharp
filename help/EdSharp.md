@@ -693,9 +693,26 @@ The Web Download command, Alt+Shift+W, lets you pick one or more files to downlo
   
 To make moving through a long list quicker and easier, EdSharp adds these features to its dialogs that show lists.
 
-Control+J prompts for text within an item, going to the first match if a new search, or the next match if the previous value is accepted.  Alt+J goes to the next match without prompting for a value.  The item with focus when the dialog is closed -- but not canceled -- becomes the current item the next time that the same list dialog is invoked (you are notified when it is not the first item).  The Jump value of that dialog is also remembered.
+Control+J prompts for text within an item, going to the first match if a new search, or the next match if the previous value is accepted.  Alt+J or F3 goes to the next match without prompting for a value, and Shift+F3 to the one before.  The item with focus when the dialog is closed -- but not canceled -- becomes the current item the next time that the same list dialog is invoked (you are notified when it is not the first item).  The Jump value of that dialog is also remembered.
 
-Control+F sets a filter, so only matching items are shown. Use wildcards: * matches any run of characters, and ? matches a single one.  For example, to browse the commands about replacing in the Alternate Menu, Alt+F10, press Control+F in that list and type *replace* as the filter.  Control+Shift+F clears the filter, so all items show again.  You can also change the order of items: Alt+A for alphabetical order, Alt+Shift+A for reverse alphabetical order, Alt+D for the default order, or Alt+Shift+D for the default order reversed.
+Control+F sets a filter, so only matching items are shown, in the search syntax below: * matches any run of characters, ? a single one, & means all, | any, and ! not.  For example, to browse the commands about replacing in the Alternate Menu, Alt+F10, press Control+F in that list and type *replace* as the filter.  Control+Shift+F clears the filter, so all items show again.  You can also change the order of items: Alt+A for alphabetical order, Alt+Shift+A for reverse alphabetical order, Alt+D for the default order, or Alt+Shift+D for the default order reversed.
+
+### Search syntax
+
+Every Homer search that is not a regular expression reads what you type the same way. A plain word is enough most of the time; the symbols are there when you need more.
+
+- **A word** is found anywhere, whatever its case: `river` finds "Riverside".
+- **`*`** stands for any run of characters, and **`?`** for any one character: `chap*`, `c?t`.
+- **`&`** means all of them: `red & blue`.
+- **`|`** means any of them: `red | blue`. `&` is read first, so `red & blue | green` means red and blue, or else green.
+- **`!`** before a word means not: `!draft`.
+- **Quotes** find exactly what is inside, symbols and all: `"C#"`, `"a & b"`.
+
+Where a wildcard counts depends on what is searched. When the search reads a **name** -- a file name, a line of a list, one field -- a word with `*` or `?` must match the whole name, so `*.md` means a name ending in .md, and `chap*` one starting with chap. When it reads **text** -- a file's contents, a whole record -- every word may match anywhere. A word with no wildcard is found anywhere in both.
+
+F3 repeats the last search, in the same way and over the same things, going forward; Shift+F3 repeats it going back.
+
+EdSharp's Find, Control+F in a document, is the exception: it finds exactly the characters you type, because in a document `&&` or `*` must be found as written. File Find, Alt+Shift+F, takes the syntax in both boxes: Contains reads each file's text, and Filter reads its name. Search for Topic, Alt+F6, reads each topic heading as a name.
 
 Multiple commands support flexible checking or unchecking in a checked listbox such as the Web Download dialog.  Press Space to toggle the checked state of the current item, Control+A to check all items, or Control+Shift+A to uncheck all.  Press Shift+DownArrow for check and Next, or Shift+UpArrow for check and Previous.  Press Shift+End for check to Bottom, or Shift+Home for check to Top.  Shift+NumPad5 checks the current item.  F8 marks the start of a checking operation, completed with Shift+F8.
 

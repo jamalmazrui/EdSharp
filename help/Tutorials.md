@@ -878,7 +878,7 @@ One want: to move around EdSharp without hunting. Everything in it follows a few
 
 ### Step 2: Insert+Tab
 
-EdSharp is one window. The document you are editing fills it, and its name is in the title. The edit box is a plain Windows edit control, so every reader reads it the same way.
+EdSharp is one window. Your document fills it, and its name is in the title. The edit box is a plain Windows control, so every reader reads it the same way.
 
 Screen reader:
 
@@ -948,7 +948,7 @@ Confirm the wording with a live run: buildTutorials -live.
 
 ### Step 9: Insert+Page Down
 
-EdSharp speaks its own confirmations as they happen, such as Converting, or a bookmark's place. They are shown on the status line too, so a message missed can be read again with the reader's own key for that line.
+EdSharp speaks its own confirmations, such as Converting. They also go to the status line, so a missed one can be read again.
 
 Screen reader:
 
@@ -1029,7 +1029,7 @@ Confirm the wording with a live run: buildTutorials -live.
 
 ### Step 17
 
-Control plus Space selects the chunk at the cursor, a run of characters with no spaces in it, such as a web address; pressed again, it adds the next.
+Control plus Space selects the chunk at the cursor, such as a web address; pressed again, it adds the next.
 
 ### Step 18: F1
 

@@ -4168,7 +4168,10 @@ Util.Say(rtb.RowText);
 else AddMessage("Not found!");
 }
 
-if (menuItem == menuNavigateReverseFind || menuItem == menuNavigateReverseFindAtCursor || (!this.FindWithRegExp && menuItem == menuNavigateReverseFindAgain)) {
+// SHIFT+F3 REPEATS THE SAME SEARCH BACKWARD (31 October 2026): after Search for
+// Topic it looked for the last Find text instead, because only F3 checked which
+// search came last. Both keys now do.
+if (menuItem == menuNavigateReverseFind || menuItem == menuNavigateReverseFindAtCursor || (!this.FindWithRegExp && !bLastSearchTopic && menuItem == menuNavigateReverseFindAgain)) {
 iIndex = rtb.Index;
 iEnd = 0;
 sText = App.ReadData("Find", "");
@@ -4240,7 +4243,7 @@ Util.Say(rtb.RowText);
 else AddMessage("Not found!");
 }
 
-if (menuItem == menuNavigateReverseFindWithRegExp || (this.FindWithRegExp && menuItem == menuNavigateReverseFindAgain)) {
+if (menuItem == menuNavigateReverseFindWithRegExp || (this.FindWithRegExp && !bLastSearchTopic && menuItem == menuNavigateReverseFindAgain)) {
 sMatch = App.ReadData("Pattern", "");
 if (menuItem == menuNavigateReverseFindWithRegExp) sMatch = Dialog.Input("Reverse Find with Regular Expression", "Pattern", sMatch, "FindRegExp");
 if (sMatch.Length == 0) return;
@@ -4306,8 +4309,14 @@ Dialog.Show("Error", "Invalid position!");
 return;
 }
 }
-if (menuItem == menuNavigateSearchForTopic || (bLastSearchTopic && menuItem == menuNavigateForwardFindAgain)) {
+// SEARCH FOR TOPIC IN THE HOMER SEARCH SYNTAX (31 October 2026, kit 1.95.0). The
+// words typed went straight into a regular expression, so C++ or (draft) broke the
+// search. Each topic heading is now read as a name by Homer.Search: a word is found
+// anywhere in it, chap* is a heading starting with chap, rivers | lakes either,
+// !draft not. F3 finds the next matching topic and Shift+F3 the one before.
+if (menuItem == menuNavigateSearchForTopic || (bLastSearchTopic && (menuItem == menuNavigateForwardFindAgain || menuItem == menuNavigateReverseFindAgain))) {
 bLastSearchTopic = true;
+bool bTopicForward = menuItem != menuNavigateReverseFindAgain;
 sText = App.ReadData("Topic", "");
 if (menuItem == menuNavigateSearchForTopic) {
 sText = Dialog.Input("Search For", "Topic", sText, "SearchTopic");
@@ -4317,9 +4326,7 @@ else iStart = rtb.Index;
 if (sText.Length == 0) return;
 
 App.WriteData("Topic", sText);
-sMatch = SB + ".*?" + sText + ".*?" + LB;
-sText = rtb.Text;
-iIndex = (int) Util.RegExpContainsEquiv(sText, sMatch, iStart)[0];
+iIndex = FindTopic(rtb.Text, sText, iStart, bTopicForward);
 if (iIndex == -1) {
 AddMessage("Not found!");
 return;
@@ -9319,6 +9326,31 @@ rtb.Index = iIndex;
 this.AddMessage(sText);
 } // NavigatePriorMatch method
 
+// FindTopic: where the next (or previous) topic whose heading matches sPattern
+// begins -- the index of its section break -- or -1. A heading is the line after a
+// section break, read as a name in the Homer search syntax.
+public int FindTopic(string sText, string sPattern, int iStart, bool bForward) {
+List<List<Homer.Search.Term>> llPattern = Homer.Search.parse(sPattern);
+int iBest = -1;
+int iAt = sText.IndexOf(SB, StringComparison.Ordinal);
+while (iAt >= 0) {
+int iHead = iAt + SB.Length;
+int iEnd = sText.IndexOf(LB, iHead, StringComparison.Ordinal);
+if (iEnd < 0) iEnd = sText.Length;
+string sHead = sText.Substring(iHead, iEnd - iHead).Trim();
+bool bMatch = Homer.Search.isMatch(sHead, llPattern, true, false);
+if (bForward) {
+if (iAt >= iStart && bMatch) return iAt;
+}
+else {
+if (iHead >= iStart) break;
+if (bMatch) iBest = iAt;
+}
+iAt = sText.IndexOf(SB, iAt + 1, StringComparison.Ordinal);
+}
+return bForward ? -1 : iBest;
+} // FindTopic method
+
 public void FileFind() {
 string sContains, sFilter, sDir, sFile;
 string[] aLabels, aValues, aFilters, aResults, aFiles, aNames;
@@ -9340,9 +9372,23 @@ sFilter = aResults[1].Trim();
 if (sFilter.Length == 0) sFilter = "*.*";
 App.WriteData("Contains", sContains);
 App.WriteData("Filter", sFilter);
-aFilters = sFilter.Split('|');
+// THE HOMER SEARCH SYNTAX (31 October 2026, kit 1.95.0): Filter is read as a name
+// pattern (*.txt|*.md, !*.bak) and Contains as text (red & blue, "C#" exactly).
+// Windows' own patterns took * and ? only, and Contains was one plain string.
 sDir = Directory.GetCurrentDirectory();
-aFiles = Util.FindInFiles(sContains, sDir, aFilters, false);
+List<List<Homer.Search.Term>> llFilter = Homer.Search.parse(sFilter);
+List<List<Homer.Search.Term>> llContains = Homer.Search.parse(sContains);
+bool bAllFiles = sFilter == "*" || sFilter == "*.*";
+List<string> lsFound = new List<string>();
+foreach (string sCandidate in Directory.GetFiles(sDir, "*")) {
+if (!bAllFiles && !Homer.Search.isMatch(Path.GetFileName(sCandidate), llFilter, true, false)) continue;
+if (sContains.Length > 0) {
+try { if (!Homer.Search.isMatch(File.ReadAllText(sCandidate), llContains, false, false)) continue; }
+catch { continue; }
+}
+lsFound.Add(sCandidate);
+}
+aFiles = lsFound.ToArray();
 if (aFiles.Length == 0) {
 Dialog.Show("Alert", "No matches!");
 return;
@@ -10032,6 +10078,8 @@ tblNew.Columns.Add("Value", typeof(string));
 for (int i = this.tblDefault.Rows.Count -1; i >= 0; i--) tblNew.Rows.Add(this.tblDefault.Rows[i][0].ToString(), tblDefault.Rows[i][1].ToString());
 tbl = tblNew;
 //bs = new BindingSource();
+// A sort makes a new table; a Homer filter's Shown marks go with it (31 October 2026).
+if (!string.IsNullOrEmpty(this.Filter)) GetFilterSql(this.Filter);
 bs.DataSource = tbl;
 //this.BS = bs;
 //bs.ResetBindings();
@@ -10232,37 +10280,38 @@ if (Dialog.hashFilter.ContainsKey(this.Text)) Dialog.hashFilter.Remove(this.Text
 if (sFilter.Trim().Length > 0) Dialog.hashFilter.Add(this.Text, sFilter);
 //}
 return true;
+// JUMP IN THE HOMER SEARCH SYNTAX, WITH F3 AND SHIFT+F3 (31 October 2026, kit
+// 1.95.0). The item was lowered and the jump text was not, so a capital letter
+// never matched; and the list had Alt+J forward only. An item is now read as a
+// name by Homer.Search, from the cursor round to the top; Alt+J and F3 find the
+// next, Shift+F3 the one before, as in every Homer list.
 case Keys.Control | Keys.J :
 case Keys.Alt | Keys.J :
+case Keys.F3 :
+case Keys.Shift | Keys.F3 :
 string sTitle = this.Text;
 string sJump = "";
 Dialog.hashJump.TryGetValue(sTitle, out sJump);
-if (keyData == (Keys.Control | Keys.J)) {
+if (sJump == null) sJump = "";
+if (keyData == (Keys.Control | Keys.J) || sJump.Length == 0) {
 sJump = Dialog.Input("Jump", "Text", sJump);
 if (sJump.Length == 0) return true;
 }
-
-int iIndex = bs.Position;
-if (keyData == (Keys.Alt | Keys.J) || sJump == Dialog.Jump) iIndex++;
-else iIndex = 0;
 if (Dialog.hashJump.ContainsKey(sTitle)) Dialog.hashJump.Remove(sTitle);
 Dialog.hashJump.Add(sTitle, sJump);
 
 int iCount = tbl.DefaultView.Count;
-//while (iIndex < iCount && tbl.DefaultView[iIndex].ToString().ToLower().IndexOf(sJump) == -1) iIndex ++;
-/*
-while (iIndex < iCount && tbl.DefaultView[iIndex].ToString().ToLower().IndexOf(sJump) == -1) {
-//App.Frame.AddMessage(iIndex);
-iIndex ++;
+if (iCount == 0) { App.Frame.AddMessage("No items!"); return true; }
+int iStep = (keyData == (Keys.Shift | Keys.F3)) ? -1 : 1;
+List<List<Homer.Search.Term>> llJump = Homer.Search.parse(sJump);
+for (int iTry = 1; iTry <= iCount; iTry++) {
+int iIndex = ((bs.Position + iStep * iTry) % iCount + iCount) % iCount;
+if (Homer.Search.isMatch(tbl.DefaultView[iIndex][0].ToString(), llJump, true, false)) {
+bs.Position = iIndex;
+return true;
 }
-*/
-while (iIndex < iCount && tbl.DefaultView[iIndex][0].ToString().ToLower().IndexOf(sJump) == -1) {
-iIndex ++;
 }
-//if (iIndex < iCount) bs.Position = iIndex;
-if (iIndex < iCount) bs.Position = iIndex;
-else App.Frame.AddMessage("Not found!");
-//lst.Update();
+App.Frame.AddMessage("0 matches");
 return true;
 }
 
@@ -10270,39 +10319,20 @@ return base.ProcessCmdKey (ref msg, keyData);
 } // ProcessCmdKey handler
 
 public string GetFilterSql(string sText) {
+// THE HOMER SEARCH SYNTAX (31 October 2026, kit 1.95.0). This built a DataView LIKE
+// expression from the text, as FileDir's folder filter did, so & ? and ! did not
+// work and an apostrophe made it fail. Each item is now tested by Homer.Search as
+// a name and marked Shown; the expression returned shows the marked items.
 if (sText == null) sText = "";
 sText = sText.Trim();
 if (sText == "" || sText == "*") return "";
-string[] aFilters = sText.Split('|');
-string s = "";
-for (int i =0; i < aFilters.Length; i++) {
-if (i == 0) s += "(";
-string[] a = aFilters[i].Split('*');
-for (int j = 0; j < a.Length; j++) {
-string sPrefix = "";
-string sSuffix = "";
-if (j == 0) s += " (";
-if (a[j].Length > 0) {
-if (j > 0) sPrefix = "*";
-if (j < a.Length - 1) sSuffix = "*";
-s += "Item like '" + sPrefix + a[j] + sSuffix + "'";
+if (!tbl.Columns.Contains("Shown")) {
+DataColumn colShown = tbl.Columns.Add("Shown", typeof(bool));
+colShown.DefaultValue = true;
 }
-
-if (j == a.Length - 1) s += ") ";
-else s += " and ";
-}
-if (i == aFilters.Length - 1) s+=")";
-else s += " or ";
-}
-
-s = s.Replace("( and ", "(");
-s = s.Replace(" and )", ")");
-s = s.Replace("**", "*");
-s = s.Replace("  ", " ");
-s = s.Replace("( ", "(");
-s = s.Replace(" )", ")");
-s = s.Trim();
-return s;
+List<List<Homer.Search.Term>> llFilter = Homer.Search.parse(sText);
+foreach (DataRow row in tbl.Rows) row["Shown"] = Homer.Search.isMatch(row[0].ToString(), llFilter, true, false);
+return "Shown = true";
 } // GetFilterSql method
 
 } // ListForm class
@@ -14420,20 +14450,52 @@ return Literalize(sText, bCheckPrefix);
 } // Literalize method
 
 public static string Literalize(string sText, bool bCheckPrefix) {
+// ESCAPES ARE READ HERE, NOT BY A SCRIPT ENGINE (1 November 2026). The text was
+// wrapped in quotes and handed to JScript, whose answer to a fault is the TEXT
+// "ERROR: ..." rather than an exception -- so when the SectionBreak setting did
+// not survive the round trip, Control+Enter typed "ERROR: Unterminated string
+// constant" into the document. The escapes it understood are read directly now:
+// \n \r \t \f \v \b \0 \\ \" \' \xHH and \uHHHH; any other backslash is kept as
+// written. A setting written with its own surrounding quotes, as EdSharp.ini
+// writes SectionBreak, loses them first.
+if (sText == null) return "";
 if (bCheckPrefix) {
 if (sText.StartsWith("@")) return sText.Substring(1);
 else if (sText.StartsWith(@"\@")) sText = sText.Substring(1);
 }
-string sReturn = null;
-try {
-sReturn = Script.run("\"" + sText + "\"");
+if (sText.Length >= 2 && sText[0] == '"' && sText[sText.Length - 1] == '"') sText = sText.Substring(1, sText.Length - 2);
+StringBuilder sb = new StringBuilder(sText.Length);
+for (int i = 0; i < sText.Length; i++) {
+char c = sText[i];
+if (c != '\\' || i == sText.Length - 1) { sb.Append(c); continue; }
+char cNext = sText[i + 1];
+int iHex = cNext == 'x' ? 2 : (cNext == 'u' ? 4 : 0);
+if (iHex > 0) {
+int iCode;
+if (i + 1 + iHex < sText.Length && Int32.TryParse(sText.Substring(i + 2, iHex), System.Globalization.NumberStyles.HexNumber, null, out iCode)) {
+sb.Append((char) iCode);
+i += 1 + iHex;
 }
-catch {}
-
-//string sReturn = JS.Eval("\"" + sText + "\"").ToString();
-//if (sReturn.Length == 0) sReturn = sText;
-if (sReturn == null) sReturn = sText;
-return sReturn;
+else sb.Append(c);
+continue;
+}
+string sMapped = null;
+switch (cNext) {
+case 'n': sMapped = "\n"; break;
+case 'r': sMapped = "\r"; break;
+case 't': sMapped = "\t"; break;
+case 'f': sMapped = "\f"; break;
+case 'v': sMapped = "\v"; break;
+case 'b': sMapped = "\b"; break;
+case '0': sMapped = "\0"; break;
+case '\\': sMapped = "\\"; break;
+case '"': sMapped = "\""; break;
+case '\'': sMapped = "'"; break;
+}
+if (sMapped == null) sb.Append(c);
+else { sb.Append(sMapped); i++; }
+}
+return sb.ToString();
 } // Literalize method
 
 public static string Reverse(string sText) {

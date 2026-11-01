@@ -10,7 +10,7 @@ Say=One want: to move around EdSharp without hunting. Everything in it follows a
 Key=
 [step]
 
-Say=EdSharp is one window. The document you are editing fills it, and its name is in the title. The edit box is a plain Windows edit control, so every reader reads it the same way.
+Say=EdSharp is one window. Your document fills it, and its name is in the title. The edit box is a plain Windows control, so every reader reads it the same way.
 Key=Insert+Tab
 Hear=EdSharp, Untitled, edit, multiline, blank
 Note=Confirm the wording with a live run: buildTutorials -live.
@@ -52,7 +52,7 @@ Hear=UTF-8
 Note=Confirm the wording with a live run: buildTutorials -live.
 [step]
 
-Say=EdSharp speaks its own confirmations as they happen, such as Converting, or a bookmark's place. They are shown on the status line too, so a message missed can be read again with the reader's own key for that line.
+Say=EdSharp speaks its own confirmations, such as Converting. They also go to the status line, so a missed one can be read again.
 Key=Insert+Page Down
 Hear=Line 1 of 1
 Note=Confirm the wording with a live run: buildTutorials -live.
@@ -101,7 +101,7 @@ Hear=The budget for the second quarter is attached.
 Note=Confirm the wording with a live run: buildTutorials -live.
 [step]
 
-Say=Control plus Space selects the chunk at the cursor, a run of characters with no spaces in it, such as a web address; pressed again, it adds the next.
+Say=Control plus Space selects the chunk at the cursor, such as a web address; pressed again, it adds the next.
 Key=
 [step]
 

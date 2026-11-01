@@ -1649,19 +1649,57 @@ page_002.htm and so on.</p>
 these features to its dialogs that show lists.</p>
 <p>Control+J prompts for text within an item, going to the first match
 if a new search, or the next match if the previous value is accepted.
-Alt+J goes to the next match without prompting for a value. The item
-with focus when the dialog is closed -- but not canceled -- becomes the
-current item the next time that the same list dialog is invoked (you are
-notified when it is not the first item). The Jump value of that dialog
-is also remembered.</p>
-<p>Control+F sets a filter, so only matching items are shown. Use
-wildcards: * matches any run of characters, and ? matches a single one.
-For example, to browse the commands about replacing in the Alternate
-Menu, Alt+F10, press Control+F in that list and type <em>replace</em> as
-the filter. Control+Shift+F clears the filter, so all items show again.
-You can also change the order of items: Alt+A for alphabetical order,
-Alt+Shift+A for reverse alphabetical order, Alt+D for the default order,
-or Alt+Shift+D for the default order reversed.</p>
+Alt+J or F3 goes to the next match without prompting for a value, and
+Shift+F3 to the one before. The item with focus when the dialog is
+closed -- but not canceled -- becomes the current item the next time
+that the same list dialog is invoked (you are notified when it is not
+the first item). The Jump value of that dialog is also remembered.</p>
+<p>Control+F sets a filter, so only matching items are shown, in the
+search syntax below: * matches any run of characters, ? a single one,
+&amp; means all, | any, and ! not. For example, to browse the commands
+about replacing in the Alternate Menu, Alt+F10, press Control+F in that
+list and type <em>replace</em> as the filter. Control+Shift+F clears the
+filter, so all items show again. You can also change the order of items:
+Alt+A for alphabetical order, Alt+Shift+A for reverse alphabetical
+order, Alt+D for the default order, or Alt+Shift+D for the default order
+reversed.</p>
+<h3 id="search-syntax">Search syntax</h3>
+<p>Every Homer search that is not a regular expression reads what you
+type the same way. A plain word is enough most of the time; the symbols
+are there when you need more.</p>
+<ul>
+<li><strong>A word</strong> is found anywhere, whatever its case:
+<code>river</code> finds "Riverside".</li>
+<li><strong><code>*</code></strong> stands for any run of characters,
+and <strong><code>?</code></strong> for any one character:
+<code>chap*</code>, <code>c?t</code>.</li>
+<li><strong><code>&amp;</code></strong> means all of them:
+<code>red &amp; blue</code>.</li>
+<li><strong><code>|</code></strong> means any of them:
+<code>red | blue</code>. <code>&amp;</code> is read first, so
+<code>red &amp; blue | green</code> means red and blue, or else
+green.</li>
+<li><strong><code>!</code></strong> before a word means not:
+<code>!draft</code>.</li>
+<li><strong>Quotes</strong> find exactly what is inside, symbols and
+all: <code>"C#"</code>, <code>"a &amp; b"</code>.</li>
+</ul>
+<p>Where a wildcard counts depends on what is searched. When the search
+reads a <strong>name</strong> -- a file name, a line of a list, one
+field -- a word with <code>*</code> or <code>?</code> must match the
+whole name, so <code>*.md</code> means a name ending in .md, and
+<code>chap*</code> one starting with chap. When it reads
+<strong>text</strong> -- a file's contents, a whole record -- every word
+may match anywhere. A word with no wildcard is found anywhere in
+both.</p>
+<p>F3 repeats the last search, in the same way and over the same things,
+going forward; Shift+F3 repeats it going back.</p>
+<p>EdSharp's Find, Control+F in a document, is the exception: it finds
+exactly the characters you type, because in a document
+<code>&amp;&amp;</code> or <code>*</code> must be found as written. File
+Find, Alt+Shift+F, takes the syntax in both boxes: Contains reads each
+file's text, and Filter reads its name. Search for Topic, Alt+F6, reads
+each topic heading as a name.</p>
 <p>Multiple commands support flexible checking or unchecking in a
 checked listbox such as the Web Download dialog. Press Space to toggle
 the checked state of the current item, Control+A to check all items, or

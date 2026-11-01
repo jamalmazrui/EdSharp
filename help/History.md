@@ -2,6 +2,21 @@
 
 
 
+## 1 November 2026 -- Section Break types the break again
+
+- **Control+Enter inserts the section break, not an error message.** The SectionBreak setting was turned into text by a script engine, which answers a fault with the words "ERROR: Unterminated string constant" -- and EdSharp typed those words into the document. Escapes such as \n and \f are now read directly, so the setting can never become an error message; the same goes for Find and every other place that reads escapes.
+
+## 31 October 2026 -- One search syntax
+
+- **Search for Topic takes the Homer search syntax** -- a word anywhere in the heading, `*` and `?`, `&` all, `|` any, `!` not, quotes for exact text -- where your words went into a regular expression, so C++ broke it.
+- **Shift+F3 after Search for Topic finds the previous topic,** where it looked for the last Find text.
+- **File Find's Contains and Filter take the syntax,** and pick lists filter and jump with it. Their Jump now has F3 and Shift+F3, and finds capital letters, which it never did.
+- **Find in a document stays exact,** because in a document && or * must be found as typed.
+
+## 30 October 2026, later -- the first tutorial under five minutes
+
+- **The User Interface tutorial is shorter.** It ran 5 minutes 3 seconds, over the five minutes the tutorials promise. Three explanations are trimmed, about 30 words, which should bring it under five minutes; the build measures it (found by ChatGPT's audit of the logs).
+
 ## 30 October 2026 -- every conversion the kit can do
 
 - **Import and export use every conversion the Homer kit can make.** EdSharp asked only whether the kit had a direct way between two formats, so one it makes through an in-between format fell to EdSharp's older commands. It now asks whether the kit can convert by any way (from an audit by another AI).
