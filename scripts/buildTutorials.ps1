@@ -727,7 +727,11 @@ $dReaderPitchKeyboard = 0
 # slower"; 0.56 was brisk even for a practised listener. 0.64 keeps the reader
 # faster than the narrator, which is what tells them apart, and can be set per
 # series with ReaderScale in [global].
-$dReaderScale = 0.64
+# A LITTLE SLOWER AGAIN (1 November 2026, at Jamal's request, "to make it more
+# understandable"): 0.70. Still faster than the narrator's 0.80, so the two stay
+# apart by pace as well as by voice. The Windows-voice and eSpeak fallbacks step
+# back with it, from rate 6 to 5 and from 260 to 240 words a minute.
+$dReaderScale = 0.70
 $dReaderNoise = 0.333
 # KOKORO SPEAKERS, by index in the English v0.19 voice pack: 0 af, 1 af_bella,
 # 2 af_nicole, 3 af_sarah, 4 af_sky, 5 am_adam, 6 am_michael, 7 bf_emma,
@@ -748,9 +752,9 @@ if ($null -eq $sKokoroModel) { $sKokoroModel = "" }
 # opened when the audio starts.
 $dLeadIn = 2.0
 $dGap = 0.3
-$iEspeakRate = 260
+$iEspeakRate = 240
 $iSapiNarratorRate = 4
-$iSapiReaderRate = 6
+$iSapiReaderRate = 5
 
 # ---- reading a SPEAK script ----
 
@@ -883,8 +887,24 @@ function audioName([string] $sScript) {
 # fingerprint, from before this rule, is trusted once and its fingerprint
 # recorded: no date test can settle it, since an unzipped walk can look newer
 # than audio spoken from the very same text.
+# THE VOICES ARE PART OF THE FINGERPRINT (1 November 2026). Only the walk's text
+# was, so slowing the reader changed no fingerprint and no tutorial already spoken
+# was spoken again at the new pace. The voice settings now join the walk's own
+# hash, so a change of voice, pace or pitch respeaks every walk once, and an
+# unchanged walk with unchanged voices is still left alone.
+function voiceSettings() {
+  $oInv = [System.Globalization.CultureInfo]::InvariantCulture
+  return [string]::Format($oInv, "reader={0};narrator={1};narratorPitch={2};message={3};menu={4};keyboard={5};sapiReader={6};sapiNarrator={7};espeak={8}",
+    $dReaderScale, $dNarratorScale, $dNarratorPitch, $dReaderPitchMessage, $dReaderPitchMenu, $dReaderPitchKeyboard, $iSapiReaderRate, $iSapiNarratorRate, $iEspeakRate)
+}
+
 function walkFingerprint([string] $sScript) {
-  try { return (Get-FileHash -LiteralPath $sScript -Algorithm SHA256).Hash.ToLower() } catch { return "" }
+  try {
+    $sWalk = (Get-FileHash -LiteralPath $sScript -Algorithm SHA256).Hash.ToLower()
+    $oSha = [System.Security.Cryptography.SHA256]::Create()
+    $aBytes = $oSha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($sWalk + "|" + (voiceSettings)))
+    return ([System.BitConverter]::ToString($aBytes) -replace "-", "").ToLower()
+  } catch { return "" }
 }
 
 function markSpoken([string] $sScript, [string] $sOut) {
