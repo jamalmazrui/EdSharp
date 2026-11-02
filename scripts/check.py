@@ -992,7 +992,9 @@ def checkKeys():
             # screen readers' table keys use it to read the cell.
             sLast = sKey.rsplit("+", 1)[1].lower()
             if sLast in ("shift", "alt", "control", "ctrl"): continue
-            if sLast in lsNavigation or sLast in ("numpad5", "clear", "number", "numpad"): continue
+            # Number-pad 1 to 9, as NVDA names them, are Home, the arrows and the page keys with NumLock off
+            # (2 November 2026): DbDo's NVDA add-on binds Alt+Control with them for the same table keys.
+            if sLast in lsNavigation or sLast in ("numpad5", "clear", "number", "numpad") or re.match(r"^numpad[1-9]$", sLast): continue
             # The app's own desktop shortcut, as its installer declares it,
             # is the sanctioned use: FileDir's Hotkeys.inix lists Alt+Control+F
             # because that is how FileDir is opened, and HomerView's NVDA
