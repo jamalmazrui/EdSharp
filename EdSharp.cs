@@ -1317,7 +1317,6 @@ this.KeyIndex = iIndex;
 //Clipboard.SetText(Clipboard.GetText() + keyData.ToString() + "\r\n");
 // Util.Say("Repeat " + this.KeyRepeat);
 
-ToolStripMenuItem menuItem;
 if (keyData == Keys.F9) {
 HomerRichTextBox rtb = App.Frame.Child.RTB;
 string sText = rtb.GetRange(rtb.Index, rtb.TextLength);

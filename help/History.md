@@ -2,6 +2,10 @@
 
 
 
+## 1 November 2026 -- One compiler warning fewer
+
+- An unused variable in the key handler is gone, so the build no longer warns about it.
+
 ## 1 November 2026 -- Section Break types the break again
 
 - **Control+Enter inserts the section break, not an error message.** The SectionBreak setting was turned into text by a script engine, which answers a fault with the words "ERROR: Unterminated string constant" -- and EdSharp typed those words into the document. Escapes such as \n and \f are now read directly, so the setting can never become an error message; the same goes for Find and every other place that reads escapes.
