@@ -2081,7 +2081,7 @@ static readonly string[] aCommandSummaries = new string[] {
 "Say Address\tAlt+A, Say line, column, and percent position of cursor",
 "Say Braces\tAlt+Shift+], Say number of braces on either side of cursor",
 "Say Indentation\tAlt+I, Say the indentation level of the current line, or the preceding line with less indentation if repeated",
-"Say Yield\tAlt+Y, Say number of characters, words, and lines in all or selected text",
+"Say Yield\tAlt+Y, Say number of characters, words, and lines in all or selected text, or also paragraphs, sentences, reading time, reading grade and long sentences if repeated",
 "Say Status\tAlt+Z, Say whether current file has been modified since last save to disk, or say its character encoding if repeated",
 "Say Clipboard\tAlt+Apostrophe, Say clipboard text, or spell if repeated",
 "Say Time\tAlt+Semi-colon, Say current time and date",
@@ -5323,6 +5323,17 @@ iResult = Util.RegExpCountCase(sText, "\\S+");
 AddMessage(Util.Pluralize(iResult, "Word"));
 iResult = Util.RegExpCountCase(sText, LB) + 1;
 AddMessage("\t" + Util.Pluralize(iResult, "Line"));
+}
+// PRESSED AGAIN, THE WRITER'S COUNTS (2 November 2026, from Quill's Document Statistics). A second Alt+Y adds
+// paragraphs, sentences and reading time, and the two measures the Homer documents are held to: the reading grade
+// and how many sentences run past 30 words. The counting is the kit's Homer.Util.measureText.
+if (iResult > 0 && this.KeyRepeat % 2 == 1) {
+Homer.Util.TextStatistics textStatistics = Homer.Util.measureText(sText);
+AddMessage(Util.Pluralize(textStatistics.iParagraphs, "Paragraph"));
+AddMessage(Util.Pluralize(textStatistics.iSentences, "Sentence"));
+AddMessage("about " + Util.Pluralize(textStatistics.iReadingMinutes, "minute") + " to read");
+if (textStatistics.iSentences > 0) AddMessage("grade " + textStatistics.nGrade.ToString("0.0"));
+AddMessage(textStatistics.iLongSentences == 1 ? "1 long sentence" : textStatistics.iLongSentences + " long sentences");
 }
 
 }

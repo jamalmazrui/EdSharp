@@ -907,10 +907,48 @@ function walkFingerprint([string] $sScript) {
   } catch { return "" }
 }
 
+# A CACHE OF SPOKEN WALKS (2 November 2026). An unzipped project can carry recordings older than its walks -- every
+# DbDo.zip of 2 November did -- and each unzip then cost about three hours of speech on Jamal's laptop, Kokoro running
+# at a third of real time. Every walk spoken is now also kept under %LOCALAPPDATA%\HomerDev\tutorialCache, named by
+# its fingerprint, which already covers the walk's text and the voices. A walk whose recording is missing or stale is
+# first looked for there, and copied back in seconds when the same text was spoken before. Recordings not used for
+# 90 days are removed.
+$sCacheDir = Join-Path $env:LOCALAPPDATA "HomerDev\tutorialCache"
+$iCacheDays = 90
+
+function cacheSpoken([string] $sScript, [string] $sOut) {
+  try {
+    $sPrint = walkFingerprint $sScript
+    if ($sPrint -eq "" -or -not (Test-Path -LiteralPath $sOut)) { return }
+    if (-not (Test-Path -LiteralPath $sCacheDir)) { New-Item -ItemType Directory -Path $sCacheDir -Force | Out-Null }
+    Copy-Item -LiteralPath $sOut -Destination (Join-Path $sCacheDir ($sPrint + ".mp3")) -Force
+    $dtOld = (Get-Date).AddDays(-$iCacheDays)
+    Get-ChildItem -LiteralPath $sCacheDir -Filter "*.mp3" -File -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -lt $dtOld } | Remove-Item -Force -ErrorAction SilentlyContinue
+  } catch { note ("  could not keep " + [System.IO.Path]::GetFileName($sOut) + " in the tutorial cache: " + $_) }
+}
+
+function restoreFromCache([string] $sScript, [string] $sOut) {
+  try {
+    $sPrint = walkFingerprint $sScript
+    if ($sPrint -eq "") { return $false }
+    $sCached = Join-Path $sCacheDir ($sPrint + ".mp3")
+    if (-not (Test-Path -LiteralPath $sCached)) { return $false }
+    Copy-Item -LiteralPath $sCached -Destination $sOut -Force
+    (Get-Item -LiteralPath $sCached).LastWriteTime = Get-Date
+    note ("  " + [System.IO.Path]::GetFileName($sOut) + ": the same walk was spoken before, with the same voices; restored from the tutorial cache " + $sCached)
+    markSpoken $sScript $sOut
+    return $true
+  } catch {
+    note ("  the tutorial cache could not restore " + [System.IO.Path]::GetFileName($sOut) + ": " + $_)
+    return $false
+  }
+}
+
 function markSpoken([string] $sScript, [string] $sOut) {
   # The fingerprint, then "quotes safe": spoken since straight quotes stopped breaking Kokoro (kit 1.63.1).
   $sMark = [System.IO.Path]::ChangeExtension($sOut, ".sha256")
   try { [System.IO.File]::WriteAllText($sMark, (walkFingerprint $sScript) + "`r`nquotes safe`r`n") } catch { note ("  could not write " + $sMark + ": " + $_) }
+  cacheSpoken $sScript $sOut
 }
 
 function hasStraightQuote([string] $sScript) {
@@ -919,7 +957,7 @@ function hasStraightQuote([string] $sScript) {
 }
 
 function spokenCurrent([string] $sScript, [string] $sOut) {
-  if (-not (Test-Path -LiteralPath $sOut)) { return $false }
+  if (-not (Test-Path -LiteralPath $sOut)) { return (restoreFromCache $sScript $sOut) }
   $sMark = [System.IO.Path]::ChangeExtension($sOut, ".sha256")
   $sNow = walkFingerprint $sScript
   if (Test-Path -LiteralPath $sMark) {
@@ -934,7 +972,7 @@ function spokenCurrent([string] $sScript, [string] $sOut) {
     }
     if ($sWas -ne "" -and $sWas -eq $sNow) { note ("  " + [System.IO.Path]::GetFileName($sOut) + ": the walk is unchanged since it was spoken (same fingerprint)"); return $true }
     note ("  " + [System.IO.Path]::GetFileName($sOut) + ": the walk has changed since it was spoken (fingerprint " + $sWas.Substring(0, [Math]::Min(12, $sWas.Length)) + " now " + $sNow.Substring(0, [Math]::Min(12, $sNow.Length)) + ")")
-    return $false
+    return (restoreFromCache $sScript $sOut)
   }
   # Audio from before fingerprints is trusted once and its fingerprint recorded: dates cannot settle it, since an
   # unzipped walk can look newer than audio spoken from that same text. Delete an mp3 to have its walk spoken again.

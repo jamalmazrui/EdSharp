@@ -2,6 +2,10 @@
 
 
 
+## 2 November 2026 -- Say Yield, pressed twice, gives a writer's counts
+
+- **Press Alt+Y twice for more.** Say Yield still says characters, words and lines for all the text or the selection. Pressed again, it adds paragraphs, sentences, reading time, the reading grade and how many sentences run past 30 words -- the counts Quill's Document Statistics gives, and the measures the Homer documents are held to, by the same rules as the books' build. Needs kit 1.99.0.
+
 ## 1 November 2026 -- One compiler warning fewer
 
 - An unused variable in the key handler is gone, so the build no longer warns about it.
