@@ -9353,7 +9353,7 @@ return bForward ? -1 : iBest;
 
 public void FileFind() {
 string sContains, sFilter, sDir, sFile;
-string[] aLabels, aValues, aFilters, aResults, aFiles, aNames;
+string[] aLabels, aValues, aResults, aFiles, aNames;
 
 sContains = App.ReadData("Contains", "");
 sFilter = App.ReadData("Filter", "*.*");

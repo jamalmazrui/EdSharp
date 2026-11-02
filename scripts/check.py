@@ -986,7 +986,13 @@ def checkKeys():
         else:
             lsCombos = re.findall(r"\b(?:Alt\+Control|Control\+Alt)(?:\+Shift)?\+\w+", sText)
         for sKey in lsCombos:
-            if sKey.rsplit("+", 1)[1].lower() in lsNavigation: continue
+            # A MODIFIER NAMED IN PROSE IS NOT A KEY (1 November 2026): "Alt+Control+Shift
+            # with an arrow" names a set of modifiers, and the pattern took Shift for the
+            # key. Number Pad 5 (NumPad5, Clear) is a navigation key with the arrows: the
+            # screen readers' table keys use it to read the cell.
+            sLast = sKey.rsplit("+", 1)[1].lower()
+            if sLast in ("shift", "alt", "control", "ctrl"): continue
+            if sLast in lsNavigation or sLast in ("numpad5", "clear", "number", "numpad"): continue
             # The app's own desktop shortcut, as its installer declares it,
             # is the sanctioned use: FileDir's Hotkeys.inix lists Alt+Control+F
             # because that is how FileDir is opened, and HomerView's NVDA
