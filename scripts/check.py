@@ -1727,6 +1727,34 @@ def checkAccessibility(bScan):
     return finding("accessibility", sVerdict, sEvidence)
 
 
+def checkKitClasses():
+    """ONE COPY OF EACH SHARED CLASS (5 November 2026). Every Homer app is to use the kit's classes, compiled from
+    C:\\HomerDev\\exec\\CSharp, not keep its own. This lists each class an app defines under a name the kit already
+    provides -- its own MdiFrame, MdiChild, Util or KeyMap beside the kit's -- so the integration still to do is named
+    at every push until none is left. A warning, not a failure: each is moved to the kit's in its own step."""
+    sKit = ""
+    try:
+        import kind
+        sKit = kind.findKit([sRoot]) or ""
+    except Exception:
+        sKit = ""
+    if not sKit or os.path.normcase(os.path.abspath(sKit)) == os.path.normcase(os.path.abspath(sRoot)):
+        return finding("kit classes", "skip", "this is the kit itself, or the kit was not found")
+    oClass = re.compile(r"^\s*(?:public\s+|internal\s+)?(?:static\s+|sealed\s+|abstract\s+|partial\s+)*class\s+([A-Za-z_]\w*)", re.M)
+    setKit = set()
+    for sPath in glob.glob(os.path.join(sKit, "exec", "CSharp", "*.cs")):
+        setKit.update(oClass.findall(readText(sPath)))
+    dOwn = {}
+    for sPath in glob.glob(os.path.join(sRoot, "*.cs")):
+        for sName in oClass.findall(readText(sPath)):
+            if sName in setKit: dOwn.setdefault(sName, os.path.basename(sPath))
+    if not dOwn:
+        return finding("kit classes", "pass", "no class here repeats one of the kit's %d" % len(setKit))
+    return finding("kit classes", "warn", "%d class%s here repeat%s the kit's, to move to the kit's: %s" % (
+        len(dOwn), "" if len(dOwn) == 1 else "es", "s" if len(dOwn) == 1 else "",
+        ", ".join("%s (%s)" % (k, v) for k, v in sorted(dOwn.items()))))
+
+
 def checkWalk():
     """A WALK IS AN OCCASIONAL TEST; THE GATE SAYS WHEN ONE IS DUE (5 November 2026). recordWalk drives the app through
     the real screen reader and writes logs\\<App>-recordWalk-<time>.md. This reads the newest: a pass when it is under
@@ -1983,6 +2011,7 @@ def main():
         checkSmoke(dArguments.build)
         checkAccessibility(not dArguments.noscan)
         checkWalk()
+        checkKitClasses()
         checkAccept()
 
     sReport = writeReport()
