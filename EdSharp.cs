@@ -99,7 +99,7 @@ if (sArg.Equals("--install-jaws-settings", StringComparison.OrdinalIgnoreCase)
 int iCopied, iCompiled;
 string sScriptsDir = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "scripts\\jaws");
 string sReport = JawsScripts.install(sScriptsDir, out iCopied, out iCompiled);
-MessageBox.Show(sReport, "EdSharp JAWS scripts: " + iCopied + " copied, " + iCompiled + " compiled");
+LbcMessage.show(sReport, "EdSharp JAWS scripts: " + iCopied + " copied, " + iCompiled + " compiled");
 return;
 }
 }
@@ -6842,7 +6842,7 @@ sOutcome = "The model download could not start: " + ex.Message + "\nIf Ollama wa
 }
 try {
 this.BeginInvoke((MethodInvoker) delegate() {
-MessageBox.Show(sOutcome, "Chat with AI");
+LbcMessage.show(sOutcome, "Chat with AI");
 if (bWorked) AddMessage("Model ready");
 });
 }
@@ -6987,7 +6987,7 @@ if (sReported.IndexOf("not found", StringComparison.OrdinalIgnoreCase) >= 0) {
 // No manual steps: offer to fetch the model right now. The pull runs
 // in a visible command window so its progress is readable, and the
 // window stays open at the end so the outcome can be reviewed.
-if (MessageBox.Show("The " + sModel + " model is not on this machine yet. Fetch it now? It is about 2 gigabytes, shared by every app that uses Ollama.", "Chat with AI", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+if (LbcMessage.show("The " + sModel + " model is not on this machine yet. Fetch it now? It is about 2 gigabytes, shared by every app that uses Ollama.", "Chat with AI", MessageBoxButtons.YesNo) == DialogResult.Yes) {
 pullOllamaModel(sModel);
 return "";
 }
@@ -10633,7 +10633,7 @@ MessageBoxDefaultButton defaultButton;
 if (sDefault.ToLower() == "n") defaultButton = MessageBoxDefaultButton.Button2;
 else defaultButton = MessageBoxDefaultButton.Button1;
 
-switch (MessageBox.Show(sText, sTitle, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, defaultButton)) {
+switch (LbcMessage.show(sText, sTitle, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, defaultButton)) {
 case DialogResult.Yes :
 //Util.Say("Yes");
 return "Y";
@@ -10654,7 +10654,7 @@ string sTitle = oTitle.ToString();
 string sText = oText.ToString();
 if (oTitle is bool) sTitle = ((bool) oTitle) ? "true" : "false";
 if (oText is bool) sText = (bool) oText ? "true" : "false";
-MessageBox.Show(oText.ToString(), oTitle.ToString());
+LbcMessage.show(oText.ToString(), oTitle.ToString());
 } // Show method
 
 public static void Properties(string sPath) {
@@ -10738,12 +10738,14 @@ ComboBox cbSuggestions = dlg.addComboHistoryBox("&Correction", lsSuggestions, (l
 // C, so the action is named Replace instead -- as familiar a word for
 // this and equally plain -- giving R, S, A, C, and the dialog's own
 // Help on H, all distinct.
-string sClicked = dlg.runWithButtons(new string[] {"&Replace", "&Skip", "&Add to Dictionary", "Cancel"});
+// TWO WORDS EACH (5 November 2026): Replace Word and Skip Word say what they act on, as Add to Dictionary does;
+// the letters are unchanged, and the words returned to the callers are the same as before.
+string sClicked = dlg.runWithButtons(new string[] {"&Replace Word", "&Skip Word", "&Add to Dictionary", "Cancel"});
 string sReplacement = (cbSuggestions == null) ? "" : cbSuggestions.Text;
 dlg.Dispose();
 string sButton;
 if (sClicked == null || sClicked.Length == 0) sButton = "Cancel";
-else sButton = sClicked.Replace("&", "");
+else sButton = sClicked.Replace("&", "").Replace(" Word", "");
 return new object[] {sButton, sReplacement};
 } // SpellChoice method
 
@@ -11154,70 +11156,70 @@ private const string sFormFeed = "\f";
 public static object ExcelOpen(object oXlss, string sFile) {
 dynamic xlss = oXlss;
 try { return xlss.Open(sFile, false, true); } // UpdateLinks, ReadOnly
-catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); return null; }
+catch (Exception ex) { LbcMessage.show(ex.Message, "Error!"); return null; }
 } // ExcelOpen method
 
 public static void ExcelSaveAs(object oXls, string sFile, int iFileFormat) {
 dynamic xls = oXls;
 try { xls.SaveAs(sFile, iFileFormat); }
-catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); }
+catch (Exception ex) { LbcMessage.show(ex.Message, "Error!"); }
 } // ExcelSaveAs method
 
 public static void ExcelClose(object oXls) {
 dynamic xls = oXls;
 try { xls.Close(0); }
-catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); }
+catch (Exception ex) { LbcMessage.show(ex.Message, "Error!"); }
 } // ExcelClose method
 
 public static void ExcelQuit(object oApp) {
 dynamic app = oApp;
 try { app.Quit(); }
-catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); }
+catch (Exception ex) { LbcMessage.show(ex.Message, "Error!"); }
 } // ExcelQuit method
 
 // ---- PowerPoint ----
 public static object PowerPointOpen(object oPpts, string sFile) {
 dynamic ppts = oPpts;
 try { return ppts.Open(sFile, true); } // ReadOnly
-catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); return null; }
+catch (Exception ex) { LbcMessage.show(ex.Message, "Error!"); return null; }
 } // PowerPointOpen method
 
 public static void PowerPointSaveAs(object oPpt, string sFile, int iFileFormat) {
 dynamic ppt = oPpt;
 try { ppt.SaveAs(sFile); }
-catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); }
+catch (Exception ex) { LbcMessage.show(ex.Message, "Error!"); }
 } // PowerPointSaveAs method
 
 public static void PowerPointClose(object oPpt) {
 dynamic ppt = oPpt;
 try { ppt.Close(); }
-catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); }
+catch (Exception ex) { LbcMessage.show(ex.Message, "Error!"); }
 } // PowerPointClose method
 
 public static void PowerPointQuit(object oApp) {
 dynamic app = oApp;
 try { app.Quit(); }
-catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); }
+catch (Exception ex) { LbcMessage.show(ex.Message, "Error!"); }
 } // PowerPointQuit method
 
 // ---- Word ----
 public static object WordOpen(object oDocs, string sFile, bool bAppVisible) {
 dynamic docs = oDocs;
 try { return docs.Open(sFile, false, false, false); } // ConfirmConversions, ReadOnly, AddToRecentFiles
-catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); return null; }
+catch (Exception ex) { LbcMessage.show(ex.Message, "Error!"); return null; }
 } // WordOpen method
 
 public static void WordSaveAs(object oDoc, string sFile, int iFileFormat) {
 dynamic doc = oDoc;
 try { doc.SaveAs(sFile, iFileFormat, false, "", false); } // LockComments, Password, AddToRecentFiles
-catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); }
+catch (Exception ex) { LbcMessage.show(ex.Message, "Error!"); }
 } // WordSaveAs method
 
 public static void WordClose(object oDoc) {
 dynamic doc = oDoc;
 ClearNormalTemplate(doc.Application);
 try { doc.Close(0); }
-catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); }
+catch (Exception ex) { LbcMessage.show(ex.Message, "Error!"); }
 } // WordClose method
 
 public static void ClearNormalTemplate(object oApp) {
@@ -11231,7 +11233,7 @@ public static void WordQuit(object oApp) {
 dynamic app = oApp;
 ClearNormalTemplate(app);
 try { app.Quit(0); }
-catch (Exception ex) { MessageBox.Show(ex.Message, "Error!"); }
+catch (Exception ex) { LbcMessage.show(ex.Message, "Error!"); }
 } // WordQuit method
 
 // ---- Office text extractors (legacy COM) ----

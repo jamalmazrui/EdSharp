@@ -2,6 +2,11 @@
 
 
 
+## 5 November 2026 -- Messages and buttons the Homer way
+
+- **Every message box is the kit's LbcMessage,** 17 of them, so each reads like the rest of Homer's dialogs and follows its keys.
+- **The spelling check's buttons say what they act on:** Replace Word, Skip Word and Add to Dictionary, with the same letters as before.
+
 ## 2 November 2026 -- Say Yield, pressed twice, gives a writer's counts
 
 - **Press Alt+Y twice for more.** Say Yield still says characters, words and lines for all the text or the selection. Pressed again, it adds paragraphs, sentences, reading time, the reading grade and how many sentences run past 30 words -- the counts Quill's Document Statistics gives, and the measures the Homer documents are held to, by the same rules as the books' build. Needs kit 1.99.0.

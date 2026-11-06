@@ -1471,12 +1471,25 @@ if ($iToSpeak -gt 0) { try {
       Start-Sleep -Seconds 60
     }
     $iWaited = $iWaited + 1
+    # STOP WAITING WHEN NOTHING IS LEFT TO SPEAK (2 November 2026, kit 1.103.0). DbDo's 11:41 cycle waited more than three
+    # hours, first behind DbDo's own 10:34 cycle speaking the same walks into the same folder, then behind EdSharp, though
+    # by 12:57 every walk it needed was spoken and current. Every five minutes the walks are tested again -- the test also
+    # restores a walk from the tutorial cache -- and with nothing left to speak, the build leaves the line.
+    if ($iWaited % 5 -eq 0) {
+      $iStill = @($lsScripts | Where-Object { $bLive -or $sOnly -ne "" -or -not (spokenCurrent $_ (Join-Path $sAudioDir (audioName $_))) }).Count
+      if ($iStill -eq 0) {
+        say ("While this build waited, every walk became spoken and current, by another build or from the tutorial cache, so it stops waiting after " + $iWaited + " minutes and speaks nothing.")
+        try { $oMutex.Dispose() } catch { }
+        $oMutex = $null
+        break
+      }
+    }
     $sNow = speakingNow
     if ($iWaited -eq 1) { say ("Another Homer build is speaking its tutorials" + $(if ($sNow) { ": " + $sNow } else { "" }) + (aheadWords $iAhead) + ". Waiting, so neither crawls; builds speak in the order they arrived.") }
     else { say ("  still waiting, " + $iWaited + " minutes" + $(if ($sNow) { "; " + $sNow } else { "" }) + (aheadWords $iAhead)) }
   }
   if ($sTicket) { try { Remove-Item -LiteralPath $sTicket -Force } catch { } }
-  if ($iWaited -gt 0) { say ("Its turn has come after " + $iWaited + $(if ($iWaited -eq 1) { " minute" } else { " minutes" }) + "; speaking now.") }
+  if ($iWaited -gt 0 -and $oMutex -ne $null) { say ("Its turn has come after " + $iWaited + $(if ($iWaited -eq 1) { " minute" } else { " minutes" }) + "; speaking now.") }
 } catch { note ("tutorial mutex not available: " + $_); $oMutex = $null; if ($sTicket) { try { Remove-Item -LiteralPath $sTicket -Force } catch { } } } } else { note "every walk is already spoken and current, so no wait for the voices" }
 retireOldAudio
 $iWalk = 0

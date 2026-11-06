@@ -1683,6 +1683,71 @@ def checkSmoke(bBuild):
     return finding("smoke", "fail", "%s --help returned %d" % (sExe, iCode))
 
 
+def checkAccessibility(bScan):
+    """ACCESSIBILITY SCAN (5 November 2026): a windowed program is started, its window scanned with Axe.Windows --
+    the rule engine of Accessibility Insights for Windows -- and closed by WM_CLOSE, nothing pressed. The verdict is a
+    warning at most, never a failure: a finding is a question to review, and the report says what to check first --
+    above all, never an accessible name where a label before the control, its own caption, or the window title
+    already names it, which the reader would then say twice. Findings reviewed and accepted go in a11yAccepted.txt."""
+    # AT EVERY PUSH, SAID ALOUD (5 November 2026, night). It had opened DbDo silently for a minute, through a
+    # command-line tool that scans a whole program; the kit's axeWindow now scans the main window by its handle, says
+    # why the program opens and how the scan goes every 10 seconds, and gives up after two minutes, saying so.
+    if not bScan:
+        return finding("accessibility", "skip", "--noscan was given")
+    if os.name != "nt":
+        return finding("accessibility", "skip", "scans need Windows")
+    lsExe = [s for s in glob.glob(os.path.join(sRoot, "exec", "*.exe")) + glob.glob(os.path.join(sRoot, "*.exe"))
+             if not s.lower().endswith("_setup.exe")]
+    sApp = appName()
+    lsOwn = [s for s in lsExe if os.path.splitext(os.path.basename(s))[0].lower() == sApp.lower()]
+    lsExe = lsOwn or lsExe
+    if not lsExe or not isWindowed(lsExe[0]):
+        return finding("accessibility", "skip", "no windowed program here to scan")
+    oAxe = None
+    sKit = ""
+    try:
+        import kind
+        sKit = kind.findKit([sRoot]) or ""
+    except Exception:
+        sKit = ""
+    for sFolder in (os.path.dirname(os.path.abspath(__file__)), os.path.join(sKit, "scripts") if sKit else ""):
+        if sFolder and os.path.isfile(os.path.join(sFolder, "axeWindow.py")) and os.path.isfile(os.path.join(sFolder, "axeScan.py")):
+            if sFolder not in sys.path: sys.path.insert(0, sFolder)
+            import importlib
+            oAxe = importlib.import_module("axeWindow")
+            break
+    if oAxe is None:
+        return finding("accessibility", "skip", "the kit's axeWindow.py was not found")
+    oAxe.useLog(logLine)
+    try:
+        sVerdict, sEvidence, sReport = oAxe.scanProgramWindow(os.path.abspath(lsExe[0]), sRoot, sApp, os.path.join(sRoot, "logs"))
+    except Exception as oError:
+        logLine("accessibility scan: " + traceback.format_exc())
+        return finding("accessibility", "skip", "the scan could not run: %s" % oError)
+    return finding("accessibility", sVerdict, sEvidence)
+
+
+def checkWalk():
+    """A WALK IS AN OCCASIONAL TEST; THE GATE SAYS WHEN ONE IS DUE (5 November 2026). recordWalk drives the app through
+    the real screen reader and writes logs\\<App>-recordWalk-<time>.md. This reads the newest: a pass when it is under
+    two weeks old and heard every expected line; a warning when it missed some, or is older; not checked when the app
+    has no walks. Nothing to remember: the gate says when to run scripts\\recordWalk."""
+    if not os.path.isdir(os.path.join(sRoot, "scripts", "walks")):
+        return finding("walk", "skip", "this app has no walks in scripts\\walks")
+    lsReports = glob.glob(os.path.join(sRoot, "logs", appName() + "-recordWalk-*.md"))
+    if not lsReports:
+        return finding("walk", "warn", "no walk has been recorded; run scripts\\recordWalk with the app installed")
+    sNewest = max(lsReports, key=os.path.getmtime)
+    nDays = (time.time() - os.path.getmtime(sNewest)) / 86400.0
+    oMatch = re.search(r"\*\*(\d+) of (\d+) expected lines heard", readText(sNewest))
+    sHeard = ("%s of %s lines heard" % (oMatch.group(1), oMatch.group(2))) if oMatch else "its count not read"
+    if oMatch and oMatch.group(1) != oMatch.group(2):
+        return finding("walk", "warn", "the newest walk, %s, %s; read it, or run scripts\\recordWalk again" % (os.path.basename(sNewest), sHeard))
+    if nDays > 14:
+        return finding("walk", "warn", "the newest walk is %d days old (%s); run scripts\\recordWalk" % (int(nDays), sHeard))
+    return finding("walk", "pass", "the newest walk, %d day%s old, %s" % (int(nDays), "" if int(nDays) == 1 else "s", sHeard))
+
+
 def checkAccept():
     """The app's own acceptance criteria, which only the app can state."""
     sPath = os.path.join(sRoot, "accept.inix")
@@ -1798,6 +1863,8 @@ def main():
     oParser.add_argument("--build", action="store_true",
                          help="build the app first, and count the build as evidence")
     oParser.add_argument("--path", default="", help="the app folder; this one by default")
+    oParser.add_argument("--scan", action="store_true", help=argparse.SUPPRESS)   # kept for old command lines; scans are on
+    oParser.add_argument("--noscan", action="store_true", help="leave out the accessibility scan of the program's window")
     oParser.add_argument("--quiet", action="store_true", help="write the report, say little")
     oParser.add_argument("--fresh", action="store_true",
                          help="run every check even when a pass with exactly these files is on record")
@@ -1914,6 +1981,8 @@ def main():
         checkConversions()
         checkBuild(dArguments.build)
         checkSmoke(dArguments.build)
+        checkAccessibility(not dArguments.noscan)
+        checkWalk()
         checkAccept()
 
     sReport = writeReport()
