@@ -10034,7 +10034,8 @@ return App.Frame.ProcessCmdKey_Helper(ref msg, keyData);
 
 } // HomerRichTextBox class
 
-public class ListForm : Form {
+// ON LBCFORM (6 November 2026): so Shift+F1 and Alt+Shift+Slash reach this dialog, as every Homer dialog.
+public class ListForm : LbcForm {
 
 public ListBox lst;
 public DataTable tbl;
@@ -10045,6 +10046,8 @@ public int CheckFirst = -1;
 public int CheckLast = -1;
 
 protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+// The kit's help keys first: LbcForm answers them for this dialog.
+if (keyData == (Keys.Alt | Keys.Shift | Keys.OemQuestion) || keyData == (Keys.Shift | Keys.F1)) return base.ProcessCmdKey(ref msg, keyData);
 ListBox lst = this.lst;
 bool bChecked = false;
 if (lst is CheckedListBox) bChecked = true;
@@ -10813,7 +10816,7 @@ return aReturn;
 public static string OpenFolder(string sTitle, string sLabel, string sValue) {
 string sResult = "";
 
-Form frm = new Form();
+Form frm = new LbcForm(); // on LbcForm (6 November 2026), for Shift+F1 and Alt+Shift+Slash
 frm.SuspendLayout();
 frm.AutoSize = true;
 frm.AutoSizeMode = AutoSizeMode.GrowAndShrink;
@@ -10937,7 +10940,7 @@ return sReturn;
 public static string[] PickAndInputDialog(string sTitle, string sLblList, string[] aValues, string sLblInput, string sValue, bool bSort, int iIndex) {
 string[] aResults = {};
 
-Form frm = new Form();
+Form frm = new LbcForm(); // on LbcForm (6 November 2026), for Shift+F1 and Alt+Shift+Slash
 frm.SuspendLayout();
 frm.AutoSize = true;
 frm.AutoSizeMode = AutoSizeMode.GrowAndShrink;
@@ -15106,7 +15109,8 @@ return String.Join(Segment.Delimiter.ToString(), aSegments);
 // WebBrowser control ships inside the .NET Framework, so this feature
 // adds no dependency; if its legacy engine ever falls short, the
 // upgrade path is swapping this one class to Microsoft's WebView2.
-public class PreviewForm : Form {
+// ON LBCFORM (6 November 2026): so Shift+F1 and Alt+Shift+Slash reach this window, as every Homer dialog.
+public class PreviewForm : LbcForm {
 WebBrowser browser;
 
 public PreviewForm(string sTitle, string sHtml) {

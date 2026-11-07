@@ -1740,13 +1740,21 @@ def checkKitClasses():
         sKit = ""
     if not sKit or os.path.normcase(os.path.abspath(sKit)) == os.path.normcase(os.path.abspath(sRoot)):
         return finding("kit classes", "skip", "this is the kit itself, or the kit was not found")
-    oClass = re.compile(r"^\s*(?:public\s+|internal\s+)?(?:static\s+|sealed\s+|abstract\s+|partial\s+)*class\s+([A-Za-z_]\w*)", re.M)
+    # TOP-LEVEL CLASSES ONLY (6 November 2026): DbDo's KeyBinding and Result are helpers nested inside its own classes and
+    # only share a name with the kit's; counting them overstated the work left. A class counts when it sits at the
+    # file's outermost class indentation -- column 0, or inside one namespace.
+    oClass = re.compile(r"^([ \t]*)(?:public\s+|internal\s+)?(?:static\s+|sealed\s+|abstract\s+|partial\s+)*class\s+([A-Za-z_]\w*)", re.M)
+    def topClasses(sText):
+        lFound = [(len(m.group(1).expandtabs(4)), m.group(2)) for m in oClass.finditer(sText)]
+        if not lFound: return []
+        iTop = min(i for i, _ in lFound)
+        return [sName for i, sName in lFound if i == iTop]
     setKit = set()
     for sPath in glob.glob(os.path.join(sKit, "exec", "CSharp", "*.cs")):
-        setKit.update(oClass.findall(readText(sPath)))
+        setKit.update(topClasses(readText(sPath)))
     dOwn = {}
     for sPath in glob.glob(os.path.join(sRoot, "*.cs")):
-        for sName in oClass.findall(readText(sPath)):
+        for sName in topClasses(readText(sPath)):
             if sName in setKit: dOwn.setdefault(sName, os.path.basename(sPath))
     if not dOwn:
         return finding("kit classes", "pass", "no class here repeats one of the kit's %d" % len(setKit))
@@ -1926,6 +1934,17 @@ def main():
         sayLine("This is the kit; running checkHomerDev, which builds the samples ...")
         iCode = subprocess.call([sys.executable, sChecker], cwd=sRoot)
         logLine("checkHomerDev exit code %d" % iCode)
+        # THE KIT'S OWN WINDOW IS SCANNED TOO (6 November 2026). The kit's gate stopped after checkHomerDev, so
+        # HomerDev.exe -- the program that opens after installing the kit -- was never scanned, though every app's is.
+        # It gets the same scan, with the same five-minute limit, spoken progress and fingerprint; a warning never
+        # fails the kit's push, which checkHomerDev's result decides.
+        try:
+            checkAccessibility("--noscan" not in [sArg.lower() for sArg in sys.argv[1:]])
+            sName, sVerdict, sEvidence = lsFindings[-1]
+            if sVerdict in ("warn", "fail"): sayLine("  warning: %s -- %s" % (sName, sEvidence))
+            else: logLine("the kit's own program: %s %s" % (sVerdict, sEvidence))
+        except Exception:
+            logLine("the kit's own program could not be scanned: " + traceback.format_exc())
         logLine("check end")
         return iCode
 

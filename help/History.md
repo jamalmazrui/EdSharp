@@ -2,6 +2,10 @@
 
 
 
+## 6 November 2026 -- Shift+F1 and Alt+Shift+Slash in every EdSharp dialog
+
+- **Every EdSharp dialog answers Shift+F1 and Alt+Shift+Slash.** Its input and choice dialogs were already Lbc dialogs; ListForm, PreviewForm, Open Folder and Pick and Input were plain forms, and are built on the kit's LbcForm now. Windows' own file, folder and font pickers are beyond any app's reach.
+
 ## 5 November 2026 -- Messages and buttons the Homer way
 
 - **Every message box is the kit's LbcMessage,** 17 of them, so each reads like the rest of Homer's dialogs and follows its keys.
