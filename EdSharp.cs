@@ -1087,8 +1087,10 @@ menuNavigateStartTag = CreateMenuItem("Start Tag", "Control+Shift+Oemcomma", men
 menuNavigateEndTag = CreateMenuItem("End Tag", "Control+Shift+OemPeriod", menuItem_Click, "child silent");
 menuNavigateNextJustify = CreateMenuItem("Next Alignment", "Control+OemCloseBrackets", menuItem_Click, "child silent");
 menuNavigatePriorJustify = CreateMenuItem("Previous Alignment", "Control+OemOpenBrackets", menuItem_Click, "child silent");
-menuNavigateNextStyle = CreateMenuItem("Next Style", "Control+OemQuestion", menuItem_Click, "child silent");
-menuNavigatePriorStyle = CreateMenuItem("Previous Style", "Control+Shift+OemQuestion", menuItem_Click, "child silent");
+// ALT+PERIOD AND ALT+COMMA (8 November 2026, help\KeyDecisions.md in the kit): next and previous, a pair free in EdSharp.
+// Control+Slash now lists the keys, as in Google Docs, Slack and ChatGPT.
+menuNavigateNextStyle = CreateMenuItem("Next Style", "Alt+OemPeriod", menuItem_Click, "child silent");
+menuNavigatePriorStyle = CreateMenuItem("Previous Style", "Alt+Oemcomma", menuItem_Click, "child silent");
 menuNavigateNextBaseline = CreateMenuItem("Next Baseline", "Control+D6", menuItem_Click, "child silent");
 menuNavigatePriorBaseline = CreateMenuItem("Previous Baseline", "Control+Shift+D6", menuItem_Click, "child silent");
 menuNavigateNextFont = CreateMenuItem("Next Font", "Control+OemMinus", menuItem_Click, "child silent");
@@ -1251,6 +1253,8 @@ statusBar = CreateStatusBar();
 // this.Controls.AddRange(new Control[] {menuMain, statusBar});
 this.Controls.AddRange(new Control[] {statusBar, menuMain});
 this.MainMenuStrip = menuMain;
+// Control+Slash lists the keys too (8 November 2026), the key web apps use, beside Alt+Shift+H.
+KeyMap.addAlias(KeyMap.toId("Hotkey Summary"), "Control+Slash");
 menuMain.MdiWindowListItem = menuWindow;
 //this.AutoSize = true;
 this.Size = new Size(600, 600);
@@ -2247,8 +2251,8 @@ static readonly string[] aCommandSummaries = new string[] {
 "Set Selection Font\tAlt+Shift+Dash, Set font of cursor or selected text",
 "Next Alignment\tControl+RightBracket, Go to next change in justification",
 "Previous Alignment\tControl+LeftBracket, Go to previous change in justification",
-"Next Style\tControl+Slash, Go to next change in style",
-"Previous Style\tControl+Shift+Slash, Go to previous change in style",
+"Next Style\tAlt+Period, Go to the next change in style",
+"Previous Style\tAlt+Comma, Go to the previous change in style",
 "Next Baseline\tControl+6, Go to next change in baseline",
 "Previous Baseline\tControl+Shift+6, Go to previous change in baseline",
 "Next Font\tControl+Dash, Go to next change in font",

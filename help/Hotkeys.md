@@ -93,7 +93,7 @@ Grouped by menu, and alphabetical within each group.
 - **What This Does**, Shift+F1. Say what the control with focus does.
 - **Where Am I**, Alt+Shift+Slash. Say the document, the cursor's position and whether it is modified.
 - **History of Changes**, Control+Shift+F1. Open the history of EdSharp's changes, newest first.
-- **Hotkey Summary**, Alt+Shift+H. Display this list of command names, hot keys, and descriptions in a new window.
+- **Hotkey Summary**, Alt+Shift+H or Control+Slash. List every command with its key and description.
 - **Key Describer Toggle**, Control+F1. Toggle a mode in which pressing a key describes its action.
 - **Play Tutorials**, Alt+F12. Open the role-based quick-start tutorials in your web browser: Python, NVDA add-ons, JAWS scripts, web development, C#, translation, article writing, slides, summarizing, and batch conversion.
 - **ReadMe**, Alt+Shift+F1. Open the ReadMe, the quick start, in your web browser.
@@ -194,7 +194,7 @@ Grouped by menu, and alphabetical within each group.
 - **Next Indent**, Control+I. Go to the next change in indentation.
 - **Next Paragraph**, Control+DownArrow. Go to next paragraph and read it.
 - **Next Sentence**, Alt+DownArrow. Go to next sentence and read it.
-- **Next Style**, Control+Slash. Go to next change in style.
+- **Next Style**, Alt+Period. Go to the next change in style.
 - **Previous Alignment**, Control+LeftBracket. Go to previous change in justification.
 - **Previous Baseline**, Control+Shift+6. Go to previous change in baseline.
 - **Previous Chunk**, Alt+LeftArrow. Go to previous chunk and read it.
@@ -202,7 +202,7 @@ Grouped by menu, and alphabetical within each group.
 - **Previous Indent**, Control+Shift+I. Go to the previous change in indentation.
 - **Previous Paragraph**, Control+UpArrow. Go to previous paragraph and read it.
 - **Previous Sentence**, Alt+UpArrow. Go to previous sentence and read it.
-- **Previous Style**, Control+Shift+Slash. Go to previous change in style.
+- **Previous Style**, Alt+Comma. Go to the previous change in style.
 - **Prior Block**, Control+Shift+B. Go to the previous block of code, having the same or less indentation.
 - **Reverse Find**, Control+Shift+F. Search backward for string.
 - **Reverse Find at Cursor**, Alt+Shift+F3. Search backward for chunk or selected text.
@@ -344,7 +344,9 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Alt+Shift+F9**: Run Code Blocks. Run this document's sql and jscript code blocks and put each block's results below it.
 - **Alt+Shift+G**: Go to Part. Pick a part to go to.
 - **Alt+Shift+Grave**: Voice Softer. Decrease JAWS voice volume by 5%.
-- **Alt+Shift+H**: Hotkey Summary. Display this list of command names, hot keys, and descriptions in a new window.
+- **Alt+Comma**: Previous Style. Go to the previous change in style.
+- **Alt+Period**: Next Style. Go to the next change in style.
+- **Alt+Shift+H**: Hotkey Summary. List every command with its key and description.
 - **Alt+Shift+I**: Indent Mode. Toggle auto indent with Enter, and announcement of indentation changes.
 - **Alt+Shift+J**: Justify. Set justification of cursor or selected text.
 - **Alt+Shift+K**: Keep Unique Items. Discard repetitive items in all or selected text.
@@ -464,7 +466,6 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Control+Shift+RightBracket**: Right Brace. Search forward for matching right brace character.
 - **Control+Shift+S**: Save As. Save As.
 - **Control+Shift+Semi-colon**: Calculate Date. Calculate and insert date.
-- **Control+Shift+Slash**: Previous Style. Go to previous change in style.
 - **Control+Shift+T**: Text Combine. Convert other formats to text and combine them in a new editing window.
 - **Control+Shift+Tab**: Previous Window. Cycle to previous editing window.
 - **Control+Shift+U**: Lower Case. Convert current or selected characters to lower case.
@@ -472,7 +473,7 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Control+Shift+W**: Unwrap. Unwrap lines.
 - **Control+Shift+Y**: Yield with Regex. Count parts of text matching a regular expression.
 - **Control+Shift+Z**: Redo. Redo the last action that was undone.
-- **Control+Slash**: Next Style. Go to next change in style.
+- **Control+Slash**: Hotkey Summary. List every command with its key and description.
 - **Control+Space**: Select Chunk. Select contiguous sequence of non-blank characters at cursor, or select the next chunk if a selection already exists.
 - **Control+T**: Text Convert. Convert other formats to text files with the same name except for a .txt extension.
 - **Control+Tab**: Next Window. Cycle to next editing window.
