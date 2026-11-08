@@ -916,7 +916,9 @@ return App.Frame.ProcessCmdKey_Helper(ref msg, keyData);
 
 public class MdiFrame : Form {
 public string LastDescription = "";
-public bool KeyDescriber = false;
+// ONE KEY DESCRIBER, THE KIT'S (7 November 2026, both audits): EdSharp kept a flag of its own, so the kit's
+// router did not know the describer was on. The name stays so EdSharp's code reads as before.
+public bool KeyDescriber { get { return KeyMap.bKeyDescriber; } set { KeyMap.bKeyDescriber = value; } }
 public string KeyString = "";
 public int KeyRepeat = 0;
 public int KeyIndex = -1;
@@ -1317,6 +1319,12 @@ this.KeyIndex = iIndex;
 //Clipboard.SetText(Clipboard.GetText() + keyData.ToString() + "\r\n");
 // Util.Say("Repeat " + this.KeyRepeat);
 
+// THE ROUTER ANSWERS FIRST IN THE DESCRIBER (7 November 2026, both audits): F9 started JAWS's Say All and
+// Shift+F9 moved the caret before the router could see them, so in the Key Describer they acted. With the
+// describer on, every key goes to the router first, which describes it; only a key the router leaves alone,
+// such as typing in a text box, reaches the branches below.
+if (KeyMap.bKeyDescriber && KeyMap.route(this, ref msg, keyData)) return true;
+
 if (keyData == Keys.F9) {
 HomerRichTextBox rtb = App.Frame.Child.RTB;
 string sText = rtb.GetRange(rtb.Index, rtb.TextLength);
@@ -1445,6 +1453,13 @@ App.Frame.bCommandComplete = true;
 return true;
 };
 KeyMap.addCommand(oCommand);
+// ITS DESCRIPTION AT ONCE (7 November 2026): it had been set only when the status bar first asked, and
+// then with the key packed in front, so the describer could say nothing or say the key twice.
+try {
+string sDescription = descriptionFor(sCommand);
+if (sDescription.Length > 0) KeyMap.setSummary(sCommand, sDescription);
+}
+catch (Exception oError) { Homer.Log.exception(oError); }
 }
 
 // THE STATUS LINE FOR THE SELECTED ITEM (19 October 2026). Every item's Paint
@@ -2297,6 +2312,32 @@ static readonly string[] aCommandSummaries = new string[] {
 static Dictionary<string, string> dCommandSummaries = null;
 
 // The table as a lookup, built once.
+// descriptionFor: a command's one sentence, without the key that Hotkeys.ini and the built-in table put
+// before it (7 November 2026). Hotkeys.ini first, so a description someone has edited still wins, then the
+// table built into the program. The key is taken off only when the text before the first comma reads as
+// keys -- every word "or", "through" or capitalized, as in "Control+F6 or Control+PageDown" -- so a
+// description that holds a comma of its own is kept whole.
+public static string descriptionFor(string sCommand) {
+string sValue = "";
+try {
+sValue = Ini.ReadValue(App.HotkeyIniFile, "Hotkeys", sCommand, "");
+if (sValue.Length == 0) sValue = Ini.ReadValue(App.HotkeyIniFile, "Hotkeys", "Say " + sCommand, "");
+}
+catch (Exception oError) { Homer.Log.exception(oError); }
+if (sValue.Length == 0) sValue = builtInSummary(sCommand);
+int iComma = sValue.IndexOf(",");
+if (iComma >= 0 && readsAsKeys(sValue.Substring(0, iComma))) sValue = sValue.Substring(iComma + 1);
+return sValue.Trim();
+} // descriptionFor method
+
+public static bool readsAsKeys(string sText) {
+foreach (string sWord in sText.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries)) {
+if (sWord == "or" || sWord == "through") continue;
+if (char.IsLower(sWord[0])) return false;
+}
+return true;
+} // readsAsKeys method
+
 public static string builtInSummary(string sCommand) {
 if (dCommandSummaries == null) {
 dCommandSummaries = new Dictionary<string, string>();
@@ -2319,26 +2360,13 @@ string sCommand = item.Name;
 // is requested it is read once from Hotkeys.ini and cached here, so the
 // status bar, Key Describer, and Alternate Menu all agree and later reads
 // cost nothing. The Hotkeys.ini format and parse are unchanged.
-string sValue = KeyMap.getSummary(sCommand);
-if (sValue.Length == 0) {
-// Hotkeys.ini first, so a description someone has edited still wins,
-// then the table built into the program, which cannot be missing or
-// out of date. Only a command in neither is left undescribed, and the
-// audit script makes sure there is no such command.
-sValue = Ini.ReadValue(App.HotkeyIniFile, "Hotkeys", sCommand, "");
-if (sValue.Length == 0) sValue = Ini.ReadValue(App.HotkeyIniFile, "Hotkeys", "Say " + sCommand, "");
-if (sValue.Length == 0) sValue = builtInSummary(sCommand);
-if (sValue.Length == 0) sValue = "No description available";
-KeyMap.setSummary(sCommand, sValue);
+string sDescription = KeyMap.getSummary(sCommand);
+if (sDescription.Length == 0) {
+sDescription = descriptionFor(sCommand);
+if (sDescription.Length > 0) KeyMap.setSummary(sCommand, sDescription);
 }
+if (sDescription.Length == 0) sDescription = "No description available";
 string sKey = "";
-string sDescription = "";
-int iComma = sValue.IndexOf(",");
-if (iComma == -1) sDescription = sValue;
-else {
-sKey = sValue.Substring(0, iComma);
-sDescription = sValue.Substring(iComma + 1);
-}
 // THE REAL KEY WINS (19 October 2026): a Hotkeys.ini kept from an earlier install names the keys of
 // that release, so the key shown is the menu item's own, and only the description comes from the file.
 if (item.ShortcutKeyDisplayString != null && item.ShortcutKeyDisplayString.Length > 0) sKey = item.ShortcutKeyDisplayString;

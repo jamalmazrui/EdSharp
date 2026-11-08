@@ -2,6 +2,12 @@
 
 
 
+## 7 November 2026 -- Exploring keys is safe
+
+- **F9 and Shift+F9 are described in the Key Describer,** instead of starting Say All or moving the cursor.
+- **One Key Describer for every Homer app.** EdSharp now uses the kit's, so every key is described the same way as in DbDo and FileDir: the command's name, the key, then one sentence of what it does, each heard separately.
+- **The key is said once.** A command's description no longer carries its key in front, so the describer does not say the key twice.
+
 ## 6 November 2026 -- Shift+F1 and Alt+Shift+Slash in every EdSharp dialog
 
 - **Every EdSharp dialog answers Shift+F1 and Alt+Shift+Slash.** Its input and choice dialogs were already Lbc dialogs; ListForm, PreviewForm, Open Folder and Pick and Input were plain forms, and are built on the kit's LbcForm now. Windows' own file, folder and font pickers are beyond any app's reach.
