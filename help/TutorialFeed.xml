@@ -5,7 +5,7 @@
     <link>Tutorials.htm</link>
     <description>Spoken walks through EdSharp, the text and code editor for working by ear. Ten walks, each under five minutes, in the order a new person meets them.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 08 Nov 2026 07:48:29 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Nov 2026 19:12:41 +0000</lastBuildDate>
     <itunes:author>Jamal Mazrui</itunes:author>
     <itunes:explicit>false</itunes:explicit>
     <itunes:category text="Technology"/>
@@ -24,8 +24,8 @@
       <description>EdSharp is open, with an empty document. Full transcript: Tutorials.htm#0a-1-user-interface</description>
       <link>Tutorials.htm#0a-1-user-interface</link>
       <guid isPermaLink="false">homer-tutorial_1_user_interface</guid>
-      <enclosure url="tutorials/1_User_Interface.mp3" length="2068778" type="audio/mpeg"/>
-      <itunes:duration>00:05:02</itunes:duration>
+      <enclosure url="tutorials/1_User_Interface.mp3" length="2083061" type="audio/mpeg"/>
+      <itunes:duration>00:05:04</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
     <item>
@@ -96,8 +96,8 @@
       <description>Nothing is needed. Full transcript: Tutorials.htm#0i-9-conclusion</description>
       <link>Tutorials.htm#0i-9-conclusion</link>
       <guid isPermaLink="false">homer-tutorial_9_conclusion</guid>
-      <enclosure url="tutorials/9_Conclusion.mp3" length="1531072" type="audio/mpeg"/>
-      <itunes:duration>00:03:39</itunes:duration>
+      <enclosure url="tutorials/9_Conclusion.mp3" length="1567209" type="audio/mpeg"/>
+      <itunes:duration>00:03:43</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
   </channel>

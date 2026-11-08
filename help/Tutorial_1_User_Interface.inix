@@ -111,7 +111,7 @@ Hear=EdSharp Guide
 Note=Confirm the wording with a live run: buildTutorials -live.
 [step]
 
-Say=Shift plus F1 opens the history of changes; Alt plus F1 says the version, and offers a newer one if there is one; Alt plus F12 opens the quick starts, one for each kind of work.
+Say=Shift plus F1 says what the control with focus does. Control plus Shift plus F1 opens the history of changes; Alt plus F1 says the version, and offers a newer one if there is one; Alt plus F12 opens the quick starts, one for each kind of work.
 Key=Alt+F1
 Hear=About EdSharp dialog
 Note=Confirm the wording with a live run: buildTutorials -live.

@@ -150,7 +150,7 @@ Hear=A mode in which every key says what it does instead of doing it. Control pl
 
 [step]
 
-Say=F1 opens the guide, the whole of EdSharp in one document, from inside the program. Shift plus F1 opens the history of changes. Alt plus F1 says the version. Alt plus F12 opens the quick starts by role.
+Say=F1 opens the guide, the whole of EdSharp in one document, from inside the program. Shift plus F1 says what the control with focus does. Control plus Shift plus F1 opens the history of changes. Alt plus F1 says the version. Alt plus F12 opens the quick starts by role.
 Key=
 Hear=
 

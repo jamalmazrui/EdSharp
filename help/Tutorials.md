@@ -1043,7 +1043,7 @@ Confirm the wording with a live run: buildTutorials -live.
 
 ### Step 19: Alt+F1
 
-Shift plus F1 opens the history of changes; Alt plus F1 says the version, and offers a newer one if there is one; Alt plus F12 opens the quick starts, one for each kind of work.
+Shift plus F1 says what the control with focus does. Control plus Shift plus F1 opens the history of changes; Alt plus F1 says the version, and offers a newer one if there is one; Alt plus F12 opens the quick starts, one for each kind of work.
 
 Screen reader:
 
@@ -2465,7 +2465,7 @@ Screen reader:
 
 ### Step 24
 
-F1 opens the guide, the whole of EdSharp in one document, from inside the program. Shift plus F1 opens the history of changes. Alt plus F1 says the version. Alt plus F12 opens the quick starts by role.
+F1 opens the guide, the whole of EdSharp in one document, from inside the program. Shift plus F1 says what the control with focus does. Control plus Shift plus F1 opens the history of changes. Alt plus F1 says the version. Alt plus F12 opens the quick starts by role.
 
 ### Step 25
 

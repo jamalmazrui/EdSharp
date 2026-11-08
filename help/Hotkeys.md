@@ -48,7 +48,7 @@ Grouped by menu, and alphabetical within each group.
 - **Select Chunk**, Control+Space. Select contiguous sequence of non-blank characters at cursor, or select the next chunk if a selection already exists.
 - **Set Selection Font**, Alt+Shift+Dash. Set font of cursor or selected text.
 - **Start Selection**, F8. Mark starting point of text to be selected.
-- **Style**, Alt+Shift+Slash. Set style of cursor or selected text.
+- **Style**, Alt+Slash pressed twice. Set the style of the cursor or selected text.
 - **Swap Case**, Alt+Shift+U. Convert lower case characters to upper case, and vice versa.
 - **Undo**, Control+Z. Undo the last editing action.
 - **Unquote**, Control+Shift+Q. Remove prefix sequence from current or selected lines.
@@ -90,14 +90,16 @@ Grouped by menu, and alphabetical within each group.
 - **Copy Log**, Control+F12. Copy this session's log path to the clipboard, as a file for pasting into a mail message and as text.
 - **Documentation**, F1. Open Documentation in web browser.
 - **Elevate Version**, F11. Download latest EdSharp version and run installer (after confirming).
-- **History of Changes**, Shift+F1. Display list of fixes and improvements.
+- **What This Does**, Shift+F1. Say what the control with focus does.
+- **Where Am I**, Alt+Shift+Slash. Say the document, the cursor's position and whether it is modified.
+- **History of Changes**, Control+Shift+F1. Open the history of EdSharp's changes, newest first.
 - **Hotkey Summary**, Alt+Shift+H. Display this list of command names, hot keys, and descriptions in a new window.
 - **Key Describer Toggle**, Control+F1. Toggle a mode in which pressing a key describes its action.
 - **Play Tutorials**, Alt+F12. Open the role-based quick-start tutorials in your web browser: Python, NVDA add-ons, JAWS scripts, web development, C#, translation, article writing, slides, summarizing, and batch conversion.
 - **ReadMe**, Alt+Shift+F1. Open the ReadMe, the quick start, in your web browser.
 - **Sample Programs**, Control+Shift+F2. List the sample programs that ship with EdSharp and open one.
 
-- **Hotkeys**, Control+Shift+F1. Open the Hotkeys page, every command and key sorted several ways, in your web browser.
+- **Hotkeys**, Help menu. Open the document of every command and key, sorted several ways.
 ### Miscellaneous
 
 - **Burn to CD**, Alt+Shift+B. Burn a list of files or folders to a CD.
@@ -355,7 +357,7 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Alt+Shift+R**: Reverse Items. Reverse order of all or selected items of text.
 - **Alt+Shift+S**: Save Copy. Save copy of document using a different name.
 - **Alt+Shift+Semi-colon**: Insert Time. Insert current time and date.
-- **Alt+Shift+Slash**: Style. Set style of cursor or selected text.
+- **Alt+Shift+Slash**: Where Am I. Say the document, the cursor's position and whether it is modified.
 - **Alt+Shift+Space**: Web Client Utilities. Pick a web client utility to run.
 - **Alt+Shift+T**: Text Contents. Generate and prepend a table of contents to the current document.
 - **Alt+Shift+U**: Swap Case. Convert lower case characters to upper case, and vice versa.
@@ -434,7 +436,7 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Control+Shift+Enter**: Trim Blanks. Trim leading and trailing blanks from the current or selected lines, and remove more than two consecutive blank lines.
 - **Control+Shift+Equals**: Replace Tokens. Swap user-defined tokens with their computed results in all or selected text.
 - **Control+Shift+F**: Reverse Find. Search backward for string.
-- **Control+Shift+F1**: Hotkeys. Open the Hotkeys page, every command and key sorted several ways, in your web browser.
+- **Control+Shift+F1**: History of Changes. Open the history of EdSharp's changes, newest first.
 - **Control+Shift+F12**: Go to Environment. Go to interactive environment of current compiler.
 - **Control+Shift+F2**: Sample Programs. List the sample programs that ship with EdSharp and open one.
 - **Control+Shift+F3**: Reverse Find with Regex. Search forward for regular expression in all or selected text.
@@ -500,7 +502,7 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **no key**: Preview Markdown in Web Browser. Show this Markdown as a formatted page in your web browser, where diagrams are drawn.
 - **Shift+BackSpace**: Say Chunk. Say chunk at cursor.
 - **Shift+Enter**: Indent New Line. Start new line with same indentation as current one.
-- **Shift+F1**: History of Changes. Display list of fixes and improvements.
+- **Shift+F1**: What This Does. Say what the control with focus does.
 - **Shift+F10**: Context Menu. Pick a command from those available to Windows Explorer for the current file extension.
 - **Shift+F11**: Tile Vertical. Tile open windows vertically.
 - **Shift+F12**: Chat about Document. Ask an AI model on this computer about the open text: the selection when text is selected, the whole document when it is not.

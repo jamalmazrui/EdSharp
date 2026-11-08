@@ -47,7 +47,7 @@ Another checkbox sets Alt+Control+E as a key for the whole system, tied to the E
 
 An additional checkbox opens this manual in the default web browser.
 
-EdSharp may be safely installed over previous versions.  The About option from its Help menu, or Alt+F1 key, indicates the current version number and release date.  The History of Changes command, Shift+F1, summarizes fixes and improvements over time.
+EdSharp may be safely installed over previous versions.  The About option from its Help menu, or Alt+F1 key, indicates the current version number and release date.  The History of Changes command, Control+Shift+F1, summarizes fixes and improvements over time.
 
 EdSharp's features fall into these kinds of activity: editing, navigating, querying, managing files, invoking snippets, working with structured text, word processing, programming, doing math, and others.
 

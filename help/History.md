@@ -2,6 +2,12 @@
 
 
 
+## 7 November 2026 -- The same help keys as every Homer app
+
+- **Shift+F1 says what the control with focus does,** as it does in every dialog.
+- **Alt+Shift+Slash, Where Am I,** says the document, the cursor's position and whether it is modified.
+- **Control+Shift+F1 opens the History of Changes.** The Hotkeys document stays on the Help menu, since Alt+Shift+H lists every key. Alt+Slash, Say Styles, pressed twice opens the Style dialog, which had Alt+Shift+Slash.
+
 ## 7 November 2026 -- Exploring keys is safe
 
 - **F9 and Shift+F9 are described in the Key Describer,** instead of starting Say All or moving the cursor.

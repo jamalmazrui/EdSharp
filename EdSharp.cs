@@ -961,6 +961,7 @@ public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReve
 public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles;
 public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
 public ToolStripMenuItem menuWindow, menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
+public ToolStripMenuItem menuHelpWhatThisDoes, menuHelpWhereAmI;
 public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
 public StatusStrip statusBar;
 public ToolStripStatusLabel lblStatus;
@@ -1040,7 +1041,9 @@ menuEditOutdent = CreateMenuItem("Outdent", "Shift+Tab", menuItem_Click, "child 
 menuEditAlign = CreateMenuItem("Align", "Alt+Shift+A", menuItem_Click, "child speak");
 menuEditIndentMode = CreateMenuItem("Indent Mode", "Alt+Shift+I", menuItem_Click, "child speak");
 menuEditJustify = CreateMenuItem("Justify ...", "Alt+Shift+J", menuItem_Click, "child silent");
-menuEditStyle = CreateMenuItem("Style ...", "Alt+Shift+OemQuestion", menuItem_Click, "child silent");
+// STYLE IS ALT+SLASH PRESSED TWICE (7 November 2026, help\KeyDecisions.md in the kit): Alt+Shift+Slash is Where Am I in
+// every Homer window. Alt+Slash, Say Styles, says the styles; pressed again, it opens this dialog to change them.
+menuEditStyle = CreateMenuItem("Style ...", "", menuItem_Click, "child silent");
 menuEditBaseline = CreateMenuItem("Baseline ...", "Alt+Shift+D6", menuItem_Click, "child silent");
 menuEditSetSelectionFont = CreateMenuItem("Set Selection Font ...", "Alt+Shift+OemMinus", menuItem_Click, "child speak");
 menuEdit.DropDownItems.AddRange(new ToolStripItem[] {menuEditSelectAll, menuEditUnselectAll, menuEditCopy, menuEditCopyAppend, menuEditCopyRichText, menuEditCut, menuEditCutAppend, menuEditPaste, menuEditPasteFile, menuEditUndo, menuEditRedo, menuEditStartSelection, menuEditCompleteSelection, menuEditReselect, menuEditCopyAll, menuEditSelectChunk, menuEditAppendFromClipboard, menuEditSaveClipboard, menuEditAppendClipboard, menuEditClearClipboard, menuEditQuote, menuEditUnquote, menuEditUpperCase, menuEditLowerCase, menuEditProperCase, menuEditSwapCase, menuEditYieldEncoding, menuEditJoinLines, menuEditHardLineBreak, menuEditEnterNewLine, menuEditIndentNewLine, menuEditIndentNewLinePrior, menuEditIndent, menuEditOutdent, menuEditAlign, menuEditIndentMode, menuEditJustify, menuEditStyle, menuEditBaseline, menuEditSetSelectionFont});
@@ -1217,7 +1220,12 @@ menuHelp = CreateMenu("&Help");
 menuHelpAbout = CreateMenuItem("&About ...", "Alt+F1", menuItem_Click, "frame silent");
 menuHelpDocumentation = CreateMenuItem("Documentation", "F1", menuItem_Click, "frame speak");
 menuHelpTutorial = CreateMenuItem("Play Tutorials", "Alt+F12", menuItem_Click, "frame speak");
-menuHelpHistoryOfChanges = CreateMenuItem("History of Changes", "Shift+F1", menuItem_Click, "frame speak");
+// THE HELP KEYS OF EVERY HOMER WINDOW (7 November 2026, help\KeyDecisions.md in the kit): Shift+F1 says what the
+// focused control does and Alt+Shift+Slash says where you are, as in every dialog; History of Changes takes
+// Control+Shift+F1 (was Shift+F1), which the Hotkeys document gives up, since Alt+Shift+H lists every key.
+menuHelpWhatThisDoes = CreateMenuItem("What This Does", "Shift+F1", menuItem_Click, "frame silent");
+menuHelpWhereAmI = CreateMenuItem("Where Am I", "Alt+Shift+OemQuestion", menuItem_Click, "frame silent");
+menuHelpHistoryOfChanges = CreateMenuItem("History of Changes", "Control+Shift+F1", menuItem_Click, "frame speak");
 // KEY DECISIONS OF 19 OCTOBER 2026, each with the key it replaced so any one can be rolled back on its own
 // line; the reasons are in the kit's help\KeyDecisions.md and the suite manifest:
 //   Play Tutorials Alt+F12 (was Control+Shift+F1, now Hotkeys, the suite Help key); Rename Shift+F2 (was
@@ -1225,7 +1233,7 @@ menuHelpHistoryOfChanges = CreateMenuItem("History of Changes", "Shift+F1", menu
 //   Control+Shift+X); Go to Special Folder Control+Shift+G (was Control+Shift+0); Go to Environment
 //   Control+Shift+F12 (was Control+Shift+G); Say Font joined Say Styles (was Alt+Dash).
 menuHelpReadMe = CreateMenuItem("ReadMe", "Alt+Shift+F1", menuItem_Click, "frame speak");
-menuHelpHotkeys = CreateMenuItem("Hotkeys", "Control+Shift+F1", menuItem_Click, "frame speak");
+menuHelpHotkeys = CreateMenuItem("Hotkeys", "", menuItem_Click, "frame speak");
 menuHelpSamplePrograms = CreateMenuItem("Sample Programs ...", "Control+Shift+F2", menuItem_Click, "frame speak");
 menuHelpCopyLog = CreateMenuItem("Copy Log", "Control+F12", menuItem_Click, "frame speak");
 menuHelpKeyDescriber = CreateMenuItem("Key Describer Toggle", "Control+F1", menuItem_Click, "frame silent");
@@ -1234,7 +1242,7 @@ menuHelpAlternateMenu= CreateMenuItem("Alternate Menu ...", "Alt+F10", menuItem_
 menuHelpContextMenu= CreateMenuItem("Context Menu ...", "Shift+F10", menuItem_Click, "child silent");
 menuHelpSendToMenu= CreateMenuItem("SendTo Menu ...", "Control+F10", menuItem_Click, "child silent");
 menuHelpElevateVersion = CreateMenuItem("Elevate Version", "F11", menuItem_Click, "frame speak");
-menuHelp.DropDownItems.AddRange(new ToolStripItem[] {menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion});
+menuHelp.DropDownItems.AddRange(new ToolStripItem[] {menuHelpAbout, menuHelpDocumentation, menuHelpWhatThisDoes, menuHelpWhereAmI, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion});
 //Dialog.Show("Help.", menuHelp.DropDownItems.Count);
 
 menuMain.Items.AddRange(new ToolStripItem[] {menuFile, menuEdit, menuDelete, menuNavigate, menuQuery, menuMisc, menuWindow, menuHelp});
@@ -2234,7 +2242,7 @@ static readonly string[] aCommandSummaries = new string[] {
 "Text Convert\tControl+T, Convert other formats to text files with the same name except for a .txt extension",
 "Text Combine\tControl+Shift+T, Convert other formats to text and combine them in a new editing window",
 "Justify\tAlt+Shift+J, Set justification of cursor or selected text",
-"Style\tAlt+Shift+Slash, Set style of cursor or selected text",
+"Style\t, Set the style of the cursor or selected text",
 "Baseline\tAlt+Shift+6, Set vertical alignment of cursor or selected text",
 "Set Selection Font\tAlt+Shift+Dash, Set font of cursor or selected text",
 "Next Alignment\tControl+RightBracket, Go to next change in justification",
@@ -2245,7 +2253,9 @@ static readonly string[] aCommandSummaries = new string[] {
 "Previous Baseline\tControl+Shift+6, Go to previous change in baseline",
 "Next Font\tControl+Dash, Go to next change in font",
 "Previous Font\tControl+Shift+Dash, Go to previous change in font",
-"Say Styles\tAlt+Slash, Say the style, alignment and baseline that differ from normal, then the font and color",
+"Say Styles\tAlt+Slash, Say the styles at the cursor; press twice to set them",
+"What This Does\tShift+F1, Say what the control with focus does",
+"Where Am I\tAlt+Shift+Slash, Say the document, the cursor's position and whether it is modified",
 "Infer Indent\tAlt+RightBracket, Infer the indent unit of the current document, or configure EdSharp accordingly if repeated",
 "Toggle Indentation\tJAWSKey+Shift+GraveAccent, Toggle announcement of indentation by JAWS",
 "Indent Mode\tAlt+Shift+I, Toggle auto indent with Enter, and announcement of indentation changes",
@@ -5366,6 +5376,19 @@ AddMessage(textStatistics.iLongSentences == 1 ? "1 long sentence" : textStatisti
 
 }
 
+// WHAT THIS DOES AND WHERE AM I (7 November 2026). Shift+F1 says the focused control's hint, from Hints.inix or
+// its own description, as in every Lbc dialog. Alt+Shift+Slash says the document, the cursor's line, column and
+// percent, and whether the document is modified, each as its own utterance.
+if (menuItem == menuHelpWhatThisDoes) {
+Homer.Say.sayForced(Homer.LbcHints.sentenceForFocused(this));
+return;
+}
+if (menuItem == menuHelpWhereAmI) {
+if (child == null || rtb == null) Homer.Say.sayForced("No document is open.");
+else Homer.Say.sayForcedParts(child.Text, GetPercentAddress(rtb), rtb.Modified ? "Modified" : "Unmodified");
+return;
+}
+
 if (menuItem == menuQueryStatus) {
 if (this.KeyRepeat % 2 == 0) {
 sText = rtb.Modified ? "Modified" : "Unmodified" + "\t";
@@ -5450,6 +5473,10 @@ Util.Say(rtb.RowText);
 }
 
 if (menuItem == menuQueryStyles) {
+if (this.KeyRepeat % 2 == 1) {
+menuEditStyle.PerformClick();
+return;
+}
 sText = GetStyleText() + " ";
 sText += GetJustifyText() + " ";
 sText += GetBaselineText() + " ";
