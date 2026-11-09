@@ -2,6 +2,10 @@
 
 
 
+## 9 November 2026 -- The Alternate Menu, the same in every Homer app
+
+- **Alt+F10 shows every command in one list,** in menu order, with Menu order, Name order and Key order buttons to sort it. In the list, Control+F filters and Control+Shift+F clears the filter; Control+J and Control+Shift+J jump to a line holding what you type; F3 and Shift+F3 go to the next and previous match.
+
 ## 9 November 2026 -- Three help keys, and Control+P plays
 
 - **The NVDA add-on is offered as Update only when it changed.** Its version, stamped by every build, made each release read as Update; the installer now compares the add-on's files.

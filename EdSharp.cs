@@ -2091,7 +2091,7 @@ static readonly string[] aCommandSummaries = new string[] {
 "About\tAlt+F1, Display version and release date",
 "History of Changes\tShift+F1, Display list of fixes and improvements",
 "Key Describer Toggle\tControl+F1, Toggle a mode in which pressing a key describes its action",
-"Alternate Menu\tAlt+F10, Present all commands in a single, alphabetized list",
+"Alternate Menu\tAlt+F10, Pick any command from one list, in menu, name or key order",
 "Context Menu\tShift+F10, Pick a command from those available to Windows Explorer for the current file extension",
 "SendTo Menu\tControl+F10, Pick a command from those available as Windows \"Send To\" options",
 "Select All\tControl+A, Select all text",
@@ -9618,41 +9618,11 @@ if (aResults.Length == 0) AddMessage("No files!");
 return aResults;
 } // GetPathsFromDocument method
 
+// THE KIT'S ALTERNATE MENU (9 November 2026): the same dialog in every Homer app -- the list alone, the suite's
+// search keys, and Menu, Name and Key order buttons. EdSharp supplies each command's sentence.
 public void AlternateMenu() {
-int iChoice = -1;
-List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
-string sItems = "";
-StringBuilder sb = new StringBuilder();
-foreach (ToolStripMenuItem menu in menuMain.Items) {
-foreach (object o in menu.DropDownItems) {
-ToolStripMenuItem item = o as ToolStripMenuItem;
-if (item == null) continue;
-if (item == menuHelpAlternateMenu) continue;
-// string sText = item.Text.Replace("&", "") + "\t" + item.ShortcutKeyDisplayString;
-// if ("1234567890".Contains(sText.Substring(0, 1))) continue;
-if (item.IsMdiWindowListEntry) continue;
-string[] aSummary = GetKeySummary(item);
-string sText = aSummary[0] + " = " + aSummary[1] + ", " + aSummary[2];
-sb.Append(sText + "\n");
-items.Add(item);
-}
-}
-sItems = sb.ToString();
-string[] aItems = sItems.Trim().Split('\n');
-string sItem = Dialog.Pick("Alternate Menu", aItems, true, 0);
-if (sItem.Length == 0) return;
-
-foreach (ToolStripMenuItem item in items) {
-//if (sItem == item.Text.Replace("&", "")) {
-// if (sItem == item.Text.Replace("&", "") + "\t" + item.ShortcutKeyDisplayString) {
-string[] aSummary = GetKeySummary(item);
-string sText = aSummary[0] + " = " + aSummary[1] + ", " + aSummary[2];
-if (sItem == sText) {
-iChoice = items.IndexOf(item);
-break;
-}
-}
-items[iChoice].PerformClick();
+List<Homer.AlternateEntry> lEntries = Homer.SuiteCommands.alternateEntries(menuMain, delegate(ToolStripMenuItem mi) { return GetKeySummary(mi)[2]; }, menuHelpAlternateMenu);
+Homer.SuiteCommands.runAlternateEntry(Homer.SuiteCommands.showAlternateMenu(this, lEntries));
 } // AlternateMenu method
 
 new void ContextMenu(string sFile) {

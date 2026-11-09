@@ -222,7 +222,7 @@ Grouped by menu, and alphabetical within each group.
 
 ### Screen Reader Announcements
 
-- **Alternate Menu**, Alt+F10. Present all commands in a single, alphabetized list.
+- **Alternate Menu**, Alt+F10. Pick any command from one list, in menu, name or key order.
 - **Arrange Icons**, Alt+F11. Arrange open windows.
 - **Cascade**, Control+F11. Cascade open windows.
 - **Context Menu**, Shift+F10. Pick a command from those available to Windows Explorer for the current file extension.
@@ -291,7 +291,7 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Alt+Enter**: Properties. display Windows properties dialog for current file.
 - **Alt+Equals**: Transform Files. Apply a set of search and replace tasks to a list of files in the current window.
 - **Alt+F1**: About. Display version and release date.
-- **Alt+F10**: Alternate Menu. Present all commands in a single, alphabetized list.
+- **Alt+F10**: Alternate Menu. Pick any command from one list, in menu, name or key order.
 - **Alt+F11**: Arrange Icons. Arrange open windows.
 - **Alt+F12**: Play Tutorials. Open the role-based quick-start tutorials in your web browser: Python, NVDA add-ons, JAWS scripts, web development, C#, translation, article writing, slides, summarizing, and batch conversion.
 - **Alt+F3**: Forward Find at Cursor. Search forward for chunk or selected text.
