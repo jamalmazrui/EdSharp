@@ -5,7 +5,7 @@
     <link>Tutorials.htm</link>
     <description>Spoken walks through EdSharp, the text and code editor for working by ear. Ten walks, each under five minutes, in the order a new person meets them.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 08 Nov 2026 22:36:22 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 09 Nov 2026 16:25:35 +0000</lastBuildDate>
     <itunes:author>Jamal Mazrui</itunes:author>
     <itunes:explicit>false</itunes:explicit>
     <itunes:category text="Technology"/>
@@ -96,8 +96,8 @@
       <description>Nothing is needed. Full transcript: Tutorials.htm#0i-9-conclusion</description>
       <link>Tutorials.htm#0i-9-conclusion</link>
       <guid isPermaLink="false">homer-tutorial_9_conclusion</guid>
-      <enclosure url="tutorials/9_Conclusion.mp3" length="1567209" type="audio/mpeg"/>
-      <itunes:duration>00:03:43</itunes:duration>
+      <enclosure url="tutorials/9_Conclusion.mp3" length="1570474" type="audio/mpeg"/>
+      <itunes:duration>00:03:44</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
     </item>
   </channel>

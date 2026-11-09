@@ -1133,3 +1133,11 @@ If FileExists(sOutputFile) Then
 ShellRun(StringQuote(sOutputFile), 1, False)
 EndIf
 EndScript
+
+Script HotKeyHelp ()
+; HOMER'S KEYS ON JAWS+H (9 November 2026). JAWS has no hot key help of its own for a Homer app, so JAWS+H
+; presses Control+Slash twice: Where Am I in a window, followed by every command and key, the same as a
+; screen reader user without these scripts gets from Control+Slash pressed twice.
+TypeKey ("Control+Slash")
+TypeKey ("Control+Slash")
+EndScript

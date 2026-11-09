@@ -757,7 +757,7 @@ Use the Alternate Menu command, Alt+F10, to execute a command from a single, alp
 The Context Menu command, Shift+F10, lets you choose an action for the current file from those Windows offers for its type, as set in the registry.  It includes the OpenWith action, which sets the default program for files of this type.  The Send To Menu, Control+F10, lets you pick one of the SendTo shortcuts, put there by various programs, to use on the current file.
 
 ### Online Help
-Press Alt+Shift+H for a summary of EdSharp hot keys.  Press F1 to load this documentation, or Alt+F1 to simply confirm the version.  Control+F1 toggles a Key Describer mode in which pressing a key describes its action.  If you switch to another application window, the mode is automatically turned off.
+Press Control+Slash to hear where you are, and twice for a window with every EdSharp key.  Press F1 to load this documentation, or Alt+F1 to simply confirm the version.  Control+F1 toggles a Key Describer mode in which pressing a key describes its action.  If you switch to another application window, the mode is automatically turned off.
 
 Use the Environment Variables command, Control+E, to review or change such settings of Windows.  Choose those of the current process, user, or system as a whole.  Jump quickly to a particular variable based on its initial letter, e.g., Alt+P for the PATH setting that determines where Windows searches for an executable file that is not found in the current directory.  Changes to process settings affect the current session of EdSharp, but not the next time it is run.  User settings take effect when you log in again.  System settings take affect when you restart the computer.
 
@@ -777,7 +777,7 @@ Use the Elevate Version command, F11, to update EdSharp to the latest version pu
 Every EdSharp command, with its key and what it does, is in the Hotkeys document. It is made from the program itself each time EdSharp is built, so it always matches the keys you have. Four ways to reach a key from inside EdSharp:
 
 - **Alt+F10, Alternate Menu:** every command in one alphabetical list, to run by name.
-- **Alt+Shift+H, Hotkey Summary:** the keys, shown in EdSharp.
+- **Control+Slash, Where Am I:** where you are; pressed twice, with every key, shown in EdSharp.
 - **Control+F1, Key Describer Toggle:** then press any key to hear the command it runs, without running it.
 - **Control+Shift+F1, Hotkeys:** opens the Hotkeys document.
 

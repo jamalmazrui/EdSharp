@@ -73,7 +73,7 @@ Grouped by menu, and alphabetical within each group.
 - **Open**, Control+O. Open file.
 - **Open Again**, Alt+O. Reload the current file from disk.
 - **Open Other Format**, Control+Shift+O. Open file in another format and convert it to text.
-- **Print**, Control+P. Print current file.
+- **Print**, Misc menu. Print current file.
 - **Properties**, Alt+Enter. display Windows properties dialog for current file.
 - **Recent Files**, Alt+R. Open a file from the list of those recently used.
 - **Rename**, Shift+F2. Rename current file on disk.
@@ -91,9 +91,9 @@ Grouped by menu, and alphabetical within each group.
 - **Documentation**, F1. Open Documentation in web browser.
 - **Elevate Version**, F11. Download latest EdSharp version and run installer (after confirming).
 - **What This Does**, Shift+F1. Say what the control with focus does.
-- **Where Am I**, Alt+Shift+Slash. Say the document, the cursor's position and whether it is modified.
+- **Where Am I**, Control+Slash. Say the document, the cursor's position and whether it is modified; twice, show them with every key.
 - **History of Changes**, Control+Shift+F1. Open the history of EdSharp's changes, newest first.
-- **Hotkey Summary**, Alt+Shift+H or Control+Slash. List every command with its key and description.
+- **Hotkey Summary**, Help menu. List every command with its key and description.
 - **Key Describer Toggle**, Control+F1. Toggle a mode in which pressing a key describes its action.
 - **Play Tutorials**, Alt+F12. Open the role-based quick-start tutorials in your web browser: Python, NVDA add-ons, JAWS scripts, web development, C#, translation, article writing, slides, summarizing, and batch conversion.
 - **ReadMe**, Alt+Shift+F1. Open the ReadMe, the quick start, in your web browser.
@@ -346,7 +346,6 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Alt+Shift+Grave**: Voice Softer. Decrease JAWS voice volume by 5%.
 - **Alt+Comma**: Previous Style. Go to the previous change in style.
 - **Alt+Period**: Next Style. Go to the next change in style.
-- **Alt+Shift+H**: Hotkey Summary. List every command with its key and description.
 - **Alt+Shift+I**: Indent Mode. Toggle auto indent with Enter, and announcement of indentation changes.
 - **Alt+Shift+J**: Justify. Set justification of cursor or selected text.
 - **Alt+Shift+K**: Keep Unique Items. Discard repetitive items in all or selected text.
@@ -359,7 +358,6 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Alt+Shift+R**: Reverse Items. Reverse order of all or selected items of text.
 - **Alt+Shift+S**: Save Copy. Save copy of document using a different name.
 - **Alt+Shift+Semi-colon**: Insert Time. Insert current time and date.
-- **Alt+Shift+Slash**: Where Am I. Say the document, the cursor's position and whether it is modified.
 - **Alt+Shift+Space**: Web Client Utilities. Pick a web client utility to run.
 - **Alt+Shift+T**: Text Contents. Generate and prepend a table of contents to the current document.
 - **Alt+Shift+U**: Swap Case. Convert lower case characters to upper case, and vice versa.
@@ -416,7 +414,6 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Control+M**: Mail Body. Mail current file as body of an email message.
 - **Control+N**: New. Open a new editing window.
 - **Control+O**: Open. Open file.
-- **Control+P**: Print. Print current file.
 - **Control+PageDown**: Next Section. Go to next section.
 - **Control+PageUp**: Previous Section. Go to previous section and read its heading.
 - **Control+Q**: Quote. Add prefix sequence to current or selected lines.
@@ -473,7 +470,7 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Control+Shift+W**: Unwrap. Unwrap lines.
 - **Control+Shift+Y**: Yield with Regex. Count parts of text matching a regular expression.
 - **Control+Shift+Z**: Redo. Redo the last action that was undone.
-- **Control+Slash**: Hotkey Summary. List every command with its key and description.
+- **Control+Slash**: Where Am I. Say the document, the cursor's position and whether it is modified; twice, show them with every key.
 - **Control+Space**: Select Chunk. Select contiguous sequence of non-blank characters at cursor, or select the next chunk if a selection already exists.
 - **Control+T**: Text Convert. Convert other formats to text files with the same name except for a .txt extension.
 - **Control+Tab**: Next Window. Cycle to next editing window.

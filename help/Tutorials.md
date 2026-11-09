@@ -13,7 +13,7 @@ below in capitals, such as IndentUnit, is a setting you will find there.
 Every command has a name and a key. Press Control+F1 to turn on Key
 Describer, then press any key to hear what it does without doing it;
 press Control+F1 again to leave. Alt+F10 lists every command
-alphabetically, and Alt+Shift+H shows the whole table of names, keys and
+alphabetically, and Control+Slash pressed twice shows the whole table of names, keys and
 descriptions in a window you can search.
 
 ## Contents
@@ -542,7 +542,7 @@ If you are impatient to get going, here are some things you can do to get up and
 
 - Launch EdSharp from the Start menu, the desktop shortcut, or its desktop hot key Alt+Control+E.
 - Press F1 to open the full documentation in your default web browser.
-- Press Alt+Shift+H for the Hotkey Summary, an alphabetically sorted list of hot keys placed in a new EdSharp window.
+- Press Control+Slash twice for Where Am I with every command and key, in a window you can review.
 - Press Control+F1 for the Key Describer, then press any key to hear which command it runs.
 - Press Alt+F10 for the Alternate Menu, an alphabetical list of every available command.
 - Explore the regular menus to get a feel for the large number of familiar and new commands available through hot keys.
@@ -2453,7 +2453,7 @@ hotkey summary.
 
 Screen reader:
 
-- Every command with its key and description, in a new window. Alt plus Shift plus H.
+- Every command with its key and description, in a window. Control plus slash, pressed twice.
 
 ### Step 23
 

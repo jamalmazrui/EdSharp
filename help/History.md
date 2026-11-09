@@ -2,6 +2,18 @@
 
 
 
+## 9 November 2026 -- Three help keys, and Control+P plays
+
+- **Control+Slash is Where Am I,** in the main window and every dialog, in place of Alt+Shift+Slash. Pressed once, it reads everything; Control stops the speech. Pressed twice, it shows the same in a window you can review, followed by every command and key.
+- **Shift+F1 reads everything at once too:** the control's sentence, its whole description and its keys; pressed twice, the same in a window. Neither key has a third press now.
+- **JAWS+H lists this app's keys,** through its JAWS scripts: JAWS's Hot Key Help opens the Where Am I window.
+- **Hotkey Summary stays on the Help menu,** without a key.
+- **Print is on the Misc menu, without a key.** Control+P plays media in Homer apps that play it, as in Windows Media Player.
+
+## 8 November 2026 -- HTML Format works again
+
+- **HTML Format converts Markdown again.** A library it uses asked for a newer System.Runtime.CompilerServices.Unsafe than the one EdSharp ships, and Windows refused to load it. EdSharp now tells Windows to use the copy it ships for every version.
+
 ## 8 November 2026 -- Control+Slash lists the keys
 
 - **Control+Slash shows Hotkey Summary,** as well as Alt+Shift+H, the key Google Docs, Slack and ChatGPT use to list their shortcuts.

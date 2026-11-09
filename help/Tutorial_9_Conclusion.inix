@@ -137,7 +137,7 @@ Hear=Searching a folder of files for a string and opening the one you pick. Alt 
 
 Say=hotkey summary.
 Key=
-Hear=Every command with its key and description, in a new window. Alt plus Shift plus H.
+Hear=Every command with its key and description, in a window. Control plus slash, pressed twice.
 
 [step]
 

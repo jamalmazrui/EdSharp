@@ -11,7 +11,7 @@ that key brings it forward rather than starting a second copy.
 
 Control+F1 turns on Key Describer. Press any key and EdSharp says what it does
 without doing it; press Control+F1 again to leave. Alt+F10 lists every command
-alphabetically with its key, and Alt+Shift+H shows the whole table in a window
+alphabetically with its key, and Control+Slash pressed twice shows the whole table in a window
 you can search.
 
 ### Do I need anything else installed?

@@ -993,13 +993,14 @@ menuFileRename = CreateMenuItem("Rename ...", "Shift+F2", menuItem_Click, "child
 menuFileProperties = CreateMenuItem("Properties", "Alt+Enter", menuItem_Click, "child speak");
 menuFileMailBody = CreateMenuItem("&Mail Body ...", "Control+M", menuItem_Click, "child speak");
 menuFileMailAttach = CreateMenuItem("Mail Attachment ...", "Control+Shift+M", menuItem_Click, "child speak");
-menuFilePrint = CreateMenuItem("&Print", "Control+P", menuItem_Click, "child silent");
+// NO KEY, ON THE MISC MENU (9 November 2026): Control+P plays media in every Homer app, and few people print now.
+menuFilePrint = CreateMenuItem("&Print", "", menuItem_Click, "child silent");
 menuFileRun = CreateMenuItem("Run", "F5", menuItem_Click, "child speak");
 menuFileCurrentWindows = CreateMenuItem("Current Windows ...", "F4", menuItem_Click, "frame silent");
 menuFileClose = CreateMenuItem("&Close Window", "Control+F4", menuItem_Click, "child speak");
 menuFileCloseAllButCurrentWindow = CreateMenuItem("Close All but Current Window", "Control+Shift+F4", menuItem_Click, "child speak");
 menuFileExit = CreateMenuItem("&E&xit EdSharp", "Alt+F4", menuItem_Click, "frame speak");
-menuFile.DropDownItems.AddRange(new ToolStripItem[] {menuFileNew, menuFileNewFromClipboard, menuFileOpen, menuFileOpenOtherFormat, menuFileOpenAgain, menuFileRecent, menuFileSetFavorite, menuFileClearFavorite, menuFileListFavorites, menuFileFind, menuFileSave, menuFileSaveAs, menuFileSaveCopy, menuFileExport, menuFileRename, menuFileProperties, menuFileMailBody, menuFileMailAttach, menuFilePrint, menuFileRun, menuFileCurrentWindows, menuFileClose, menuFileCloseAllButCurrentWindow, menuFileExit});
+menuFile.DropDownItems.AddRange(new ToolStripItem[] {menuFileNew, menuFileNewFromClipboard, menuFileOpen, menuFileOpenOtherFormat, menuFileOpenAgain, menuFileRecent, menuFileSetFavorite, menuFileClearFavorite, menuFileListFavorites, menuFileFind, menuFileSave, menuFileSaveAs, menuFileSaveCopy, menuFileExport, menuFileRename, menuFileProperties, menuFileMailBody, menuFileMailAttach, menuFileRun, menuFileCurrentWindows, menuFileClose, menuFileCloseAllButCurrentWindow, menuFileExit});
 //Dialog.Show("File.", menuFile.DropDownItems.Count);
 
 menuEdit = CreateMenu("&Edit");
@@ -1205,7 +1206,7 @@ menuMiscExplorerFolder = CreateMenuItem("Open in Explorer", "Alt+Oem5", menuItem
 menuMiscCommandPrompt = CreateMenuItem("Open Command Prompt", "Control+Oem5", menuItem_Click, "frame speak");
 menuMiscBurnToCD = CreateMenuItem("Burn to CD", "Alt+Shift+B", menuItem_Click, "child speak");
 menuMiscWebDownload = CreateMenuItem("Web Download", "Alt+Shift+W", menuItem_Click, "frame speak");
-menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload});
+menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload, menuFilePrint});
 //Dialog.Show("Misc.", menuMisc.DropDownItems.Count);
 
 menuWindow = CreateMenu("&Window");
@@ -1226,7 +1227,7 @@ menuHelpTutorial = CreateMenuItem("Play Tutorials", "Alt+F12", menuItem_Click, "
 // focused control does and Alt+Shift+Slash says where you are, as in every dialog; History of Changes takes
 // Control+Shift+F1 (was Shift+F1), which the Hotkeys document gives up, since Alt+Shift+H lists every key.
 menuHelpWhatThisDoes = CreateMenuItem("What This Does", "Shift+F1", menuItem_Click, "frame silent");
-menuHelpWhereAmI = CreateMenuItem("Where Am I", "Alt+Shift+OemQuestion", menuItem_Click, "frame silent");
+menuHelpWhereAmI = CreateMenuItem("Where Am I", "Control+OemQuestion", menuItem_Click, "frame silent");
 menuHelpHistoryOfChanges = CreateMenuItem("History of Changes", "Control+Shift+F1", menuItem_Click, "frame speak");
 // KEY DECISIONS OF 19 OCTOBER 2026, each with the key it replaced so any one can be rolled back on its own
 // line; the reasons are in the kit's help\KeyDecisions.md and the suite manifest:
@@ -1239,7 +1240,8 @@ menuHelpHotkeys = CreateMenuItem("Hotkeys", "", menuItem_Click, "frame speak");
 menuHelpSamplePrograms = CreateMenuItem("Sample Programs ...", "Control+Shift+F2", menuItem_Click, "frame speak");
 menuHelpCopyLog = CreateMenuItem("Copy Log", "Control+F12", menuItem_Click, "frame speak");
 menuHelpKeyDescriber = CreateMenuItem("Key Describer Toggle", "Control+F1", menuItem_Click, "frame silent");
-menuHelpHotKeySummary = CreateMenuItem("Hotkey Summary", "Alt+Shift+H", menuItem_Click, "frame speak");
+// NO KEY (9 November 2026): Control+Slash pressed twice shows every command and key after Where Am I.
+menuHelpHotKeySummary = CreateMenuItem("Hotkey Summary", "", menuItem_Click, "frame speak");
 menuHelpAlternateMenu= CreateMenuItem("Alternate Menu ...", "Alt+F10", menuItem_Click, "frame silent");
 menuHelpContextMenu= CreateMenuItem("Context Menu ...", "Shift+F10", menuItem_Click, "child silent");
 menuHelpSendToMenu= CreateMenuItem("SendTo Menu ...", "Control+F10", menuItem_Click, "child silent");
@@ -1253,8 +1255,6 @@ statusBar = CreateStatusBar();
 // this.Controls.AddRange(new Control[] {menuMain, statusBar});
 this.Controls.AddRange(new Control[] {statusBar, menuMain});
 this.MainMenuStrip = menuMain;
-// Control+Slash lists the keys too (8 November 2026), the key web apps use, beside Alt+Shift+H.
-KeyMap.addAlias(KeyMap.toId("Hotkey Summary"), "Control+Slash");
 menuMain.MdiWindowListItem = menuWindow;
 //this.AutoSize = true;
 this.Size = new Size(600, 600);
@@ -5388,8 +5388,9 @@ Homer.Say.sayForced(Homer.LbcHints.sentenceForFocused(this));
 return;
 }
 if (menuItem == menuHelpWhereAmI) {
-if (child == null || rtb == null) Homer.Say.sayForced("No document is open.");
-else Homer.Say.sayForcedParts(child.Text, GetPercentAddress(rtb), rtb.Modified ? "Modified" : "Unmodified");
+// Control+Slash (9 November 2026): everything at once; twice, the same in a window with every command and key.
+if (child == null || rtb == null) Homer.SuiteCommands.whereAmI(this, new string[] { "No document is open." });
+else Homer.SuiteCommands.whereAmI(this, new string[] { child.Text, GetPercentAddress(rtb), rtb.Modified ? "Modified" : "Unmodified" });
 return;
 }
 
