@@ -92,6 +92,52 @@ function sourcesFingerprint() {
   $oHash = [Security.Cryptography.SHA256]::Create()
   return (($oHash.ComputeHash($oBuffer.ToArray()) | ForEach-Object { $_.ToString("x2") }) -join "")
 }
+# addonPrint: one fingerprint of an add-on's files, by lowercase relative name and bytes, leaving out what NVDA
+# makes for itself (Python caches) and manifest.ini's version line (9 November 2026).
+function addonPrint($dFiles) {
+  $oBuffer = New-Object IO.MemoryStream
+  $lsNames = [string[]]@($dFiles.Keys)
+  [Array]::Sort($lsNames, [StringComparer]::Ordinal)
+  foreach ($sName in $lsNames) {
+    $aName = [Text.Encoding]::UTF8.GetBytes($sName)
+    $oBuffer.Write($aName, 0, $aName.Length)
+    $aBytes = $dFiles[$sName]
+    if ($sName -like "*manifest.ini") {
+      $sText = [regex]::Replace([Text.Encoding]::UTF8.GetString($aBytes), '(?m)^[ \t]*version[ \t]*=.*(\r?\n)?', '')
+      $aBytes = [Text.Encoding]::UTF8.GetBytes($sText)
+    }
+    $oBuffer.Write($aBytes, 0, $aBytes.Length)
+  }
+  $oHash = [Security.Cryptography.SHA256]::Create()
+  return (($oHash.ComputeHash($oBuffer.ToArray()) | ForEach-Object { $_.ToString("x2") }) -join "")
+}
+function isNvdaMade([string] $sName) { return ($sName -like "*.pyc" -or $sName -match '(^|/)__pycache__/') }
+function addonArchivePrint([string] $sPath) {
+  Add-Type -AssemblyName System.IO.Compression.FileSystem
+  $oArchive = [IO.Compression.ZipFile]::OpenRead($sPath)
+  try {
+    $dFiles = @{}
+    foreach ($oEntry in @($oArchive.Entries | Where-Object { $_.Name })) {
+      $sName = $oEntry.FullName.Replace("\", "/").ToLowerInvariant()
+      if (isNvdaMade $sName) { continue }
+      $oStream = $oEntry.Open(); $oCopy = New-Object IO.MemoryStream
+      $oStream.CopyTo($oCopy); $oStream.Dispose()
+      $dFiles[$sName] = $oCopy.ToArray()
+    }
+    return (addonPrint $dFiles)
+  } finally { $oArchive.Dispose() }
+}
+function addonFolderPrint([string] $sFolder) {
+  $dFiles = @{}
+  $sRoot = (Resolve-Path -LiteralPath $sFolder).Path.TrimEnd("\")
+  foreach ($oFile in @(Get-ChildItem -LiteralPath $sRoot -File -Recurse)) {
+    $sName = $oFile.FullName.Substring($sRoot.Length + 1).Replace("\", "/").ToLowerInvariant()
+    if (isNvdaMade $sName) { continue }
+    $dFiles[$sName] = [IO.File]::ReadAllBytes($oFile.FullName)
+  }
+  return (addonPrint $dFiles)
+}
+
 function readManifest([string] $sText) {
   $dValues = @{}
   foreach ($sLine in ($sText -split "`r?`n")) {
@@ -242,8 +288,12 @@ if ($sState -ne "") {
         if (-not (Test-Path -LiteralPath $sInstalled) -and (Test-Path -LiteralPath $sPending)) { $sInstalled = $sPending }
         $sHave = "none"
         if (Test-Path -LiteralPath $sInstalled) { $sHave = (readManifest ([IO.File]::ReadAllText($sInstalled)))["version"] }
+        # SAME FILES, NOT SAME VERSION (9 November 2026). The build stamps EdSharp's version into the add-on's
+        # manifest.ini, so comparing versions said Update on every release, though no add-on file had changed.
+        # The shipped and installed files are compared instead, leaving out manifest.ini's version line, as the
+        # kit's installScreenReaderSupport does: Update means the add-on changed, Reinstall that it is the same.
         if ($sHave -eq "none") { $sAnswer = "install" }
-        elseif ($sHave -eq $dShipped["version"]) { $sAnswer = "reinstall" }
+        elseif ((addonArchivePrint $sAddon) -eq (addonFolderPrint (Split-Path -Parent $sInstalled))) { $sAnswer = "reinstall" }
         else { $sAnswer = "update" }
         $lsFacts += "state nvda: add-on name=$($dShipped['name']) shipped version=$($dShipped['version']); installed version=$sHave (from $sInstalled)"
         $lsFacts += (nvdaLogLines $dShipped["name"])

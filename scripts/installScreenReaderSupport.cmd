@@ -186,6 +186,15 @@ function printOfFiles($dFiles) {
         $aName = [Text.Encoding]::UTF8.GetBytes($sName)
         $oBuffer.Write($aName, 0, $aName.Length)
         $aBytes = & $dFiles[$sName]
+        # A VERSION ALONE IS NOT A CHANGE (kit 1.172.0, 9 November 2026). An app's build may stamp its own version
+        # into the add-on's manifest.ini -- EdSharp's does -- so every new release read as Update though no script
+        # had changed. The fingerprint now leaves out manifest.ini's version line: Update means the scripts changed,
+        # Reinstall that they are the same.
+        if ($sName -like "*manifest.ini") {
+            $sText = [Text.Encoding]::UTF8.GetString($aBytes)
+            $sText = [regex]::Replace($sText, '(?m)^[ \t]*version[ \t]*=.*(\r?\n)?', '')
+            $aBytes = [Text.Encoding]::UTF8.GetBytes($sText)
+        }
         $oBuffer.Write($aBytes, 0, $aBytes.Length)
     }
     $oHash = [Security.Cryptography.SHA256]::Create()
