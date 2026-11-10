@@ -4,6 +4,7 @@
 
 ## 10 November 2026 -- One list for picking
 
+- **Questions and messages use the kit's dialogs too,** shared with FileDir. A question's default answer is now the one EdSharp asks for; it had always been the first. Scripts that call Dialog.Show, Pick or Choose work as before.
 - **Picking from a list uses the kit's dialog,** shared with FileDir. A list narrowed with Control+F now gives back the item you chose; it had given back whatever item first stood in that row. The old snippets folder is removed from the program folder at install, now that templates\\scripts replaces it.
 
 ## 10 November 2026 -- Script, the one word

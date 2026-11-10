@@ -196,7 +196,7 @@ sMessage += "\n\nStack trace:\n" + ex.StackTrace;
 // sMessage += "\nExit EdSharp?\n\nStack trace:\n" + ex.StackTrace;
 // e.ExitApplication = Dialog.Confirm("Confirm", "Unexpected event!\n" + sMessage + ".\nExit EdSharp?", "N") == "Y";
 string[] aButtons = {"&Mail to Developer", "Copy to Clipboard", "Exit EdSharp"};
-string sButton = Dialog.Choose("Unexpected Event", sMessage, aButtons, 0);
+string sButton = Homer.LbcAsk.choose("Unexpected Event", sMessage, aButtons, 0);
 switch (sButton) {
 case "&Mail to Developer" :
 Util.Say("Please add steps to reproduce the problem, if possible.");
@@ -331,8 +331,8 @@ public static bool InitNetSdk() {
 // string sDir = Win32.GetNetRuntimeDir();
 // string sDir = Win32.GetNetSdkDir();
 string sDir = RuntimeEnvironment.GetRuntimeDirectory();
-// Dialog.Show("RuntimeEnvironment", RuntimeEnvironment.GetSystemVersion() + "\r\n" + RuntimeEnvironment.GetRuntimeDirectory() + "\r\n" + RuntimeEnvironment.SystemConfigurationFile);
-// Dialog.Show(sDir);
+// Homer.LbcAsk.message("RuntimeEnvironment", RuntimeEnvironment.GetSystemVersion() + "\r\n" + RuntimeEnvironment.GetRuntimeDirectory() + "\r\n" + RuntimeEnvironment.SystemConfigurationFile);
+// Homer.LbcAsk.message(sDir);
 
 if (sDir.Length == 0) return false;
 if (sDir.EndsWith(@"\")) sDir = sDir.Substring(0, sDir.Length - 2);
@@ -803,7 +803,7 @@ if (Util.IsNumeric(sEncoding)) en = Encoding.GetEncoding(Int32.Parse(sEncoding))
 else en = Encoding.GetEncoding(sEncoding);
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 en = new UTF8Encoding(true);
 }
 }
@@ -835,7 +835,7 @@ else {
 Encoding en = GetYieldEncoding();
 string sText = Util.File2String(sFile, ref en);
 this.RTB.Text = sText;
-// Dialog.Show(sText.Length, this.RTB.TextLength);
+// Homer.LbcAsk.message(sText.Length, this.RTB.TextLength);
 if (sText.Length > 1 && this.RTB.TextLength == 1) {
 en = Encoding.Unicode;
 this.RTB.Text = Util.File2String(sFile, ref en);
@@ -856,7 +856,7 @@ if (System.IO.File.Exists(App.TempFile)) System.IO.File.Delete(App.TempFile);
 System.IO.File.Copy(sFile, App.TempFile);
 App.Frame.OpenOrActivateWindow(App.TempFile);
 }
-//Dialog.Show(this.File);
+//Homer.LbcAsk.message(this.File);
 // Stop double bookmark at message
 // App.Frame.ApplyFileOptions(sFile);
 } // LoadTextFile method
@@ -1005,7 +1005,7 @@ menuFileClose = CreateMenuItem("&Close Window", "Control+F4", menuItem_Click, "c
 menuFileCloseAllButCurrentWindow = CreateMenuItem("Close All but Current Window", "Control+Shift+F4", menuItem_Click, "child speak");
 menuFileExit = CreateMenuItem("&E&xit EdSharp", "Alt+F4", menuItem_Click, "frame speak");
 menuFile.DropDownItems.AddRange(new ToolStripItem[] {menuFileNew, menuFileNewFromClipboard, menuFileOpen, menuFileOpenOtherFormat, menuFileOpenAgain, menuFileRecent, menuFileSetFavorite, menuFileClearFavorite, menuFileListFavorites, menuFileFind, menuFileSave, menuFileSaveAs, menuFileSaveCopy, menuFileExport, menuFileRename, menuFileProperties, menuFileMailBody, menuFileMailAttach, menuFileRun, menuFileCurrentWindows, menuFileClose, menuFileCloseAllButCurrentWindow, menuFileExit});
-//Dialog.Show("File.", menuFile.DropDownItems.Count);
+//Homer.LbcAsk.message("File.", menuFile.DropDownItems.Count);
 
 menuEdit = CreateMenu("&Edit");
 menuEditSelectAll = CreateMenuItem("Select &All", "Control+A", menuItem_Click, "child speak");
@@ -1052,7 +1052,7 @@ menuEditStyle = CreateMenuItem("Style ...", "", menuItem_Click, "child silent");
 menuEditBaseline = CreateMenuItem("Baseline ...", "Alt+Shift+D6", menuItem_Click, "child silent");
 menuEditSetSelectionFont = CreateMenuItem("Set Selection Font ...", "Alt+Shift+OemMinus", menuItem_Click, "child speak");
 menuEdit.DropDownItems.AddRange(new ToolStripItem[] {menuEditSelectAll, menuEditUnselectAll, menuEditCopy, menuEditCopyAppend, menuEditCopyRichText, menuEditCut, menuEditCutAppend, menuEditPaste, menuEditPasteFile, menuEditUndo, menuEditRedo, menuEditStartSelection, menuEditCompleteSelection, menuEditReselect, menuEditCopyAll, menuEditSelectChunk, menuEditAppendFromClipboard, menuEditSaveClipboard, menuEditAppendClipboard, menuEditClearClipboard, menuEditQuote, menuEditUnquote, menuEditUpperCase, menuEditLowerCase, menuEditProperCase, menuEditSwapCase, menuEditYieldEncoding, menuEditJoinLines, menuEditHardLineBreak, menuEditEnterNewLine, menuEditIndentNewLine, menuEditIndentNewLinePrior, menuEditIndent, menuEditOutdent, menuEditAlign, menuEditIndentMode, menuEditJustify, menuEditStyle, menuEditBaseline, menuEditSetSelectionFont});
-//Dialog.Show("Edit.", menuEdit.DropDownItems.Count);
+//Homer.LbcAsk.message("Edit.", menuEdit.DropDownItems.Count);
 
 menuDelete = CreateMenu("&Delete");
 menuDeleteReplaceRegular = CreateMenuItem("&Replace ...", "Control+R", menuItem_Click, "child silent");
@@ -1067,7 +1067,7 @@ menuDeleteUp = CreateMenuItem("Delete Up", "Alt+Shift+Back", menuItem_Click, "ch
 menuDeleteFile = CreateMenuItem("Delete File", "Alt+Shift+D", menuItem_Click, "child speak");
 menuDeleteTrimBlanks = CreateMenuItem("Trim Blanks", "Control+Shift+Enter", menuItem_Click, "child speak");
 menuDelete.DropDownItems.AddRange(new ToolStripMenuItem[] {menuDeleteReplaceRegular, menuDeleteReplaceWithRegExp, menuDeleteHardLine, menuDeleteParagraph, menuDeleteLine, menuDeleteRight, menuDeleteLeft, menuDeleteDown, menuDeleteUp, menuDeleteFile, menuDeleteTrimBlanks});
-//Dialog.Show("Delete.", menuDelete.DropDownItems.Count);
+//Homer.LbcAsk.message("Delete.", menuDelete.DropDownItems.Count);
 
 menuNavigate = CreateMenu("&Navigate");
 menuNavigateForwardFind = CreateMenuItem("Forward &Find ...", "Control+F", menuItem_Click, "child silent");
@@ -1122,7 +1122,7 @@ menuNavigateGoToContents = CreateMenuItem("Go to Contents", "Shift+F6", menuItem
 menuNavigateSearchForTopic = CreateMenuItem("Search for Topic ...", "Alt+F6", menuItem_Click, "child silent");
 menuNavigateGoToStartOfSelection = CreateMenuItem("Go to Start of Selection", "Alt+Shift+F8", menuItem_Click, "child speak");
 menuNavigate.DropDownItems.AddRange(new ToolStripItem[] {menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateGoToStartOfSelection});
-//Dialog.Show("Navigate.", menuNavigate.DropDownItems.Count);
+//Homer.LbcAsk.message("Navigate.", menuNavigate.DropDownItems.Count);
 
 menuQuery = CreateMenu("&Query");
 menuQueryAddress = CreateMenuItem("Address", "Alt+A", menuItem_Click, "child silent");
@@ -1141,7 +1141,7 @@ menuQueryClipboard = CreateMenuItem("Clipboard", "Alt+OemQuotes", menuItem_Click
 menuQueryTime = CreateMenuItem("Time", "Alt+OemSemicolon", menuItem_Click, "frame silent");
 menuQueryStyles = CreateMenuItem("Styles", "Alt+OemQuestion", menuItem_Click, "child silent");
 menuQuery.DropDownItems.AddRange(new ToolStripItem[] {menuQueryAddress, menuQueryBraces, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles});
-//Dialog.Show("Query.", menuQuery.DropDownItems.Count);
+//Homer.LbcAsk.message("Query.", menuQuery.DropDownItems.Count);
 
 menuMisc = CreateMenu("&Misc");
 menuMiscSetDefaultFont = CreateMenuItem("Set Default Font and Color ...", "Alt+Shift+Oemplus", menuItem_Click, "child speak");
@@ -1211,7 +1211,7 @@ menuMiscCommandPrompt = CreateMenuItem("Open Command Prompt", "Control+Oem5", me
 menuMiscBurnToCD = CreateMenuItem("Burn to CD", "Alt+Shift+B", menuItem_Click, "child speak");
 menuMiscWebDownload = CreateMenuItem("Web Download", "Alt+Shift+W", menuItem_Click, "frame speak");
 menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload, menuFilePrint});
-//Dialog.Show("Misc.", menuMisc.DropDownItems.Count);
+//Homer.LbcAsk.message("Misc.", menuMisc.DropDownItems.Count);
 
 menuWindow = CreateMenu("&Window");
 menuWindowNext = CreateMenuItem("Next Window", "Control+Tab", menuItem_Click, "child speak");
@@ -1221,7 +1221,7 @@ menuWindowCascade = CreateMenuItem("Cascade", "Control+F11", menuItem_Click, "ch
 menuWindowTileHorizontal = CreateMenuItem("Tile Horizontal", "Alt+Shift+F11", menuItem_Click, "child speak");
 menuWindowTileVertical = CreateMenuItem("Tile Vertical", "Shift+F11", menuItem_Click, "child speak");
 menuWindow.DropDownItems.AddRange(new ToolStripMenuItem[] {menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical});
-//Dialog.Show("Window.", menuWindow.DropDownItems.Count);
+//Homer.LbcAsk.message("Window.", menuWindow.DropDownItems.Count);
 
 menuHelp = CreateMenu("&Help");
 menuHelpAbout = CreateMenuItem("&About ...", "Alt+F1", menuItem_Click, "frame silent");
@@ -1251,7 +1251,7 @@ menuHelpContextMenu= CreateMenuItem("Context Menu ...", "Shift+F10", menuItem_Cl
 menuHelpSendToMenu= CreateMenuItem("SendTo Menu ...", "Control+F10", menuItem_Click, "child silent");
 menuHelpElevateVersion = CreateMenuItem("Elevate Version", "F11", menuItem_Click, "frame speak");
 menuHelp.DropDownItems.AddRange(new ToolStripItem[] {menuHelpAbout, menuHelpDocumentation, menuHelpWhatThisDoes, menuHelpWhereAmI, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion});
-//Dialog.Show("Help.", menuHelp.DropDownItems.Count);
+//Homer.LbcAsk.message("Help.", menuHelp.DropDownItems.Count);
 
 menuMain.Items.AddRange(new ToolStripItem[] {menuFile, menuEdit, menuDelete, menuNavigate, menuQuery, menuMisc, menuWindow, menuHelp});
 //menuMain.Items.AddRange(new ToolStripItem[] {menuFile, menuEdit, menuDelete, menuNavigate, menuQuery, menuMisc, menuHelp});
@@ -1281,7 +1281,7 @@ string sDir = Directory.GetCurrentDirectory();
 string sFile = Path.Combine(App.DataDir, App.ReadData("Compiler", "Default") + ".ini");
 s = Ini.ReadValue(sFile, "Data", "Directory", "");
 if (Directory.Exists(s) && !Util.Equiv(sDir, s)) {
-//Dialog.Show(sDir, s);
+//Homer.LbcAsk.message(sDir, s);
 //Directory.SetCurrentDirectory(s);
 AddMessage("Folder " + Path.GetFileName(s));
 Directory.SetCurrentDirectory(s);
@@ -1344,7 +1344,7 @@ if (KeyMap.bKeyDescriber && KeyMap.route(this, ref msg, keyData)) return true;
 if (keyData == Keys.F9) {
 HomerRichTextBox rtb = App.Frame.Child.RTB;
 string sText = rtb.GetRange(rtb.Index, rtb.TextLength);
-//Dialog.Show(App.TempFile, sText);
+//Homer.LbcAsk.message(App.TempFile, sText);
 /*
 sText = Util.ConvertQuotes(sText);
 Util.String2FileA(sText, App.TempFile);
@@ -1441,7 +1441,7 @@ menuItem.Text = sText;
 }
 else if (hashKey.ContainsKey(keyData)) {
 string s = hashKey[keyData].Name;
-Dialog.Show("Alert", "Cannot assign " + sKey + " to " + sCommand + ",\nsince already assigned to " + s);
+Homer.LbcAsk.message("Alert", "Cannot assign " + sKey + " to " + sCommand + ",\nsince already assigned to " + s);
 }
 else {
 string sFriendlyKey = Util.GetFriendlyKeyName(sKey);
@@ -1854,7 +1854,7 @@ if (sText.IndexOf(sToken) == -1) continue;
 string s = App.ReadValue("Tokens", sToken, "");
 string sFile = GetScriptDir() + @"\" + s;
 if (File.Exists(sFile)) s = Util.File2String(sFile);
-//Dialog.Show(sFile, s);
+//Homer.LbcAsk.message(sFile, s);
 string sResult = Script.run(s);
 if (sResult == null) sResult = "";
 sText = sText.Replace("%" + sToken + "%",sResult);
@@ -1889,13 +1889,13 @@ foreach (InixCodec.Section section in lsAll) {
 if (section.get("Find") != null) lsTasks.Add(section);
 }
 if (lsTasks.Count == 0) {
-Dialog.Show("Transform Files", "No tasks found.  A job is now an .inix file with one [Section] per task, each having Find, Replace, Options, Extract, and Divider keys.");
+Homer.LbcAsk.message("Transform Files", "No tasks found.  A job is now an .inix file with one [Section] per task, each having Find, Replace, Options, Extract, and Divider keys.");
 App.CaptureOutput = false;
 return;
 }
 
 string[] aChoices = {"&Test", "&Run", "&Verbose"};
-string sChoice = Dialog.Choose("Choose Mode", "", aChoices, 0);
+string sChoice = Homer.LbcAsk.choose("Choose Mode", "", aChoices, 0);
 if (sChoice.Length == 0) { App.CaptureOutput = false; return; }
 bool bApply = (sChoice != "&Test");
 bool bVerbose = (sChoice == "&Verbose");
@@ -1949,7 +1949,7 @@ sDivider = (sDivider == null || sDivider.Length == 0) ? "\f\n" : Regex.Unescape(
 Regex rex;
 try { rex = new Regex(sFind, options); }
 catch (Exception ex) {
-Dialog.Show("Error", section.Name + ": " + ex.Message);
+Homer.LbcAsk.message("Error", section.Name + ": " + ex.Message);
 App.CaptureOutput = false;
 return;
 }
@@ -1990,7 +1990,7 @@ Util.String2File(sSourceBody, sSourceFile, ref en);
 // line -- it is not itself the file being transformed.  Silently doing nothing
 // is what makes this look broken.
 if (iFileCount == 0) {
-Dialog.Show("Transform Files", "No files were transformed.\n\nThe document that is open should contain the list of files to transform, one full path per line.  It is not itself the file that gets transformed.\n\nTo transform a single file, open a new document, type or paste that file's full path on the first line, and run Transform Files from there.");
+Homer.LbcAsk.message("Transform Files", "No files were transformed.\n\nThe document that is open should contain the list of files to transform, one full path per line.  It is not itself the file that gets transformed.\n\nTo transform a single file, open a new document, type or paste that file's full path on the first line, and run Transform Files from there.");
 App.CaptureOutput = false;
 return;
 }
@@ -2046,7 +2046,7 @@ return sDir;
 
 public string GetDirChoice() {
 string[] aButtons = {"&Current", "&Program", "&Data", "&Script", "&Other"};
-string sButton = Dialog.Choose("Choose Directory", "", aButtons, 0);
+string sButton = Homer.LbcAsk.choose("Choose Directory", "", aButtons, 0);
 if (sButton.Length == 0) return "";
 
 string sDir = Directory.GetCurrentDirectory();
@@ -2092,7 +2092,7 @@ string[] aViewLevel = sViewLevel.Split(':');
 if (aViewLevel.Length < 2) continue;
 if (sExt != aViewLevel[0].Trim().ToLower()) continue;
 try { return Int32.Parse(aViewLevel[1]); }
-catch (Exception ex) { Dialog.Show("Error", ex.Message); }
+catch (Exception ex) { Homer.LbcAsk.message("Error", ex.Message); }
 }
 foreach (string sBinaryFormat in sBinaryFormats.Split(' ')) if (sExt == sBinaryFormat) return 1;
 return 0;
@@ -2521,7 +2521,7 @@ try {
 sText = COM.ConvertFile2String(sFile);
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 return;
 }
 
@@ -2616,7 +2616,7 @@ sFile = Dialog.SaveFile("", sFile);
 if (sFile.Length == 0) return;
 }
 
-//Dialog.Show(sFile);
+//Homer.LbcAsk.message(sFile);
 //if (Path.GetExtension(sFile).Length == 0) sFile += ".txt";
 child.SaveTextOrRtfFile(sFile);
 //this.SetRecent(sFile);
@@ -2659,7 +2659,7 @@ aValues = hl.ToArray();
 
 sTitle = "Export " + sExt + " to ";
 sResult = Homer.LbcAsk.pick(sTitle, aValues, aDisplay, false, 0);
-//Dialog.Show(sResult);
+//Homer.LbcAsk.message(sResult);
 if (sResult.Length == 0) return;
 
 int iCodePage = -1;
@@ -2725,7 +2725,7 @@ try {
 File.Move(sFile, sNewFile);
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 return;
 }
 child.Text = sName;
@@ -3052,7 +3052,7 @@ if (rtb.SelectionLength == 0) {
 AddMessage("Line");
 iStart = rtb.RowStart;
 iEnd = iStart + rtb.RowText.Length;
-//Dialog.Show(iStart, iEnd);
+//Homer.LbcAsk.message(iStart, iEnd);
 }
 else {
 AddMessage("Selected");
@@ -3189,7 +3189,7 @@ iEnd = rtb.TextLength;
 else {
 sTitle = "Yield Encoding Selected";
 iStart = rtb.SelectionStart;
-// Dialog.Show(iStart, rtb.SelectionLength);
+// Homer.LbcAsk.message(iStart, rtb.SelectionLength);
 iEnd = iStart + rtb.SelectionLength;
 }
 
@@ -3197,7 +3197,7 @@ sText = rtb.GetRange(iStart, iEnd);
 
 // string[] aButtons = {"&Default", "&ASCII", "UTF-&7", "UTF-&8", "&Unicode", "UTF-&32", "&Latin1", "&Other"};
 string[] aButtons = {"&ASCII", "&Latin1", "UTF-&8", "&UTF-16", "UTF-&7", "UTF-&32", "&Other", "&Codes"};
-string sButton = Dialog.Choose(sTitle, "", aButtons, 0);
+string sButton = Homer.LbcAsk.choose(sTitle, "", aButtons, 0);
 if (sButton.Length == 0) return;
 
 Encoding def = Encoding.Default;
@@ -3249,7 +3249,7 @@ if (Util.IsNumeric(sCodePage)) other = Encoding.GetEncoding(Int32.Parse(sCodePag
 else other = Encoding.GetEncoding(sCodePage, new EncoderReplacementFallback(""), new DecoderReplacementFallback(""));
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 return;
 }
 */
@@ -3410,13 +3410,13 @@ char[] a = {' ', '\t'};
 sLine = "";
 string sComment = App.ReadOption("QuotePrefix", "> ");
 int iRow = rtb.GetIndexRow(iStart);
-// Dialog.Show("iStart " + iStart, "iRow " + iRow);
+// Homer.LbcAsk.message("iStart " + iStart, "iRow " + iRow);
 int iLevels = GetIndent(iRow);
 int i = iLevels;
 int iTop = 0;
 while (iRow > iTop) {
 iRow--;
-// Dialog.Show("row " + iRow);
+// Homer.LbcAsk.message("row " + iRow);
 sLine = rtb.GetRowText(iRow).Trim(a);
 if (sLine.Length == 0 || sLine.StartsWith(sComment)) continue;
 i = GetIndent(iRow);
@@ -3424,7 +3424,7 @@ if (iLevels != i) break;
 }
 
 int iDelta = i - iLevels;
-// Dialog.Show(iDelta);
+// Homer.LbcAsk.message(iDelta);
 
 sText = rtb.GetRange(iStart, iEnd);
 if (iDelta > 0) {
@@ -3476,7 +3476,7 @@ int i = 0;
 if (rtb.SelectionBullet) i = 1;
 if (rtb.SelectionAlignment == HorizontalAlignment.Center) i = 2;
 else if (rtb.SelectionAlignment == HorizontalAlignment.Right) i = 3;
-sResult = Dialog.Choose(sTitle, "", aValues, i);
+sResult = Homer.LbcAsk.choose(sTitle, "", aValues, i);
 if (sResult.Length == 0) return;
 
 rtb.SelectionBullet = false;
@@ -3535,7 +3535,7 @@ aValues = new string[] {"&Down", "&Flat", "&Up"};
 int i = 1;
 if (rtb.SelectionCharOffset < 0) i = 0;
 else if (rtb.SelectionCharOffset > 0) i = 2;
-sResult = Dialog.Choose(sTitle, "", aValues, i);
+sResult = Homer.LbcAsk.choose(sTitle, "", aValues, i);
 if (sResult.Length == 0) return;
 
 switch (sResult) {
@@ -3567,7 +3567,7 @@ rtb.SelectionColor = (Color) a[1];
 }
 
 if (menuItem == menuMiscEnvironmentVariables) {
-string sChoice = Dialog.Choose("Target", "", new string[] {"&Process", "&User", "&Machine"}, 0);
+string sChoice = Homer.LbcAsk.choose("Target", "", new string[] {"&Process", "&User", "&Machine"}, 0);
 if (sChoice.Length == 0) return;
 
 EnvironmentVariableTarget target = EnvironmentVariableTarget.Process;
@@ -3612,7 +3612,7 @@ Environment.SetEnvironmentVariable(aKeys[i], aResults[i], target);
 }
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 return;
 }
 AddMessage("Done");
@@ -3738,7 +3738,7 @@ this.Child.RTB.Text = sTranslation.Replace("\r\n", "\n").Replace("\n", "\r\n");
 this.Child.RTB.Modified = false;
 this.Child.RTB.Index = 0;
 if (bUnchanged) {
-Dialog.Show("Translate", "The reply is the same as the text that went in, so nothing was translated."
+Homer.LbcAsk.message("Translate", "The reply is the same as the text that went in, so nothing was translated."
 + "\r\n\r\nThe usual cause is the wrong source language: choose Detect for the language to translate FROM."
 + "\r\n\r\nIt can also mean the model declined a long document. Try a selection.");
 AddMessage("Unchanged");
@@ -4084,7 +4084,7 @@ int iCode = Int32.Parse(sResult);
 sText = Util.Code2String(iCode);
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 return;
 }
 }
@@ -4093,7 +4093,7 @@ if (sResult.StartsWith("u")) sResult = sResult.Remove(0, 1);
 string s = sResult;
 sText = Util.Literalize(@"\u" + sResult.PadLeft(4, '0'));
 if (sText.Length == 0 || sText == "\u0000") {
-Dialog.Show("Error", "Invalid Unicode number");
+Homer.LbcAsk.message("Error", "Invalid Unicode number");
 return;
 }
 }
@@ -4119,7 +4119,7 @@ iStart = rtb.RowStart;
 sMatch = @"\n\s*\n";
 object[] a = Util.RegExpContainsCase(rtb.Text, sMatch, iStart);
 iEnd = (int) a[0];
-//Dialog.Show(iEnd, ((string) a[1]).Length);
+//Homer.LbcAsk.message(iEnd, ((string) a[1]).Length);
 if (iEnd >= 0) iEnd += ((string) a[1]).Length;
 else iEnd = rtb.TextLength;
 rtb.ReplaceRange(iStart, iEnd, "");
@@ -4365,7 +4365,7 @@ try {
 iLine = Int32.Parse(sLine);
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 return;
 }
 
@@ -4374,7 +4374,7 @@ try {
 iColumn = Int32.Parse(sColumn);
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 return;
 }
 
@@ -4385,7 +4385,7 @@ rtb.Column = iColumn;
 Util.Say(rtb.RowText);
 }
 catch {
-Dialog.Show("Error", "Invalid position!");
+Homer.LbcAsk.message("Error", "Invalid position!");
 return;
 }
 }
@@ -4424,7 +4424,7 @@ try {
 iPercent = Int32.Parse(sText);
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 return;
 }
 
@@ -4532,13 +4532,13 @@ aValues = hl.ToArray();
 iIndex = rtb.Index;
 int iDefault = -1;
 for (int i = 0; i < hl.Count; i++) {
-//Dialog.Show(iIndex, Int32.Parse(hl[i]));
+//Homer.LbcAsk.message(iIndex, Int32.Parse(hl[i]));
 if (iIndex < Int32.Parse(hl[i])) {
 iDefault = i;
 break;
 }
 }
-//Dialog.Show(iDefault);
+//Homer.LbcAsk.message(iDefault);
 
 sResult = Homer.LbcAsk.pick("Bookmarks", aValues, aDisplay, false, iDefault);
 if (sResult.Length == 0) return;
@@ -4949,7 +4949,7 @@ iEnd = rtb.TextLength;
 sText = rtb.GetRange(iStart, iEnd);
 iCount = 0;
 int i = 0;
-// Dialog.Show(i, sText.Length);
+// Homer.LbcAsk.message(i, sText.Length);
 bool bLoop = true;
 while (bLoop) {
 if (i == sText.Length) {
@@ -5069,7 +5069,7 @@ iRow = rtb.Row;
 string sRest = rtb.GetRowText(iRow);
 sRest = "";
 iCount = rtb.Lines.Length;
-// Dialog.Show(iRow, iCount);
+// Homer.LbcAsk.message(iRow, iCount);
 if (iRow >= iCount - 1) {
 AddMessage("Bottom!");
 return;
@@ -5845,8 +5845,8 @@ if (menuItem == menuMiscManualOptions) {
 //OpenOrActivateWindow(App.IniFile, 0);
 string sCompiler = App.ReadData("Compiler", "Default");
 //sText = sCompiler + " Compiler";
-//sResult = Dialog.Choose("Manual Options", "", new string[] {"&Main", "&" + sText}, 0);
-sResult = Dialog.Choose("Edit Settings File", "", new string[] {"&Main", "&" + sCompiler}, 0);
+//sResult = Homer.LbcAsk.choose("Manual Options", "", new string[] {"&Main", "&" + sText}, 0);
+sResult = Homer.LbcAsk.choose("Edit Settings File", "", new string[] {"&Main", "&" + sCompiler}, 0);
 if (sResult.Length == 0) return;
 
 // .inix only (22 October 2026): your settings are your EdSharp.inix, made if it is not there yet.
@@ -5867,8 +5867,8 @@ App.SetConfigurationValues();
 
 string sCompiler = App.ReadData("Compiler", "Default");
 //sText = sCompiler + " Compiler";
-//sResult = Dialog.Choose("Manual Options", "", new string[] {"&Main", "&" + sText}, 0);
-sResult = Dialog.Choose("Reset Configuration", "", new string[] {"&Main", "&" + sCompiler, "&Both", "&New"}, 0);
+//sResult = Homer.LbcAsk.choose("Manual Options", "", new string[] {"&Main", "&" + sText}, 0);
+sResult = Homer.LbcAsk.choose("Reset Configuration", "", new string[] {"&Main", "&" + sCompiler, "&Both", "&New"}, 0);
 if (sResult.Length == 0) return;
 
 if (sResult == "&Main" || sResult == "&Both") {
@@ -6081,9 +6081,9 @@ if (menuItem == menuMiscPickCompiler) {
 aResults = Ini.ReadSectionKeys(App.IniFile, "Compilers");
 //Array.Sort(aResults);
 sResult = App.ReadData("Compiler", "Default");
-//Dialog.Show(sResult, String.Join("\n", aResults));
+//Homer.LbcAsk.message(sResult, String.Join("\n", aResults));
 int i = Array.IndexOf(aResults, sResult);
-//Dialog.Show(i);
+//Homer.LbcAsk.message(i);
 if (i == -1) i = 0;
 sResult = Homer.LbcAsk.pick("Pick Compiler", aResults, false, i);
 if (sResult.Length == 0) return;
@@ -6149,7 +6149,7 @@ return;
 bool bCSharpConsole = sCommand.Equals("%CSharp%", StringComparison.OrdinalIgnoreCase);
 if (bCSharpConsole || sCommand.Equals("%Script%", StringComparison.OrdinalIgnoreCase) || sCommand.Equals("%Snippet%", StringComparison.OrdinalIgnoreCase) || sCommand.ToLower().EndsWith("ijs.exe") || sCommand.ToLower().EndsWith("ijs.exe\"")) {
 AddMessage(bCSharpConsole ? "C# console" : "Script console");
-if (!Script.runConsole(bCSharpConsole)) Dialog.Show("Go to Environment", "The console could not be started.\n\nThe run log has the detail:\n" + App.LogFile);
+if (!Script.runConsole(bCSharpConsole)) Homer.LbcAsk.message("Go to Environment", "The console could not be started.\n\nThe run log has the detail:\n" + App.LogFile);
 return;
 }
 if (this.Child == null) sFile = "temp.txt";
@@ -6246,7 +6246,7 @@ else if (sFile.Length > 0 && (child.RTB.Modified || !File.Exists(sFile))) child.
 string sDir = Directory.GetCurrentDirectory();
 if (sCommand.IndexOf("%SourceDir%") >=0) Directory.SetCurrentDirectory(Path.GetDirectoryName(sFile));
 sCommand = Util.ExpandCommandLine(sCommand, sFile, Path.ChangeExtension(sFile, ".exe"));
-// Dialog.Show(sCommand);
+// Homer.LbcAsk.message(sCommand);
 
 // Try with COMSpec
 // string sOutput = Util.GetProgramOutput(@"c:\windows\system32\cmd.exe", "/c " + sCommand);
@@ -6263,16 +6263,16 @@ Util.RunHideWait(sCommand);
 sOutput = File.ReadAllText(App.TempFile);
 }
 
-// Dialog.Show("output", sOutput.Length);
+// Homer.LbcAsk.message("output", sOutput.Length);
 
 /*
-Dialog.Show(sCommand);
+Homer.LbcAsk.message(sCommand);
 int i = sCommand.IndexOf(".exe");
 string sParams = sCommand.Substring(i + 5);
 sCommand = sCommand.Substring(0, i + 4);
-Dialog.Show(sCommand, sParams);
+Homer.LbcAsk.message(sCommand, sParams);
 string sOutput = Util.GetProgramOutput(sCommand, sParams);
-Dialog.Show(sOutput);
+Homer.LbcAsk.message(sOutput);
 */
 
 if (sDir != Directory.GetCurrentDirectory()) Directory.SetCurrentDirectory(sDir);
@@ -6500,7 +6500,7 @@ try {
 iLine = Int32.Parse(sResult);
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 return;
 }
 
@@ -6626,7 +6626,7 @@ BurnToCD();
 if (menuItem == menuMiscWebDownload) {
 string sButton = "Web Page";
 if (App.Frame.Child != null) {
-sButton = Dialog.Choose("Choose Source of URLs", "", new string[] {"&Web Page", "&Document"}, 0);
+sButton = Homer.LbcAsk.choose("Choose Source of URLs", "", new string[] {"&Web Page", "&Document"}, 0);
 if (sButton.Length == 0) return;
 } // if
 
@@ -6761,7 +6761,7 @@ sText = "EdSharp 5.0 beta\nJune 16, 2026\n\n";
 sText += "Copyright 2007 - 2026 by Jamal Mazrui\nMIT License\n\n";
 sText += ".NET Framework " + RuntimeEnvironment.GetSystemVersion() + "\n\n";
 sText += Util.GetPortableExecutableKind();
-Dialog.Show("About", sText);
+Homer.LbcAsk.message("About", sText);
 }
 
 if (menuItem == menuHelpDocumentation) {
@@ -6798,14 +6798,14 @@ if (menuItem == menuHelpSamplePrograms) {
 // explains itself rather than demanding the ReadMe be opened first.
 string sSamplesDir = Path.Combine(App.ProgramDir, "templates\\samples");
 if (!Directory.Exists(sSamplesDir)) {
-Dialog.Show("Sample Programs", "The Samples folder was not found at:\n" + sSamplesDir);
+Homer.LbcAsk.message("Sample Programs", "The Samples folder was not found at:\n" + sSamplesDir);
 return;
 }
 List<object> lPaths = new List<object>();
 List<string> lDisplay = new List<string>();
 collectSamples(sSamplesDir, "", lPaths, lDisplay);
 if (lPaths.Count == 0) {
-Dialog.Show("Sample Programs", "No samples were found in:\n" + sSamplesDir);
+Homer.LbcAsk.message("Sample Programs", "No samples were found in:\n" + sSamplesDir);
 return;
 }
 object[] aPicked = Dialog.PickAndChoose("Sample Programs", lPaths.ToArray(), lDisplay.ToArray(), new string[] {"&Open", "&Folder"}, false, 0);
@@ -6814,7 +6814,7 @@ string sPicked = aPicked[0].ToString();
 string sButton = ((string) aPicked[1]).Replace("&", "");
 if (sButton == "Folder") {
 try { Process.Start("explorer.exe", "/select,\"" + sPicked + "\""); }
-catch (Exception ex) { Dialog.Show("Sample Programs", ex.Message); }
+catch (Exception ex) { Homer.LbcAsk.message("Sample Programs", ex.Message); }
 return;
 }
 // Open: a program or a document opens in EdSharp, where it can be read,
@@ -6822,7 +6822,7 @@ return;
 string sExt = Path.GetExtension(sPicked).ToLower();
 if (sExt == ".htm" || sExt == ".html") {
 try { Process.Start(sPicked); AddMessage("Opened in the browser"); }
-catch (Exception ex) { Dialog.Show("Sample Programs", ex.Message); }
+catch (Exception ex) { Homer.LbcAsk.message("Sample Programs", ex.Message); }
 return;
 }
 OpenOrActivateWindow(sPicked, 0);
@@ -7062,7 +7062,7 @@ using (StreamReader reader = new StreamReader(response.GetResponseStream(), Enco
 string sAnswer = jsonExtractString(sJson, "response");
 if (sAnswer.Length == 0) {
 string sError = jsonExtractString(sJson, "error");
-Dialog.Show("Chat with AI", sError.Length > 0 ? "Ollama reported: " + sError : "Ollama sent an empty answer.");
+Homer.LbcAsk.message("Chat with AI", sError.Length > 0 ? "Ollama reported: " + sError : "Ollama sent an empty answer.");
 }
 return sAnswer;
 }
@@ -7094,11 +7094,11 @@ sHint += "\n\nWhen you are ready, fetch it with: ollama pull " + sModel + "\nThe
 }
 }
 else sHint = "Could not reach Ollama at " + sUrl + ".\n" + ex.Message + "\n\nIf Ollama is not installed, rerun the EdSharp installer and check the Ollama box at the finish page, or run: winget install Ollama.Ollama\nIf the model is missing, run: ollama pull " + sModel;
-Dialog.Show("Chat with AI", sHint);
+Homer.LbcAsk.message("Chat with AI", sHint);
 return "";
 }
 catch (Exception ex) {
-Dialog.Show("Chat with AI", ex.Message);
+Homer.LbcAsk.message("Chat with AI", ex.Message);
 return "";
 }
 } // askOllama method
@@ -7587,7 +7587,7 @@ return;
 else if (sExt == "boo") {
 if (App.Boo == null) App.Boo = COM.CreateObject("Iron.COM");
 sScript = (string) COM.CallMethod(App.Boo, "Eval", new string[] {sBody, "", "", "", ""});
-//Dialog.Show(sScript);
+//Homer.LbcAsk.message(sScript);
 return;
 }
 
@@ -7944,7 +7944,7 @@ try {
 iWidth = Int32.Parse(sResult);
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 return;
 }
 
@@ -7955,7 +7955,7 @@ iLength = sText.Length;
 bLoop = true;
 
 while (bLoop) {
-//Dialog.Show("index", iIndex);
+//Homer.LbcAsk.message("index", iIndex);
 if (iLength - iIndex <= iWidth) {
 sLine = sText.Substring(iIndex);
 bLoop = false;
@@ -7963,13 +7963,13 @@ bLoop = false;
 else {
 sLine = sText.Substring(iIndex, iWidth);
 i = sLine.LastIndexOf("\n");
-//Dialog.Show("break", i);
+//Homer.LbcAsk.message("break", i);
 if (i >=0) {
 sLine = sLine.Substring(0, i + 1);
 }
 else {
 i = sLine.LastIndexOf(" ");
-//Dialog.Show("space", i);
+//Homer.LbcAsk.message("space", i);
 if (i >=0) sLine = sLine.Substring(0, i + 1);
 }
 }
@@ -8028,7 +8028,7 @@ while ((int) dt.DayOfWeek != iDay) dt = dt.AddDays(1);
 }
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 }
 
 iIndex = rtb.Index;
@@ -8076,7 +8076,7 @@ AddMessage("Mail message opened");
 Util.Log("mailto opened, " + sBody.Length + " characters");
 }
 catch (Exception ex) {
-Dialog.Show("Mail", "No mail program answered.\n" + ex.Message);
+Homer.LbcAsk.message("Mail", "No mail program answered.\n" + ex.Message);
 }
 return;
 }
@@ -8093,7 +8093,7 @@ Util.String2File(Util.Convert2WinLineBreak(sBody), sFile);
 App.TempFiles.Add(sFile);
 }
 catch (Exception ex) {
-Dialog.Show("Mail", "The attachment could not be written.\n" + ex.Message);
+Homer.LbcAsk.message("Mail", "The attachment could not be written.\n" + ex.Message);
 return;
 }
 
@@ -8116,7 +8116,7 @@ Clipboard.SetDataObject(dataFile, true);
 catch (Exception) {}
 Util.Log("mail attachment prepared: " + sFile);
 if (bOpened) AddMessage("Mail message opened; the file is also on the clipboard");
-else Dialog.Show("Mail", "The document is saved as:\n" + sFile + "\n\nIt is on the clipboard as a file, so pressing Control+V in a new mail message attaches it.");
+else Homer.LbcAsk.message("Mail", "The document is saved as:\n" + sFile + "\n\nIt is on the clipboard as a file, so pressing Control+V in a new mail message attaches it.");
 } // Mail method
 
 public void MailWord(bool bAttach) {
@@ -8610,7 +8610,7 @@ List<SpellingProblem> lsProblems = null;
 if (sEngine != "windows") lsProblems = findSpellingProblemsHunspell(sText, sLanguage);
 if (lsProblems == null) lsProblems = findSpellingProblems(sText, sLanguage);
 if (lsProblems == null) {
-Dialog.Show("Spell Check", "No spell checker could be started.\n\nThe dictionary should be here:\n" + Path.Combine(App.ProgramDir, @"data\dictionaries\en_US.dic") + "\n\nThe Windows checker also refused: \n\n" + App.SpellCheckError + "\n\nThe run log has the detail:\n" + App.LogFile + "\n\nIf Microsoft Word is installed, set the SpellChecker option to Word with Edit Settings, Alt+Shift+E.");
+Homer.LbcAsk.message("Spell Check", "No spell checker could be started.\n\nThe dictionary should be here:\n" + Path.Combine(App.ProgramDir, @"data\dictionaries\en_US.dic") + "\n\nThe Windows checker also refused: \n\n" + App.SpellCheckError + "\n\nThe run log has the detail:\n" + App.LogFile + "\n\nIf Microsoft Word is installed, set the SpellChecker option to Word with Edit Settings, Alt+Shift+E.");
 return;
 }
 if (lsProblems.Count == 0) { AddMessage("No spelling problems"); return; }
@@ -8793,12 +8793,12 @@ if (sWord.Length == 0 || !Char.IsLetter(sWord[0])) { AddMessage("No word!"); ret
 
 AddMessage("Looking up " + sWord);
 string sHelper = Path.Combine(App.ProgramDir, @"configs\convert\wordNet.py");
-if (!File.Exists(sHelper)) { Dialog.Show("Thesaurus", "The thesaurus helper was not found at:\n" + sHelper); return; }
+if (!File.Exists(sHelper)) { Homer.LbcAsk.message("Thesaurus", "The thesaurus helper was not found at:\n" + sHelper); return; }
 string sOutput = Util.GetProgramOutput("python", "\"" + sHelper + "\" \"" + sWord + "\"");
 if (sOutput == null) sOutput = "";
 sOutput = sOutput.Trim();
 if (sOutput.StartsWith("NOTINSTALLED")) {
-Dialog.Show("Thesaurus", "The free thesaurus database is not installed yet.\n\nRun installPdfTools.cmd in the EdSharp program folder -- it installs the thesaurus as well -- or set the Thesaurus option to Word with Edit Settings, Alt+Shift+E, to use the Microsoft Word thesaurus instead.");
+Homer.LbcAsk.message("Thesaurus", "The free thesaurus database is not installed yet.\n\nRun installPdfTools.cmd in the EdSharp program folder -- it installs the thesaurus as well -- or set the Thesaurus option to Word with Edit Settings, Alt+Shift+E, to use the Microsoft Word thesaurus instead.");
 return;
 }
 if (sOutput.StartsWith("NOWORD") || sOutput.Length == 0) { AddMessage("No entry for " + sWord); return; }
@@ -8822,7 +8822,7 @@ string sChosen = aChoice[0].ToString();
 string sButton = ((string) aChoice[1]).Replace("&", "");
 if (sButton == "Copy") {
 try { Clipboard.SetText(sChosen); AddMessage("Copied " + sChosen); }
-catch (Exception ex) { Dialog.Show("Thesaurus", ex.Message); }
+catch (Exception ex) { Homer.LbcAsk.message("Thesaurus", ex.Message); }
 return;
 }
 // Replace, keeping the original capitalization of the word replaced.
@@ -8920,7 +8920,7 @@ string sName = "EdSharp_Setup.exe";
 Util.Say("Checking for updates");
 string sTag = Util.FetchLatestReleaseTag(sOwnerRepo);
 if (sTag.Length == 0) {
-Dialog.Show("Elevate Version", "Could not check for updates right now.\nPlease check your internet connection and try again.\nYou can also download the latest installer from\n" + sReleasesUrl);
+Homer.LbcAsk.message("Elevate Version", "Could not check for updates right now.\nPlease check your internet connection and try again.\nYou can also download the latest installer from\n" + sReleasesUrl);
 return;
 }
 
@@ -8941,7 +8941,7 @@ Util.Say("Downloading installer");
 string sUrl = sReleasesUrl + "/download/" + sName;
 string sFile = Homer.Web.download(sUrl, Path.GetTempPath(), sName);
 if (sFile.Length == 0) {
-Dialog.Show("Elevate Version", "The download did not complete.\nYou can download the installer manually from\n" + sReleasesUrl);
+Homer.LbcAsk.message("Elevate Version", "The download did not complete.\nYou can download the installer manually from\n" + sReleasesUrl);
 return;
 }
 
@@ -8953,7 +8953,7 @@ processStartInfo.UseShellExecute = true;
 Process.Start(processStartInfo);
 }
 catch (Exception ex) {
-Dialog.Show("Elevate Version", "The installer downloaded but could not be started.\n" + ex.Message + "\n\nThe file is here:\n" + sFile);
+Homer.LbcAsk.message("Elevate Version", "The installer downloaded but could not be started.\n" + ex.Message + "\n\nThe file is here:\n" + sFile);
 }
 } // ElevateVersion method
 
@@ -9227,9 +9227,9 @@ return;
 string sTargetExt = "txt";
 if (iConvert == 0) sText = "";
 else {
-// Dialog.Show("iConvert " + iConvert, "sTargetExt " + sTargetExt);
+// Homer.LbcAsk.message("iConvert " + iConvert, "sTargetExt " + sTargetExt);
 sText = COM.ConvertFile2String(sFile, ref iConvert, ref sTargetExt);
-// Dialog.Show("iConvert " + iConvert, "sTargetExt " + sTargetExt);
+// Homer.LbcAsk.message("iConvert " + iConvert, "sTargetExt " + sTargetExt);
 
 if (iConvert >= 1 && sText.Trim().Length == 0) {
 AddMessage("No text!");
@@ -9246,7 +9246,7 @@ return;
 if (!IsEmptyWindow()) new DocumentWindow(this, sFile);
 if (iConvert <= 0) {
 this.Child.LoadTextOrRtfFile(sFile, (iConvert == 0 ? true : false));
-//Dialog.Show(sFile);
+//Homer.LbcAsk.message(sFile);
 ApplyFileOptions(sFile);
 FollowCompilerForFile(sFile);
 // A file opened this way -- Enter on it in Explorer, Open With, a recent
@@ -9407,7 +9407,7 @@ else iIndex += ((string) aResults[1]).Length;
 else {
 iBackward = (int) aResults[0];
 sValue = (string) aResults[1];
-// Dialog.Show(sValue, iBackward);
+// Homer.LbcAsk.message(sValue, iBackward);
 iEnd = iBackward;
 sText = rtb.GetRange(iStart, iEnd);
 aResults = Util.RegExpContainsLastEquiv(sText, sMatch);
@@ -9417,7 +9417,7 @@ iIndex = iStart;
 else {
 iBackward = (int) aResults[0];
 sValue = (string) aResults[1];
-// Dialog.Show(sValue, iBackward);
+// Homer.LbcAsk.message(sValue, iBackward);
 iStart = iBackward + sValue.Length;
 iIndex = iStart;
 }
@@ -9499,7 +9499,7 @@ lsFound.Add(sCandidate);
 }
 aFiles = lsFound.ToArray();
 if (aFiles.Length == 0) {
-Dialog.Show("Alert", "No matches!");
+Homer.LbcAsk.message("Alert", "No matches!");
 return;
 }
 
@@ -9598,7 +9598,7 @@ try {
 Process.Start(sCommand);
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 return;
 }
 } // ExplorerFolder method
@@ -9611,7 +9611,7 @@ try {
 Process.Start(sCommand, sParams);
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 return;
 }
 } // CommandPrompt method
@@ -10075,7 +10075,7 @@ return this.GetFirstCharIndexFromLine(iRow);
 public string GetRowText(int iRow) {
 int iStart = this.GetFirstCharIndexFromLine(iRow);
 int iEnd = this.GetFirstCharIndexFromLine(iRow + 1);
-// Dialog.Show("iStart " + iStart, "iEnd " + iEnd);
+// Homer.LbcAsk.message("iStart " + iStart, "iEnd " + iEnd);
 if (iEnd == -1) iEnd = this.Text.Length;
 else iEnd --;
 return this.GetRange(iStart, iEnd);
@@ -10349,7 +10349,7 @@ bs.Filter = sFilterSql;
 this.Filter = sFilter;
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 bs.Filter = sTemp;
 return true;
 }
@@ -10420,6 +10420,16 @@ return "Shown = true";
 } // ListForm class
 
 public class Dialog {
+
+// FOR SCRIPTS (10 November 2026). Show, Pick and Choose are the kit's LbcAsk.message, pick and choose now, which EdSharp's
+// own code calls; these stay, one line each, because scripts call them by these names -- the shipped MultiInput.js
+// calls Dialog.Show -- and so may anyone's own.
+public static void Show(object oText) { Homer.LbcAsk.message(oText); }
+public static void Show(object oTitle, object oText) { Homer.LbcAsk.message(oTitle, oText); }
+public static string Pick(string sTitle, string[] aValue, bool bSort) { return Homer.LbcAsk.pick(sTitle, aValue, bSort); }
+public static string Pick(string sTitle, string[] aValue, bool bSort, int iIndex) { return Homer.LbcAsk.pick(sTitle, aValue, bSort, iIndex); }
+public static string Pick(string sTitle, string[] aValue, string[] aDisplay, bool bSort, int iIndex) { return Homer.LbcAsk.pick(sTitle, aValue, aDisplay, bSort, iIndex); }
+public static string Choose(string sTitle, string sText, string[] aButtons, int iDefault) { return Homer.LbcAsk.choose(sTitle, sText, aButtons, iDefault); }
 public static string Jump = "";
 public static Dictionary<string, string> hashItem = new Dictionary<string, string>();
 public static Dictionary<string, string> hashFilter = new Dictionary<string, string>();
@@ -10685,17 +10695,7 @@ return "N";
 return "";
 } // Confirm method
 
-public static void Show(object oText) {
-Show("Show", oText);
-} // Show method
 
-public static void Show(object oTitle, object oText) {
-string sTitle = oTitle.ToString();
-string sText = oText.ToString();
-if (oTitle is bool) sTitle = ((bool) oTitle) ? "true" : "false";
-if (oText is bool) sText = (bool) oText ? "true" : "false";
-LbcMessage.show(oText.ToString(), oTitle.ToString());
-} // Show method
 
 public static void Properties(string sPath) {
 COM.InvokeVerb(sPath, "P&roperties");
@@ -10789,20 +10789,6 @@ else sButton = sClicked.Replace("&", "").Replace(" Word", "");
 return new object[] {sButton, sReplacement};
 } // SpellChoice method
 
-public static string Choose (string sTitle, string sText, string[] aButtons, int iDefault) {
-LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
-if (sText != "") dlg.addLabel(sText);
-List<string> lButtons = new List<string>(aButtons);
-bool bHasCancel = false;
-foreach (string sButton in aButtons) if (sButton.Replace("&", "").Equals("Cancel", StringComparison.OrdinalIgnoreCase)) bHasCancel = true;
-if (!bHasCancel) lButtons.Add("Cancel");
-string sClicked = dlg.runWithButtons(lButtons.ToArray());
-dlg.Dispose();
-string sResult = "";
-foreach (string sButton in aButtons) if (sButton.Replace("&", "") == sClicked) { sResult = sButton; break; }
-Util.Say(sResult.Replace("&", ""));
-return sResult;
-} // Choose method
 
 public static object[] PickAndChoose(string sTitle, object[] aValue, string[] aDisplay, string[] aButton, bool bSort, int iIndex) {
 object[] aVal = (object[]) aValue.Clone();
@@ -10914,7 +10900,7 @@ DirectoryInfo di = new DirectoryInfo(sResult);
 di.Create();
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 }
 }
 }
@@ -11676,7 +11662,7 @@ return false;
 } // JFWRunFunction method
 
 public static void InvokeVerb(string sPath, string sVerb) {
-// Dialog.Show(sPath, sVerb);
+// Homer.LbcAsk.message(sPath, sVerb);
 object o = COM.CreateObject("Shell.Application");
 string sDir = Path.GetDirectoryName(sPath);
 string sName = Path.GetFileName(sPath);
@@ -11782,7 +11768,7 @@ Array.Sort(aDisplay, aResults);
 // if (bTextOnly) aResults = new string[] { sExt + "2txt"};
 // if (bTextOnly) aResults = new string[] { sExt, sExt + "2txt"};
 if (aResults.Length == 0) {
-//Dialog.Show("Alert", "No import options for " + sExt);
+//Homer.LbcAsk.message("Alert", "No import options for " + sExt);
 //return "";
 sResult = "";
 }
@@ -11800,12 +11786,12 @@ for (int iPick = 0; iPick < aDisplay.Length; iPick++) {
 if (aDisplay[iPick] == sLastTarget) { iDefaultPick = iPick; break; }
 }
 sResult = Homer.LbcAsk.pick(sTitle, aResults, aDisplay, true, iDefaultPick);
-//Dialog.Show(sResult);
+//Homer.LbcAsk.message(sResult);
 if (sResult.Length == 0) return "";
 
 }
 string sTempExt = Util.RegExpReplaceCase(sResult, @"^\w+2", "");
-//Dialog.Show(s, sResult);
+//Homer.LbcAsk.message(s, sResult);
 if (sTempExt != sResult) sTargetExt = sTempExt;
 else sResult = sExt;
 // Remember the chosen target so the next import's list starts there.
@@ -11822,13 +11808,13 @@ App.TempFiles.Add(sKitTarget);
 App.Frame.AddMessage("Converting");
 string sKitError;
 if (Homer.Conversion.convert(sSource, sKitTarget, out sKitError) && File.Exists(sKitTarget)) sText = Util.ConvertedFile2String(sKitTarget);
-else Dialog.Show("Error", "The conversion did not work: " + sKitError + "\n\nThe run log records each step:\n" + App.LogFile);
+else Homer.LbcAsk.message("Error", "The conversion did not work: " + sKitError + "\n\nThe run log records each step:\n" + App.LogFile);
 App.Frame.Activate();
 return Util.Convert2UnixLineBreak(sText);
 }
 string sCommand = Ini.ReadValue(App.IniFile, "Import", sResult, "");
 if (sCommand.Length > 0) {
-// Dialog.Show(sTargetExt, "target extension");
+// Homer.LbcAsk.message(sTargetExt, "target extension");
 string s = Path.ChangeExtension(sTarget, sTargetExt);
 if (!Util.Equiv(sTarget, s)) {
 if (File.Exists(s)) File.Delete(s);
@@ -11860,8 +11846,8 @@ if (bFinishMarkdownInBinary) sTarget = Path.ChangeExtension(sTarget, ".htm");
 bool bFinishFromRichMarkdown = ((sTargetExt == "htm" || sTargetExt == "html" || sTargetExt == "txt") && sCommand.IndexOf("pdf2md.cmd", StringComparison.OrdinalIgnoreCase) >= 0);
 if (bFinishFromRichMarkdown) sTarget = Path.ChangeExtension(sTarget, ".md");
 sCommand = Util.ExpandCommandLine(sCommand, sSource, sTarget);
-// Dialog.Show(sTarget, "target file");
-// Dialog.Show(sCommand);
+// Homer.LbcAsk.message(sTarget, "target file");
+// Homer.LbcAsk.message(sCommand);
 //Clipboard.SetText(sCommand);
 //Clipboard.SetText(sTarget);
 App.Frame.AddMessage("Converting");
@@ -11939,7 +11925,7 @@ sToolWords = "\n\nThe converter said:\n" + String.Join("\n", aToolLines, iFrom, 
 }
 }
 catch (Exception) {}
-Dialog.Show("Error", "The conversion produced no output.\nCommand line:\n" + sCommand + sToolWords + "\n\nThe run log records each step and its exit code:\n" + App.LogFile);
+Homer.LbcAsk.message("Error", "The conversion produced no output.\nCommand line:\n" + sCommand + sToolWords + "\n\nThe run log records each step and its exit code:\n" + App.LogFile);
 }
 }
 else {
@@ -11967,7 +11953,7 @@ string sRtfText = Path.ChangeExtension(Path.GetTempFileName(), ".txt");
 App.TempFiles.Add(sRtfText);
 string sRtfError;
 if (Homer.Conversion.convert(sSource, sRtfText, out sRtfError) && File.Exists(sRtfText)) sText = Util.ConvertedFile2String(sRtfText);
-else Dialog.Show("Error", "The conversion did not work: " + sRtfError + "\n\nThe run log records each step:\n" + App.LogFile);
+else Homer.LbcAsk.message("Error", "The conversion did not work: " + sRtfError + "\n\nThe run log records each step:\n" + App.LogFile);
 }
 break;
 }
@@ -12003,7 +11989,7 @@ try {
 oDoc = CallMethod(oDocs, "Open", oParams);
 }
 catch (COMException ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 }
 return oDoc;
 } // OpenWordDocument method
@@ -12031,7 +12017,7 @@ try {
 CallMethod(oDoc, "SaveAs", oParams);
 }
 catch (COMException ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 }
 } // WordSaveAs method
 
@@ -12049,7 +12035,7 @@ try {
 CallMethod(oDoc, "Close", oParams);
 }
 catch (COMException ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 }
 } // WordClose method
 
@@ -12073,7 +12059,7 @@ try {
 CallMethod(oApp, "Quit", oParams);
 }
 catch (COMException ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 }
 } // WordQuit method
 
@@ -12751,7 +12737,7 @@ else sReturn += sPEKind + "\n\n";
 // else sReturn += sMachine + "\n\n";
 sReturn += "Running in " + (IntPtr.Size == 8 ? "64" : "32") + "-bit mode.";
 // sReturn = sReturn.Replace("\nTargets a ", "\nRunning on a ");
-// Dialog.Show("Portable Executable Kind", sReturn);
+// Homer.LbcAsk.message("Portable Executable Kind", sReturn);
 return sReturn;
 } // GetPortableExecutableKind method
 
@@ -13187,7 +13173,7 @@ Process.Start(sCommand);
 bResult = true;
 }
 catch (Exception ex) {
-Dialog.Show("Error", ex.Message);
+Homer.LbcAsk.message("Error", ex.Message);
 bResult = false;
 }
 return bResult;
@@ -13249,7 +13235,7 @@ return sPath;
 
 public static bool IsUnicode(string sText) {
 foreach (char c in sText) {
-// if (((int) c) > 255) Dialog.Show(c, (int) c);
+// if (((int) c) > 255) Homer.LbcAsk.message(c, (int) c);
 if (((int) c) > 255) return true;
 }
 return false;
@@ -13502,7 +13488,7 @@ Regex rx = new Regex(sMatch, options);
 
 Match match = rx.Match(sText, iStart);
 object[] aReturn = new object[] {-1, null};
-// Dialog.Show(match.Success);
+// Homer.LbcAsk.message(match.Success);
 if (match.Success) aReturn = new object[] {match.Index, match.Value};
 return aReturn;
 } // RegExpContains method
@@ -13559,7 +13545,7 @@ return File2String(sFile, ref en);
 
 public static string File2String(string sFile, ref Encoding en) {
 //return System.IO.File.ReadAllText(sFile);
-// Dialog.Show("Encoding", Util.GetFileEncoding(sFile));
+// Homer.LbcAsk.message("Encoding", Util.GetFileEncoding(sFile));
 if (en == null) en = Util.GetFileEncoding(sFile, App.BomDictionary);
 // return System.IO.File.ReadAllText(sFile, System.Text.Encoding.Default);
 // return System.IO.File.ReadAllText(sFile, encoding);
@@ -13641,7 +13627,7 @@ String2File(sBody, sFile, ref en);
 } // String2File method
 
 public static void String2File(string sBody, string sFile, ref Encoding en) {
-// Dialog.Show(IsUnicode(sBody));
+// Homer.LbcAsk.message(IsUnicode(sBody));
 if (en != null) {}
 // Do nothing
 else if (IsUnicode(sBody))en = Encoding.UTF8;
@@ -13791,7 +13777,7 @@ public static bool ActivateProcess(string sProcess) {
 Process[] processes = Process.GetProcessesByName(sProcess);
 if (processes.Length == 0) return false;
 Process process = processes[0];
-//Dialog.Show(process.ProcessName, process.MainWindowTitle);
+//Homer.LbcAsk.message(process.ProcessName, process.MainWindowTitle);
 
 int iPid = processes[0].Id;
 try {
@@ -14142,7 +14128,7 @@ return sb.ToString();
 }
 catch (Exception ex) {
 Util.Log("Could not convert Markdown to HTML: " + ex.ToString());
-Dialog.Show("HTML Format", "Could not convert Markdown to HTML.\n" + ex.Message);
+Homer.LbcAsk.message("HTML Format", "Could not convert Markdown to HTML.\n" + ex.Message);
 return "";
 }
 } // Markdown2Html method
@@ -14154,7 +14140,7 @@ try {
 return Markdig.Markdown.ToPlainText(sSource, GetMarkdownPipeline());
 }
 catch (Exception ex) {
-Dialog.Show("Markdown to Plain Text", "Could not convert the document.\n" + ex.Message);
+Homer.LbcAsk.message("Markdown to Plain Text", "Could not convert the document.\n" + ex.Message);
 return "";
 }
 } // Markdown2Text method
@@ -14293,7 +14279,7 @@ try {
 return GetHtmlConverter().Convert(sHtml);
 }
 catch (Exception ex) {
-Dialog.Show("HTML to Markdown", "Could not convert the document.\n" + ex.Message);
+Homer.LbcAsk.message("HTML to Markdown", "Could not convert the document.\n" + ex.Message);
 return "";
 }
 } // Html2Markdown method
@@ -14309,7 +14295,7 @@ try {
 return Markdig.Markdown.ToPlainText(sMarkdown, GetMarkdownPipeline());
 }
 catch (Exception ex) {
-Dialog.Show("HTML to Plain Text", "Could not convert the document.\n" + ex.Message);
+Homer.LbcAsk.message("HTML to Plain Text", "Could not convert the document.\n" + ex.Message);
 return "";
 }
 } // Html2Text method
@@ -14323,7 +14309,7 @@ return System.Net.WebUtility.HtmlEncode(sText);
 } // String2Html method
 
 public static string ExpandCommandLine(string sCommand, string sSource, string sTarget ) {
-// Dialog.Show(sTarget);
+// Homer.LbcAsk.message(sTarget);
 
 sCommand = sCommand.Replace("%NetDirLong%", App.NetDir);
 sCommand = sCommand.Replace("%NetDir%", Win32.GetShortPath(App.NetDir));
@@ -14353,9 +14339,9 @@ sCommand = sCommand.Replace("%SourceExt%", Path.GetExtension(Win32.GetShortPath(
 
 if (sTarget.Length > 0) {
 sCommand = sCommand.Replace("%TargetLong%", sTarget);
-// Dialog.Show(sCommand, "");
+// Homer.LbcAsk.message(sCommand, "");
 sCommand = sCommand.Replace("%Target%", Win32.GetShortPath(sTarget));
-// Dialog.Show(sCommand, "");
+// Homer.LbcAsk.message(sCommand, "");
 
 sCommand = sCommand.Replace("%TargetDirLong%", Path.GetDirectoryName(sTarget));
 sCommand = sCommand.Replace("%TargetDir%", Win32.GetShortPath(Path.GetDirectoryName(sTarget)));
@@ -14459,18 +14445,18 @@ if (bMade && sKitKept != "") { try { File.Delete(sKitKept); } catch (Exception) 
 if (!bMade) {
 try { if (File.Exists(sTarget)) File.Delete(sTarget); } catch (Exception oError) { Log("The unfinished " + sTarget + " could not be removed: " + oError.Message); }
 if (sKitKept != "") { try { File.Move(sKitKept, sTarget); } catch (Exception oError) { Log("The earlier " + sTarget + " could not be put back; it is kept at " + sKitKept + ": " + oError.Message); } }
-Dialog.Show("Error", "The conversion did not work: " + sKitError + "\n\nThe run log records each step:\n" + App.LogFile);
+Homer.LbcAsk.message("Error", "The conversion did not work: " + sKitError + "\n\nThe run log records each step:\n" + App.LogFile);
 }
 App.Frame.Activate();
 return File.Exists(sTarget);
 }
 }
-// Dialog.Show(sSource, Util.File2String(sSource));
+// Homer.LbcAsk.message(sSource, Util.File2String(sSource));
 string sCommand = Ini.ReadValue(App.IniFile, "Export", sTargetFormat, "");
-//Dialog.Show(sCommand);
+//Homer.LbcAsk.message(sCommand);
 if (sCommand.Length > 0) {
 sCommand = Util.ExpandCommandLine(sCommand, sSource, sTarget);
-// Dialog.Show("show", sCommand);
+// Homer.LbcAsk.message("show", sCommand);
 App.Frame.AddMessage("Converting");
 // THE EARLIER FILE IS SET ASIDE, NOT DELETED (14 October 2026, from an audit by another AI): it was deleted before
 // the converter ran, so a conversion that failed lost the file it was to replace. It is now moved aside and put
@@ -14487,13 +14473,13 @@ if (File.Exists(sTarget)) sText = Util.ConvertedFile2String(sTarget);
 if (sText.Length == 0) {
 if (File.Exists(sTarget)) File.Delete(sTarget);
 if (sKept != "") { try { File.Move(sKept, sTarget); } catch (Exception oError) { Log("The earlier " + sTarget + " could not be put back; it is kept at " + sKept + ": " + oError.Message); } }
-Dialog.Show("Error", "The conversion produced no output.\nCommand line:\n" + sCommand + "\n\nThe run log records each step and its exit code:\n" + App.LogFile);
+Homer.LbcAsk.message("Error", "The conversion produced no output.\nCommand line:\n" + sCommand + "\n\nThe run log records each step and its exit code:\n" + App.LogFile);
 }
 // Converted: the earlier file set aside is no longer needed.
 else if (sKept != "") { try { File.Delete(sKept); } catch (Exception oError) { Log("The earlier copy at " + sKept + " could not be removed: " + oError.Message); } }
 }
-else Dialog.Show("Error", "No way to export to ." + sKeyTo + " is known. The [Export] section of EdSharp.inix can name a command for it.");
-//Dialog.Show("Error", "Command line:\n" + sCommand);
+else Homer.LbcAsk.message("Error", "No way to export to ." + sKeyTo + " is known. The [Export] section of EdSharp.inix can name a command for it.");
+//Homer.LbcAsk.message("Error", "Command line:\n" + sCommand);
 App.Frame.Activate();
 return File.Exists(sTarget);
 } // ConvertString2FileFormat method
