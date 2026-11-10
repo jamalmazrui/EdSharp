@@ -2,6 +2,10 @@
 
 
 
+## 10 November 2026 -- Classes named for what they are
+
+- **EdSharp's document window and main window are named DocumentWindow and EdSharpFrame,** not MdiChild and MdiFrame, the names of different kit classes. Util keeps its name, since snippets call it.
+
 ## 10 November 2026 -- Shift+F1 in the main window
 
 - **Shift+F1 in a document** says what it is: the document's text, where you read and type. EdSharp has a hints file of its own now.

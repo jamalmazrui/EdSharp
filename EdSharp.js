@@ -12,7 +12,7 @@ This revives, in one file, the role formerly split across jsSupport.js
 and Eval.js, following the DbDo.js model.
 
 Globals visible to user .js snippets, inside the eval scope:
-  frm -- the active editor window (MdiChild), passed in from C#.
+  frm -- the active editor window (DocumentWindow), passed in from C#.
   rtb -- shortcut for frm.RTB, the RichTextBox holding the document.
 
 Camel Type: lower-camelCase functions and variables; frm and rtb are

@@ -56,7 +56,7 @@ public class App : WindowsFormsApplicationBase {
 // release tag that F11 compares against) to disagree.
 public const string VersionString = BuildVersion.Version;
 public static App Shell;
-public static MdiFrame Frame;
+public static EdSharpFrame Frame;
 public static string ProgramName;
 public static string NetDir;
 public static string ProgramDir;
@@ -248,10 +248,10 @@ App.IndentChange = App.ReadOption("E&xtraSpeech", "Y").Contains("-") ? false : t
 InitNetSdk();
 InitJFW();
 
-Frame = new MdiFrame();
+Frame = new EdSharpFrame();
 Homer.Say.attach(Frame);
 this.MainForm = Frame;
-MdiChild child = new MdiChild(Frame);
+DocumentWindow child = new DocumentWindow(Frame);
 if (App.ReadOption("OpenPrevious", "Y").ToLower().Substring(0, 1) != "n") {
 string[] aFiles = App.ReadSectionKeys("Previous");
 int iCount = 0;
@@ -517,7 +517,7 @@ if (Inix.isRedirected(sSection) || !Inix.userHas(sSection, sCommand)) Ini.WriteQ
 
 } // App class
 
-public class MdiChild : Form {
+public class DocumentWindow : Form {
 public HomerRichTextBox RTB;
 public Encoding YieldEncoding = null;
 public bool IsUnixLineBreak = false;
@@ -537,12 +537,12 @@ sFile = value;
 
 public DateTime FileTime;
 public bool FileTimeChecked = false;
-public MdiChild(MdiFrame frame) {
+public DocumentWindow(EdSharpFrame frame) {
 string sTitle = frame.GetNoNameTitle();
-new MdiChild(frame, sTitle);
-} // MdiChild constructor
+new DocumentWindow(frame, sTitle);
+} // DocumentWindow constructor
 
-public MdiChild(MdiFrame frame, string sTitle) {
+public DocumentWindow(EdSharpFrame frame, string sTitle) {
 this.SuspendLayout();
 this.MdiParent = frame;
 HomerRichTextBox rtb = new HomerRichTextBox();
@@ -912,9 +912,12 @@ protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
 return App.Frame.ProcessCmdKey_Helper(ref msg, keyData);
 } // ProcessCmdKey handler
 
-} // MdiChild class
+} // DocumentWindow class
 
-public class MdiFrame : Form {
+// NAMED FOR WHAT IT IS (10 November 2026): DocumentWindow and EdSharpFrame were MdiChild and MdiFrame, the names of the
+// kit's own, different classes. Util keeps its name on purpose: EdSharp's snippets call it, as Util.Convert2Ascii,
+// and so may anyone's own, so it is EdSharp's scripting interface, not a copy of the kit's Util.
+public class EdSharpFrame : Form {
 public string LastDescription = "";
 // ONE KEY DESCRIBER, THE KIT'S (7 November 2026, both audits): EdSharp kept a flag of its own, so the kit's
 // router did not know the describer was on. The name stays so EdSharp's code reads as before.
@@ -923,13 +926,13 @@ public string KeyString = "";
 public int KeyRepeat = 0;
 public int KeyIndex = -1;
 
-public MdiChild Child {
+public DocumentWindow Child {
 get {
-MdiChild child = this.ActiveMdiChild as MdiChild;
+DocumentWindow child = this.ActiveMdiChild as DocumentWindow;
 if (child == null) {
 Form[] children = this.MdiChildren;
 int iLength = children.Length;
-if (children.Length > 0) child = (MdiChild) children[iLength - 1];
+if (children.Length > 0) child = (DocumentWindow) children[iLength - 1];
 }
 return child;
 }
@@ -966,7 +969,7 @@ public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHel
 public StatusStrip statusBar;
 public ToolStripStatusLabel lblStatus;
 
-public MdiFrame() {
+public EdSharpFrame() {
 SectionBreak = Util.Literalize(App.ReadOption("SectionBreak", SectionBreak));
 this.SuspendLayout();
 this.IsMdiContainer = true;
@@ -1262,7 +1265,7 @@ this.StartPosition = FormStartPosition.CenterScreen;
 this.Text = "EdSharp";
 this.ResumeLayout();
 this.KeyPreview = true;
-//this.MdiChildActivate += delegate(object o, EventArgs e) {this.Child = (MdiChild) this.ActiveMdiChild;};
+//this.MdiChildActivate += delegate(object o, EventArgs e) {this.Child = (DocumentWindow) this.ActiveMdiChild;};
 string s = App.ReadOption("MaximizeWindow", "N").Trim().ToUpper();
 if (s == "Y" || s == "YES") this.Shown += delegate(object o, EventArgs e) {
 this.WindowState = FormWindowState.Maximized;
@@ -1283,7 +1286,7 @@ AddMessage("Folder " + Path.GetFileName(s));
 Directory.SetCurrentDirectory(s);
 }
 
-} // MdiFrame constructor
+} // EdSharpFrame constructor
 
 public void SetStatus(object o) {
 string sText = o.ToString();
@@ -1294,7 +1297,7 @@ public string GetNoNameTitle() {
 object[] children = this.MdiChildren;
 List<int> list = new List<int>();
 foreach (object o in children) {
-MdiChild child = (MdiChild) o;
+DocumentWindow child = (DocumentWindow) o;
 string sTitle = child.Text;
 if (sTitle.StartsWith("NoName") && Path.GetExtension(sTitle).Length == 0) {
 string s = sTitle.Substring(6);
@@ -1674,7 +1677,7 @@ return GetIndent(this.Child.RTB.Row);
 
 public int GetIndent(int iRow) {
 string sIndent = GetIndentUnit();
-MdiChild child = this.Child;
+DocumentWindow child = this.Child;
 HomerRichTextBox rtb = child.RTB;
 string sLine = rtb.GetRowText(iRow);
 int iLength = sIndent.Length;
@@ -2437,7 +2440,7 @@ return;
 SetStatus(sLabel);
 if (!sOptions.Contains(" silent ") && Homer.KeyMap.shouldEcho(sLabel, menuItem.Text.Contains("..."))) SetMessage(sLabel);
 
-MdiChild child = this.Child;
+DocumentWindow child = this.Child;
 if (child == null) {
 if (!sOptions.Contains(" frame ")) return;
 }
@@ -2446,11 +2449,11 @@ rtb = Child.RTB;
 }
 
 if (menuItem == menuFileNew) {
-child = new MdiChild(App.Frame);
+child = new DocumentWindow(App.Frame);
 }
 
 if (menuItem == menuFileNewFromClipboard) {
-new MdiChild(App.Frame);
+new DocumentWindow(App.Frame);
 child = App.Frame.Child;
 Child.RTB.Text = Util.GetClipboardText();
 child.RTB.Modified = true;
@@ -2494,7 +2497,7 @@ Dialog.Show("Error", ex.Message);
 return;
 }
 
-if (!IsEmptyWindow()) new MdiChild(this);
+if (!IsEmptyWindow()) new DocumentWindow(this);
 child = this.Child;
 rtb = child.RTB;
 rtb.Text = sText;
@@ -3636,7 +3639,7 @@ App.WriteData("Term", sResult);
 //AddMessage("Please wait");
 AddMessage("Connecting");
 sText = VB.LookupTerm(sResult);
-if (!IsEmptyWindow()) new MdiChild(this);
+if (!IsEmptyWindow()) new DocumentWindow(this);
 child = this.Child;
 child.Text = sResult + ".txt";
 child.File = child.Text;
@@ -3702,7 +3705,7 @@ if (sTranslation.Length == 0) return;
 bool bUnchanged = Util.Equiv(Regex.Replace(sTranslation, "\\s+", " ").Trim(),
 Regex.Replace(sText, "\\s+", " ").Trim());
 
-child = new MdiChild(this);
+child = new DocumentWindow(this);
 this.Child.RTB.Text = sTranslation.Replace("\r\n", "\n").Replace("\n", "\r\n");
 this.Child.RTB.Modified = false;
 this.Child.RTB.Index = 0;
@@ -3748,7 +3751,7 @@ rtb.ReplaceRange(iStart, iEnd, sText);
 rtb.Index = iStart;
 }
 else {
-child = new MdiChild(App.Frame, sFile);
+child = new DocumentWindow(App.Frame, sFile);
 Child.RTB.Text = sText;
 child.RTB.Modified = true;
 }
@@ -3784,7 +3787,7 @@ rtb.ReplaceRange(iStart, iEnd, sText);
 rtb.Index = iStart;
 }
 else {
-child = new MdiChild(App.Frame, sFile);
+child = new DocumentWindow(App.Frame, sFile);
 Child.RTB.Text = sText;
 child.RTB.Modified = true;
 }
@@ -4003,7 +4006,7 @@ iCount = aResults.Length;
 AddMessage(Util.Pluralize(iCount, "match", "matches"));
 if (iCount == 0) return;
 
-new MdiChild(this);
+new DocumentWindow(this);
 rtb = App.Frame.Child.RTB;
 sText = String.Join(SectionBreak, aResults);
 rtb.ReplaceRange(0, 0, sText);
@@ -5519,7 +5522,7 @@ string sHtml = Util.Markdown2Html(rtb.Text, sBaseName);
 if (sHtml.Length > 0) {
 if (child.File != null && child.File.IndexOf(@":\") > 0) Directory.SetCurrentDirectory(Path.GetDirectoryName(child.File));
 sFile = sBaseName + ".htm";
-new MdiChild(this, sFile);
+new DocumentWindow(this, sFile);
 this.Child.File = sFile;
 this.Child.RTB.Text = sHtml;
 this.Child.RTB.Modified = false;
@@ -5536,7 +5539,7 @@ sText = Util.Markdown2Text(rtb.Text);
 if (sText.Length > 0) {
 if (child.File != null && child.File.IndexOf(@":\") > 0) Directory.SetCurrentDirectory(Path.GetDirectoryName(child.File));
 sFile = sBaseName + ".txt";
-new MdiChild(this, sFile);
+new DocumentWindow(this, sFile);
 this.Child.File = sFile;
 this.Child.RTB.Text = sText;
 this.Child.RTB.Modified = false;
@@ -5552,7 +5555,7 @@ sText = Util.Html2Markdown(rtb.Text);
 if (sText.Length > 0) {
 if (child.File != null && child.File.IndexOf(@":\") > 0) Directory.SetCurrentDirectory(Path.GetDirectoryName(child.File));
 sFile = sBaseName + ".md";
-new MdiChild(this, sFile);
+new DocumentWindow(this, sFile);
 this.Child.File = sFile;
 this.Child.RTB.Text = sText;
 this.Child.RTB.Modified = false;
@@ -5569,7 +5572,7 @@ sText = Util.Html2Text(rtb.Text);
 if (sText.Length > 0) {
 if (child.File != null && child.File.IndexOf(@":\") > 0) Directory.SetCurrentDirectory(Path.GetDirectoryName(child.File));
 sFile = sBaseName + ".txt";
-new MdiChild(this, sFile);
+new DocumentWindow(this, sFile);
 this.Child.File = sFile;
 this.Child.RTB.Text = sText;
 this.Child.RTB.Modified = false;
@@ -5617,7 +5620,7 @@ string sReport = checkMarkdown(rtb.Text);
 // The report opens in a plain new window that EdSharp titles itself,
 // NoName style, like List Different Items -- temporary output earns a
 // name only when the person decides to save it.
-child = new MdiChild(this);
+child = new DocumentWindow(this);
 this.Child.RTB.Text = sReport;
 this.Child.RTB.Modified = false;
 this.Child.RTB.Index = 0;
@@ -5695,7 +5698,7 @@ Util.Say("Answer ready");
 // NoName style -- the same pattern as List Different Items and Query
 // Common Items. Temporary output earns a name only when the person
 // decides to save it.
-child = new MdiChild(this);
+child = new DocumentWindow(this);
 this.Child.RTB.Text = sAnswer.Replace("\r\n", "\n").Replace("\n", "\r\n");
 this.Child.RTB.Modified = false;
 this.Child.RTB.Index = 0;
@@ -5760,7 +5763,7 @@ else sb.Append(SectionBreak + sName + LB + LB + sText);
 AddMessage("Converted " + Util.Pluralize(iCount, "file"), true);
 if (menuItem == menuMiscTextConvert || iCount == 0) return;
 
-if (!IsEmptyWindow()) new MdiChild(this);
+if (!IsEmptyWindow()) new DocumentWindow(this);
 sText = sb.ToString();
 sText += EOD;
 rtb = this.Child.RTB;
@@ -5941,7 +5944,7 @@ iLength = aResults.Length;
 sText = Util.Pluralize(iLength, "file");
 AddMessage(sText);
 
-if (!IsEmptyWindow()) new MdiChild(this);
+if (!IsEmptyWindow()) new DocumentWindow(this);
 child = this.Child;
 rtb = child.RTB;
 for (int i = 0; i < iLength; i++) {
@@ -6552,7 +6555,7 @@ return;
 AddMessage(Util.Pluralize(aResults.Length, "line"));
 // sText = String.Join("\n", aResults).TrimEnd('\n') + "\n";
 sText = String.Join(sLimitItem, aResults);
-child = new MdiChild(App.Frame);
+child = new DocumentWindow(App.Frame);
 Child.RTB.Text = sText;
 rtb.Index = 0;
 }
@@ -6577,7 +6580,7 @@ return;
 AddMessage(Util.Pluralize(aResults.Length, "line"));
 // sText = String.Join("\n", aResults).TrimEnd('\n') + "\n";
 sText = String.Join(sLimitItem, aResults);
-child = new MdiChild(App.Frame);
+child = new DocumentWindow(App.Frame);
 Child.RTB.Text = sText;
 rtb.Index = 0;
 }
@@ -6936,7 +6939,7 @@ static string sTranslationModel = null;
 // CodeModel option names a different one for anyone who prefers it.
 static string sCodingModel = null;
 
-public string modelForDocument(MdiChild childAsked) {
+public string modelForDocument(DocumentWindow childAsked) {
 string sChatModel = App.ReadOption("OllamaModel", "llama3.2");
 string sFile = (childAsked == null || childAsked.File == null) ? "" : childAsked.File;
 string sExt = Path.GetExtension(sFile).ToLower().TrimStart('.');
@@ -8934,12 +8937,12 @@ Application.Exit();
 return true;
 } // ExitApp method
 
-public bool CloseWindow(MdiChild child) {
+public bool CloseWindow(DocumentWindow child) {
 bool bExiting = false;
 return CloseWindow(child, bExiting);
 } // CloseWindow method
 
-public bool CloseWindow(MdiChild child, bool bExiting) {
+public bool CloseWindow(DocumentWindow child, bool bExiting) {
 HomerRichTextBox rtb = child.RTB;
 if (rtb.Modified) {
 switch (Dialog.Confirm("Confirm", "Save changes to " + child.Text + "?", "Y")) {
@@ -9182,7 +9185,7 @@ sFile = Util.GetLfn(sFile);
 // ApplyFileOptions(sFile);
 // SetRecent(sFile);
 object[] children = this.MdiChildren;
-foreach (MdiChild child in children) {
+foreach (DocumentWindow child in children) {
 if (Util.Equiv(child.File, sFile)) {
 Util.Say("returning");
 child.Activate();
@@ -9210,9 +9213,9 @@ return;
 
 // Did so above
 // SetRecent(sFile);
-//if (!IsEmptyWindow()) new MdiChild(this);
-//if (!IsEmptyWindow()) new MdiChild(this, "");
-if (!IsEmptyWindow()) new MdiChild(this, sFile);
+//if (!IsEmptyWindow()) new DocumentWindow(this);
+//if (!IsEmptyWindow()) new DocumentWindow(this, "");
+if (!IsEmptyWindow()) new DocumentWindow(this, sFile);
 if (iConvert <= 0) {
 this.Child.LoadTextOrRtfFile(sFile, (iConvert == 0 ? true : false));
 //Dialog.Show(sFile);
@@ -9550,7 +9553,7 @@ else AddMessage("Folder " + sDir + " not found!");
 public void CurrentWindows() {
 object[] children = this.MdiChildren;
 string sTitles = "";
-foreach (MdiChild child in children) {
+foreach (DocumentWindow child in children) {
 sTitles += child.Text + "\n";
 }
 string[] aTitles = sTitles.Trim().Split('\n');
@@ -9558,7 +9561,7 @@ string sTitle = Dialog.Pick("Current Windows", aTitles, true, 0);
 if (sTitle.Length == 0) return;
 
 int iTitle = Array.IndexOf(aTitles, sTitle);
-((MdiChild) children[iTitle]).Activate();
+((DocumentWindow) children[iTitle]).Activate();
 } // CurrentWindows method
 
 public void ExplorerFolder(string sDir) {
@@ -9634,7 +9637,7 @@ Homer.SuiteCommands.runAlternateEntry(Homer.SuiteCommands.showAlternateMenu(this
 } // AlternateMenu method
 
 new void ContextMenu(string sFile) {
-MdiChild child = this.Child;
+DocumentWindow child = this.Child;
 
 string[] aVerbs = COM.Verbs(sFile);
 bool bFound = false;
@@ -9664,7 +9667,7 @@ else COM.InvokeVerb(sFile, sVerb);
 } // ContextMenu method
 
 public void SendToMenu(string sFile) {
-MdiChild child = this.Child;
+DocumentWindow child = this.Child;
 string sDir = Environment.GetFolderPath(Environment.SpecialFolder.SendTo);
 string[]aLinks = Directory.GetFiles(sDir);
 string sNameList = "";
@@ -9719,7 +9722,7 @@ e.Handled = true;
 else e.Handled = false;
 } // ListBox_KeyUp handler
 
-} // MdiFrame class
+} // EdSharpFrame class
 
 public class HomerRichTextBox : RichTextBox {
 public int OldIndex = -1;
@@ -12703,6 +12706,8 @@ throw new System.ComponentModel.Win32Exception();
 
 } // Win32 class
 
+// KEPT ON PURPOSE (10 November 2026): EdSharp's snippets call this class by name, as Util.Convert2Ascii, and so may
+// anyone's own, so it is EdSharp's scripting interface and keeps its name beside the kit's Util.
 public class Util {
 
 public static string GetPortableExecutableKind() {

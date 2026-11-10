@@ -1759,11 +1759,20 @@ def checkKitClasses():
     for sPath in glob.glob(os.path.join(sKit, "exec", "CSharp", "*.cs")):
         setKit.update(topClasses(readText(sPath)))
     dOwn = {}
+    lKept = []
     for sPath in glob.glob(os.path.join(sRoot, "*.cs")):
-        for sName in topClasses(readText(sPath)):
-            if sName in setKit: dOwn.setdefault(sName, os.path.basename(sPath))
+        sText = readText(sPath)
+        for sName in topClasses(sText):
+            if sName not in setKit: continue
+            # KEPT ON PURPOSE (10 November 2026): a class whose declaration has "KEPT ON PURPOSE" in the comment just
+            # above it keeps the kit's name for a reason given there -- EdSharp's Util is the interface its snippets
+            # call -- and is reported, not warned about.
+            oDecl = re.search(r"((?:^[ \t]*//[^\n]*\n){1,6})[ \t]*(?:public\s+|internal\s+)?(?:static\s+|sealed\s+|abstract\s+|partial\s+)*class\s+" + re.escape(sName) + r"\b", sText, re.M)
+            if oDecl and "KEPT ON PURPOSE" in oDecl.group(1): lKept.append("%s (%s)" % (sName, os.path.basename(sPath))); continue
+            dOwn.setdefault(sName, os.path.basename(sPath))
+    if lKept: logLine("kit classes: kept on purpose, as their comments say: " + ", ".join(lKept))
     if not dOwn:
-        return finding("kit classes", "pass", "no class here repeats one of the kit's %d" % len(setKit))
+        return finding("kit classes", "pass", "no class here repeats one of the kit's %d%s" % (len(setKit), "; kept on purpose: " + ", ".join(lKept) if lKept else ""))
     return finding("kit classes", "warn", "%d class%s here repeat%s the kit's, to move to the kit's: %s" % (
         len(dOwn), "" if len(dOwn) == 1 else "es", "s" if len(dOwn) == 1 else "",
         ", ".join("%s (%s)" % (k, v) for k, v in sorted(dOwn.items()))))
