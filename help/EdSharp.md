@@ -14,7 +14,7 @@ MIT License\
 - [Navigating](#navigating)
 - [Querying](#querying)
 - [Managing Files](#managing-files)
-- [Invoking Snippets](#invoking-snippets)
+- [Invoking Scripts](#invoking-scripts)
 - [Working with Structured Text](#working-with-structured-text)
 - [Word Processing](#word-processing)
 - [Doing Math](#doing-math)
@@ -49,7 +49,7 @@ An additional checkbox opens this manual in the default web browser.
 
 EdSharp may be safely installed over previous versions.  The About option from its Help menu, or Alt+F1 key, indicates the current version number and release date.  The History of Changes command, Control+Shift+F1, summarizes fixes and improvements over time.
 
-EdSharp's features fall into these kinds of activity: editing, navigating, querying, managing files, invoking snippets, working with structured text, word processing, programming, doing math, and others.
+EdSharp's features fall into these kinds of activity: editing, navigating, querying, managing files, invoking scripts, working with structured text, word processing, programming, doing math, and others.
 
 ## Editing
 ### Selecting, Copying, and Pasting
@@ -173,24 +173,24 @@ Use the Mail command, Control+M, to send the current file as the body of a messa
 
   Press Shift+F2 to rename the current file, both in EdSharp and on disk.  Press Alt+Shift+D to delete it.
 
-Press Alt+Backslash to open Windows Explorer in the folder of the current file, or Control+Backslash to open a command prompt there.  Besides the current folder, which it offers first, the dialog that comes up also lets you open the EdSharp program folder, data folder or snippet folder.  It also lets you create a new folder.
+Press Alt+Backslash to open Windows Explorer in the folder of the current file, or Control+Backslash to open a command prompt there.  Besides the current folder, which it offers first, the dialog that comes up also lets you open the EdSharp program folder, data folder or script folder.  It also lets you create a new folder.
 
 Press Alt+0 to verify the current compiler and folder of EdSharp.  Control+0 lets you change the current folder to one containing recent or favorite files, which are put in a list.  Press Control+Shift+G to change to a special folder of Windows, e.g., My Documents.  These commands may be more efficient than navigating the standard Windows open file dialog, invoked with Control+O.
 
-## Invoking Snippets
-Press Alt+S to save all or selected text to a file that may be conveniently pasted into other documents.  You may give the file a descriptive name and an extension appropriate for its content.  It is saved in a subfolder of the EdSharp data folder.  Each programming compiler or interpreter may have its own set of snippets.  The subfolder name is the same as the current value of the Pick Compiler command, Control+Shift+F5.  If no compiler has been chosen, the "Default" subfolder is used.
+## Invoking Scripts
+Press Alt+S to save all or selected text to a file that may be conveniently pasted into other documents.  You may give the file a descriptive name and an extension appropriate for its content.  It is saved in a subfolder of the EdSharp data folder.  Each programming compiler or interpreter may have its own set of scripts.  The subfolder name is the same as the current value of the Pick Compiler command, Control+Shift+F5.  If no compiler has been chosen, the "Default" subfolder is used.
 
-Press Alt+V to pick one of the available snippets and paste it into the current document.  This command lists snippets in the Default snippet folder, as well as those in the folder associated with a Compiler being used.  This lets you have a set of snippets that are available regardless of the programming language in use.  
+Press Alt+V to pick one of the available scripts and paste it into the current document.  This command lists scripts in the Default script folder, as well as those in the folder associated with a Compiler being used.  This lets you have a set of scripts that are available regardless of the programming language in use.  
 
-A snippet collection grows over the years, so each row in the list says where its snippet came from. A name alone means the Default folder. A name followed by a language in parentheses means that language's folder. A name followed by "shipped" means a snippet that came with EdSharp, not one you saved. The name still comes first in each row, so typing part of a name finds it as before. Snippets are divided by compiler on purpose, which keeps a large collection manageable. Save a snippet while a compiler is chosen, and it belongs to that language; save it with no compiler chosen, and it is available everywhere.
+A script collection grows over the years, so each row in the list says where its script came from. A name alone means the Default folder. A name followed by a language in parentheses means that language's folder. A name followed by "shipped" means a script that came with EdSharp, not one you saved. The name still comes first in each row, so typing part of a name finds it as before. Scripts are divided by compiler on purpose, which keeps a large collection manageable. Save a script while a compiler is chosen, and it belongs to that language; save it with no compiler chosen, and it is available everywhere.
 
-Use the View Snippet command, Alt+Shift+V, to open a snippet file in EdSharp to read or edit it, rather than run it.  You can also manage snippet files with the Open in Explorer command, Alt+Backslash, which opens Windows Explorer in the folder that holds them.
+Use the View Script command, Alt+Shift+V, to open a script file in EdSharp to read or edit it, rather than run it.  You can also manage script files with the Open in Explorer command, Alt+Backslash, which opens Windows Explorer in the folder that holds them.
 
-EdSharp runs a snippet with a .js extension as JScript .NET code.  Such a file can do almost anything in EdSharp, as the section about scripting explains.  For example, the "ul from selected.js" file makes an HTML unordered list from the selected lines of text.
+EdSharp runs a script with a .js extension as JScript .NET code.  Such a file can do almost anything in EdSharp, as the section about scripting explains.  For example, the "ul from selected.js" file makes an HTML unordered list from the selected lines of text.
 
-A Non .js snippet may be either literal or an interpreted type.  A literal snippet is pasted completely.  An interpreted type is separated into an initial header line and remaining lines as its body.  The header line contains keywords, in lower case, that control how EdSharp processes the snippet.  At present, two interpreted types are defined:  html and text.  The type keyword must be the first word on the header line, and thus the first word of the snippet file.
+A Non .js script may be either literal or an interpreted type.  A literal script is pasted completely.  An interpreted type is separated into an initial header line and remaining lines as its body.  The header line contains keywords, in lower case, that control how EdSharp processes the script.  At present, two interpreted types are defined:  html and text.  The type keyword must be the first word on the header line, and thus the first word of the script file.
 
-The first body line of an HTML snippet is the name of an HTML tag.  Subsequent body lines are attributes of the tag.  An optional default value can follow the attribute name, separated by an equals sign (=).  Here is an example for the anchor tag:
+The first body line of an HTML script is the name of an HTML tag.  Subsequent body lines are attributes of the tag.  An optional default value can follow the attribute name, separated by an equals sign (=).  Here is an example for the anchor tag:
 
 html phrase
 a
@@ -207,15 +207,15 @@ The "phrase" keyword tells EdSharp that the tag may be embedded in a paragraph, 
 
 EdSharp pastes only those attributes that have values greater then zero in length as part of the opening tag.  To include an attribute with essentially no value, enter a space character for it in the dialog.  If text is selected when pressing Alt+V, it is surrounded by the opening and closing tags, and the cursor is placed afterward.  If there is no selection, the cursor is placed between the opening and closing tags.
 
-Over 100 HTML snippets are distributed with EdSharp:  a collection of tags and attributes to serve common needs in developing web sites.  HTML and PHP page templates are also included.  You can modify or add to these, and are encouraged to submit ones you think would be useful to others.  
+Over 100 HTML scripts are distributed with EdSharp:  a collection of tags and attributes to serve common needs in developing web sites.  HTML and PHP page templates are also included.  You can modify or add to these, and are encouraged to submit ones you think would be useful to others.  
 
-New .txt and .js snippet files are installed when you upgrade EdSharp.  The installer does not replace snippets that have the same names, though, so clear the folder yourself if you want a fresh set.  To do so, press Control+Shift+F5 and pick the HTML Tidy compiler. Then press Alt+Backslash and choose to open the snippet folder in Windows Explorer.  There, press Control+A and Delete to remove all the files in the folder.
+New .txt and .js script files are installed when you upgrade EdSharp.  The installer does not replace scripts that have the same names, though, so clear the folder yourself if you want a fresh set.  To do so, press Control+Shift+F5 and pick the HTML Tidy compiler. Then press Alt+Backslash and choose to open the script folder in Windows Explorer.  There, press Control+A and Delete to remove all the files in the folder.
 
-With a text snippet, EdSharp pastes the whole body, after making any substitutions a keyword called "form" calls for.  This lets you put variable or constant tokens in the body.  A variable has percent signs around it, and an equals sign between its name and its default value.  For example, %City=%Silver Spring% is a variable named City, with the default value Silver Spring.  EdSharp makes a dialog that asks for the value of each variable it finds in the snippet body.  It then replaces the variables with the values you enter.  A snippet can use the same variable more than once, so you are asked for it once, and the value is used in several places.  Leave out the default value after the equals sign in the later uses, as in a %City=% token.
+With a text script, EdSharp pastes the whole body, after making any substitutions a keyword called "form" calls for.  This lets you put variable or constant tokens in the body.  A variable has percent signs around it, and an equals sign between its name and its default value.  For example, %City=%Silver Spring% is a variable named City, with the default value Silver Spring.  EdSharp makes a dialog that asks for the value of each variable it finds in the script body.  It then replaces the variables with the values you enter.  A script can use the same variable more than once, so you are asked for it once, and the value is used in several places.  Leave out the default value after the equals sign in the later uses, as in a %City=% token.
 
 A few tokens are always defined.  %Date% is the current date and %Time% the time. %UserName% is your Windows user name, %UserFirstName% the first part of that name, and %UserLastName% the second part, if there is one.  You can change the date and time formats in EdSharp's configuration options, using the .NET Framework's DateTime format codes, which [Microsoft's DateTimeFormatInfo reference](<https://learn.microsoft.com/en-us/dotnet/api/system.globalization.datetimeformatinfo>) explains.
 
-If a snippet header contains the "caret" keyword, EdSharp looks for a double caret sequence (^^) in the body, and positions the cursor (think of blinking caret) in that location after pasting.  An example text type snippet is called Letter.txt, located in the Default snippet folder.  Its content is as follows:
+If a script header contains the "caret" keyword, EdSharp looks for a double caret sequence (^^) in the body, and positions the cursor (think of blinking caret) in that location after pasting.  An example text type script is called Letter.txt, located in the Default script folder.  Its content is as follows:
 
 ```
 text form caret
@@ -229,13 +229,13 @@ Sincerely,
 %UserName%
 ```
 
-EdSharp notices that this is a text type snippet because of the first word of the file.  It finds two other keywords on the header line:  form and caret.  It creates a dialog with two edit boxes, prompting for the Customer and Product -- defaulting to Super Widget.  It substitutes the values entered, as well as date and user name constants.  After pasting, the cursor is positioned after the first sentence.
+EdSharp notices that this is a text type script because of the first word of the file.  It finds two other keywords on the header line:  form and caret.  It creates a dialog with two edit boxes, prompting for the Customer and Product -- defaulting to Super Widget.  It substitutes the values entered, as well as date and user name constants.  After pasting, the cursor is positioned after the first sentence.
 
-A section of the configuration file that supports snippets is called Tokens.  Each of these user-defined tokens is an expression in Microsoft JScript .NET:  a version of JavaScript explained in [Microsoft's JScript .NET reference](<https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2010/72bd815a(v=vs.100)>).
+A section of the configuration file that supports scripts is called Tokens.  Each of these user-defined tokens is an expression in Microsoft JScript .NET:  a version of JavaScript explained in [Microsoft's JScript .NET reference](<https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2010/72bd815a(v=vs.100)>).
 
-The EdSharp configuration file has three example tokens.  The CurrentDirectory token shows a call to a static method in the .NET Framework Class Library (FCL); this one returns the current folder of the EdSharp process.  The Signature token shows how to write a literal string; this one is a signature block of several lines.  The UnorderedList token refers to a JScript file called ul.js, which comes in the HTML snippet folder.
+The EdSharp configuration file has three example tokens.  The CurrentDirectory token shows a call to a static method in the .NET Framework Class Library (FCL); this one returns the current folder of the EdSharp process.  The Signature token shows how to write a literal string; this one is a signature block of several lines.  The UnorderedList token refers to a JScript file called ul.js, which comes in the HTML script folder.
 
-When EdSharp finds that a token refers to a file in the current snippet folder, it interprets the content of that file as JScript.  The ul.js example creates an unordered list element in HTML after prompting for the number of items to generate in the list.  Its content is as follows:
+When EdSharp finds that a token refers to a file in the current script folder, it interprets the content of that file as JScript.  The ul.js example creates an unordered list element in HTML after prompting for the number of items to generate in the list.  Its content is as follows:
 
 ```
 [Begin Content of ul.js]
@@ -250,7 +250,7 @@ sTag += "</ul>\n"
 [End Content of ul.js]
 ```
 
-User-defined tokens can go in a snippet that has the "form" keyword in its header.  They can also be typed in a document you are editing.  You can test a token with the Evaluate Expression command, Control+Equals, which works out the current line or selected text and puts the result on the line below.  The Replace Tokens command, Control+Shift+Equals, swaps token names for their results in all or selected text.
+User-defined tokens can go in a script that has the "form" keyword in its header.  They can also be typed in a document you are editing.  You can test a token with the Evaluate Expression command, Control+Equals, which works out the current line or selected text and puts the result on the line below.  The Replace Tokens command, Control+Shift+Equals, swaps token names for their results in all or selected text.
 
 For example, you might press Alt+Shift+F2 for Edit Settings File and define a signature token as follows:
 
@@ -259,7 +259,7 @@ For example, you might press Alt+Shift+F2 for Edit Settings File and define a si
 Signature=("Sincerely,\nJohn Doe\nJohn.Doe@NiftyHomePage.com\n")
 ```
 
-Then type %Signature% in your document where you want that to appear, and use the Replace Tokens command to do it.  Alternatively, put %Signature% in the body of a snippet containing the form keyword in its header, and paste that snippet with Alt+V.
+Then type %Signature% in your document where you want that to appear, and use the Replace Tokens command to do it.  Alternatively, put %Signature% in the body of a script containing the form keyword in its header, and paste that script with Alt+V.
 
 ## Working with Structured Text
 Several commands work with a structured text document consisting of a table of contents that lists topics at the beginning of the document, followed by a section for each topic in the body.  Each topic in the table of contents is a line with the same text as the heading of its corresponding section.  A divider sequence of characters -- a line of 10 dashes followed by a form feed and line break, separates each section.  The next line after such a section break is the topic heading of the next section.  For an example of this structure, examine the EdSharp.txt file in the EdSharp program folder.  The default location is\
@@ -280,20 +280,20 @@ as structured text. When you convert or preview such a document as HTML,
 EdSharp includes the mermaid script, so a real web browser draws the
 diagram for sighted readers. The preview window inside EdSharp uses the
 older browser engine built into Windows, which cannot run current mermaid,
-so there the block shows as its source text. Ten snippets that come with
+so there the block shows as its source text. Ten scripts that come with
 EdSharp insert ready outlines: flowchart, sequence diagram, pie chart,
 class diagram, state diagram, entity relationship diagram, Gantt chart,
 mindmap, timeline and XY chart. Press Alt+V, pick one, and answer the
 prompts.
 
-### Variables in a Snippet
+### Variables in a Script
 
-A snippet asks you for the parts that change. Write a variable as a label
+A script asks you for the parts that change. Write a variable as a label
 and a default between percent signs:
 
     A[%Start step=Start%]
 
-When the snippet is inserted, a dialog asks for the Start step and offers
+When the script is inserted, a dialog asks for the Start step and offers
 Start as the answer. The label may be several words. The same label used
 more than once is asked about once, and your answer fills every place it
 appears.
@@ -310,13 +310,13 @@ hear what each field is for.
 
 A few variables need no answer because EdSharp knows them: %Date%, %Time%,
 %UserName%, %UserFirstName% and %UserLastName%. Two carets, ^^, mark where
-the cursor should land after the snippet is inserted.
+the cursor should land after the script is inserted.
 
-### A Snippet That Describes Its Own Dialog
+### A Script That Describes Its Own Dialog
 
-Variables ask for text. When a snippet needs a yes or no, one of six
+Variables ask for text. When a script needs a yes or no, one of six
 choices, a number within a range, or several lines, it can describe the
-dialog instead. Open the snippet with a block between `[[form]]` and
+dialog instead. Open the script with a block between `[[form]]` and
 `[[end]]`, written in the same format as the sample forms in the
 Samples\Forms folder: one section per control.
 
@@ -336,11 +336,11 @@ Samples\Forms folder: one section per control.
     > ^^
 
 Each answer replaces the control's name between percent signs in the rest
-of the snippet, so `%Heading%` above becomes whatever was chosen. The
+of the script, so `%Heading%` above becomes whatever was chosen. The
 dialog is a real Lbc dialog: a trigger letter per field, a focus tip, F1
 to hear them all, Control+Enter and Escape.
 
-Both kinds may appear in one snippet. The form is asked first, then the
+Both kinds may appear in one script. The form is asked first, then the
 plain variables.
 
 That the source text is the accessible view is not a convenience; it is
@@ -365,7 +365,7 @@ usable, and Check Markdown, Alt+F9, reports the first four.
 - **Give several diagrams a heading each**, so a reader can reach the one
   they want.
 
-The snippets already follow all of this: each prompts for the name and the
+The scripts already follow all of this: each prompts for the name and the
 description before anything else, so the accessible version is the one
 that costs nothing extra. The Samples\Mermaid folder holds a short example
 of each diagram type and a page explaining the five rules.
@@ -382,13 +382,13 @@ Navigation commands let you move forward or backward to a change in formatting. 
 Press Alt+Slash, Say Styles, to hear how the text at the cursor looks: any style, alignment or baseline that differs from normal, then the font and color.
 
 ## Doing Math
-You can press Control+Equals to evaluate mathematical expressions in JScript code, either on the current line or in selected text.  Control+Shift+F12 goes to another, more interactive environment, such as the interactive console of Python or iPython.  The latter is particularly useful for learning the library of the .NET Framework and testing expressions that may be incorporated in programming code, including EdSharp snippets.  It may also be used as a simple, speech-friendly calculator.
+You can press Control+Equals to evaluate mathematical expressions in JScript code, either on the current line or in selected text.  Control+Shift+F12 goes to another, more interactive environment, such as the interactive console of Python or iPython.  The latter is particularly useful for learning the library of the .NET Framework and testing expressions that may be incorporated in programming code, including EdSharp scripts.  It may also be used as a simple, speech-friendly calculator.
 
 Alternatively, the GoToEnvironment setting could be configured for a computer algebra system such as [Maxima](<http://Maxima.SourceForge.net>),
 or [Axiom](<http://Axiom.SourceForge.net>).
 
 ### LaTex
-EdSharp includes support for the LaTeX language (pronounced La Tech).  This is a common language used for typesetting, especially for scientific publications.  About 30 sample LaTeX snippets, ending in a .tex extension, are distributed with EdSharp.  You can convert from LaTeX to RTF and vice versa.  To fully work with LaTeX, install the open source [MiKTeX](<http://www.miktex.org>) package for Windows.
+EdSharp includes support for the LaTeX language (pronounced La Tech).  This is a common language used for typesetting, especially for scientific publications.  About 30 sample LaTeX scripts, ending in a .tex extension, are distributed with EdSharp.  You can convert from LaTeX to RTF and vice versa.  To fully work with LaTeX, install the open source [MiKTeX](<http://www.miktex.org>) package for Windows.
 
 With that installation, EdSharp's LaTeX compiler option lets you check and correct syntax.  You can then export to PDF or to XHTML containing embedded MathML, the standard for mathematics on the web.
 
@@ -409,7 +409,7 @@ Until 30 August 2026 EdSharp's conversion asked Pandoc for MathJax instead, whic
 Open a Python file, and EdSharp becomes a Python editor. F5 runs it through
 Python, Alt+PageDown steps from one definition to the next, a quoted line
 starts with a number sign, indentation is four spaces, and Alt+V offers the
-Python snippets. Open an XML file in the next window, and all five change
+Python scripts. Open an XML file in the next window, and all five change
 again.
 
 Until August 2026 they did not. The compiler was one setting for the whole
@@ -526,7 +526,7 @@ Press F12 to talk with an AI model running on your own computer. Whatever is sel
 
 Press Control+Shift+F5 to pick the compiler for your work. The set that comes with EdSharp covers what Windows developers really use today: C#, Python, JavaScript through Node.js, PowerShell, JAWS Script, VBScript, JScript .NET, and HTML Tidy for checking web pages, plus Default for plain editing. Each compiler is defined in EdSharp.inix by a section named Compiler followed by its name. It has one clearly named key for each setting: CompileCommand, JumpPosition, AbbreviateOutput, NavigatePart, QuotePrefix, ExtensionDefault, IndentUnit and GoToEnvironment. Picking a compiler brings all of them. So choosing Python also brings four-space indentation and Python's own prompt, and choosing JavaScript brings two spaces and Node's shell. A document that already has indentation of its own still follows its own.
 
-Control+Shift+F12 opens that shell: Python's interpreter with your file already run, Node's read-evaluate-print shell, or PowerShell left open after running the file. Two shells are built into EdSharp, for languages Windows gives no interpreter for: a JScript console for writing snippets, and a C# console. Both open with the editor window ready as frm and its text box as rtb. So a line tried at the prompt does to your document exactly what the same line does in a snippet. The C# console compiles each line with the compiler named in the compiler settings and loads it into EdSharp, which is why it can reach the live document. A line ending in a semicolon is kept for the rest of the session, and anything else is printed. A language with no such shell, such as JAWS script, says so rather than starting something unrelated.
+Control+Shift+F12 opens that shell: Python's interpreter with your file already run, Node's read-evaluate-print shell, or PowerShell left open after running the file. Two shells are built into EdSharp, for languages Windows gives no interpreter for: a JScript console for writing scripts, and a C# console. Both open with the editor window ready as frm and its text box as rtb. So a line tried at the prompt does to your document exactly what the same line does in a script. The C# console compiles each line with the compiler named in the compiler settings and loads it into EdSharp, which is why it can reach the live document. A line ending in a semicolon is kept for the rest of the session, and anything else is printed. A language with no such shell, such as JAWS script, says so rather than starting something unrelated.
 
 Values are kept exactly as written and may span several lines, so regular expressions are easy to read and edit. Every expression in the set was checked against the tool's real message format, so Compile, Control+F5, goes to the true line and column of the error. Two things make that easy to work with. First, noise is removed before you hear anything, so you hear the error first, not your own file path, which Python and most compilers repeat in every message. Second, when a tool reports several problems, EdSharp goes to the one earliest in the file, whatever order the tool printed them in, and starts speaking there. Fix it and press Control+F5 again, and the next problem is waiting, so you work down the file from the top. The full output, including anything skipped, is always there with Review Output.
 
@@ -575,7 +575,7 @@ Compiler settings are stored in the [Compilers] section of your settings, the Ed
 ## Scripting Add-Ins
 Almost the complete object model of the EdSharp application has been exposed to add-in code in the JScript .NET language, explained in [Microsoft's JScript .NET reference](<https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2010/72bd815a(v=vs.100)>).
 
-JScript.NET is a version of JavaScript that can use the huge library of the .NET Framework.  In EdSharp, JScript code can be used in the Evaluate Expression command (Control+Equals), the Replace Tokens command (Control+Shift+Equals) and the Paste Snippet command (Alt+V).  You can also make JScript programs that run on their own, with the JScript .NET compiler (jsc.exe), which comes with the free .NET developer tools.
+JScript.NET is a version of JavaScript that can use the huge library of the .NET Framework.  In EdSharp, JScript code can be used in the Evaluate Expression command (Control+Equals), the Replace Tokens command (Control+Shift+Equals) and the Paste Script command (Alt+V).  You can also make JScript programs that run on their own, with the JScript .NET compiler (jsc.exe), which comes with the free .NET developer tools.
 
 The Compile command, Control+F5, is the best way to debug JScript code, even code you mean to use as an add-in rather than as a program of its own.  That is because the JScript compiler gives error information you do not get when add-in code fails to run because of a syntax error.  When writing code this way, you will probably want to import one or more namespaces, to shorten .NET references. You can copy the statements at the top of the Eval.js file in the EdSharp program folder.  Comment out those import statements in the finished add-in version of the code, since EdSharp already calls them itself.
 
@@ -595,7 +595,7 @@ The methods and properties of an RTB (RichTextBox) object are explained in [Micr
 
 EdSharp also adds some methods and properties to its own version of the RichTextBox class. One is the ReplaceRange method, which replaces the text between two points in the current document.  Other EdSharp classes give handy methods for scripts. For example, Dialog.Pick gets a choice from a list box, and Util.String2File saves a string of text to a file on disk.
 
-These classes will be documented further as questions come in.  For now, the best way to learn them is to read the code in the sample .js snippet files and the main EdSharp.cs program file, which carry out what you see when you run the program.  The .cs code is in the C# language, but its syntax is like JScript, and the names of classes, methods and properties are the same.
+These classes will be documented further as questions come in.  For now, the best way to learn them is to read the code in the sample .js script files and the main EdSharp.cs program file, which carry out what you see when you run the program.  The .cs code is in the C# language, but its syntax is like JScript, and the names of classes, methods and properties are the same.
 
 ## Miscellaneous
 
@@ -791,9 +791,9 @@ To build the Windows installer, `EdSharp_Setup.exe`, install [Inno Setup](<https
 Because the built and fetched files are reproducible, they are kept out of source control by `.gitignore`:  `EdSharp.exe`, `EdSharp.dll`, `EdSharp_Setup.exe`, `Build.log`, the fetched `Ude.dll`, and the downloaded tool folders under `Convert`.  Committed binaries that are not produced by the build, such as `Tektosyne.dll`, `nvdaControllerClient.dll`, and `EdSharp.ico`, remain in the repository.  A `.gitattributes` file keeps text files in Windows (CRLF) form and marks those binaries.  This lets the whole project be pushed to GitHub with `git add -A`.
 
 ### Contributors
-Thanks go to Jim Homme for contributing an improved set of HTML snippets.  He also contributed the Sounds4Stuff scheme for JAWS, which may be installed via Settings Packager.
+Thanks go to Jim Homme for contributing an improved set of HTML scripts.  He also contributed the Sounds4Stuff scheme for JAWS, which may be installed via Settings Packager.
 
-I thank Jaffer for contributing C++ and PHP snippets.
+I thank Jaffer for contributing C++ and PHP scripts.
 
 ### Third Party Utilities
 PDF conversions use the open source [Xpdf](<http://www.foolabs.com/xpdf/home.html>) software.

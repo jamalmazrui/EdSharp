@@ -65,7 +65,7 @@ help/
 ; file is read as part of the first line. fixEncoding should skip them.
 configs/
 data/
-; templates\snippets\LaTeX holds files that DEMONSTRATE other encodings --
+; templates\scripts\LaTeX holds files that DEMONSTRATE other encodings --
 ; koi8, cp866, latin2 and the rest. Putting them into UTF-8 would destroy
 ; the very thing they are examples of. fixEncoding should skip them too.
 templates/

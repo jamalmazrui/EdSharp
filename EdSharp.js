@@ -5,13 +5,13 @@ via Assembly.LoadFrom(<full path>) and calls EdSharp.JS.runScript by
 reflection, so EdSharp.cs takes no compile-time dependency on this
 assembly. That matters because the exe and this dll share the base
 name "EdSharp"; a compile-time reference would make Assembly.Load
-ambiguous at load time. Late-bound dispatch resolves snippet member
+ambiguous at load time. Late-bound dispatch resolves script member
 access at run time with no compile-time type information.
 
 This revives, in one file, the role formerly split across jsSupport.js
 and Eval.js, following the DbDo.js model.
 
-Globals visible to user .js snippets, inside the eval scope:
+Globals visible to user .js scripts, inside the eval scope:
   frm -- the active editor window (DocumentWindow), passed in from C#.
   rtb -- shortcut for frm.RTB, the RichTextBox holding the document.
 
@@ -64,14 +64,14 @@ package EdSharp
 
         // ===== Interactive console ========================================
         //
-        // A read-evaluate-print loop for writing EdSharp snippets. It is
+        // A read-evaluate-print loop for writing EdSharp scripts. It is
         // the Interactive JScript program of the Homer.NET toolkit
         // (2009-2010), brought inside EdSharp: rewritten in Camel Type,
         // stripped of the screen readers and helpers that no longer
         // exist, and given what it lacked -- the editor itself. When it
         // starts, frm is the window you were editing and rtb is its text
         // box, already live, so a line typed here does to your document
-        // exactly what the same line would do in a snippet.
+        // exactly what the same line would do in a script.
         //
         // Everything is an expression unless it begins with one of the
         // words listed by help. Expressions print their value; statements
@@ -90,14 +90,14 @@ package EdSharp
         // that is the reason this console exists.
         static function sayHelp() : void
         {
-            say("Interactive JScript for EdSharp snippets.");
+            say("Interactive JScript for EdSharp scripts.");
             say("");
             say("Already in scope:");
             say("  frm   the editor window you came from");
             say("  rtb   its text box: rtb.Text, rtb.SelectedText, rtb.Lines");
             say("");
             say("Type any JScript expression to see its value, or any");
-            say("statement to run it. What works here works in a snippet.");
+            say("statement to run it. What works here works in a script.");
             say("");
             say("  rtb.SelectedText.toUpperCase()");
             say("  rtb.SelectedText = rtb.SelectedText.toUpperCase()");

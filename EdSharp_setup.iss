@@ -246,7 +246,7 @@ Source: "help\lgpl.txt";           DestDir: "{app}\help"; Flags: ignoreversion s
 ; Data trees.  pandoc.exe is excluded from Convert even if a copy is sitting
 ; there at compile time: the Run section below fetches it on the user's
 ; machine instead, so the installer stays small enough for GitHub.
-Source: "templates\snippets\*"; DestDir: "{app}\templates\snippets"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist; Excludes: ".git,.venv,__pycache__,*.pyc,venv"
+Source: "templates\scripts\*"; DestDir: "{app}\templates\scripts"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist; Excludes: ".git,.venv,__pycache__,*.pyc,venv"
 Source: "configs\convert\*";  DestDir: "{app}\configs\convert";  Excludes: "pandoc.exe,*.sln,*.vcproj,*.vcxproj,*.vcxproj.filters,*.suo,*.user,*.c,*.asm,*.cs,*.obj,*.zip,temp.htm,temp.txt,.git,.venv,__pycache__,*.pyc,venv"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist
 Source: "templates\samples\*"; DestDir: "{app}\templates\samples"; Flags: recursesubdirs ignoreversion skipifsourcedoesntexist; Excludes: ".git,.venv,__pycache__,*.pyc,venv"
 ; The spelling dictionary: two plain files the spell checker reads.
@@ -262,6 +262,9 @@ Name: "{localappdata}\EdSharp\Temp";
 ; installer of 26 September copied the whole scripts folder into it, and the
 ; stray files stayed through every install after.
 Type: filesandordirs; Name: "{app}\scripts\jaws"
+; templates\snippets is templates\scripts (10 November 2026). The program folder holds only what the installer
+; ships -- your own files live under %LOCALAPPDATA%\EdSharp -- so the old folder goes when the new one comes.
+Type: filesandordirs; Name: "{app}\templates\snippets"
 ; The loose handshake file older versions left in C:\temp; the logs
 ; folder is its home now.
 Type: files; Name: "C:\temp\EdSharp_jaws.result"

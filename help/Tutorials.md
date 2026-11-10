@@ -132,7 +132,7 @@ folder, which is a working example of the layout.
 
 - Alt+F5 Prompt Command for the build script; Control+F5 Compile for a
   single file
-- Alt+Shift+F9 Run Code Blocks if your notes hold snippets to try
+- Alt+Shift+F9 Run Code Blocks if your notes hold scripts to try
 - Control+F12 Copy Log when reporting a problem: it puts this session's
   log on the clipboard as a file, ready to attach to a message
 
@@ -151,19 +151,19 @@ themselves use.
 JAWS script has no interactive prompt, so Control+Shift+F12 says so
 rather than opening something unrelated.
 
-Snippets help here more than anywhere. Alt+S saves the selection as a
-snippet under the current compiler, so a script skeleton or a common
+Scripts help here more than anywhere. Alt+S saves the selection as a
+script under the current compiler, so a script skeleton or a common
 call is a keystroke away; Alt+V inserts one. EdSharp ships two, InputBox
 and SayString, which appear in the list marked as shipped.
 
 ### Key Reminders
 
 - Control+Shift+F5 Pick Compiler, Control+F5 Compile
-- Alt+S Save Snippet, Alt+V Invoke Snippet
+- Alt+S Save Script, Alt+V Invoke Script
 - Alt+PageDown and Alt+PageUp move between scripts and functions
-- Control+Shift+F12 opens the snippet console when the JScript .NET
+- Control+Shift+F12 opens the script console when the JScript .NET
   compiler is chosen: a JScript prompt with the editor window as frm and
-  its text box as rtb, so a line that works there works in a snippet
+  its text box as rtb, so a line that works there works in a script
 
 ## Node.js and Web Developer
 
@@ -1245,7 +1245,7 @@ The screen reader scripts are offered too. Install when they are not there, Upda
 
 ### Step 11
 
-Where things went. EdSharp itself is in Program Files; your settings, snippets and logs are under your local application data, in a folder named EdSharp. An update never touches them.
+Where things went. EdSharp itself is in Program Files; your settings, scripts and logs are under your local application data, in a folder named EdSharp. An update never touches them.
 
 ### Step 12: F11
 
@@ -1801,7 +1801,7 @@ Screen reader:
 
 ## 6 - Write Code
 
-One want: a program that will not run, fixed. Choosing the compiler once, compiling with the cursor landing on the error, moving by blocks of code, hearing indentation, and snippets. This walk assumes walks three and five.
+One want: a program that will not run, fixed. Choosing the compiler once, compiling with the cursor landing on the error, moving by blocks of code, hearing indentation, and scripts. This walk assumes walks three and five.
 
 **Before you start:** EdSharp is open on a short Python file with one mistake, and Python was ticked when EdSharp was installed.
 
@@ -1854,11 +1854,11 @@ Screen reader:
 
 ### Step 7: Alt+V
 
-Snippets fill in the parts that change. Alt plus V, Invoke Snippet, picks a saved piece of code to paste or run; Alt plus S saves the selection as a new one.
+Scripts fill in the parts that change. Alt plus V, Invoke Script, picks a saved piece of code to paste or run; Alt plus S saves the selection as a new one.
 
 Screen reader:
 
-- Invoke Snippet dialog, Snippet: list box, python-main, 1 of 14
+- Invoke Script dialog, Script: list box, python-main, 1 of 14
 
 ### Step 8: Escape
 
@@ -1934,7 +1934,7 @@ Alt plus V.
 
 Screen reader:
 
-- Invoke Snippet
+- Invoke Script
 
 **Something to try:** Compile a program of your own, go to its first error, fix it, and run it.
 

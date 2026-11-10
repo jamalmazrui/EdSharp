@@ -218,7 +218,7 @@ tt2txt=pandoc "%SourceLong%" -f t2t -t plain -o %Target%
 ;                     spaces, or \t -- applied to a document that has none of
 ;                     its own to detect
 ;   GoToEnvironment   the interactive shell Control+Shift+G opens; the
-;                     special values %Snippet% and %CSharp% open EdSharp's
+;                     special values %Script% and %CSharp% open EdSharp's
 ;                     own JScript and C# consoles, and an empty value means
 ;                     the language has no shell
 ; Every expression was traced against the tool's real message format.
@@ -235,14 +235,14 @@ tt2txt=pandoc "%SourceLong%" -f t2t -t plain -o %Target%
 ; Which compiler section owns a file, by its extension. EdSharp reads
 ; this when a document is opened or activated and makes that section the
 ; current one, so the compile command, the part navigation, the comment
-; prefix, the indent unit and the snippet folder all describe the file
+; prefix, the indent unit and the script folder all describe the file
 ; you are actually in.
 ;
 ; Before 30 August 2026 the compiler was one setting for the whole
 ; program, changed only by Pick Compiler, Control+Shift+F5. With C#
 ; chosen, a Python file compiled with csc, Alt+PageDown navigated by C#
 ; parts, comments were quoted with two slashes and Alt+V offered C#
-; snippets -- four things wrong at once, and the cure was to remember.
+; scripts -- four things wrong at once, and the cure was to remember.
 ;
 ; An extension named here must have a [Compiler <name>] section behind
 ; it or nothing changes. An extension not named here changes nothing
@@ -328,7 +328,7 @@ xslt="XML"
 ; and loaded into EdSharp itself, which is what lets the code touch the
 ; live document. Anyone with the .NET SDK can point this at
 ; "dotnet-script" or at "csi.exe" from Visual Studio's Roslyn folder
-; instead; %Snippet% opens the JScript console.
+; instead; %Script% opens the JScript console.
 ; IndentUnit: four spaces, the Microsoft C# convention.
 CompileCommand="%NetDir%\csc.exe /nologo /platform:x64 "%Source%" 2>&1"
 JumpPosition="\(\d+,\d+\)"
@@ -419,10 +419,10 @@ IndentUnit="\t"
 ; jsc reports "prog.js(12,3) : error JS1002". This is the compiler that
 ; builds EdSharp.dll, so the references below are the ones EdSharp's own
 ; scripts expect.
-; GoToEnvironment: %Snippet%, the JScript console built into EdSharp,
+; GoToEnvironment: %Script%, the JScript console built into EdSharp,
 ; where frm is the editor window and rtb its text box -- the same two
-; objects a snippet receives, so a line tried there is a line that
-; works in a snippet.
+; objects a script receives, so a line tried there is a line that
+; works in a script.
 ; IndentUnit: two spaces, as for JavaScript.
 CompileCommand="%NetDir%\jsc.exe /nologo /r:%ProgDir%\EdSharp.dll;System.dll;System.Windows.Forms.dll;System.Drawing.dll;Accessibility.dll;Microsoft.VisualBasic.dll "%Source%" 2>&1"
 JumpPosition="\(\d+,\d+\)"
@@ -431,7 +431,7 @@ NavigatePart="^( |\t)*(function|class) +\w+"
 QuotePrefix="//"
 ExtensionDefault="js"
 IndentUnit="  "
-GoToEnvironment="%Snippet%"
+GoToEnvironment="%Script%"
 
 [Compiler Visual Basic .NET]
 ; vbc.exe sits beside csc.exe in every Windows .NET Framework folder, so
@@ -592,4 +592,4 @@ IndentUnit="  "
 QuotePrefix="> "
 ExtensionDefault="rtf"
 IndentUnit="\t"
-GoToEnvironment="%Snippet%"
+GoToEnvironment="%Script%"

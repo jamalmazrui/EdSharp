@@ -2,6 +2,14 @@
 
 
 
+## 10 November 2026 -- One list for picking
+
+- **Picking from a list uses the kit's dialog,** shared with FileDir. A list narrowed with Control+F now gives back the item you chose; it had given back whatever item first stood in that row. The old snippets folder is removed from the program folder at install, now that templates\\scripts replaces it.
+
+## 10 November 2026 -- Script, the one word
+
+- **Script, not snippet.** Save Script (Alt+S), Invoke Script (Alt+V) and View Script (Alt+Shift+V) on the Misc menu, the Script choice among folders, and every guide and tutorial say script, as DbDo does. The folder is templates\\scripts: your own files in the old snippets folder move there the first time EdSharp looks, and the old folder goes once it is empty. In a compiler setting, %Script% opens the console, and %Snippet% still does. Visual Studio's .snippet files keep their name, which is their format's.
+
 ## 10 November 2026 -- Classes named for what they are
 
 - **EdSharp's document window and main window are named DocumentWindow and EdSharpFrame,** not MdiChild and MdiFrame, the names of different kit classes. Util keeps its name, since snippets call it.

@@ -249,6 +249,7 @@ InitNetSdk();
 InitJFW();
 
 Frame = new EdSharpFrame();
+Homer.LbcAsk.oMainForm = Frame;   // the kit's standard dialogs belong to EdSharp's main window (10 November 2026)
 Homer.Say.attach(Frame);
 this.MainForm = Frame;
 DocumentWindow child = new DocumentWindow(Frame);
@@ -915,7 +916,7 @@ return App.Frame.ProcessCmdKey_Helper(ref msg, keyData);
 } // DocumentWindow class
 
 // NAMED FOR WHAT IT IS (10 November 2026): DocumentWindow and EdSharpFrame were MdiChild and MdiFrame, the names of the
-// kit's own, different classes. Util keeps its name on purpose: EdSharp's snippets call it, as Util.Convert2Ascii,
+// kit's own, different classes. Util keeps its name on purpose: EdSharp's scripts call it, as Util.Convert2Ascii,
 // and so may anyone's own, so it is EdSharp's scripting interface, not a copy of the kit's Util.
 public class EdSharpFrame : Form {
 public string LastDescription = "";
@@ -962,7 +963,7 @@ public ToolStripMenuItem menuEdit, menuEditSelectAll, menuEditUnselectAll, menuE
 public ToolStripMenuItem menuDelete, menuDeleteReplaceRegular, menuDeleteReplaceWithRegExp, menuDeleteHardLine, menuDeleteParagraph, menuDeleteLine, menuDeleteRight, menuDeleteLeft, menuDeleteDown, menuDeleteUp, menuDeleteFile, menuDeleteTrimBlanks;
 public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateNextBlock, menuNavigatePriorBlock, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateGoToStartOfSelection;
 public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles;
-public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
+public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
 public ToolStripMenuItem menuWindow, menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
 public ToolStripMenuItem menuHelpWhatThisDoes, menuHelpWhereAmI;
 public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
@@ -1196,9 +1197,9 @@ menuMiscCompile = CreateMenuItem("Compile", "Control+F5", menuItem_Click, "child
 menuMiscPickCompiler = CreateMenuItem("Pick Compiler", "Control+Shift+F5", menuItem_Click, "frame silent");
 menuMiscPromptCommand = CreateMenuItem("Prompt Command", "Alt+F5", menuItem_Click, "child silent");
 menuMiscReviewOutput = CreateMenuItem("Review Output", "Alt+Shift+F5", menuItem_Click, "child speak");
-menuMiscSaveSnippet = CreateMenuItem("Save Snippet", "Alt+S", menuItem_Click, "child speak");
-menuMiscInvokeSnippet = CreateMenuItem("Invoke Snippet", "Alt+V", menuItem_Click, "child speak");
-menuMiscViewSnippet = CreateMenuItem("View Snippet", "Alt+Shift+V", menuItem_Click, "frame speak");
+menuMiscSaveScript = CreateMenuItem("Save Script", "Alt+S", menuItem_Click, "child speak");
+menuMiscInvokeScript = CreateMenuItem("Invoke Script", "Alt+V", menuItem_Click, "child speak");
+menuMiscViewScript = CreateMenuItem("View Script", "Alt+Shift+V", menuItem_Click, "frame speak");
 menuMiscKeepUniqueItems = CreateMenuItem("Keep Unique Items", "Alt+Shift+K", menuItem_Click, "child speak");
 menuMiscNumberItems = CreateMenuItem("Number Items ...", "Alt+Shift+N", menuItem_Click, "child silent");
 menuMiscOrderItems = CreateMenuItem("Order Items", "Alt+Shift+O", menuItem_Click, "child speak");
@@ -1209,7 +1210,7 @@ menuMiscExplorerFolder = CreateMenuItem("Open in Explorer", "Alt+Oem5", menuItem
 menuMiscCommandPrompt = CreateMenuItem("Open Command Prompt", "Control+Oem5", menuItem_Click, "frame speak");
 menuMiscBurnToCD = CreateMenuItem("Burn to CD", "Alt+Shift+B", menuItem_Click, "child speak");
 menuMiscWebDownload = CreateMenuItem("Web Download", "Alt+Shift+W", menuItem_Click, "frame speak");
-menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveSnippet, menuMiscInvokeSnippet, menuMiscViewSnippet, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload, menuFilePrint});
+menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload, menuFilePrint});
 //Dialog.Show("Misc.", menuMisc.DropDownItems.Count);
 
 menuWindow = CreateMenu("&Window");
@@ -1783,8 +1784,8 @@ catch (Exception) {}
 return "";
 } // describeSample method
 
-public string[] GetSnippetFiles(out string[] aValues) {
-string sBaseDir = @"templates\snippets\" + App.ReadData("Compiler", "Default");
+public string[] GetScriptFiles(out string[] aValues) {
+string sBaseDir = @"templates\scripts\" + App.ReadData("Compiler", "Default");
 string sDir = Path.Combine(App.DataDir, sBaseDir);
 if (!Directory.Exists(sDir)) Directory.CreateDirectory(sDir);
 string[] aResults = Directory.GetFiles(sDir);
@@ -1793,18 +1794,18 @@ List<string> listResults = new List<string>(aResults);
 List<string> listFiles = new List<string>();
 foreach (string s in aResults) listFiles.Add(Path.GetFileName(s).ToLower());
 
-sBaseDir = @"templates\snippets\Default";
+sBaseDir = @"templates\scripts\Default";
 sDir = Path.Combine(App.DataDir, sBaseDir);
 if (!Directory.Exists(sDir)) Directory.CreateDirectory(sDir);
 aResults = Directory.GetFiles(sDir);
 foreach (string s in aResults) if (!listFiles.Contains(Path.GetFileName(s).ToLower())) listResults.Add(s);
 
-// Snippets shipped with the program (the installer places the Snippets
+// Scripts shipped with the program (the installer places the Scripts
 // folder in the program directory) join the list last, so a same-named
-// snippet in the data directory always wins: the user's copy overrides
-// the shipped one, and shipped snippets appear without any copying.
+// script in the data directory always wins: the user's copy overrides
+// the shipped one, and shipped scripts appear without any copying.
 foreach (string s in listResults) if (!listFiles.Contains(Path.GetFileName(s).ToLower())) listFiles.Add(Path.GetFileName(s).ToLower());
-string[] aProgramDirs = new string[] {Path.Combine(App.ProgramDir, @"templates\snippets\" + App.ReadData("Compiler", "Default")), Path.Combine(App.ProgramDir, @"templates\snippets\Default")};
+string[] aProgramDirs = new string[] {Path.Combine(App.ProgramDir, @"templates\scripts\" + App.ReadData("Compiler", "Default")), Path.Combine(App.ProgramDir, @"templates\scripts\Default")};
 foreach (string sProgramDir in aProgramDirs) {
 if (!Directory.Exists(sProgramDir)) continue;
 foreach (string s in Directory.GetFiles(sProgramDir)) {
@@ -1816,24 +1817,24 @@ listResults.Add(s);
 }
 aResults = listResults.ToArray();
 
-// Each row reads as the snippet's name and, when it did not come from
+// Each row reads as the script's name and, when it did not come from
 // the shared Default folder, the folder it did come from: "Mermaid
-// Flowchart.txt (Python)" or "... (shipped)". A snippet collection
+// Flowchart.txt (Python)" or "... (shipped)". A script collection
 // grows over years, and a list that says where each entry lives is far
 // easier to keep in order than a flat one -- while the name itself
-// still leads, so typing to match a snippet works exactly as before.
+// still leads, so typing to match a script works exactly as before.
 aValues = new string[aResults.Length];
-string sProgramSnippets = Path.Combine(App.ProgramDir, "templates\\snippets").ToLower();
+string sProgramScripts = Path.Combine(App.ProgramDir, "templates\\scripts").ToLower();
 for (int i = 0; i < aResults.Length; i++) {
 string sName = Path.GetFileName(aResults[i]);
 string sFolder = Path.GetFileName(Path.GetDirectoryName(aResults[i]));
-bool bShipped = aResults[i].ToLower().StartsWith(sProgramSnippets);
+bool bShipped = aResults[i].ToLower().StartsWith(sProgramScripts);
 if (bShipped) aValues[i] = sName + " (shipped)";
 else if (String.Compare(sFolder, "Default", true) != 0) aValues[i] = sName + " (" + sFolder + ")";
 else aValues[i] = sName;
 }
 return aResults;
-} // GetSnippetFiles method
+} // GetScriptFiles method
 
 public void GetDateAndTime(out string sDate, out string sTime) {
 DateTime dt = DateTime.Now;
@@ -1851,7 +1852,7 @@ string[] aTokens = App.ReadSectionKeys("Tokens");
 foreach (string sToken in aTokens) {
 if (sText.IndexOf(sToken) == -1) continue;
 string s = App.ReadValue("Tokens", sToken, "");
-string sFile = GetSnippetDir() + @"\" + s;
+string sFile = GetScriptDir() + @"\" + s;
 if (File.Exists(sFile)) s = Util.File2String(sFile);
 //Dialog.Show(sFile, s);
 string sResult = Script.run(s);
@@ -2009,15 +2010,42 @@ AddMessage("Done", true);
 App.CaptureOutput = false;
 } // TransForm files method
 
-public static string GetSnippetDir() {
-string sBaseDir = @"templates\snippets\" + App.ReadData("Compiler", "Default");
+// SCRIPTS, NOT SNIPPETS (10 November 2026): EdSharp and DbDo both invoke scripts, so the word is script throughout, and
+// the folder is templates\scripts. A person's files in the old templates\snippets folder are moved into it the first
+// time it is looked for -- each file the new folder lacks -- and the old folder goes once it is empty.
+private static bool bScriptsMoved = false;
+
+public static bool moveOldScripts() {
+string sOld = Path.Combine(App.DataDir, @"templates\snippets");
+string sNew = Path.Combine(App.DataDir, @"templates\scripts");
+if (!Directory.Exists(sOld)) return false;
+int iMoved = 0;
+try {
+foreach (string sFile in Directory.GetFiles(sOld, "*", SearchOption.AllDirectories)) {
+string sTarget = Path.Combine(sNew, sFile.Substring(sOld.Length).TrimStart('\\'));
+if (File.Exists(sTarget)) continue;
+Directory.CreateDirectory(Path.GetDirectoryName(sTarget));
+File.Move(sFile, sTarget);
+iMoved++;
+}
+bool bEmpty = Directory.GetFiles(sOld, "*", SearchOption.AllDirectories).Length == 0;
+if (bEmpty) Directory.Delete(sOld, true);
+Util.Log("scripts: moved " + iMoved + " file(s) from " + sOld + " to " + sNew + (bEmpty ? "; the old folder is gone" : "; the old folder keeps files the new one already has"));
+}
+catch (Exception ex) { Util.Log("scripts: the old folder " + sOld + " could not be moved: " + ex.Message); }
+return iMoved > 0;
+} // moveOldScripts method
+
+public static string GetScriptDir() {
+if (!bScriptsMoved) { bScriptsMoved = true; moveOldScripts(); }
+string sBaseDir = @"templates\scripts\" + App.ReadData("Compiler", "Default");
 string sDir = Path.Combine(App.DataDir, sBaseDir);
 if (!Directory.Exists(sDir)) Directory.CreateDirectory(sDir);
 return sDir;
-} // GetSnippetDir method
+} // GetScriptDir method
 
 public string GetDirChoice() {
-string[] aButtons = {"&Current", "&Program", "&Data", "&Snippet", "&Other"};
+string[] aButtons = {"&Current", "&Program", "&Data", "&Script", "&Other"};
 string sButton = Dialog.Choose("Choose Directory", "", aButtons, 0);
 if (sButton.Length == 0) return "";
 
@@ -2032,8 +2060,8 @@ break;
 case "&Data" :
 sDir = App.DataDir;
 break;
-case "&Snippet" :
-sDir = App.DataDir + @"\Snippets\" + App.ReadData("Compiler", "Default");
+case "&Script" :
+sDir = App.DataDir + @"\Scripts\" + App.ReadData("Compiler", "Default");
 if (!Directory.Exists(sDir)) Directory.CreateDirectory(sDir);
 break;
 case "&Other" :
@@ -2131,9 +2159,9 @@ static readonly string[] aCommandSummaries = new string[] {
 "Append from Clipboard\tAlt+7, Toggle a mode in which text copied to the clipboard is also saved to a file",
 "Undo\tControl+Z, Undo the last editing action",
 "Redo\tControl+Shift+Z, Redo the last action that was undone",
-"Save Snippet\tAlt+S, Save all or selected text to a snippet file",
-"Invoke Snippet\tAlt+V, Pick snippet file to paste or execute",
-"View Snippet\tAlt+Shift+V, Pick snippet file to view or edit",
+"Save Script\tAlt+S, Save all or selected text to a script file",
+"Invoke Script\tAlt+V, Pick script file to paste or execute",
+"View Script\tAlt+Shift+V, Pick script file to view or edit",
 "Yield with Regex\tControl+Shift+Y, Count parts of text matching a regular expression",
 "Extract with Regex\tControl+Shift+E, Extract text matching a regular expression, putting matches in a new window",
 "Replace with Regex\tControl+Shift+R, Search and replace regular expression in all or selected text",
@@ -2558,7 +2586,7 @@ aResults = listResults.ToArray();
 string[] aDisplay = new string[aResults.Length];
 for (int i = 0; i < aDisplay.Length; i++) aDisplay[i] = Path.GetFileName(aResults[i]);
 
-sFile = Dialog.Pick("Recent Files", aResults, aDisplay, false, 0);
+sFile = Homer.LbcAsk.pick("Recent Files", aResults, aDisplay, false, 0);
 if (sFile.Length == 0) return;
 
 OpenOrActivateWindow(sFile, GetViewLevel(sFile));
@@ -2630,7 +2658,7 @@ hl.Add("Other");
 aValues = hl.ToArray();
 
 sTitle = "Export " + sExt + " to ";
-sResult = Dialog.Pick(sTitle, aValues, aDisplay, false, 0);
+sResult = Homer.LbcAsk.pick(sTitle, aValues, aDisplay, false, 0);
 //Dialog.Show(sResult);
 if (sResult.Length == 0) return;
 
@@ -4430,7 +4458,7 @@ lValues.Add(sIndex);
 
 string[] aNames = lNames.ToArray();
 aValues = lValues.ToArray();
-string s = Dialog.Pick("Go to Part", aValues, aNames, false, iPosition);
+string s = Homer.LbcAsk.pick("Go to Part", aValues, aNames, false, iPosition);
 if (s.Length == 0) return;
 
 iIndex = Int32.Parse(s);
@@ -4512,7 +4540,7 @@ break;
 }
 //Dialog.Show(iDefault);
 
-sResult = Dialog.Pick("Bookmarks", aValues, aDisplay, false, iDefault);
+sResult = Homer.LbcAsk.pick("Bookmarks", aValues, aDisplay, false, iDefault);
 if (sResult.Length == 0) return;
 }
 
@@ -4565,7 +4593,7 @@ return;
 
 string[] aDisplay = new string[aResults.Length];
 for (int i = 0; i < aDisplay.Length; i++) aDisplay[i] = Path.GetFileName(aResults[i]);
-sFile = Dialog.Pick("List Favorites", aResults, aDisplay, true, 0);
+sFile = Homer.LbcAsk.pick("List Favorites", aResults, aDisplay, true, 0);
 if (sFile.Length == 0) return;
 
 OpenOrActivateWindow(sFile, 0);
@@ -5894,7 +5922,7 @@ return;
 aResults = hl.ToArray();
 string[] aDisplay = new string[aResults.Length];
 for (int i = 0; i < aDisplay.Length; i++) aDisplay[i] = Path.GetFileName(aResults[i]);
-sDir = Dialog.Pick("Go to Folder", aResults, aDisplay, true, 0);
+sDir = Homer.LbcAsk.pick("Go to Folder", aResults, aDisplay, true, 0);
 if (sDir.Length == 0) return;
 
 Directory.SetCurrentDirectory(sDir);
@@ -5998,8 +6026,8 @@ iEnd = iStart + rtb.SelectionLength;
 sText = rtb.GetRange(iStart, iEnd);
 
 if (rtb.SelectionLength == 0 && !sText.StartsWith("%")) {
-AddMessage("Replace Snippet");
-aResults = GetSnippetFiles(out aValues);
+AddMessage("Replace Script");
+aResults = GetScriptFiles(out aValues);
 HomerList hlResults = new HomerList(aResults);
 HomerList hlValues = new HomerList(aValues);
 //sMatch = @"^" + sText + @".*";
@@ -6020,14 +6048,14 @@ return;
 aResults = hlResults.ToArray();
 aValues = hlValues.ToArray();
 
-string sSnippet;
-if (aResults.Length == 1) sSnippet = aResults[0];
+string sScript;
+if (aResults.Length == 1) sScript = aResults[0];
 else {
-sSnippet = Dialog.Pick("Pick", aResults, aValues, false, 0);
-if (sSnippet.Length == 0) return;
+sScript = Homer.LbcAsk.pick("Pick", aResults, aValues, false, 0);
+if (sScript.Length == 0) return;
 }
 
-InvokeSnippet(sSnippet, sText, iStart, iEnd);
+InvokeScript(sScript, sText, iStart, iEnd);
 }
 else {
 if (rtb.SelectionLength == 0) AddMessage("Replace Token");
@@ -6057,7 +6085,7 @@ sResult = App.ReadData("Compiler", "Default");
 int i = Array.IndexOf(aResults, sResult);
 //Dialog.Show(i);
 if (i == -1) i = 0;
-sResult = Dialog.Pick("Pick Compiler", aResults, false, i);
+sResult = Homer.LbcAsk.pick("Pick Compiler", aResults, false, i);
 if (sResult.Length == 0) return;
 
 sFile = Path.Combine(App.DataDir, App.ReadData("Compiler", "Default") + ".ini");
@@ -6116,11 +6144,11 @@ AddMessage("No interactive environment for this compiler");
 return;
 }
 // The built-in one: a JScript console with EdSharp's own objects in
-// scope, for writing snippets. Named rather than pathed, because it is
+// scope, for writing scripts. Named rather than pathed, because it is
 // inside EdSharp rather than a program on disk.
 bool bCSharpConsole = sCommand.Equals("%CSharp%", StringComparison.OrdinalIgnoreCase);
-if (bCSharpConsole || sCommand.Equals("%Snippet%", StringComparison.OrdinalIgnoreCase) || sCommand.ToLower().EndsWith("ijs.exe") || sCommand.ToLower().EndsWith("ijs.exe\"")) {
-AddMessage(bCSharpConsole ? "C# console" : "Snippet console");
+if (bCSharpConsole || sCommand.Equals("%Script%", StringComparison.OrdinalIgnoreCase) || sCommand.Equals("%Snippet%", StringComparison.OrdinalIgnoreCase) || sCommand.ToLower().EndsWith("ijs.exe") || sCommand.ToLower().EndsWith("ijs.exe\"")) {
+AddMessage(bCSharpConsole ? "C# console" : "Script console");
 if (!Script.runConsole(bCSharpConsole)) Dialog.Show("Go to Environment", "The console could not be started.\n\nThe run log has the detail:\n" + App.LogFile);
 return;
 }
@@ -6333,7 +6361,7 @@ return;
 OpenOrActivateWindow(sFile, 0);
 }
 
-if (menuItem == menuMiscSaveSnippet) {
+if (menuItem == menuMiscSaveScript) {
 if (rtb.SelectionLength == 0) {
 AddMessage("All");
 iStart = 0;
@@ -6346,7 +6374,7 @@ iEnd = iStart + rtb.SelectionLength;
 }
 sText = rtb.GetRange(iStart, iEnd);
 
-string sDir = @"templates\snippets\" + App.ReadData("Compiler", "Default");
+string sDir = @"templates\scripts\" + App.ReadData("Compiler", "Default");
 sDir = Path.Combine(App.DataDir, sDir);
 if (!Directory.Exists(sDir)) Directory.CreateDirectory(sDir);
 sFile = Path.Combine(sDir, Path.GetFileName(child.File));
@@ -6355,9 +6383,9 @@ if (Path.GetExtension(sFile).Length == 0) sFile += ".txt";
 sFile = Dialog.SaveFile("", sFile);
 if (sFile.Length == 0) return;
 
-// A snippet is a file EdSharp writes for itself, so it takes the Homer
+// A script is a file EdSharp writes for itself, so it takes the Homer
 // standard rather than the document's own encoding: UTF-8 with a byte-order
-// mark and CRLF endings, which is what the snippet reader detects most
+// mark and CRLF endings, which is what the script reader detects most
 // reliably. String2File would have saved plain ASCII text as ANSI with no
 // mark at all. Rich text still goes through the document writer, since a
 // .rtf file is not plain text.
@@ -6367,7 +6395,7 @@ else Util.String2FileHomer(sText, sFile);
 AddMessage("Done");
 }
 
-if (menuItem == menuMiscInvokeSnippet) {
+if (menuItem == menuMiscInvokeScript) {
 if (rtb.SelectionLength == 0) {
 AddMessage("Cursor");
 //iStart = 0;
@@ -6382,19 +6410,19 @@ iEnd = iStart + rtb.SelectionLength;
 }
 sText = rtb.GetRange(iStart, iEnd);
 
-aResults = GetSnippetFiles(out aValues);
+aResults = GetScriptFiles(out aValues);
 
 /*
-foreach (string sSnippetFile in aResults) {
-Util.Say(Path.GetFileNameWithoutExtension(sSnippetFile));
-string sSnippetText = Util.File2String(sSnippetFile);
-string[] aSnippetLines = sSnippetText.Split('\n');
-StringBuilder sbSnippet = new StringBuilder();
-foreach (string sSnippetLine in aSnippetLines) {
-if (sSnippetLine.Trim().Length == 0) continue;
-sbSnippet.Append(sSnippetLine.Trim() + "\r\n");
+foreach (string sScriptFile in aResults) {
+Util.Say(Path.GetFileNameWithoutExtension(sScriptFile));
+string sScriptText = Util.File2String(sScriptFile);
+string[] aScriptLines = sScriptText.Split('\n');
+StringBuilder sbScript = new StringBuilder();
+foreach (string sScriptLine in aScriptLines) {
+if (sScriptLine.Trim().Length == 0) continue;
+sbScript.Append(sScriptLine.Trim() + "\r\n");
 }
-Util.String2File(sbSnippet.ToString(), sSnippetFile);
+Util.String2File(sbScript.ToString(), sScriptFile);
 }
 */
 
@@ -6403,20 +6431,20 @@ AddMessage("No files!");
 return;
 }
 
-string sSnippet = Dialog.Pick("Pick", aResults, aValues, false, 0);
-if (sSnippet.Length == 0) return;
+string sScript = Homer.LbcAsk.pick("Pick", aResults, aValues, false, 0);
+if (sScript.Length == 0) return;
 
-InvokeSnippet(sSnippet, sText, iStart, iEnd);
+InvokeScript(sScript, sText, iStart, iEnd);
 }
 
-if (menuItem == menuMiscViewSnippet) {
-aResults = GetSnippetFiles(out aValues);
+if (menuItem == menuMiscViewScript) {
+aResults = GetScriptFiles(out aValues);
 if (aResults.Length == 0) {
 AddMessage("No files!");
 return;
 }
 
-sResult = Dialog.Pick("Pick", aResults, aValues, false, 0);
+sResult = Homer.LbcAsk.pick("Pick", aResults, aValues, false, 0);
 if (sResult.Length == 0) return;
 
 OpenOrActivateWindow(sResult, 0);
@@ -6757,9 +6785,9 @@ Homer.SuiteCommands.openHistory();
 
 if (menuItem == menuHelpSamplePrograms) {
 // One menu item, one list. The samples live in a folder rather than in
-// menus, snippets or the compiler table, because a sample is something
+// menus, scripts or the compiler table, because a sample is something
 // you READ once in a while, not something you invoke while working:
-// putting them anywhere that grows -- the snippet list a person picks
+// putting them anywhere that grows -- the script list a person picks
 // from every day, or the menus themselves -- would make the tools you
 // use constantly noisier in order to shelve things you open rarely.
 //
@@ -7456,16 +7484,16 @@ sText = sText.TrimEnd();
 return new object[] {iStart, sText};
 } // GetChunk method
 
-public string FillSnippetForm(string sText) {
-// A snippet may describe its dialog rather than merely name its blanks.
+public string FillScriptForm(string sText) {
+// A script may describe its dialog rather than merely name its blanks.
 // Where the body opens with a block between [[form]] and [[end]], that
 // block is an .inix form definition -- the IniForm arrangement, one
 // section per control -- and it is put up through LbcInixForm. Each
-// answer then replaces %Name% in the rest of the snippet, where Name is
+// answer then replaces %Name% in the rest of the script, where Name is
 // the control's section name.
 //
 // This is what %Label=Value% cannot do. That syntax asks for text and
-// nothing else, so a snippet wanting a yes or no, one of six choices, a
+// nothing else, so a script wanting a yes or no, one of six choices, a
 // number in a range, or several lines has to ask for it as typing and
 // hope. A definition block gives it a check box, a list, a spin control
 // or a memo, all from Lbc, all obeying the same form rules as every
@@ -7482,22 +7510,22 @@ if (iEnd < 0) return sText;
 string sDefinition = sText.Substring(iOpen + sFormOpen.Length, iEnd - iOpen - sFormOpen.Length);
 string sRest = sText.Substring(iEnd + sFormEnd.Length).TrimStart('\r', '\n');
 List<Homer.InixCodec.Section> lsSections = Homer.InixCodec.parseLines(sDefinition.Replace("\r\n", "\n").Split('\n'));
-Homer.LbcInixForm frmSnippet = new Homer.LbcInixForm(lsSections);
-if (frmSnippet.run(App.Frame).Length == 0) return null;
-foreach (KeyValuePair<string, string> pairAnswer in frmSnippet.Results) {
+Homer.LbcInixForm frmScript = new Homer.LbcInixForm(lsSections);
+if (frmScript.run(App.Frame).Length == 0) return null;
+foreach (KeyValuePair<string, string> pairAnswer in frmScript.Results) {
 sRest = sRest.Replace("%" + pairAnswer.Key + "%", pairAnswer.Value);
 }
 return sRest;
-} // FillSnippetForm method
+} // FillScriptForm method
 
-public string FillSnippetVariables(string sText) {
-// Ask for every %Label=Value% variable in a snippet and put the answers
+public string FillScriptVariables(string sText) {
+// Ask for every %Label=Value% variable in a script and put the answers
 // back. Returns the filled text, or null when the dialog was cancelled.
 //
 // The pattern used to be \%\w+\=.*?\% . Since \w matches no space, a label
 // of more than one word was invisible to it: "%First participant=User%"
 // never became a prompt and stayed in the finished document as literal
-// text. All three shipped Mermaid snippets were affected, which is how it
+// text. All three shipped Mermaid scripts were affected, which is how it
 // came to light. A label may now hold anything but a percent sign, an
 // equals sign or a line break.
 //
@@ -7526,12 +7554,12 @@ if (sValue.IndexOf('|') >= 0) {
 string[] aChoice = sValue.Split('|');
 laChoices.Add(aChoice);
 lsValues.Add(aChoice[0]);
-lsTips.Add("Choose the " + sLabel.ToLower() + ". It replaces this variable everywhere the snippet uses it.");
+lsTips.Add("Choose the " + sLabel.ToLower() + ". It replaces this variable everywhere the script uses it.");
 }
 else {
 laChoices.Add(null);
 lsValues.Add(sValue);
-lsTips.Add("Type the " + sLabel.ToLower() + ". It replaces this variable everywhere the snippet uses it.");
+lsTips.Add("Type the " + sLabel.ToLower() + ". It replaces this variable everywhere the script uses it.");
 }
 }
 string[] aAnswers = Dialog.MultiInput("Variables", lsLabels.ToArray(), lsValues.ToArray(), laChoices.ToArray(), lsTips.ToArray());
@@ -7542,15 +7570,15 @@ return rexVariable.Replace(sText, delegate(Match match) {
 string sLabel = match.Groups[1].Value.Trim();
 return dAnswers.ContainsKey(sLabel) ? dAnswers[sLabel] : match.Value;
 });
-} // FillSnippetVariables method
+} // FillScriptVariables method
 
-public void InvokeSnippet(string sSnippet, string sText, int iStart, int iEnd) {
+public void InvokeScript(string sScript, string sText, int iStart, int iEnd) {
 string[] aLabels, aValues, aResults;
 int iIndex;
 HomerRichTextBox rtb = this.Child.RTB;
 string sLabel, sValue;
-string sExt = Path.GetExtension(sSnippet).ToLower().TrimStart('.');
-string sBody = Util.File2String(sSnippet);
+string sExt = Path.GetExtension(sScript).ToLower().TrimStart('.');
+string sBody = Util.File2String(sScript);
 sBody = Util.Convert2UnixLineBreak(sBody);
 if (sExt == "js") {
 Script.run(sBody);
@@ -7558,8 +7586,8 @@ return;
 }
 else if (sExt == "boo") {
 if (App.Boo == null) App.Boo = COM.CreateObject("Iron.COM");
-sSnippet = (string) COM.CallMethod(App.Boo, "Eval", new string[] {sBody, "", "", "", ""});
-//Dialog.Show(sSnippet);
+sScript = (string) COM.CallMethod(App.Boo, "Eval", new string[] {sBody, "", "", "", ""});
+//Dialog.Show(sScript);
 return;
 }
 
@@ -7633,11 +7661,11 @@ string[] aNames = (sUserName + " ").Split(' ');
 sText = sText.Replace("%UserFirstName%", aNames[0]);
 sText = sText.Replace("%UserLastName%", aNames[1]);
 
-// A form definition first, when the snippet carries one, then the plain
-// %Label=Value% blanks, so a snippet may use either or both.
-string sFilled = FillSnippetForm(sText);
+// A form definition first, when the script carries one, then the plain
+// %Label=Value% blanks, so a script may use either or both.
+string sFilled = FillScriptForm(sText);
 if (sFilled == null) return;
-sFilled = FillSnippetVariables(sFilled);
+sFilled = FillScriptVariables(sFilled);
 if (sFilled == null) return;
 sText = sFilled;
 
@@ -7660,7 +7688,7 @@ if (rtb.SelectionLength == 0) iIndex -= sPost.Length;
 rtb.ReplaceRange(iStart, iEnd, sText);
 rtb.Index = iIndex;
 Util.Say(rtb.RowText);
-} // InvokeSnippet method
+} // InvokeScript method
 
 // ===== Python structure engine (rewritten 24 August 2026) ==================
 // PyBrace and PyDent convert between Python's indentation and a flat,
@@ -9083,7 +9111,7 @@ sbPaths.Append(Util.GetTempFolder() + "\n");
 string[] aNames = sbNames.ToString().Trim().Split('\n');
 string[] aPaths = sbPaths.ToString().Trim().Split('\n');
 
-string sDir = Dialog.Pick("Go to Special Folder", aPaths, aNames, true, 0);
+string sDir = Homer.LbcAsk.pick("Go to Special Folder", aPaths, aNames, true, 0);
 return sDir;
 } // PickSpecialFolder method
 
@@ -9141,7 +9169,7 @@ public bool FollowCompilerForFile(string sFile) {
 // depends on it therefore described whatever file you happened to pick
 // it for -- so with C# chosen, a Python file compiled with csc, Alt+Page
 // Down navigated by C# parts, comments were quoted with two slashes,
-// indentation was four spaces, and Alt+V offered C# snippets. All four
+// indentation was four spaces, and Alt+V offered C# scripts. All four
 // were wrong at once, and the only cure was to remember to change the
 // setting by hand at every switch of file.
 //
@@ -9478,7 +9506,7 @@ return;
 aNames = new string[aFiles.Length];
 for (int i = 0; i < aNames.Length; i++) aNames[i] = Path.GetFileName(aFiles[i]);
 //Array.Sort(aNames, aFiles);
-sFile = Dialog.Pick("Pick", aFiles, aNames, true, 0);
+sFile = Homer.LbcAsk.pick("Pick", aFiles, aNames, true, 0);
 if (sFile.Length == 0) return;
 
 OpenOrActivateWindow(sFile, 1);
@@ -9533,7 +9561,7 @@ iIndex = 0;
 
 App.WriteData("FileFindMatch", sMatch);
 App.WriteData("FileFindFilter", sFilter);
-sName = Dialog.Pick("Pick", aNames, true, iIndex);
+sName = Homer.LbcAsk.pick("Pick", aNames, true, iIndex);
 if (sName.Length == 0) return;
 
 int iName = Array.IndexOf(aNames, sName);
@@ -9557,7 +9585,7 @@ foreach (DocumentWindow child in children) {
 sTitles += child.Text + "\n";
 }
 string[] aTitles = sTitles.Trim().Split('\n');
-string sTitle = Dialog.Pick("Current Windows", aTitles, true, 0);
+string sTitle = Homer.LbcAsk.pick("Current Windows", aTitles, true, 0);
 if (sTitle.Length == 0) return;
 
 int iTitle = Array.IndexOf(aTitles, sTitle);
@@ -9653,7 +9681,7 @@ aVerbs[aVerbs.Length - 1] = "Open With...";
 string[] aNames = new string[aVerbs.Length];
 for (int iVerb = 0; iVerb < aVerbs.Length; iVerb++) aNames[iVerb] = aVerbs[iVerb].Replace("&", "");
 
-string sName = Dialog.Pick("Context Menu", aNames, true, 0);
+string sName = Homer.LbcAsk.pick("Context Menu", aNames, true, 0);
 if (sName.Length == 0) return;
 
 int i = Array.IndexOf(aNames, sName);
@@ -9673,7 +9701,7 @@ string[]aLinks = Directory.GetFiles(sDir);
 string sNameList = "";
 foreach (string s in aLinks) sNameList += Path.GetFileNameWithoutExtension(s) + "\n";
 string[]aNames = sNameList.Trim().Split('\n');
-string sName = Dialog.Pick("SendTo Menu", aNames, true, 0);
+string sName = Homer.LbcAsk.pick("SendTo Menu", aNames, true, 0);
 if (sName.Length == 0) return;
 
 int i = Array.IndexOf(aNames, sName);
@@ -10418,7 +10446,7 @@ if (sTitle.Length == 0) sTitle = "Pick Encoding";
 string sItem = "";
 if (hashItem.TryGetValue(sTitle, out sItem)) iPosition = 0;
 
-string sName = Dialog.Pick(sTitle, aNames, false, iPosition);
+string sName = Homer.LbcAsk.pick(sTitle, aNames, false, iPosition);
 if (sName.Length == 0) return -1;
 
 iPosition = Array.IndexOf(aNames, sName);
@@ -10598,11 +10626,6 @@ dlg.Dispose();
 return lReturn.ToArray();
 } // MultiInput method (history overload)
 
-public static string Pick(string sTitle, string[] aValue, bool bSort) {
-string[] aDisplay = null;
-int iIndex = 0;
-return Pick(sTitle, aValue, aDisplay, bSort, iIndex);
-} // Pick method
 
 public static string[] MultiPick(string sTitle, string[] aValues, int[] aSelect, bool bSort) {
 List<string> lSelectedValues = new List<string>();
@@ -10643,34 +10666,7 @@ dlg.Dispose();
 return lReturn.ToArray();
 } // MultiCheck method
 
-public static string Pick(string sTitle, string[] aValue, bool bSort, int iIndex) {
-string[] aDisplay = null;
-return Pick(sTitle, aValue, aDisplay, bSort, iIndex);
-} // Pick method
 
-public static string Pick(string sTitle, string[] aValue, string[] aDisplay, bool bSort, int iIndex) {
-string[] aVal = (string[]) aValue.Clone();
-string[] aDisp = (aDisplay == null) ? (string[]) aVal.Clone() : (string[]) aDisplay.Clone();
-if (bSort) {
-if (aDisplay == null) { Array.Sort(aVal, new CaseInsensitiveComparer()); aDisp = (string[]) aVal.Clone(); }
-else Array.Sort(aDisp, aVal);
-}
-List<string> lNames = new List<string>(aDisp);
-LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
-// A list is a tab stop, so it takes a trigger letter like any other
-// control. "Choices" is used rather than the dialog's own subject
-// because these two dialogs serve many commands, and C is free -- Cancel
-// carries no letter under the Homer guidelines.
-ListBox lst = dlg.addPickBox("&Choices", lNames, "", "");
-if (iIndex >= 0 && iIndex < lNames.Count) lst.SelectedIndex = iIndex;
-string sReturn = "";
-if (dlg.runOkCancel()) {
-int i = lst.SelectedIndex;
-if (i >= 0 && i < aVal.Length) sReturn = aVal[i];
-}
-dlg.Dispose();
-return sReturn;
-} // Pick method
 
 public static string Confirm(string sTitle, string sText, string sDefault) {
 MessageBoxDefaultButton defaultButton;
@@ -11071,7 +11067,7 @@ return aResults;
 // from EdSharp.js. Loaded by path (not /reference) so the exe and the
 // same-named dll do not collide at load time. The MethodInfo is cached
 // after first use. run returns the script result string, or text that
-// begins "ERROR: " on a compile or runtime fault in the snippet.
+// begins "ERROR: " on a compile or runtime fault in the script.
 // PickItem: carries a display string together with the index of the value
 // it represents, so a sorted pick-list can map the selected row back to the
 // original value array. Replaces the former VB6 ListBox ItemData shim.
@@ -11364,13 +11360,13 @@ static extern IntPtr GetConsoleWindow();
 [DllImport("user32.dll")]
 static extern bool SetForegroundWindow(IntPtr hWnd);
 
-// The interactive console for writing snippets. EdSharp is a windowed
+// The interactive console for writing scripts. EdSharp is a windowed
 // program with no console of its own, so one is created for the
 // occasion and released when the person types quit. The loop itself
-// lives in EdSharp.dll, where the snippet language lives, and it is
-// handed the same two objects a snippet gets: the window and its text
+// lives in EdSharp.dll, where the script language lives, and it is
+// handed the same two objects a script gets: the window and its text
 // box, both live, so a line tried here does exactly what the same line
-// will do in the snippet.
+// will do in the script.
 //
 // It runs on its own thread: reading from a console blocks, and
 // blocking the interface would freeze the editor the console is meant
@@ -11409,7 +11405,7 @@ object rtb = (App.Frame != null && App.Frame.Child != null) ? (object) App.Frame
 threadConsole = new System.Threading.Thread(delegate() {
 try {
 AllocConsole();
-Console.Title = bCSharp ? "EdSharp C# Console" : "EdSharp Snippet Console";
+Console.Title = bCSharp ? "EdSharp C# Console" : "EdSharp Script Console";
 // The streams are rebound because they were captured when the
 // program started, before any console existed.
 StreamWriter writerOut = new StreamWriter(Console.OpenStandardOutput());
@@ -11427,7 +11423,7 @@ finally { try { FreeConsole(); } catch (Exception) {} }
 threadConsole.IsBackground = true;
 threadConsole.SetApartmentState(System.Threading.ApartmentState.STA);
 threadConsole.Start();
-Util.Log("snippet console opened");
+Util.Log("script console opened");
 return true;
 } // runConsole method
 
@@ -11438,7 +11434,7 @@ return true;
 // uses -- into a small assembly which is then loaded into this process
 // and run. That last part is the point: loaded here, the code holds the
 // real editor window, so "rtb.Text = rtb.Text.ToUpper()" changes the
-// document in front of you, exactly as a snippet would.
+// document in front of you, exactly as a script would.
 //
 // Why not Roslyn's scripting package, which offers this directly? It
 // would be the elegant answer on a modern framework. On .NET Framework
@@ -11507,7 +11503,7 @@ catch (Exception ex) { sError = ex.Message; return null; }
 } // runCSharpEntry method
 
 static void sayCSharpHelp() {
-Console.WriteLine("Interactive C# for EdSharp snippets.");
+Console.WriteLine("Interactive C# for EdSharp scripts.");
 Console.WriteLine();
 Console.WriteLine("Already in scope:");
 Console.WriteLine("  frm   the editor window you came from");
@@ -11576,7 +11572,7 @@ else lsCSharpSession.Add(sInput);
 } // csharpConsoleLoop method
 
 // run: evaluate sCode with the active editor window as frm and its
-// RichTextBox as rtb, both visible to the snippet. Either may be null
+// RichTextBox as rtb, both visible to the script. Either may be null
 // for host-internal expressions that need no document context.
 public static string run(string sCode) {
 object frm = (App.Frame != null) ? App.Frame.Child : null;
@@ -11792,7 +11788,7 @@ sResult = "";
 }
 else if (aResults.Length == 1) sResult = aResults[0];
 else {
-//sResult = Dialog.Pick("Import Format", aResults, true, 0);
+//sResult = Homer.LbcAsk.pick("Import Format", aResults, true, 0);
 string sTitle = "Import " + sExt + " to ";
 // The list opens on the target format used LAST time, when this
 // source can offer it -- open an epub as txt, and the next pdf's list
@@ -11803,7 +11799,7 @@ int iDefaultPick = 0;
 for (int iPick = 0; iPick < aDisplay.Length; iPick++) {
 if (aDisplay[iPick] == sLastTarget) { iDefaultPick = iPick; break; }
 }
-sResult = Dialog.Pick(sTitle, aResults, aDisplay, true, iDefaultPick);
+sResult = Homer.LbcAsk.pick(sTitle, aResults, aDisplay, true, iDefaultPick);
 //Dialog.Show(sResult);
 if (sResult.Length == 0) return "";
 
@@ -12706,7 +12702,7 @@ throw new System.ComponentModel.Win32Exception();
 
 } // Win32 class
 
-// KEPT ON PURPOSE (10 November 2026): EdSharp's snippets call this class by name, as Util.Convert2Ascii, and so may
+// KEPT ON PURPOSE (10 November 2026): EdSharp's scripts call this class by name, as Util.Convert2Ascii, and so may
 // anyone's own, so it is EdSharp's scripting interface and keeps its name beside the kit's Util.
 public class Util {
 

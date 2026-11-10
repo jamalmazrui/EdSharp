@@ -125,7 +125,7 @@ Grouped by menu, and alphabetical within each group.
 - **HTML to Plain Text**, no key. Convert the HTML in this window to plain text, keeping paragraphs and lists.
 - **Infer Indent**, Alt+RightBracket. Infer the indent unit of the current document, or configure EdSharp accordingly if repeated.
 - **Insert Time**, Alt+Shift+Semi-colon. Insert current time and date.
-- **Invoke Snippet**, Alt+V. Pick snippet file to paste or execute.
+- **Invoke Script**, Alt+V. Pick script file to paste or execute.
 - **Keep Unique Items**, Alt+Shift+K. Discard repetitive items in all or selected text.
 - **List Different Items**, Alt+Shift+L. Compare two lists and put non-overlapping items in a new window.
 - **Lookup Term**, Alt+F7. Look up information from dictionary.com, thesaurus.com, and wikipedia.org.
@@ -151,7 +151,7 @@ Grouped by menu, and alphabetical within each group.
 - **Review Output**, Alt+Shift+F5. Open standard output of last prompt or compile command in a new editing window.
 - **Run at Cursor**, Shift+F5. Execute a web URL or email address at cursor position or in selected text.
 - **Run Code Blocks**, Alt+Shift+F9. Run the document's sql and jscript code blocks, results below each.
-- **Save Snippet**, Alt+S. Save all or selected text to a snippet file.
+- **Save Script**, Alt+S. Save all or selected text to a script file.
 - **Section Break**, Control+Enter. Insert a section break at the cursor position.
 - **Set Default Font and Color**, Alt+Shift+Equals. Set default font and color for editing window.
 - **Special Character**, F2. Insert character indirectly by specifying its Unicode value.
@@ -163,7 +163,7 @@ Grouped by menu, and alphabetical within each group.
 - **Transform Files**, Alt+Equals. Apply a list of search and replace tasks to files.
 - **Translate Language**, Alt+Shift+F7. Translate the selection or the document into another language.
 - **Unwrap**, Control+Shift+W. Unwrap lines.
-- **View Snippet**, Alt+Shift+V. Pick snippet file to view or edit.
+- **View Script**, Alt+Shift+V. Pick script file to view or edit.
 - **Web Download**, Alt+Shift+W. Pick files to download from a web page or the current document.
 - **Word Wrap**, Control+W. Word wrap lines.
 - **Yield with Regex**, Control+Shift+Y. Count parts of text matching a regular expression.
@@ -317,7 +317,7 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Alt+R**: Recent Files. Open a file from the list of those recently used.
 - **Alt+RightArrow**: Next Chunk. Go to next chunk and read it.
 - **Alt+RightBracket**: Infer Indent. Infer the indent unit of the current document, or configure EdSharp accordingly if repeated.
-- **Alt+S**: Save Snippet. Save all or selected text to a snippet file.
+- **Alt+S**: Save Script. Save all or selected text to a script file.
 - **Alt+Semi-colon**: Say Time. Say current time and date.
 - **Alt+Shift+0**: Reset Configuration. Revert to default options, or define a new compiler configuration.
 - **Alt+Shift+6**: Baseline. Set vertical alignment of cursor or selected text.
@@ -361,7 +361,7 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Alt+Shift+Space**: Web Client Utilities. Pick a web client utility to run.
 - **Alt+Shift+T**: Text Contents. Generate and prepend a table of contents to the current document.
 - **Alt+Shift+U**: Swap Case. Convert lower case characters to upper case, and vice versa.
-- **Alt+Shift+V**: View Snippet. Pick snippet file to view or edit.
+- **Alt+Shift+V**: View Script. Pick script file to view or edit.
 - **Alt+Shift+W**: Web Download. Pick files to download from a web page or the current document.
 - **Alt+Shift+X**: Export Format. Export document to another format.
 - **Alt+Shift+Y**: Yield Encoding. Render all or selected text based on a character encoding.
@@ -370,7 +370,7 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Alt+T**: Topic. Say topic of current section.
 - **Alt+U**: Proper Case. Convert current or selected characters to proper case.
 - **Alt+UpArrow**: Previous Sentence. Go to previous sentence and read it.
-- **Alt+V**: Invoke Snippet. Pick snippet file to paste or execute.
+- **Alt+V**: Invoke Script. Pick script file to paste or execute.
 - **Alt+X**: Cut Append. Cut the selection, or the line, and append it to the clipboard.
 - **Alt+Y**: Say Yield. Say number of characters, words, and lines in all or selected text.
 - **Alt+Z**: Say Status. Say whether the document is modified; twice, its encoding.

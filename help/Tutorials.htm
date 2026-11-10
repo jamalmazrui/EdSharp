@@ -294,7 +294,7 @@ folder, which is a working example of the layout.</p>
 <ul>
 <li>Alt+F5 Prompt Command for the build script; Control+F5 Compile for a
 single file</li>
-<li>Alt+Shift+F9 Run Code Blocks if your notes hold snippets to try</li>
+<li>Alt+Shift+F9 Run Code Blocks if your notes hold scripts to try</li>
 <li>Control+F12 Copy Log when reporting a problem: it puts this
 session’s log on the clipboard as a file, ready to attach to a
 message</li>
@@ -310,18 +310,18 @@ semicolon and IndentUnit becomes one tab, which is what the JAWS script
 files themselves use.</p>
 <p>JAWS script has no interactive prompt, so Control+Shift+F12 says so
 rather than opening something unrelated.</p>
-<p>Snippets help here more than anywhere. Alt+S saves the selection as a
-snippet under the current compiler, so a script skeleton or a common
-call is a keystroke away; Alt+V inserts one. EdSharp ships two, InputBox
-and SayString, which appear in the list marked as shipped.</p>
+<p>Scripts help here more than anywhere. Alt+S saves the selection as a
+script under the current compiler, so a script skeleton or a common call
+is a keystroke away; Alt+V inserts one. EdSharp ships two, InputBox and
+SayString, which appear in the list marked as shipped.</p>
 <h3 id="key-reminders-2">Key Reminders</h3>
 <ul>
 <li>Control+Shift+F5 Pick Compiler, Control+F5 Compile</li>
-<li>Alt+S Save Snippet, Alt+V Invoke Snippet</li>
+<li>Alt+S Save Script, Alt+V Invoke Script</li>
 <li>Alt+PageDown and Alt+PageUp move between scripts and functions</li>
-<li>Control+Shift+F12 opens the snippet console when the JScript .NET
+<li>Control+Shift+F12 opens the script console when the JScript .NET
 compiler is chosen: a JScript prompt with the editor window as frm and
-its text box as rtb, so a line that works there works in a snippet</li>
+its text box as rtb, so a line that works there works in a script</li>
 </ul>
 <h2 id="node.js-and-web-developer">Node.js and Web Developer</h2>
 <h3 id="setup-3">Setup</h3>
@@ -1452,7 +1452,7 @@ there, Update when a newer set is available, Reinstall when they are
 current – the word is the state, so you need not ask.</p>
 <h3 id="step-11-1">Step 11</h3>
 <p>Where things went. EdSharp itself is in Program Files; your settings,
-snippets and logs are under your local application data, in a folder
+scripts and logs are under your local application data, in a folder
 named EdSharp. An update never touches them.</p>
 <h3 id="step-12-f11">Step 12: F11</h3>
 <p>F11, Elevate Version, is the installer’s other half from now on: it
@@ -1956,8 +1956,8 @@ text, and export a Markdown file as a web page.</p>
 <h2 id="write-code">6 - Write Code</h2>
 <p>One want: a program that will not run, fixed. Choosing the compiler
 once, compiling with the cursor landing on the error, moving by blocks
-of code, hearing indentation, and snippets. This walk assumes walks
-three and five.</p>
+of code, hearing indentation, and scripts. This walk assumes walks three
+and five.</p>
 <p><strong>Before you start:</strong> EdSharp is open on a short Python
 file with one mistake, and Python was ticked when EdSharp was
 installed.</p>
@@ -2004,12 +2004,12 @@ speaks its output and lands nowhere.</p>
 <li>Total: 42</li>
 </ul>
 <h3 id="step-7-altv">Step 7: Alt+V</h3>
-<p>Snippets fill in the parts that change. Alt plus V, Invoke Snippet,
+<p>Scripts fill in the parts that change. Alt plus V, Invoke Script,
 picks a saved piece of code to paste or run; Alt plus S saves the
 selection as a new one.</p>
 <p>Screen reader:</p>
 <ul>
-<li>Invoke Snippet dialog, Snippet: list box, python-main, 1 of 14</li>
+<li>Invoke Script dialog, Script: list box, python-main, 1 of 14</li>
 </ul>
 <h3 id="step-8-escape">Step 8: Escape</h3>
 <p>F5, Run, executes the file by its extension, without the compile
@@ -2075,7 +2075,7 @@ does.</p>
 <p>Alt plus V.</p>
 <p>Screen reader:</p>
 <ul>
-<li>Invoke Snippet</li>
+<li>Invoke Script</li>
 </ul>
 <p><strong>Something to try:</strong> Compile a program of your own, go
 to its first error, fix it, and run it.</p>

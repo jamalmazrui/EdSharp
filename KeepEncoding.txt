@@ -4,8 +4,8 @@
 ; byte order mark and CRLF; check expects it. These it leaves exactly as they
 ; are: the conversion tools and their configuration, where a byte order mark on
 ; a Lua filter or a config file is read as part of its first line; the spelling
-; dictionaries; and the LaTeX snippets that demonstrate other encodings.
+; dictionaries; and the LaTeX scripts that demonstrate other encodings.
 
 configs/convert/
 data/dictionaries/
-templates/snippets/LaTeX/
+templates/scripts/LaTeX/

@@ -103,11 +103,11 @@ It lands on the earliest error in the file, which is often not the first one
 the compiler printed — compilers group warnings and errors as they please. Fix
 it and press Control+F5 again.
 
-### What is the snippet console?
+### What is the script console?
 
 Control+Shift+F12 opens a prompt where the editor window is in scope as frm and
 its text box as rtb. Type an expression to see its value, or a statement to
-change the document. Whatever works there works in a snippet, which is the
+change the document. Whatever works there works in a script, which is the
 point. There are two, JScript and C#, chosen by which compiler you have
 picked.
 

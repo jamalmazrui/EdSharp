@@ -66,7 +66,7 @@ Hear=
 
 [step]
 
-Say=Where things went. EdSharp itself is in Program Files; your settings, snippets and logs are under your local application data, in a folder named EdSharp. An update never touches them.
+Say=Where things went. EdSharp itself is in Program Files; your settings, scripts and logs are under your local application data, in a folder named EdSharp. An update never touches them.
 Key=
 Hear=
 

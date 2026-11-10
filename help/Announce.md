@@ -57,7 +57,7 @@ what is spoken.
 
 The Go to Environment command opens a console where the editor window and its
 text box are already at hand, so a line that works at the prompt also works in
-a snippet. Chat with AI, F12, sends questions about a source file to a model
+a script. Chat with AI, F12, sends questions about a source file to a model
 trained on code.
 
 ## If you work in bulk

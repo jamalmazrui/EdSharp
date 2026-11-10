@@ -45,7 +45,7 @@ starts with a different letter so the list can be walked by initial:
   a chronological one.
 - **scripts** -- the kit's tools, EdSharp's install scripts, and jaws for
   the screen reader scripts.
-- **templates** -- samples and snippets, the things a person copies and edits.
+- **templates** -- samples and scripts, the things a person copies and edits.
 
 ### What git carries
 
@@ -148,7 +148,7 @@ twice.
 **EdSharp.js** is compiled by the JScript compiler into EdSharp.dll and loaded
 by reflection, never by a compile-time reference — the executable and the
 library share a base name, and a compile-time reference would make loading
-ambiguous. It runs snippets and hosts the JScript console.
+ambiguous. It runs scripts and hosts the JScript console.
 
 ## Settings
 

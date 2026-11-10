@@ -417,6 +417,24 @@ try {
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
   writeLog "TLS 1.2 enabled for downloads."
 
+  # ---- 2c2. templates\snippets is templates\scripts (10 November 2026) ----
+  # EdSharp and DbDo both invoke scripts, so the folder took that word. The new folder comes in EdSharp.zip; once it
+  # holds every file the old one does, the old one is removed, logged file by file; until then it is left alone.
+  $sOldScripts = Join-Path $sScriptDir "templates\snippets"
+  $sNewScripts = Join-Path $sScriptDir "templates\scripts"
+  if ((Test-Path -LiteralPath $sOldScripts -PathType Container) -and (Test-Path -LiteralPath $sNewScripts -PathType Container)) {
+    $lMissing = @(Get-ChildItem -LiteralPath $sOldScripts -Recurse -File | Where-Object {
+      -not (Test-Path -LiteralPath (Join-Path $sNewScripts $_.FullName.Substring($sOldScripts.Length).TrimStart([char]92)))
+    })
+    if ($lMissing.Count -eq 0) {
+      foreach ($oFile in @(Get-ChildItem -LiteralPath $sOldScripts -Recurse -File)) { writeLog ("retired " + $oFile.FullName + "; templates\scripts has it") }
+      Remove-Item -LiteralPath $sOldScripts -Recurse -Force
+      writeLog "templates\snippets removed: templates\scripts holds every file it did"
+    } else {
+      writeLog ("templates\snippets kept: " + $lMissing.Count + " file(s) not yet in templates\scripts, such as " + $lMissing[0].FullName)
+    }
+  }
+
   # ---- 2d. Retire the old top-level Convert and Samples folders (9 October 2026) ----
   # Leftovers from the layout before configs\convert and templates\samples:
   # the program reads neither, every file in them but one was already kept,
@@ -889,6 +907,9 @@ try {
     $sConfig = [regex]::Replace($sConfig, '(?s)\s*<assemblyBinding.*?</assemblyBinding>', '')
     $sbBinding = New-Object System.Text.StringBuilder
     [void]$sbBinding.Append("`r`n    <assemblyBinding xmlns=""urn:schemas-microsoft-com:asm.v1"">")
+    # EVERY VERSION TO THE ONE SHIPPED (8 November 2026): the range had ended at the shipped version, so a library
+    # asking for a newer one -- System.Memory wants System.Runtime.CompilerServices.Unsafe 6.0.3.0, and 6.0.0.0 ships --
+    # was refused, and HTML Format failed. Each redirect now sends every version to the copy on disk.
     # Every strong-named library in exec, each to the version on disk (22 October 2026): PdfPig's
     # companions as well as Markdig's, at whichever version the copy left there.
     foreach ($sLibrary in @(Get-ChildItem -LiteralPath $sExecDir -Filter "*.dll" | ForEach-Object { $_.Name })) {
@@ -896,12 +917,14 @@ try {
         $oName = [System.Reflection.AssemblyName]::GetAssemblyName((Join-Path $sExecDir $sLibrary))
         $sToken = (($oName.GetPublicKeyToken() | ForEach-Object { $_.ToString("x2") }) -join "")
         if ($sToken -eq "") { continue }
-        [void]$sbBinding.Append("`r`n      <dependentAssembly>`r`n        <assemblyIdentity name=""$($oName.Name)"" publicKeyToken=""$sToken"" culture=""neutral"" />`r`n        <bindingRedirect oldVersion=""0.0.0.0-$($oName.Version)"" newVersion=""$($oName.Version)"" />`r`n      </dependentAssembly>")
+        [void]$sbBinding.Append("`r`n      <dependentAssembly>`r`n        <assemblyIdentity name=""$($oName.Name)"" publicKeyToken=""$sToken"" culture=""neutral"" />`r`n        <bindingRedirect oldVersion=""0.0.0.0-65535.65535.65535.65535"" newVersion=""$($oName.Version)"" />`r`n      </dependentAssembly>")
         writeLog "Binding redirect: $($oName.Name) to $($oName.Version)"
       } catch { writeLog "WARNING: no redirect for $sLibrary`: $($_.Exception.Message)" }
     }
     [void]$sbBinding.Append("`r`n    </assemblyBinding>")
     $sConfig = $sConfig.Replace("</runtime>", $sbBinding.ToString() + "`r`n  </runtime>")
+    # One line ending, CRLF, as every Homer text file has (8 November 2026); the header lines had been LF alone.
+    $sConfig = ($sConfig -replace "`r`n", "`n") -replace "`n", "`r`n"
     [System.IO.File]::WriteAllText($sConfigFile, $sConfig, (New-Object System.Text.UTF8Encoding($true)))
     writeLog "EdSharp.exe.config carries $($script:lDependencyDlls.Count) binding redirects."
   }
