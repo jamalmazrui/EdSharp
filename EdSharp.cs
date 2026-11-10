@@ -1024,7 +1024,7 @@ menuFileClearFavorite = CreateMenuItem("Clear Favorite", "Control+Shift+L", menu
 menuFileListFavorites = CreateMenuItem("List Favorites ...", "Alt+L", menuItem_Click, "frame silent");
 menuFileFind = CreateMenuItem("File Find ...", "Alt+Shift+F", menuItem_Click, "frame speak");
 menuFileSave = CreateMenuItem("&Save", "Control+S", menuItem_Click, "child speak");
-menuFileSaveAs = CreateMenuItem("Save &As ...", "Control+Shift+S", menuItem_Click, "child silent");
+menuFileSaveAs = CreateMenuItem("Save As ...", "Control+Shift+S", menuItem_Click, "child silent");
 menuFileSaveCopy = CreateMenuItem("Save Copy ...", "Alt+Shift+S", menuItem_Click, "child speak");
 menuFileExport = CreateMenuItem("Export Format ...", "Alt+Shift+X", menuItem_Click, "child silent");
 menuFileRename = CreateMenuItem("Rename ...", "Shift+F2", menuItem_Click, "child silent");
@@ -1035,9 +1035,9 @@ menuFileMailAttach = CreateMenuItem("Mail Attachment ...", "Control+Shift+M", me
 menuFilePrint = CreateMenuItem("&Print", "", menuItem_Click, "child silent");
 menuFileRun = CreateMenuItem("Run", "F5", menuItem_Click, "child speak");
 menuFileCurrentWindows = CreateMenuItem("Current Windows ...", "F4", menuItem_Click, "frame silent");
-menuFileClose = CreateMenuItem("&Close Window", "Control+F4", menuItem_Click, "child speak");
+menuFileClose = CreateMenuItem("Close Window", "Control+F4", menuItem_Click, "child speak");
 menuFileCloseAllButCurrentWindow = CreateMenuItem("Close All but Current Window", "Control+Shift+F4", menuItem_Click, "child speak");
-menuFileExit = CreateMenuItem("&E&xit EdSharp", "Alt+F4", menuItem_Click, "frame speak");
+menuFileExit = CreateMenuItem("Exit EdSharp", "Alt+F4", menuItem_Click, "frame speak");
 menuFile.DropDownItems.AddRange(new ToolStripItem[] {menuFileNew, menuFileNewFromClipboard, menuFileOpen, menuFileOpenOtherFormat, menuFileOpenAgain, menuFileRecent, menuFileSetFavorite, menuFileClearFavorite, menuFileListFavorites, menuFileFind, menuFileSave, menuFileSaveAs, menuFileSaveCopy, menuFileExport, menuFileRename, menuFileProperties, menuFileMailBody, menuFileMailAttach, menuFileRun, menuFileCurrentWindows, menuFileClose, menuFileCloseAllButCurrentWindow, menuFileExit});
 //Homer.LbcAsk.message("File.", menuFile.DropDownItems.Count);
 
@@ -1258,7 +1258,7 @@ menuWindow.DropDownItems.AddRange(new ToolStripMenuItem[] {menuWindowNext, menuW
 //Homer.LbcAsk.message("Window.", menuWindow.DropDownItems.Count);
 
 menuHelp = CreateMenu("&Help");
-menuHelpAbout = CreateMenuItem("&About ...", "Alt+F1", menuItem_Click, "frame silent");
+menuHelpAbout = CreateMenuItem("About ...", "Alt+F1", menuItem_Click, "frame silent");
 menuHelpDocumentation = CreateMenuItem("Documentation", "F1", menuItem_Click, "frame speak");
 menuHelpTutorial = CreateMenuItem("Play Tutorials", "Alt+F12", menuItem_Click, "frame speak");
 // THE HELP KEYS OF EVERY HOMER WINDOW (7 November 2026, help\KeyDecisions.md in the kit): Shift+F1 says what the

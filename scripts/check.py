@@ -1734,42 +1734,54 @@ def checkAccessibility(bScan):
 
 
 def checkMenuLetters():
-    """HOMER'S LETTER RULES IN EVERY APP (10 November 2026). DbDo's own audit checked its menus against the two rules --
-    a key's letter starts a word of the command's name, and an access letter starts a word and matches the key's
-    letter -- but EdSharp and FileDir were never checked. This reads each app's menu items as the app writes them
-    (DbDo's addItem, EdSharp's CreateMenuItem, FileDir's menu_Helper) and checks the same rules for all of them.
-
-    Standing exceptions, as in DbDo's audit: X for the "ex" sound, V for "voke", Z for a toggle or status; Windows'
-    own keys -- Control+X, C and V for the clipboard, Control+Z and Y for undo and redo -- and the Alt keys built on
-    them (Cut Append on Alt+X); and a key letter a command shares with its family: Proper Case keeps Upper Case's U,
-    since another command on that letter starts a word with it and shares a word with this one. A warning, not a
-    failure: each break is logged for a person to judge."""
-    lPatterns = [r'addItem\(mi[A-Za-z]+,\s*"([^"]*)",\s*"[^"]*",\s*([^,]+?),',
-                 r'CreateMenuItem\("([^"]*)",\s*"([^"]*)"',
-                 r'menu_Helper\("([^"]*)",\s*"([^"]*)"']
-    lItems = []
+    """HOMER'S LETTER RULES IN EVERY APP (10 November 2026, strengthened the same day after a walk of DbDo's menus).
+    Reads each app's menu items as the app writes them -- DbDo's addItem, EdSharp's CreateMenuItem, FileDir's
+    menu_Helper -- with the menu each is added to, and checks five rules:
+      1. no two items in one menu share an access letter;
+      2. an access letter starts a word of the item's name, never sits inside one;
+      3. an item whose key is a letter has that letter as its access letter, if it has one -- Shift or not;
+      4. an item whose key is a function key, an arrow or a symbol has no access letter;
+      5. a key's letter starts a word of the item's name;
+      6. a caption marks at most one access letter.
+    Standing exceptions, as in DbDo's audit: X for the "ex" sound, V for "voke", Z for a toggle or status; Windows' own
+    keys -- Control+X, C and V, Control+Z and Y -- and the keys built on them; a letter a command family shares, as
+    Proper Case keeps Upper Case's U; and Shift, which keeps a command's letter for rule 5. A failure, so a break
+    stops the release; each is logged."""
+    lItems = []   # (sMenu, sCaption, sKeys)
     for sPath in glob.glob(os.path.join(sRoot, "*.cs")):
         sText = readText(sPath)
-        for sPattern in lPatterns:
-            for sCaption, sKeys in re.findall(sPattern, sText):
-                sKeys = sKeys.replace("Keys.", "").replace(" | ", "+").replace("|", "+").strip()
-                lItems.append((sCaption, sKeys))
+        sCode = "\n".join(s for s in sText.splitlines() if not s.lstrip().startswith("//"))
+        for sMenu, sCaption, sKeys in re.findall(r'addItem\((mi[A-Za-z]+),\s*"([^"]*)",\s*"[^"]*",\s*([^,]+?),', sCode):
+            lItems.append((sMenu, sCaption, sKeys.replace("Keys.", "").replace(" | ", "+").replace("|", "+").strip()))
+        dParent = {}
+        for sParent, sList in re.findall(r'(\w+)\.DropDownItems\.AddRange\(new ToolStripItem\[\]\s*\{([^}]*)\}', sCode):
+            for sChild in re.findall(r"\w+", sList): dParent[sChild] = sParent
+        for sParent, sChild in re.findall(r'(\w+)\.DropDownItems\.Add\((\w+)\)', sCode): dParent[sChild] = sParent
+        for sVar, sCaption, sKeys in re.findall(r'(\w+)\s*=\s*(?:CreateMenuItem|menu_Helper)\("([^"]*)",\s*"([^"]*)"', sCode):
+            lItems.append((dParent.get(sVar, ""), sCaption, sKeys))
     if not lItems:
         return finding("menu letters", "skip", "no menu items found in the app's code")
     setWindows = {"X", "C", "V", "Z", "Y"}
+    def mainKey(sKeys):
+        lParts = [s for s in re.split(r"\+", sKeys.split(" or ")[0].strip()) if s]
+        lMain = [s for s in lParts if s not in ("Alt", "Control", "Shift", "Ctrl")]
+        return lMain[-1] if lMain else ""
     def keyLetter(sKeys):
-        oMatch = re.search(r"(?:^|\+)([A-Za-z])(?:$|\b)", sKeys.split(" or ")[0])
-        return oMatch.group(1).upper() if oMatch else ""
-    def exempt(sLetter, sPlain, sKeys):
+        sMain = mainKey(sKeys)
+        return sMain.upper() if len(sMain) == 1 and sMain.isalpha() else ""
+    def symbolKey(sKeys):
+        sMain = mainKey(sKeys)
+        return sMain != "" and sMain != "None" and not (len(sMain) == 1 and sMain.isalnum()) and not re.match(r"^D\d$", sMain)
+    def exempt(sLetter, sPlain):
         if sLetter == "X" and re.search(r"ex", sPlain, re.I): return True
         if sLetter == "V" and re.search(r"voke", sPlain, re.I): return True
         if sLetter == "Z" and re.search(r"toggle|status", sPlain, re.I): return True
         if sLetter in setWindows and re.search(r"cut|copy|paste|undo|redo|repeat", sPlain, re.I): return True
-        return "Shift" in sKeys   # Shift reverses or extends a command, and keeps its letter
+        return False
     lFacts = []
-    for sCaption, sKeys in lItems:
-        sPlainOne = sCaption.replace("&", "").replace("...", "").strip()
-        lFacts.append((sPlainOne, keyLetter(sKeys), set(s.lower() for s in re.findall(r"[A-Za-z][A-Za-z0-9']*", sPlainOne))))
+    for sMenu, sCaption, sKeys in lItems:
+        sPlain = sCaption.replace("&", "").replace("...", "").strip()
+        lFacts.append((sPlain, keyLetter(sKeys), set(s.lower() for s in re.findall(r"[A-Za-z][A-Za-z0-9']*", sPlain))))
     def family(sLetter, sPlain):
         setWords = set(s.lower() for s in re.findall(r"[A-Za-z][A-Za-z0-9']*", sPlain))
         for sOther, sOtherLetter, setOther in lFacts:
@@ -1777,21 +1789,37 @@ def checkMenuLetters():
             if sLetter.lower() in [s[0] for s in setOther] and setWords & setOther: return True
         return False
     lBreaks = []
-    for sCaption, sKeys in lItems:
+    dByMenu = {}
+    for sMenu, sCaption, sKeys in lItems:
         sPlain = sCaption.replace("&", "").replace("...", "").strip()
         lInitials = [s[0].upper() for s in re.findall(r"[A-Za-z][A-Za-z0-9']*", sPlain)]
         sHot = keyLetter(sKeys)
-        oAmp = re.search(r"&(.)", sCaption)
+        oAmp = re.search(r"&([^&])", sCaption)
+        if len(re.findall(r"&[^&]", sCaption.replace("&&", ""))) > 1:
+            lBreaks.append("%s: more than one access letter is marked in its caption" % sPlain)
         if oAmp:
+            sAmp = oAmp.group(1).upper()
+            if sMenu: dByMenu.setdefault(sMenu, []).append((sAmp, sPlain))
             iAt = sCaption.index("&")
-            if iAt > 0 and sCaption[iAt - 1].isalnum() and not exempt(oAmp.group(1).upper(), sPlain, sKeys):
-                lBreaks.append("%s: access letter %s is inside a word" % (sPlain, oAmp.group(1).upper()))
-        if sHot and sHot not in lInitials and not exempt(sHot, sPlain, sKeys) and not family(sHot, sPlain):
+            if iAt > 0 and sCaption[iAt - 1].isalnum() and not exempt(sAmp, sPlain):
+                lBreaks.append("%s: access letter %s is inside a word" % (sPlain, sAmp))
+            if sHot and sAmp != sHot and not exempt(sHot, sPlain):
+                lBreaks.append("%s: access letter %s, but its key %s has the letter %s" % (sPlain, sAmp, sKeys, sHot))
+            if symbolKey(sKeys):
+                lBreaks.append("%s: key %s is not a letter, so the item takes no access letter, but it has %s" % (sPlain, sKeys, sAmp))
+        if sHot and sHot not in lInitials and not exempt(sHot, sPlain) and "Shift" not in sKeys and not family(sHot, sPlain):
             lBreaks.append("%s: key %s, and %s starts none of its words" % (sPlain, sKeys, sHot))
+    for sMenu, lLetters in sorted(dByMenu.items()):
+        dSeen = {}
+        for sAmp, sPlain in lLetters: dSeen.setdefault(sAmp, []).append(sPlain)
+        for sAmp, lNames in sorted(dSeen.items()):
+            if len(lNames) > 1: lBreaks.append("%s menu: access letter %s is shared by %s" % (sMenu, sAmp, "; ".join(lNames)))
     for sBreak in lBreaks: logLine("MENU LETTER: " + sBreak)
     if lBreaks:
-        return finding("menu letters", "warn", "%d of %d menu items break Homer's letter rules; each is in the log" % (len(lBreaks), len(lItems)))
-    return finding("menu letters", "pass", "%d menu items, each key and access letter starting a word of its name" % len(lItems))
+        # A GATE, NOT A WARNING (10 November 2026): Jamal heard shared letters and a letter that was not its key's in a
+        # walk of DbDo's menus, and a warning had let them through; every app passes, so a break now stops the release.
+        return finding("menu letters", "fail", "%d break(s) of Homer's letter rules among %d menu items; each is in the log" % (len(lBreaks), len(lItems)))
+    return finding("menu letters", "pass", "%d menu items: no letter shared in a menu, each letter starts a word and matches its key, none on a function or symbol key" % len(lItems))
 
 
 def checkKitClasses():
