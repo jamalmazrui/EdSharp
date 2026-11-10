@@ -36,7 +36,7 @@ should not go up.
 The development folder mirrors the installed one, and every standard folder
 starts with a different letter so the list can be walked by initial:
 
-- **configs** -- EdSharp.ini, EdSharp.inix, Hotkeys.ini, Tools.inix, and
+- **configs** -- EdSharp.ini, EdSharp.inix, Hotkeys.inix, Tools.inix, and
   convert, the conversion tools.
 - **data** -- dictionaries, the spelling files.
 - **exec** -- the built program, its libraries and the installer. Not in git.

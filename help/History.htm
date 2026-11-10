@@ -187,6 +187,9 @@
 <li><a href="#edsharp-history" id="toc-edsharp-history">EdSharp
 History</a>
 <ul>
+<li><a href="#10-november-2026----settings-in-inix-found-where-they-are"
+id="toc-10-november-2026----settings-in-inix-found-where-they-are">10
+November 2026 -- Settings in .inix, found where they are</a></li>
 <li><a href="#10-november-2026----one-list-for-picking"
 id="toc-10-november-2026----one-list-for-picking">10 November 2026 --
 One list for picking</a></li>
@@ -368,6 +371,23 @@ id="toc-earlier-in-august-2026">Earlier in August 2026</a></li>
 </nav>
 <main>
 <h1 id="edsharp-history">EdSharp History</h1>
+<h2 id="10-november-2026----settings-in-inix-found-where-they-are">10
+November 2026 -- Settings in .inix, found where they are</h2>
+<ul>
+<li><strong>EdSharp's shipped files are found again.</strong> Since they
+moved into configs, EdSharp had looked for them beside EdSharp.exe: the
+shipped settings layer (EdSharp.inix), the defaults and the key file. So
+an installed EdSharp used what was built into it, or an older copy left
+beside the program. It now looks in configs first, and the installer
+removes the old copies beside the program. The rewritten command
+descriptions are heard now, from the key file.</li>
+<li><strong>Every EdSharp settings file is .inix.</strong> The key file
+is Hotkeys.inix and the defaults are EdSharpDefaults.inix, both replaced
+at every install. Each compiler setting's file is Name.inix: the first
+time EdSharp opens one, your old Name.ini is copied there, accented
+letters and all, and the old file is left where it was. Your own
+settings were already in your EdSharp.inix.</li>
+</ul>
 <h2 id="10-november-2026----one-list-for-picking">10 November 2026 --
 One list for picking</h2>
 <ul>

@@ -208,8 +208,10 @@ Source: "scripts\jaws\*"; Excludes: "*.jsb";   DestDir: "{app}\scripts\jaws"; Fl
 ; NVDA add-on (installed on the Finish page via [Run]).
 Source: "exec\EdSharp.nvda-addon"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 ; Configuration: do not clobber a user's existing settings on upgrade.
-Source: "configs\EdSharp.ini";        DestDir: "{app}\configs"; Flags: onlyifdoesntexist
-Source: "configs\Hotkeys.ini";        DestDir: "{app}\configs"; Flags: onlyifdoesntexist
+; EdSharpDefaults.inix, the shipped defaults, replaced at every install (10 November 2026); they were EdSharp.ini.
+Source: "configs\EdSharpDefaults.inix"; DestDir: "{app}\configs"; Flags: ignoreversion
+; Hotkeys.inix, replaced at every install (10 November 2026): it is the program's own list of keys and descriptions.
+Source: "configs\Hotkeys.inix";       DestDir: "{app}\configs"; Flags: ignoreversion
 ; Documentation.
 Source: "help\EdSharp.md";         DestDir: "{app}\help"; Flags: ignoreversion
 Source: "help\EdSharp.htm";        DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
@@ -265,6 +267,15 @@ Type: filesandordirs; Name: "{app}\scripts\jaws"
 ; templates\snippets is templates\scripts (10 November 2026). The program folder holds only what the installer
 ; ships -- your own files live under %LOCALAPPDATA%\EdSharp -- so the old folder goes when the new one comes.
 Type: filesandordirs; Name: "{app}\templates\snippets"
+; Hotkeys.ini is Hotkeys.inix (10 November 2026).
+Type: files; Name: "{app}\configs\Hotkeys.ini"
+; The shipped files EdSharp now finds in configs (10 November 2026): an older copy beside the program would be
+; read in their place. Your own settings are in %LOCALAPPDATA%\EdSharp and are not touched.
+Type: files; Name: "{app}\configs\EdSharp.ini"
+Type: files; Name: "{app}\EdSharp.ini"
+Type: files; Name: "{app}\EdSharp.inix"
+Type: files; Name: "{app}\Hotkeys.ini"
+Type: files; Name: "{app}\Hotkeys.inix"
 ; The loose handshake file older versions left in C:\temp; the logs
 ; folder is its home now.
 Type: files; Name: "C:\temp\EdSharp_jaws.result"

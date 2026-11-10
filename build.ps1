@@ -417,6 +417,18 @@ try {
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
   writeLog "TLS 1.2 enabled for downloads."
 
+  # ---- 2c1. configs\EdSharp.ini and configs\Hotkeys.ini are .inix (10 November 2026) ----
+  # EdSharpDefaults.inix and Hotkeys.inix replace them and come in EdSharp.zip; once each new file is here, its old
+  # one is removed, and logged. People's own settings are in %LOCALAPPDATA%\EdSharp, not in the project.
+  foreach ($aPair in @(@("configs\EdSharp.ini", "configs\EdSharpDefaults.inix"), @("configs\Hotkeys.ini", "configs\Hotkeys.inix"))) {
+    $sOldConfig = Join-Path $sScriptDir $aPair[0]
+    $sNewConfig = Join-Path $sScriptDir $aPair[1]
+    if ((Test-Path -LiteralPath $sOldConfig) -and (Test-Path -LiteralPath $sNewConfig)) {
+      Remove-Item -LiteralPath $sOldConfig -Force
+      writeLog ("retired " + $aPair[0] + "; " + $aPair[1] + " replaces it")
+    }
+  }
+
   # ---- 2c2. templates\snippets is templates\scripts (10 November 2026) ----
   # EdSharp and DbDo both invoke scripts, so the folder took that word. The new folder comes in EdSharp.zip; once it
   # holds every file the old one does, the old one is removed, logged file by file; until then it is left alone.

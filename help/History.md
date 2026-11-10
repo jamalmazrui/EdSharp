@@ -2,6 +2,11 @@
 
 
 
+## 10 November 2026 -- Settings in .inix, found where they are
+
+- **EdSharp's shipped files are found again.** Since they moved into configs, EdSharp had looked for them beside EdSharp.exe: the shipped settings layer (EdSharp.inix), the defaults and the key file. So an installed EdSharp used what was built into it, or an older copy left beside the program. It now looks in configs first, and the installer removes the old copies beside the program. The rewritten command descriptions are heard now, from the key file.
+- **Every EdSharp settings file is .inix.** The key file is Hotkeys.inix and the defaults are EdSharpDefaults.inix, both replaced at every install. Each compiler setting's file is Name.inix: the first time EdSharp opens one, your old Name.ini is copied there, accented letters and all, and the old file is left where it was. Your own settings were already in your EdSharp.inix.
+
 ## 10 November 2026 -- One list for picking
 
 - **EdSharp's list of strings is the kit's HomerList,** shared with FileDir; EdSharp's own copy is gone. The two had the same methods; only the casing of seventeen names differed.

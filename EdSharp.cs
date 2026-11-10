@@ -163,7 +163,7 @@ App.ProgramDir = GetProgramDir();
 App.DataDir = GetDataDir();
 App.TempFile = GetTempFile();
 App.DefaultIniFile = GetDefaultIniFile();
-App.HotkeyIniFile = Path.Combine(App.ProgramDir, "Hotkeys.ini");
+App.HotkeyIniFile = GetHotkeyFile();
 App.IniFile = GetIniFile();
 Inix.migrateFromIni();
 
@@ -233,7 +233,7 @@ App.ProgramDir = GetProgramDir();
 App.DataDir = GetDataDir();
 App.TempFile = GetTempFile();
 App.DefaultIniFile = GetDefaultIniFile();
-App.HotkeyIniFile = Path.Combine(App.ProgramDir, "Hotkeys.ini");
+App.HotkeyIniFile = GetHotkeyFile();
 App.IniFile = GetIniFile();
 App.IndentModeFile = Path.Combine(App.DataDir, "IndentMode.tmp");
 // IniFile = GetIniFile();
@@ -414,6 +414,40 @@ App.TempFiles.Add(sReturn);
 return sReturn;
 } // GetTempFile method
 
+// CompilerFile: a compiler setting's own file, Name.inix in EdSharp's data folder (10 November 2026). Homer apps keep
+// settings in .inix; these were Name.ini, written by Windows' profile functions. The first time one is asked for, an
+// old Name.ini is copied to Name.inix -- read in the system's code page, or by its byte order mark, and written as
+// UTF-8 -- and the old file is left where it was. Values read the same: both readers drop one pair of quotes.
+public static string CompilerFile(string sName) {
+string sInix = Path.Combine(App.DataDir, sName + ".inix");
+string sIni = Path.Combine(App.DataDir, sName + ".ini");
+try {
+if (!File.Exists(sInix) && File.Exists(sIni)) {
+File.WriteAllText(sInix, File.ReadAllText(sIni, Encoding.Default), new UTF8Encoding(true));
+Util.Log("settings: " + sIni + " copied to " + sInix);
+}
+}
+catch (Exception ex) { Util.Log("settings: " + sIni + " could not be copied to .inix: " + ex.Message); }
+return sInix;
+} // CompilerFile method
+
+// ShippedFile: a file the installer ships in configs (10 November 2026). EdSharp looked beside EdSharp.exe for its
+// shipped files -- the configuration layer EdSharp.inix, the defaults, the key file -- but the installer puts them in
+// configs, so in an installed EdSharp they were not found, or an older copy left beside the program was read instead.
+// configs beside the program is looked in first (installed), then configs one folder up (running from the project's
+// exec folder), then beside the program.
+public static string ShippedFile(string sName) {
+string[] aPlaces = new string[] {
+Path.Combine(Path.Combine(App.ProgramDir, "configs"), sName),
+Path.Combine(Path.Combine(Path.Combine(App.ProgramDir, ".."), "configs"), sName),
+Path.Combine(App.ProgramDir, sName)};
+foreach (string sPlace in aPlaces) if (File.Exists(sPlace)) return Path.GetFullPath(sPlace);
+return aPlaces[0];
+} // ShippedFile method
+
+public static string GetHotkeyFile() { return ShippedFile("Hotkeys.inix"); }
+
+
 public static string GetIniFile() {
 string sName = GetAppName() + ".ini";
 string sDir = GetDataDir();
@@ -422,10 +456,8 @@ return sReturn;
 } // GetIniFile method
 
 public static string GetDefaultIniFile() {
-string sName = GetAppName() + ".ini";
-string sDir = GetProgramDir();
-string sReturn = Path.Combine(sDir, sName);
-return sReturn;
+// The shipped defaults, EdSharpDefaults.inix in configs (10 November 2026); they were EdSharp.ini.
+return ShippedFile(GetAppName() + "Defaults.inix");
 } // GetDefaultIniFile method
 
 public static string ReadData(string sKey, string sDefault) {
@@ -1280,7 +1312,7 @@ Util.ActivateTitle(this.Text);
 };
 
 string sDir = Directory.GetCurrentDirectory();
-string sFile = Path.Combine(App.DataDir, App.ReadData("Compiler", "Default") + ".ini");
+string sFile = App.CompilerFile(App.ReadData("Compiler", "Default"));
 s = Ini.ReadValue(sFile, "Data", "Directory", "");
 if (Directory.Exists(s) && !Util.Equiv(sDir, s)) {
 //Homer.LbcAsk.message(sDir, s);
@@ -5856,7 +5888,7 @@ if (sResult == "&Main") {
 sFile = Inix.userPath();
 if (!File.Exists(sFile)) File.WriteAllText(sFile, "; Your EdSharp settings. A value here overrides the shipped one.\r\n", new UTF8Encoding(true));
 }
-else sFile = Path.Combine(App.DataDir, sCompiler + ".ini");
+else sFile = App.CompilerFile(sCompiler);
 OpenOrActivateWindow(sFile, 0);
 }
 
@@ -5881,7 +5913,7 @@ Inix.reload();
 }
 
 if (sResult == sCompiler || sResult == "&Both") {
-sFile = Path.Combine(App.DataDir, App.ReadData("Compiler", "Default") + ".ini");
+sFile = App.CompilerFile(App.ReadData("Compiler", "Default"));
 if (System.IO.File.Exists(sFile)) System.IO.File.Delete(sFile);
 }
 
@@ -6090,11 +6122,11 @@ if (i == -1) i = 0;
 sResult = Homer.LbcAsk.pick("Pick Compiler", aResults, false, i);
 if (sResult.Length == 0) return;
 
-sFile = Path.Combine(App.DataDir, App.ReadData("Compiler", "Default") + ".ini");
+sFile = App.CompilerFile(App.ReadData("Compiler", "Default"));
 string sDir = Directory.GetCurrentDirectory();
 Ini.WriteValue(sFile, "Data", "Directory", sDir);
 App.WriteData("Compiler", sResult);
-sFile = Path.Combine(App.DataDir, sResult + ".ini");
+sFile = App.CompilerFile(sResult);
 string s = Ini.ReadValue(sFile, "Data", "Directory", "");
 if (Directory.Exists(s) && !Util.Equiv(sDir, s)) {
 AddMessage("Folder " + Path.GetFileName(s));
@@ -9004,7 +9036,7 @@ else sTime += "|" + (this.Child.RTB.ReadOnly ? "G" : "M") + "|" + Util.If(this.C
 App.WriteValue("Recent", sFile, sTime);
 string sDir = Path.GetDirectoryName(sFile);
 if (Directory.Exists(sDir)) Directory.SetCurrentDirectory(sDir);
-sFile = Path.Combine(App.DataDir, App.ReadData("Compiler", "Default") + ".ini");
+sFile = App.CompilerFile(App.ReadData("Compiler", "Default"));
 Ini.WriteValue(sFile, "Data", "Directory", sDir);
 } // SetRecent method
 
@@ -12057,7 +12089,7 @@ static string getProgramPath() {
 // the installer refreshes it on every upgrade (ignoreversion), unlike
 // the data-folder files, which belong to the user and are preserved.
 if (String.IsNullOrEmpty(App.ProgramDir)) return null;
-return Path.Combine(App.ProgramDir, App.GetAppName() + ".inix");
+return App.ShippedFile(App.GetAppName() + ".inix");   // in configs, where the installer puts it (10 November 2026)
 } // getProgramPath method
 
 static DateTime dtUserLoaded = DateTime.MinValue;
@@ -12234,8 +12266,10 @@ catch { return false; }
 } // Inix class
 
 public class Ini {
+// IsInix: a file Homer's .inix codec reads and writes, not Windows' profile functions (10 November 2026).
+public static bool IsInix(string sFile) { return !String.IsNullOrEmpty(sFile) && sFile.EndsWith(".inix", StringComparison.OrdinalIgnoreCase); }
 public static string RedirectFile(string sFile, string sSection) {
-if(Util.Equiv(sFile, App.IniFile) && (Util.Equiv(sSection, "Favorites") || Util.Equiv(sSection, "Recent") || Util.Equiv(sFile, "Tokens"))) sFile = Path.Combine(App.DataDir, App.ReadData("Compiler", "Default") + ".ini");
+if(Util.Equiv(sFile, App.IniFile) && (Util.Equiv(sSection, "Favorites") || Util.Equiv(sSection, "Recent") || Util.Equiv(sFile, "Tokens"))) sFile = App.CompilerFile(App.ReadData("Compiler", "Default"));
 return sFile;
 } // RedirectFile method
 
@@ -12247,6 +12281,8 @@ if (Util.Equiv(sFile, App.IniFile) && Inix.tryGet(sSection, sKey, out sInix)) re
 // .inix only: what your .inix and the shipped one lack comes from the shipped defaults.
 if (Util.Equiv(sFile, App.IniFile) && !Inix.isRedirected(sSection) && !File.Exists(App.IniFile)) sFile = App.DefaultIniFile;
 sFile = RedirectFile(sFile, sSection);
+// A .inix file is read by the kit's InixCodec (10 November 2026); Windows' profile functions read only .ini.
+if (IsInix(sFile)) return Homer.InixCodec.readValue(sFile, sSection, sKey, sDefault);
 StringBuilder sb = new StringBuilder(260);
 if (GetPrivateProfileString(sSection, sKey, sDefault, sb, sb.Capacity, sFile) > 0) return sb.ToString();
 else return sDefault;
@@ -12272,6 +12308,7 @@ Inix.reload();
 return bWritten;
 }
 sFile = RedirectFile(sFile, sSection);
+if (IsInix(sFile)) return Homer.InixCodec.writeValue(sFile, sSection, sKey, sValue);   // the codec quotes a value when it must
 string sRaw = sValue;
 if (bQuote) sValue = "\"" + sValue + "\"";
 bool bReturn = WritePrivateProfileString(sSection, sKey, sValue, sFile);
@@ -12285,6 +12322,7 @@ public static extern bool WritePrivateProfileString(string sSection, string sKey
 public static bool DeleteKey(String sFile, String sSection, String sKey) {
 if (Util.Equiv(sFile, App.IniFile) && !Inix.isRedirected(sSection)) return Inix.removeUser(sSection, sKey);
 sFile = RedirectFile(sFile, sSection);
+if (IsInix(sFile)) return Homer.InixCodec.writeValue(sFile, sSection, sKey, "");   // an empty value removes the key
 int iValue = 0;
 bool bReturn = WritePrivateProfileString(sSection, sKey, iValue, sFile);
 FlushFile(sFile);
@@ -12295,6 +12333,11 @@ return bReturn;
 public static extern bool WritePrivateProfileString(string sSection, int iKey, int iValue, string sFile);
 public static bool DeleteSection(String sFile, String sSection) {
 if (Util.Equiv(sFile, App.IniFile) && !Inix.isRedirected(sSection)) return Inix.removeUser(sSection, null);
+if (IsInix(sFile)) {
+bool bAll = true;
+foreach (string sKey in ReadSectionKeys(sFile, sSection, false)) if (!Homer.InixCodec.writeValue(sFile, sSection, sKey, "")) bAll = false;
+return bAll;
+}
 int iKey = 0;
 int iValue = 0;
 bool bReturn = WritePrivateProfileString(sSection, iKey, iValue, sFile);
