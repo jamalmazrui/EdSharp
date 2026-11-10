@@ -2,6 +2,14 @@
 
 
 
+## 9 November 2026 -- One short sentence per command
+
+- **Descriptions rewritten** as single short sentences, in the same words across Homer: no asides in parentheses, no other keys named. The describer had taken a second key, such as JAWSKey+Shift+DownArrow for Say Selected, as the start of the description. Every key on a line now stays with the keys.
+
+## 9 November 2026 -- The kit's check script
+
+- **scripts\\check.py is the kit's current copy,** which uses the kit's accessibility scanner first and logs which one ran.
+
 ## 9 November 2026 -- The Alternate Menu, the same in every Homer app
 
 - **Alt+F10 shows every command in one list,** in menu order, with Menu order, Name order and Key order buttons to sort it. In the list, Control+F filters and Control+Shift+F clears the filter; Control+J and Control+Shift+J jump to a line holding what you type; F3 and Shift+F3 go to the next and previous match.

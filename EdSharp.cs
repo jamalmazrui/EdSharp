@@ -2340,7 +2340,15 @@ if (sValue.Length == 0) sValue = Ini.ReadValue(App.HotkeyIniFile, "Hotkeys", "Sa
 catch (Exception oError) { Homer.Log.exception(oError); }
 if (sValue.Length == 0) sValue = builtInSummary(sCommand);
 int iComma = sValue.IndexOf(",");
-if (iComma >= 0 && readsAsKeys(sValue.Substring(0, iComma))) sValue = sValue.Substring(iComma + 1);
+if (iComma >= 0 && readsAsKeys(sValue.Substring(0, iComma))) {
+sValue = sValue.Substring(iComma + 1);
+// A second key given as ", or Key" or ", through Key" is a key too (9 November 2026), not the description's start.
+while (sValue.TrimStart().StartsWith("or ") || sValue.TrimStart().StartsWith("through ")) {
+int iNext = sValue.IndexOf(",");
+if (iNext < 0) break;
+sValue = sValue.Substring(iNext + 1);
+}
+}
 return sValue.Trim();
 } // descriptionFor method
 
