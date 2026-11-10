@@ -14577,6 +14577,9 @@ return Code2Char(iCode).ToString();
 
 } // Util class
 
+// KEPT ON PURPOSE (10 November 2026): the kit has HomerList now, in Camel Type, from FileDir. This older copy's methods
+// have upper-camel names -- ToLower, TrimEnd, AddRange -- that are also string and list methods, so its calls cannot
+// be told from theirs by reading the code; moving EdSharp onto the kit's needs a compiler in the loop, call by call.
 public class HomerList : List<string> {
 
 public char Delimiter = '|';

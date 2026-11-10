@@ -1733,6 +1733,67 @@ def checkAccessibility(bScan):
     return finding("accessibility", sVerdict, sEvidence)
 
 
+def checkMenuLetters():
+    """HOMER'S LETTER RULES IN EVERY APP (10 November 2026). DbDo's own audit checked its menus against the two rules --
+    a key's letter starts a word of the command's name, and an access letter starts a word and matches the key's
+    letter -- but EdSharp and FileDir were never checked. This reads each app's menu items as the app writes them
+    (DbDo's addItem, EdSharp's CreateMenuItem, FileDir's menu_Helper) and checks the same rules for all of them.
+
+    Standing exceptions, as in DbDo's audit: X for the "ex" sound, V for "voke", Z for a toggle or status; Windows'
+    own keys -- Control+X, C and V for the clipboard, Control+Z and Y for undo and redo -- and the Alt keys built on
+    them (Cut Append on Alt+X); and a key letter a command shares with its family: Proper Case keeps Upper Case's U,
+    since another command on that letter starts a word with it and shares a word with this one. A warning, not a
+    failure: each break is logged for a person to judge."""
+    lPatterns = [r'addItem\(mi[A-Za-z]+,\s*"([^"]*)",\s*"[^"]*",\s*([^,]+?),',
+                 r'CreateMenuItem\("([^"]*)",\s*"([^"]*)"',
+                 r'menu_Helper\("([^"]*)",\s*"([^"]*)"']
+    lItems = []
+    for sPath in glob.glob(os.path.join(sRoot, "*.cs")):
+        sText = readText(sPath)
+        for sPattern in lPatterns:
+            for sCaption, sKeys in re.findall(sPattern, sText):
+                sKeys = sKeys.replace("Keys.", "").replace(" | ", "+").replace("|", "+").strip()
+                lItems.append((sCaption, sKeys))
+    if not lItems:
+        return finding("menu letters", "skip", "no menu items found in the app's code")
+    setWindows = {"X", "C", "V", "Z", "Y"}
+    def keyLetter(sKeys):
+        oMatch = re.search(r"(?:^|\+)([A-Za-z])(?:$|\b)", sKeys.split(" or ")[0])
+        return oMatch.group(1).upper() if oMatch else ""
+    def exempt(sLetter, sPlain, sKeys):
+        if sLetter == "X" and re.search(r"ex", sPlain, re.I): return True
+        if sLetter == "V" and re.search(r"voke", sPlain, re.I): return True
+        if sLetter == "Z" and re.search(r"toggle|status", sPlain, re.I): return True
+        if sLetter in setWindows and re.search(r"cut|copy|paste|undo|redo|repeat", sPlain, re.I): return True
+        return "Shift" in sKeys   # Shift reverses or extends a command, and keeps its letter
+    lFacts = []
+    for sCaption, sKeys in lItems:
+        sPlainOne = sCaption.replace("&", "").replace("...", "").strip()
+        lFacts.append((sPlainOne, keyLetter(sKeys), set(s.lower() for s in re.findall(r"[A-Za-z][A-Za-z0-9']*", sPlainOne))))
+    def family(sLetter, sPlain):
+        setWords = set(s.lower() for s in re.findall(r"[A-Za-z][A-Za-z0-9']*", sPlain))
+        for sOther, sOtherLetter, setOther in lFacts:
+            if sOther == sPlain or sOtherLetter != sLetter: continue
+            if sLetter.lower() in [s[0] for s in setOther] and setWords & setOther: return True
+        return False
+    lBreaks = []
+    for sCaption, sKeys in lItems:
+        sPlain = sCaption.replace("&", "").replace("...", "").strip()
+        lInitials = [s[0].upper() for s in re.findall(r"[A-Za-z][A-Za-z0-9']*", sPlain)]
+        sHot = keyLetter(sKeys)
+        oAmp = re.search(r"&(.)", sCaption)
+        if oAmp:
+            iAt = sCaption.index("&")
+            if iAt > 0 and sCaption[iAt - 1].isalnum() and not exempt(oAmp.group(1).upper(), sPlain, sKeys):
+                lBreaks.append("%s: access letter %s is inside a word" % (sPlain, oAmp.group(1).upper()))
+        if sHot and sHot not in lInitials and not exempt(sHot, sPlain, sKeys) and not family(sHot, sPlain):
+            lBreaks.append("%s: key %s, and %s starts none of its words" % (sPlain, sKeys, sHot))
+    for sBreak in lBreaks: logLine("MENU LETTER: " + sBreak)
+    if lBreaks:
+        return finding("menu letters", "warn", "%d of %d menu items break Homer's letter rules; each is in the log" % (len(lBreaks), len(lItems)))
+    return finding("menu letters", "pass", "%d menu items, each key and access letter starting a word of its name" % len(lItems))
+
+
 def checkKitClasses():
     """ONE COPY OF EACH SHARED CLASS (5 November 2026). Every Homer app is to use the kit's classes, compiled from
     C:\\HomerDev\\exec\\CSharp, not keep its own. This lists each class an app defines under a name the kit already
@@ -2046,6 +2107,7 @@ def main():
         checkAccessibility(not dArguments.noscan)
         checkWalk()
         checkKitClasses()
+        checkMenuLetters()
         checkAccept()
 
     sReport = writeReport()

@@ -4,6 +4,7 @@
 
 ## 10 November 2026 -- One list for picking
 
+- **EdSharp's HomerList is marked as kept on purpose,** with the reason, now that the kit has its own.
 - **A prompt naming a password hides what you type,** and cancelling a prompt is said, as in FileDir: both use the kit's one input now.
 - **Fields to fill in come from the kit too:** every prompt for text, with its history of what you typed before, which stays where it was. Scripts that call Dialog.Input or MultiInput work as before.
 - **Questions and messages use the kit's dialogs too,** shared with FileDir. A question's default answer is now the one EdSharp asks for; it had always been the first. Scripts that call Dialog.Show, Pick or Choose work as before.
