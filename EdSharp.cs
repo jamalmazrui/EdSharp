@@ -249,7 +249,9 @@ InitNetSdk();
 InitJFW();
 
 Frame = new EdSharpFrame();
-Homer.LbcAsk.oMainForm = Frame;   // the kit's standard dialogs belong to EdSharp's main window (10 November 2026)
+Homer.LbcAsk.oMainForm = Frame;
+Homer.LbcAsk.fReadSetting = delegate(string sSection, string sKey) { return App.ReadValue(sSection, sKey, ""); };   // input history, kept where EdSharp always kept it (10 November 2026)
+Homer.LbcAsk.fWriteSetting = delegate(string sSection, string sKey, string sValue) { App.WriteValue(sSection, sKey, sValue); };   // the kit's standard dialogs belong to EdSharp's main window (10 November 2026)
 Homer.Say.attach(Frame);
 this.MainForm = Frame;
 DocumentWindow child = new DocumentWindow(Frame);
@@ -2717,7 +2719,7 @@ AddMessage("No disk file is open for this command!");
 return;
 }
 
-string sName = Dialog.Input("Rename", "File Name", child.Text, "Rename").Trim();
+string sName = Homer.LbcAsk.input("Rename", "File Name", child.Text, "Rename").Trim();
 if (sName.Length == 0) return;
 
 string sNewFile = Path.Combine(Path.GetDirectoryName(sFile), sName);
@@ -3241,7 +3243,7 @@ break;
 
 case "&Other" :
 /*
-string sCodePage = Dialog.Input("Input", "Code Page:", "", "CodePage");
+string sCodePage = Homer.LbcAsk.input("Input", "Code Page:", "", "CodePage");
 if (sCodePage.Length == 0) return;
 Encoding other;
 try {
@@ -3600,7 +3602,7 @@ sTitle = "Variables for ";
 if (sChoice == "&Process") sTitle += "Process " + Process.GetCurrentProcess().ProcessName;
 else if (sChoice == "&User") sTitle += "User " + Environment.UserName;
 else if (sChoice == "&Machine") sTitle += "Machine " + Environment.MachineName;
-aResults = Dialog.MultiInput(sTitle, aLabels, aValues);
+aResults = Homer.LbcAsk.multiInput(sTitle, aLabels, aValues);
 if (aResults.Length == 0) return;
 
 try {
@@ -3660,7 +3662,7 @@ sText = sText.TrimEnd();
 else sText = "";
 
 if (sText.Length == 0) sText = App.ReadData("Term", "");
-sResult = Dialog.Input("Lookup", "Term", sText, "Lookup").Trim();
+sResult = Homer.LbcAsk.input("Lookup", "Term", sText, "Lookup").Trim();
 if (sResult.Length == 0) return;
 
 App.WriteData("Term", sResult);
@@ -3935,7 +3937,7 @@ aLabels = new string[] {"&Match", "&Replace"};
 sMatch = App.ReadData("Match", "");
 sReplace = App.ReadData("Replace", "");
 aValues = new string[] {sMatch, sReplace};
-aResults = Dialog.MultiInput(sTitle, aLabels, aValues, new string[] {"ReplaceMatch", "ReplaceWith"});
+aResults = Homer.LbcAsk.multiInput(sTitle, aLabels, aValues, new string[] {"ReplaceMatch", "ReplaceWith"});
 if (aResults == null || aResults.Length == 0) return;
 
 sMatch = aResults[0];
@@ -3969,7 +3971,7 @@ aLabels = new string[] {"&Pattern", "&Substitute"};
 sPattern = App.ReadData("Pattern", "");
 sSubstitute = App.ReadData("Substitute", "");
 aValues = new string[] {sPattern, sSubstitute};
-aResults = Dialog.MultiInput(sTitle, aLabels, aValues, new string[] {"ReplaceRegExpPattern", "ReplaceRegExpWith"});
+aResults = Homer.LbcAsk.multiInput(sTitle, aLabels, aValues, new string[] {"ReplaceRegExpPattern", "ReplaceRegExpWith"});
 if (aResults == null || aResults.Length == 0) return;
 
 sPattern = aResults[0];
@@ -3999,7 +4001,7 @@ iEnd = iStart + rtb.SelectionLength;
 
 sLabel = "Pattern";
 sValue = App.ReadData("Pattern", "");
-sResult = Dialog.Input(sTitle, sLabel, sValue);
+sResult = Homer.LbcAsk.input(sTitle, sLabel, sValue);
 if (sResult.Length == 0) return;
 
 App.WriteData("Pattern", sResult);
@@ -4023,7 +4025,7 @@ iEnd = iStart + rtb.SelectionLength;
 
 sLabel = "Pattern";
 sValue = App.ReadData("Pattern", "");
-sResult = Dialog.Input(sTitle, sLabel, sValue);
+sResult = Homer.LbcAsk.input(sTitle, sLabel, sValue);
 if (sResult.Length == 0) return;
 
 App.WriteData("Pattern", sResult);
@@ -4065,14 +4067,14 @@ if (sText.Contains("://")) sText = sText.Trim(); //do nothing
 else if (sText.ToLower().StartsWith("www.")) sText = "http://" + sText;
 else if (sText.Contains("@") && !sText.ToLower().StartsWith("mailto")) sText = "MailTo:" + sText;
 
-sResult = Dialog.Input(sTitle, sLabel, sText).Trim();
+sResult = Homer.LbcAsk.input(sTitle, sLabel, sText).Trim();
 if (sResult.Length == 0) return;
 Process.Start(sResult);
 }
 
 if (menuItem == menuMiscSpecialCharacter) {
 string sCode = App.ReadData("Code", "");
-sResult = Dialog.Input("Special Character", "Code:", sCode, "SpecialCharacter").Trim().ToLower();
+sResult = Homer.LbcAsk.input("Special Character", "Code:", sCode, "SpecialCharacter").Trim().ToLower();
 if (sResult.Length == 0) return;
 
 App.WriteData("Code", sResult);
@@ -4208,7 +4210,7 @@ if (menuItem == menuNavigateForwardFind || menuItem == menuNavigateForwardFindAt
 iIndex = rtb.Index;
 iStart = 0;
 sText = App.ReadData("Find", "");
-if (menuItem == menuNavigateForwardFind) sText = Dialog.Input("Forward Find", "Text", sText, "Find");
+if (menuItem == menuNavigateForwardFind) sText = Homer.LbcAsk.input("Forward Find", "Text", sText, "Find");
 else if (menuItem == menuNavigateForwardFindAtCursor) {
 if (rtb.SelectionLength == 0) {
 object[] a = GetChunk();
@@ -4255,7 +4257,7 @@ if (menuItem == menuNavigateReverseFind || menuItem == menuNavigateReverseFindAt
 iIndex = rtb.Index;
 iEnd = 0;
 sText = App.ReadData("Find", "");
-if (menuItem == menuNavigateReverseFind) sText = Dialog.Input("Reverse Find", "Text", sText, "Find");
+if (menuItem == menuNavigateReverseFind) sText = Homer.LbcAsk.input("Reverse Find", "Text", sText, "Find");
 else if (menuItem == menuNavigateReverseFindAtCursor) {
 if (rtb.SelectionLength == 0) {
 object[] a = GetChunk();
@@ -4297,7 +4299,7 @@ else AddMessage("Not found!");
 
 if (menuItem == menuNavigateForwardFindWithRegExp || (this.FindWithRegExp && !bLastSearchTopic && menuItem == menuNavigateForwardFindAgain)) {
 sMatch = App.ReadData("Pattern", "");
-if (menuItem == menuNavigateForwardFindWithRegExp) sMatch = Dialog.Input("Forward Find with Regular Expression", "Pattern", sMatch, "FindRegExp");
+if (menuItem == menuNavigateForwardFindWithRegExp) sMatch = Homer.LbcAsk.input("Forward Find with Regular Expression", "Pattern", sMatch, "FindRegExp");
 if (sMatch.Length == 0) return;
 
 App.WriteData("Pattern", sMatch);
@@ -4325,7 +4327,7 @@ else AddMessage("Not found!");
 
 if (menuItem == menuNavigateReverseFindWithRegExp || (this.FindWithRegExp && !bLastSearchTopic && menuItem == menuNavigateReverseFindAgain)) {
 sMatch = App.ReadData("Pattern", "");
-if (menuItem == menuNavigateReverseFindWithRegExp) sMatch = Dialog.Input("Reverse Find with Regular Expression", "Pattern", sMatch, "FindRegExp");
+if (menuItem == menuNavigateReverseFindWithRegExp) sMatch = Homer.LbcAsk.input("Reverse Find with Regular Expression", "Pattern", sMatch, "FindRegExp");
 if (sMatch.Length == 0) return;
 
 App.WriteData("Pattern", sMatch);
@@ -4353,7 +4355,7 @@ else AddMessage("Not found!");
 
 if (menuItem == menuNavigateJumpToLine || menuItem == menuNavigateJumpToLineAgain) {
 sText = App.ReadData("Jump", "");
-if (menuItem == menuNavigateJumpToLine) sText = Dialog.Input("Jump to", "Line", sText);
+if (menuItem == menuNavigateJumpToLine) sText = Homer.LbcAsk.input("Jump to", "Line", sText);
 if (sText.Length == 0) return;
 
 string[] a = sText.Split(',');
@@ -4399,7 +4401,7 @@ bLastSearchTopic = true;
 bool bTopicForward = menuItem != menuNavigateReverseFindAgain;
 sText = App.ReadData("Topic", "");
 if (menuItem == menuNavigateSearchForTopic) {
-sText = Dialog.Input("Search For", "Topic", sText, "SearchTopic");
+sText = Homer.LbcAsk.input("Search For", "Topic", sText, "SearchTopic");
 iStart = 0;
 }
 else iStart = rtb.Index;
@@ -4417,7 +4419,7 @@ Util.Say(rtb.RowText);
 
 if (menuItem == menuNavigateGoToPercent || menuItem == menuNavigateGoToPercentAgain) {
 sText = App.ReadData("Percent", "");
-if (menuItem == menuNavigateGoToPercent) sText = Dialog.Input("Go to", "Percent", sText);
+if (menuItem == menuNavigateGoToPercent) sText = Homer.LbcAsk.input("Go to", "Percent", sText);
 if (sText.Length == 0) return;
 
 try {
@@ -5754,7 +5756,7 @@ return;
 }
 
 sText = Util.GetExtensions(aResults);
-sResult = Dialog.Input("Filter", "Extensions", sText, "FilterExtensions").Trim();
+sResult = Homer.LbcAsk.input("Filter", "Extensions", sText, "FilterExtensions").Trim();
 if (sResult.Length == 0) return;
 
 aResults = Util.GetPathsWithExtensions(aResults, sResult);
@@ -5836,7 +5838,7 @@ aDefaults[i] = App.ReadDefaultOption(aResults[i], "");
 aValues[i] = App.ReadOption(aResults[i], aDefaults[i]);
 }
 
-string[] a = Dialog.MultiInput("Edit Settings", aLabels, aValues);
+string[] a = Homer.LbcAsk.multiInput("Edit Settings", aLabels, aValues);
 if (a.Length == 0) return;
 for (int i = 0; i < a.Length; i++) App.WriteOption(aResults[i], a[i]);
 }
@@ -5886,7 +5888,7 @@ if (System.IO.File.Exists(sFile)) System.IO.File.Delete(sFile);
 if (sResult == "&New") {
 aLabels = new string[] {"&Name", "&CompileCommand", "&JumpPosition", "&AbbreviateOutput", "&NavigatePart", "&QuotePrefix", "&ExtensionDefault", "&GoToEnvironment"};
 aValues = new string[] {"", "", "", "", "", "", "", ""};
-aResults = Dialog.MultiInput("Create Compiler setting", aLabels, aValues);
+aResults = Homer.LbcAsk.multiInput("Create Compiler setting", aLabels, aValues);
 if (aResults.Length == 0) return;
 
 sCompiler = aResults[0];
@@ -5964,7 +5966,7 @@ AddMessage("No files!");
 return;
 }
 
-sResult = Dialog.Input("Filter", "Extensions", sText, "FilterExtensions");
+sResult = Homer.LbcAsk.input("Filter", "Extensions", sText, "FilterExtensions");
 if (sResult.Length == 0) return;
 
 aResults = Util.GetPathsWithExtensions(Directory.GetFiles(sDir), sResult);
@@ -6221,7 +6223,7 @@ return;
 }
 else {
 sCommand = App.ReadOption("PromptCommand", "");
-sCommand = Dialog.Input("Prompt", "Command", sCommand, "Command").Trim();
+sCommand = Homer.LbcAsk.input("Prompt", "Command", sCommand, "Command").Trim();
 if (sCommand.Length == 0) return;
 App.WriteOption("PromptCommand", sCommand);
 }
@@ -6493,7 +6495,7 @@ iStart = rtb.SelectionStart;
 iEnd = iStart + rtb.SelectionLength;
 }
 
-sResult = Dialog.Input(sTitle, "Start", "1").Trim();
+sResult = Homer.LbcAsk.input(sTitle, "Start", "1").Trim();
 if (sResult.Length == 0) return;
 
 try {
@@ -6634,7 +6636,7 @@ List<string[]> listLinks;
 if (sButton.Replace("&", "") == "Web Page") {
 string sUrl = COM.GetUrl();
 if (sUrl.Length == 0) sUrl = App.ReadData("Url", "");
-sUrl = Dialog.Input("Web Download", "Address", sUrl, "WebAddress");
+sUrl = Homer.LbcAsk.input("Web Download", "Address", sUrl, "WebAddress");
 if (sUrl.Length == 0) return;
 
 AddMessage("Please wait");
@@ -6672,7 +6674,7 @@ listFiles.Add(sFile);
 
 string[] aFiles = listFiles.ToArray();
 sText = Util.GetExtensions(aFiles);
-sResult = Dialog.Input("Filter", "Extensions", sText, "DownloadExtensions").Replace(".", "").Trim().ToLower();
+sResult = Homer.LbcAsk.input("Filter", "Extensions", sText, "DownloadExtensions").Replace(".", "").Trim().ToLower();
 if (sResult.Length == 0) return;
 
 aResults = Util.GetPathsWithExtensions(aFiles, sResult);
@@ -7562,7 +7564,7 @@ lsValues.Add(sValue);
 lsTips.Add("Type the " + sLabel.ToLower() + ". It replaces this variable everywhere the script uses it.");
 }
 }
-string[] aAnswers = Dialog.MultiInput("Variables", lsLabels.ToArray(), lsValues.ToArray(), laChoices.ToArray(), lsTips.ToArray());
+string[] aAnswers = Homer.LbcAsk.multiInput("Variables", lsLabels.ToArray(), lsValues.ToArray(), laChoices.ToArray(), lsTips.ToArray());
 if (aAnswers.Length == 0) return null;
 Dictionary<string, string> dAnswers = new Dictionary<string, string>();
 for (int i = 0; i < lsLabels.Count && i < aAnswers.Length; i++) dAnswers[lsLabels[i]] = aAnswers[i];
@@ -7628,7 +7630,7 @@ aLabels = listLabels.ToArray();
 aValues = listValues.ToArray();
 // Letters by Lbc's shared rule: an attribute name is a run-time label, and
 // "class" beside "colspan" would otherwise give two fields the same C.
-aResults = Dialog.MultiInput("Attributes", aLabels, aValues, null, null);
+aResults = Homer.LbcAsk.multiInput("Attributes", aLabels, aValues, null, null);
 if (aResults.Length == 0) return;
 
 for (int i = 0; i < aResults.Length; i++) {
@@ -7937,7 +7939,7 @@ if (iLength > iWidth) iWidth = iLength;
 }
 
 sText = iWidth.ToString();
-sResult = Dialog.Input(sTitle, "Width", sText).Trim();
+sResult = Homer.LbcAsk.input(sTitle, "Width", sText).Trim();
 if (sResult.Length == 0) return;
 
 try {
@@ -7996,7 +7998,7 @@ sDay = App.ReadData("Day", "");
 aLabels = new string[] {"&Year", "&Month", "&Week", "&Day"};
 aValues = new string[] {sYear, sMonth, sWeek, sDay};
 sTitle = "Calculate Date";
-aResults = Dialog.MultiInput(sTitle, aLabels, aValues);
+aResults = Homer.LbcAsk.multiInput(sTitle, aLabels, aValues);
 if (aResults.Length == 0) return;
 
 sYear = aResults[0].Trim();
@@ -9473,7 +9475,7 @@ if (sDir.Length == 0) return;
 Directory.SetCurrentDirectory(sDir);
 aLabels = new string[] {"&Contains", "&Filter"};
 aValues = new string[] {sContains, sFilter};
-aResults = Dialog.MultiInput("Criteria", aLabels, aValues);
+aResults = Homer.LbcAsk.multiInput("Criteria", aLabels, aValues);
 if (aResults.Length == 0) return;
 
 sContains = aResults[0];
@@ -9526,7 +9528,7 @@ string sFields = "&Text\t&Filter";
 string sValues = sMatch + "\t" + sFilter;
 string[] aFields = sFields.Split('\t');
 string[] aValues = sValues.Split('\t');
-string[] aResults = Dialog.MultiInput("File Find", aFields, aValues);
+string[] aResults = Homer.LbcAsk.multiInput("File Find", aFields, aValues);
 if (aResults.Length == 0) return;
 
 sMatch = aResults[0];
@@ -9649,7 +9651,7 @@ return aResults;
 }
 
 string sText = Util.GetExtensions(aResults);
-string sResult = Dialog.Input("Filter", "Extensions", sText, "FilterExtensions").Trim();
+string sResult = Homer.LbcAsk.input("Filter", "Extensions", sText, "FilterExtensions").Trim();
 if (sResult.Length == 0) return new string[] {};
 
 aResults = Util.GetPathsWithExtensions(aResults, sResult);
@@ -9727,7 +9729,7 @@ e.Handled = true;
 else if(e.KeyCode == Keys.J && ((e.Alt && !e.Control) || (!e.Alt && e.Control)) && !e.Shift) {
 string sText = Dialog.Jump;
 if (e.Control) {
-sText = Dialog.Input("Jump", "Text", sText, "Jump");
+sText = Homer.LbcAsk.input("Jump", "Text", sText, "Jump");
 if (sText.Length == 0) return;
 }
 
@@ -10337,7 +10339,7 @@ string sFilter = "";
 if (keyData == (Keys.Control | Keys.Shift | Keys.F)) App.Frame.AddMessage("Clear filter");
 else {
 Dialog.hashFilter.TryGetValue(this.Text, out sFilter);
-sFilter = Dialog.Input("Filter", "Text", sFilter);
+sFilter = Homer.LbcAsk.input("Filter", "Text", sFilter);
 if (sFilter.Length == 0) return true;
 //sFilterSql = "Item like '" + sFilter + "'";
 sFilterSql = GetFilterSql(sFilter);
@@ -10376,7 +10378,7 @@ string sJump = "";
 Dialog.hashJump.TryGetValue(sTitle, out sJump);
 if (sJump == null) sJump = "";
 if (keyData == (Keys.Control | Keys.J) || sJump.Length == 0) {
-sJump = Dialog.Input("Jump", "Text", sJump);
+sJump = Homer.LbcAsk.input("Jump", "Text", sJump);
 if (sJump.Length == 0) return true;
 }
 if (Dialog.hashJump.ContainsKey(sTitle)) Dialog.hashJump.Remove(sTitle);
@@ -10532,72 +10534,17 @@ public static string OldInput(string sTitle, string sLabel, string sValue) {
 return Input(sTitle, sLabel, sValue);
 } // Input method
 
-public static string Input(string sTitle, string sLabel, string sValue) {
-string[] aLabel = new string[] {sLabel};
-string[] aValue = new string[] {sValue};
-string[] aReturn = MultiInput(sTitle, aLabel, aValue);
-//string sReturn = aReturn[0];
-string sReturn = "";
-if (aReturn != null && aReturn.Length > 0) sReturn = aReturn[0];
-return sReturn;
-} // Input method
+public static string Input(string sTitle, string sLabel, string sValue) { return Homer.LbcAsk.input(sTitle, sLabel, sValue); }
 
-public static string[] MultiInput(string sTitle, string[] aLabel, string[] aValue, string[][] aaChoice, string[] aTip) {
-// MultiInput where a field may offer a list of choices rather than free
-// text. Built from Lbc primitives so it inherits what they do: reading
-// order matching tab order, the automatic Help button, F1 describing every
-// field, Control+Enter and Escape.
-//
-// Two Homer form rules are honoured here that the plain overload could not:
-// every field gets a trigger letter that BEGINS A WORD and that no other
-// field holds, by Lbc's shared rule rather than an ampersand pushed in
-// front of whatever the label happens to be; and every field gets a focus
-// tip, since F1 has nothing to describe without one.
-List<string> lsLabels = new List<string>();
-foreach (string sLabel in aLabel) lsLabels.Add(sLabel);
-List<string> lsMarked = Homer.LbcDialog.markTriggerLetters(lsLabels);
-LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
-List<Control> lBoxes = new List<Control>();
-for (int i = 0; i < aLabel.Length; i++) {
-string sVal = (aValue != null && i < aValue.Length && aValue[i] != null) ? aValue[i] : "";
-string sTip = (aTip != null && i < aTip.Length && aTip[i] != null) ? aTip[i] : "";
-string[] aChoice = (aaChoice != null && i < aaChoice.Length) ? aaChoice[i] : null;
-if (aChoice != null && aChoice.Length > 0) lBoxes.Add(dlg.addComboPickBox(lsMarked[i], aChoice, sVal, sTip));
-else lBoxes.Add(dlg.addInputBox(lsMarked[i], sVal, sTip));
-}
-List<string> lReturn = new List<string>();
-if (dlg.runOkCancel()) foreach (Control ctl in lBoxes) lReturn.Add(ctl.Text);
-dlg.Dispose();
-return lReturn.ToArray();
-} // MultiInput method (choices overload)
+public static string[] MultiInput(string sTitle, string[] aLabel, string[] aValue, string[][] aaChoice, string[] aTip) { return Homer.LbcAsk.multiInput(sTitle, aLabel, aValue, aaChoice, aTip); }
 
-public static string[] MultiInput(string sTitle, string[] aLabel, string[] aValue) {
-LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
-List<TextBox> lBoxes = new List<TextBox>();
-for (int i = 0; i < aLabel.Length; i++) {
-string sVal = (aValue != null && i < aValue.Length && aValue[i] != null) ? aValue[i] : "";
-lBoxes.Add(dlg.addInputBox(aLabel[i], sVal));
-}
-List<string> lReturn = new List<string>();
-if (dlg.runOkCancel()) foreach (TextBox txt in lBoxes) lReturn.Add(txt.Text);
-dlg.Dispose();
-return lReturn.ToArray();
-} // MultiInput method
+public static string[] MultiInput(string sTitle, string[] aLabel, string[] aValue) { return Homer.LbcAsk.multiInput(sTitle, aLabel, aValue); }
 
 // Input with input history: when sHistoryKey is given (for example "Find"),
 // the field is an editable combo box whose dropdown offers up to
 // historyCount recent entries for the command, newest first. Delegates to
 // the history-aware MultiInput.
-public static string Input(string sTitle, string sLabel, string sValue, string sHistoryKey) {
-if (String.IsNullOrEmpty(sHistoryKey)) return Input(sTitle, sLabel, sValue);
-string[] aLabel = new string[] {sLabel};
-string[] aValue = new string[] {sValue};
-string[] aKey = new string[] {sHistoryKey};
-string[] aReturn = MultiInput(sTitle, aLabel, aValue, aKey);
-string sReturn = "";
-if (aReturn != null && aReturn.Length > 0) sReturn = aReturn[0];
-return sReturn;
-} // Input method (history overload)
+public static string Input(string sTitle, string sLabel, string sValue, string sHistoryKey) { return Homer.LbcAsk.input(sTitle, sLabel, sValue, sHistoryKey); }
 
 // MultiInput with input history: aHistoryKey parallels aLabel; where a key
 // is given, that field is an editable combo box whose dropdown offers up to
@@ -10606,35 +10553,7 @@ return sReturn;
 // on. This is the same layout FileDir and DbDo use. [General] historyCount
 // sets the depth; default 10, ceiling 100. Fields with a null or empty key
 // keep the plain text box, so nothing is recorded for them.
-public static string[] MultiInput(string sTitle, string[] aLabel, string[] aValue, string[] aHistoryKey) {
-if (aHistoryKey == null) return MultiInput(sTitle, aLabel, aValue);
-int iCount = Homer.InputHistory.clampCount(App.ReadValue("General", "historyCount", ""));
-LbcDialog dlg = new LbcDialog(sTitle, App.Frame);
-List<Control> lBoxes = new List<Control>();
-for (int i = 0; i < aLabel.Length; i++) {
-string sVal = (aValue != null && i < aValue.Length && aValue[i] != null) ? aValue[i] : "";
-string sKey = (i < aHistoryKey.Length) ? aHistoryKey[i] : null;
-if (String.IsNullOrEmpty(sKey)) { lBoxes.Add(dlg.addInputBox(aLabel[i], sVal)); continue; }
-string sSection = "Recent" + sKey;
-List<string> lRecent = Homer.InputHistory.load(delegate(string sSlot) { return App.ReadValue(sSection, sSlot, ""); }, iCount);
-lBoxes.Add(dlg.addComboHistoryBox(aLabel[i], lRecent, sVal, ""));
-}
-List<string> lReturn = new List<string>();
-if (dlg.runOkCancel()) {
-for (int i = 0; i < lBoxes.Count; i++) {
-string sText = lBoxes[i].Text;
-lReturn.Add(sText);
-string sKey = (i < aHistoryKey.Length) ? aHistoryKey[i] : null;
-if (String.IsNullOrEmpty(sKey) || sText == null || sText.Trim().Length == 0) continue;
-string sSection = "Recent" + sKey;
-List<string> lRecent = Homer.InputHistory.load(delegate(string sSlot) { return App.ReadValue(sSection, sSlot, ""); }, iCount);
-lRecent = Homer.InputHistory.push(lRecent, sText.Trim(), iCount);
-Homer.InputHistory.store(lRecent, delegate(string sSlot, string sSlotValue) { App.WriteValue(sSection, sSlot, sSlotValue); }, iCount);
-}
-}
-dlg.Dispose();
-return lReturn.ToArray();
-} // MultiInput method (history overload)
+public static string[] MultiInput(string sTitle, string[] aLabel, string[] aValue, string[] aHistoryKey) { return Homer.LbcAsk.multiInput(sTitle, aLabel, aValue, aHistoryKey); }
 
 
 public static string[] MultiPick(string sTitle, string[] aValues, int[] aSelect, bool bSort) {
