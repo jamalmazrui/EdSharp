@@ -166,6 +166,7 @@ App.DefaultIniFile = GetDefaultIniFile();
 App.HotkeyIniFile = GetHotkeyFile();
 App.IniFile = GetIniFile();
 Inix.migrateFromIni();
+Inix.unpinDefaults();
 
 App.BomDictionary = Util.GetBomDictionary();
 SetConfigurationValues();
@@ -1426,6 +1427,8 @@ return this.ProcessCmdKey_Helper(ref msg, keyData);
 
 static MenuStrip CreateMainMenu() {
 MenuStrip menuMain = new MenuStrip();
+// NAMED FOR THE PROGRAM (10 November 2026): Axe.Windows found the menu bar with no name; nothing else names a menu bar for the reader, so it takes the program's name, read as "<program> menu bar".
+menuMain.AccessibleName = Application.ProductName;
 menuMain.AccessibleRole = AccessibleRole.MenuBar;
 //menuMain.AutoSize = true;
 //menuMain.CanOverflow = false;
@@ -12193,6 +12196,43 @@ return false;
 public static bool isRedirected(string sSection) {
 return Util.Equiv(sSection, "Favorites") || Util.Equiv(sSection, "Recent");
 } // isRedirected method
+
+// unpinDefaults: once, for a person whose settings came from an old EdSharp.ini (10 November 2026). That move copied
+// every value the old file held, and earlier installs had written every default into it, so the defaults of the day
+// were pinned in the person's own .inix, and a later change to a shipped default never reached them. A value equal
+// to today's shipped one -- the shipped EdSharp.inix's, else EdSharpDefaults.inix's -- is removed: today nothing
+// changes, and tomorrow the shipped value flows through. Only someone with an EdSharp.ini.migrated is touched, once,
+// and [Data] DefaultsUnpinned=y marks it done.
+public static void unpinDefaults() {
+string sUser = getPath();
+if (sUser == null || !File.Exists(sUser) || String.IsNullOrEmpty(App.IniFile) || !File.Exists(App.IniFile + ".migrated")) return;
+if (Homer.InixCodec.readValue(sUser, "Data", "DefaultsUnpinned", "") == "y") return;
+int iRemoved = 0;
+try {
+List<Homer.InixCodec.Section> lsShipped = new List<Homer.InixCodec.Section>();
+foreach (string sFile in new string[] { getProgramPath(), App.DefaultIniFile }) {
+if (!String.IsNullOrEmpty(sFile) && File.Exists(sFile)) lsShipped.AddRange(Homer.InixCodec.parseLines(File.ReadAllLines(sFile)));
+}
+List<Homer.InixCodec.Section> lsUser = Homer.InixCodec.parseLines(File.ReadAllLines(sUser));
+foreach (Homer.InixCodec.Section sec in lsUser) {
+if (isRedirected(sec.Name) || Util.Equiv(sec.Name, "Data")) continue;
+foreach (Homer.InixCodec.Pair pair in sec.Pairs) {
+if (String.IsNullOrEmpty(pair.Value)) continue;
+string sShipped = null;
+foreach (Homer.InixCodec.Section secShipped in lsShipped) {
+if (!Util.Equiv(secShipped.Name, sec.Name)) continue;
+foreach (Homer.InixCodec.Pair pairShipped in secShipped.Pairs) if (Util.Equiv(pairShipped.Key, pair.Key)) { sShipped = pairShipped.Value; break; }
+if (sShipped != null) break;
+}
+if (sShipped != null && sShipped == pair.Value && Homer.InixCodec.writeValue(sUser, sec.Name, pair.Key, "")) iRemoved++;
+}
+}
+Homer.InixCodec.writeValue(sUser, "Data", "DefaultsUnpinned", "y");
+reload();
+Homer.Log.info("settings: " + iRemoved + " value(s) equal to the shipped ones removed from " + sUser + ", so later changes to the defaults reach you");
+}
+catch (Exception oError) { Homer.Log.error("settings: the shipped values could not be unpinned in " + sUser + ": " + oError.Message); }
+} // unpinDefaults method
 
 static bool bMigrated = false;
 public static void migrateFromIni() {

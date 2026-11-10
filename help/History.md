@@ -2,6 +2,11 @@
 
 
 
+## 10 November 2026 -- Named menu bars
+
+- **The menu bar is named for EdSharp,** as Axe.Windows asked.
+- **Defaults you never chose follow the shipped ones again.** Moving your settings in October copied every value your old EdSharp.ini held, defaults and all, so a later change to a shipped default never reached you. Once, values in your settings that equal today's shipped ones are removed; nothing changes now, and future defaults flow through. Only settings that came from an old EdSharp.ini are touched.
+
 ## 10 November 2026 -- Access letters only where the key is a letter
 
 - **Menu items on function keys have no access letter:** Close Window, Exit EdSharp and About. Save As has none either, since its key's letter, S, is Save's. Exit EdSharp had marked two letters in its caption.
