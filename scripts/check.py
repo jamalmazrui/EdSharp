@@ -1710,11 +1710,17 @@ def checkAccessibility(bScan):
         sKit = kind.findKit([sRoot]) or ""
     except Exception:
         sKit = ""
-    for sFolder in (os.path.dirname(os.path.abspath(__file__)), os.path.join(sKit, "scripts") if sKit else ""):
+    # THE KIT'S COPY FIRST, AND SAID WHICH (9 November 2026). An app's own scripts folder came first, so an old
+    # axeWindow.py left there outranked the kit's: DbDo's main window kept the fingerprint and the 5-minute rescans the
+    # kit had fixed. The kit's copy wins now, and the log names the file that ran.
+    for sFolder in (os.path.join(sKit, "scripts") if sKit else "", os.path.dirname(os.path.abspath(__file__))):
         if sFolder and os.path.isfile(os.path.join(sFolder, "axeWindow.py")) and os.path.isfile(os.path.join(sFolder, "axeScan.py")):
-            if sFolder not in sys.path: sys.path.insert(0, sFolder)
+            if sFolder in sys.path: sys.path.remove(sFolder)
+            sys.path.insert(0, sFolder)
             import importlib
+            if "axeWindow" in sys.modules: del sys.modules["axeWindow"]
             oAxe = importlib.import_module("axeWindow")
+            logLine("accessibility: axeWindow from " + os.path.abspath(getattr(oAxe, "__file__", "?")))
             break
     if oAxe is None:
         return finding("accessibility", "skip", "the kit's axeWindow.py was not found")
