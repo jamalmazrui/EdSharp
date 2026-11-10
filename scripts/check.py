@@ -1759,6 +1759,17 @@ def checkMenuLetters():
         for sParent, sChild in re.findall(r'(\w+)\.DropDownItems\.Add\((\w+)\)', sCode): dParent[sChild] = sParent
         for sVar, sCaption, sKeys in re.findall(r'(\w+)\s*=\s*(?:CreateMenuItem|menu_Helper)\("([^"]*)",\s*"([^"]*)"', sCode):
             lItems.append((dParent.get(sVar, ""), sCaption, sKeys))
+        # SUBMENUS AND MENUS TOO (10 November 2026): a submenu's own caption -- DbDo's Say, Tools and Bulk Marking, made
+        # with new ToolStripMenuItem("...") -- and each menu on the menu bar share letters with the items beside them,
+        # and were not counted: Query's Say and Show Schema both had S. They carry no key.
+        for sParent, sList in re.findall(r'(\w+)\.Items\.AddRange\(new ToolStrip(?:Menu)?Item\[\]\s*\{([^}]*)\}', sCode):
+            for sChild in re.findall(r"\w+", sList): dParent.setdefault(sChild, "menu bar")
+        for sParent, sList in re.findall(r'(\w+)\.DropDownItems\.AddRange\(new ToolStripMenuItem\[\]\s*\{([^}]*)\}', sCode):
+            for sChild in re.findall(r"\w+", sList): dParent[sChild] = sParent
+        for sVar, sCaption in re.findall(r'(\w+)\s*=\s*(?:new\s+\w*MenuItem|CreateMenu|menu_Helper|addMenu)\("([^"]*)"\)', sCode):
+            lItems.append((dParent.get(sVar, "menu bar" if re.match(r"^&?[A-Za-z]+$", sCaption) and sVar in re.findall(r"\w+", " ".join(re.findall(r"Items\.AddRange\([^)]*\)", sCode))) else ""), sCaption, ""))
+        for sVar, sCaption in re.findall(r'(mi[A-Za-z]+)\s*=\s*addMenu\("([^"]*)"\)', sCode):
+            lItems.append(("menu bar", sCaption, ""))
     if not lItems:
         return finding("menu letters", "skip", "no menu items found in the app's code")
     setWindows = {"X", "C", "V", "Z", "Y"}
