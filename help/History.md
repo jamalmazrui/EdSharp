@@ -2,6 +2,10 @@
 
 
 
+## 10 November 2026 -- Shift+F1 in the main window
+
+- **Shift+F1 in a document** says what it is: the document's text, where you read and type. EdSharp has a hints file of its own now.
+
 ## 9 November 2026 -- One short sentence per command
 
 - **Descriptions rewritten** as single short sentences, in the same words across Homer: no asides in parentheses, no other keys named. The describer had taken a second key, such as JAWSKey+Shift+DownArrow for Say Selected, as the start of the description. Every key on a line now stays with the keys.

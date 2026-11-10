@@ -1,0 +1,6 @@
+﻿; Hints.inix -- what Shift+F1 says about the control with focus (10 November 2026).
+; A dialog's hints go in a section named for its title; the document window's in [Main window], keyed by role.
+
+[Main window]
+role Text=The document's text, where you read and type.
+role Document=The document's text, where you read and type.

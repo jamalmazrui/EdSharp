@@ -239,6 +239,8 @@ Source: "License.md";         DestDir: "{app}"; Flags: ignoreversion skipifsourc
 Source: "License.htm";        DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "templates\Transform_Example.inix"; DestDir: "{app}\templates"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "configs\EdSharp.inix"; DestDir: "{app}\configs"; Flags: ignoreversion skipifsourcedoesntexist
+; Shift+F1's sentences (10 November 2026), replaced at every install like the program.
+Source: "configs\Hints.inix"; DestDir: "{app}\configs"; Flags: ignoreversion
 Source: "help\history.txt";        DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "help\lgpl.txt";           DestDir: "{app}\help"; Flags: ignoreversion skipifsourcedoesntexist
 ; Data trees.  pandoc.exe is excluded from Convert even if a copy is sitting
