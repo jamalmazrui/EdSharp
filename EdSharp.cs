@@ -1159,21 +1159,21 @@ menuNavigate.DropDownItems.AddRange(new ToolStripItem[] {menuNavigateForwardFind
 //Homer.LbcAsk.message("Navigate.", menuNavigate.DropDownItems.Count);
 
 menuQuery = CreateMenu("&Query");
-menuQueryAddress = CreateMenuItem("Address", "Alt+A", menuItem_Click, "child silent");
-menuQueryBraces = CreateMenuItem("Braces", "Alt+Shift+OemCloseBrackets", menuItem_Click, "child silent");
-menuQueryIndent = CreateMenuItem("Indentation", "Alt+I", menuItem_Click, "child silent");
-menuQueryPath = CreateMenuItem("Path", "Alt+P", menuItem_Click, "child silent");
+menuQueryAddress = CreateMenuItem("Say Address", "Alt+A", menuItem_Click, "child silent");
+menuQueryBraces = CreateMenuItem("Say Braces", "Alt+Shift+OemCloseBrackets", menuItem_Click, "child silent");
+menuQueryIndent = CreateMenuItem("Say Indentation", "Alt+I", menuItem_Click, "child silent");
+menuQueryPath = CreateMenuItem("Say Path", "Alt+P", menuItem_Click, "child silent");
 menuQueryTopic = CreateMenuItem("Topic", "Alt+T", menuItem_Click, "child speak");
-menuQueryYield = CreateMenuItem("Yield", "Alt+Y", menuItem_Click, "child speak");
-menuQueryStatus = CreateMenuItem("Status", "Alt+Z", menuItem_Click, "child silent");
-menuQueryCompiler = CreateMenuItem("Compiler", "Alt+D0", menuItem_Click, "frame silent");
-menuQuerySelected = CreateMenuItem("Selected", "Shift+Space", menuItem_Click, "child silent");
-menuQueryChunk = CreateMenuItem("Chunk", "Shift+Back", menuItem_Click, "child silent");
+menuQueryYield = CreateMenuItem("Say Yield", "Alt+Y", menuItem_Click, "child speak");
+menuQueryStatus = CreateMenuItem("Say Status", "Alt+Z", menuItem_Click, "child silent");
+menuQueryCompiler = CreateMenuItem("Say Compiler", "Alt+D0", menuItem_Click, "frame silent");
+menuQuerySelected = CreateMenuItem("Say Selected", "Shift+Space", menuItem_Click, "child silent");
+menuQueryChunk = CreateMenuItem("Say Chunk", "Shift+Back", menuItem_Click, "child silent");
 menuQueryReadAll = CreateMenuItem("Read All", "Alt+F8", menuItem_Click, "child speak");
 menuQueryWindowsOpen = CreateMenuItem("Say Windows Open", "Shift+F4", menuItem_Click, "child speak");
-menuQueryClipboard = CreateMenuItem("Clipboard", "Alt+OemQuotes", menuItem_Click, "frame silent");
-menuQueryTime = CreateMenuItem("Time", "Alt+OemSemicolon", menuItem_Click, "frame silent");
-menuQueryStyles = CreateMenuItem("Styles", "Alt+OemQuestion", menuItem_Click, "child silent");
+menuQueryClipboard = CreateMenuItem("Say Clipboard", "Alt+OemQuotes", menuItem_Click, "frame silent");
+menuQueryTime = CreateMenuItem("Say Time", "Alt+OemSemicolon", menuItem_Click, "frame silent");
+menuQueryStyles = CreateMenuItem("Say Styles", "Alt+OemQuestion", menuItem_Click, "child silent");
 menuQuery.DropDownItems.AddRange(new ToolStripItem[] {menuQueryAddress, menuQueryBraces, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles});
 //Homer.LbcAsk.message("Query.", menuQuery.DropDownItems.Count);
 

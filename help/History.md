@@ -2,6 +2,10 @@
 
 
 
+## 10 November 2026 -- What you see is what you hear
+
+- **The Say menu says Say.** Its items read Say Address, Say Path, Say Status and so on, as their keys' descriptions and DbDo's Say menu do; they had read Address, Path, Status. Save Clipboard, Append Clipboard and Clear Clipboard have descriptions for the Key Describer now, the same as FileDir's.
+
 ## 10 November 2026 -- Settings in .inix, found where they are
 
 - **EdSharp's shipped files are found again.** Since they moved into configs, EdSharp had looked for them beside EdSharp.exe: the shipped settings layer (EdSharp.inix), the defaults and the key file. So an installed EdSharp used what was built into it, or an older copy left beside the program. It now looks in configs first, and the installer removes the old copies beside the program. The rewritten command descriptions are heard now, from the key file.
