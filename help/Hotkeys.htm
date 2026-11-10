@@ -291,10 +291,10 @@ text based on a character encoding.</li>
 from the list of favorites.</li>
 <li><strong>Close All but Current Window</strong>, Control+Shift+F4.
 Close all editing windows except the current one.</li>
-<li><strong>Close Window</strong>, Control+F4. Close current editing
+<li><strong>Close Window</strong>, Control+F4. Close the current
 window.</li>
-<li><strong>Current Windows</strong>, F4. Activate an editing window
-from a list of those currently open.</li>
+<li><strong>Current Windows</strong>, F4. Switch to a window you pick
+from the list.</li>
 <li><strong>Exit EdSharp</strong>, Alt+F4. Exit the EdSharp
 application.</li>
 <li><strong>Export Format</strong>, Alt+Shift+X. Export document to
@@ -334,34 +334,35 @@ current file on the favorites list.</li>
 </ul>
 <h3 id="help">Help</h3>
 <ul>
-<li><p><strong>About</strong>, Alt+F1. Display version and release
+<li><p><strong>About</strong>, Alt+F1. Say EdSharp's version and release
 date.</p></li>
-<li><p><strong>Copy Log</strong>, Control+F12. Copy this session's log
-to the clipboard.</p></li>
-<li><p><strong>Documentation</strong>, F1. Open Documentation in web
-browser.</p></li>
+<li><p><strong>Copy Log</strong>, Control+F12. Copy the session log to
+the clipboard as a file.</p></li>
+<li><p><strong>Documentation</strong>, F1. Open the EdSharp
+guide.</p></li>
 <li><p><strong>Elevate Version</strong>, F11. Download and install the
-latest EdSharp, after confirming.</p></li>
+latest EdSharp.</p></li>
 <li><p><strong>What This Does</strong>, Shift+F1. Say what the control
 with focus does.</p></li>
-<li><p><strong>Where Am I</strong>, Control+Slash. Say the document, the
-cursor's position and whether it is modified.</p></li>
+<li><p><strong>Where Am I</strong>, Control+Slash. Say where you are,
+what has focus and its keys.</p></li>
 <li><p><strong>History of Changes</strong>, Control+Shift+F1. Open the
 history of EdSharp's changes, newest first.</p></li>
 <li><p><strong>Hotkey Summary</strong>, Help menu. List every command
 with its key and description.</p></li>
-<li><p><strong>Key Describer Toggle</strong>, Control+F1. Toggle a mode
-in which pressing a key describes its action.</p></li>
-<li><p><strong>Play Tutorials</strong>, Alt+F12. Open the role-based
-quick-start tutorials in your web browser: Python, NVDA add-ons, JAWS
-scripts, web development, C#, translation, article writing, slides,
-summarizing, and batch conversion.</p></li>
-<li><p><strong>ReadMe</strong>, Alt+Shift+F1. Open the ReadMe, the quick
-start, in your web browser.</p></li>
+<li><p><strong>Key Describer Toggle</strong>, Control+F1. Turn key
+describing on or off: a key says its command instead of running
+it.</p></li>
+<li><p><strong>Play Tutorials</strong>, Alt+F12. Play the spoken
+tutorials: Python, NVDA add-ons, JAWS scripts, web development, C#,
+translation, article writing, slides, summarizing, and batch
+conversion.</p></li>
+<li><p><strong>ReadMe</strong>, Alt+Shift+F1. Open the quick
+start.</p></li>
 <li><p><strong>Sample Programs</strong>, Control+Shift+F2. List the
 sample programs that ship with EdSharp and open one.</p></li>
-<li><p><strong>Hotkeys</strong>, Help menu. Open the document of every
-command and key, sorted several ways.</p></li>
+<li><p><strong>Hotkeys</strong>, Help menu. Open the list of every
+command and key.</p></li>
 </ul>
 <h3 id="miscellaneous">Miscellaneous</h3>
 <ul>
@@ -377,8 +378,8 @@ computer a question.</li>
 Markdown, such as heading jumps.</li>
 <li><strong>Compile</strong>, Control+F5. Compile source code, say
 output, and jump to error position.</li>
-<li><strong>Edit Settings</strong>, Alt+Shift+E. Adjust configuration
-options through a dialog.</li>
+<li><strong>Edit Settings</strong>, Alt+Shift+E. Edit EdSharp's settings
+file.</li>
 <li><strong>Edit Settings File</strong>, Alt+Shift+F2. Adjust options by
 directly editing the main configuration file.</li>
 <li><strong>Environment Variables</strong>, Control+E. Change Windows
@@ -387,8 +388,8 @@ environment variables for the current process, user, or system.</li>
 line or selection as JScript.NET and insert the result.</li>
 <li><strong>Extra Speech Log</strong>, Alt+Shift+F12. Open speech.log
 file in a new window.</li>
-<li><strong>Extra Speech Toggle</strong>, Alt+Shift+Z. Toggle extra
-speech messages on or off, redirecting to Speech.log file.</li>
+<li><strong>Extra Speech Toggle</strong>, Alt+Shift+Z. Turn extra speech
+on or off.</li>
 <li><strong>Extract with Regex</strong>, Control+Shift+E. Extract text
 matching a regular expression, putting matches in a new window.</li>
 <li><strong>Format Code</strong>, Control+4. Arrange indentation and
@@ -407,9 +408,8 @@ HTML in a new window.</li>
 window to Markdown.</li>
 <li><strong>HTML to Plain Text</strong>, no key. Convert the HTML in
 this window to plain text, keeping paragraphs and lists.</li>
-<li><strong>Infer Indent</strong>, Alt+RightBracket. Infer the indent
-unit of the current document, or configure EdSharp accordingly if
-repeated.</li>
+<li><strong>Infer Indent</strong>, Alt+RightBracket. Infer the current
+document's indent unit, or set it on a second press.</li>
 <li><strong>Insert Time</strong>, Alt+Shift+Semi-colon. Insert current
 time and date.</li>
 <li><strong>Invoke Script</strong>, Alt+V. Pick script file to paste or
@@ -427,11 +427,9 @@ status.</li>
 <li><strong>Number Items</strong>, Alt+Shift+N. Insert numbers at the
 start of items in all or selected text.</li>
 <li><strong>Open Command Prompt</strong>, Control+Backslash. Open a
-command prompt in the EdSharp program folder, data folder, or current
-folder.</li>
-<li><strong>Open in Explorer</strong>, Alt+Backslash. Open Windows
-Explorer in the EdSharp program folder, data folder, or current
-folder.</li>
+command prompt in the current folder.</li>
+<li><strong>Open in Explorer</strong>, Alt+Backslash. Open the current
+folder in Windows Explorer.</li>
 <li><strong>Order Items</strong>, Alt+Shift+O. Sort items alphabetically
 in all or selected text.</li>
 <li><strong>Path List</strong>, Control+Shift+P. Generate a list of
@@ -510,8 +508,8 @@ tag of the HTML element.</li>
 in all or selected text.</li>
 <li><strong>Forward Find at Cursor</strong>, Alt+F3. Search forward for
 chunk or selected text.</li>
-<li><strong>Forward Find with Regex</strong>, Control+F3. Search forward
-for regular expression in all or selected text.</li>
+<li><strong>Forward Find with Regex</strong>, Control+F3. Search
+backward for a regular expression in all or selected text.</li>
 <li><strong>Go to Contents</strong>, Shift+F6. Go to topic in table of
 contents from section in body.</li>
 <li><strong>Go to Part</strong>, Alt+Shift+G. Pick a part to go to.</li>
@@ -571,7 +569,7 @@ string.</li>
 <li><strong>Reverse Find at Cursor</strong>, Alt+Shift+F3. Search
 backward for chunk or selected text.</li>
 <li><strong>Reverse Find with Regex</strong>, Control+Shift+F3. Search
-forward for regular expression in all or selected text.</li>
+backward for a regular expression in all or selected text.</li>
 <li><strong>Right Brace</strong>, Control+Shift+RightBracket. Search
 forward for matching right brace character.</li>
 <li><strong>Save Bookmark</strong>, Control+K. Save a bookmark at the
@@ -589,8 +587,8 @@ of HTML element.</li>
 <ul>
 <li><strong>Read All</strong>, Alt+F8. Say all the text without moving
 the cursor.</li>
-<li><strong>Say Windows Open</strong>, Shift+F4. Say titles of current
-editing windows.</li>
+<li><strong>Say Windows Open</strong>, Shift+F4. Say how many windows
+are open, and their titles.</li>
 <li><strong>Topic</strong>, Alt+T. Say topic of current section.</li>
 </ul>
 <h3 id="screen-reader-announcements">Screen Reader Announcements</h3>
@@ -629,7 +627,7 @@ the EdSharp application via a Windows desktop shortcut.</li>
 NavigatePart setting.</li>
 <li><strong>Next Section</strong>, Control+F6 or Control+PageDown. Go to
 next section.</li>
-<li><strong>Next Window</strong>, Control+Tab. Cycle to next editing
+<li><strong>Next Window</strong>, Control+Tab. Switch to the next
 window.</li>
 <li><strong>Next Word</strong>, Control+RightArrow. Go to next word and
 read it.</li>
@@ -637,8 +635,8 @@ read it.</li>
 NavigatePart setting.</li>
 <li><strong>Previous Section</strong>, Control+Shift+F6 or
 Control+PageUp. Go to previous section and read its heading.</li>
-<li><strong>Previous Window</strong>, Control+Shift+Tab. Cycle to
-previous editing window.</li>
+<li><strong>Previous Window</strong>, Control+Shift+Tab. Switch to the
+previous window.</li>
 <li><strong>Previous Word</strong>, Control+LeftArrow. Go to previous
 word and read it.</li>
 <li><strong>Replace</strong>, Control+R. Search and replace string in
@@ -653,8 +651,8 @@ block, or the whole block if repeated.</li>
 either side of cursor.</li>
 <li><strong>Say Chunk</strong>, Shift+BackSpace. Say chunk at
 cursor.</li>
-<li><strong>Say Clipboard</strong>, Alt+Apostrophe. Say clipboard text,
-or spell if repeated.</li>
+<li><strong>Say Clipboard</strong>, Alt+Apostrophe. Say the clipboard
+text.</li>
 <li><strong>Say Compiler</strong>, Alt+0. Say current compiler and
 folder.</li>
 <li><strong>Say Indentation</strong>, Alt+I. Say the current line's
@@ -662,13 +660,13 @@ indentation.</li>
 <li><strong>Say Path</strong>, Alt+P. Say full path of current
 file.</li>
 <li><strong>Say Selected</strong>, Shift+Space. or
-JAWSKey+Shift+DownArrow, Say selected text, or spell if repeated.</li>
+JAWSKey+Shift+DownArrow, Say the selected text.</li>
 <li><strong>Say Status</strong>, Alt+Z. Say whether the document is
-modified; twice, its encoding.</li>
+modified, and its encoding on a second press.</li>
 <li><strong>Say Styles</strong>, Alt+Slash. Say the style, alignment and
 baseline that differ from normal, then the font and color.</li>
-<li><strong>Say Time</strong>, Alt+Semi-colon. Say current time and
-date.</li>
+<li><strong>Say Time</strong>, Alt+Semi-colon. Say the date and
+time.</li>
 <li><strong>Say Yield</strong>, Alt+Y. Say number of characters, words,
 and lines in all or selected text.</li>
 <li><strong>SendTo Menu</strong>, Control+F10. Pick a command from those
@@ -704,13 +702,12 @@ folder.</li>
 everything copied to the clipboard to a file.</li>
 <li><strong>Alt+A</strong>: Say Address. Say line, column, and percent
 position of cursor.</li>
-<li><strong>Alt+Apostrophe</strong>: Say Clipboard. Say clipboard text,
-or spell if repeated.</li>
+<li><strong>Alt+Apostrophe</strong>: Say Clipboard. Say the clipboard
+text.</li>
 <li><strong>Alt+B</strong>: Say Block. Say the rest of the current code
 block, or the whole block if repeated.</li>
-<li><strong>Alt+Backslash</strong>: Open in Explorer. Open Windows
-Explorer in the EdSharp program folder, data folder, or current
-folder.</li>
+<li><strong>Alt+Backslash</strong>: Open in Explorer. Open the current
+folder in Windows Explorer.</li>
 <li><strong>Alt+Backspace</strong>: Delete Line. Delete current
 line.</li>
 <li><strong>Alt+C</strong>: Copy Append. Append selected text to
@@ -725,15 +722,14 @@ character of line and read it.</li>
 of the current file.</li>
 <li><strong>Alt+Equals</strong>: Transform Files. Apply a list of search
 and replace tasks to files.</li>
-<li><strong>Alt+F1</strong>: About. Display version and release
+<li><strong>Alt+F1</strong>: About. Say EdSharp's version and release
 date.</li>
 <li><strong>Alt+F10</strong>: Alternate Menu. Pick any command from one
 list, in menu, name or key order.</li>
 <li><strong>Alt+F11</strong>: Arrange Icons. Arrange open windows.</li>
-<li><strong>Alt+F12</strong>: Play Tutorials. Open the role-based
-quick-start tutorials in your web browser: Python, NVDA add-ons, JAWS
-scripts, web development, C#, translation, article writing, slides,
-summarizing, and batch conversion.</li>
+<li><strong>Alt+F12</strong>: Play Tutorials. Play the spoken tutorials:
+Python, NVDA add-ons, JAWS scripts, web development, C#, translation,
+article writing, slides, summarizing, and batch conversion.</li>
 <li><strong>Alt+F3</strong>: Forward Find at Cursor. Search forward for
 chunk or selected text.</li>
 <li><strong>Alt+F4</strong>: Exit EdSharp. Exit the EdSharp
@@ -777,13 +773,12 @@ NavigatePart setting.</li>
 those recently used.</li>
 <li><strong>Alt+RightArrow</strong>: Next Chunk. Go to next chunk and
 read it.</li>
-<li><strong>Alt+RightBracket</strong>: Infer Indent. Infer the indent
-unit of the current document, or configure EdSharp accordingly if
-repeated.</li>
+<li><strong>Alt+RightBracket</strong>: Infer Indent. Infer the current
+document's indent unit, or set it on a second press.</li>
 <li><strong>Alt+S</strong>: Save Script. Save all or selected text to a
 script file.</li>
-<li><strong>Alt+Semi-colon</strong>: Say Time. Say current time and
-date.</li>
+<li><strong>Alt+Semi-colon</strong>: Say Time. Say the date and
+time.</li>
 <li><strong>Alt+Shift+0</strong>: Reset Configuration. Revert to default
 options, or define a new compiler configuration.</li>
 <li><strong>Alt+Shift+6</strong>: Baseline. Set vertical alignment of
@@ -804,16 +799,15 @@ disk.</li>
 cursor or selected text.</li>
 <li><strong>Alt+Shift+Delete</strong>: Delete Down. Delete from cursor
 to bottom of file.</li>
-<li><strong>Alt+Shift+E</strong>: Edit Settings. Adjust configuration
-options through a dialog.</li>
+<li><strong>Alt+Shift+E</strong>: Edit Settings. Edit EdSharp's settings
+file.</li>
 <li><strong>Alt+Shift+Enter</strong>: Indent New Line Previous. Insert a
 line above with the current line's indentation.</li>
 <li><strong>Alt+Shift+Equals</strong>: Set Default Font and Color. Set
 default font and color for editing window.</li>
 <li><strong>Alt+Shift+F</strong>: File Find. Open file from list of
 files containing a search string.</li>
-<li><strong>Alt+Shift+F1</strong>: ReadMe. Open the ReadMe, the quick
-start, in your web browser.</li>
+<li><strong>Alt+Shift+F1</strong>: ReadMe. Open the quick start.</li>
 <li><strong>Alt+Shift+F11</strong>: Tile Horizontal. Tile open windows
 horizontally.</li>
 <li><strong>Alt+Shift+F12</strong>: Extra Speech Log. Open speech.log
@@ -875,8 +869,8 @@ from a web page or the current document.</li>
 another format.</li>
 <li><strong>Alt+Shift+Y</strong>: Yield Encoding. Render all or selected
 text based on a character encoding.</li>
-<li><strong>Alt+Shift+Z</strong>: Extra Speech Toggle. Toggle extra
-speech messages on or off, redirecting to Speech.log file.</li>
+<li><strong>Alt+Shift+Z</strong>: Extra Speech Toggle. Turn extra speech
+on or off.</li>
 <li><strong>Alt+Slash</strong>: Say Styles. Say the style, alignment and
 baseline that differ from normal, then the font and color.</li>
 <li><strong>Alt+T</strong>: Topic. Say topic of current section.</li>
@@ -891,7 +885,7 @@ and append it to the clipboard.</li>
 <li><strong>Alt+Y</strong>: Say Yield. Say number of characters, words,
 and lines in all or selected text.</li>
 <li><strong>Alt+Z</strong>: Say Status. Say whether the document is
-modified; twice, its encoding.</li>
+modified, and its encoding on a second press.</li>
 <li><strong>Control+0</strong>: Go to Folder. Go to folder containing
 recent or favorite files.</li>
 <li><strong>Control+4</strong>: Format Code. Arrange indentation and
@@ -904,8 +898,7 @@ clipboard text to a file you name.</li>
 <li><strong>Control+B</strong>: Next Block. Go to the next block of
 code, having the same or less indentation.</li>
 <li><strong>Control+Backslash</strong>: Open Command Prompt. Open a
-command prompt in the EdSharp program folder, data folder, or current
-folder.</li>
+command prompt in the current folder.</li>
 <li><strong>Control+C</strong>: Copy. Copy selected text to clipboard,
 or copy current line if no selection.</li>
 <li><strong>Control+D</strong>: Delete Hard Line. Delete line ending in
@@ -922,16 +915,16 @@ break at the cursor position.</li>
 line or selection as JScript.NET and insert the result.</li>
 <li><strong>Control+F</strong>: Forward Find. Search forward for string
 in all or selected text.</li>
-<li><strong>Control+F1</strong>: Key Describer Toggle. Toggle a mode in
-which pressing a key describes its action.</li>
+<li><strong>Control+F1</strong>: Key Describer Toggle. Turn key
+describing on or off: a key says its command instead of running it.</li>
 <li><strong>Control+F10</strong>: SendTo Menu. Pick a command from those
 available as Windows "Send To" options.</li>
 <li><strong>Control+F11</strong>: Cascade. Cascade open windows.</li>
-<li><strong>Control+F12</strong>: Copy Log. Copy this session's log to
-the clipboard.</li>
-<li><strong>Control+F3</strong>: Forward Find with Regex. Search forward
-for regular expression in all or selected text.</li>
-<li><strong>Control+F4</strong>: Close Window. Close current editing
+<li><strong>Control+F12</strong>: Copy Log. Copy the session log to the
+clipboard as a file.</li>
+<li><strong>Control+F3</strong>: Forward Find with Regex. Search
+backward for a regular expression in all or selected text.</li>
+<li><strong>Control+F4</strong>: Close Window. Close the current
 window.</li>
 <li><strong>Control+F5</strong>: Compile. Compile source code, say
 output, and jump to error position.</li>
@@ -1017,7 +1010,7 @@ interactive environment of current compiler.</li>
 <li><strong>Control+Shift+F2</strong>: Sample Programs. List the sample
 programs that ship with EdSharp and open one.</li>
 <li><strong>Control+Shift+F3</strong>: Reverse Find with Regex. Search
-forward for regular expression in all or selected text.</li>
+backward for a regular expression in all or selected text.</li>
 <li><strong>Control+Shift+F4</strong>: Close All but Current Window.
 Close all editing windows except the current one.</li>
 <li><strong>Control+Shift+F5</strong>: Pick Compiler. Pick a compiler or
@@ -1067,8 +1060,8 @@ forward for matching right brace character.</li>
 and insert date.</li>
 <li><strong>Control+Shift+T</strong>: Text Combine. Convert other
 formats to text and combine them in a new editing window.</li>
-<li><strong>Control+Shift+Tab</strong>: Previous Window. Cycle to
-previous editing window.</li>
+<li><strong>Control+Shift+Tab</strong>: Previous Window. Switch to the
+previous window.</li>
 <li><strong>Control+Shift+U</strong>: Lower Case. Convert current or
 selected characters to lower case.</li>
 <li><strong>Control+Shift+V</strong>: Paste File. Insert another file at
@@ -1078,13 +1071,13 @@ cursor position.</li>
 text matching a regular expression.</li>
 <li><strong>Control+Shift+Z</strong>: Redo. Redo the last action that
 was undone.</li>
-<li><strong>Control+Slash</strong>: Where Am I. Say the document, the
-cursor's position and whether it is modified.</li>
+<li><strong>Control+Slash</strong>: Where Am I. Say where you are, what
+has focus and its keys.</li>
 <li><strong>Control+Space</strong>: Select Chunk. Select the run of
 non-blank characters at the cursor, or the next one.</li>
 <li><strong>Control+T</strong>: Text Convert. Convert files of other
 formats to text files.</li>
-<li><strong>Control+Tab</strong>: Next Window. Cycle to next editing
+<li><strong>Control+Tab</strong>: Next Window. Switch to the next
 window.</li>
 <li><strong>Control+U</strong>: Upper Case. Convert current or selected
 characters to upper case.</li>
@@ -1099,18 +1092,17 @@ it.</li>
 <li><strong>Control+Z</strong>: Undo. Undo the last editing action.</li>
 <li><strong>Enter</strong>: Enter New Line. Start new line at left
 margin.</li>
-<li><strong>F1</strong>: Documentation. Open Documentation in web
-browser.</li>
+<li><strong>F1</strong>: Documentation. Open the EdSharp guide.</li>
 <li><strong>F11</strong>: Elevate Version. Download and install the
-latest EdSharp, after confirming.</li>
+latest EdSharp.</li>
 <li><strong>F12</strong>: Chat with AI. Ask the AI model on this
 computer a question.</li>
 <li><strong>F2</strong>: Special Character. Insert character indirectly
 by specifying its Unicode value.</li>
 <li><strong>F3</strong>: Search Next. Search forward for next
 match.</li>
-<li><strong>F4</strong>: Current Windows. Activate an editing window
-from a list of those currently open.</li>
+<li><strong>F4</strong>: Current Windows. Switch to a window you pick
+from the list.</li>
 <li><strong>F5</strong>: Run. Execute current file, based on its
 extension.</li>
 <li><strong>F6</strong>: Go to Section. Go to section in body from topic
@@ -1146,8 +1138,8 @@ this computer about the selection or document.</li>
 <li><strong>Shift+F2</strong>: Rename. Rename current file on disk.</li>
 <li><strong>Shift+F3</strong>: Search Previous. Search backward for
 previous match.</li>
-<li><strong>Shift+F4</strong>: Say Windows Open. Say titles of current
-editing windows.</li>
+<li><strong>Shift+F4</strong>: Say Windows Open. Say how many windows
+are open, and their titles.</li>
 <li><strong>Shift+F5</strong>: Run at Cursor. Execute a web URL or email
 address at cursor position or in selected text.</li>
 <li><strong>Shift+F6</strong>: Go to Contents. Go to topic in table of
@@ -1157,7 +1149,7 @@ cursor.</li>
 <li><strong>Shift+F8</strong>: Complete Selection. Select text from
 starting point to cursor.</li>
 <li><strong>Shift+Space</strong>: Say Selected. or
-JAWSKey+Shift+DownArrow, Say selected text, or spell if repeated.</li>
+JAWSKey+Shift+DownArrow, Say the selected text.</li>
 <li><strong>Shift+Tab</strong>: Outdent. Reduce indentation of current
 or selected lines by one unit.</li>
 <li><strong>Tab</strong>: Indent. Indent current line or selected text

@@ -2,6 +2,10 @@
 
 
 
+## 10 November 2026 -- One wording across Homer
+
+- **Commands the Homer apps share are described alike in each,** such as About, Where Am I and the clipboard commands. Reverse Find with Regex says it searches backward; it had said forward. A Say command mentions its second press only when that press does something else, as Say Styles and Say Status do.
+
 ## 10 November 2026 -- Named menu bars
 
 - **The menu bar is named for EdSharp,** as Axe.Windows asked.

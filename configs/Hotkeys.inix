@@ -2,12 +2,12 @@
 Launch EdSharp=Alt+Control+E, Launch or activate the EdSharp application via a Windows desktop shortcut
 Hotkey Summary=, List every command with its key and description
 
-Documentation=F1, Open Documentation in web browser
-About=Alt+F1, Display version and release date
+Documentation=F1, Open the EdSharp guide
+About=Alt+F1, Say EdSharp's version and release date
 History of Changes=Control+Shift+F1, Open the history of EdSharp's changes, newest first
-ReadMe=Alt+Shift+F1, Open the ReadMe, the quick start, in your web browser
-Hotkeys=, Open the document of every command and key, sorted several ways
-Key Describer Toggle=Control+F1, Toggle a mode in which pressing a key describes its action
+ReadMe=Alt+Shift+F1, Open the quick start
+Hotkeys=, Open the list of every command and key
+Key Describer Toggle=Control+F1, Turn key describing on or off: a key says its command instead of running it
 Alternate Menu=Alt+F10, Pick any command from one list, in menu, name or key order
 Context Menu=Shift+F10, Pick a command from those available to Windows Explorer for the current file extension
 SendTo Menu=Control+F10, Pick a command from those available as Windows "Send To" options
@@ -16,7 +16,7 @@ Select All=Control+A, Select all text
 Unselect All=Control+Shift+A, Clear text selection
 
 Select Chunk=Control+Space, Select the run of non-blank characters at the cursor, or the next one
-Say Selected=Shift+Space, or JAWSKey+Shift+DownArrow, Say selected text, or spell if repeated
+Say Selected=Shift+Space, or JAWSKey+Shift+DownArrow, Say the selected text
 Say Chunk=Shift+BackSpace, Say chunk at cursor
 
 Start Selection=F8, Mark starting point of text to be selected
@@ -30,16 +30,16 @@ Say Address=Alt+A, Say line, column, and percent position of cursor
 Say Braces=Alt+Shift+], Say number of braces on either side of cursor
 Say Indentation=Alt+I, Say the current line's indentation
 Say Yield=Alt+Y, Say number of characters, words, and lines in all or selected text
-Say Status=Alt+Z, Say whether the document is modified; twice, its encoding
-Say Clipboard=Alt+Apostrophe, Say clipboard text, or spell if repeated
-Save Clipboard=Control+Apostrophe, Export clipboard text to disk file
+Say Status=Alt+Z, Say whether the document is modified, and its encoding on a second press
+Say Clipboard=Alt+Apostrophe, Say the clipboard text
+Save Clipboard=Control+Apostrophe, Save the clipboard text to a file you name
 Append Clipboard=Control+Shift+Apostrophe, Add the clipboard text to the end of a file you name
-Clear Clipboard=Alt+Shift+Apostrophe, Clear clipboard text
-Say Time=Alt+Semi-colon, Say current time and date
+Clear Clipboard=Alt+Shift+Apostrophe, Empty the clipboard
+Say Time=Alt+Semi-colon, Say the date and time
 Insert Time=Alt+Shift+Semi-colon, Insert current time and date
 Calculate Date=Control+Shift+Semi-colon, Calculate and insert date
 
-Edit Settings=Alt+Shift+E, Adjust configuration options through a dialog
+Edit Settings=Alt+Shift+E, Edit EdSharp's settings file
 Set Default Font and Color=Alt+Shift+Equals, Set default font and color for editing window
 Edit Settings File=Alt+Shift+F2, Adjust options by directly editing the main configuration file
 Reset Configuration=Alt+Shift+0, Revert to default options, or define a new compiler configuration
@@ -69,7 +69,7 @@ File Find=Alt+Shift+F, Open file from list of files containing a search string
 Forward Find=Control+F, Search forward for string in all or selected text
 Reverse Find=Control+Shift+F, Search backward for string
 Forward Find with Regex=Control+F3, Search forward for regular expression in all or selected text
-Reverse Find with Regex=Control+Shift+F3, Search forward for regular expression in all or selected text
+Reverse Find with Regex=Control+Shift+F3, Search backward for a regular expression in all or selected text
 Forward Find at Cursor=Alt+F3, Search forward for chunk or selected text
 Reverse Find at Cursor=Alt+Shift+F3, Search backward for chunk or selected text
 Search Next=F3, Search forward for next match
@@ -84,7 +84,7 @@ Voice Louder=Alt+Grave, Increase JAWS voice volume by 5%
 Voice Softer=Alt+Shift+Grave, Decrease JAWS voice volume by 5%
 Voice Faster=Control+Grave, Increase JAWS voice rate by 5%
 Voice Slower=Control+Shift+Grave, Decrease JAWS voice rate by 5%
-Extra Speech Toggle=Alt+Shift+Z, Toggle extra speech messages on or off, redirecting to Speech.log file
+Extra Speech Toggle=Alt+Shift+Z, Turn extra speech on or off
 Extra Speech Log=Alt+Shift+F12, Open speech.log file in a new window
 
 Go to Percent=Control+G, Go to percentage point in document
@@ -207,11 +207,11 @@ Next Baseline=Control+6, Go to next change in baseline
 Previous Baseline=Control+Shift+6, Go to previous change in baseline
 Next Font=Control+Dash, Go to next change in font
 Previous Font=Control+Shift+Dash, Go to previous change in font
-Say Styles=Alt+Slash, Say the styles at the cursor; press twice to set them
+Say Styles=Alt+Slash, Say the styles at the cursor, or set them on a second press
 What This Does=Shift+F1, Say what the control with focus does
-Where Am I=Control+Slash, Say the document, the cursor's position and whether it is modified
+Where Am I=Control+Slash, Say where you are, what has focus and its keys
 
-Infer Indent=Alt+RightBracket, Infer the indent unit of the current document, or configure EdSharp accordingly if repeated
+Infer Indent=Alt+RightBracket, Infer the current document's indent unit, or set it on a second press
 Toggle Indentation=JAWSKey+Shift+GraveAccent, Toggle announcement of indentation by JAWS
 Indent Mode=Alt+Shift+I, Toggle auto indent with Enter, and announcement of indentation changes
 Enter New Line=Enter, Start new line at left margin
@@ -242,15 +242,15 @@ PyBrace=Alt+Shift+LeftBracket, Convert PyDent or Python code to PyBrace form, wi
 Insert Script Path=Control+I, Insert JAWS script path in Open or Save Dialog
 Insert All Users Path=Control+Shift+I, Insert JAWS All Users path in Open or Save Dialog
 
-Open in Explorer=Alt+Backslash, Open Windows Explorer in the EdSharp program folder, data folder, or current folder
-Open Command Prompt=Control+Backslash, Open a command prompt in the EdSharp program folder, data folder, or current folder
+Open in Explorer=Alt+Backslash, Open the current folder in Windows Explorer
+Open Command Prompt=Control+Backslash, Open a command prompt in the current folder
 Environment Variables=Control+E, Change Windows environment variables for the current process, user, or system
 
-Next Window=Control+Tab, Cycle to next editing window
-Previous Window=Control+Shift+Tab, Cycle to previous editing window
-Say Windows Open=Shift+F4, Say titles of current editing windows
-Current Windows=F4, Activate an editing window from a list of those currently open
-Close Window=Control+F4, Close current editing window
+Next Window=Control+Tab, Switch to the next window
+Previous Window=Control+Shift+Tab, Switch to the previous window
+Say Windows Open=Shift+F4, Say how many windows are open, and their titles
+Current Windows=F4, Switch to a window you pick from the list
+Close Window=Control+F4, Close the current window
 Close All but Current Window=Control+Shift+F4, Close all editing windows except the current one
 Exit EdSharp=Alt+F4, Exit the EdSharp application
 
@@ -259,7 +259,7 @@ Cascade=Control+F11, Cascade open windows
 Tile Horizontal=Alt+Shift+F11, Tile open windows horizontally
 Tile Vertical=Shift+F11, Tile open windows vertically
 
-Elevate Version=F11, Download and install the latest EdSharp, after confirming
+Elevate Version=F11, Download and install the latest EdSharp
 
 ; Commands added in August 2026. Every command EdSharp creates must have
 ; a line here, or the Key Describer answers "No description available";
@@ -274,6 +274,6 @@ Check Markdown=Alt+F9, Report problems in this Markdown, such as heading jumps
 Run Code Blocks=Alt+Shift+F9, Run the document's sql and jscript code blocks, results below each
 Chat with AI=F12, Ask the AI model on this computer a question
 Chat about Document=Shift+F12, Ask the AI model on this computer about the selection or document
-Play Tutorials=Alt+F12, Open the role-based quick-start tutorials in your web browser
+Play Tutorials=Alt+F12, Play the spoken tutorials
 Sample Programs=Control+Shift+F2, List the sample programs that ship with EdSharp and open one
-Copy Log=Control+F12, Copy this session's log to the clipboard
+Copy Log=Control+F12, Copy the session log to the clipboard as a file
