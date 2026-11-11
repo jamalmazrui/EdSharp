@@ -1856,7 +1856,9 @@ def checkSuiteCommands():
         sKeyFile = os.path.join(sRoot, "configs", "Hotkeys.inix")
     if not os.path.isfile(sKeyFile):
         return finding("suite commands", "skip", "no key file in configs")
-    dCommands, dWords, sSection = {}, {}, ""
+    # [keys <App>] in the catalog names a key an app keeps instead of the suite's, for a reason the catalog gives --
+    # HomerView's Elevate Version is Control+F11, since F11 is Microsoft Edge's full screen (10 November 2026).
+    dCommands, dWords, dKeyExceptions, sSection = {}, {}, {}, ""
     for sLine in readText(sCatalog).splitlines():
         sTrim = sLine.strip()
         if not sTrim or sTrim.startswith(";"): continue
@@ -1865,9 +1867,10 @@ def checkSuiteCommands():
         sKey, sValue = sTrim.split("=", 1)
         if sSection.startswith("command "): dCommands.setdefault(sSection[8:], {})[sKey.strip()] = sValue.strip()
         elif sSection.startswith("words "): dWords.setdefault(sSection[6:], {})[sKey.strip()] = sValue.strip()
+        elif sSection.startswith("keys "): dKeyExceptions.setdefault(sSection[5:], {})[sKey.strip()] = sValue.strip()
     def normKey(sKey):
         dRep = {"Ctrl": "Control", "Apostrophe": "'", "OemQuotes": "'", "Semicolon": ";", "Semi-colon": ";", "Backslash": "\\",
-                "Slash": "/", "Grave": "`", "Equals": "=", "Return": "Enter", "Comma": ",", "Period": "."}
+                "Slash": "/", "Grave": "`", "Equals": "=", "Return": "Enter", "Comma": ",", "Period": ".", "SemiColon": ";"}
         lParts = [dRep.get(s, s) for s in sKey.strip().split("+") if s]
         lMods = [s for s in ("Control", "Alt", "Shift") if s in lParts]
         lRest = [re.sub(r"^D(\d)$", r"\1", s) for s in lParts if s not in ("Control", "Alt", "Shift")]
@@ -1890,14 +1893,17 @@ def checkSuiteCommands():
         lKeys = [normKey(s) for sPart in lParts[:iAt] for s in re.split(r"\s+or\s+|^\s*or\s+|^\s*through\s+", sPart.strip()) if s.strip() and s.strip().lower() != "none"]
         sDescription = ",".join(lParts[iAt:]).strip()
         sSuiteKey = normKey(dCommands[sCanon].get("key", "").replace("{app}", sApp))
+        sOwnKey = normKey(dKeyExceptions.get(sApp, {}).get(sCanon, ""))
+        if sOwnKey: sSuiteKey = sOwnKey
         if sSuiteKey and sSuiteKey not in lKeys:
             lBreaks.append("%s: the suite's key is %s, but %s binds %s" % (sName.strip(), sSuiteKey, sApp, " or ".join(lKeys) or "none"))
         sWanted = render(sCanon)
-        if sDescription != sWanted:
+        if sDescription.rstrip(".") != sWanted.rstrip("."):   # a closing period is a matter of each app's style
             lBreaks.append("%s: says \"%s\", where the suite says \"%s\"" % (sName.strip(), sDescription, sWanted))
     for sBreak in lBreaks: logLine("SUITE: " + sBreak)
     if lBreaks:
-        return finding("suite commands", "fail", "%d of %d shared commands differ from the suite's catalog; each is in the log" % (len(lBreaks), iShared))
+        iDiffer = len(set(s.split(":", 1)[0] for s in lBreaks))   # commands, not breaks: one can differ in key and words
+        return finding("suite commands", "fail", "%d of %d shared commands differ from the suite's catalog; each is in the log" % (iDiffer, iShared))
     return finding("suite commands", "pass", "%d shared commands, each with the suite's key and sentence" % iShared)
 
 
