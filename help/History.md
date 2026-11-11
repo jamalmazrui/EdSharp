@@ -2,6 +2,14 @@
 
 
 
+## 10 November 2026 -- Every message, always
+
+- **Extra Speech Toggle and Extra Speech Log are gone, and their keys are free.** EdSharp always speaks its messages, each chosen and short. A message it does not speak, because EdSharp is not in front, is written to the session log with the reason, which replaces Speech.log. The JAWS keys that changed the voice -- rate, volume, punctuation and indentation, on the accent key -- are freed too; JAWS's own keys set its voice.
+
+## 10 November 2026 -- Homer Suite
+
+- **Shared commands match DbDo and FileDir word for word.** Go to Folder is Choose Folder, since it picks from the current, recent and favorite folders, not FileDir's Go to Folder. The Help menu lists each document EdSharp ships: Frequently Asked Questions, Tutorials Transcript, Announcement, Developer Guide and License join it.
+
 ## 10 November 2026 -- One wording across Homer
 
 - **Commands the Homer apps share are described alike in each,** such as About, Where Am I and the clipboard commands. Reverse Find with Regex says it searches backward; it had said forward. A Say command mentions its second press only when that press does something else, as Say Styles and Say Status do.

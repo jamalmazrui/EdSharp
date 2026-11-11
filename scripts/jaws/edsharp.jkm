@@ -282,14 +282,7 @@ Alt+Shift+Home=TypeCurrentScriptKey
 Alt+Shift+End=TypeCurrentScriptKey
 Shift+NumPad5=TypeCurrentScriptKey
 Alt+Shift+NumPad5=TypeCurrentScriptKey
-;JAWSKey+I=ToggleIndentation
-; Toggle Indentation left Windows+` on 19 October 2026: Windows keys belong to Windows (kit key decision 6).
-JAWSKey+Shift+`=ToggleIndentation
-JAWSKey+`=TogglePunctuation
-Control+`=SpeedFaster
-Control+Shift+`=SpeedSlower
-Alt+`=VolumeLouder
-Alt+Shift+`=VolumeSofter
+; NO SPEECH TWEAKS (10 November 2026): the voice, punctuation and indentation keys are freed; JAWS's own keys set its voice.
 Control+Backslash=TypeCurrentScriptKey
 Alt+Backslash=TypeCurrentScriptKey
 Control+Dash=TypeCurrentScriptKey

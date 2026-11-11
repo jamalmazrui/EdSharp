@@ -160,8 +160,9 @@ somewhere feels too quiet, say so and it can be added back deliberately.
 
 ### Can I turn its speech off entirely?
 
-Yes, with Extra Speech in the Miscellaneous menu. The messages still go to the
-status bar and to a log you can read.
+No. EdSharp speaks only what your screen reader cannot already tell you, and
+keeps it short, so none of it is optional. Everything it says, and anything it
+chose not to say, is written to its session log.
 
 ## Problems
 

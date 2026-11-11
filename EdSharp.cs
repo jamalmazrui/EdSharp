@@ -172,7 +172,7 @@ App.BomDictionary = Util.GetBomDictionary();
 SetConfigurationValues();
 App.SpeechLog = Path.Combine(App.DataDir, "Speech.log");
 if (File.Exists(App.SpeechLog)) File.Delete(App.SpeechLog);
-App.ExtraSpeech = (App.ReadOption("E&xtraSpeech", "Y").ToLower().Substring(0, 1) == "n") ? false : true;
+App.ExtraSpeech = true;   // no extra-speech switch: every message EdSharp speaks is chosen, and short (10 November 2026)
 
 InitNetSdk();
 InitJFW();
@@ -243,7 +243,7 @@ App.BomDictionary = Util.GetBomDictionary();
 SetConfigurationValues();
 App.SpeechLog = Path.Combine(App.DataDir, "Speech.log");
 if (File.Exists(App.SpeechLog)) File.Delete(App.SpeechLog);
-App.ExtraSpeech = (App.ReadOption("E&xtraSpeech", "Y").ToLower().Substring(0, 1) == "n") ? false : true;
+App.ExtraSpeech = true;   // no extra-speech switch: every message EdSharp speaks is chosen, and short (10 November 2026)
 App.IndentChange = App.ReadOption("E&xtraSpeech", "Y").Contains("-") ? false : true;
 
 InitNetSdk();
@@ -998,7 +998,7 @@ public ToolStripMenuItem menuEdit, menuEditSelectAll, menuEditUnselectAll, menuE
 public ToolStripMenuItem menuDelete, menuDeleteReplaceRegular, menuDeleteReplaceWithRegExp, menuDeleteHardLine, menuDeleteParagraph, menuDeleteLine, menuDeleteRight, menuDeleteLeft, menuDeleteDown, menuDeleteUp, menuDeleteFile, menuDeleteTrimBlanks;
 public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateNextBlock, menuNavigatePriorBlock, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateGoToStartOfSelection;
 public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles;
-public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
+public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
 public ToolStripMenuItem menuWindow, menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
 public ToolStripMenuItem menuHelpWhatThisDoes, menuHelpWhereAmI;
 public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
@@ -1183,12 +1183,10 @@ menuMiscSetDefaultFont = CreateMenuItem("Set Default Font and Color ...", "Alt+S
 menuMiscConfigurationOptions = CreateMenuItem("Edit Settings ...", "Alt+Shift+E", menuItem_Click, "frame silent");
 menuMiscManualOptions = CreateMenuItem("Edit Settings File", "Alt+Shift+F2", menuItem_Click, "frame silent");
 menuMiscResetConfiguration = CreateMenuItem("Reset Configuration", "Alt+Shift+D0", menuItem_Click, "frame silent");
-menuMiscGoToFolder = CreateMenuItem("Go to Folder", "Control+D0", menuItem_Click, "frame silent");
+menuMiscGoToFolder = CreateMenuItem("Choose Folder", "Control+D0", menuItem_Click, "frame silent");
 menuMiscGoToSpecialFolder = CreateMenuItem("Go to Special Folder", "Control+Shift+G", menuItem_Click, "frame silent");
 menuMiscWordWrap = CreateMenuItem("&Word Wrap", "Control+W", menuItem_Click, "child speak");
 menuMiscUnwrap = CreateMenuItem("Unwrap", "Control+Shift+W", menuItem_Click, "child speak");
-menuMiscExtraSpeechToggle = CreateMenuItem("Extra Speech Toggle", "Alt+Shift+Z", menuItem_Click, "frame silent");
-menuMiscExtraSpeechLog = CreateMenuItem("Extra Speech Log", "Alt+Shift+F12", menuItem_Click, "frame speak");
 menuMiscEnvironmentVariables = CreateMenuItem("&Environment Variables ...", "Control+E", menuItem_Click, "frame speak");
 menuMiscSpellCheck = CreateMenuItem("Spell Check", "F7", menuItem_Click, "child speak");
 menuMiscThesaurus = CreateMenuItem("Thesaurus", "Shift+F7", menuItem_Click, "child speak");
@@ -1245,7 +1243,7 @@ menuMiscExplorerFolder = CreateMenuItem("Open in Explorer", "Alt+Oem5", menuItem
 menuMiscCommandPrompt = CreateMenuItem("Open Command Prompt", "Control+Oem5", menuItem_Click, "frame speak");
 menuMiscBurnToCD = CreateMenuItem("Burn to CD", "Alt+Shift+B", menuItem_Click, "child speak");
 menuMiscWebDownload = CreateMenuItem("Web Download", "Alt+Shift+W", menuItem_Click, "frame speak");
-menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscExtraSpeechToggle, menuMiscExtraSpeechLog, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload, menuFilePrint});
+menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscManualOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload, menuFilePrint});
 //Homer.LbcAsk.message("Misc.", menuMisc.DropDownItems.Count);
 
 menuWindow = CreateMenu("&Window");
@@ -1285,7 +1283,13 @@ menuHelpAlternateMenu= CreateMenuItem("Alternate Menu ...", "Alt+F10", menuItem_
 menuHelpContextMenu= CreateMenuItem("Context Menu ...", "Shift+F10", menuItem_Click, "child silent");
 menuHelpSendToMenu= CreateMenuItem("SendTo Menu ...", "Control+F10", menuItem_Click, "child silent");
 menuHelpElevateVersion = CreateMenuItem("Elevate Version", "F11", menuItem_Click, "frame speak");
-menuHelp.DropDownItems.AddRange(new ToolStripItem[] {menuHelpAbout, menuHelpDocumentation, menuHelpWhatThisDoes, menuHelpWhereAmI, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion});
+// EVERY DOCUMENT ON THE HELP MENU (10 November 2026): the documents EdSharp ships, each an item, as in DbDo and FileDir.
+ToolStripMenuItem menuHelpFrequentlyAskedQuestions = CreateMenuItem("Frequently Asked Questions", "", delegate(object oSender, EventArgs oArgs) { Homer.SuiteCommands.openHelp("FAQ.htm"); }, "frame speak");
+ToolStripMenuItem menuHelpTutorialsTranscript = CreateMenuItem("Tutorials Transcript", "", delegate(object oSender, EventArgs oArgs) { Homer.SuiteCommands.openHelp("Tutorials.htm"); }, "frame speak");
+ToolStripMenuItem menuHelpAnnouncement = CreateMenuItem("Announcement", "", delegate(object oSender, EventArgs oArgs) { Homer.SuiteCommands.openHelp("Announce.htm"); }, "frame speak");
+ToolStripMenuItem menuHelpDeveloperGuide = CreateMenuItem("Developer Guide", "", delegate(object oSender, EventArgs oArgs) { Homer.SuiteCommands.openHelp("Developer.htm"); }, "frame speak");
+ToolStripMenuItem menuHelpLicense = CreateMenuItem("License", "", delegate(object oSender, EventArgs oArgs) { Homer.SuiteCommands.openHelp("License.htm"); }, "frame speak");
+menuHelp.DropDownItems.AddRange(new ToolStripItem[] {menuHelpAbout, menuHelpDocumentation, menuHelpWhatThisDoes, menuHelpWhereAmI, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpFrequentlyAskedQuestions, menuHelpTutorialsTranscript, menuHelpAnnouncement, menuHelpDeveloperGuide, menuHelpLicense, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion});
 //Homer.LbcAsk.message("Help.", menuHelp.DropDownItems.Count);
 
 menuMain.Items.AddRange(new ToolStripItem[] {menuFile, menuEdit, menuDelete, menuNavigate, menuQuery, menuMisc, menuWindow, menuHelp});
@@ -2221,8 +2225,6 @@ static readonly string[] aCommandSummaries = new string[] {
 "Voice Softer\tAlt+Shift+Grave, Decrease JAWS voice volume by 5%",
 "Voice Faster\tControl+Grave, Increase JAWS voice rate by 5%",
 "Voice Slower\tControl+Shift+Grave, Decrease JAWS voice rate by 5%",
-"Extra Speech Toggle\tAlt+Shift+Z, Toggle extra speech messages on or off, redirecting to Speech.log file",
-"Extra Speech Log\tAlt+Shift+F12, Open speech.log file in a new window",
 "Go to Percent\tControl+G, Go to percentage point in document",
 "Go to Percent Again\tAlt+G, Repeat Go command",
 "Jump to Line\tControl+J, Jump to line number or to line, column position",
@@ -3659,19 +3661,7 @@ if (menuItem == menuMiscSpellCheck) {
 SpellCheck();
 }
 
-if (menuItem == menuMiscExtraSpeechToggle) {
-SetStatus("");
-bool b = !App.ExtraSpeech;
-App.ExtraSpeech = true;
-AddMessage("Extra Speech");
-AddMessage(b ? "On" : "Off");
-App.ExtraSpeech = b;
-App.WriteOption("E&xtraSpeech", (b ? "Y" : "N"));
-}
 
-if (menuItem == menuMiscExtraSpeechLog) {
-OpenOrActivateWindow(App.SpeechLog, 0);
-}
 
 if (menuItem == menuMiscThesaurus) {
 Thesaurus();
@@ -13303,15 +13293,12 @@ return Say(oText, bGlobal);
 public static bool Say(object oText, bool bGlobal) {
 string sText = oText.ToString();
 if (sText.Trim().Length == 0) sText = "Blank";
-if (!App.ExtraSpeech) {
-Util.StringAppend2File(sText + "\r\n", App.SpeechLog);
-return false;
-}
-
+// WHAT IS NOT SPOKEN IS STILL LOGGED (10 November 2026): the runtime log holds every message, spoken or not, with
+// the reason; speech.log, which held only the unspoken ones, is retired.
 if (!bGlobal) {
-if (!IsAppActiveWindow()) return false;
+if (!IsAppActiveWindow()) { Homer.Say.noteUnspoken(sText, "EdSharp is not the active window"); return false; }
 
-if ((Control.ModifierKeys & Keys.Alt) != 0 && (Control.ModifierKeys & Keys.Control) != 0) return false;
+if ((Control.ModifierKeys & Keys.Alt) != 0 && (Control.ModifierKeys & Keys.Control) != 0) { Homer.Say.noteUnspoken(sText, "Alt and Control are held down"); return false; }
 }
 
 // Speech goes through Homer.Say: JAWS COM, then the NVDA controller client,

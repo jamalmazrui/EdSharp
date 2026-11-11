@@ -1,5 +1,5 @@
 ﻿[Hotkeys]
-Launch EdSharp=Alt+Control+E, Launch or activate the EdSharp application via a Windows desktop shortcut
+Launch EdSharp=Alt+Control+E, Start EdSharp, or switch to it, from its desktop shortcut
 Hotkey Summary=, List every command with its key and description
 
 Documentation=F1, Open the EdSharp guide
@@ -7,10 +7,15 @@ About=Alt+F1, Say EdSharp's version and release date
 History of Changes=Control+Shift+F1, Open the history of EdSharp's changes, newest first
 ReadMe=Alt+Shift+F1, Open the quick start
 Hotkeys=, Open the list of every command and key
+Frequently Asked Questions=, Open the answers to frequently asked questions
+Tutorials Transcript=, Open the text of the tutorials
+Announcement=, Open the announcement of this version
+Developer Guide=, Open the guide for developers
+License=, Open the license
 Key Describer Toggle=Control+F1, Turn key describing on or off: a key says its command instead of running it
 Alternate Menu=Alt+F10, Pick any command from one list, in menu, name or key order
-Context Menu=Shift+F10, Pick a command from those available to Windows Explorer for the current file extension
-SendTo Menu=Control+F10, Pick a command from those available as Windows "Send To" options
+Context Menu=Shift+F10, Open the Windows context menu for the current file
+SendTo Menu=Control+F10, Send the current file to a Send To choice you pick
 
 Select All=Control+A, Select all text
 Unselect All=Control+Shift+A, Clear text selection
@@ -29,7 +34,7 @@ Read All=Alt+F8, Say all the text without moving the cursor
 Say Address=Alt+A, Say line, column, and percent position of cursor
 Say Braces=Alt+Shift+], Say number of braces on either side of cursor
 Say Indentation=Alt+I, Say the current line's indentation
-Say Yield=Alt+Y, Say number of characters, words, and lines in all or selected text
+Say Yield=Alt+Y, Say how many characters, words and lines are in all or the selected text
 Say Status=Alt+Z, Say whether the document is modified, and its encoding on a second press
 Say Clipboard=Alt+Apostrophe, Say the clipboard text
 Save Clipboard=Control+Apostrophe, Save the clipboard text to a file you name
@@ -41,60 +46,53 @@ Calculate Date=Control+Shift+Semi-colon, Calculate and insert date
 
 Edit Settings=Alt+Shift+E, Edit EdSharp's settings file
 Set Default Font and Color=Alt+Shift+Equals, Set default font and color for editing window
-Edit Settings File=Alt+Shift+F2, Adjust options by directly editing the main configuration file
+Edit Settings File=Alt+Shift+F2, Edit EdSharp's settings file in your text editor
 Reset Configuration=Alt+Shift+0, Revert to default options, or define a new compiler configuration
 
-Copy=Control+C, Copy selected text to clipboard, or copy current line if no selection
-Copy Append=Alt+C, Append selected text to clipboard, or append current line if no selection
+Copy=Control+C, Copy the selected text or the current line to the clipboard
+Copy Append=Alt+C, Add the selected text or the current line to the end of the clipboard
 Copy Rich Text=Control+Shift+C, Copy selected text with formatting to clipboard
-Cut=Control+X, Cut selected text to clipboard, or cut current line if no selection
+Cut=Control+X, Cut the selected text or the current line to the clipboard
 Cut Append=Alt+X, Cut the selection, or the line, and append it to the clipboard
 
-Paste=Control+V, Paste text from clipboard
+Paste=Control+V, Paste the clipboard text at the cursor
 Paste File=Control+Shift+V, Insert another file at cursor position
 Append from Clipboard=Alt+7, Toggle saving everything copied to the clipboard to a file
 Undo=Control+Z, Undo the last editing action
 Redo=Control+Shift+Z, Redo the last action that was undone
 
 Save Script=Alt+S, Save all or selected text to a script file
-Invoke Script=Alt+V, Pick script file to paste or execute
+Invoke Script=Alt+V, Pick a script to run or paste
 View Script=Alt+Shift+V, Pick script file to view or edit
 
 Yield with Regex=Control+Shift+Y, Count parts of text matching a regular expression
-Extract with Regex=Control+Shift+E, Extract text matching a regular expression, putting matches in a new window
-Replace with Regex=Control+Shift+R, Search and replace regular expression in all or selected text
-Replace=Control+R, Search and replace string in all or selected text
+Extract with Regex=Control+Shift+E, Copy every match of a regular expression in the text, into a new window
+Replace with Regex=Control+Shift+R, Replace a regular expression's matches in all or the selected text
+Replace=Control+R, Replace text in all or the selected text
 
-File Find=Alt+Shift+F, Open file from list of files containing a search string
+File Find=Alt+Shift+F, Find files by name and content in this folder and below, and open one
 Forward Find=Control+F, Search forward for string in all or selected text
 Reverse Find=Control+Shift+F, Search backward for string
 Forward Find with Regex=Control+F3, Search forward for regular expression in all or selected text
 Reverse Find with Regex=Control+Shift+F3, Search backward for a regular expression in all or selected text
 Forward Find at Cursor=Alt+F3, Search forward for chunk or selected text
 Reverse Find at Cursor=Alt+Shift+F3, Search backward for chunk or selected text
-Search Next=F3, Search forward for next match
-Search Previous=Shift+F3, Search backward for previous match
+Search Next=F3, Repeat the last search, forward
+Search Previous=Shift+F3, Repeat the last search, backward
 
 Word Wrap=Control+W, Word wrap lines
 Unwrap=Control+Shift+W, Unwrap lines
 Guard Document=Control+F7, Make document read-only
 No Guard=Control+Shift+F7, Clear read-only status
-Toggle Punctuation=JAWSKey+Grave, Accent, Toggle JAWS voice between all and no punctuation
-Voice Louder=Alt+Grave, Increase JAWS voice volume by 5%
-Voice Softer=Alt+Shift+Grave, Decrease JAWS voice volume by 5%
-Voice Faster=Control+Grave, Increase JAWS voice rate by 5%
-Voice Slower=Control+Shift+Grave, Decrease JAWS voice rate by 5%
-Extra Speech Toggle=Alt+Shift+Z, Turn extra speech on or off
-Extra Speech Log=Alt+Shift+F12, Open speech.log file in a new window
 
 Go to Percent=Control+G, Go to percentage point in document
 Go to Percent Again=Alt+G, Repeat Go command
 Jump to Line=Control+J, Jump to line number or to line, column position
 Jump to Line Again=Alt+J, Repeat Jump command
 
-Save Bookmark=Control+B, Set bookmark at cursor position
-Clear Bookmark=Control+Shift+B, Clear bookmark at cursor position
-List Bookmarks=Alt+B, Go to bookmark in current file
+Save Bookmark=Control+B, Bookmark the cursor's place
+Clear Bookmark=Control+Shift+B, Remove the bookmark at the cursor
+List Bookmarks=Alt+B, Go to a bookmark in the current file you pick from a list
 
 Set Favorite=Control+L, Add current file to the list of favorites
 Clear Favorite=Control+Shift+L, Clear current file from the list of favorites
@@ -109,16 +107,16 @@ Open Other Format=Control+Shift+O, Open file in another format and convert it to
 Open Again=Alt+O, Reload the current file from disk
 
 Properties=Alt+Enter, Show the Windows properties of the current file
-Save=Control+S, Save
-Save As=Control+Shift+S, Save As
+Save=Control+S, Save the current file
+Save As=Control+Shift+S, Save a copy of the current file under another name or format
 Save Copy=Alt+Shift+S, Save copy of document using a different name
 Export Format=Alt+Shift+X, Export document to another format
 
-Print=, Print current file
-Mail Body=Control+M, Mail current file as body of an email message
-Mail Attachment=Control+Shift+M, Mail current file as an email attachment
-Burn to CD=Alt+Shift+B, Burn a list of files or folders to a CD
-Web Download=Alt+Shift+W, Pick files to download from a web page or the current document
+Print=, Print the selected text or the current line
+Mail Body=Control+M, Send the current file's text as the body of an email message
+Mail Attachment=Control+Shift+M, Send the current file as email attachments
+Burn to CD=Alt+Shift+B, Burn the files or folders the document lists to a CD
+Web Download=Alt+Shift+W, Download files linked from a web page or the current document
 Web Client Utilities=Alt+Shift+Space, Pick a web client utility to run
 
 Run=F5, Execute current file, based on its extension
@@ -128,8 +126,8 @@ Review Output=Alt+Shift+F5, Open standard output of last prompt or compile comma
 Compile=Control+F5, Compile source code, say output, and jump to error position
 Pick Compiler=Control+Shift+F5, Pick a compiler or interpreter from the list of those configured
 Say Compiler=Alt+0, Say current compiler and folder
-Go to Folder=Control+0, Go to folder containing recent or favorite files
-Go to Special Folder=Control+Shift+G, Go to special folder of Windows
+Choose Folder=Control+0, Go to a folder you pick from the current, recent and favorite ones
+Go to Special Folder=Control+Shift+G, Go to a Windows special folder you pick
 Go to Environment=Control+Shift+F12, Go to interactive environment of current compiler
 
 Spell Check=F7, Spell check all or selected text
@@ -137,8 +135,8 @@ Thesaurus=Shift+F7, Look up synonyms for word at cursor
 Lookup Term=Alt+F7, Look up information from dictionary.com, thesaurus.com, and wikipedia.org
 Translate Language=Alt+Shift+F7, Translate the selection or the document into another language
 
-Say Path=Alt+P, Say full path of current file
-Path to Clipboard=Alt+Shift+P, Copy full path of current file to clipboard
+Say Path=Alt+P, Say the full path of the current file
+Path to Clipboard=Alt+Shift+P, Copy the full path of the current file to the clipboard
 Path List=Control+Shift+P, Generate a list of files in a new editing window
 
 Special Character=F2, Insert character indirectly by specifying its Unicode value
@@ -155,7 +153,7 @@ Yield Encoding=Alt+Shift+Y, Render all or selected text based on a character enc
 
 Format Code =Control+4, Arrange indentation and other stylistic conventions in a C-like language
 Repeat Line=Control+Y, Copy current line below it
-Evaluate Expression=Control+Equals, Evaluate the line or selection as JScript.NET and insert the result
+Evaluate Expression=Control+Equals, Evaluate an expression and insert its result
 Replace Tokens=Control+Shift+Equals, Swap user-defined tokens with their computed results in all or selected text
 Transform Files=Alt+Equals, Apply a list of search and replace tasks to files
 Trim Blanks=Control+Shift+Enter, Trim blanks from the lines, and extra blank lines between them
@@ -179,7 +177,7 @@ Delete Line=Alt+Backspace, Delete current line
 Delete Hard Line=Control+D, Delete line ending in hard line break
 Delete Paragraph=Control+Shift+D, Delete past one or more blank lines
 Delete File=Alt+Shift+D, Delete current file on disk
-Rename=Shift+F2, Rename current file on disk
+Rename=Shift+F2, Rename the current file on disk
 
 Next Section=Control+F6 or Control+PageDown, Go to next section
 Previous Section=Control+Shift+F6 or Control+PageUp, Go to previous Section
@@ -212,7 +210,6 @@ What This Does=Shift+F1, Say what the control with focus does
 Where Am I=Control+Slash, Say where you are, what has focus and its keys
 
 Infer Indent=Alt+RightBracket, Infer the current document's indent unit, or set it on a second press
-Toggle Indentation=JAWSKey+Shift+GraveAccent, Toggle announcement of indentation by JAWS
 Indent Mode=Alt+Shift+I, Toggle auto indent with Enter, and announcement of indentation changes
 Enter New Line=Enter, Start new line at left margin
 Indent New Line=Shift+Enter, Start new line with same indentation as current one
@@ -242,9 +239,9 @@ PyBrace=Alt+Shift+LeftBracket, Convert PyDent or Python code to PyBrace form, wi
 Insert Script Path=Control+I, Insert JAWS script path in Open or Save Dialog
 Insert All Users Path=Control+Shift+I, Insert JAWS All Users path in Open or Save Dialog
 
-Open in Explorer=Alt+Backslash, Open the current folder in Windows Explorer
-Open Command Prompt=Control+Backslash, Open a command prompt in the current folder
-Environment Variables=Control+E, Change Windows environment variables for the current process, user, or system
+Open in Explorer=Alt+Backslash, Open the current file's folder in Windows Explorer
+Open Command Prompt=Control+Backslash, Open a command prompt in the current file's folder
+Environment Variables=Control+E, Change Windows environment variables for this process, your account or the system
 
 Next Window=Control+Tab, Switch to the next window
 Previous Window=Control+Shift+Tab, Switch to the previous window
@@ -252,12 +249,12 @@ Say Windows Open=Shift+F4, Say how many windows are open, and their titles
 Current Windows=F4, Switch to a window you pick from the list
 Close Window=Control+F4, Close the current window
 Close All but Current Window=Control+Shift+F4, Close all editing windows except the current one
-Exit EdSharp=Alt+F4, Exit the EdSharp application
+Exit EdSharp=Alt+F4, Close EdSharp
 
-Arrange Icons=Alt+F11, Arrange open windows
-Cascade=Control+F11, Cascade open windows
-Tile Horizontal=Alt+Shift+F11, Tile open windows horizontally
-Tile Vertical=Shift+F11, Tile open windows vertically
+Arrange Icons=Alt+F11, Arrange the open windows
+Cascade=Control+F11, Cascade the open windows
+Tile Horizontal=Alt+Shift+F11, Tile the open windows across
+Tile Vertical=Shift+F11, Tile the open windows down
 
 Elevate Version=F11, Download and install the latest EdSharp
 

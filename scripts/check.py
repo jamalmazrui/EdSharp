@@ -1833,6 +1833,74 @@ def checkMenuLetters():
     return finding("menu letters", "pass", "%d menu items: no letter shared in a menu, each letter starts a word and matches its key, none on a function or symbol key" % len(lItems))
 
 
+def checkSuiteCommands():
+    """THE HOMER SUITE SPEAKS WITH ONE VOICE (10 November 2026). A command DbDo, EdSharp and FileDir share has one name,
+    one suite key and one sentence, word for word but for the app's own words, as HomerDev\\data\\SuiteCatalog.inix
+    keeps them. This reads the app's key file -- configs\\<App>.inix's [Hotkeys], else configs\\Hotkeys.inix -- and fails
+    when a shared command lacks its suite key or says a different sentence. A command the catalog does not list is
+    the app's own, and is not judged here."""
+    # THE KIT AS THE OTHER CHECKS FIND IT (10 November 2026): kind is imported here, and findKit takes the folders to
+    # look from; the first version called a kind never imported, with the wrong argument, and stopped every release.
+    try:
+        import kind
+        sKit = kind.findKit([sRoot]) or ""
+    except Exception as exceptionError:
+        logLine("suite commands: the kit could not be found: %s" % exceptionError)
+        sKit = ""
+    sCatalog = os.path.join(sKit or "", "data", "SuiteCatalog.inix")
+    if not sKit or not os.path.isfile(sCatalog):
+        return finding("suite commands", "skip", "no SuiteCatalog.inix in the kit")
+    sApp = os.path.basename(os.path.normpath(sRoot))
+    sKeyFile = os.path.join(sRoot, "configs", sApp + ".inix")
+    if not (os.path.isfile(sKeyFile) and re.search(r"(?mi)^\[hotkeys\]", readText(sKeyFile))):
+        sKeyFile = os.path.join(sRoot, "configs", "Hotkeys.inix")
+    if not os.path.isfile(sKeyFile):
+        return finding("suite commands", "skip", "no key file in configs")
+    dCommands, dWords, sSection = {}, {}, ""
+    for sLine in readText(sCatalog).splitlines():
+        sTrim = sLine.strip()
+        if not sTrim or sTrim.startswith(";"): continue
+        if sTrim.startswith("["): sSection = sTrim[1:-1]; continue
+        if "=" not in sTrim: continue
+        sKey, sValue = sTrim.split("=", 1)
+        if sSection.startswith("command "): dCommands.setdefault(sSection[8:], {})[sKey.strip()] = sValue.strip()
+        elif sSection.startswith("words "): dWords.setdefault(sSection[6:], {})[sKey.strip()] = sValue.strip()
+    def normKey(sKey):
+        dRep = {"Ctrl": "Control", "Apostrophe": "'", "OemQuotes": "'", "Semicolon": ";", "Semi-colon": ";", "Backslash": "\\",
+                "Slash": "/", "Grave": "`", "Equals": "=", "Return": "Enter", "Comma": ",", "Period": "."}
+        lParts = [dRep.get(s, s) for s in sKey.strip().split("+") if s]
+        lMods = [s for s in ("Control", "Alt", "Shift") if s in lParts]
+        lRest = [re.sub(r"^D(\d)$", r"\1", s) for s in lParts if s not in ("Control", "Alt", "Shift")]
+        return "+".join(lMods + lRest)
+    def render(sName):
+        sText = dCommands[sName].get("description", "")
+        dAll = dict(dWords.get(sApp, {})); dAll["app"] = sApp; dAll.update(dWords.get(sName + "|" + sApp, {}))
+        for sKey, sValue in dAll.items(): sText = sText.replace("{" + sKey + "}", sValue)
+        return sText
+    lBreaks, iShared = [], 0
+    for sLine in readText(sKeyFile).splitlines():
+        if "=" not in sLine or sLine.lstrip().startswith((";", "[")): continue
+        sName, sRest = sLine.split("=", 1)
+        sCanon = sName.strip().replace(sApp, "{app}")
+        if sCanon not in dCommands: continue
+        iShared += 1
+        lParts = sRest.split(",")
+        iAt = 1
+        while iAt < len(lParts) and re.match(r"^\s*(or|through)\b", lParts[iAt]): iAt += 1
+        lKeys = [normKey(s) for sPart in lParts[:iAt] for s in re.split(r"\s+or\s+|^\s*or\s+|^\s*through\s+", sPart.strip()) if s.strip() and s.strip().lower() != "none"]
+        sDescription = ",".join(lParts[iAt:]).strip()
+        sSuiteKey = normKey(dCommands[sCanon].get("key", "").replace("{app}", sApp))
+        if sSuiteKey and sSuiteKey not in lKeys:
+            lBreaks.append("%s: the suite's key is %s, but %s binds %s" % (sName.strip(), sSuiteKey, sApp, " or ".join(lKeys) or "none"))
+        sWanted = render(sCanon)
+        if sDescription != sWanted:
+            lBreaks.append("%s: says \"%s\", where the suite says \"%s\"" % (sName.strip(), sDescription, sWanted))
+    for sBreak in lBreaks: logLine("SUITE: " + sBreak)
+    if lBreaks:
+        return finding("suite commands", "fail", "%d of %d shared commands differ from the suite's catalog; each is in the log" % (len(lBreaks), iShared))
+    return finding("suite commands", "pass", "%d shared commands, each with the suite's key and sentence" % iShared)
+
+
 def checkKitClasses():
     """ONE COPY OF EACH SHARED CLASS (5 November 2026). Every Homer app is to use the kit's classes, compiled from
     C:\\HomerDev\\exec\\CSharp, not keep its own. This lists each class an app defines under a name the kit already
@@ -2147,6 +2215,7 @@ def main():
         checkWalk()
         checkKitClasses()
         checkMenuLetters()
+        checkSuiteCommands()
         checkAccept()
 
     sReport = writeReport()
