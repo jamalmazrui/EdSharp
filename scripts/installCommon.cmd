@@ -24,6 +24,7 @@ if /i "%~1"=="say" goto :saySo
 if /i "%~1"=="wingetHas" goto :wingetHas
 if /i "%~1"=="wingetUpgrade" goto :wingetUpgrade
 if /i "%~1"=="runLong" goto :runLong
+if /i "%~1"=="copies" goto :copies
 exit /b 0
 
 :setup
@@ -130,6 +131,22 @@ if not "%iHomerUpgrade%"=="0" exit /b 1
 echo %~3 was updated.
 exit /b 0
 
+:copies
+rem copies <program.exe> <known path> [<known path>...]: every copy of a program, so a log says which one a program
+rem that runs it would get (HomerDev 1.232.0, 15 November 2026). Sets sHomerCopies to each copy on the PATH or at a
+rem known path, with the version it reports, and sHomerShadow to a sentence when a copy that is not at a known path
+rem comes first on the PATH: Jamal's C:\bin\pandoc.exe, 2.19.2, answered for a Pandoc 3.13 in Program Files. The
+rem PowerShell is at the end of this file, after the last exit, as runLong's is.
+set "sHomerCopyExe=%~2"
+set "sHomerCopyKnown=%~3;%~4;%~5"
+set "sHomerCopies="
+set "sHomerShadow="
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$s = [IO.File]::ReadAllText('%~f0'); $i = $s.LastIndexOf('#HOMER-COPIES-BEGIN'); $j = $s.LastIndexOf('#HOMER-COPIES-END'); Invoke-Expression $s.Substring($i, $j - $i)" > "%TEMP%\homerCopies.txt" 2>nul
+for /f "usebackq tokens=1* delims==" %%A in ("%TEMP%\homerCopies.txt") do set "%%A=%%B"
+del /q "%TEMP%\homerCopies.txt" >nul 2>&1
+if not defined sHomerCopies set "sHomerCopies=none found"
+exit /b 0
+
 :runLong
 rem runLong <label>: runs the command in sHomerRunLong, which the caller sets, for a step that takes a while.
 call :runLongAs "%~2"
@@ -183,3 +200,14 @@ foreach ($sLine in @(cleaned ((Get-Content -Raw -LiteralPath $sOut -ErrorAction 
 logLine ('exit code ' + $iCode + ' after ' + [int]((Get-Date) - $dtStart).TotalSeconds + ' s: ' + $sCommand)
 Remove-Item -LiteralPath $sOut, $sErr -ErrorAction SilentlyContinue
 exit $iCode
+
+#HOMER-COPIES-BEGIN
+$sExe = $env:sHomerCopyExe; $lsKnown = @(($env:sHomerCopyKnown -split ';') | Where-Object { $_ -and (Test-Path -LiteralPath $_) })
+$lsOnPath = @(); foreach ($sDir in ($env:PATH -split ';')) { if ($sDir.Trim() -eq '' -or $sDir -like '*WindowsApps*') { continue }; $sTry = Join-Path $sDir.Trim() $sExe; if ((Test-Path -LiteralPath $sTry) -and ($lsOnPath -notcontains $sTry)) { $lsOnPath += $sTry } }
+$sFlag = '--version'; if ($sExe -like 'exiftool*') { $sFlag = '-ver' }
+function versionOf($sPath) { try { $sOut = (& $sPath $sFlag 2>&1 | Select-Object -First 1) -join ''; $oMatch = [regex]::Match($sOut, '\d+(\.\d+)+'); if ($oMatch.Success) { return $oMatch.Value }; return 'an unread version' } catch { return 'a copy that would not run' } }
+$lsAll = @(); foreach ($sPath in ($lsOnPath + $lsKnown)) { if ($lsAll -notcontains $sPath) { $lsAll += $sPath } }
+$lsParts = @(); foreach ($sPath in $lsAll) { $sWhere = ''; if ($lsOnPath.Count -gt 0 -and $lsOnPath[0] -eq $sPath) { $sWhere = ', first on the PATH' } elseif ($lsOnPath -contains $sPath) { $sWhere = ', on the PATH' }; $lsParts += ($sPath + ' ' + (versionOf $sPath) + $sWhere) }
+if ($lsParts.Count -gt 0) { 'sHomerCopies=' + ($lsParts -join '; ') }
+if ($lsOnPath.Count -gt 0 -and $lsKnown.Count -gt 0 -and ($lsKnown -notcontains $lsOnPath[0])) { 'sHomerShadow=Note: ' + $lsOnPath[0] + ', version ' + (versionOf $lsOnPath[0]) + ', comes first on the PATH, so a program that runs ' + [IO.Path]::GetFileNameWithoutExtension($sExe) + ' gets it rather than ' + $lsKnown[0] + ', version ' + (versionOf $lsKnown[0]) + '. Homer tools choose the newest copy themselves. Delete or rename the older copy if other programs should use the newer one.' }
+#HOMER-COPIES-END

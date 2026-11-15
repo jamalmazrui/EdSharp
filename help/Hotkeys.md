@@ -242,11 +242,11 @@ Grouped by menu, and alphabetical within each group.
 - **Insert Script Path**, Control+I. Insert JAWS script path in Open or Save the current file Dialog.
 - **Launch EdSharp**, Alt+Control+E. Start EdSharp, or switch to it, from its desktop shortcut.
 - **Next Part**, Alt+PageDown. Go to next match of NavigatePart setting.
-- **Next Section**, Control+F6 or Control+PageDown. Go to next section.
+- **Next Section**, Control+F6. Go to next section.
 - **Next Window**, Control+Tab. Switch to the next window.
 - **Next Word**, Control+RightArrow. Go to next word and read it.
 - **Previous Part**, Alt+PageUp. Go to previous match of NavigatePart setting.
-- **Previous Section**, Control+Shift+F6 or Control+PageUp. Go to previous section and read its heading.
+- **Previous Section**, Control+Shift+F6. Go to previous section and read its heading.
 - **Previous Window**, Control+Shift+Tab. Switch to the previous window.
 - **Previous Word**, Control+LeftArrow. Go to previous word and read it.
 - **Replace**, Control+R. Replace text in all or the selected text.
@@ -406,8 +406,6 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Control+M**: Mail Body. Send the current file's text as the body of an email message.
 - **Control+N**: New. Open a new editing window.
 - **Control+O**: Open. Open file.
-- **Control+PageDown**: Next Section. Go to next section.
-- **Control+PageUp**: Previous Section. Go to previous section and read its heading.
 - **Control+Q**: Quote. Add prefix sequence to current or selected lines.
 - **Control+R**: Replace. Replace text in all or the selected text.
 - **Control+RightArrow**: Next Word. Go to next word and read it.

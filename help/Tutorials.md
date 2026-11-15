@@ -608,7 +608,7 @@ Here is a list of hot keys you will use often. Where EdSharp differs from what y
 EdSharp lets you divide a document into named sections, which is the basis of the address-book exercise later in this tutorial.
 
 - Control+Enter = Insert a Section Break.
-- Control+PageDown and Control+PageUp = Move to the next and prior section.
+- Control+F6 and Control+Shift+F6 = Move to the next and previous section.
 - F6 = Go to Section: jump from a table-of-contents line to its section. Shift+F6 = Go to Contents: jump from a section back to its table-of-contents line.
 - Alt+T = Speak the current section's topic (its first line).
 - Alt+Shift+T = Text Contents: build a table of contents from the first line of each section.
@@ -716,7 +716,7 @@ Email:
 
 **Build the table of contents.** Press Alt+Shift+T (Text Contents). EdSharp adds a "Contents" line near the top of the file followed by the first line of each section, which here is the name line of each entry. A blank line in the table of contents means a section break is missing or misplaced.
 
-**Check the sections.** Use Control+PageDown and Control+PageUp to confirm the cursor lands on the first line of each entry. If you land on a blank line, delete any text between the previous entry's last line and the new entry's first line, place the cursor on the first character of the new entry, and press Control+Enter to recreate the section break. When the sections are correct, make sure the table of contents has a line for each one.
+**Check the sections.** Use Control+F6 and Control+Shift+F6 to confirm the cursor lands on the first line of each entry. If you land on a blank line, delete any text between the previous entry's last line and the new entry's first line, place the cursor on the first character of the new entry, and press Control+Enter to recreate the section break. When the sections are correct, make sure the table of contents has a line for each one.
 
 **Sort the table of contents.** Select all of the table-of-contents lines and press Alt+Shift+O (Order Items) to sort them alphabetically. The `!Template` line stays at the top because of its leading exclamation mark. Now you can press F6 on a contents line to jump to that entry, and Shift+F6 to jump back to the contents.
 

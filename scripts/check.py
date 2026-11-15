@@ -468,7 +468,9 @@ def checkEncoding():
     lsWrong = []
     iChecked = 0
     for sDirPath, lsDirs, lsNames in os.walk(sRoot):
-        lsDirs[:] = [s for s in lsDirs if s.lower() not in lsSkipFolders]
+        # HARVESTED PAGES KEEP THEIR OWN ENCODING (1.208.0): data\\harvests holds other people's web pages as they were
+        # fetched, read by the builder and never pushed; 111 of them refused AppHelpGuides' push on 11 November 2026.
+        lsDirs[:] = [s for s in lsDirs if s.lower() not in lsSkipFolders and not (s.lower() == "harvests" and os.path.basename(sDirPath).lower() == "data")]
         for sName in sorted(lsNames):
             if sName.lower() in lsGeneratedFiles: continue
             if not sName.lower().endswith(lsTextExtensions): continue
@@ -792,8 +794,8 @@ def finishEntries(sText):
 
 def checkFinishPage():
     r"""THE FINISH PAGE'S RULES (1.43.51; help\FinishPage.md). In every installer
-    script: an Install or Update box is ticked, a Reinstall box never is, and
-    Launch is ticked; every component box says Install, Update or Reinstall;
+    script: an Install or Update box is marked, a Reinstall box never is, and
+    Launch is marked; every component box says Install, Update or Reinstall;
     nothing starts NVDA (opening an .nvda-addon or running nvda.exe), and no
     label says NVDA must be running. EdSharp's and DbDo's installers broke the
     first rule on 30 September after being called migrated."""
@@ -809,7 +811,7 @@ def checkFinishPage():
                     oMatch = re.search(sName + r':\s*("(?:[^"]|"")*"|[^;]+)', sEntry, re.I)
                     return oMatch.group(1).strip().strip('"') if oMatch else ""
                 sCheck = field("Check"); sFlags = field("Flags").lower(); sDesc = field("Description"); sFile = field("Filename")
-                bUnticked = "unchecked" in sFlags
+                bUnmarked = "unchecked" in sFlags
                 oVerb = re.search(r"is(Install|Update|Reinstall)|(?:Needs?)(Install|Update)|(IsCurrent|AreCurrent)|isModel(Install|Reinstall)", sCheck)
                 sVerb = ""
                 if oVerb:
@@ -818,9 +820,9 @@ def checkFinishPage():
                 elif re.match(r"^(Install|Update|Reinstall)\b", sDesc):
                     sVerb = sDesc.split()[0]
                 sWhat = sDesc or sFile
-                if sVerb in ("Install", "Update") and bUnticked: lsBad.append("%s: %s box not ticked: %s" % (sRel, sVerb, sWhat))
-                if sVerb == "Reinstall" and not bUnticked: lsBad.append("%s: Reinstall box ticked: %s" % (sRel, sWhat))
-                if re.search(r"launch", sDesc, re.I) and bUnticked: lsBad.append("%s: Launch box not ticked" % sRel)
+                if sVerb in ("Install", "Update") and bUnmarked: lsBad.append("%s: %s box not marked: %s" % (sRel, sVerb, sWhat))
+                if sVerb == "Reinstall" and not bUnmarked: lsBad.append("%s: Reinstall box marked: %s" % (sRel, sWhat))
+                if re.search(r"launch", sDesc, re.I) and bUnmarked: lsBad.append("%s: Launch box not marked" % sRel)
                 if not sVerb and not re.search(r"launch|open|guide|read|view", sDesc, re.I):
                     lsBad.append("%s: box without Install, Update or Reinstall: %s" % (sRel, sWhat))
                 if re.search(r"nvda-addon|nvda\.exe|GetNvdaPath", sFile, re.I): lsBad.append("%s: box starts NVDA: %s" % (sRel, sFile))
@@ -1080,6 +1082,44 @@ def checkKeys():
     return finding("keys", "pass", "0 reserved combinations, 0 access keys claimed twice")
 
 
+def checkLaunchWords():
+    """ONE NAME, ONE SENTENCE IN EVERY LAUNCH APP (1.221.0, the author's ruling of 12 November 2026: the same command has
+    the same name, description and binding in every launch app). Browse local source, Choose output directory, Use
+    configuration and View output directory do the same thing in 2htm, BatCon, extCheck, HomerScribe, urlCheck and
+    urlFido, so each takes the kit's sentence, passed as "" to LaunchDialog; an app that words its own fails. Source
+    paths and Output directory say what the app reads and writes, so their tips are its own."""
+    lsHits = []
+    for sPath in sourceFiles():
+        if not sPath.lower().endswith((".cs", ".py")): continue
+        if os.path.dirname(os.path.abspath(sPath)) != os.path.abspath(sRoot): continue
+        sText = readText(sPath)
+        for sCall, lsWhich in (("addSourceBand", [(2, "Browse local source")]), ("addOutputBand", [(2, "Choose output directory")]),
+                               ("addOperationBands", [(3, "Use configuration"), (5, "View output directory")])):
+            for oCall in re.finditer(r"\b" + sCall + r"\s*\(", sText):
+                lsArgs, sCur, iDepth, sQuote, k = [], "", 1, "", oCall.end()
+                while k < len(sText) and iDepth:
+                    ch = sText[k]
+                    if sQuote:
+                        if ch == "\\": sCur += sText[k:k + 2]; k += 2; continue
+                        if ch == sQuote: sQuote = ""
+                    elif ch in "\"'": sQuote = ch
+                    elif ch in "([{": iDepth += 1
+                    elif ch in ")]}":
+                        iDepth -= 1
+                        if not iDepth: break
+                    elif ch == "," and iDepth == 1: lsArgs.append(sCur.strip()); sCur = ""; k += 1; continue
+                    sCur += ch; k += 1
+                lsArgs.append(sCur.strip())
+                for iArg, sLabel in lsWhich:
+                    if iArg < len(lsArgs) and lsArgs[iArg] not in ('""', "''", "null", "None"):
+                        lsHits.append("%s: %s has its own tip, %s; pass \"\" for the kit's sentence" % (os.path.basename(sPath), sLabel, lsArgs[iArg][:60]))
+    if not lsHits:
+        return finding("launch words", "pass" if any(re.search(r"\baddOperationBands\s*\(", readText(p)) for p in sourceFiles() if p.lower().endswith((".cs", ".py"))) else "skip",
+                       "the standard launch controls use the kit's sentences" )
+    for sHit in lsHits: logLine("launch words: " + sHit)
+    return finding("launch words", "fail", "; ".join(lsHits))
+
+
 def checkConversions():
     """ONE COPY OF EVERY CONVERSION (1.74.0): an app converts files only through the kit's Conversion.
 
@@ -1106,7 +1146,10 @@ def checkConversions():
         oMatch = re.search(r"(?im)^\s*conversionsMoved\s*=\s*(.*)$", readText(sManifest))
         if oMatch: lsMoved = [s.strip().lower() for s in oMatch.group(1).split(",") if s.strip()]
     lsPatterns = [(r"pandoc\.exe", "its own Pandoc finder"), (r"2htm\.exe", "a 2htm call"),
-                  (r"\"(Word|Excel|PowerPoint)\.Application\"", "an Office COM object"), (r"pymupdf4llm", "its own PDF reader")]
+                  (r"\"(Word|Excel|PowerPoint)\.Application\"", "an Office COM object"), (r"pymupdf4llm", "its own PDF reader"),
+                  # ONLY VALID CONVERSIONS (1.220.0, the author's ruling of 12 November 2026): a picker of target formats
+                  # lists what the chosen sources can become -- Conversion.targetsForPaths -- never every format.
+                  (r"\ballTargets\s*\(", "a target list of every format; offer only what the sources can become, by Conversion.targetsForPaths")]
     lsHits = []
     for sPath in sourceFiles():
         if not sPath.lower().endswith(".cs"): continue
@@ -1297,7 +1340,7 @@ def checkInstallerNames():
     try:
         import kind
         sKit = kind.findKit([sRoot])
-        sComponents = os.path.join(sKit, "Templates", "HomerComponents.iss") if sKit else ""
+        sComponents = os.path.join(sKit, "templates", "HomerComponents.iss") if sKit else ""
         if not os.path.isfile(sComponents): return finding("installer", "skip", "the kit's HomerComponents.iss was not found")
         lsClash = kind.issFunctionClashes(sAppText, readText(sComponents))
     except Exception as oError:
@@ -1456,7 +1499,7 @@ def checkIssComments():
 
 
 # THE HOMER INSTALLER PATTERN, CHECKED (1.65.21, 10 October 2026). Every installer was meant to share one Finish
-# page -- each component's verb (Install, Update, Reinstall) and tick decided by the kit, so pressing Enter installs
+# page -- each component's verb (Install, Update, Reinstall) and mark decided by the kit, so pressing Enter installs
 # what is missing, updates what is stale and starts the app -- and to reuse the folder of an earlier install. The
 # rule lived only in the homer-installer skill, and DbDo, EdSharp and HomerView kept code of their own: DbDo's JAWS
 # box said Update on every new version though its scripts had not changed, and EdSharp asked for the folder again on
@@ -1856,54 +1899,21 @@ def checkSuiteCommands():
         sKeyFile = os.path.join(sRoot, "configs", "Hotkeys.inix")
     if not os.path.isfile(sKeyFile):
         return finding("suite commands", "skip", "no key file in configs")
-    # [keys <App>] in the catalog names a key an app keeps instead of the suite's, for a reason the catalog gives --
-    # HomerView's Elevate Version is Control+F11, since F11 is Microsoft Edge's full screen (10 November 2026).
-    dCommands, dWords, dKeyExceptions, sSection = {}, {}, {}, ""
-    for sLine in readText(sCatalog).splitlines():
-        sTrim = sLine.strip()
-        if not sTrim or sTrim.startswith(";"): continue
-        if sTrim.startswith("["): sSection = sTrim[1:-1]; continue
-        if "=" not in sTrim: continue
-        sKey, sValue = sTrim.split("=", 1)
-        if sSection.startswith("command "): dCommands.setdefault(sSection[8:], {})[sKey.strip()] = sValue.strip()
-        elif sSection.startswith("words "): dWords.setdefault(sSection[6:], {})[sKey.strip()] = sValue.strip()
-        elif sSection.startswith("keys "): dKeyExceptions.setdefault(sSection[5:], {})[sKey.strip()] = sValue.strip()
-    def normKey(sKey):
-        dRep = {"Ctrl": "Control", "Apostrophe": "'", "OemQuotes": "'", "Semicolon": ";", "Semi-colon": ";", "Backslash": "\\",
-                "Slash": "/", "Grave": "`", "Equals": "=", "Return": "Enter", "Comma": ",", "Period": ".", "SemiColon": ";"}
-        lParts = [dRep.get(s, s) for s in sKey.strip().split("+") if s]
-        lMods = [s for s in ("Control", "Alt", "Shift") if s in lParts]
-        lRest = [re.sub(r"^D(\d)$", r"\1", s) for s in lParts if s not in ("Control", "Alt", "Shift")]
-        return "+".join(lMods + lRest)
-    def render(sName):
-        sText = dCommands[sName].get("description", "")
-        dAll = dict(dWords.get(sApp, {})); dAll["app"] = sApp; dAll.update(dWords.get(sName + "|" + sApp, {}))
-        for sKey, sValue in dAll.items(): sText = sText.replace("{" + sKey + "}", sValue)
-        return sText
-    lBreaks, iShared = [], 0
-    for sLine in readText(sKeyFile).splitlines():
-        if "=" not in sLine or sLine.lstrip().startswith((";", "[")): continue
-        sName, sRest = sLine.split("=", 1)
-        sCanon = sName.strip().replace(sApp, "{app}")
-        if sCanon not in dCommands: continue
-        iShared += 1
-        lParts = sRest.split(",")
-        iAt = 1
-        while iAt < len(lParts) and re.match(r"^\s*(or|through)\b", lParts[iAt]): iAt += 1
-        lKeys = [normKey(s) for sPart in lParts[:iAt] for s in re.split(r"\s+or\s+|^\s*or\s+|^\s*through\s+", sPart.strip()) if s.strip() and s.strip().lower() != "none"]
-        sDescription = ",".join(lParts[iAt:]).strip()
-        sSuiteKey = normKey(dCommands[sCanon].get("key", "").replace("{app}", sApp))
-        sOwnKey = normKey(dKeyExceptions.get(sApp, {}).get(sCanon, ""))
-        if sOwnKey: sSuiteKey = sOwnKey
-        if sSuiteKey and sSuiteKey not in lKeys:
-            lBreaks.append("%s: the suite's key is %s, but %s binds %s" % (sName.strip(), sSuiteKey, sApp, " or ".join(lKeys) or "none"))
-        sWanted = render(sCanon)
-        if sDescription.rstrip(".") != sWanted.rstrip("."):   # a closing period is a matter of each app's style
-            lBreaks.append("%s: says \"%s\", where the suite says \"%s\"" % (sName.strip(), sDescription, sWanted))
+    # THE COMPARISON LIVES IN THE KIT (1.235.0): scripts\\suiteCatalog.py, which the kit's build proves with
+    # testSuiteGate. Besides each shared command's key and sentence, it now fails a command the catalog gives this app
+    # (apps=) that the key file leaves out, and a key file naming no shared command, which used to pass as "0 shared
+    # commands" (the keyboard audit of 15 November, A2). [keys <App>] in the catalog still names a key an app keeps.
+    sKitScripts = os.path.join(sKit, "scripts")
+    if sKitScripts not in sys.path: sys.path.insert(0, sKitScripts)
+    try:
+        import suiteCatalog
+    except Exception as exceptionError:
+        return finding("suite commands", "fail", "the kit's scripts\\suiteCatalog.py could not be loaded: %s" % exceptionError)
+    lBreaks, iShared = suiteCatalog.suiteBreaks(readText(sCatalog), readText(sKeyFile), sApp)
     for sBreak in lBreaks: logLine("SUITE: " + sBreak)
     if lBreaks:
         iDiffer = len(set(s.split(":", 1)[0] for s in lBreaks))   # commands, not breaks: one can differ in key and words
-        return finding("suite commands", "fail", "%d of %d shared commands differ from the suite's catalog; each is in the log" % (iDiffer, iShared))
+        return finding("suite commands", "fail", "%d shared command%s differ from the suite's catalog or are missing; each is in the log" % (iDiffer, "" if iDiffer == 1 else "s"))
     return finding("suite commands", "pass", "%d shared commands, each with the suite's key and sentence" % iShared)
 
 
@@ -2215,6 +2225,7 @@ def main():
         checkKeys()
         checkSuite()
         checkConversions()
+        checkLaunchWords()
         checkBuild(dArguments.build)
         checkSmoke(dArguments.build)
         checkAccessibility(not dArguments.noscan)

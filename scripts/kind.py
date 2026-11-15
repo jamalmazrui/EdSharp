@@ -48,13 +48,17 @@ lsKinds = ["app", "collection", "kit", "page", "unknown"]
 # have at its top. A folder outside these is either declared in the project's
 # RepoFiles.txt or LocalFiles.txt, and listed for the author to confirm, or it
 # fails check -- nobody, the AI included, adds a folder to a Homer tree unasked.
-lsHiddenFolders = [".claude", ".git", ".github", ".vs", ".vscode"]
+# THE HOMER TREE (1.204.0): help\HomerTree.md names every entry and its purpose; these lists are the code's copy.
+# One letter, one folder: books, configs, data, exec, help, logs, notes, pages, results, scripts, templates, work.
+# books, pages and work were authorized on 11 November 2026, with the agent folders .claude and .claude-plugin.
+lsHiddenFolders = [".claude", ".claude-plugin", ".git", ".github", ".vs", ".vscode"]
+lsBaseFolders = ["books", "configs", "data", "help", "logs", "notes", "pages", "results", "scripts", "templates", "work"]
 dStandardFolders = {
-    "app": ["configs", "data", "exec", "help", "logs", "notes", "results", "scripts", "templates"],
-    "kit": ["configs", "data", "exec", "help", "logs", "notes", "results", "scripts", "templates"],
-    "page": ["_data", "_includes", "_layouts", "assets", "configs", "data", "help", "logs", "notes", "results", "scripts", "templates"],
-    "collection": ["configs", "data", "help", "logs", "notes", "results", "scripts", "templates"],
-    "unknown": ["configs", "data", "exec", "help", "logs", "notes", "results", "scripts", "templates"]}
+    "app": lsBaseFolders + ["exec"],
+    "collection": lsBaseFolders,
+    "kit": lsBaseFolders + ["exec"],
+    "page": lsBaseFolders + ["_data", "_includes", "_layouts", "assets"],
+    "unknown": lsBaseFolders + ["exec"]}
 
 
 def standardFolders(sKind):
@@ -98,7 +102,9 @@ def documentStems(sFolder):
     """The distinct document names at the top of a folder, less the standard
     ones every project may carry."""
     dStems = {}
-    for sName in sorted(os.listdir(sFolder)):
+    try: lsNames = sorted(os.listdir(sFolder))
+    except OSError: return []   # a folder this account may not read, such as C:\\Config.Msi, has no documents to count
+    for sName in lsNames:
         sStem, sExt = os.path.splitext(sName)
         if sExt.lower() in (".md", ".htm") and sStem.lower() not in lsStandardDocs:
             dStems.setdefault(sStem.lower(), sStem)
@@ -124,7 +130,7 @@ def projectKind(sFolder):
     lsIssFirst = [s for s in glob.glob(os.path.join(sFolder, "*_setup.iss")) if os.path.basename(s).lower() != "homerdev_setup.iss"]
     bNamedProgram = sName.lower() != "homerdev" and any(os.path.isfile(os.path.join(sFolder, sName + sExt)) for sExt in (".cs", ".py", ".js", ".ps1"))
     if (not lsIssFirst and not bNamedProgram
-            and os.path.isfile(os.path.join(sFolder, "Templates", "HomerComponents.iss"))
+            and (os.path.isfile(os.path.join(sFolder, "templates", "HomerComponents.iss")) or os.path.isfile(os.path.join(sFolder, "templates", "HomerComponents.iss")))
             and os.path.isfile(os.path.join(sFolder, "exec", "CSharp", "Lbc.cs"))):
         return "kit", "Templates\\HomerComponents.iss and exec\\CSharp\\Lbc.cs are here, and no app's installer or program"
     lsIss = sorted(glob.glob(os.path.join(sFolder, "*_setup.iss")), key=lambda s: os.path.basename(s).lower() != (sName + "_setup.iss").lower())
@@ -143,7 +149,38 @@ def projectKind(sFolder):
         return "collection", "%d documents at the top, and no program" % len(lsStems)
     if len(lsStems) == 1:
         return "page", "%s is its one document, and there is no program" % lsStems[0]
+    # A BOOK PROJECT IS A PAGE PROJECT (1.212.0): published elsewhere, by kdpSubmit, and never a repository. Without
+    # this, retiring MyBooks.md -- a stale copy of the page MyPages publishes -- would have left MyBooks "unknown",
+    # and push would have tried to make a GitHub repository of commercial manuscripts.
+    if publishesBooks(sFolder): return "page", "configs\\books.inix is its catalog of books, which kdpSubmit publishes; it is not a repository"
     return "unknown", "no installer script, program source or document at the top"
+
+
+# THE ROLE: WHAT THE CYCLE DOES WITH A PROJECT (1.203.0). The kind says what a folder is; the role says what
+# build_release's build and release steps do there. Four projects are known by their folder's name, on any drive and
+# at any depth, so that "build_release" works in each the way it does in an app's folder:
+#
+#   books       MyBooks              build: buildBooks; release: kdpSubmit
+#   guides      AppHelpGuides        build: the app-help-guide skill's buildGuide --build; release: the push publishes
+#   pages       MyPages              build: nothing to compile; release: the project's post
+#   podcasts    PodcastDirectories   build: fixPages --changed; release: the push publishes
+#
+# Another folder takes its role from what it holds: books.inix makes books, a pages folder makes pages, and a
+# collection of documents is a collection, built and released as podcasts are. An app or the kit keeps its own build
+# and release, so its role is its kind.
+dRolesByName = {"apphelpguides": "guides", "mybooks": "books", "mypages": "pages", "podcastdirectories": "podcasts"}
+
+
+def projectRole(sFolder):
+    """Returns (role, reason): what build_release's build and release steps do in this project."""
+    sFolder = os.path.abspath(sFolder).rstrip("\\/")
+    sName = os.path.basename(sFolder)
+    sKind, sWhy = projectKind(sFolder)
+    if sKind in ("app", "kit"): return sKind, sWhy
+    if sName.lower() in dRolesByName: return dRolesByName[sName.lower()], "the folder is named %s" % sName
+    if publishesBooks(sFolder): return "books", "configs\\books.inix is its catalog of books"
+    if publishesPages(sFolder): return "pages", "its pages folder holds a folder for each page"
+    return sKind, sWhy
 
 
 def publishesBooks(sFolder):
@@ -182,7 +219,9 @@ def publishesPages(sFolder):
     the project is a page project, and pages joins its standard folders."""
     sPages = os.path.join(os.path.abspath(sFolder), "pages")
     if not os.path.isdir(sPages): return False
-    for sName in os.listdir(sPages):
+    try: lsPages = os.listdir(sPages)
+    except OSError: return False
+    for sName in lsPages:
         sPage = os.path.join(sPages, sName)
         if os.path.isdir(sPage) and any(s.lower().endswith(".md") for s in os.listdir(sPage)): return True
     return False
@@ -295,12 +334,17 @@ def main():
         return 0 if sKit else 1
     sRoot = projectRoot(sStart)
     sKind, sWhy = projectKind(sRoot)
+    if "--role" in sys.argv:
+        print(projectRole(sRoot)[0])
+        return 0
     if "--word" in sys.argv:
         print(sKind)
     else:
         if sKind == "unknown": print("%s is not a kind of Homer resource kind.py knows: %s." % (sRoot, sWhy))
         else: print("%s is %s %s: %s." % (sRoot, "an" if sKind[0] in "aeiou" else "a", sKind, sWhy))
         if publishesBooks(sRoot): print("It also publishes books: configs\\books.inix is its catalog.")
+        sRole, sRoleWhy = projectRole(sRoot)
+        if sRole not in (sKind, "unknown"): print("Its role in build_release is %s: %s." % (sRole, sRoleWhy))
     return 0 if sKind != "unknown" else 1
 
 

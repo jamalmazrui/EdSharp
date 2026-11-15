@@ -2,6 +2,11 @@
 
 
 
+## 15 November 2026 -- Sections move with Control+F6
+
+- **Next Section** is Control+F6 and **Previous Section** is Control+Shift+F6, as in the other Homer apps. Control+PageDown and Control+PageUp no longer move by section, and the JAWS key maps no longer pass them through. The menus, Hotkeys, the guide and the tutorials say so.
+- The guide's key for Search for Topic is corrected to Alt+F6, and Search Next to F3.
+
 ## 10 November 2026 -- Every message, always
 
 - **Extra Speech Toggle and Extra Speech Log are gone, and their keys are free.** EdSharp always speaks its messages, each chosen and short. A message it does not speak, because EdSharp is not in front, is written to the session log with the reason, which replaces Speech.log. The JAWS keys that changed the voice -- rate, volume, punctuation and indentation, on the accent key -- are freed too; JAWS's own keys set its voice.

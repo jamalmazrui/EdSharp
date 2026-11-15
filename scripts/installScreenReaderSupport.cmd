@@ -4,7 +4,7 @@ rem add-on where each screen reader looks for them.
 rem
 rem SHIPPED WITH EVERY HOMER APP THAT HAS SCRIPTS, and its installer checkbox is
 rem CHECKED BY DEFAULT. A blind user installing a Homer tool wants the scripts;
-rem making them notice and tick a box is the friction this suite exists to
+rem making them notice and mark a box is the friction this suite exists to
 rem remove.
 rem
 rem What it looks for, beside this script:

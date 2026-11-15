@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc 3.13" />
+  <meta name="generator" content="pandoc 3.14" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>EdSharp EdSharp</title>
   <style>
@@ -35,27 +35,6 @@
       }
       h1 {
         font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        color-scheme: light only;
-      }
-      html, body, pre, code {
-        background-color: transparent;
-      }
-      body, a, a:visited, blockquote {
-        color: black;
-      }
-      pre, code {
-        padding: 0;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
       }
     }
     p {
@@ -163,6 +142,12 @@
       text-decoration: none;
     }
     span.smallcaps{font-variant: small-caps;}
+    em, em em em, em em em em em {
+      font-style: italic;
+    }
+    em em, em em em em {
+      font-style: normal;
+    }
     div.columns{display: flex; gap: 1.5em;}
     div.column{flex: auto;}
     @media screen {
@@ -179,7 +164,27 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-  </style>
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }  </style>
 </head>
 <body>
 <nav id="TOC" role="doc-toc" aria-label="Contents">
@@ -350,10 +355,10 @@ EdSharp. The document is then saved to disk automatically. EdSharp beeps
 to confirm it. Text copied within the collecting document itself is not
 appended, so copying part of that document does not copy it back into
 itself. The pieces are separated by a section break, so you can move
-among them with the Control+PageDown and Control+PageUp commands. So the
-feature is a handy way to collect and save information from programs
-that have no way to append on their own. When you are done, turn the
-mode off with the same command, Alt+7.</p>
+among them with Next Section (Control+F6) and Previous Section
+(Control+Shift+F6). So the feature is a handy way to collect and save
+information from programs that have no way to append on their own. When
+you are done, turn the mode off with the same command, Alt+7.</p>
 <p>Press Control+Z to undo the last editing operation, or
 Control+Shift+Z to redo it.</p>
 <p>Press Control+N to start a new document, or Control+Shift+N to
@@ -804,14 +809,13 @@ The next line after such a section break is the topic heading of the
 next section. For an example of this structure, examine the EdSharp.txt
 file in the EdSharp program folder. The default location is<br />
 <code>C:\Program Files\EdSharp\EdSharp.txt</code></p>
-<p>Press Control+PageDown or Control+F6 to go to the next section and
-read its heading, or Control+PageUp or Control+Shift+F6 to go to the
-previous one. When the cursor is on a topic in the table of contents,
-press F6 to go to its corresponding section in the body. Press Shift+F6
-to go from a section in the body to its topic in the table of contents.
-Press Control+F6 to search for a topic based on text within its heading.
-The search starts at the beginning of the document. Press Alt+F6 to
-search again for the next match.</p>
+<p>Press Control+F6 to go to the next section and read its heading, or
+Control+Shift+F6 to go to the previous one. When the cursor is on a
+topic in the table of contents, press F6 to go to its corresponding
+section in the body. Press Shift+F6 to go from a section in the body to
+its topic in the table of contents. Press Alt+F6 to search for a topic
+based on text within its heading. The search starts at the beginning of
+the document. Press F3, Search Next, to find the next match.</p>
 <p>To create a structured text document, press Control+Enter to insert a
 section break at the cursor position, then type the heading of the next
 section. Alt+T verbally confirms the topic of the current section. Use

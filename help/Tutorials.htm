@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc 3.13" />
+  <meta name="generator" content="pandoc 3.14" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>EdSharp Tutorials</title>
   <style>
@@ -35,27 +35,6 @@
       }
       h1 {
         font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        color-scheme: light only;
-      }
-      html, body, pre, code {
-        background-color: transparent;
-      }
-      body, a, a:visited, blockquote {
-        color: black;
-      }
-      pre, code {
-        padding: 0;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
       }
     }
     p {
@@ -163,6 +142,12 @@
       text-decoration: none;
     }
     span.smallcaps{font-variant: small-caps;}
+    em, em em em, em em em em em {
+      font-style: italic;
+    }
+    em em, em em em em {
+      font-style: normal;
+    }
     div.columns{display: flex; gap: 1.5em;}
     div.column{flex: auto;}
     @media screen {
@@ -179,7 +164,27 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-  </style>
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }  </style>
 </head>
 <body>
 <main>
@@ -786,7 +791,7 @@ Control+Shift+F3 = the same, backward.</li>
 basis of the address-book exercise later in this tutorial.</p>
 <ul>
 <li>Control+Enter = Insert a Section Break.</li>
-<li>Control+PageDown and Control+PageUp = Move to the next and prior
+<li>Control+F6 and Control+Shift+F6 = Move to the next and previous
 section.</li>
 <li>F6 = Go to Section: jump from a table-of-contents line to its
 section. Shift+F6 = Go to Contents: jump from a section back to its
@@ -974,8 +979,8 @@ Contents). EdSharp adds a “Contents” line near the top of the file
 followed by the first line of each section, which here is the name line
 of each entry. A blank line in the table of contents means a section
 break is missing or misplaced.</p>
-<p><strong>Check the sections.</strong> Use Control+PageDown and
-Control+PageUp to confirm the cursor lands on the first line of each
+<p><strong>Check the sections.</strong> Use Control+F6 and
+Control+Shift+F6 to confirm the cursor lands on the first line of each
 entry. If you land on a blank line, delete any text between the previous
 entry’s last line and the new entry’s first line, place the cursor on
 the first character of the new entry, and press Control+Enter to

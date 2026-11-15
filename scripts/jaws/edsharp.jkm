@@ -366,8 +366,6 @@ Alt+Control+PageDown=SayCurrentColumn
 ;Control+Alt+8=SayColumn(8)
 ;Control+Alt+9=SayColumn(9)
 ;Control+Alt+0=SayColumn(10)
-Control+PageDown=TypeCurrentScriptKey
-Control+PageUp=TypeCurrentScriptKey
 Alt+PageDown=TypeCurrentScriptKey
 Alt+PageUp=TypeCurrentScriptKey
 [Keyboard Layouts]

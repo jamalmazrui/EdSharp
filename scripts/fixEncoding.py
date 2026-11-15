@@ -162,7 +162,8 @@ def ownFiles(sRoot, lsNamed):
         if sNamed.endswith("/"):
             sFolder = os.path.join(sRoot, sNamed.rstrip("/").replace("/", os.sep))
             for sDirPath, lsDirs, lsNames in os.walk(sFolder):
-                lsDirs[:] = [s for s in lsDirs if s.lower() not in lsSkipFolders]
+                # data\\harvests holds fetched web pages, kept exactly as they came (1.208.0), as check leaves them.
+                lsDirs[:] = [s for s in lsDirs if s.lower() not in lsSkipFolders and not (s.lower() == "harvests" and os.path.basename(sDirPath).lower() == "data")]
                 for sName in lsNames:
                     if sName.lower().endswith(lsTextExtensions): lsFiles.append(os.path.join(sDirPath, sName))
         elif "*" in sNamed:

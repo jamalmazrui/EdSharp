@@ -144,7 +144,7 @@ lsNeverPushed = [
     # *.jsb (1.43.38): a compiled JAWS script belongs to the JAWS version
     # that built it; the installer compiles on the user's machine.
     "*.exe", "*.jsb", "*.log", "*.obj", "*.pdb", "Version.cs", "__pycache__/",
-    ".venv/", "build/", "create*Repo.cmd", "create*Repo.ps1", "dist/", "notes/",
+    ".venv/", "build/", "create*Repo.cmd", "create*Repo.ps1", "dist/", "notes/", "work/",
     # /version.py, AT THE TOP ONLY (1.43.16): it is the file a Python app's
     # build generates beside its source. HomerView's NVDA add-on carries its
     # own homer\version.py, which the add-on imports, and a bare version.py
@@ -828,8 +828,8 @@ def addToGitignore(lsPaths):
 
 def isKitAt(sDir):
     """True when sDir is a HomerDev kit itself: its own markers, which no app holds."""
-    if not sDir or not os.path.isfile(os.path.join(sDir, "version.txt")) or not os.path.isdir(os.path.join(sDir, "Templates")): return False
-    return any(os.path.exists(os.path.join(sDir, s)) for s in ("releaseHomerDev.cmd", "checkHomerDev.py", os.path.join("Templates", "HomerComponents.iss")))
+    if not sDir or not os.path.isfile(os.path.join(sDir, "version.txt")) or not os.path.isdir(os.path.join(sDir, "templates")): return False
+    return any(os.path.exists(os.path.join(sDir, s)) for s in ("releaseHomerDev.cmd", "checkHomerDev.py", os.path.join("templates", "HomerComponents.iss")))
 
 
 def kitVersion(sDir):
@@ -885,7 +885,7 @@ def findKitFolder():
                    if ctypes.windll.kernel32.GetDriveTypeW(sLetter + ":\\") == 3]
     lsFound = []
     for sDir in lsDirs:
-        if sDir and os.path.isfile(os.path.join(sDir, "version.txt")) and os.path.isdir(os.path.join(sDir, "Templates")):
+        if sDir and os.path.isfile(os.path.join(sDir, "version.txt")) and os.path.isdir(os.path.join(sDir, "templates")):
             if os.path.abspath(sDir).lower() not in [s.lower() for s in lsFound]: lsFound.append(os.path.abspath(sDir))
     if not lsFound: return ""
     return max(lsFound, key=lambda s: (kitVersion(s), -lsFound.index(s)))
@@ -909,6 +909,15 @@ def kitPlaced():
     was running, which ended DbDo's cycle silently five times on 10 and 11 October, and scripts\\kind.cmd on every
     run. These names belong in the folder survey; git's whitelist is decided as before."""
     lsOut = ["build_release.bat"]
+    # THE TOOLS A COLLECTION'S OR PAGE PROJECT'S BUILD REFRESHES (1.215.0): projectCycle's own list, read from the copy
+    # beside this script, so they stay in scripts even when the kit itself cannot be found. In a rehearsal of
+    # MyPages, tidy moved the tools the build had just put there -- tidy and push among them -- into notes.
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import projectCycle
+        lsOut += ["scripts/" + s for s in sorted(set(projectCycle.lsCommonTools + [t for l in projectCycle.dRoleTools.values() for t in l]))]
+    except Exception as oError:
+        logLine("projectCycle's tool list not read: %s" % oError)
     sKit = findKitFolder()
     sScripts = os.path.join(sKit, "scripts") if sKit else ""
     if sScripts and os.path.isdir(sScripts):
@@ -1199,6 +1208,50 @@ def givePagesOneHeading():
     return iFixed
 
 
+def sweepTopLogs():
+    """A LOG AT THE TOP GOES TO logs (1.206.0). The first full audit found checkJawsScripts.log at HomerView's top and
+    fixPages.log at PodcastDirectories', written by older scripts beside themselves. A log is never pushed, so moving it
+    loses nothing; a name already in logs gains -2, -3. Returns how many moved."""
+    import shutil
+    sLogs = os.path.join(sRoot, "logs")
+    iMoved = 0
+    for sName in sorted(os.listdir(sRoot)):
+        sPath = os.path.join(sRoot, sName)
+        if not (os.path.isfile(sPath) and sName.lower().endswith(".log")): continue
+        os.makedirs(sLogs, exist_ok=True)
+        sTo, iNext = os.path.join(sLogs, sName), 2
+        while os.path.exists(sTo):
+            sTo = os.path.join(sLogs, "%s-%d.log" % (sName[:-4], iNext))
+            iNext += 1
+        shutil.move(sPath, sTo)
+        logLine("TOP LOG: moved %s to %s" % (sName, sTo))
+        iMoved += 1
+    if iMoved: sayLine("Moved %s from the top into logs." % countNoun(iMoved, "log"))
+    return iMoved
+
+
+def settleFolderCase(sKind):
+    """A STANDARD FOLDER TAKES ITS LOWER-CASE NAME (1.206.0): DbDuo's Scripts becomes scripts, as the kit's Templates
+    became templates. Windows ignores case, so nothing that names the folder breaks; git is told in two steps, which a
+    change of case alone needs. Returns how many folders were renamed."""
+    import kind
+    setStandard = kind.standardFolders(sKind)
+    bGit = isGitRepo()
+    iRenamed = 0
+    for sName in sorted(os.listdir(sRoot)):
+        sLower = sName.lower()
+        if sName == sLower or sLower not in setStandard or not os.path.isdir(os.path.join(sRoot, sName)): continue
+        if any(s == sLower for s in os.listdir(sRoot) if s != sName): continue   # both cases present: leave it for a person
+        sMid = sLower + ".renaming"
+        for sFrom, sTo in ((sName, sMid), (sMid, sLower)):
+            iCode = subprocess.run(["git", "mv", sFrom, sTo], cwd=sRoot, capture_output=True).returncode if bGit else 1
+            if iCode != 0: os.rename(os.path.join(sRoot, sFrom), os.path.join(sRoot, sTo))
+        logLine("FOLDER CASE: %s is now %s" % (sName, sLower))
+        iRenamed += 1
+    if iRenamed: sayLine("Gave %s its lower-case Homer name." % countNoun(iRenamed, "folder"))
+    return iRenamed
+
+
 def sweepStrayFolders(sKind):
     """A TOP-LEVEL FOLDER OUTSIDE THE HOMER TREE GOES TO NOTES (1.73.7). check's layout rule fails a folder at the top
     that is neither standard for the project's kind (kind.standardFolders), declared in RepoFiles.txt or
@@ -1375,10 +1428,15 @@ def main():
     # repository has nothing for tidy to tidy: post stages and publishes it.
     sKind, sWhy = loadKind()(sRoot)
     logLine("setting kind=%s reason=%s" % (sKind, logValue(sWhy)))
+    # A PAGE PROJECT IS TIDIED TOO (1.215.0, his ruling of 12 November 2026: build_release's tidy makes sure everything
+    # is in its proper folder, notes included, or gone). Version 1.45.0 stopped here for a page project that is not a
+    # repository, so MyBooks and MyPages were never tidied at all. Such a project now gets the whole folder phase --
+    # files put in place, empty files and duplicates removed, strays moved to notes, logs at the top into logs, folder
+    # names in Homer case -- judged by its RepoFiles.txt and LocalFiles.txt; only the repository phase is skipped,
+    # since there is no repository.
     if sKind == "page" and not isGitRepo():
-        sayLine("%s is a page project, not a repository: post publishes it, and tidy has nothing to do." % appName())
-        logLine("tidy end")
-        return 0
+        dArguments.folder_only = True
+        sayLine("%s is a page project, not a repository: tidying its folder; there is no repository to tidy." % appName())
     sayLine("%s in %s" % (appName(), sRoot))
     if not dArguments.repo_only:
         # The step itself declines when this folder is the kit's own; the kind
@@ -1396,6 +1454,10 @@ def main():
         if sKind == "app":
             try: keepJawsKeys()
             except Exception as oError: logLine("JAWS key map: skipped, " + str(oError))
+        try: sweepTopLogs()
+        except Exception as oError: logLine("top logs: skipped, " + str(oError))
+        try: settleFolderCase(sKind)
+        except Exception as oError: logLine("folder case: skipped, " + str(oError))
         if sKind != "kit":
             try: sweepStrayFolders(sKind)
             except Exception as oError: logLine("stray folders: skipped, " + str(oError))

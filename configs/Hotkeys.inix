@@ -179,8 +179,8 @@ Delete Paragraph=Control+Shift+D, Delete past one or more blank lines
 Delete File=Alt+Shift+D, Delete current file on disk
 Rename=Shift+F2, Rename the current file on disk
 
-Next Section=Control+F6 or Control+PageDown, Go to next section
-Previous Section=Control+Shift+F6 or Control+PageUp, Go to previous Section
+Next Section=Control+F6, Go to next section
+Previous Section=Control+Shift+F6, Go to previous section
 Go to Section=F6, Go to section in body from topic in table of contents
 Go to Contents=Shift+F6, Go to topic in table of contents from section in body
 Search for Topic=Alt+F6, Search for a topic based on text in its heading

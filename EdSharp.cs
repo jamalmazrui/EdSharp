@@ -1147,11 +1147,12 @@ menuNavigateNextParagraph = CreateMenuItem("Next Paragraph", "Control+Down", men
 menuNavigatePriorParagraph = CreateMenuItem("Previous Paragraph", "Control+Up", menuItem_Click, "child silent");
 menuNavigateNextPart= CreateMenuItem("Next Part", "Alt+PageDown", menuItem_Click, "child silent");
 menuNavigatePriorPart= CreateMenuItem("Previous Part", "Alt+PageUp", menuItem_Click, "child silent");
-menuNavigateNextSection= CreateMenuItem("Next Section", "Control+PageDown", menuItem_Click, "child silent");
-menuNavigatePriorSection= CreateMenuItem("Previous Section", "Control+PageUp", menuItem_Click, "child silent");
-// The F6 cycle as well (suite manifest): Control+F6 and Control+Shift+F6 move by section, as in the other apps.
-KeyMap.addAlias(KeyMap.toId("Next Section"), "Control+F6");
-KeyMap.addAlias(KeyMap.toId("Previous Section"), "Control+Shift+F6");
+// SECTIONS ON THE F6 CYCLE ALONE (15 November 2026, the keyboard audit's A7, agreed by Claude and ChatGPT): Control+F6 and
+// Control+Shift+F6 move to the next and previous section, the unit after the window, as Control+F6 moves by table in DbDo
+// and by sibling folder in FileDir. They were aliases of Control+PageDown and Control+PageUp, which the 19 October ruling
+// says must not duplicate an F6-family command, so the Page keys are retired and the F6 keys are primary.
+menuNavigateNextSection= CreateMenuItem("Next Section", "Control+F6", menuItem_Click, "child silent");
+menuNavigatePriorSection= CreateMenuItem("Previous Section", "Control+Shift+F6", menuItem_Click, "child silent");
 menuNavigateGoToSection= CreateMenuItem("Go to Section", "F6", menuItem_Click, "child speak");
 menuNavigateGoToContents = CreateMenuItem("Go to Contents", "Shift+F6", menuItem_Click, "child speak");
 menuNavigateSearchForTopic = CreateMenuItem("Search for Topic ...", "Alt+F6", menuItem_Click, "child silent");
@@ -2304,8 +2305,8 @@ static readonly string[] aCommandSummaries = new string[] {
 "Delete Paragraph\tControl+Shift+D, Delete past one or more blank lines",
 "Delete File\tAlt+Shift+D, Delete current file on disk",
 "Rename\tShift+F2, Rename current file on disk",
-"Next Section\tControl+F6 or Control+PageDown, Go to next section",
-"Previous Section\tControl+Shift+F6 or Control+PageUp, Go to previous section",
+"Next Section\tControl+F6, Go to next section",
+"Previous Section\tControl+Shift+F6, Go to previous section",
 "Go to Section\tF6, Go to section in body from topic in table of contents",
 "Go to Contents\tShift+F6, Go to topic in table of contents from section in body",
 "Search for Topic\tAlt+F6, Search for a topic based on text in its heading; Search Next (F3) finds the next one",

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc 3.13" />
+  <meta name="generator" content="pandoc 3.14" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>EdSharp Hotkeys</title>
   <style>
@@ -35,27 +35,6 @@
       }
       h1 {
         font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        color-scheme: light only;
-      }
-      html, body, pre, code {
-        background-color: transparent;
-      }
-      body, a, a:visited, blockquote {
-        color: black;
-      }
-      pre, code {
-        padding: 0;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
       }
     }
     p {
@@ -163,6 +142,12 @@
       text-decoration: none;
     }
     span.smallcaps{font-variant: small-caps;}
+    em, em em em, em em em em em {
+      font-style: italic;
+    }
+    em em, em em em em {
+      font-style: normal;
+    }
     div.columns{display: flex; gap: 1.5em;}
     div.column{flex: auto;}
     @media screen {
@@ -179,7 +164,27 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-  </style>
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }  </style>
 </head>
 <body>
 <nav id="TOC" role="doc-toc" aria-label="Contents">
@@ -637,16 +642,15 @@ path in Open or Save the current file Dialog.</li>
 switch to it, from its desktop shortcut.</li>
 <li><strong>Next Part</strong>, Alt+PageDown. Go to next match of
 NavigatePart setting.</li>
-<li><strong>Next Section</strong>, Control+F6 or Control+PageDown. Go to
-next section.</li>
+<li><strong>Next Section</strong>, Control+F6. Go to next section.</li>
 <li><strong>Next Window</strong>, Control+Tab. Switch to the next
 window.</li>
 <li><strong>Next Word</strong>, Control+RightArrow. Go to next word and
 read it.</li>
 <li><strong>Previous Part</strong>, Alt+PageUp. Go to previous match of
 NavigatePart setting.</li>
-<li><strong>Previous Section</strong>, Control+Shift+F6 or
-Control+PageUp. Go to previous section and read its heading.</li>
+<li><strong>Previous Section</strong>, Control+Shift+F6. Go to previous
+section and read its heading.</li>
 <li><strong>Previous Window</strong>, Control+Shift+Tab. Switch to the
 previous window.</li>
 <li><strong>Previous Word</strong>, Control+LeftArrow. Go to previous
@@ -953,10 +957,6 @@ previous change in justification.</li>
 as the body of an email message.</li>
 <li><strong>Control+N</strong>: New. Open a new editing window.</li>
 <li><strong>Control+O</strong>: Open. Open file.</li>
-<li><strong>Control+PageDown</strong>: Next Section. Go to next
-section.</li>
-<li><strong>Control+PageUp</strong>: Previous Section. Go to previous
-section and read its heading.</li>
 <li><strong>Control+Q</strong>: Quote. Add prefix sequence to current or
 selected lines.</li>
 <li><strong>Control+R</strong>: Replace. Replace text in all or the
