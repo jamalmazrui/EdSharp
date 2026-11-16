@@ -1923,9 +1923,10 @@ def checkExportedKeys():
     kit's KeyMap.exportAndExit, before any window shows or a running copy is asked. This runs the built program that
     way and compares the file with its key file -- configs\\<App>.inix's [Hotkeys], else configs\\Hotkeys.inix -- by
     command name: a key shown but not bound is a false alias, and a key bound but not shown is hidden.
-    A WARNING THIS ROUND, NOT A FAILURE. The suite's apps have never been compared with what they really bind, and the
-    first comparison will find differences of spelling as well as of substance. Each goes to the log; once they are
-    read and settled, the verdict becomes a failure, as A2 asks."""
+    A FAILURE SINCE 1.240.0. The first comparisons (15 November 2026) were read and settled: spellings brought to one,
+    commands handled outside the router named in the catalog's [handled <App>] sections, and the real findings fixed --
+    after which DbDo, EdSharp and FileDir each showed no difference. A difference now stops a push, as A2 asks. A
+    program that cannot export at all still warns, since a check that cannot run should not stop a release."""
     sApp = os.path.basename(os.path.normpath(sRoot))
     if not any("KeyMap.exportAndExit" in readText(sPath) for sPath in sourceFiles() if sPath.lower().endswith(".cs")):
         return finding("exported keys", "skip", "%s does not answer /exportkeys" % sApp)
@@ -1961,7 +1962,7 @@ def checkExportedKeys():
     lBreaks, iCompared = suiteCatalog.exportBreaks(readText(sExport), readText(sKeyFile), sApp, dHandled)
     for sBreak in lBreaks: logLine("EXPORTED KEYS: " + sBreak)
     if lBreaks:
-        return finding("exported keys", "warn", "%d difference%s between the keys %s binds and the keys it shows, in %d commands compared; each is in the log"
+        return finding("exported keys", "fail", "%d difference%s between the keys %s binds and the keys it shows, in %d commands compared; each is in the log"
                        % (len(lBreaks), "" if len(lBreaks) == 1 else "s", sApp, iCompared))
     return finding("exported keys", "pass", "%d commands: every key shown is bound, and every key bound is shown" % iCompared)
 
