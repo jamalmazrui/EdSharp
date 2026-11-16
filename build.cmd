@@ -54,7 +54,7 @@ if not defined homerDev (
 )
 set "homerVer=0.0.0"
 if exist "!homerDev!\version.txt" set /p homerVer=<"!homerDev!\version.txt"
-set "kitNeeded=1.238.0"
+set "kitNeeded=1.241.0"
 powershell -NoProfile -Command "if ([version]'!homerVer!' -lt [version]'!kitNeeded!') { exit 1 } else { exit 0 }" >nul
 if errorlevel 1 (
   echo EdSharp needs HomerDev !kitNeeded! or later, and the kit is !homerVer!.
@@ -206,6 +206,20 @@ if exist "help\Tutorial_*.inix" (
     call "scripts\buildTutorials.cmd" -build
     if errorlevel 1 echo WARN: not every tutorial could be spoken. The tutorials log in logs\ says why.
   )
+)
+
+rem ---- help\Hotkeys.md, from configs\Hotkeys.inix ----------------------
+rem ONE COMMAND RECORD (15 November 2026, the keyboard audit's A1): the page said it was generated but was written by
+rem hand, and it drifted from the program. The kit's makeHotkeys writes it from the key file at every build, as
+rem FileDir's makeKeyMap does; build.ps1 then makes its .htm with the other documents.
+echo Writing help\Hotkeys.md from configs\Hotkeys.inix.
+python "!homerDev!\scripts\makeHotkeys.py" "%CD%" >> "%log%" 2>&1
+set "iHotkeys=!errorlevel!"
+echo makeHotkeys exit code !iHotkeys!>> "%log%"
+if not "!iHotkeys!"=="0" (
+  echo ERROR: help\Hotkeys.md could not be written. Its log in logs\ says why.
+  popd
+  exit /b 1
 )
 
 rem ---- EdSharp's own build: compile and installer ---------------------

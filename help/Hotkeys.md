@@ -1,506 +1,718 @@
 ﻿# EdSharp Hotkeys
 
-Every command in EdSharp, with the key that runs it and what it does.
-This file is generated from the program itself, so it cannot fall behind
-the program: the same table answers Key Describer, Control+F1, and the
-Alternate Menu, Alt+F10.
+**Version 5.0.158**  
 
-A command with no key is reached from its menu or from the Alternate
-Menu. A key written as Alt+Shift+OemQuestion is the framework's name for
-a punctuation key; the plainer name appears beside it here.
+Generated from the key file on 15 November 2026. Do not edit this page; edit the key file in configs and build again.
 
-## By Command
+Every EdSharp command, given three ways so you can find a command however you think of it. Press Control+F1 to turn on the Key Describer, which says a command's name, key and description instead of running it, and Alt+F10 for the Alternate Menu, which lists every command and finds one by a former name too.
 
-Grouped by menu, and alphabetical within each group.
+## Contents
 
-### Edit
+- [By Command Name](#by-command-name)
+- [By Key](#by-key)
+- [By First Modifier](#by-first-modifier)
 
-- **Align**, Alt+Shift+A. Adjust indentation of current or selected lines according to prior line.
-- **Append Clipboard**, Control+Shift+Apostrophe. Add the clipboard text to the end of a file you name.
-- **Append from Clipboard**, Alt+7. Toggle saving everything copied to the clipboard to a file.
-- **Baseline**, Alt+Shift+6. Set vertical alignment of cursor or selected text.
-- **Clear Clipboard**, Alt+Shift+Apostrophe. Empty the clipboard.
-- **Complete Selection**, Shift+F8. Select text from starting point to cursor.
-- **Copy**, Control+C. Copy the selected text or the current line to the clipboard.
-- **Copy All**, Control+F8. Copy all text to clipboard.
-- **Copy Append**, Alt+C. Add the selected text or the current line to the end of the clipboard.
-- **Copy Rich Text**, Control+Shift+C. Copy selected text with formatting to clipboard.
-- **Cut**, Control+X. Cut the selected text or the current line to the clipboard.
-- **Cut Append**, Alt+X. Cut the selection, or the line, and append it to the clipboard.
-- **Enter New Line**, Enter. Start new line at left margin.
-- **Hard Line Break**, Control+Shift+H. Set the maximum width of lines in all or selected text.
-- **Indent**, Tab. Indent current line or selected text by one unit.
-- **Indent Mode**, Alt+Shift+I. Toggle auto indent with Enter, and announcement of indentation changes.
-- **Indent New Line**, Shift+Enter. Start new line with same indentation as current one.
-- **Indent New Line Previous**, Alt+Shift+Enter. Insert a line above with the current line's indentation.
-- **Join Lines**, Control+Shift+J. Word wrap lines in all or selected paragraphs.
-- **Justify**, Alt+Shift+J. Set justification of cursor or selected text.
-- **Lower Case**, Control+Shift+U. Convert current or selected characters to lower case.
-- **Outdent**, Shift+Tab. Reduce indentation of current or selected lines by one unit.
-- **Paste**, Control+V. Paste the clipboard text at the cursor.
-- **Paste File**, Control+Shift+V. Insert another file at cursor position.
-- **Proper Case**, Alt+U. Convert current or selected characters to proper case.
-- **Quote**, Control+Q. Add prefix sequence to current or selected lines.
-- **Redo**, Control+Shift+Z. Redo the last action that was undone.
-- **Reselect**, Control+Shift+F8. Reselect between previous start and end positions.
-- **Save the current file Clipboard**, Control+Apostrophe. Save the current file the clipboard text to a file you name.
-- **Select All**, Control+A. Select all text.
-- **Select Chunk**, Control+Space. Select the run of non-blank characters at the cursor, or the next one.
-- **Set Selection Font**, Alt+Shift+Dash. Set font of cursor or selected text.
-- **Start Selection**, F8. Mark starting point of text to be selected.
-- **Style**, Alt+Slash pressed twice. Set the style of the cursor or selected text.
-- **Swap Case**, Alt+Shift+U. Convert lower case characters to upper case, and vice versa.
-- **Undo**, Control+Z. Undo the last editing action.
-- **Unquote**, Control+Shift+Q. Remove prefix sequence from current or selected lines.
-- **Unselect All**, Control+Shift+A. Clear text selection.
-- **Upper Case**, Control+U. Convert current or selected characters to upper case.
-- **Yield Encoding**, Alt+Shift+Y. Render all or selected text based on a character encoding.
+## By Command Name
 
-### File
+Commands in alphabetical order.
 
-- **Clear Favorite**, Control+Shift+L. Clear current file from the list of favorites.
-- **Close All but Current Window**, Control+Shift+F4. Close all editing windows except the current one.
-- **Close Window**, Control+F4. Close the current window.
-- **Current Windows**, F4. Switch to a window you pick from the list.
-- **Exit EdSharp**, Alt+F4. Close EdSharp.
-- **Export Format**, Alt+Shift+X. Export document to another format.
-- **File Find**, Alt+Shift+F. Find files by name and content in this folder and below, and open one.
-- **List Favorites**, Alt+L. Open a file from the list of favorites.
-- **Mail Attachment**, Control+Shift+M. Send the current file as email attachments.
-- **Mail Body**, Control+M. Send the current file's text as the body of an email message.
-- **New**, Control+N. Open a new editing window.
-- **New from Clipboard**, Control+Shift+N. Open a new editing window containing clipboard text.
-- **Open**, Control+O. Open file.
-- **Open Again**, Alt+O. Reload the current file from disk.
-- **Open Other Format**, Control+Shift+O. Open file in another format and convert it to text.
-- **Print**, Misc menu. Print the selected text or the current line.
-- **Properties**, Alt+Enter. Show the Windows properties of the current file.
-- **Recent Files**, Alt+R. Open a file from the list of those recently used.
-- **Rename**, Shift+F2. Rename the current file on disk.
-- **Run**, F5. Execute current file, based on its extension.
-- **Save the current file**, Control+S. Save the current file.
-- **Save the current file As**, Control+Shift+S. Save the current file As.
-- **Save the current file Copy**, Alt+Shift+S. Save the current file copy of document using a different name.
-- **Set Favorite**, Control+L. Add current file to the list of favorites.
-
-### Help
-
-- **About**, Alt+F1. Say EdSharp's version and release date.
-- **Copy Log**, Control+F12. Copy the session log to the clipboard as a file.
-- **Documentation**, F1. Open the EdSharp guide.
-- **Elevate Version**, F11. Download and install the latest EdSharp.
-- **What This Does**, Shift+F1. Say what the control with focus does.
-- **Where Am I**, Control+Slash. Say where you are, what has focus and its keys.
-- **History of Changes**, Control+Shift+F1. Open the history of EdSharp's changes, newest first.
-- **Hotkey Summary**, Help menu. List every command with its key and description.
-- **Key Describer Toggle**, Control+F1. Turn key describing on or off: a key says its command instead of running it.
-- **Play Tutorials**, Alt+F12. Play the spoken tutorials: Python, NVDA add-ons, JAWS scripts, web development, C#, translation, article writing, slides, summarizing, and batch conversion.
-- **ReadMe**, Alt+Shift+F1. Open the quick start.
-- **Sample Programs**, Control+Shift+F2. List the sample programs that ship with EdSharp and open one.
-
-- **Hotkeys**, Help menu. Open the list of every command and key.
-- **Frequently Asked Questions**, no key -- Open the answers to frequently asked questions
-- **Tutorials Transcript**, no key -- Open the text of the tutorials
+- **About**, Alt+F1 -- Say EdSharp's version and release date
+- **Align**, Alt+Shift+A -- Adjust indentation of current or selected lines according to prior line
+- **Alternate Menu**, Alt+F10 -- Pick any command from one list, in menu, name or key order
 - **Announcement**, no key -- Open the announcement of this version
+- **Append Clipboard**, Control+Shift+Apostrophe -- Add the clipboard text to the end of a file you name
+- **Append from Clipboard**, Alt+7 -- Toggle saving everything copied to the clipboard to a file
+- **Arrange Icons**, Alt+F11 -- Arrange the open windows
+- **Baseline**, Alt+Shift+6 -- Set vertical alignment of cursor or selected text
+- **Burn to CD**, Alt+Shift+B -- Burn the files or folders the document lists to a CD
+- **Calculate Date**, Control+Shift+Semi-colon -- Calculate and insert date
+- **Cascade**, Control+F11 -- Cascade the open windows
+- **Chat about Document**, Shift+F12 -- Ask the AI model on this computer about the selection or document
+- **Chat with AI**, F12 -- Ask the AI model on this computer a question
+- **Check Markdown**, Alt+F9 -- Report problems in this Markdown, such as heading jumps
+- **Choose Folder**, Control+0 -- Go to a folder you pick from the current, recent and favorite ones
+- **Clear Bookmark**, Control+Shift+B -- Remove the bookmark at the cursor
+- **Clear Clipboard**, Alt+Shift+Apostrophe -- Empty the clipboard
+- **Clear Favorite**, Control+Shift+L -- Clear current file from the list of favorites
+- **Close All but Current Window**, Control+Shift+F4 -- Close all editing windows except the current one
+- **Close Window**, Control+F4 -- Close the current window
+- **Compile**, Control+F5 -- Compile source code, say output, and jump to error position
+- **Complete Selection**, Shift+F8 -- Select text from starting point to cursor
+- **Context Menu**, Shift+F10 -- Open the Windows context menu for the current file
+- **Copy**, Control+C -- Copy the selected text or the current line to the clipboard
+- **Copy All**, Control+F8 -- Copy all text to clipboard
+- **Copy Append**, Alt+C -- Add the selected text or the current line to the end of the clipboard
+- **Copy Log**, Control+F12 -- Copy the session log to the clipboard as a file
+- **Copy Rich Text**, Control+Shift+C -- Copy selected text with formatting to clipboard
+- **Current Windows**, F4 -- Switch to a window you pick from the list
+- **Cut**, Control+X -- Cut the selected text or the current line to the clipboard
+- **Cut Append**, Alt+X -- Cut the selection, or the line, and append it to the clipboard
+- **Delete Down**, Alt+Shift+Delete -- Delete from cursor to bottom of file
+- **Delete File**, Alt+Shift+D -- Delete current file on disk
+- **Delete Hard Line**, Control+D -- Delete line ending in hard line break
+- **Delete Left**, Control+Shift+Backspace -- Delete from cursor to start of line
+- **Delete Line**, Alt+Backspace -- Delete current line
+- **Delete Paragraph**, Control+Shift+D -- Delete past one or more blank lines
+- **Delete Right**, Control+Shift+Delete -- Delete from cursor to end of line
+- **Delete Up**, Alt+Shift+Backspace -- Delete from cursor to top of file
 - **Developer Guide**, no key -- Open the guide for developers
+- **Documentation**, F1 -- Open the EdSharp guide
+- **Edit Settings**, Alt+Shift+E -- Edit EdSharp's settings file
+- **Elevate Version**, F11 -- Download and install the latest EdSharp
+- **End Character**, Alt+End -- Go to last non-blank character of line and read it
+- **End Tag**, Control+Shift+Period -- Go to the closing tag of the HTML element
+- **Enter New Line**, Enter -- Start new line at left margin
+- **Environment Variables**, Control+E -- Change Windows environment variables for this process, your account or the system
+- **Evaluate Expression**, Control+Equals -- Evaluate an expression and insert its result
+- **Exit EdSharp**, Alt+F4 -- Close EdSharp
+- **Export Format**, Alt+Shift+X -- Export document to another format
+- **Extract with Regex**, Control+Shift+E -- Copy every match of a regular expression in the text, into a new window
+- **File Find**, Alt+Shift+F -- Find files by name and content in this folder and below, and open one
+- **Format Code**, Control+4 -- Arrange indentation and other stylistic conventions in a C-like language
+- **Forward Find**, Control+F -- Search forward for string in all or selected text
+- **Forward Find at Cursor**, Alt+F3 -- Search forward for chunk or selected text
+- **Forward Find with Regex**, Control+F3 -- Search forward for regular expression in all or selected text
+- **Frequently Asked Questions**, no key -- Open the answers to frequently asked questions
+- **Go to Contents**, Shift+F6 -- Go to topic in table of contents from section in body
+- **Go to Environment**, Control+Shift+F12 -- Go to interactive environment of current compiler
+- **Go to Part**, Alt+Shift+G -- Pick a part to go to
+- **Go to Percent**, Control+G -- Go to percentage point in document
+- **Go to Percent Again**, Alt+G -- Repeat Go command
+- **Go to Section**, F6 -- Go to section in body from topic in table of contents
+- **Go to Special Folder**, Control+Shift+G -- Go to a Windows special folder you pick
+- **Go to Start of Selection**, Alt+Shift+F8 -- Return to start position of selection
+- **Guard Document**, Control+F7 -- Make document read-only
+- **Hard Line Break**, Control+Shift+H -- Set the maximum width of lines in all or selected text
+- **History of Changes**, Control+Shift+F1 -- Open the history of EdSharp's changes, newest first
+- **Home Character**, Alt+Home -- Go to first non-blank character of line and read it
+- **Hotkey Summary**, no key -- List every command with its key and description
+- **Hotkeys**, no key -- Open the list of every command and key
+- **HTML Format**, Control+H -- Convert current document to HTML in a new window
+- **HTML to Markdown**, no key -- Convert the HTML in this window to Markdown
+- **HTML to Plain Text**, no key -- Convert the HTML in this window to plain text, keeping paragraphs and lists
+- **Indent**, Tab -- Indent current line or selected text by one unit
+- **Indent Mode**, Alt+Shift+I -- Toggle auto indent with Enter, and announcement of indentation changes
+- **Indent New Line**, Shift+Enter -- Start new line with same indentation as current one
+- **Indent New Line Previous**, Alt+Shift+Enter -- Insert a line above with the current line's indentation
+- **Infer Indent**, Alt+RightBracket -- Infer the current document's indent unit, or set it on a second press
+- **Insert All Users Path**, Control+Shift+I -- Insert JAWS All Users path in Open or Save Dialog
+- **Insert Script Path**, Control+I -- Insert JAWS script path in Open or Save Dialog
+- **Insert Time**, Alt+Shift+Semi-colon -- Insert current time and date
+- **Invoke Script**, Alt+V -- Pick a script to run or paste
+- **Join Lines**, Control+Shift+J -- Word wrap lines in all or selected paragraphs
+- **Jump to Line**, Control+J -- Jump to line number or to line, column position
+- **Jump to Line Again**, Alt+J -- Repeat Jump command
+- **Justify**, Alt+Shift+J -- Set justification of cursor or selected text
+- **Keep Unique Items**, Alt+Shift+K -- Discard repetitive items in all or selected text
+- **Key Describer Toggle**, Control+F1 -- Turn key describing on or off: a key says its command instead of running it
+- **Launch EdSharp**, Alt+Control+E -- Start EdSharp, or switch to it, from its desktop shortcut
+- **Left Brace**, Control+Shift+LeftBracket -- Search backward for matching left brace character
 - **License**, no key -- Open the license
-### Miscellaneous
-
-- **Burn to CD**, Alt+Shift+B. Burn the files or folders the document lists to a CD.
-- **Calculate Date**, Control+Shift+Semi-colon. Calculate and insert date.
-- **Chat about Document**, Shift+F12. Ask the AI model on this computer about the selection or document.
-- **Chat with AI**, F12. Ask the AI model on this computer a question.
-- **Check Markdown**, Alt+F9. Report problems in this Markdown, such as heading jumps.
-- **Compile**, Control+F5. Compile source code, say output, and jump to error position.
-- **Edit Settings**, Alt+Shift+E. Edit EdSharp's settings file.
-- **Environment Variables**, Control+E. Change Windows environment variables for this process, your account or the system.
-- **Evaluate Expression**, Control+Equals. Evaluate an expression and insert its result.
-- **Extract with Regex**, Control+Shift+E. Copy every match of a regular expression in the text, into a new window.
-- **Format Code**, Control+4. Arrange indentation and other stylistic conventions in a C-like language.
-- **Go to Environment**, Control+Shift+F12. Go to interactive environment of current compiler.
-- **Choose Folder**, Control+0. Go to a folder you pick from the current, recent and favorite ones.
-- **Go to Special Folder**, Control+Shift+G. Go to a Windows special folder you pick.
-- **Guard Document**, Control+F7. Make document read-only.
-- **HTML Format**, Control+H. Convert current document to HTML in a new window.
-- **HTML to Markdown**, no key. Convert the HTML in this window to Markdown.
-- **HTML to Plain Text**, no key. Convert the HTML in this window to plain text, keeping paragraphs and lists.
-- **Infer Indent**, Alt+RightBracket. Infer the current document's indent unit, or set it on a second press.
-- **Insert Time**, Alt+Shift+Semi-colon. Insert current time and date.
-- **Invoke Script**, Alt+V. Pick a script to run or paste.
-- **Keep Unique Items**, Alt+Shift+K. Discard repetitive items in all or selected text.
-- **List Different Items**, Alt+Shift+L. Compare two lists and put non-overlapping items in a new window.
-- **Lookup Term**, Alt+F7. Look up information from dictionary.com, thesaurus.com, and wikipedia.org.
-- **Markdown to Plain Text**, no key. Convert the Markdown in this window to plain text.
-- **No Guard**, Control+Shift+F7. Clear read-only status.
-- **Number Items**, Alt+Shift+N. Insert numbers at the start of items in all or selected text.
-- **Open Command Prompt**, Control+Backslash. Open a command prompt in the current file's folder.
-- **Open in Explorer**, Alt+Backslash. Open the current file's folder in Windows Explorer.
-- **Order Items**, Alt+Shift+O. Sort items alphabetically in all or selected text.
-- **Path List**, Control+Shift+P. Generate a list of files in a new editing window.
-- **Path to Clipboard**, Alt+Shift+P. Copy the full path of the current file to the clipboard.
-- **Pick Compiler**, Control+Shift+F5. Pick a compiler or interpreter from the list of those configured.
-- **Preview Markdown**, Control+F9. Show this Markdown as a formatted page in a preview window.
-- **Preview Markdown in Web Browser**, no key. Show this Markdown as a formatted page in your web browser.
-- **Prompt Command**, Alt+F5. Prompt for a command line to execute and say its standard output.
-- **PyBrace**, Alt+Shift+LeftBracket. Convert PyDent or Python code to PyBrace form, with braces.
-- **PyDent**, Alt+LeftBracket. Convert PyBrace or Python code to indented PyDent form.
-- **Query Common Items**, Alt+Shift+Q. Compare two lists and put overlapping items in a new window.
-- **Repeat Line**, Control+Y. Copy current line below it.
-- **Replace Tokens**, Control+Shift+Equals. Swap user-defined tokens with their computed results in all or selected text.
-- **Reset Configuration**, Alt+Shift+0. Revert to default options, or define a new compiler configuration.
-- **Reverse Items**, Alt+Shift+R. Reverse order of all or selected items of text.
-- **Review Output**, Alt+Shift+F5. Open standard output of last prompt or compile command in a new editing window.
-- **Run at Cursor**, Shift+F5. Execute a web URL or email address at cursor position or in selected text.
-- **Run Code Blocks**, Alt+Shift+F9. Run the document's sql and jscript code blocks, results below each.
-- **Save the current file Script**, Alt+S. Save the current file all or selected text to a script file.
-- **Section Break**, Control+Enter. Insert a section break at the cursor position.
-- **Set Default Font and Color**, Alt+Shift+Equals. Set default font and color for editing window.
-- **Special Character**, F2. Insert character indirectly by specifying its Unicode value.
-- **Spell Check**, F7. Spell check all or selected text.
-- **Text Combine**, Control+Shift+T. Convert other formats to text and combine them in a new editing window.
-- **Text Contents**, Alt+Shift+T. Generate and prepend a table of contents to the current document.
-- **Text Convert**, Control+T. Convert files of other formats to text files.
-- **Thesaurus**, Shift+F7. Look up synonyms for word at cursor.
-- **Transform Files**, Alt+Equals. Apply a list of search and replace tasks to files.
-- **Translate Language**, Alt+Shift+F7. Translate the selection or the document into another language.
-- **Unwrap**, Control+Shift+W. Unwrap lines.
-- **View Script**, Alt+Shift+V. Pick script file to view or edit.
-- **Web Download**, Alt+Shift+W. Download files linked from a web page or the current document.
-- **Word Wrap**, Control+W. Word wrap lines.
-- **Yield with Regex**, Control+Shift+Y. Count parts of text matching a regular expression.
-
-### Navigation
-
-- **Clear Bookmark**, Control+Shift+K. Remove the bookmark at the cursor.
-- **End Character**, Alt+End. Go to last non-blank character of line and read it.
-- **End Tag**, Control+Shift+Period. Go to the closing tag of the HTML element.
-- **Forward Find**, Control+F. Search forward for string in all or selected text.
-- **Forward Find at Cursor**, Alt+F3. Search forward for chunk or selected text.
-- **Forward Find with Regex**, Control+F3. Search backward for a regular expression in all or selected text.
-- **Go to Contents**, Shift+F6. Go to topic in table of contents from section in body.
-- **Go to Part**, Alt+Shift+G. Pick a part to go to.
-- **Go to Percent**, Control+G. Go to percentage point in document.
-- **Go to Percent Again**, Alt+G. Repeat Go command.
-- **Go to Start of Selection**, Alt+Shift+F8. Return to start position of selection.
-- **Home Character**, Alt+Home. Go to first non-blank character of line and read it.
-- **Jump to Line**, Control+J. Jump to line number or to line, column position.
-- **Jump to Line Again**, Alt+J. Repeat Jump command.
-- **Left Brace**, Control+Shift+LeftBracket. Search backward for matching left brace character.
-- **List Bookmarks**, Alt+K. Go to a bookmark in the current file you pick from a list.
-- **Next Alignment**, Control+RightBracket. Go to next change in justification.
-- **Next Baseline**, Control+6. Go to next change in baseline.
-- **Next Block**, Control+B. Go to the next block of code, having the same or less indentation.
-- **Next Chunk**, Alt+RightArrow. Go to next chunk and read it.
-- **Next Font**, Control+Dash. Go to next change in font.
-- **Next Indent**, Control+I. Go to the next change in indentation.
-- **Next Paragraph**, Control+DownArrow. Go to next paragraph and read it.
-- **Next Sentence**, Alt+DownArrow. Go to next sentence and read it.
-- **Next Style**, Alt+Period. Go to the next change in style.
-- **Previous Alignment**, Control+LeftBracket. Go to previous change in justification.
-- **Previous Baseline**, Control+Shift+6. Go to previous change in baseline.
-- **Previous Chunk**, Alt+LeftArrow. Go to previous chunk and read it.
-- **Previous Font**, Control+Shift+Dash. Go to previous change in font.
-- **Previous Indent**, Control+Shift+I. Go to the previous change in indentation.
-- **Previous Paragraph**, Control+UpArrow. Go to previous paragraph and read it.
-- **Previous Sentence**, Alt+UpArrow. Go to previous sentence and read it.
-- **Previous Style**, Alt+Comma. Go to the previous change in style.
-- **Prior Block**, Control+Shift+B. Go to the previous block of code, having the same or less indentation.
-- **Reverse Find**, Control+Shift+F. Search backward for string.
-- **Reverse Find at Cursor**, Alt+Shift+F3. Search backward for chunk or selected text.
-- **Reverse Find with Regex**, Control+Shift+F3. Search backward for a regular expression in all or selected text.
-- **Right Brace**, Control+Shift+RightBracket. Search forward for matching right brace character.
-- **Save the current file Bookmark**, Control+K. Save the current file a bookmark at the cursor position.
-- **Search for Topic**, Alt+F6. Search for a topic based on text in its heading; Search Next (F3) finds the next one.
-- **Search Next**, F3. Repeat the last search, forward.
-- **Search Previous**, Shift+F3. Repeat the last search, backward.
-- **Start Tag**, Control+Shift+Comma. Go to opening tag of HTML element.
-
-### Query
-
-- **Read All**, Alt+F8. Say all the text without moving the cursor.
-- **Say Windows Open**, Shift+F4. Say how many windows are open, and their titles.
-- **Topic**, Alt+T. Say topic of current section.
-
-### Screen Reader Announcements
-
-- **Alternate Menu**, Alt+F10. Pick any command from one list, in menu, name or key order.
-- **Arrange Icons**, Alt+F11. Arrange the open windows.
-- **Cascade**, Control+F11. Cascade the open windows.
-- **Context Menu**, Shift+F10. Open the Windows context menu for the current file.
-- **Delete Down**, Alt+Shift+Delete. Delete from cursor to bottom of file.
-- **Delete File**, Alt+Shift+D. Delete current file on disk.
-- **Delete Hard Line**, Control+D. Delete line ending in hard line break.
-- **Delete Left**, Control+Shift+Backspace. Delete from cursor to start of line.
-- **Delete Line**, Alt+Backspace. Delete current line.
-- **Delete Paragraph**, Control+Shift+D. Delete past one or more blank lines.
-- **Delete Right**, Control+Shift+Delete. Delete from cursor to end of line.
-- **Delete Up**, Alt+Shift+Backspace. Delete from cursor to top of file.
-- **Go to Section**, F6. Go to section in body from topic in table of contents.
-- **Insert All Users Path**, Control+Shift+I. Insert JAWS All Users path in Open or Save the current file Dialog.
-- **Insert Script Path**, Control+I. Insert JAWS script path in Open or Save the current file Dialog.
-- **Launch EdSharp**, Alt+Control+E. Start EdSharp, or switch to it, from its desktop shortcut.
-- **Next Part**, Alt+PageDown. Go to next match of NavigatePart setting.
-- **Next Section**, Control+F6. Go to next section.
-- **Next Window**, Control+Tab. Switch to the next window.
-- **Next Word**, Control+RightArrow. Go to next word and read it.
-- **Previous Part**, Alt+PageUp. Go to previous match of NavigatePart setting.
-- **Previous Section**, Control+Shift+F6. Go to previous section and read its heading.
-- **Previous Window**, Control+Shift+Tab. Switch to the previous window.
-- **Previous Word**, Control+LeftArrow. Go to previous word and read it.
-- **Replace**, Control+R. Replace text in all or the selected text.
-- **Replace with Regex**, Control+Shift+R. Replace a regular expression's matches in all or the selected text.
-- **Say Address**, Alt+A. Say line, column, and percent position of cursor.
-- **Say Block**, Alt+B. Say the rest of the current code block, or the whole block if repeated.
-- **Say Braces**, Alt+Shift+]. Say number of braces on either side of cursor.
-- **Say Chunk**, Shift+BackSpace. Say chunk at cursor.
-- **Say Clipboard**, Alt+Apostrophe. Say the clipboard text.
-- **Say Compiler**, Alt+0. Say current compiler and folder.
-- **Say Indentation**, Alt+I. Say the current line's indentation.
-- **Say Path**, Alt+P. Say the full path of the current file.
-- **Say Selected**, Shift+Space. or JAWSKey+Shift+DownArrow, Say the selected text.
-- **Say Status**, Alt+Z. Say whether the document is modified, and its encoding on a second press.
-- **Say Styles**, Alt+Slash. Say the style, alignment and baseline that differ from normal, then the font and color.
-- **Say Time**, Alt+Semi-colon. Say the date and time.
-- **Say Yield**, Alt+Y. Say how many characters, words and lines are in all or the selected text.
-- **SendTo Menu**, Control+F10. Send the current file to a Send To choice you pick.
-- **Tile Horizontal**, Alt+Shift+F11. Tile the open windows across.
-- **Tile Vertical**, Shift+F11. Tile the open windows down.
-- **Trim Blanks**, Control+Shift+Enter. Trim blanks from the lines, and extra blank lines between them.
-- **Web Client Utilities**, Alt+Shift+Space. Pick a web client utility to run.
+- **List Bookmarks**, Alt+B -- Go to a bookmark in the current file you pick from a list
+- **List Different Items**, Alt+Shift+L -- Compare two lists and put non-overlapping items in a new window
+- **List Favorites**, Alt+L -- Open a file from the list of favorites
+- **Lookup Term**, Alt+F7 -- Look up information from dictionary.com, thesaurus.com, and wikipedia.org
+- **Lower Case**, Control+Shift+U -- Convert current or selected characters to lower case
+- **Mail Attachment**, Control+Shift+M -- Send the current file as email attachments
+- **Mail Body**, Control+M -- Send the current file's text as the body of an email message
+- **Markdown to Plain Text**, no key -- Convert the Markdown in this window to plain text
+- **New**, Control+N -- Open a new editing window
+- **New from Clipboard**, Control+Shift+N -- Open a new editing window containing clipboard text
+- **Next Alignment**, Control+RightBracket -- Go to next change in justification
+- **Next Baseline**, Control+6 -- Go to next change in baseline
+- **Next Chunk**, Alt+RightArrow -- Go to next chunk and read it
+- **Next Font**, Control+Dash -- Go to next change in font
+- **Next Indent**, Control+I -- Go to the next change in indentation
+- **Next Paragraph**, Control+DownArrow -- Go to next paragraph and read it
+- **Next Part**, Alt+PageDown -- Go to next match of NavigatePart setting
+- **Next Section**, Control+F6 -- Go to next section
+- **Next Sentence**, Alt+DownArrow -- Go to next sentence and read it
+- **Next Style**, Alt+Period -- Go to the next change in style
+- **Next Window**, Control+Tab -- Switch to the next window
+- **Next Word**, Control+RightArrow -- Go to next word and read it
+- **No Guard**, Control+Shift+F7 -- Clear read-only status
+- **Number Items**, Alt+Shift+N -- Insert numbers at the start of items in all or selected text
+- **Open**, Control+O -- Open file
+- **Open Again**, Alt+O -- Reload the current file from disk
+- **Open Command Prompt**, Control+Backslash -- Open a command prompt in the current file's folder
+- **Open in Explorer**, Alt+Backslash -- Open the current file's folder in Windows Explorer
+- **Open Other Format**, Control+Shift+O -- Open file in another format and convert it to text
+- **Order Items**, Alt+Shift+O -- Sort items alphabetically in all or selected text
+- **Outdent**, Shift+Tab -- Reduce indentation of current or selected lines by one unit
+- **Paste**, Control+V -- Paste the clipboard text at the cursor
+- **Paste File**, Control+Shift+V -- Insert another file at cursor position
+- **Path List**, Control+Shift+P -- Generate a list of files in a new editing window
+- **Path to Clipboard**, Alt+Shift+P -- Copy the full path of the current file to the clipboard
+- **Pick Compiler**, Control+Shift+F5 -- Pick a compiler or interpreter from the list of those configured
+- **Play Tutorials**, Alt+F12 -- Play the spoken tutorials
+- **Preview Markdown**, Control+F9 -- Show this Markdown as a formatted page in a preview window
+- **Preview Markdown in Web Browser**, no key -- Show this Markdown as a formatted page in your web browser
+- **Previous Alignment**, Control+LeftBracket -- Go to previous change in justification
+- **Previous Baseline**, Control+Shift+6 -- Go to previous change in baseline
+- **Previous Chunk**, Alt+LeftArrow -- Go to previous chunk and read it
+- **Previous Font**, Control+Shift+Dash -- Go to previous change in font
+- **Previous Indent**, Control+Shift+I -- Go to the previous change in indentation
+- **Previous Paragraph**, Control+UpArrow -- Go to previous paragraph and read it
+- **Previous Part**, Alt+PageUp -- Go to previous match of NavigatePart setting
+- **Previous Section**, Control+Shift+F6 -- Go to previous section
+- **Previous Sentence**, Alt+UpArrow -- Go to previous sentence and read it
+- **Previous Style**, Alt+Comma -- Go to the previous change in style
+- **Previous Window**, Control+Shift+Tab -- Switch to the previous window
+- **Previous Word**, Control+LeftArrow -- Go to previous word and read it
+- **Print**, no key -- Print the selected text or the current line
+- **Prompt Command**, Alt+F5 -- Prompt for a command line to execute and say its standard output
+- **Proper Case**, Alt+U -- Convert current or selected characters to proper case
+- **Properties**, Alt+Enter -- Show the Windows properties of the current file
+- **PyBrace**, Alt+Shift+LeftBracket -- Convert PyDent or Python code to PyBrace form, with braces
+- **PyDent**, Alt+LeftBracket -- Convert PyBrace or Python code to indented PyDent form
+- **Query Common Items**, Alt+Shift+Q -- Compare two lists and put overlapping items in a new window
+- **Quote**, Control+Q -- Add prefix sequence to current or selected lines
+- **Read All**, Alt+F8 -- Say all the text without moving the cursor
+- **ReadMe**, Alt+Shift+F1 -- Open the quick start
+- **Recent Files**, Alt+R -- Open a file from the list of those recently used
+- **Redo**, Control+Shift+Z -- Redo the last action that was undone
+- **Rename**, Shift+F2 -- Rename the current file on disk
+- **Repeat Line**, Control+Y -- Copy current line below it
+- **Replace**, Control+R -- Replace text in all or the selected text
+- **Replace Tokens**, Control+Shift+Equals -- Swap user-defined tokens with their computed results in all or selected text
+- **Replace with Regex**, Control+Shift+R -- Replace a regular expression's matches in all or the selected text
+- **Reselect**, Control+Shift+F8 -- Reselect between previous start and end positions
+- **Reset Configuration**, Alt+Shift+0 -- Revert to default options, or define a new compiler configuration
+- **Reverse Find**, Control+Shift+F -- Search backward for string
+- **Reverse Find at Cursor**, Alt+Shift+F3 -- Search backward for chunk or selected text
+- **Reverse Find with Regex**, Control+Shift+F3 -- Search backward for a regular expression in all or selected text
+- **Reverse Items**, Alt+Shift+R -- Reverse order of all or selected items of text
+- **Review Output**, Alt+Shift+F5 -- Open standard output of last prompt or compile command in a new editing window
+- **Right Brace**, Control+Shift+RightBracket -- Search forward for matching right brace character
+- **Run**, F5 -- Execute current file, based on its extension
+- **Run at Cursor**, Shift+F5 -- Execute a web URL or email address at cursor position or in selected text
+- **Run Code Blocks**, Alt+Shift+F9 -- Run the document's sql and jscript code blocks, results below each
+- **Sample Programs**, Control+Shift+F2 -- List the sample programs that ship with EdSharp and open one
+- **Save**, Control+S -- Save the current file
+- **Save As**, Control+Shift+S -- Save a copy of the current file under another name or format
+- **Save Bookmark**, Control+B -- Bookmark the cursor's place
+- **Save Clipboard**, Control+Apostrophe -- Save the clipboard text to a file you name
+- **Save Copy**, Alt+Shift+S -- Save copy of document using a different name
+- **Save Script**, Alt+S -- Save all or selected text to a script file
+- **Say Address**, Alt+A -- Say line, column, and percent position of cursor
+- **Say Braces**, Alt+Shift+] -- Say number of braces on either side of cursor
+- **Say Chunk**, Shift+BackSpace -- Say chunk at cursor
+- **Say Clipboard**, Alt+Apostrophe -- Say the clipboard text
+- **Say Compiler**, Alt+0 -- Say current compiler and folder
+- **Say Indentation**, Alt+I -- Say the current line's indentation
+- **Say Path**, Alt+P -- Say the full path of the current file
+- **Say Selected**, Shift+Space -- or JAWSKey+Shift+DownArrow, Say the selected text
+- **Say Status**, Alt+Z -- Say whether the document is modified, and its encoding on a second press
+- **Say Styles**, Alt+Slash -- Say the styles at the cursor, or set them on a second press
+- **Say Time**, Alt+Semi-colon -- Say the date and time
+- **Say Windows Open**, Shift+F4 -- Say how many windows are open, and their titles
+- **Say Yield**, Alt+Y -- Say how many characters, words and lines are in all or the selected text
+- **Search for Topic**, Alt+F6 -- Search for a topic based on text in its heading
+- **Search Next**, F3 -- Repeat the last search, forward
+- **Search Previous**, Shift+F3 -- Repeat the last search, backward
+- **Section Break**, Control+Enter -- Insert a section break at the cursor position
+- **Select All**, Control+A -- Select all text
+- **Select Chunk**, Control+Space -- Select the run of non-blank characters at the cursor, or the next one
+- **SendTo Menu**, Control+F10 -- Send the current file to a Send To choice you pick
+- **Set Default Font and Color**, Alt+Shift+Equals -- Set default font and color for editing window
+- **Set Favorite**, Control+L -- Add current file to the list of favorites
+- **Set Selection Font**, Alt+Shift+Dash -- Set font of cursor or selected text
+- **Special Character**, F2 -- Insert character indirectly by specifying its Unicode value
+- **Spell Check**, F7 -- Spell check all or selected text
+- **Start Selection**, F8 -- Mark starting point of text to be selected
+- **Start Tag**, Control+Shift+Comma -- Go to opening tag of HTML element
+- **Style**, no key -- Set the style of the cursor or selected text
+- **Swap Case**, Alt+Shift+U -- Convert lower case characters to upper case, and vice versa
+- **Text Combine**, Control+Shift+T -- Convert other formats to text and combine them in a new editing window
+- **Text Contents**, Alt+Shift+T -- Generate and prepend a table of contents to the current document
+- **Text Convert**, Control+T -- Convert files of other formats to text files
+- **Thesaurus**, Shift+F7 -- Look up synonyms for word at cursor
+- **Tile Horizontal**, Alt+Shift+F11 -- Tile the open windows across
+- **Tile Vertical**, Shift+F11 -- Tile the open windows down
+- **Topic**, Alt+T -- Say topic of current section
+- **Transform Files**, Alt+Equals -- Apply a list of search and replace tasks to files
+- **Translate Language**, Alt+Shift+F7 -- Translate the selection or the document into another language
+- **Trim Blanks**, Control+Shift+Enter -- Trim blanks from the lines, and extra blank lines between them
+- **Tutorials Transcript**, no key -- Open the text of the tutorials
+- **Undo**, Control+Z -- Undo the last editing action
+- **Unquote**, Control+Shift+Q -- Remove prefix sequence from current or selected lines
+- **Unselect All**, Control+Shift+A -- Clear text selection
+- **Unwrap**, Control+Shift+W -- Unwrap lines
+- **Upper Case**, Control+U -- Convert current or selected characters to upper case
+- **View Script**, Alt+Shift+V -- Pick script file to view or edit
+- **Web Client Utilities**, Alt+Shift+Space -- Pick a web client utility to run
+- **Web Download**, Alt+Shift+W -- Download files linked from a web page or the current document
+- **What This Does**, Shift+F1 -- Say what the control with focus does
+- **Where Am I**, Control+Slash -- Say where you are, what has focus and its keys
+- **Word Wrap**, Control+W -- Word wrap lines
+- **Yield Encoding**, Alt+Shift+Y -- Render all or selected text based on a character encoding
+- **Yield with Regex**, Control+Shift+Y -- Count parts of text matching a regular expression
 
 ## By Key
 
-Alphabetical by key name, for looking up a key you have just pressed.
+The same commands, in alphabetical order of the key that runs them.
 
-- **Alt+0**: Say Compiler. Say current compiler and folder.
-- **Alt+7**: Append from Clipboard. Toggle saving everything copied to the clipboard to a file.
-- **Alt+A**: Say Address. Say line, column, and percent position of cursor.
-- **Alt+Apostrophe**: Say Clipboard. Say the clipboard text.
-- **Alt+B**: Say Block. Say the rest of the current code block, or the whole block if repeated.
-- **Alt+Backslash**: Open in Explorer. Open the current file's folder in Windows Explorer.
-- **Alt+Backspace**: Delete Line. Delete current line.
-- **Alt+C**: Copy Append. Add the selected text or the current line to the end of the clipboard.
-- **Alt+Control+E**: Launch EdSharp. Start EdSharp, or switch to it, from its desktop shortcut.
-- **Alt+DownArrow**: Next Sentence. Go to next sentence and read it.
-- **Alt+End**: End Character. Go to last non-blank character of line and read it.
-- **Alt+Enter**: Properties. Show the Windows properties of the current file.
-- **Alt+Equals**: Transform Files. Apply a list of search and replace tasks to files.
-- **Alt+F1**: About. Say EdSharp's version and release date.
-- **Alt+F10**: Alternate Menu. Pick any command from one list, in menu, name or key order.
-- **Alt+F11**: Arrange Icons. Arrange the open windows.
-- **Alt+F12**: Play Tutorials. Play the spoken tutorials: Python, NVDA add-ons, JAWS scripts, web development, C#, translation, article writing, slides, summarizing, and batch conversion.
-- **Alt+F3**: Forward Find at Cursor. Search forward for chunk or selected text.
-- **Alt+F4**: Exit EdSharp. Close EdSharp.
-- **Alt+F5**: Prompt Command. Prompt for a command line to execute and say its standard output.
-- **Alt+F6**: Search for Topic. Search for a topic based on text in its heading; Search Next (F3) finds the next one.
-- **Alt+F7**: Lookup Term. Look up information from dictionary.com, thesaurus.com, and wikipedia.org.
-- **Alt+F8**: Read All. Say all the text without moving the cursor.
-- **Alt+F9**: Check Markdown. Report problems in this Markdown, such as heading jumps.
-- **Alt+G**: Go to Percent Again. Repeat Go command.
-- **Alt+Home**: Home Character. Go to first non-blank character of line and read it.
-- **Alt+I**: Say Indentation. Say the current line's indentation.
-- **Alt+J**: Jump to Line Again. Repeat Jump command.
-- **Alt+K**: List Bookmarks. Go to a bookmark in the current file you pick from a list.
-- **Alt+L**: List Favorites. Open a file from the list of favorites.
-- **Alt+LeftArrow**: Previous Chunk. Go to previous chunk and read it.
-- **Alt+LeftBracket**: PyDent. Convert PyBrace or Python code to indented PyDent form.
-- **Alt+O**: Open Again. Reload the current file from disk.
-- **Alt+P**: Say Path. Say the full path of the current file.
-- **Alt+PageDown**: Next Part. Go to next match of NavigatePart setting.
-- **Alt+PageUp**: Previous Part. Go to previous match of NavigatePart setting.
-- **Alt+R**: Recent Files. Open a file from the list of those recently used.
-- **Alt+RightArrow**: Next Chunk. Go to next chunk and read it.
-- **Alt+RightBracket**: Infer Indent. Infer the current document's indent unit, or set it on a second press.
-- **Alt+S**: Save the current file Script. Save the current file all or selected text to a script file.
-- **Alt+Semi-colon**: Say Time. Say the date and time.
-- **Alt+Shift+0**: Reset Configuration. Revert to default options, or define a new compiler configuration.
-- **Alt+Shift+6**: Baseline. Set vertical alignment of cursor or selected text.
-- **Alt+Shift+]**: Say Braces. Say number of braces on either side of cursor.
-- **Alt+Shift+A**: Align. Adjust indentation of current or selected lines according to prior line.
-- **Alt+Shift+Apostrophe**: Clear Clipboard. Empty the clipboard.
-- **Alt+Shift+B**: Burn to CD. Burn the files or folders the document lists to a CD.
-- **Alt+Shift+Backspace**: Delete Up. Delete from cursor to top of file.
-- **Alt+Shift+D**: Delete File. Delete current file on disk.
-- **Alt+Shift+Dash**: Set Selection Font. Set font of cursor or selected text.
-- **Alt+Shift+Delete**: Delete Down. Delete from cursor to bottom of file.
-- **Alt+Shift+E**: Edit Settings. Edit EdSharp's settings file.
-- **Alt+Shift+Enter**: Indent New Line Previous. Insert a line above with the current line's indentation.
-- **Alt+Shift+Equals**: Set Default Font and Color. Set default font and color for editing window.
-- **Alt+Shift+F**: File Find. Find files by name and content in this folder and below, and open one.
-- **Alt+Shift+F1**: ReadMe. Open the quick start.
-- **Alt+Shift+F11**: Tile Horizontal. Tile the open windows across.
-- **Alt+Shift+F3**: Reverse Find at Cursor. Search backward for chunk or selected text.
-- **Alt+Shift+F5**: Review Output. Open standard output of last prompt or compile command in a new editing window.
-- **Alt+Shift+F7**: Translate Language. Translate the selection or the document into another language.
-- **Alt+Shift+F8**: Go to Start of Selection. Return to start position of selection.
-- **Alt+Shift+F9**: Run Code Blocks. Run the document's sql and jscript code blocks, results below each.
-- **Alt+Shift+G**: Go to Part. Pick a part to go to.
-- **Alt+Comma**: Previous Style. Go to the previous change in style.
-- **Alt+Period**: Next Style. Go to the next change in style.
-- **Alt+Shift+I**: Indent Mode. Toggle auto indent with Enter, and announcement of indentation changes.
-- **Alt+Shift+J**: Justify. Set justification of cursor or selected text.
-- **Alt+Shift+K**: Keep Unique Items. Discard repetitive items in all or selected text.
-- **Alt+Shift+L**: List Different Items. Compare two lists and put non-overlapping items in a new window.
-- **Alt+Shift+LeftBracket**: PyBrace. Convert PyDent or Python code to PyBrace form, with braces.
-- **Alt+Shift+N**: Number Items. Insert numbers at the start of items in all or selected text.
-- **Alt+Shift+O**: Order Items. Sort items alphabetically in all or selected text.
-- **Alt+Shift+P**: Path to Clipboard. Copy the full path of the current file to the clipboard.
-- **Alt+Shift+Q**: Query Common Items. Compare two lists and put overlapping items in a new window.
-- **Alt+Shift+R**: Reverse Items. Reverse order of all or selected items of text.
-- **Alt+Shift+S**: Save the current file Copy. Save the current file copy of document using a different name.
-- **Alt+Shift+Semi-colon**: Insert Time. Insert current time and date.
-- **Alt+Shift+Space**: Web Client Utilities. Pick a web client utility to run.
-- **Alt+Shift+T**: Text Contents. Generate and prepend a table of contents to the current document.
-- **Alt+Shift+U**: Swap Case. Convert lower case characters to upper case, and vice versa.
-- **Alt+Shift+V**: View Script. Pick script file to view or edit.
-- **Alt+Shift+W**: Web Download. Download files linked from a web page or the current document.
-- **Alt+Shift+X**: Export Format. Export document to another format.
-- **Alt+Shift+Y**: Yield Encoding. Render all or selected text based on a character encoding.
-- **Alt+Slash**: Say Styles. Say the style, alignment and baseline that differ from normal, then the font and color.
-- **Alt+T**: Topic. Say topic of current section.
-- **Alt+U**: Proper Case. Convert current or selected characters to proper case.
-- **Alt+UpArrow**: Previous Sentence. Go to previous sentence and read it.
-- **Alt+V**: Invoke Script. Pick a script to run or paste.
-- **Alt+X**: Cut Append. Cut the selection, or the line, and append it to the clipboard.
-- **Alt+Y**: Say Yield. Say how many characters, words and lines are in all or the selected text.
-- **Alt+Z**: Say Status. Say whether the document is modified, and its encoding on a second press.
-- **Control+0**: Choose Folder. Go to a folder you pick from the current, recent and favorite ones.
-- **Control+4**: Format Code. Arrange indentation and other stylistic conventions in a C-like language.
-- **Control+6**: Next Baseline. Go to next change in baseline.
-- **Control+A**: Select All. Select all text.
-- **Control+Apostrophe**: Save the current file Clipboard. Save the current file the clipboard text to a file you name.
-- **Control+B**: Next Block. Go to the next block of code, having the same or less indentation.
-- **Control+Backslash**: Open Command Prompt. Open a command prompt in the current file's folder.
-- **Control+C**: Copy. Copy the selected text or the current line to the clipboard.
-- **Control+D**: Delete Hard Line. Delete line ending in hard line break.
-- **Control+Dash**: Next Font. Go to next change in font.
-- **Control+DownArrow**: Next Paragraph. Go to next paragraph and read it.
-- **Control+E**: Environment Variables. Change Windows environment variables for this process, your account or the system.
-- **Control+Enter**: Section Break. Insert a section break at the cursor position.
-- **Control+Equals**: Evaluate Expression. Evaluate an expression and insert its result.
-- **Control+F**: Forward Find. Search forward for string in all or selected text.
-- **Control+F1**: Key Describer Toggle. Turn key describing on or off: a key says its command instead of running it.
-- **Control+F10**: SendTo Menu. Send the current file to a Send To choice you pick.
-- **Control+F11**: Cascade. Cascade the open windows.
-- **Control+F12**: Copy Log. Copy the session log to the clipboard as a file.
-- **Control+F3**: Forward Find with Regex. Search backward for a regular expression in all or selected text.
-- **Control+F4**: Close Window. Close the current window.
-- **Control+F5**: Compile. Compile source code, say output, and jump to error position.
-- **Control+F6**: Next Section. Go to next section.
-- **Control+F7**: Guard Document. Make document read-only.
-- **Control+F8**: Copy All. Copy all text to clipboard.
-- **Control+F9**: Preview Markdown. Show this Markdown as a formatted page in a preview window.
-- **Control+G**: Go to Percent. Go to percentage point in document.
-- **Control+H**: HTML Format. Convert current document to HTML in a new window.
-- **Control+I**: Insert Script Path. Insert JAWS script path in Open or Save the current file Dialog.
-- **Control+I**: Next Indent. Go to the next change in indentation.
-- **Control+J**: Jump to Line. Jump to line number or to line, column position.
-- **Control+K**: Save the current file Bookmark. Save the current file a bookmark at the cursor position.
-- **Control+L**: Set Favorite. Add current file to the list of favorites.
-- **Control+LeftArrow**: Previous Word. Go to previous word and read it.
-- **Control+LeftBracket**: Previous Alignment. Go to previous change in justification.
-- **Control+M**: Mail Body. Send the current file's text as the body of an email message.
-- **Control+N**: New. Open a new editing window.
-- **Control+O**: Open. Open file.
-- **Control+Q**: Quote. Add prefix sequence to current or selected lines.
-- **Control+R**: Replace. Replace text in all or the selected text.
-- **Control+RightArrow**: Next Word. Go to next word and read it.
-- **Control+RightBracket**: Next Alignment. Go to next change in justification.
-- **Control+S**: Save the current file. Save the current file.
-- **Control+Shift+6**: Previous Baseline. Go to previous change in baseline.
-- **Control+Shift+A**: Unselect All. Clear text selection.
-- **Control+Shift+Apostrophe**: Append Clipboard. Add the clipboard text to the end of a file you name.
-- **Control+Shift+B**: Prior Block. Go to the previous block of code, having the same or less indentation.
-- **Control+Shift+Backspace**: Delete Left. Delete from cursor to start of line.
-- **Control+Shift+C**: Copy Rich Text. Copy selected text with formatting to clipboard.
-- **Control+Shift+Comma**: Start Tag. Go to opening tag of HTML element.
-- **Control+Shift+D**: Delete Paragraph. Delete past one or more blank lines.
-- **Control+Shift+Dash**: Previous Font. Go to previous change in font.
-- **Control+Shift+Delete**: Delete Right. Delete from cursor to end of line.
-- **Control+Shift+E**: Extract with Regex. Copy every match of a regular expression in the text, into a new window.
-- **Control+Shift+Enter**: Trim Blanks. Trim blanks from the lines, and extra blank lines between them.
-- **Control+Shift+Equals**: Replace Tokens. Swap user-defined tokens with their computed results in all or selected text.
-- **Control+Shift+F**: Reverse Find. Search backward for string.
-- **Control+Shift+F1**: History of Changes. Open the history of EdSharp's changes, newest first.
-- **Control+Shift+F12**: Go to Environment. Go to interactive environment of current compiler.
-- **Control+Shift+F2**: Sample Programs. List the sample programs that ship with EdSharp and open one.
-- **Control+Shift+F3**: Reverse Find with Regex. Search backward for a regular expression in all or selected text.
-- **Control+Shift+F4**: Close All but Current Window. Close all editing windows except the current one.
-- **Control+Shift+F5**: Pick Compiler. Pick a compiler or interpreter from the list of those configured.
-- **Control+Shift+F6**: Previous Section. Go to previous section and read its heading.
-- **Control+Shift+F7**: No Guard. Clear read-only status.
-- **Control+Shift+F8**: Reselect. Reselect between previous start and end positions.
-- **Control+Shift+G**: Go to Special Folder. Go to a Windows special folder you pick.
-- **Control+Shift+H**: Hard Line Break. Set the maximum width of lines in all or selected text.
-- **Control+Shift+I**: Insert All Users Path. Insert JAWS All Users path in Open or Save the current file Dialog.
-- **Control+Shift+I**: Previous Indent. Go to the previous change in indentation.
-- **Control+Shift+J**: Join Lines. Word wrap lines in all or selected paragraphs.
-- **Control+Shift+K**: Clear Bookmark. Remove the bookmark at the cursor.
-- **Control+Shift+L**: Clear Favorite. Clear current file from the list of favorites.
-- **Control+Shift+LeftBracket**: Left Brace. Search backward for matching left brace character.
-- **Control+Shift+M**: Mail Attachment. Send the current file as email attachments.
-- **Control+Shift+N**: New from Clipboard. Open a new editing window containing clipboard text.
-- **Control+Shift+O**: Open Other Format. Open file in another format and convert it to text.
-- **Control+Shift+P**: Path List. Generate a list of files in a new editing window.
-- **Control+Shift+Period**: End Tag. Go to the closing tag of the HTML element.
-- **Control+Shift+Q**: Unquote. Remove prefix sequence from current or selected lines.
-- **Control+Shift+R**: Replace with Regex. Replace a regular expression's matches in all or the selected text.
-- **Control+Shift+RightBracket**: Right Brace. Search forward for matching right brace character.
-- **Control+Shift+S**: Save the current file As. Save the current file As.
-- **Control+Shift+Semi-colon**: Calculate Date. Calculate and insert date.
-- **Control+Shift+T**: Text Combine. Convert other formats to text and combine them in a new editing window.
-- **Control+Shift+Tab**: Previous Window. Switch to the previous window.
-- **Control+Shift+U**: Lower Case. Convert current or selected characters to lower case.
-- **Control+Shift+V**: Paste File. Insert another file at cursor position.
-- **Control+Shift+W**: Unwrap. Unwrap lines.
-- **Control+Shift+Y**: Yield with Regex. Count parts of text matching a regular expression.
-- **Control+Shift+Z**: Redo. Redo the last action that was undone.
-- **Control+Slash**: Where Am I. Say where you are, what has focus and its keys.
-- **Control+Space**: Select Chunk. Select the run of non-blank characters at the cursor, or the next one.
-- **Control+T**: Text Convert. Convert files of other formats to text files.
-- **Control+Tab**: Next Window. Switch to the next window.
-- **Control+U**: Upper Case. Convert current or selected characters to upper case.
-- **Control+UpArrow**: Previous Paragraph. Go to previous paragraph and read it.
-- **Control+V**: Paste. Paste the clipboard text at the cursor.
-- **Control+W**: Word Wrap. Word wrap lines.
-- **Control+X**: Cut. Cut the selected text or the current line to the clipboard.
-- **Control+Y**: Repeat Line. Copy current line below it.
-- **Control+Z**: Undo. Undo the last editing action.
-- **Enter**: Enter New Line. Start new line at left margin.
-- **F1**: Documentation. Open the EdSharp guide.
-- **F11**: Elevate Version. Download and install the latest EdSharp.
-- **F12**: Chat with AI. Ask the AI model on this computer a question.
-- **F2**: Special Character. Insert character indirectly by specifying its Unicode value.
-- **F3**: Search Next. Repeat the last search, forward.
-- **F4**: Current Windows. Switch to a window you pick from the list.
-- **F5**: Run. Execute current file, based on its extension.
-- **F6**: Go to Section. Go to section in body from topic in table of contents.
-- **F7**: Spell Check. Spell check all or selected text.
-- **F8**: Start Selection. Mark starting point of text to be selected.
-- **no key**: HTML to Markdown. Convert the HTML in this window to Markdown.
-- **no key**: HTML to Plain Text. Convert the HTML in this window to plain text, keeping paragraphs and lists.
-- **no key**: Markdown to Plain Text. Convert the Markdown in this window to plain text.
-- **no key**: Preview Markdown in Web Browser. Show this Markdown as a formatted page in your web browser.
-- **Shift+BackSpace**: Say Chunk. Say chunk at cursor.
-- **Shift+Enter**: Indent New Line. Start new line with same indentation as current one.
-- **Shift+F1**: What This Does. Say what the control with focus does.
-- **Shift+F10**: Context Menu. Open the Windows context menu for the current file.
-- **Shift+F11**: Tile Vertical. Tile the open windows down.
-- **Shift+F12**: Chat about Document. Ask the AI model on this computer about the selection or document.
-- **Shift+F2**: Rename. Rename the current file on disk.
-- **Shift+F3**: Search Previous. Repeat the last search, backward.
-- **Shift+F4**: Say Windows Open. Say how many windows are open, and their titles.
-- **Shift+F5**: Run at Cursor. Execute a web URL or email address at cursor position or in selected text.
-- **Shift+F6**: Go to Contents. Go to topic in table of contents from section in body.
-- **Shift+F7**: Thesaurus. Look up synonyms for word at cursor.
-- **Shift+F8**: Complete Selection. Select text from starting point to cursor.
-- **Shift+Space**: Say Selected. or JAWSKey+Shift+DownArrow, Say the selected text.
-- **Shift+Tab**: Outdent. Reduce indentation of current or selected lines by one unit.
-- **Tab**: Indent. Indent current line or selected text by one unit.
+- **Alt+0** -- Say Compiler: Say current compiler and folder
+- **Alt+7** -- Append from Clipboard: Toggle saving everything copied to the clipboard to a file
+- **Alt+A** -- Say Address: Say line, column, and percent position of cursor
+- **Alt+Apostrophe** -- Say Clipboard: Say the clipboard text
+- **Alt+B** -- List Bookmarks: Go to a bookmark in the current file you pick from a list
+- **Alt+Backslash** -- Open in Explorer: Open the current file's folder in Windows Explorer
+- **Alt+Backspace** -- Delete Line: Delete current line
+- **Alt+C** -- Copy Append: Add the selected text or the current line to the end of the clipboard
+- **Alt+Comma** -- Previous Style: Go to the previous change in style
+- **Alt+Control+E** -- Launch EdSharp: Start EdSharp, or switch to it, from its desktop shortcut
+- **Alt+DownArrow** -- Next Sentence: Go to next sentence and read it
+- **Alt+End** -- End Character: Go to last non-blank character of line and read it
+- **Alt+Enter** -- Properties: Show the Windows properties of the current file
+- **Alt+Equals** -- Transform Files: Apply a list of search and replace tasks to files
+- **Alt+F1** -- About: Say EdSharp's version and release date
+- **Alt+F10** -- Alternate Menu: Pick any command from one list, in menu, name or key order
+- **Alt+F11** -- Arrange Icons: Arrange the open windows
+- **Alt+F12** -- Play Tutorials: Play the spoken tutorials
+- **Alt+F3** -- Forward Find at Cursor: Search forward for chunk or selected text
+- **Alt+F4** -- Exit EdSharp: Close EdSharp
+- **Alt+F5** -- Prompt Command: Prompt for a command line to execute and say its standard output
+- **Alt+F6** -- Search for Topic: Search for a topic based on text in its heading
+- **Alt+F7** -- Lookup Term: Look up information from dictionary.com, thesaurus.com, and wikipedia.org
+- **Alt+F8** -- Read All: Say all the text without moving the cursor
+- **Alt+F9** -- Check Markdown: Report problems in this Markdown, such as heading jumps
+- **Alt+G** -- Go to Percent Again: Repeat Go command
+- **Alt+Home** -- Home Character: Go to first non-blank character of line and read it
+- **Alt+I** -- Say Indentation: Say the current line's indentation
+- **Alt+J** -- Jump to Line Again: Repeat Jump command
+- **Alt+L** -- List Favorites: Open a file from the list of favorites
+- **Alt+LeftArrow** -- Previous Chunk: Go to previous chunk and read it
+- **Alt+LeftBracket** -- PyDent: Convert PyBrace or Python code to indented PyDent form
+- **Alt+O** -- Open Again: Reload the current file from disk
+- **Alt+P** -- Say Path: Say the full path of the current file
+- **Alt+PageDown** -- Next Part: Go to next match of NavigatePart setting
+- **Alt+PageUp** -- Previous Part: Go to previous match of NavigatePart setting
+- **Alt+Period** -- Next Style: Go to the next change in style
+- **Alt+R** -- Recent Files: Open a file from the list of those recently used
+- **Alt+RightArrow** -- Next Chunk: Go to next chunk and read it
+- **Alt+RightBracket** -- Infer Indent: Infer the current document's indent unit, or set it on a second press
+- **Alt+S** -- Save Script: Save all or selected text to a script file
+- **Alt+Semi-colon** -- Say Time: Say the date and time
+- **Alt+Shift+0** -- Reset Configuration: Revert to default options, or define a new compiler configuration
+- **Alt+Shift+6** -- Baseline: Set vertical alignment of cursor or selected text
+- **Alt+Shift+]** -- Say Braces: Say number of braces on either side of cursor
+- **Alt+Shift+A** -- Align: Adjust indentation of current or selected lines according to prior line
+- **Alt+Shift+Apostrophe** -- Clear Clipboard: Empty the clipboard
+- **Alt+Shift+B** -- Burn to CD: Burn the files or folders the document lists to a CD
+- **Alt+Shift+Backspace** -- Delete Up: Delete from cursor to top of file
+- **Alt+Shift+D** -- Delete File: Delete current file on disk
+- **Alt+Shift+Dash** -- Set Selection Font: Set font of cursor or selected text
+- **Alt+Shift+Delete** -- Delete Down: Delete from cursor to bottom of file
+- **Alt+Shift+E** -- Edit Settings: Edit EdSharp's settings file
+- **Alt+Shift+Enter** -- Indent New Line Previous: Insert a line above with the current line's indentation
+- **Alt+Shift+Equals** -- Set Default Font and Color: Set default font and color for editing window
+- **Alt+Shift+F** -- File Find: Find files by name and content in this folder and below, and open one
+- **Alt+Shift+F1** -- ReadMe: Open the quick start
+- **Alt+Shift+F11** -- Tile Horizontal: Tile the open windows across
+- **Alt+Shift+F3** -- Reverse Find at Cursor: Search backward for chunk or selected text
+- **Alt+Shift+F5** -- Review Output: Open standard output of last prompt or compile command in a new editing window
+- **Alt+Shift+F7** -- Translate Language: Translate the selection or the document into another language
+- **Alt+Shift+F8** -- Go to Start of Selection: Return to start position of selection
+- **Alt+Shift+F9** -- Run Code Blocks: Run the document's sql and jscript code blocks, results below each
+- **Alt+Shift+G** -- Go to Part: Pick a part to go to
+- **Alt+Shift+I** -- Indent Mode: Toggle auto indent with Enter, and announcement of indentation changes
+- **Alt+Shift+J** -- Justify: Set justification of cursor or selected text
+- **Alt+Shift+K** -- Keep Unique Items: Discard repetitive items in all or selected text
+- **Alt+Shift+L** -- List Different Items: Compare two lists and put non-overlapping items in a new window
+- **Alt+Shift+LeftBracket** -- PyBrace: Convert PyDent or Python code to PyBrace form, with braces
+- **Alt+Shift+N** -- Number Items: Insert numbers at the start of items in all or selected text
+- **Alt+Shift+O** -- Order Items: Sort items alphabetically in all or selected text
+- **Alt+Shift+P** -- Path to Clipboard: Copy the full path of the current file to the clipboard
+- **Alt+Shift+Q** -- Query Common Items: Compare two lists and put overlapping items in a new window
+- **Alt+Shift+R** -- Reverse Items: Reverse order of all or selected items of text
+- **Alt+Shift+S** -- Save Copy: Save copy of document using a different name
+- **Alt+Shift+Semi-colon** -- Insert Time: Insert current time and date
+- **Alt+Shift+Space** -- Web Client Utilities: Pick a web client utility to run
+- **Alt+Shift+T** -- Text Contents: Generate and prepend a table of contents to the current document
+- **Alt+Shift+U** -- Swap Case: Convert lower case characters to upper case, and vice versa
+- **Alt+Shift+V** -- View Script: Pick script file to view or edit
+- **Alt+Shift+W** -- Web Download: Download files linked from a web page or the current document
+- **Alt+Shift+X** -- Export Format: Export document to another format
+- **Alt+Shift+Y** -- Yield Encoding: Render all or selected text based on a character encoding
+- **Alt+Slash** -- Say Styles: Say the styles at the cursor, or set them on a second press
+- **Alt+T** -- Topic: Say topic of current section
+- **Alt+U** -- Proper Case: Convert current or selected characters to proper case
+- **Alt+UpArrow** -- Previous Sentence: Go to previous sentence and read it
+- **Alt+V** -- Invoke Script: Pick a script to run or paste
+- **Alt+X** -- Cut Append: Cut the selection, or the line, and append it to the clipboard
+- **Alt+Y** -- Say Yield: Say how many characters, words and lines are in all or the selected text
+- **Alt+Z** -- Say Status: Say whether the document is modified, and its encoding on a second press
+- **Control+0** -- Choose Folder: Go to a folder you pick from the current, recent and favorite ones
+- **Control+4** -- Format Code: Arrange indentation and other stylistic conventions in a C-like language
+- **Control+6** -- Next Baseline: Go to next change in baseline
+- **Control+A** -- Select All: Select all text
+- **Control+Apostrophe** -- Save Clipboard: Save the clipboard text to a file you name
+- **Control+B** -- Save Bookmark: Bookmark the cursor's place
+- **Control+Backslash** -- Open Command Prompt: Open a command prompt in the current file's folder
+- **Control+C** -- Copy: Copy the selected text or the current line to the clipboard
+- **Control+D** -- Delete Hard Line: Delete line ending in hard line break
+- **Control+Dash** -- Next Font: Go to next change in font
+- **Control+DownArrow** -- Next Paragraph: Go to next paragraph and read it
+- **Control+E** -- Environment Variables: Change Windows environment variables for this process, your account or the system
+- **Control+Enter** -- Section Break: Insert a section break at the cursor position
+- **Control+Equals** -- Evaluate Expression: Evaluate an expression and insert its result
+- **Control+F** -- Forward Find: Search forward for string in all or selected text
+- **Control+F1** -- Key Describer Toggle: Turn key describing on or off: a key says its command instead of running it
+- **Control+F10** -- SendTo Menu: Send the current file to a Send To choice you pick
+- **Control+F11** -- Cascade: Cascade the open windows
+- **Control+F12** -- Copy Log: Copy the session log to the clipboard as a file
+- **Control+F3** -- Forward Find with Regex: Search forward for regular expression in all or selected text
+- **Control+F4** -- Close Window: Close the current window
+- **Control+F5** -- Compile: Compile source code, say output, and jump to error position
+- **Control+F6** -- Next Section: Go to next section
+- **Control+F7** -- Guard Document: Make document read-only
+- **Control+F8** -- Copy All: Copy all text to clipboard
+- **Control+F9** -- Preview Markdown: Show this Markdown as a formatted page in a preview window
+- **Control+G** -- Go to Percent: Go to percentage point in document
+- **Control+H** -- HTML Format: Convert current document to HTML in a new window
+- **Control+I** -- Next Indent: Go to the next change in indentation
+- **Control+I** -- Insert Script Path: Insert JAWS script path in Open or Save Dialog
+- **Control+J** -- Jump to Line: Jump to line number or to line, column position
+- **Control+L** -- Set Favorite: Add current file to the list of favorites
+- **Control+LeftArrow** -- Previous Word: Go to previous word and read it
+- **Control+LeftBracket** -- Previous Alignment: Go to previous change in justification
+- **Control+M** -- Mail Body: Send the current file's text as the body of an email message
+- **Control+N** -- New: Open a new editing window
+- **Control+O** -- Open: Open file
+- **Control+Q** -- Quote: Add prefix sequence to current or selected lines
+- **Control+R** -- Replace: Replace text in all or the selected text
+- **Control+RightArrow** -- Next Word: Go to next word and read it
+- **Control+RightBracket** -- Next Alignment: Go to next change in justification
+- **Control+S** -- Save: Save the current file
+- **Control+Shift+6** -- Previous Baseline: Go to previous change in baseline
+- **Control+Shift+A** -- Unselect All: Clear text selection
+- **Control+Shift+Apostrophe** -- Append Clipboard: Add the clipboard text to the end of a file you name
+- **Control+Shift+B** -- Clear Bookmark: Remove the bookmark at the cursor
+- **Control+Shift+Backspace** -- Delete Left: Delete from cursor to start of line
+- **Control+Shift+C** -- Copy Rich Text: Copy selected text with formatting to clipboard
+- **Control+Shift+Comma** -- Start Tag: Go to opening tag of HTML element
+- **Control+Shift+D** -- Delete Paragraph: Delete past one or more blank lines
+- **Control+Shift+Dash** -- Previous Font: Go to previous change in font
+- **Control+Shift+Delete** -- Delete Right: Delete from cursor to end of line
+- **Control+Shift+E** -- Extract with Regex: Copy every match of a regular expression in the text, into a new window
+- **Control+Shift+Enter** -- Trim Blanks: Trim blanks from the lines, and extra blank lines between them
+- **Control+Shift+Equals** -- Replace Tokens: Swap user-defined tokens with their computed results in all or selected text
+- **Control+Shift+F** -- Reverse Find: Search backward for string
+- **Control+Shift+F1** -- History of Changes: Open the history of EdSharp's changes, newest first
+- **Control+Shift+F12** -- Go to Environment: Go to interactive environment of current compiler
+- **Control+Shift+F2** -- Sample Programs: List the sample programs that ship with EdSharp and open one
+- **Control+Shift+F3** -- Reverse Find with Regex: Search backward for a regular expression in all or selected text
+- **Control+Shift+F4** -- Close All but Current Window: Close all editing windows except the current one
+- **Control+Shift+F5** -- Pick Compiler: Pick a compiler or interpreter from the list of those configured
+- **Control+Shift+F6** -- Previous Section: Go to previous section
+- **Control+Shift+F7** -- No Guard: Clear read-only status
+- **Control+Shift+F8** -- Reselect: Reselect between previous start and end positions
+- **Control+Shift+G** -- Go to Special Folder: Go to a Windows special folder you pick
+- **Control+Shift+H** -- Hard Line Break: Set the maximum width of lines in all or selected text
+- **Control+Shift+I** -- Previous Indent: Go to the previous change in indentation
+- **Control+Shift+I** -- Insert All Users Path: Insert JAWS All Users path in Open or Save Dialog
+- **Control+Shift+J** -- Join Lines: Word wrap lines in all or selected paragraphs
+- **Control+Shift+L** -- Clear Favorite: Clear current file from the list of favorites
+- **Control+Shift+LeftBracket** -- Left Brace: Search backward for matching left brace character
+- **Control+Shift+M** -- Mail Attachment: Send the current file as email attachments
+- **Control+Shift+N** -- New from Clipboard: Open a new editing window containing clipboard text
+- **Control+Shift+O** -- Open Other Format: Open file in another format and convert it to text
+- **Control+Shift+P** -- Path List: Generate a list of files in a new editing window
+- **Control+Shift+Period** -- End Tag: Go to the closing tag of the HTML element
+- **Control+Shift+Q** -- Unquote: Remove prefix sequence from current or selected lines
+- **Control+Shift+R** -- Replace with Regex: Replace a regular expression's matches in all or the selected text
+- **Control+Shift+RightBracket** -- Right Brace: Search forward for matching right brace character
+- **Control+Shift+S** -- Save As: Save a copy of the current file under another name or format
+- **Control+Shift+Semi-colon** -- Calculate Date: Calculate and insert date
+- **Control+Shift+T** -- Text Combine: Convert other formats to text and combine them in a new editing window
+- **Control+Shift+Tab** -- Previous Window: Switch to the previous window
+- **Control+Shift+U** -- Lower Case: Convert current or selected characters to lower case
+- **Control+Shift+V** -- Paste File: Insert another file at cursor position
+- **Control+Shift+W** -- Unwrap: Unwrap lines
+- **Control+Shift+Y** -- Yield with Regex: Count parts of text matching a regular expression
+- **Control+Shift+Z** -- Redo: Redo the last action that was undone
+- **Control+Slash** -- Where Am I: Say where you are, what has focus and its keys
+- **Control+Space** -- Select Chunk: Select the run of non-blank characters at the cursor, or the next one
+- **Control+T** -- Text Convert: Convert files of other formats to text files
+- **Control+Tab** -- Next Window: Switch to the next window
+- **Control+U** -- Upper Case: Convert current or selected characters to upper case
+- **Control+UpArrow** -- Previous Paragraph: Go to previous paragraph and read it
+- **Control+V** -- Paste: Paste the clipboard text at the cursor
+- **Control+W** -- Word Wrap: Word wrap lines
+- **Control+X** -- Cut: Cut the selected text or the current line to the clipboard
+- **Control+Y** -- Repeat Line: Copy current line below it
+- **Control+Z** -- Undo: Undo the last editing action
+- **Enter** -- Enter New Line: Start new line at left margin
+- **F1** -- Documentation: Open the EdSharp guide
+- **F11** -- Elevate Version: Download and install the latest EdSharp
+- **F12** -- Chat with AI: Ask the AI model on this computer a question
+- **F2** -- Special Character: Insert character indirectly by specifying its Unicode value
+- **F3** -- Search Next: Repeat the last search, forward
+- **F4** -- Current Windows: Switch to a window you pick from the list
+- **F5** -- Run: Execute current file, based on its extension
+- **F6** -- Go to Section: Go to section in body from topic in table of contents
+- **F7** -- Spell Check: Spell check all or selected text
+- **F8** -- Start Selection: Mark starting point of text to be selected
+- **Shift+BackSpace** -- Say Chunk: Say chunk at cursor
+- **Shift+Enter** -- Indent New Line: Start new line with same indentation as current one
+- **Shift+F1** -- What This Does: Say what the control with focus does
+- **Shift+F10** -- Context Menu: Open the Windows context menu for the current file
+- **Shift+F11** -- Tile Vertical: Tile the open windows down
+- **Shift+F12** -- Chat about Document: Ask the AI model on this computer about the selection or document
+- **Shift+F2** -- Rename: Rename the current file on disk
+- **Shift+F3** -- Search Previous: Repeat the last search, backward
+- **Shift+F4** -- Say Windows Open: Say how many windows are open, and their titles
+- **Shift+F5** -- Run at Cursor: Execute a web URL or email address at cursor position or in selected text
+- **Shift+F6** -- Go to Contents: Go to topic in table of contents from section in body
+- **Shift+F7** -- Thesaurus: Look up synonyms for word at cursor
+- **Shift+F8** -- Complete Selection: Select text from starting point to cursor
+- **Shift+Space** -- Say Selected: or JAWSKey+Shift+DownArrow, Say the selected text
+- **Shift+Tab** -- Outdent: Reduce indentation of current or selected lines by one unit
+- **Tab** -- Indent: Indent current line or selected text by one unit
 
-## Commands Without a Key
+## By First Modifier
 
-- **HTML to Markdown**. Convert the HTML in this window to Markdown.
-- **HTML to Plain Text**. Convert the HTML in this window to plain text, keeping paragraphs and lists.
-- **Markdown to Plain Text**. Convert the Markdown in this window to plain text.
-- **Preview Markdown in Web Browser**. Show this Markdown as a formatted page in your web browser.
+Grouped by the modifier key a command starts with.
+
+### Alt+Shift
+
+- **Alt+Shift+A** -- Align
+- **Alt+Shift+6** -- Baseline
+- **Alt+Shift+B** -- Burn to CD
+- **Alt+Shift+Apostrophe** -- Clear Clipboard
+- **Alt+Shift+Delete** -- Delete Down
+- **Alt+Shift+D** -- Delete File
+- **Alt+Shift+Backspace** -- Delete Up
+- **Alt+Shift+E** -- Edit Settings
+- **Alt+Shift+X** -- Export Format
+- **Alt+Shift+F** -- File Find
+- **Alt+Shift+G** -- Go to Part
+- **Alt+Shift+F8** -- Go to Start of Selection
+- **Alt+Shift+I** -- Indent Mode
+- **Alt+Shift+Enter** -- Indent New Line Previous
+- **Alt+Shift+Semi-colon** -- Insert Time
+- **Alt+Shift+J** -- Justify
+- **Alt+Shift+K** -- Keep Unique Items
+- **Alt+Shift+L** -- List Different Items
+- **Alt+Shift+N** -- Number Items
+- **Alt+Shift+O** -- Order Items
+- **Alt+Shift+P** -- Path to Clipboard
+- **Alt+Shift+LeftBracket** -- PyBrace
+- **Alt+Shift+Q** -- Query Common Items
+- **Alt+Shift+F1** -- ReadMe
+- **Alt+Shift+0** -- Reset Configuration
+- **Alt+Shift+F3** -- Reverse Find at Cursor
+- **Alt+Shift+R** -- Reverse Items
+- **Alt+Shift+F5** -- Review Output
+- **Alt+Shift+F9** -- Run Code Blocks
+- **Alt+Shift+S** -- Save Copy
+- **Alt+Shift+]** -- Say Braces
+- **Alt+Shift+Equals** -- Set Default Font and Color
+- **Alt+Shift+Dash** -- Set Selection Font
+- **Alt+Shift+U** -- Swap Case
+- **Alt+Shift+T** -- Text Contents
+- **Alt+Shift+F11** -- Tile Horizontal
+- **Alt+Shift+F7** -- Translate Language
+- **Alt+Shift+V** -- View Script
+- **Alt+Shift+Space** -- Web Client Utilities
+- **Alt+Shift+W** -- Web Download
+- **Alt+Shift+Y** -- Yield Encoding
+
+### Alt+Control
+
+- **Alt+Control+E** -- Launch EdSharp
+
+### Control+Shift
+
+- **Control+Shift+Apostrophe** -- Append Clipboard
+- **Control+Shift+Semi-colon** -- Calculate Date
+- **Control+Shift+B** -- Clear Bookmark
+- **Control+Shift+L** -- Clear Favorite
+- **Control+Shift+F4** -- Close All but Current Window
+- **Control+Shift+C** -- Copy Rich Text
+- **Control+Shift+Backspace** -- Delete Left
+- **Control+Shift+D** -- Delete Paragraph
+- **Control+Shift+Delete** -- Delete Right
+- **Control+Shift+Period** -- End Tag
+- **Control+Shift+E** -- Extract with Regex
+- **Control+Shift+F12** -- Go to Environment
+- **Control+Shift+G** -- Go to Special Folder
+- **Control+Shift+H** -- Hard Line Break
+- **Control+Shift+F1** -- History of Changes
+- **Control+Shift+I** -- Insert All Users Path
+- **Control+Shift+J** -- Join Lines
+- **Control+Shift+LeftBracket** -- Left Brace
+- **Control+Shift+U** -- Lower Case
+- **Control+Shift+M** -- Mail Attachment
+- **Control+Shift+N** -- New from Clipboard
+- **Control+Shift+F7** -- No Guard
+- **Control+Shift+O** -- Open Other Format
+- **Control+Shift+V** -- Paste File
+- **Control+Shift+P** -- Path List
+- **Control+Shift+F5** -- Pick Compiler
+- **Control+Shift+6** -- Previous Baseline
+- **Control+Shift+Dash** -- Previous Font
+- **Control+Shift+I** -- Previous Indent
+- **Control+Shift+F6** -- Previous Section
+- **Control+Shift+Tab** -- Previous Window
+- **Control+Shift+Z** -- Redo
+- **Control+Shift+Equals** -- Replace Tokens
+- **Control+Shift+R** -- Replace with Regex
+- **Control+Shift+F8** -- Reselect
+- **Control+Shift+F** -- Reverse Find
+- **Control+Shift+F3** -- Reverse Find with Regex
+- **Control+Shift+RightBracket** -- Right Brace
+- **Control+Shift+F2** -- Sample Programs
+- **Control+Shift+S** -- Save As
+- **Control+Shift+Comma** -- Start Tag
+- **Control+Shift+T** -- Text Combine
+- **Control+Shift+Enter** -- Trim Blanks
+- **Control+Shift+Q** -- Unquote
+- **Control+Shift+A** -- Unselect All
+- **Control+Shift+W** -- Unwrap
+- **Control+Shift+Y** -- Yield with Regex
+
+### Alt
+
+- **Alt+F1** -- About
+- **Alt+F10** -- Alternate Menu
+- **Alt+7** -- Append from Clipboard
+- **Alt+F11** -- Arrange Icons
+- **Alt+F9** -- Check Markdown
+- **Alt+C** -- Copy Append
+- **Alt+X** -- Cut Append
+- **Alt+Backspace** -- Delete Line
+- **Alt+End** -- End Character
+- **Alt+F4** -- Exit EdSharp
+- **Alt+F3** -- Forward Find at Cursor
+- **Alt+G** -- Go to Percent Again
+- **Alt+Home** -- Home Character
+- **Alt+RightBracket** -- Infer Indent
+- **Alt+V** -- Invoke Script
+- **Alt+J** -- Jump to Line Again
+- **Alt+B** -- List Bookmarks
+- **Alt+L** -- List Favorites
+- **Alt+F7** -- Lookup Term
+- **Alt+RightArrow** -- Next Chunk
+- **Alt+PageDown** -- Next Part
+- **Alt+DownArrow** -- Next Sentence
+- **Alt+Period** -- Next Style
+- **Alt+O** -- Open Again
+- **Alt+Backslash** -- Open in Explorer
+- **Alt+F12** -- Play Tutorials
+- **Alt+LeftArrow** -- Previous Chunk
+- **Alt+PageUp** -- Previous Part
+- **Alt+UpArrow** -- Previous Sentence
+- **Alt+Comma** -- Previous Style
+- **Alt+F5** -- Prompt Command
+- **Alt+U** -- Proper Case
+- **Alt+Enter** -- Properties
+- **Alt+LeftBracket** -- PyDent
+- **Alt+F8** -- Read All
+- **Alt+R** -- Recent Files
+- **Alt+S** -- Save Script
+- **Alt+A** -- Say Address
+- **Alt+Apostrophe** -- Say Clipboard
+- **Alt+0** -- Say Compiler
+- **Alt+I** -- Say Indentation
+- **Alt+P** -- Say Path
+- **Alt+Z** -- Say Status
+- **Alt+Slash** -- Say Styles
+- **Alt+Semi-colon** -- Say Time
+- **Alt+Y** -- Say Yield
+- **Alt+F6** -- Search for Topic
+- **Alt+T** -- Topic
+- **Alt+Equals** -- Transform Files
+
+### Control
+
+- **Control+F11** -- Cascade
+- **Control+0** -- Choose Folder
+- **Control+F4** -- Close Window
+- **Control+F5** -- Compile
+- **Control+C** -- Copy
+- **Control+F8** -- Copy All
+- **Control+F12** -- Copy Log
+- **Control+X** -- Cut
+- **Control+D** -- Delete Hard Line
+- **Control+E** -- Environment Variables
+- **Control+Equals** -- Evaluate Expression
+- **Control+4** -- Format Code
+- **Control+F** -- Forward Find
+- **Control+F3** -- Forward Find with Regex
+- **Control+G** -- Go to Percent
+- **Control+F7** -- Guard Document
+- **Control+H** -- HTML Format
+- **Control+I** -- Insert Script Path
+- **Control+J** -- Jump to Line
+- **Control+F1** -- Key Describer Toggle
+- **Control+M** -- Mail Body
+- **Control+N** -- New
+- **Control+RightBracket** -- Next Alignment
+- **Control+6** -- Next Baseline
+- **Control+Dash** -- Next Font
+- **Control+I** -- Next Indent
+- **Control+DownArrow** -- Next Paragraph
+- **Control+F6** -- Next Section
+- **Control+Tab** -- Next Window
+- **Control+RightArrow** -- Next Word
+- **Control+O** -- Open
+- **Control+Backslash** -- Open Command Prompt
+- **Control+V** -- Paste
+- **Control+F9** -- Preview Markdown
+- **Control+LeftBracket** -- Previous Alignment
+- **Control+UpArrow** -- Previous Paragraph
+- **Control+LeftArrow** -- Previous Word
+- **Control+Q** -- Quote
+- **Control+Y** -- Repeat Line
+- **Control+R** -- Replace
+- **Control+S** -- Save
+- **Control+B** -- Save Bookmark
+- **Control+Apostrophe** -- Save Clipboard
+- **Control+Enter** -- Section Break
+- **Control+A** -- Select All
+- **Control+Space** -- Select Chunk
+- **Control+F10** -- SendTo Menu
+- **Control+L** -- Set Favorite
+- **Control+T** -- Text Convert
+- **Control+Z** -- Undo
+- **Control+U** -- Upper Case
+- **Control+Slash** -- Where Am I
+- **Control+W** -- Word Wrap
+
+### Shift
+
+- **Shift+F12** -- Chat about Document
+- **Shift+F8** -- Complete Selection
+- **Shift+F10** -- Context Menu
+- **Shift+F6** -- Go to Contents
+- **Shift+Enter** -- Indent New Line
+- **Shift+Tab** -- Outdent
+- **Shift+F2** -- Rename
+- **Shift+F5** -- Run at Cursor
+- **Shift+BackSpace** -- Say Chunk
+- **Shift+Space** -- Say Selected
+- **Shift+F4** -- Say Windows Open
+- **Shift+F3** -- Search Previous
+- **Shift+F7** -- Thesaurus
+- **Shift+F11** -- Tile Vertical
+- **Shift+F1** -- What This Does
+
+### Function keys
+
+- **F12** -- Chat with AI
+- **F4** -- Current Windows
+- **F1** -- Documentation
+- **F11** -- Elevate Version
+- **F6** -- Go to Section
+- **F5** -- Run
+- **F3** -- Search Next
+- **F2** -- Special Character
+- **F7** -- Spell Check
+- **F8** -- Start Selection
+
+### Other keys
+
+- **Enter** -- Enter New Line
+- **Tab** -- Indent

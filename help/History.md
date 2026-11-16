@@ -2,6 +2,11 @@
 
 
 
+## 15 November 2026 -- Hotkeys made from the key file
+
+- **help\Hotkeys.md is now written from configs\Hotkeys.inix at every build,** by the kit's makeHotkeys, so it always says what EdSharp does: by command name, by key and by first modifier. It had been written by hand and had fallen behind.
+- EdSharp now needs HomerDev 1.241.0.
+
 ## 15 November 2026 -- What EdSharp binds, shown truly
 
 - **Set on Favorite List is gone from Hotkeys.** It was an old name on Control+L, which Set Favorite holds; the first comparison of what EdSharp binds with what it shows found it.
