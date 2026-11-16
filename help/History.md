@@ -2,6 +2,11 @@
 
 
 
+## 15 November 2026 -- EdSharp says which keys it binds
+
+- **EdSharp.exe /exportkeys <file>** writes every command and key EdSharp declares, without opening a window, and ends. The kit's check runs it at every push and compares the file with configs\\Hotkeys.inix, so a key the menus or the Key Describer name is a key that runs. For now a difference is a warning, listed in the check's log.
+- EdSharp now needs HomerDev 1.238.0.
+
 ## 15 November 2026 -- One Edit Settings
 
 - **Edit Settings** (Alt+Shift+E) is the one entry to EdSharp's settings. Beside OK it has a **Settings file** button, which opens your EdSharp.inix, and a button named for the current compiler, which opens that compiler's file. Edit Settings File (Alt+Shift+F2) is retired, and the JAWS key maps no longer pass Alt+Shift+F2. The guide and Hotkeys say so.

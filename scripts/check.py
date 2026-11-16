@@ -1917,6 +1917,50 @@ def checkSuiteCommands():
     return finding("suite commands", "pass", "%d shared commands, each with the suite's key and sentence" % iShared)
 
 
+def checkExportedKeys():
+    """WHAT THE PROGRAM BINDS, AGAINST WHAT IT SHOWS (1.238.0, 15 November 2026, the keyboard audit's Phase 1 and A2).
+    DbDo, EdSharp and FileDir now answer "/exportkeys <file>" by writing every command and key they declare, through the
+    kit's KeyMap.exportAndExit, before any window shows or a running copy is asked. This runs the built program that
+    way and compares the file with its key file -- configs\\<App>.inix's [Hotkeys], else configs\\Hotkeys.inix -- by
+    command name: a key shown but not bound is a false alias, and a key bound but not shown is hidden.
+    A WARNING THIS ROUND, NOT A FAILURE. The suite's apps have never been compared with what they really bind, and the
+    first comparison will find differences of spelling as well as of substance. Each goes to the log; once they are
+    read and settled, the verdict becomes a failure, as A2 asks."""
+    sApp = os.path.basename(os.path.normpath(sRoot))
+    if not any("KeyMap.exportAndExit" in readText(sPath) for sPath in sourceFiles() if sPath.lower().endswith(".cs")):
+        return finding("exported keys", "skip", "%s does not answer /exportkeys" % sApp)
+    sExe = next((s for s in (os.path.join(sRoot, "exec", sApp + ".exe"), os.path.join(sRoot, sApp + ".exe")) if os.path.isfile(s)), "")
+    if not sExe:
+        return finding("exported keys", "warn", "%s.exe was not found to export its keys; build first" % sApp)
+    sKeyFile = os.path.join(sRoot, "configs", sApp + ".inix")
+    if not (os.path.isfile(sKeyFile) and re.search(r"(?mi)^\[hotkeys\]", readText(sKeyFile))):
+        sKeyFile = os.path.join(sRoot, "configs", "Hotkeys.inix")
+    if not os.path.isfile(sKeyFile):
+        return finding("exported keys", "skip", "no key file in configs")
+    sExport = os.path.join(sLogDir, "%s-keys-%s.inix" % (sApp, datetime.datetime.now().strftime("%Y%m%d-%H%M%S")))
+    try:
+        oRun = subprocess.run([sExe, "/exportkeys", sExport], cwd=os.path.dirname(sExe), capture_output=True, text=True, timeout=90)
+        logLine("exported keys: %s /exportkeys %s, exit %d" % (sExe, sExport, oRun.returncode))
+    except Exception as exceptionError:
+        return finding("exported keys", "warn", "%s could not export its keys: %s" % (sApp, exceptionError))
+    if oRun.returncode != 0 or not os.path.isfile(sExport):
+        return finding("exported keys", "warn", "%s did not export its keys (exit %d); its own session log says why" % (sApp, oRun.returncode))
+    try:
+        import kind
+        sKit = kind.findKit([sRoot]) or ""
+        sKitScripts = os.path.join(sKit, "scripts")
+        if sKitScripts not in sys.path: sys.path.insert(0, sKitScripts)
+        import suiteCatalog
+    except Exception as exceptionError:
+        return finding("exported keys", "warn", "the kit's scripts\\suiteCatalog.py could not be loaded: %s" % exceptionError)
+    lBreaks, iCompared = suiteCatalog.exportBreaks(readText(sExport), readText(sKeyFile), sApp)
+    for sBreak in lBreaks: logLine("EXPORTED KEYS: " + sBreak)
+    if lBreaks:
+        return finding("exported keys", "warn", "%d difference%s between the keys %s binds and the keys it shows, in %d commands compared; each is in the log"
+                       % (len(lBreaks), "" if len(lBreaks) == 1 else "s", sApp, iCompared))
+    return finding("exported keys", "pass", "%d commands: every key shown is bound, and every key bound is shown" % iCompared)
+
+
 def checkKitClasses():
     """ONE COPY OF EACH SHARED CLASS (5 November 2026). Every Homer app is to use the kit's classes, compiled from
     C:\\HomerDev\\exec\\CSharp, not keep its own. This lists each class an app defines under a name the kit already
@@ -2233,6 +2277,7 @@ def main():
         checkKitClasses()
         checkMenuLetters()
         checkSuiteCommands()
+        checkExportedKeys()
         checkAccept()
 
     sReport = writeReport()

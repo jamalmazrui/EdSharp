@@ -152,7 +152,10 @@ throw;
 } // Main method
 
 public App() {
-base.IsSingleInstance = true;
+// NOT A SINGLE INSTANCE WHEN EXPORTING (15 November 2026, the keyboard audit's Phase 1): "EdSharp.exe /exportkeys
+// <file>" must build its own window, never hand the request to an EdSharp already open, which would take
+// "/exportkeys" for a file to open.
+base.IsSingleInstance = Homer.KeyMap.exportKeysPath() == "";
 /*
 //this.IsSingleInstance = true;
 base.IsSingleInstance = true;
@@ -250,6 +253,9 @@ InitNetSdk();
 InitJFW();
 
 Frame = new EdSharpFrame();
+// THE KEYS AS DECLARED (Phase 1): with /exportkeys, the menus just built are written with the kit's KeyMap and EdSharp
+// ends before any window shows; the kit's check compares the file with configs\Hotkeys.inix.
+Homer.KeyMap.exportAndExit("EdSharp");
 Homer.LbcAsk.oMainForm = Frame;
 Homer.LbcAsk.fReadSetting = delegate(string sSection, string sKey) { return App.ReadValue(sSection, sKey, ""); };   // input history, kept where EdSharp always kept it (10 November 2026)
 Homer.LbcAsk.fWriteSetting = delegate(string sSection, string sKey, string sValue) { App.WriteValue(sSection, sKey, sValue); };   // the kit's standard dialogs belong to EdSharp's main window (10 November 2026)
