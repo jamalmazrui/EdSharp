@@ -114,7 +114,6 @@ Grouped by menu, and alphabetical within each group.
 - **Check Markdown**, Alt+F9. Report problems in this Markdown, such as heading jumps.
 - **Compile**, Control+F5. Compile source code, say output, and jump to error position.
 - **Edit Settings**, Alt+Shift+E. Edit EdSharp's settings file.
-- **Edit Settings File**, Alt+Shift+F2. Edit EdSharp's settings file in your text editor.
 - **Environment Variables**, Control+E. Change Windows environment variables for this process, your account or the system.
 - **Evaluate Expression**, Control+Equals. Evaluate an expression and insert its result.
 - **Extract with Regex**, Control+Shift+E. Copy every match of a regular expression in the text, into a new window.
@@ -331,7 +330,6 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Alt+Shift+F**: File Find. Find files by name and content in this folder and below, and open one.
 - **Alt+Shift+F1**: ReadMe. Open the quick start.
 - **Alt+Shift+F11**: Tile Horizontal. Tile the open windows across.
-- **Alt+Shift+F2**: Edit Settings File. Edit EdSharp's settings file in your text editor.
 - **Alt+Shift+F3**: Reverse Find at Cursor. Search backward for chunk or selected text.
 - **Alt+Shift+F5**: Review Output. Open standard output of last prompt or compile command in a new editing window.
 - **Alt+Shift+F7**: Translate Language. Translate the selection or the document into another language.

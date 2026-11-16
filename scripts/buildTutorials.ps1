@@ -1208,7 +1208,9 @@ function buildOne([string] $sScript) {
     # Half the lines in a walk are the reader's, and piper speaks a line in a
     # second where Kokoro takes twenty; piper's john, flattened, is also what a
     # screen reader sounds like. Kokoro's naturalness goes where it is heard,
-    # the narrator. KokoroReader=1 in [global] puts the reader on Kokoro too.
+    # the narrator. ReaderOnKokoro=1 in [global] puts the reader on Kokoro too, as speaker KokoroReader
+    # (corrected 15 November 2026: this line named KokoroReader, which picks the speaker, not the engine).
+    # scripts\auditionVoices renders candidate readers side by side, to choose one by ear.
     if ($bKokoro -and $bKokoroForReader -and -not $bWindowsVoices) {
       speakKokoro $sText $iKokoroReader $dReaderScale $sFile "kokoro-sr"
     }

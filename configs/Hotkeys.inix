@@ -46,7 +46,6 @@ Calculate Date=Control+Shift+Semi-colon, Calculate and insert date
 
 Edit Settings=Alt+Shift+E, Edit EdSharp's settings file
 Set Default Font and Color=Alt+Shift+Equals, Set default font and color for editing window
-Edit Settings File=Alt+Shift+F2, Edit EdSharp's settings file in your text editor
 Reset Configuration=Alt+Shift+0, Revert to default options, or define a new compiler configuration
 
 Copy=Control+C, Copy the selected text or the current line to the clipboard

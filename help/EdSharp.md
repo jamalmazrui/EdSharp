@@ -130,7 +130,7 @@ As usual, press Control+O to open a file.  Press Control+Shift+O to open a file 
 
 EdSharp converts documents with the shared conversion code of the Homer kit, the same code every Homer app uses. A table beside the program, conversions.inix, picks the way for each kind of file. Text comes straight out of Word, OpenDocument, Excel and PowerPoint files with no other program. Pandoc handles Markdown, web pages, e-books and rich text. A free PDF reader handles PDF. Microsoft Office is used only as the last resort, and an Alert box says so when it is missing. The Import section of your settings still adds targets the kit does not cover, such as MediaWiki and LaTeX, and any commands of your own.
 
-For a format the kit does not cover, you can name a converter of your own in the Import or Export section of the settings file, through the Edit Settings File command, Alt+Shift+F2. EdSharp runs it only when the kit has no way to convert that file.
+For a format the kit does not cover, you can name a converter of your own in the Import or Export section of the settings file, through the Settings file button of Edit Settings, Alt+Shift+E. EdSharp runs it only when the kit has no way to convert that file.
 
 To configure a converter, specify the command line for converting an extension from a source, non-text format to a target, text format.  The following variables may be used:\
 
@@ -163,7 +163,7 @@ As usual, press Control+S to save.  Press Control+Shift+S to Save As, giving the
 
 When saving text to a file, EdSharp checks whether any character has a Unicode number greater than 255, which means that more than one byte is needed to represent it.  If so, the file is saved with a UTF-8 encoding, the most common form of Unicode for storing files on disk.  Otherwise, the default encoding of the computer is used, e.g., Latin 1.
 
-Alt+Shift+X saves a file in another format.  The built-in choices are ASCII format, which removes characters with ANSI codes above 127; Mac format, whose line break is \r; and Unix format, whose line break is \n.  It also offers .htm and .rtf, and .doc, the 1997 Word format, through the kit's shared conversions; only Microsoft Word can write a .doc file, so that choice needs Word.  You can add other converters by editing the Export section with the Edit Settings File command, Alt+Shift+F2.  The syntax is like that of the Import section, explained elsewhere.  The Other choice lets you pick a character encoding for the new file, from a list of over 100.
+Alt+Shift+X saves a file in another format.  The built-in choices are ASCII format, which removes characters with ANSI codes above 127; Mac format, whose line break is \r; and Unix format, whose line break is \n.  It also offers .htm and .rtf, and .doc, the 1997 Word format, through the kit's shared conversions; only Microsoft Word can write a .doc file, so that choice needs Word.  You can add other converters by editing the Export section of the settings file: press Alt+Shift+E, Edit Settings, then its Settings file button.  The syntax is like that of the Import section, explained elsewhere.  The Other choice lets you pick a character encoding for the new file, from a list of over 100.
 
 Use the Run command, F5, to run the current file as if you had typed its name in the Windows Start, Run dialog.  It is also like pressing Enter on its name in Windows Explorer, which opens it with the program linked to its extension.  For example, pressing F5 when the current document is a .htm file opens it in your web browser.
 
@@ -252,7 +252,7 @@ sTag += "</ul>\n"
 
 User-defined tokens can go in a script that has the "form" keyword in its header.  They can also be typed in a document you are editing.  You can test a token with the Evaluate Expression command, Control+Equals, which works out the current line or selected text and puts the result on the line below.  The Replace Tokens command, Control+Shift+Equals, swaps token names for their results in all or selected text.
 
-For example, you might press Alt+Shift+F2 for Edit Settings File and define a signature token as follows:
+For example, you might press Alt+Shift+E for Edit Settings, then its Settings file button, and define a signature token as follows:
 
 ```
 [Tokens]
@@ -570,7 +570,7 @@ For HTML, the HTML Tidy utility is configured by default and distributed with Ed
 
 For PowerBASIC, a batch file is needed, in the EdSharp program folder. It refers to the default location of PowerBASIC for Windows version 10.0.  The path to the JAWS script compiler is also written in, for the latest version.  EdSharp's own scripts help with JAWS scripting too. When focus is in EdSharp's Open or Save dialog, Control+I inserts the path to your user script folder, and Control+Shift+I the path to the All Users script folder.
 
-Compiler settings are stored in the [Compilers] section of your settings, the EdSharp.inix file in your EdSharp data folder.  Only current compiler settings appear in the Edit Settings dialog, Alt+Shift+E.  Other settings may be edited, however, using the Edit Settings File command, Alt+Shift+F2.  You can adjust command line parameters of configured compilers, or add others.  Installing a new version of EdSharp does not change existing compiler settings.
+Compiler settings are stored in the [Compilers] section of your settings, the EdSharp.inix file in your EdSharp data folder.  Only current compiler settings appear in the Edit Settings dialog, Alt+Shift+E.  Other settings may be edited in the file itself: the Settings file button of that dialog opens the main file, and the button named for the current compiler opens its file.  You can adjust command line parameters of configured compilers, or add others.  Installing a new version of EdSharp does not change existing compiler settings.
 
 ## Scripting Add-Ins
 Almost the complete object model of the EdSharp application has been exposed to add-in code in the JScript .NET language, explained in [Microsoft's JScript .NET reference](<https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2010/72bd815a(v=vs.100)>).
@@ -730,7 +730,7 @@ The UseIndentModeDefault setting determines the state of indent mode when a new 
 
 The YieldEncoding setting decides the character encoding EdSharp uses when opening a file from disk.  EdSharp ignores the setting if the file has a .rtf extension, meaning rich text format, or starts with a byte order mark (BOM), meaning a Unicode format such as UTF-8 or UTF-16.  You can name an encoding by its name or its number.  To see the list, choose the Other option in the Yield Encoding command, Alt+Shift+Y, or the Export Format command, Alt+Shift+X.  With no YieldEncoding setting, EdSharp uses the default encoding in the region settings of Windows Control Panel, usually Western European.  To check which encoding EdSharp used to open the current document, press the Status command, Alt+Z, twice.  EdSharp saves the document in the same encoding.
 
-A separate dialog, opened with Alt+Shift+Equals, sets the font and color of text in an editing window.  The default font was chosen to suit people with low vision, and you can change it to suit yourself.  Use the Edit Settings File command, Alt+Shift+F2, to edit the main configuration file directly. It is EdSharp.inix, in the EdSharp data folder. That folder is inside the Windows Application Data path, usually something like\
+A separate dialog, opened with Alt+Shift+Equals, sets the font and color of text in an editing window.  The default font was chosen to suit people with low vision, and you can change it to suit yourself.  To edit the main configuration file directly, press the Settings file button in Edit Settings, Alt+Shift+E. It is EdSharp.inix, in the EdSharp data folder. That folder is inside the Windows Application Data path, usually something like\
 \C:\users\UserName\appdata\roaming\EdSharp\\`
 
 To change key assignments, edit the Keys section of the configuration file. For example, the line\

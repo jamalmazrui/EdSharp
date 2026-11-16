@@ -2,6 +2,11 @@
 
 
 
+## 15 November 2026 -- One Edit Settings
+
+- **Edit Settings** (Alt+Shift+E) is the one entry to EdSharp's settings. Beside OK it has a **Settings file** button, which opens your EdSharp.inix, and a button named for the current compiler, which opens that compiler's file. Edit Settings File (Alt+Shift+F2) is retired, and the JAWS key maps no longer pass Alt+Shift+F2. The guide and Hotkeys say so.
+- EdSharp now needs HomerDev 1.237.0.
+
 ## 15 November 2026 -- Sections move with Control+F6
 
 - **Next Section** is Control+F6 and **Previous Section** is Control+Shift+F6, as in the other Homer apps. Control+PageDown and Control+PageUp no longer move by section, and the JAWS key maps no longer pass them through. The menus, Hotkeys, the guide and the tutorials say so.

@@ -7,9 +7,12 @@ rem   buildTutorials -docs              documents and feed only, no speaking
 rem   buildTutorials -sapi              use Windows voices; fetch nothing
 rem   buildTutorials -live              perform it now through the screen reader, write no file
 rem
-rem The voices are Kokoro, through sherpa-onnx, when they can be fetched --
-rem Apache 2.0, fine to publish under MIT -- and piper's kristin and john,
-rem public domain, when they cannot. Both fetched once into scripts\voices.
+rem The narrator is Kokoro's af_sarah, through sherpa-onnx (Apache 2.0), when it
+rem can be fetched; the reader is piper's john (public domain), kept even and
+rem quick; piper's kristin narrates when Kokoro cannot be fetched. Apache 2.0
+rem parts keep their own licence beside the MIT code; the recordings may be
+rem published with it. Fetched once into the voices folder (the kit's exec).
+rem auditionVoices.cmd renders other reader voices side by side.
 rem The audio goes to help\tutorials, one .mp3 per script, with Tutorials.m3u.
 rem The log is logs\<App>-tutorials-yyyyMMdd-HHmmss.log.
 setlocal

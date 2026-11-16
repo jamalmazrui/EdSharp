@@ -538,8 +538,8 @@ Import section of your settings still adds targets the kit does not
 cover, such as MediaWiki and LaTeX, and any commands of your own.</p>
 <p>For a format the kit does not cover, you can name a converter of your
 own in the Import or Export section of the settings file, through the
-Edit Settings File command, Alt+Shift+F2. EdSharp runs it only when the
-kit has no way to convert that file.</p>
+Settings file button of Edit Settings, Alt+Shift+E. EdSharp runs it only
+when the kit has no way to convert that file.</p>
 <p>To configure a converter, specify the command line for converting an
 extension from a source, non-text format to a target, text format. The
 following variables may be used:\</p>
@@ -619,10 +619,10 @@ format, whose line break is \r; and Unix format, whose line break is \n.
 It also offers .htm and .rtf, and .doc, the 1997 Word format, through
 the kit's shared conversions; only Microsoft Word can write a .doc file,
 so that choice needs Word. You can add other converters by editing the
-Export section with the Edit Settings File command, Alt+Shift+F2. The
-syntax is like that of the Import section, explained elsewhere. The
-Other choice lets you pick a character encoding for the new file, from a
-list of over 100.</p>
+Export section of the settings file: press Alt+Shift+E, Edit Settings,
+then its Settings file button. The syntax is like that of the Import
+section, explained elsewhere. The Other choice lets you pick a character
+encoding for the new file, from a list of over 100.</p>
 <p>Use the Run command, F5, to run the current file as if you had typed
 its name in the Windows Start, Run dialog. It is also like pressing
 Enter on its name in Windows Explorer, which opens it with the program
@@ -790,8 +790,8 @@ can test a token with the Evaluate Expression command, Control+Equals,
 which works out the current line or selected text and puts the result on
 the line below. The Replace Tokens command, Control+Shift+Equals, swaps
 token names for their results in all or selected text.</p>
-<p>For example, you might press Alt+Shift+F2 for Edit Settings File and
-define a signature token as follows:</p>
+<p>For example, you might press Alt+Shift+E for Edit Settings, then its
+Settings file button, and define a signature token as follows:</p>
 <pre><code>[Tokens]
 Signature=(&quot;Sincerely,\nJohn Doe\nJohn.Doe@NiftyHomePage.com\n&quot;)</code></pre>
 <p>Then type %Signature% in your document where you want that to appear,
@@ -1421,9 +1421,10 @@ All Users script folder.</p>
 <p>Compiler settings are stored in the [Compilers] section of your
 settings, the EdSharp.inix file in your EdSharp data folder. Only
 current compiler settings appear in the Edit Settings dialog,
-Alt+Shift+E. Other settings may be edited, however, using the Edit
-Settings File command, Alt+Shift+F2. You can adjust command line
-parameters of configured compilers, or add others. Installing a new
+Alt+Shift+E. Other settings may be edited in the file itself: the
+Settings file button of that dialog opens the main file, and the button
+named for the current compiler opens its file. You can adjust command
+line parameters of configured compilers, or add others. Installing a new
 version of EdSharp does not change existing compiler settings.</p>
 <h2 id="scripting-add-ins">Scripting Add-Ins</h2>
 <p>Almost the complete object model of the EdSharp application has been
@@ -1772,11 +1773,11 @@ used to open the current document, press the Status command, Alt+Z,
 twice. EdSharp saves the document in the same encoding.</p>
 <p>A separate dialog, opened with Alt+Shift+Equals, sets the font and
 color of text in an editing window. The default font was chosen to suit
-people with low vision, and you can change it to suit yourself. Use the
-Edit Settings File command, Alt+Shift+F2, to edit the main configuration
-file directly. It is EdSharp.inix, in the EdSharp data folder. That
-folder is inside the Windows Application Data path, usually something
-like<br />
+people with low vision, and you can change it to suit yourself. To edit
+the main configuration file directly, press the Settings file button in
+Edit Settings, Alt+Shift+E. It is EdSharp.inix, in the EdSharp data
+folder. That folder is inside the Windows Application Data path, usually
+something like<br />
 \C:\users\UserName\appdata\roaming\EdSharp\`</p>
 <p>To change key assignments, edit the Keys section of the configuration
 file. For example, the line<br />
