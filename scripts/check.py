@@ -1953,7 +1953,12 @@ def checkExportedKeys():
         import suiteCatalog
     except Exception as exceptionError:
         return finding("exported keys", "warn", "the kit's scripts\\suiteCatalog.py could not be loaded: %s" % exceptionError)
-    lBreaks, iCompared = suiteCatalog.exportBreaks(readText(sExport), readText(sKeyFile), sApp)
+    # HANDLED ELSEWHERE (1.239.0): the catalog's [handled <App>] names commands an app runs outside the kit's router --
+    # by the item under the cursor, in a text box's own keys, or in a JAWS script -- which no export can contain.
+    sCatalog = os.path.join(sKit, "data", "SuiteCatalog.inix")
+    dHandled = suiteCatalog.readHandled(readText(sCatalog), sApp) if os.path.isfile(sCatalog) else {}
+    logLine("exported keys: %d commands handled outside the router, by the catalog" % len(dHandled))
+    lBreaks, iCompared = suiteCatalog.exportBreaks(readText(sExport), readText(sKeyFile), sApp, dHandled)
     for sBreak in lBreaks: logLine("EXPORTED KEYS: " + sBreak)
     if lBreaks:
         return finding("exported keys", "warn", "%d difference%s between the keys %s binds and the keys it shows, in %d commands compared; each is in the log"

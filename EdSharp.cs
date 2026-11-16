@@ -2380,7 +2380,6 @@ static readonly string[] aCommandSummaries = new string[] {
 "Tile Horizontal\tAlt+Shift+F11, Tile open windows horizontally",
 "Tile Vertical\tShift+F11, Tile open windows vertically",
 "Elevate Version\tF11, Download latest EdSharp version and run installer (after confirming)",
-"Set on Favorite List\tControl+L, Add or remove the current file on the favorites list",
 "Markdown to Plain Text\t, Convert the Markdown in this window to plain text",
 "HTML to Markdown\t, Convert the HTML in this window to Markdown",
 "HTML to Plain Text\t, Convert the HTML in this window to plain text, keeping paragraphs and lists",

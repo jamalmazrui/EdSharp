@@ -82,7 +82,6 @@ Grouped by menu, and alphabetical within each group.
 - **Save the current file As**, Control+Shift+S. Save the current file As.
 - **Save the current file Copy**, Alt+Shift+S. Save the current file copy of document using a different name.
 - **Set Favorite**, Control+L. Add current file to the list of favorites.
-- **Set on Favorite List**, Control+L. Add or remove the current file on the favorites list.
 
 ### Help
 
@@ -398,7 +397,6 @@ Alphabetical by key name, for looking up a key you have just pressed.
 - **Control+J**: Jump to Line. Jump to line number or to line, column position.
 - **Control+K**: Save the current file Bookmark. Save the current file a bookmark at the cursor position.
 - **Control+L**: Set Favorite. Add current file to the list of favorites.
-- **Control+L**: Set on Favorite List. Add or remove the current file on the favorites list.
 - **Control+LeftArrow**: Previous Word. Go to previous word and read it.
 - **Control+LeftBracket**: Previous Alignment. Go to previous change in justification.
 - **Control+M**: Mail Body. Send the current file's text as the body of an email message.

@@ -260,7 +260,6 @@ Elevate Version=F11, Download and install the latest EdSharp
 ; Commands added in August 2026. Every command EdSharp creates must have
 ; a line here, or the Key Describer answers "No description available";
 ; the audit script checks that nothing is missing.
-Set on Favorite List=Control+L, Add or remove the current file on the favorites list
 Markdown to Plain Text=, Convert the Markdown in this window to plain text
 HTML to Markdown=, Convert the HTML in this window to Markdown
 HTML to Plain Text=, Convert the HTML in this window to plain text, keeping paragraphs and lists

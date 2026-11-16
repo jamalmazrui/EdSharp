@@ -297,6 +297,24 @@ def findKit(lsStarts=None):
     return sBest
 
 
+def writableLogDir(sRoot, sApp="HomerDev"):
+    """Where a kit script may write its log (1.239.0, 15 November 2026): the kit's own logs folder when it can be
+    written, else %LOCALAPPDATA%\\<App>\\logs, where installed Homer programs keep theirs. An app's build can find the
+    installed kit in Program Files -- it did for DbDo that evening, both kits at 1.238.0 -- and a test the build runs
+    from there could not write its log, so the build failed for a reason that had nothing to do with DbDo."""
+    import tempfile
+    for sDir in (os.path.join(sRoot, "logs"), os.path.join(os.environ.get("LOCALAPPDATA") or tempfile.gettempdir(), sApp, "logs")):
+        try:
+            os.makedirs(sDir, exist_ok=True)
+            sProbe = os.path.join(sDir, ".homer-write-test")
+            with open(sProbe, "w") as oFile: oFile.write("")
+            os.remove(sProbe)
+            return sDir
+        except OSError:
+            continue
+    return tempfile.gettempdir()
+
+
 def issFunctions(sText, setDefines):
     """The Pascal functions and procedures an installer script compiles, given the
     names #define'd before it: a block under #ifndef NAME counts only when NAME is

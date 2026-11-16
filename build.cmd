@@ -40,8 +40,11 @@ rem homerDev is emptied. Taken first as it stood, the variable named an installe
 set "sKitFromEnv=%HomerDev%"
 set "homerDev="
 set "sKitVersion="
-call :considerKit "%sKitFromEnv%"
+rem THE DEVELOPMENT KIT WINS A TIE (HomerDev 1.239.0, 15 November 2026): C:\HomerDev is considered first, so when
+rem the installed kit the HomerDev variable names has the same version, the build uses the one being developed --
+rem whose logs folder can be written, and whose files are the ones just unzipped.
 call :considerKit "C:\HomerDev"
+call :considerKit "%sKitFromEnv%"
 if not defined homerDev if exist "%CD%\exec\CSharp\Lbc.cs" set "homerDev=%CD%"
 if not defined homerDev (
   echo EdSharp needs the Homer Development Kit and cannot find it.

@@ -2,6 +2,11 @@
 
 
 
+## 15 November 2026 -- What EdSharp binds, shown truly
+
+- **Set on Favorite List is gone from Hotkeys.** It was an old name on Control+L, which Set Favorite holds; the first comparison of what EdSharp binds with what it shows found it.
+- The build uses C:\HomerDev when the installed kit has the same version.
+
 ## 15 November 2026 -- EdSharp says which keys it binds
 
 - **EdSharp.exe /exportkeys <file>** writes every command and key EdSharp declares, without opening a window, and ends. The kit's check runs it at every push and compares the file with configs\\Hotkeys.inix, so a key the menus or the Key Describer name is a key that runs. For now a difference is a warning, listed in the check's log.
