@@ -2,6 +2,12 @@
 
 
 
+## 17 November 2026 -- Descriptions in the suite's words
+
+- **Six command descriptions begin with their verb and say "the current"**, as the rest of the suite's do: Align, Go to Environment, Outdent, Quote, Topic and Unquote.
+- **Alt+Apostrophe's line in the JAWS key map spells TypeCurrentScriptKey as the script is defined.**
+- EdSharp now needs HomerDev 1.246.0.
+
 ## 17 November 2026 -- Keys spelled one way
 
 - **The key file spells keys as the rest of the suite does:** JAWS, not JAWSKey; Backspace, not BackSpace; RightBracket, not ]; and Semicolon, not Semi-colon. help\Hotkeys.md was written again from it. No key changed.

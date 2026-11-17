@@ -1876,6 +1876,50 @@ def checkMenuLetters():
     return finding("menu letters", "pass", "%d menu items: no letter shared in a menu, each letter starts a word and matches its key, none on a function or symbol key" % len(lItems))
 
 
+def checkDescriptions():
+    """ONE VOICE IN EVERY DESCRIPTION (17 November 2026). The Key Describer, the Alternate Menu and Hotkeys.md read
+    each command's description aloud, so the suite words them alike: an instruction that begins with its verb ("Say
+    the current item's name"), with "the" before "current", no slash for "or", no exclamation mark, and short enough to
+    hear in one breath. Jamal heard "Say date and time of current item" beside "Say the current item's size", and
+    HomerView's "Says ..." beside every other app's "Say ...". This reads the app's key file and warns, never fails:
+    a description is a judgment, and the log names each line to look at."""
+    sApp = os.path.basename(os.path.normpath(sRoot))
+    sKeyFile = os.path.join(sRoot, "configs", sApp + ".inix")
+    if not (os.path.isfile(sKeyFile) and re.search(r"(?mi)^\[hotkeys\]", readText(sKeyFile))):
+        sKeyFile = os.path.join(sRoot, "configs", "Hotkeys.inix")
+    if not os.path.isfile(sKeyFile):
+        return finding("command descriptions", "skip", "no key file in configs")
+    # Verbs that end in s and are still instructions.
+    setPlainS = set(["access", "address", "bypass", "cross", "dismiss", "focus", "pass", "press", "process", "toggle"])
+    lsNotes, sSection, bFence = [], "", False
+    for sLine in readText(sKeyFile).splitlines():
+        sTrim = sLine.strip()
+        if bFence:
+            if sTrim == "`": bFence = False
+            continue
+        if not sTrim or sTrim.startswith(";"): continue
+        if sTrim.startswith("["): sSection = sTrim.lower(); continue
+        if sSection != "[hotkeys]" or "=" not in sTrim: continue
+        if sTrim.endswith("=`"): bFence = True; continue
+        sName, sRest = [x.strip() for x in sTrim.split("=", 1)]
+        oMatch = re.match(r"^((?:[^,]|,(?=\s*or\s))*)(?:,\s*(.*))?$", sRest)
+        sText = (oMatch.group(2) or "").strip() if oMatch else ""
+        if not sText: continue
+        sFirst = sText.split(" ")[0].strip(",.")
+        lsWhy = []
+        if sFirst[:1].islower() and not sFirst.lower().startswith("through"): lsWhy.append("begins in lower case")
+        if sFirst.endswith("s") and sFirst.lower() not in setPlainS and len(sFirst) > 3: lsWhy.append("begins %s, not the verb as an instruction" % sFirst)
+        if re.search(r"\b(of|to|in|on|from) current\b", sText): lsWhy.append("says \"current\" without \"the\"")
+        if re.search(r"\w/\w", sText) and "://" not in sText: lsWhy.append("uses a slash for \"or\"")
+        if "!" in sText: lsWhy.append("has an exclamation mark")
+        if len(sText) > 160: lsWhy.append("is %d characters, long to hear" % len(sText))
+        if lsWhy: lsNotes.append("%s: %s -- %s" % (sName, sText[:90], "; ".join(lsWhy)))
+    for sNote in lsNotes: logLine("DESCRIPTION: " + sNote)
+    if lsNotes:
+        return finding("command descriptions", "warn", "%d description%s not worded as the suite words them; each is in the log" % (len(lsNotes), "" if len(lsNotes) == 1 else "s"))
+    return finding("command descriptions", "pass", "every description begins with its verb, as the suite's do")
+
+
 def checkSuiteCommands():
     """THE HOMER SUITE SPEAKS WITH ONE VOICE (10 November 2026). A command DbDo, EdSharp and FileDir share has one name,
     one suite key and one sentence, word for word but for the app's own words, as HomerDev\\data\\SuiteCatalog.inix
@@ -2282,6 +2326,7 @@ def main():
         checkWalk()
         checkKitClasses()
         checkMenuLetters()
+        checkDescriptions()
         checkSuiteCommands()
         checkExportedKeys()
         checkAccept()

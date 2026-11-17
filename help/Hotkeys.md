@@ -1,6 +1,6 @@
 ﻿# EdSharp Hotkeys
 
-**Version 5.0.160**  
+**Version 5.0.161**  
 
 Generated from the key file on 17 November 2026. Do not edit this page; edit the key file in configs and build again.
 
@@ -17,7 +17,7 @@ Every EdSharp command, given three ways so you can find a command however you th
 Commands in alphabetical order.
 
 - **About**, Alt+F1 -- Say EdSharp's version and release date
-- **Align**, Alt+Shift+A -- Adjust indentation of current or selected lines according to prior line
+- **Align**, Alt+Shift+A -- Indent the current or selected lines to match the line before
 - **Alternate Menu**, Alt+F10 -- Pick any command from one list, in menu, name or key order
 - **Announcement**, no key -- Open the announcement of this version
 - **Append Clipboard**, Control+Shift+Apostrophe -- Add the clipboard text to the end of a file you name
@@ -74,7 +74,7 @@ Commands in alphabetical order.
 - **Forward Find with Regex**, Control+F3 -- Search forward for regular expression in all or selected text
 - **Frequently Asked Questions**, no key -- Open the answers to frequently asked questions
 - **Go to Contents**, Shift+F6 -- Go to topic in table of contents from section in body
-- **Go to Environment**, Control+Shift+F12 -- Go to interactive environment of current compiler
+- **Go to Environment**, Control+Shift+F12 -- Go to the current compiler's interactive environment
 - **Go to Part**, Alt+Shift+G -- Pick a part to go to
 - **Go to Percent**, Control+G -- Go to percentage point in document
 - **Go to Percent Again**, Alt+G -- Repeat Go command
@@ -138,7 +138,7 @@ Commands in alphabetical order.
 - **Open in Explorer**, Alt+Backslash -- Open the current file's folder in Windows Explorer
 - **Open Other Format**, Control+Shift+O -- Open file in another format and convert it to text
 - **Order Items**, Alt+Shift+O -- Sort items alphabetically in all or selected text
-- **Outdent**, Shift+Tab -- Reduce indentation of current or selected lines by one unit
+- **Outdent**, Shift+Tab -- Indent the current or selected lines one unit less
 - **Paste**, Control+V -- Paste the clipboard text at the cursor
 - **Paste File**, Control+Shift+V -- Insert another file at cursor position
 - **Path List**, Control+Shift+P -- Generate a list of files in a new editing window
@@ -166,7 +166,7 @@ Commands in alphabetical order.
 - **PyBrace**, Alt+Shift+LeftBracket -- Convert PyDent or Python code to PyBrace form, with braces
 - **PyDent**, Alt+LeftBracket -- Convert PyBrace or Python code to indented PyDent form
 - **Query Common Items**, Alt+Shift+Q -- Compare two lists and put overlapping items in a new window
-- **Quote**, Control+Q -- Add prefix sequence to current or selected lines
+- **Quote**, Control+Q -- Add the quote prefix to the current or selected lines
 - **Read All**, Alt+F8 -- Say all the text without moving the cursor
 - **ReadMe**, Alt+Shift+F1 -- Open the quick start
 - **Recent Files**, Alt+R -- Open a file from the list of those recently used
@@ -231,13 +231,13 @@ Commands in alphabetical order.
 - **Thesaurus**, Shift+F7 -- Look up synonyms for word at cursor
 - **Tile Horizontal**, Alt+Shift+F11 -- Tile the open windows across
 - **Tile Vertical**, Shift+F11 -- Tile the open windows down
-- **Topic**, Alt+T -- Say topic of current section
+- **Topic**, Alt+T -- Say the current section's topic
 - **Transform Files**, Alt+Equals -- Apply a list of search and replace tasks to files
 - **Translate Language**, Alt+Shift+F7 -- Translate the selection or the document into another language
 - **Trim Blanks**, Control+Shift+Enter -- Trim blanks from the lines, and extra blank lines between them
 - **Tutorials Transcript**, no key -- Open the text of the tutorials
 - **Undo**, Control+Z -- Undo the last editing action
-- **Unquote**, Control+Shift+Q -- Remove prefix sequence from current or selected lines
+- **Unquote**, Control+Shift+Q -- Remove the quote prefix from the current or selected lines
 - **Unselect All**, Control+Shift+A -- Clear text selection
 - **Unwrap**, Control+Shift+W -- Unwrap lines
 - **Upper Case**, Control+U -- Convert current or selected characters to upper case
@@ -299,7 +299,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Alt+Semicolon** -- Say Time: Say the date and time
 - **Alt+Shift+0** -- Reset Configuration: Revert to default options, or define a new compiler configuration
 - **Alt+Shift+6** -- Baseline: Set vertical alignment of cursor or selected text
-- **Alt+Shift+A** -- Align: Adjust indentation of current or selected lines according to prior line
+- **Alt+Shift+A** -- Align: Indent the current or selected lines to match the line before
 - **Alt+Shift+Apostrophe** -- Clear Clipboard: Empty the clipboard
 - **Alt+Shift+B** -- Burn to CD: Burn the files or folders the document lists to a CD
 - **Alt+Shift+Backspace** -- Delete Up: Delete from cursor to top of file
@@ -339,7 +339,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Alt+Shift+X** -- Export Format: Export document to another format
 - **Alt+Shift+Y** -- Yield Encoding: Render all or selected text based on a character encoding
 - **Alt+Slash** -- Say Styles: Say the styles at the cursor, or set them on a second press
-- **Alt+T** -- Topic: Say topic of current section
+- **Alt+T** -- Topic: Say the current section's topic
 - **Alt+U** -- Proper Case: Convert current or selected characters to proper case
 - **Alt+UpArrow** -- Previous Sentence: Go to previous sentence and read it
 - **Alt+V** -- Invoke Script: Pick a script to run or paste
@@ -383,7 +383,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+M** -- Mail Body: Send the current file's text as the body of an email message
 - **Control+N** -- New: Open a new editing window
 - **Control+O** -- Open: Open file
-- **Control+Q** -- Quote: Add prefix sequence to current or selected lines
+- **Control+Q** -- Quote: Add the quote prefix to the current or selected lines
 - **Control+R** -- Replace: Replace text in all or the selected text
 - **Control+RightArrow** -- Next Word: Go to next word and read it
 - **Control+RightBracket** -- Next Alignment: Go to next change in justification
@@ -404,7 +404,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+Shift+Equals** -- Replace Tokens: Swap user-defined tokens with their computed results in all or selected text
 - **Control+Shift+F** -- Reverse Find: Search backward for string
 - **Control+Shift+F1** -- History of Changes: Open the history of EdSharp's changes, newest first
-- **Control+Shift+F12** -- Go to Environment: Go to interactive environment of current compiler
+- **Control+Shift+F12** -- Go to Environment: Go to the current compiler's interactive environment
 - **Control+Shift+F2** -- Sample Programs: List the sample programs that ship with EdSharp and open one
 - **Control+Shift+F3** -- Reverse Find with Regex: Search backward for a regular expression in all or selected text
 - **Control+Shift+F4** -- Close All but Current Window: Close all editing windows except the current one
@@ -424,7 +424,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+Shift+O** -- Open Other Format: Open file in another format and convert it to text
 - **Control+Shift+P** -- Path List: Generate a list of files in a new editing window
 - **Control+Shift+Period** -- End Tag: Go to the closing tag of the HTML element
-- **Control+Shift+Q** -- Unquote: Remove prefix sequence from current or selected lines
+- **Control+Shift+Q** -- Unquote: Remove the quote prefix from the current or selected lines
 - **Control+Shift+R** -- Replace with Regex: Replace a regular expression's matches in all or the selected text
 - **Control+Shift+RightBracket** -- Right Brace: Search forward for matching right brace character
 - **Control+Shift+S** -- Save As: Save a copy of the current file under another name or format
@@ -472,7 +472,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Shift+F7** -- Thesaurus: Look up synonyms for word at cursor
 - **Shift+F8** -- Complete Selection: Select text from starting point to cursor
 - **Shift+Space** -- Say Selected: or JAWS+Shift+DownArrow, Say the selected text
-- **Shift+Tab** -- Outdent: Reduce indentation of current or selected lines by one unit
+- **Shift+Tab** -- Outdent: Indent the current or selected lines one unit less
 - **Tab** -- Indent: Indent current line or selected text by one unit
 
 ## By First Modifier

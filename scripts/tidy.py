@@ -1316,6 +1316,15 @@ def keepJawsKeys():
     lsDone = jawsKeys.ensure(sRoot, appName(), sKit)
     for sDone in lsDone: logLine("JAWS KEY MAP: %s" % sDone)
     if lsDone: sayLine("The JAWS key map %s." % "; ".join(lsDone))
+    # THE KEY MAP AUDITED (17 November 2026): every line's script defined and spelled alike, and no key the app binds
+    # left to a JAWS table or mouse script. Reported, never fatal: the fix is a line in the key map.
+    try:
+        lsProblems = jawsKeys.audit(sRoot, appName())
+    except Exception as oError:
+        lsProblems = []
+        logLine("JAWS KEY MAP AUDIT: skipped, %s" % oError)
+    for sProblem in lsProblems: logLine("JAWS KEY MAP AUDIT: %s" % sProblem)
+    if lsProblems: sayLine("The JAWS key map audit found %s; the log names each." % countNoun(len(lsProblems), "problem"))
     return lsDone
 
 

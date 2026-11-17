@@ -128,7 +128,7 @@ Pick Compiler=Control+Shift+F5, Pick a compiler or interpreter from the list of 
 Say Compiler=Alt+0, Say current compiler and folder
 Choose Folder=Control+0, Go to a folder you pick from the current, recent and favorite ones
 Go to Special Folder=Control+Shift+G, Go to a Windows special folder you pick
-Go to Environment=Control+Shift+F12, Go to interactive environment of current compiler
+Go to Environment=Control+Shift+F12, Go to the current compiler's interactive environment
 
 Spell Check=F7, Spell check all or selected text
 Thesaurus=Shift+F7, Look up synonyms for word at cursor
@@ -140,8 +140,8 @@ Path to Clipboard=Alt+Shift+P, Copy the full path of the current file to the cli
 Path List=Control+Shift+P, Generate a list of files in a new editing window
 
 Special Character=F2, Insert character indirectly by specifying its Unicode value
-Quote=Control+Q, Add prefix sequence to current or selected lines
-Unquote=Control+Shift+Q, Remove prefix sequence from current or selected lines
+Quote=Control+Q, Add the quote prefix to the current or selected lines
+Unquote=Control+Shift+Q, Remove the quote prefix from the current or selected lines
 Join Lines=Control+Shift+J, Word wrap lines in all or selected paragraphs
 Hard Line Break=Control+Shift+H, Set the maximum width of lines in all or selected text
 
@@ -185,7 +185,7 @@ Go to Section=F6, Go to section in body from topic in table of contents
 Go to Contents=Shift+F6, Go to topic in table of contents from section in body
 Search for Topic=Alt+F6, Search for a topic based on text in its heading
 
-Topic=Alt+T, Say topic of current section
+Topic=Alt+T, Say the current section's topic
 Text Contents=Alt+Shift+T, Generate and prepend a table of contents to the current document
 Section Break=Control+Enter, Insert a section break at the cursor position
 
@@ -215,8 +215,8 @@ Enter New Line=Enter, Start new line at left margin
 Indent New Line=Shift+Enter, Start new line with same indentation as current one
 Indent New Line Previous=Alt+Shift+Enter, Insert a line above with the current line's indentation
 Indent=Tab, Indent current line or selected text by one unit
-Outdent=Shift+Tab, Reduce indentation of current or selected lines by one unit
-Align=Alt+Shift+A, Adjust indentation of current or selected lines according to prior line
+Outdent=Shift+Tab, Indent the current or selected lines one unit less
+Align=Alt+Shift+A, Indent the current or selected lines to match the line before
 Next Indent=Control+I, Go to the next change in indentation
 Previous Indent=Control+Shift+I, Go to the previous change in indentation
 Right Brace=Control+Shift+RightBracket, Search forward for matching right brace character
