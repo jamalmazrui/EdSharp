@@ -1,6 +1,6 @@
 ﻿# EdSharp Hotkeys
 
-**Version 5.0.159**  
+**Version 5.0.160**  
 
 Generated from the key file on 17 November 2026. Do not edit this page; edit the key file in configs and build again.
 
@@ -25,7 +25,7 @@ Commands in alphabetical order.
 - **Arrange Icons**, Alt+F11 -- Arrange the open windows
 - **Baseline**, Alt+Shift+6 -- Set vertical alignment of cursor or selected text
 - **Burn to CD**, Alt+Shift+B -- Burn the files or folders the document lists to a CD
-- **Calculate Date**, Control+Shift+Semi-colon -- Calculate and insert date
+- **Calculate Date**, Control+Shift+Semicolon -- Calculate and insert date
 - **Cascade**, Control+F11 -- Cascade the open windows
 - **Chat about Document**, Shift+F12 -- Ask the AI model on this computer about the selection or document
 - **Chat with AI**, F12 -- Ask the AI model on this computer a question
@@ -97,7 +97,7 @@ Commands in alphabetical order.
 - **Infer Indent**, Alt+RightBracket -- Infer the current document's indent unit, or set it on a second press
 - **Insert All Users Path**, Control+Shift+I -- Insert JAWS All Users path in Open or Save Dialog
 - **Insert Script Path**, Control+I -- Insert JAWS script path in Open or Save Dialog
-- **Insert Time**, Alt+Shift+Semi-colon -- Insert current time and date
+- **Insert Time**, Alt+Shift+Semicolon -- Insert current time and date
 - **Invoke Script**, Alt+V -- Pick a script to run or paste
 - **Join Lines**, Control+Shift+J -- Word wrap lines in all or selected paragraphs
 - **Jump to Line**, Control+J -- Jump to line number or to line, column position
@@ -195,17 +195,17 @@ Commands in alphabetical order.
 - **Save Copy**, Alt+Shift+S -- Save copy of document using a different name
 - **Save Script**, Alt+S -- Save all or selected text to a script file
 - **Say Address**, Alt+A -- Say line, column, and percent position of cursor
-- **Say Braces**, Alt+Shift+] -- Say number of braces on either side of cursor
-- **Say Chunk**, Shift+BackSpace -- Say chunk at cursor
+- **Say Braces**, Alt+Shift+RightBracket -- Say number of braces on either side of cursor
+- **Say Chunk**, Shift+Backspace -- Say chunk at cursor
 - **Say Clipboard**, Alt+Apostrophe -- Say the clipboard text
 - **Say Compiler**, Alt+0 -- Say current compiler and folder
 - **Say Indentation**, Alt+I -- Say the current line's indentation
 - **Say Path**, Alt+P -- Say the full path of the current file
 - **Say Position**, Alt+Delete -- Say the current position: the line, the column and the percent
-- **Say Selected**, Shift+Space -- or JAWSKey+Shift+DownArrow, Say the selected text
+- **Say Selected**, Shift+Space -- or JAWS+Shift+DownArrow, Say the selected text
 - **Say Status**, Alt+Z -- Say whether the document is modified, and its encoding on a second press
 - **Say Styles**, Alt+Slash -- Say the styles at the cursor, or set them on a second press
-- **Say Time**, Alt+Semi-colon -- Say the date and time
+- **Say Time**, Alt+Semicolon -- Say the date and time
 - **Say Windows Open**, Shift+F4 -- Say how many windows are open, and their titles
 - **Say Yield**, Alt+Y -- Say how many characters, words and lines are in all or the selected text
 - **Search for Topic**, Alt+F6 -- Search for a topic based on text in its heading
@@ -296,10 +296,9 @@ The same commands, in alphabetical order of the key that runs them.
 - **Alt+RightArrow** -- Next Chunk: Go to next chunk and read it
 - **Alt+RightBracket** -- Infer Indent: Infer the current document's indent unit, or set it on a second press
 - **Alt+S** -- Save Script: Save all or selected text to a script file
-- **Alt+Semi-colon** -- Say Time: Say the date and time
+- **Alt+Semicolon** -- Say Time: Say the date and time
 - **Alt+Shift+0** -- Reset Configuration: Revert to default options, or define a new compiler configuration
 - **Alt+Shift+6** -- Baseline: Set vertical alignment of cursor or selected text
-- **Alt+Shift+]** -- Say Braces: Say number of braces on either side of cursor
 - **Alt+Shift+A** -- Align: Adjust indentation of current or selected lines according to prior line
 - **Alt+Shift+Apostrophe** -- Clear Clipboard: Empty the clipboard
 - **Alt+Shift+B** -- Burn to CD: Burn the files or folders the document lists to a CD
@@ -329,8 +328,9 @@ The same commands, in alphabetical order of the key that runs them.
 - **Alt+Shift+P** -- Path to Clipboard: Copy the full path of the current file to the clipboard
 - **Alt+Shift+Q** -- Query Common Items: Compare two lists and put overlapping items in a new window
 - **Alt+Shift+R** -- Reverse Items: Reverse order of all or selected items of text
+- **Alt+Shift+RightBracket** -- Say Braces: Say number of braces on either side of cursor
 - **Alt+Shift+S** -- Save Copy: Save copy of document using a different name
-- **Alt+Shift+Semi-colon** -- Insert Time: Insert current time and date
+- **Alt+Shift+Semicolon** -- Insert Time: Insert current time and date
 - **Alt+Shift+Space** -- Web Client Utilities: Pick a web client utility to run
 - **Alt+Shift+T** -- Text Contents: Generate and prepend a table of contents to the current document
 - **Alt+Shift+U** -- Swap Case: Convert lower case characters to upper case, and vice versa
@@ -428,7 +428,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+Shift+R** -- Replace with Regex: Replace a regular expression's matches in all or the selected text
 - **Control+Shift+RightBracket** -- Right Brace: Search forward for matching right brace character
 - **Control+Shift+S** -- Save As: Save a copy of the current file under another name or format
-- **Control+Shift+Semi-colon** -- Calculate Date: Calculate and insert date
+- **Control+Shift+Semicolon** -- Calculate Date: Calculate and insert date
 - **Control+Shift+T** -- Text Combine: Convert other formats to text and combine them in a new editing window
 - **Control+Shift+Tab** -- Previous Window: Switch to the previous window
 - **Control+Shift+U** -- Lower Case: Convert current or selected characters to lower case
@@ -458,7 +458,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **F6** -- Go to Section: Go to section in body from topic in table of contents
 - **F7** -- Spell Check: Spell check all or selected text
 - **F8** -- Start Selection: Mark starting point of text to be selected
-- **Shift+BackSpace** -- Say Chunk: Say chunk at cursor
+- **Shift+Backspace** -- Say Chunk: Say chunk at cursor
 - **Shift+Enter** -- Indent New Line: Start new line with same indentation as current one
 - **Shift+F1** -- What This Does: Say what the control with focus does
 - **Shift+F10** -- Context Menu: Open the Windows context menu for the current file
@@ -471,7 +471,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Shift+F6** -- Go to Contents: Go to topic in table of contents from section in body
 - **Shift+F7** -- Thesaurus: Look up synonyms for word at cursor
 - **Shift+F8** -- Complete Selection: Select text from starting point to cursor
-- **Shift+Space** -- Say Selected: or JAWSKey+Shift+DownArrow, Say the selected text
+- **Shift+Space** -- Say Selected: or JAWS+Shift+DownArrow, Say the selected text
 - **Shift+Tab** -- Outdent: Reduce indentation of current or selected lines by one unit
 - **Tab** -- Indent: Indent current line or selected text by one unit
 
@@ -495,7 +495,7 @@ Grouped by the modifier key a command starts with.
 - **Alt+Shift+F8** -- Go to Start of Selection
 - **Alt+Shift+I** -- Indent Mode
 - **Alt+Shift+Enter** -- Indent New Line Previous
-- **Alt+Shift+Semi-colon** -- Insert Time
+- **Alt+Shift+Semicolon** -- Insert Time
 - **Alt+Shift+J** -- Justify
 - **Alt+Shift+K** -- Keep Unique Items
 - **Alt+Shift+L** -- List Different Items
@@ -511,7 +511,7 @@ Grouped by the modifier key a command starts with.
 - **Alt+Shift+F5** -- Review Output
 - **Alt+Shift+F9** -- Run Code Blocks
 - **Alt+Shift+S** -- Save Copy
-- **Alt+Shift+]** -- Say Braces
+- **Alt+Shift+RightBracket** -- Say Braces
 - **Alt+Shift+Equals** -- Set Default Font and Color
 - **Alt+Shift+Dash** -- Set Selection Font
 - **Alt+Shift+U** -- Swap Case
@@ -530,7 +530,7 @@ Grouped by the modifier key a command starts with.
 ### Control+Shift
 
 - **Control+Shift+Apostrophe** -- Append Clipboard
-- **Control+Shift+Semi-colon** -- Calculate Date
+- **Control+Shift+Semicolon** -- Calculate Date
 - **Control+Shift+B** -- Clear Bookmark
 - **Control+Shift+L** -- Clear Favorite
 - **Control+Shift+F4** -- Close All but Current Window
@@ -625,7 +625,7 @@ Grouped by the modifier key a command starts with.
 - **Alt+Delete** -- Say Position
 - **Alt+Z** -- Say Status
 - **Alt+Slash** -- Say Styles
-- **Alt+Semi-colon** -- Say Time
+- **Alt+Semicolon** -- Say Time
 - **Alt+Y** -- Say Yield
 - **Alt+F6** -- Search for Topic
 - **Alt+T** -- Topic
@@ -697,7 +697,7 @@ Grouped by the modifier key a command starts with.
 - **Shift+Tab** -- Outdent
 - **Shift+F2** -- Rename
 - **Shift+F5** -- Run at Cursor
-- **Shift+BackSpace** -- Say Chunk
+- **Shift+Backspace** -- Say Chunk
 - **Shift+Space** -- Say Selected
 - **Shift+F4** -- Say Windows Open
 - **Shift+F3** -- Search Previous

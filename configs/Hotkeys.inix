@@ -21,8 +21,8 @@ Select All=Control+A, Select all text
 Unselect All=Control+Shift+A, Clear text selection
 
 Select Chunk=Control+Space, Select the run of non-blank characters at the cursor, or the next one
-Say Selected=Shift+Space, or JAWSKey+Shift+DownArrow, Say the selected text
-Say Chunk=Shift+BackSpace, Say chunk at cursor
+Say Selected=Shift+Space, or JAWS+Shift+DownArrow, Say the selected text
+Say Chunk=Shift+Backspace, Say chunk at cursor
 
 Start Selection=F8, Mark starting point of text to be selected
 Complete Selection=Shift+F8, Select text from starting point to cursor
@@ -33,7 +33,7 @@ Read All=Alt+F8, Say all the text without moving the cursor
 
 Say Address=Alt+A, Say line, column, and percent position of cursor
 Say Position=Alt+Delete, Say the current position: the line, the column and the percent
-Say Braces=Alt+Shift+], Say number of braces on either side of cursor
+Say Braces=Alt+Shift+RightBracket, Say number of braces on either side of cursor
 Say Indentation=Alt+I, Say the current line's indentation
 Say Yield=Alt+Y, Say how many characters, words and lines are in all or the selected text
 Say Status=Alt+Z, Say whether the document is modified, and its encoding on a second press
@@ -41,9 +41,9 @@ Say Clipboard=Alt+Apostrophe, Say the clipboard text
 Save Clipboard=Control+Apostrophe, Save the clipboard text to a file you name
 Append Clipboard=Control+Shift+Apostrophe, Add the clipboard text to the end of a file you name
 Clear Clipboard=Alt+Shift+Apostrophe, Empty the clipboard
-Say Time=Alt+Semi-colon, Say the date and time
-Insert Time=Alt+Shift+Semi-colon, Insert current time and date
-Calculate Date=Control+Shift+Semi-colon, Calculate and insert date
+Say Time=Alt+Semicolon, Say the date and time
+Insert Time=Alt+Shift+Semicolon, Insert current time and date
+Calculate Date=Control+Shift+Semicolon, Calculate and insert date
 
 Edit Settings=Alt+Shift+E, Edit EdSharp's settings file
 Set Default Font and Color=Alt+Shift+Equals, Set default font and color for editing window

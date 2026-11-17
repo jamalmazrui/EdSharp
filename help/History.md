@@ -2,6 +2,11 @@
 
 
 
+## 17 November 2026 -- Keys spelled one way
+
+- **The key file spells keys as the rest of the suite does:** JAWS, not JAWSKey; Backspace, not BackSpace; RightBracket, not ]; and Semicolon, not Semi-colon. help\Hotkeys.md was written again from it. No key changed.
+- EdSharp now needs HomerDev 1.244.0.
+
 ## 17 November 2026 -- Say Position and Show in FileDir
 
 - **Say Position, Alt+Delete,** says the line, the column and the percent, on the key DbDo, FileDir and HomerView use for it. It counts lines in the text itself, so with word wrap on a long paragraph is one line, as Jump to Line means it. Say Address, Alt+A, stays as it was, pages and all. The JAWS key map hands Alt+Delete on to EdSharp; tidy writes it.

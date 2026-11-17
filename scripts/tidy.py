@@ -1319,6 +1319,26 @@ def keepJawsKeys():
     return lsDone
 
 
+def playLiveTests():
+    """THE APP HEARD LIVE (17 November 2026). An app's scripts\\tests holds a few macro scripts -- the important tests,
+    not every possible one -- that the kit's runMacro plays in the build just made, listening to the screen reader and
+    reading what Windows shows, so a change that breaks what a person hears is found by the cycle, not by Jamal. Each is
+    played only when its fingerprint changed since its last pass, only when the app is closed (nothing open is
+    touched), and only with a screen reader running; HomerLive=0 leaves them all out. A failure is reported, and never
+    fails tidy. The work is the kit's runMacro.liveTests, found through kind.findKit, as keepJawsKeys finds jawsKeys."""
+    if not os.path.isdir(os.path.join(sRoot, "scripts", "tests")): return []
+    import kind
+    sKit = kind.findKit([sRoot])
+    if not sKit: return []
+    sKitScripts = os.path.join(sKit, "scripts")
+    if not os.path.isfile(os.path.join(sKitScripts, "runMacro.py")): return []
+    if sKitScripts not in sys.path: sys.path.insert(0, sKitScripts)
+    import runMacro
+    lsDone = runMacro.liveTests(sRoot, logLine, sayLine)
+    for sDone in lsDone: logLine("LIVE TEST: %s" % sDone)
+    return lsDone
+
+
 def removeKitSampleLeftovers(bRepo):
     """The kit's samples, unarchived into an app, leave what their build made beside the files removeStrayKitFiles
     takes away: the sample programs, PyInstaller's build and dist folders, their logs, the generated version files.
@@ -1659,6 +1679,9 @@ def main():
                 sayLine("  %s untracked; push commits that after the check." % countNoun(len(lsTrackedStrays), "file"))
             sayLine()
 
+    if sKind == "app" and not dArguments.repo_only:
+        try: playLiveTests()
+        except Exception as oError: logLine("live tests: skipped, " + str(oError))
     sayLine("%s made. Anything moved is in notes, which git never takes; the log names each move." %
             countNoun(iChanges, "change"))
     logLine("tidy end")
