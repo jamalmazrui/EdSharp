@@ -1,8 +1,8 @@
 ﻿# EdSharp Hotkeys
 
-**Version 5.0.158**  
+**Version 5.0.159**  
 
-Generated from the key file on 15 November 2026. Do not edit this page; edit the key file in configs and build again.
+Generated from the key file on 17 November 2026. Do not edit this page; edit the key file in configs and build again.
 
 Every EdSharp command, given three ways so you can find a command however you think of it. Press Control+F1 to turn on the Key Describer, which says a command's name, key and description instead of running it, and Alt+F10 for the Alternate Menu, which lists every command and finds one by a former name too.
 
@@ -201,6 +201,7 @@ Commands in alphabetical order.
 - **Say Compiler**, Alt+0 -- Say current compiler and folder
 - **Say Indentation**, Alt+I -- Say the current line's indentation
 - **Say Path**, Alt+P -- Say the full path of the current file
+- **Say Position**, Alt+Delete -- Say the current position: the line, the column and the percent
 - **Say Selected**, Shift+Space -- or JAWSKey+Shift+DownArrow, Say the selected text
 - **Say Status**, Alt+Z -- Say whether the document is modified, and its encoding on a second press
 - **Say Styles**, Alt+Slash -- Say the styles at the cursor, or set them on a second press
@@ -217,6 +218,7 @@ Commands in alphabetical order.
 - **Set Default Font and Color**, Alt+Shift+Equals -- Set default font and color for editing window
 - **Set Favorite**, Control+L -- Add current file to the list of favorites
 - **Set Selection Font**, Alt+Shift+Dash -- Set font of cursor or selected text
+- **Show in FileDir**, Control+Shift+Backslash -- Show the current file in FileDir
 - **Special Character**, F2 -- Insert character indirectly by specifying its Unicode value
 - **Spell Check**, F7 -- Spell check all or selected text
 - **Start Selection**, F8 -- Mark starting point of text to be selected
@@ -262,6 +264,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Alt+C** -- Copy Append: Add the selected text or the current line to the end of the clipboard
 - **Alt+Comma** -- Previous Style: Go to the previous change in style
 - **Alt+Control+E** -- Launch EdSharp: Start EdSharp, or switch to it, from its desktop shortcut
+- **Alt+Delete** -- Say Position: Say the current position: the line, the column and the percent
 - **Alt+DownArrow** -- Next Sentence: Go to next sentence and read it
 - **Alt+End** -- End Character: Go to last non-blank character of line and read it
 - **Alt+Enter** -- Properties: Show the Windows properties of the current file
@@ -389,6 +392,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+Shift+A** -- Unselect All: Clear text selection
 - **Control+Shift+Apostrophe** -- Append Clipboard: Add the clipboard text to the end of a file you name
 - **Control+Shift+B** -- Clear Bookmark: Remove the bookmark at the cursor
+- **Control+Shift+Backslash** -- Show in FileDir: Show the current file in FileDir
 - **Control+Shift+Backspace** -- Delete Left: Delete from cursor to start of line
 - **Control+Shift+C** -- Copy Rich Text: Copy selected text with formatting to clipboard
 - **Control+Shift+Comma** -- Start Tag: Go to opening tag of HTML element
@@ -565,6 +569,7 @@ Grouped by the modifier key a command starts with.
 - **Control+Shift+RightBracket** -- Right Brace
 - **Control+Shift+F2** -- Sample Programs
 - **Control+Shift+S** -- Save As
+- **Control+Shift+Backslash** -- Show in FileDir
 - **Control+Shift+Comma** -- Start Tag
 - **Control+Shift+T** -- Text Combine
 - **Control+Shift+Enter** -- Trim Blanks
@@ -617,6 +622,7 @@ Grouped by the modifier key a command starts with.
 - **Alt+0** -- Say Compiler
 - **Alt+I** -- Say Indentation
 - **Alt+P** -- Say Path
+- **Alt+Delete** -- Say Position
 - **Alt+Z** -- Say Status
 - **Alt+Slash** -- Say Styles
 - **Alt+Semi-colon** -- Say Time

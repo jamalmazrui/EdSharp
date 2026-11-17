@@ -1,4 +1,7 @@
 ﻿[Common Keys]
+; Homer suite pass-through -- written by the kit's tidy from data\KeyOwnership.inix; do not edit
+Alt+Delete=TypeCurrentScriptKey
+; end of Homer suite pass-through
 Control+JAWSKey+Space=UIWebClientUtilities
 Control+Insert+Space=UIWebClientUtilities
 Tab=SilentKey

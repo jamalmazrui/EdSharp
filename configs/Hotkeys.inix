@@ -32,6 +32,7 @@ Copy All=Control+F8, Copy all text to clipboard
 Read All=Alt+F8, Say all the text without moving the cursor
 
 Say Address=Alt+A, Say line, column, and percent position of cursor
+Say Position=Alt+Delete, Say the current position: the line, the column and the percent
 Say Braces=Alt+Shift+], Say number of braces on either side of cursor
 Say Indentation=Alt+I, Say the current line's indentation
 Say Yield=Alt+Y, Say how many characters, words and lines are in all or the selected text
@@ -240,6 +241,7 @@ Insert All Users Path=Control+Shift+I, Insert JAWS All Users path in Open or Sav
 
 Open in Explorer=Alt+Backslash, Open the current file's folder in Windows Explorer
 Open Command Prompt=Control+Backslash, Open a command prompt in the current file's folder
+Show in FileDir=Control+Shift+Backslash, Show the current file in FileDir
 Environment Variables=Control+E, Change Windows environment variables for this process, your account or the system
 
 Next Window=Control+Tab, Switch to the next window

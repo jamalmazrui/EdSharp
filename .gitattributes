@@ -1,4 +1,4 @@
-﻿# The Homer encoding is CRLF, and git must not normalize it away: a checkout
+# The Homer encoding is CRLF, and git must not normalize it away: a checkout
 # or an archive that turned every file into LF failed the kit's own check with
 # 96 problems on 25 September 2026.
 * -text

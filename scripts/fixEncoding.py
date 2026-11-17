@@ -40,7 +40,10 @@ import datetime, glob, html, io, os, platform, re, sys, time, urllib.parse
 lsTextExtensions = (".bat", ".cmd", ".cs", ".css", ".csv", ".htm", ".html", ".inix", ".iss", ".js", ".json", ".lua",
                ".m3u", ".md", ".ps1", ".py", ".spec", ".tsv", ".txt", ".xml")
 lsNoBom = (".bat", ".cmd")
-lsNoBomNames = ("skill.md", "version.txt")
+# .gitattributes and .gitignore (1.243.0): git reads a byte order mark as part of the first line, so the first line of
+# every app's .gitattributes, a comment, became a pattern, and every git command said "CRLF, is not a valid attribute
+# name". Written without one, a BOM already there is taken off.
+lsNoBomNames = (".gitattributes", ".gitignore", "skill.md", "version.txt")
 # exec is walked, not pruned (1.43.22): the kit keeps its libraries in
 # exec\\CSharp and exec\\homer, and only what RepoFiles.txt names is touched, so
 # a build's binaries there are left alone either way.

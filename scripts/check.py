@@ -485,7 +485,7 @@ def checkEncoding():
             if not binData: continue
             iChecked += 1
             bBom = binData.startswith(b"\xef\xbb\xbf")
-            bWantBom = not sName.lower().endswith((".cmd", ".bat", "version.txt"))
+            bWantBom = not sName.lower().endswith((".cmd", ".bat", "version.txt")) and sName.lower() not in (".gitattributes", ".gitignore")
             if bBom != bWantBom:
                 lsWrong.append("%s: %s a byte order mark" %
                                (sShown, "should not have" if bBom else "needs"))

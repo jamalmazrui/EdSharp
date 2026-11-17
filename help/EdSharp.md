@@ -117,7 +117,7 @@ Press Control+G to go to a percentage point in the document, or Alt+G to repeat 
 Press Control+RightArrow or Control+LeftArrow to read by word -- stopping at embedded symbols.  Press Alt+RightArrow or Alt+LeftArrow to read by chunk -- text delimited only by white space characters.  Press Alt+DownArrow or Alt+UpArrow to read by sentence.  Press Control+DownArrow or Control+UpArrow to read by paragraph.
 
 ## Querying
-Use the Address command, Alt+A, to hear the line, column, and percent position of the cursor in the document.  Press Alt+P to hear the full path of the file on disk.  Use the Yield command, Alt+Y, to hear the number of characters, words, and lines contained in all or selected text. Press Alt+Y again to hear more: paragraphs, sentences, about how long the text takes to read, its reading grade, and how many sentences run past 30 words.  Press Alt+Z to hear whether the document has been modified from the version on disk, or press it again to check its character encoding.
+Use the Address command, Alt+A, to hear the line, column, and percent position of the cursor in the document.  Say Position, Alt+Delete, says the same three things as DbDo, FileDir and HomerView do on that key, and it counts lines in the text itself: with word wrap on, a long paragraph is still one line.  Press Alt+P to hear the full path of the file on disk.  Use the Yield command, Alt+Y, to hear the number of characters, words, and lines contained in all or selected text. Press Alt+Y again to hear more: paragraphs, sentences, about how long the text takes to read, its reading grade, and how many sentences run past 30 words.  Press Alt+Z to hear whether the document has been modified from the version on disk, or press it again to check its character encoding.
 
 Press Alt+F8 to hear the whole document without moving the cursor.  Use the Quote Clipboard command, Alt+Apostrophe, to hear the textual content of the clipboard, or its spelling if this key is pressed again.  Press Alt+Semicolon to hear the current time and date.
 
@@ -173,7 +173,7 @@ Use the Mail command, Control+M, to send the current file as the body of a messa
 
   Press Shift+F2 to rename the current file, both in EdSharp and on disk.  Press Alt+Shift+D to delete it.
 
-Press Alt+Backslash to open Windows Explorer in the folder of the current file, or Control+Backslash to open a command prompt there.  Besides the current folder, which it offers first, the dialog that comes up also lets you open the EdSharp program folder, data folder or script folder.  It also lets you create a new folder.
+Press Alt+Backslash to open Windows Explorer in the folder of the current file, or Control+Backslash to open a command prompt there.  Show in FileDir, Control+Shift+Backslash, opens FileDir with the current file selected, as the same key in DbDo shows its database; save a new file first.  Besides the current folder, which it offers first, the dialog that comes up also lets you open the EdSharp program folder, data folder or script folder.  It also lets you create a new folder.
 
 Press Alt+0 to verify the current compiler and folder of EdSharp.  Control+0 lets you change the current folder to one containing recent or favorite files, which are put in a list.  Press Control+Shift+G to change to a special folder of Windows, e.g., My Documents.  These commands may be more efficient than navigating the standard Windows open file dialog, invoked with Control+O.
 

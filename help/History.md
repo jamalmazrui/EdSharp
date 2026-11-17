@@ -2,6 +2,12 @@
 
 
 
+## 17 November 2026 -- Say Position and Show in FileDir
+
+- **Say Position, Alt+Delete,** says the line, the column and the percent, on the key DbDo, FileDir and HomerView use for it. It counts lines in the text itself, so with word wrap on a long paragraph is one line, as Jump to Line means it. Say Address, Alt+A, stays as it was, pages and all. The JAWS key map hands Alt+Delete on to EdSharp; tidy writes it.
+- **Show in FileDir, Control+Shift+Backslash,** opens FileDir with the current file selected, as the same key does in DbDo. The Backslash keys now make a family: Explorer with Alt, a command prompt with Control, FileDir with Control+Shift.
+- EdSharp now needs HomerDev 1.243.0.
+
 ## 15 November 2026 -- Hotkeys made from the key file
 
 - **help\Hotkeys.md is now written from configs\Hotkeys.inix at every build,** by the kit's makeHotkeys, so it always says what EdSharp does: by command name, by key and by first modifier. It had been written by hand and had fallen behind.

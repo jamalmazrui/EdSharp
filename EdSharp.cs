@@ -1003,8 +1003,8 @@ public ToolStripMenuItem menuFile, menuFileNew, menuFileNewFromClipboard, menuFi
 public ToolStripMenuItem menuEdit, menuEditSelectAll, menuEditUnselectAll, menuEditCopy, menuEditCopyAppend, menuEditCopyRichText, menuEditCut, menuEditCutAppend, menuEditPaste, menuEditPasteFile, menuEditUndo, menuEditRedo, menuEditStartSelection, menuEditCompleteSelection, menuEditReselect, menuEditCopyAll, menuEditSelectChunk, menuEditAppendFromClipboard, menuEditQuote, menuEditUnquote, menuEditUpperCase, menuEditLowerCase, menuEditProperCase, menuEditSwapCase, menuEditYieldEncoding, menuEditJoinLines, menuEditHardLineBreak, menuEditEnterNewLine, menuEditIndentNewLine, menuEditIndentNewLinePrior, menuEditIndent, menuEditOutdent, menuEditAlign, menuEditIndentMode, menuEditJustify, menuEditStyle, menuEditBaseline, menuEditSetSelectionFont, menuEditSaveClipboard, menuEditAppendClipboard, menuEditClearClipboard;
 public ToolStripMenuItem menuDelete, menuDeleteReplaceRegular, menuDeleteReplaceWithRegExp, menuDeleteHardLine, menuDeleteParagraph, menuDeleteLine, menuDeleteRight, menuDeleteLeft, menuDeleteDown, menuDeleteUp, menuDeleteFile, menuDeleteTrimBlanks;
 public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateNextBlock, menuNavigatePriorBlock, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateGoToStartOfSelection;
-public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles;
-public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload;
+public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryPosition, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles;
+public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscShowInFileDir, menuMiscBurnToCD, menuMiscWebDownload;
 public ToolStripMenuItem menuWindow, menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
 public ToolStripMenuItem menuHelpWhatThisDoes, menuHelpWhereAmI;
 public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
@@ -1168,6 +1168,11 @@ menuNavigate.DropDownItems.AddRange(new ToolStripItem[] {menuNavigateForwardFind
 
 menuQuery = CreateMenu("&Query");
 menuQueryAddress = CreateMenuItem("Say Address", "Alt+A", menuItem_Click, "child silent");
+// SAY POSITION (17 November 2026, the keyboard audit's suite command, as in DbDo, FileDir and HomerView). Alt+Delete
+// says the line, column and percent, counting lines in the text itself, so a wrapped line is one line, not the
+// several the screen shows. Say Address (Alt+A) keeps EdSharp's own address, with pages when HardPageAddress is on.
+// The JAWS key map hands Alt+Delete on, written by the kit's tidy once this key is in Hotkeys.md.
+menuQueryPosition = CreateMenuItem("Say Position", "Alt+Delete", menuItem_Click, "child silent");
 menuQueryBraces = CreateMenuItem("Say Braces", "Alt+Shift+OemCloseBrackets", menuItem_Click, "child silent");
 menuQueryIndent = CreateMenuItem("Say Indentation", "Alt+I", menuItem_Click, "child silent");
 menuQueryPath = CreateMenuItem("Say Path", "Alt+P", menuItem_Click, "child silent");
@@ -1182,7 +1187,7 @@ menuQueryWindowsOpen = CreateMenuItem("Say Windows Open", "Shift+F4", menuItem_C
 menuQueryClipboard = CreateMenuItem("Say Clipboard", "Alt+OemQuotes", menuItem_Click, "frame silent");
 menuQueryTime = CreateMenuItem("Say Time", "Alt+OemSemicolon", menuItem_Click, "frame silent");
 menuQueryStyles = CreateMenuItem("Say Styles", "Alt+OemQuestion", menuItem_Click, "child silent");
-menuQuery.DropDownItems.AddRange(new ToolStripItem[] {menuQueryAddress, menuQueryBraces, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles});
+menuQuery.DropDownItems.AddRange(new ToolStripItem[] {menuQueryAddress, menuQueryPosition, menuQueryBraces, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles});
 //Homer.LbcAsk.message("Query.", menuQuery.DropDownItems.Count);
 
 menuMisc = CreateMenu("&Misc");
@@ -1249,9 +1254,14 @@ menuMiscListDifferentItems = CreateMenuItem("List Different Items", "Alt+Shift+L
 menuMiscQueryCommonItems = CreateMenuItem("Query Common Items", "Alt+Shift+Q", menuItem_Click, "child speak");
 menuMiscExplorerFolder = CreateMenuItem("Open in Explorer", "Alt+Oem5", menuItem_Click, "frame speak");
 menuMiscCommandPrompt = CreateMenuItem("Open Command Prompt", "Control+Oem5", menuItem_Click, "frame speak");
+// SHOW IN FILEDIR (17 November 2026): the current file handed to FileDir, as DbDo's Show in FileDir hands it the open
+// database, on the same Control+Shift+Backslash. The Backslash keys open the current thing somewhere else: Explorer
+// with Alt, a command prompt with Control, the other Homer app with Control+Shift. The kit's openInHomerApp finds
+// FileDir and says so when it is not installed.
+menuMiscShowInFileDir = CreateMenuItem("Show in FileDir", "Control+Shift+Oem5", menuItem_Click, "child silent");
 menuMiscBurnToCD = CreateMenuItem("Burn to CD", "Alt+Shift+B", menuItem_Click, "child speak");
 menuMiscWebDownload = CreateMenuItem("Web Download", "Alt+Shift+W", menuItem_Click, "frame speak");
-menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscBurnToCD, menuMiscWebDownload, menuFilePrint});
+menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscShowInFileDir, menuMiscBurnToCD, menuMiscWebDownload, menuFilePrint});
 //Homer.LbcAsk.message("Misc.", menuMisc.DropDownItems.Count);
 
 menuWindow = CreateMenu("&Window");
@@ -1566,6 +1576,22 @@ return sb;
 public string GetPercentAddress(HomerRichTextBox rtb) {
 return String.Format("Line {0}   Column {1}   Percent{2}", rtb.Line, rtb.Column, rtb.Percent);
 } // GetPercentAddress method
+
+// GetBufferAddress: line, column and percent counted in the text itself (Say Position, 17 November 2026). The rich
+// text box numbers display lines, so with word wrap on its line number counts a long paragraph as several; this
+// counts line breaks instead, which is the line an editor, a compiler or Jump to Line means.
+public string GetBufferAddress(HomerRichTextBox rtb) {
+string sText = rtb.Text;
+int iIndex = Math.Min(rtb.Index, sText.Length);
+int iLine = 1, iLineStart = 0;
+for (int i = 0; i < iIndex; i++) {
+if (sText[i] == '\n') {
+iLine++;
+iLineStart = i + 1;
+}
+}
+return String.Format("Line {0}   Column {1}   Percent {2}", iLine, iIndex - iLineStart + 1, rtb.Percent);
+} // GetBufferAddress method
 
 public string GetPageAddress(HomerRichTextBox rtb) {
 string sText = rtb.Text;
@@ -5342,6 +5368,10 @@ Util.Say(rtb.RowText);
 if (menuItem == menuNavigateSearchForTopic) {
 }
 
+if (menuItem == menuQueryPosition) {
+AddMessage(GetBufferAddress(rtb));
+}
+
 if (menuItem == menuQueryAddress) {
 if (this.KeyRepeat % 2 == 0) SetStatusAddress(null, null);
 else if (App.ReadOption("HardPageAddress", "N").ToLower().Substring(0, 1) != "y") AddMessage(GetPageAddress(rtb));
@@ -6646,6 +6676,15 @@ if (menuItem == menuMiscCommandPrompt) {
 string sDir = GetDirChoice();
 if (sDir.Length == 0) return;
 CommandPrompt(sDir);
+}
+
+if (menuItem == menuMiscShowInFileDir) {
+string sShowFile = (App.Frame.Child == null) ? "" : App.Frame.Child.File;
+if (string.IsNullOrEmpty(sShowFile) || !System.IO.File.Exists(sShowFile)) {
+AddMessage("Save the file first, so FileDir has a file to show");
+return;
+}
+Homer.SuiteCommands.openInHomerApp(this, "FileDir", sShowFile);
 }
 
 if (menuItem == menuMiscBurnToCD) {
