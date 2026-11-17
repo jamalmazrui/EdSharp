@@ -184,9 +184,9 @@ Key=
 Hear=Alt plus P
 [step]
 
-Say=Say the time.
+Say=Hear the time.
 Key=
-Hear=Alt plus Semicolon
+Hear=The screen reader's own key, Insert plus F12; twice for the date.
 [step]
 
 Say=Copy the whole document.

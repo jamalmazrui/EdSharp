@@ -272,7 +272,7 @@ Three commands carry an article from draft to delivery. Check Markdown,
 Alt+F9, reports the faults an editor will send back: headings that skip
 a level, images without alternative text, bare web addresses, unclosed
 code fences. Preview Markdown, Control+F9, shows it formatted;
-Control+Shift+F9 opens it in your browser. Export Format, Alt+Shift+X,
+Control+Shift+F9 opens it in your browser. Export Format, Control+Shift+X,
 writes the article as a Word document, HTML, or whatever the magazine
 wants, using Pandoc.
 
@@ -284,7 +284,7 @@ word for synonyms grouped by meaning.
 
 ### Key Reminders
 
-- Alt+F9 Check Markdown, Control+F9 Preview, Alt+Shift+X Export Format
+- Alt+F9 Check Markdown, Control+F9 Preview, Control+Shift+X Export Format
 - F7 Spell Check, Shift+F7 Thesaurus
 - F12 Chat with AI on a selection: "make this tighter", "ninth grade
   reading level"
@@ -307,7 +307,7 @@ the document's own metadata block at the top:
     ---
 
 Cite in the text with a key in square brackets, such as [@smith2020].
-When you export with Alt+Shift+X, Pandoc formats the citations and
+When you export with Control+Shift+X, Pandoc formats the citations and
 builds the reference list in the style the .csl file names. Download the
 style your journal requires from the Zotero style repository and keep it
 beside the article.
@@ -322,7 +322,7 @@ document so your export matches their layout.
 
 ### Key Reminders
 
-- Alt+Shift+X Export Format for the submission file
+- Control+Shift+X Export Format for the submission file
 - Alt+F9 Check Markdown before every submission
 - Control+Shift+O Open Other Format converts a colleague's Word document
   or a PDF into Markdown you can edit, keeping headings, lists and
@@ -354,7 +354,7 @@ Presenter View and in handouts but never on the slide:
     Mention that everything runs offline. Ask how many people use JAWS.
     :::
 
-Export with Alt+Shift+X and choose pptx. To match a house style, make a
+Export with Control+Shift+X and choose pptx. To match a house style, make a
 copy of your organization's template and name it as the reference
 document; Pandoc uses its theme, its fonts and its layouts, choosing a
 layout per slide by what the slide contains -- a title slide, a section
@@ -373,7 +373,7 @@ lists.
 
 ### Key Reminders
 
-- Alt+Shift+X Export Format, choosing pptx
+- Control+Shift+X Export Format, choosing pptx
 - Control+Shift+O Open Other Format to read a deck as Markdown
 - Second level headings start slides; three hyphens start an untitled
   one; a notes div holds speaker notes
@@ -471,7 +471,7 @@ which are worth reading as models: each takes a source and a target and
 reports what happened.
 
 Text Convert, Control+T, converts the open document between formats one
-at a time, and Export Format, Alt+Shift+X, writes it out as something
+at a time, and Export Format, Control+Shift+X, writes it out as something
 else. Control+Shift+O converts on the way in.
 
 Every job leaves a record. The session log in the logs folder under your
@@ -1160,11 +1160,11 @@ Screen reader:
 
 ### Step 32
 
-Say the time.
+Hear the time.
 
 Screen reader:
 
-- Alt plus Semicolon
+- The screen reader's own key, Insert plus F12; twice for the date.
 
 ### Step 33
 
@@ -1229,7 +1229,7 @@ The window title first, then the edit box you type in. Blank means the document 
 
 ### Step 7
 
-What each box is for. Python runs the conversion tools and the spell checker's helpers; the document tools -- pandoc and its companions -- turn Word, PDF and web pages into text and back. Together they are what makes Control plus Shift plus O and Alt plus Shift plus X rich rather than basic.
+What each box is for. Python runs the conversion tools and the spell checker's helpers; the document tools -- pandoc and its companions -- turn Word, PDF and web pages into text and back. Together they are what makes Control plus Shift plus O and Control plus Shift plus X rich rather than basic.
 
 ### Step 8
 
@@ -1673,9 +1673,9 @@ Screen reader:
 
 The document is text now: headings are lines, tables are lines, and every key of walks three and five works on it.
 
-### Step 4: Alt+Shift+X
+### Step 4: Control+Shift+X
 
-The other direction: writing out as something else. Alt plus Shift plus X, Export Format, offers the formats this document can become.
+The other direction: writing out as something else. Control plus Shift plus X, Export Format, offers the formats this document can become.
 
 Screen reader:
 
@@ -1783,7 +1783,7 @@ Screen reader:
 
 ### Step 21
 
-Alt plus Shift plus X.
+Control plus Shift plus X.
 
 Screen reader:
 
@@ -2437,7 +2437,7 @@ export.
 
 Screen reader:
 
-- Writing the document out as another format -- a web page, a Word document, plain text. Alt plus Shift plus X.
+- Writing the document out as another format -- a web page, a Word document, plain text. Control plus Shift plus X.
 
 ### Step 21
 

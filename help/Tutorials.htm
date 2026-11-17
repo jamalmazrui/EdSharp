@@ -417,9 +417,9 @@ if you write mostly articles, and leave word wrap on with Control+W.</p>
 Markdown, Alt+F9, reports the faults an editor will send back: headings
 that skip a level, images without alternative text, bare web addresses,
 unclosed code fences. Preview Markdown, Control+F9, shows it formatted;
-Control+Shift+F9 opens it in your browser. Export Format, Alt+Shift+X,
-writes the article as a Word document, HTML, or whatever the magazine
-wants, using Pandoc.</p>
+Control+Shift+F9 opens it in your browser. Export Format,
+Control+Shift+X, writes the article as a Word document, HTML, or
+whatever the magazine wants, using Pandoc.</p>
 <p>For style work, F12 Chat with AI is the strongest tool in the
 program. Ask it to tighten a paragraph, to rewrite at a ninth grade
 reading level, or to suggest a title; the answer opens in its own window
@@ -427,7 +427,7 @@ so you can compare. Press F7 to spell check before sending, and Shift+F7
 on a word for synonyms grouped by meaning.</p>
 <h3 id="key-reminders-6">Key Reminders</h3>
 <ul>
-<li>Alt+F9 Check Markdown, Control+F9 Preview, Alt+Shift+X Export
+<li>Alt+F9 Check Markdown, Control+F9 Preview, Control+Shift+X Export
 Format</li>
 <li>F7 Spell Check, Shift+F7 Thesaurus</li>
 <li>F12 Chat with AI on a selection: “make this tighter”, “ninth grade
@@ -447,7 +447,7 @@ csl: apa.csl
 ---</code></pre>
 <p>Cite in the text with a key in square brackets, such as <span
 class="citation" data-cites="smith2020">[@smith2020]</span>. When you
-export with Alt+Shift+X, Pandoc formats the citations and builds the
+export with Control+Shift+X, Pandoc formats the citations and builds the
 reference list in the style the .csl file names. Download the style your
 journal requires from the Zotero style repository and keep it beside the
 article.</p>
@@ -459,7 +459,7 @@ reports missing alternative text before a reviewer does.</p>
 document so your export matches their layout.</p>
 <h3 id="key-reminders-7">Key Reminders</h3>
 <ul>
-<li>Alt+Shift+X Export Format for the submission file</li>
+<li>Control+Shift+X Export Format for the submission file</li>
 <li>Alt+F9 Check Markdown before every submission</li>
 <li>Control+Shift+O Open Other Format converts a colleague’s Word
 document or a PDF into Markdown you can edit, keeping headings, lists
@@ -485,8 +485,8 @@ Presenter View and in handouts but never on the slide:</p>
 ::: notes
 Mention that everything runs offline. Ask how many people use JAWS.
 :::</code></pre>
-<p>Export with Alt+Shift+X and choose pptx. To match a house style, make
-a copy of your organization’s template and name it as the reference
+<p>Export with Control+Shift+X and choose pptx. To match a house style,
+make a copy of your organization’s template and name it as the reference
 document; Pandoc uses its theme, its fonts and its layouts, choosing a
 layout per slide by what the slide contains – a title slide, a section
 header, a two-content slide when you use columns, and a plain title and
@@ -501,7 +501,7 @@ somebody sent you: the titles become headings and the bullets become
 lists.</p>
 <h3 id="key-reminders-8">Key Reminders</h3>
 <ul>
-<li>Alt+Shift+X Export Format, choosing pptx</li>
+<li>Control+Shift+X Export Format, choosing pptx</li>
 <li>Control+Shift+O Open Other Format to read a deck as Markdown</li>
 <li>Second level headings start slides; three hyphens start an untitled
 one; a notes div holds speaker notes</li>
@@ -586,7 +586,7 @@ compiler’s does. EdSharp’s own Convert folder holds the scripts it uses,
 which are worth reading as models: each takes a source and a target and
 reports what happened.</p>
 <p>Text Convert, Control+T, converts the open document between formats
-one at a time, and Export Format, Alt+Shift+X, writes it out as
+one at a time, and Export Format, Control+Shift+X, writes it out as
 something else. Control+Shift+O converts on the way in.</p>
 <p>Every job leaves a record. The session log in the logs folder under
 your local application data names every command EdSharp ran and its exit
@@ -1372,10 +1372,11 @@ As.</p>
 <li>Alt plus P</li>
 </ul>
 <h3 id="step-32">Step 32</h3>
-<p>Say the time.</p>
+<p>Hear the time.</p>
 <p>Screen reader:</p>
 <ul>
-<li>Alt plus Semicolon</li>
+<li>The screen reader’s own key, Insert plus F12; twice for the
+date.</li>
 </ul>
 <h3 id="step-33">Step 33</h3>
 <p>Copy the whole document.</p>
@@ -1440,7 +1441,7 @@ the document is empty.</p>
 <p>What each box is for. Python runs the conversion tools and the spell
 checker’s helpers; the document tools – pandoc and its companions – turn
 Word, PDF and web pages into text and back. Together they are what makes
-Control plus Shift plus O and Alt plus Shift plus X rich rather than
+Control plus Shift plus O and Control plus Shift plus X rich rather than
 basic.</p>
 <h3 id="step-8-1">Step 8</h3>
 <p>Git is for people who keep code in repositories; Node for web
@@ -1837,9 +1838,10 @@ way in.</p>
 <h3 id="step-3-2">Step 3</h3>
 <p>The document is text now: headings are lines, tables are lines, and
 every key of walks three and five works on it.</p>
-<h3 id="step-4-altshiftx">Step 4: Alt+Shift+X</h3>
-<p>The other direction: writing out as something else. Alt plus Shift
-plus X, Export Format, offers the formats this document can become.</p>
+<h3 id="step-4-controlshiftx">Step 4: Control+Shift+X</h3>
+<p>The other direction: writing out as something else. Control plus
+Shift plus X, Export Format, offers the formats this document can
+become.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Export Format dialog, Format: list box, Web page, 1 of 8</li>
@@ -1945,7 +1947,7 @@ does.</p>
 <li>Open Other Format</li>
 </ul>
 <h3 id="step-21-3">Step 21</h3>
-<p>Alt plus Shift plus X.</p>
+<p>Control plus Shift plus X.</p>
 <p>Screen reader:</p>
 <ul>
 <li>Export Format</li>
@@ -2525,7 +2527,7 @@ plus Shift plus Y renders the text in another one.</li>
 <p>Screen reader:</p>
 <ul>
 <li>Writing the document out as another format – a web page, a Word
-document, plain text. Alt plus Shift plus X.</li>
+document, plain text. Control plus Shift plus X.</li>
 </ul>
 <h3 id="step-21-4">Step 21</h3>
 <p>file find.</p>

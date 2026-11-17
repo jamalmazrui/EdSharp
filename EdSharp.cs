@@ -1033,7 +1033,8 @@ menuFileFind = CreateMenuItem("File Find ...", "Alt+Shift+F", menuItem_Click, "f
 menuFileSave = CreateMenuItem("&Save", "Control+S", menuItem_Click, "child speak");
 menuFileSaveAs = CreateMenuItem("Save As ...", "Control+Shift+S", menuItem_Click, "child silent");
 menuFileSaveCopy = CreateMenuItem("Save Copy ...", "Alt+Shift+S", menuItem_Click, "child speak");
-menuFileExport = CreateMenuItem("Export Format ...", "Alt+Shift+X", menuItem_Click, "child silent");
+// EXPORT IS CONTROL+SHIFT+X IN THE SUITE (17 November 2026), as in DbDo and FileDir.
+menuFileExport = CreateMenuItem("Export Format ...", "Control+Shift+X", menuItem_Click, "child silent");
 menuFileRename = CreateMenuItem("Rename ...", "Shift+F2", menuItem_Click, "child silent");
 menuFileProperties = CreateMenuItem("Properties", "Alt+Enter", menuItem_Click, "child speak");
 menuFileMailBody = CreateMenuItem("&Mail Body ...", "Control+M", menuItem_Click, "child speak");
@@ -1185,9 +1186,10 @@ menuQueryChunk = CreateMenuItem("Say Chunk", "Shift+Back", menuItem_Click, "chil
 menuQueryReadAll = CreateMenuItem("Read All", "Alt+F8", menuItem_Click, "child speak");
 menuQueryWindowsOpen = CreateMenuItem("Say Windows Open", "Shift+F4", menuItem_Click, "child speak");
 menuQueryClipboard = CreateMenuItem("Say Clipboard", "Alt+OemQuotes", menuItem_Click, "frame silent");
-menuQueryTime = CreateMenuItem("Say Time", "Alt+OemSemicolon", menuItem_Click, "frame silent");
+// SAY TIME IS GONE (17 November 2026): JAWS+F12 and NVDA+F12 say the time, and pressed twice the date, in every program, so a Homer key for it only took Alt+Semicolon and a menu line.
+menuQueryTime = null;
 menuQueryStyles = CreateMenuItem("Say Styles", "Alt+OemQuestion", menuItem_Click, "child silent");
-menuQuery.DropDownItems.AddRange(new ToolStripItem[] {menuQueryAddress, menuQueryPosition, menuQueryBraces, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles});
+menuQuery.DropDownItems.AddRange(new ToolStripItem[] {menuQueryAddress, menuQueryPosition, menuQueryBraces, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryStyles});
 //Homer.LbcAsk.message("Query.", menuQuery.DropDownItems.Count);
 
 menuMisc = CreateMenu("&Misc");
@@ -2217,7 +2219,6 @@ static readonly string[] aCommandSummaries = new string[] {
 "Say Yield\tAlt+Y, Say number of characters, words, and lines in all or selected text, or also paragraphs, sentences, reading time, reading grade and long sentences if repeated",
 "Say Status\tAlt+Z, Say whether current file has been modified since last save to disk, or say its character encoding if repeated",
 "Say Clipboard\tAlt+Apostrophe, Say clipboard text, or spell if repeated",
-"Say Time\tAlt+Semi-colon, Say current time and date",
 "Insert Time\tAlt+Shift+Semi-colon, Insert current time and date",
 "Calculate Date\tControl+Shift+Semi-colon, Calculate and insert date",
 "Edit Settings\tAlt+Shift+E, Adjust configuration options through a dialog",
@@ -2278,7 +2279,7 @@ static readonly string[] aCommandSummaries = new string[] {
 "Save\tControl+S, Save",
 "Save As\tControl+Shift+S, Save As",
 "Save Copy\tAlt+Shift+S, Save copy of document using a different name",
-"Export Format\tAlt+Shift+X, Export document to another format",
+"Export Format\tControl+Shift+X, Export document to another format",
 "Print\tControl+P, Print current file",
 "Mail Body\tControl+M, Mail current file as body of an email message",
 "Mail Attachment\tControl+Shift+M, Mail current file as an email attachment",

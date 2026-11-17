@@ -125,7 +125,7 @@ Hear=How a file's characters are stored. Alt plus Z twice says it; Alt plus Shif
 
 Say=export.
 Key=
-Hear=Writing the document out as another format -- a web page, a Word document, plain text. Alt plus Shift plus X.
+Hear=Writing the document out as another format -- a web page, a Word document, plain text. Control plus Shift plus X.
 
 [step]
 

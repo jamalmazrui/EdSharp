@@ -54,7 +54,7 @@ if not defined homerDev (
 )
 set "homerVer=0.0.0"
 if exist "!homerDev!\version.txt" set /p homerVer=<"!homerDev!\version.txt"
-set "kitNeeded=1.246.0"
+set "kitNeeded=1.247.0"
 powershell -NoProfile -Command "if ([version]'!homerVer!' -lt [version]'!kitNeeded!') { exit 1 } else { exit 0 }" >nul
 if errorlevel 1 (
   echo EdSharp needs HomerDev !kitNeeded! or later, and the kit is !homerVer!.
@@ -129,7 +129,9 @@ rem ---- the kit's scripts, refreshed into scripts\ every build ---------
 rem One source of truth: a fix in the kit reaches EdSharp on its next
 rem build, and nothing here is edited in place.
 if not exist "scripts" mkdir "scripts"
-for %%F in (buildTutorials.cmd buildTutorials.ps1 check.cmd check.py checkTutorial.cmd checkTutorial.py finish.cmd fixEncoding.cmd fixEncoding.py installCommon.cmd installOllama.cmd installScreenReaderSupport.cmd kind.cmd kind.py makeTutorials.cmd makeTutorials.py push.cmd release.cmd release.ps1 tidy.cmd tidy.py unpushed.cmd unpushed.py) do (
+rem testSay, runMacro and recordWalk joined on 17 November 2026: every Homer app's Say commands can be heard
+rem with testSay, which plays them through runMacro and recordWalk; run from HomerDev, it tests every app.
+for %%F in (buildTutorials.cmd buildTutorials.ps1 check.cmd check.py checkTutorial.cmd checkTutorial.py finish.cmd fixEncoding.cmd fixEncoding.py installCommon.cmd installOllama.cmd installScreenReaderSupport.cmd kind.cmd kind.py makeTutorials.cmd makeTutorials.py push.cmd release.cmd recordWalk.cmd recordWalk.py release.ps1 runMacro.cmd runMacro.py testSay.cmd testSay.py tidy.cmd tidy.py unpushed.cmd unpushed.py) do (
   if exist "!homerDev!\scripts\%%F" copy /y "!homerDev!\scripts\%%F" scripts\ >nul
 )
 rem Retired kit scripts, and EdSharp's own earlier editions of what the kit

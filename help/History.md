@@ -2,6 +2,12 @@
 
 
 
+## 17 November 2026 -- Export on Control+Shift+X, and testSay
+
+- **Export Format is Control+Shift+X,** as Export Data in DbDo and Export Type in FileDir, beside Control+Shift+E, R and Y for Extract, Replace and Yield with Regex. It was Alt+Shift+X.
+- **Say Time is gone.** Insert+F12 says the time in every program, under JAWS and NVDA alike, so Alt+Semicolon only repeated it.
+- **testSay comes to EdSharp,** with runMacro and recordWalk from the kit: run scripts\testSay with no argument and every Say command is pressed once, twice and described, and what JAWS said is written down beside what EdSharp meant to say.
+
 ## 17 November 2026 -- Descriptions in the suite's words
 
 - **Six command descriptions begin with their verb and say "the current"**, as the rest of the suite's do: Align, Go to Environment, Outdent, Quote, Topic and Unquote.

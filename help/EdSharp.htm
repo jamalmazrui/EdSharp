@@ -517,7 +517,8 @@ or press it again to check its character encoding.</p>
 <p>Press Alt+F8 to hear the whole document without moving the cursor.
 Use the Quote Clipboard command, Alt+Apostrophe, to hear the textual
 content of the clipboard, or its spelling if this key is pressed again.
-Press Alt+Semicolon to hear the current time and date.</p>
+To hear the time, use your screen reader's own key: Insert+F12 in JAWS
+or NVDA; pressed twice, it gives the date.</p>
 <p>Press Shift+Space to hear selected text. Press Shift+Backspace to
 hear the chunk of text at the cursor. Press Shift+F4 to hear the titles
 of open document windows. If the same key is pressed again without
@@ -615,16 +616,16 @@ is needed to represent it. If so, the file is saved with a UTF-8
 encoding, the most common form of Unicode for storing files on disk.
 Otherwise, the default encoding of the computer is used, e.g., Latin
 1.</p>
-<p>Alt+Shift+X saves a file in another format. The built-in choices are
-ASCII format, which removes characters with ANSI codes above 127; Mac
-format, whose line break is \r; and Unix format, whose line break is \n.
-It also offers .htm and .rtf, and .doc, the 1997 Word format, through
-the kit's shared conversions; only Microsoft Word can write a .doc file,
-so that choice needs Word. You can add other converters by editing the
-Export section of the settings file: press Alt+Shift+E, Edit Settings,
-then its Settings file button. The syntax is like that of the Import
-section, explained elsewhere. The Other choice lets you pick a character
-encoding for the new file, from a list of over 100.</p>
+<p>Control+Shift+X saves a file in another format. The built-in choices
+are ASCII format, which removes characters with ANSI codes above 127;
+Mac format, whose line break is \r; and Unix format, whose line break is
+\n. It also offers .htm and .rtf, and .doc, the 1997 Word format,
+through the kit's shared conversions; only Microsoft Word can write a
+.doc file, so that choice needs Word. You can add other converters by
+editing the Export section of the settings file: press Alt+Shift+E, Edit
+Settings, then its Settings file button. The syntax is like that of the
+Import section, explained elsewhere. The Other choice lets you pick a
+character encoding for the new file, from a list of over 100.</p>
 <p>Use the Run command, F5, to run the current file as if you had typed
 its name in the Windows Start, Run dialog. It is also like pressing
 Enter on its name in Windows Explorer, which opens it with the program
@@ -1412,8 +1413,8 @@ Otherwise the Windows functions that handle .ini files lose the opening
 quote before the tool.</p>
 <p>For HTML, the HTML Tidy utility is configured by default and
 distributed with EdSharp. After eliminating coding errors found with
-Control+F5, use Alt+Shift+X to export to a target file containing clean
-HTML. More information is available at the <a
+Control+F5, use Control+Shift+X to export to a target file containing
+clean HTML. More information is available at the <a
 href="http://tidy.sourceforge.net">HTML Tidy project page</a>.</p>
 <p>For PowerBASIC, a batch file is needed, in the EdSharp program
 folder. It refers to the default location of PowerBASIC for Windows
@@ -1770,7 +1771,7 @@ has a .rtf extension, meaning rich text format, or starts with a byte
 order mark (BOM), meaning a Unicode format such as UTF-8 or UTF-16. You
 can name an encoding by its name or its number. To see the list, choose
 the Other option in the Yield Encoding command, Alt+Shift+Y, or the
-Export Format command, Alt+Shift+X. With no YieldEncoding setting,
+Export Format command, Control+Shift+X. With no YieldEncoding setting,
 EdSharp uses the default encoding in the region settings of Windows
 Control Panel, usually Western European. To check which encoding EdSharp
 used to open the current document, press the Status command, Alt+Z,

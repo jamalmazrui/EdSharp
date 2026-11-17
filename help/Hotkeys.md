@@ -1,6 +1,6 @@
 ﻿# EdSharp Hotkeys
 
-**Version 5.0.161**  
+**Version 5.0.162**  
 
 Generated from the key file on 17 November 2026. Do not edit this page; edit the key file in configs and build again.
 
@@ -65,7 +65,7 @@ Commands in alphabetical order.
 - **Environment Variables**, Control+E -- Change Windows environment variables for this process, your account or the system
 - **Evaluate Expression**, Control+Equals -- Evaluate an expression and insert its result
 - **Exit EdSharp**, Alt+F4 -- Close EdSharp
-- **Export Format**, Alt+Shift+X -- Export document to another format
+- **Export Format**, Control+Shift+X -- Export document to another format
 - **Extract with Regex**, Control+Shift+E -- Copy every match of a regular expression in the text, into a new window
 - **File Find**, Alt+Shift+F -- Find files by name and content in this folder and below, and open one
 - **Format Code**, Control+4 -- Arrange indentation and other stylistic conventions in a C-like language
@@ -205,7 +205,6 @@ Commands in alphabetical order.
 - **Say Selected**, Shift+Space -- or JAWS+Shift+DownArrow, Say the selected text
 - **Say Status**, Alt+Z -- Say whether the document is modified, and its encoding on a second press
 - **Say Styles**, Alt+Slash -- Say the styles at the cursor, or set them on a second press
-- **Say Time**, Alt+Semicolon -- Say the date and time
 - **Say Windows Open**, Shift+F4 -- Say how many windows are open, and their titles
 - **Say Yield**, Alt+Y -- Say how many characters, words and lines are in all or the selected text
 - **Search for Topic**, Alt+F6 -- Search for a topic based on text in its heading
@@ -296,7 +295,6 @@ The same commands, in alphabetical order of the key that runs them.
 - **Alt+RightArrow** -- Next Chunk: Go to next chunk and read it
 - **Alt+RightBracket** -- Infer Indent: Infer the current document's indent unit, or set it on a second press
 - **Alt+S** -- Save Script: Save all or selected text to a script file
-- **Alt+Semicolon** -- Say Time: Say the date and time
 - **Alt+Shift+0** -- Reset Configuration: Revert to default options, or define a new compiler configuration
 - **Alt+Shift+6** -- Baseline: Set vertical alignment of cursor or selected text
 - **Alt+Shift+A** -- Align: Indent the current or selected lines to match the line before
@@ -336,7 +334,6 @@ The same commands, in alphabetical order of the key that runs them.
 - **Alt+Shift+U** -- Swap Case: Convert lower case characters to upper case, and vice versa
 - **Alt+Shift+V** -- View Script: Pick script file to view or edit
 - **Alt+Shift+W** -- Web Download: Download files linked from a web page or the current document
-- **Alt+Shift+X** -- Export Format: Export document to another format
 - **Alt+Shift+Y** -- Yield Encoding: Render all or selected text based on a character encoding
 - **Alt+Slash** -- Say Styles: Say the styles at the cursor, or set them on a second press
 - **Alt+T** -- Topic: Say the current section's topic
@@ -434,6 +431,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+Shift+U** -- Lower Case: Convert current or selected characters to lower case
 - **Control+Shift+V** -- Paste File: Insert another file at cursor position
 - **Control+Shift+W** -- Unwrap: Unwrap lines
+- **Control+Shift+X** -- Export Format: Export document to another format
 - **Control+Shift+Y** -- Yield with Regex: Count parts of text matching a regular expression
 - **Control+Shift+Z** -- Redo: Redo the last action that was undone
 - **Control+Slash** -- Where Am I: Say where you are, what has focus and its keys
@@ -489,7 +487,6 @@ Grouped by the modifier key a command starts with.
 - **Alt+Shift+D** -- Delete File
 - **Alt+Shift+Backspace** -- Delete Up
 - **Alt+Shift+E** -- Edit Settings
-- **Alt+Shift+X** -- Export Format
 - **Alt+Shift+F** -- File Find
 - **Alt+Shift+G** -- Go to Part
 - **Alt+Shift+F8** -- Go to Start of Selection
@@ -539,6 +536,7 @@ Grouped by the modifier key a command starts with.
 - **Control+Shift+D** -- Delete Paragraph
 - **Control+Shift+Delete** -- Delete Right
 - **Control+Shift+Period** -- End Tag
+- **Control+Shift+X** -- Export Format
 - **Control+Shift+E** -- Extract with Regex
 - **Control+Shift+F12** -- Go to Environment
 - **Control+Shift+G** -- Go to Special Folder
@@ -625,7 +623,6 @@ Grouped by the modifier key a command starts with.
 - **Alt+Delete** -- Say Position
 - **Alt+Z** -- Say Status
 - **Alt+Slash** -- Say Styles
-- **Alt+Semicolon** -- Say Time
 - **Alt+Y** -- Say Yield
 - **Alt+F6** -- Search for Topic
 - **Alt+T** -- Topic

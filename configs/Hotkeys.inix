@@ -41,7 +41,6 @@ Say Clipboard=Alt+Apostrophe, Say the clipboard text
 Save Clipboard=Control+Apostrophe, Save the clipboard text to a file you name
 Append Clipboard=Control+Shift+Apostrophe, Add the clipboard text to the end of a file you name
 Clear Clipboard=Alt+Shift+Apostrophe, Empty the clipboard
-Say Time=Alt+Semicolon, Say the date and time
 Insert Time=Alt+Shift+Semicolon, Insert current time and date
 Calculate Date=Control+Shift+Semicolon, Calculate and insert date
 
@@ -110,7 +109,7 @@ Properties=Alt+Enter, Show the Windows properties of the current file
 Save=Control+S, Save the current file
 Save As=Control+Shift+S, Save a copy of the current file under another name or format
 Save Copy=Alt+Shift+S, Save copy of document using a different name
-Export Format=Alt+Shift+X, Export document to another format
+Export Format=Control+Shift+X, Export document to another format
 
 Print=, Print the selected text or the current line
 Mail Body=Control+M, Send the current file's text as the body of an email message

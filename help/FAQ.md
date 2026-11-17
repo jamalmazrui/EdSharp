@@ -43,7 +43,7 @@ than handing you an empty file.
 
 ### How do I save as something else?
 
-Alt+Shift+X, Export Format, writes the document out as a Word document, a web
+Control+Shift+X, Export Format, writes the document out as a Word document, a web
 page, a slide deck, plain text, and more. Control+T converts the document in
 place.
 

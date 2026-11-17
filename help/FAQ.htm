@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc 3.13" />
+  <meta name="generator" content="pandoc 3.14" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>EdSharp FAQ</title>
   <style>
@@ -35,27 +35,6 @@
       }
       h1 {
         font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        color-scheme: light only;
-      }
-      html, body, pre, code {
-        background-color: transparent;
-      }
-      body, a, a:visited, blockquote {
-        color: black;
-      }
-      pre, code {
-        padding: 0;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
       }
     }
     p {
@@ -163,6 +142,12 @@
       text-decoration: none;
     }
     span.smallcaps{font-variant: small-caps;}
+    em, em em em, em em em em em {
+      font-style: italic;
+    }
+    em em, em em em em {
+      font-style: normal;
+    }
     div.columns{display: flex; gap: 1.5em;}
     div.column{flex: auto;}
     @media screen {
@@ -179,7 +164,27 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-  </style>
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }  </style>
 </head>
 <body>
 <nav id="TOC" role="doc-toc" aria-label="Contents">
@@ -240,7 +245,7 @@ help with that; it needs optical character recognition first. EdSharp
 says so rather than handing you an empty file.</p>
 <h3 id="how-do-i-save-as-something-else">How do I save as something
 else?</h3>
-<p>Alt+Shift+X, Export Format, writes the document out as a Word
+<p>Control+Shift+X, Export Format, writes the document out as a Word
 document, a web page, a slide deck, plain text, and more. Control+T
 converts the document in place.</p>
 <h3 id="can-i-make-powerpoint-slides">Can I make PowerPoint slides?</h3>

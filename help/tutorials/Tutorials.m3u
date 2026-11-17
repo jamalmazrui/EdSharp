@@ -1,7 +1,7 @@
 ﻿#EXTM3U
 #EXTINF:175,EdSharp Walkthroughs
 0_Overview.mp3
-#EXTINF:304,1 - User Interface
+#EXTINF:307,1 - User Interface
 1_User_Interface.mp3
 #EXTINF:231,2 - Install and Launch
 2_Install_and_Launch.mp3
@@ -9,7 +9,7 @@
 3_Open_Edit_and_Save_a_File.mp3
 #EXTINF:226,4 - Find Your Way in a Long Document
 4_Find_Your_Way_in_a_Long_Document.mp3
-#EXTINF:245,5 - Convert Between Formats
+#EXTINF:246,5 - Convert Between Formats
 5_Convert_Between_Formats.mp3
 #EXTINF:181,6 - Write Code
 6_Write_Code.mp3
