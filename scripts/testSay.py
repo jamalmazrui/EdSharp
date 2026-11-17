@@ -149,9 +149,15 @@ def suiteApps():
     return lsFound
 
 
+# NOT YET: HOMERVIEW (17 November 2026). HomerView's Say commands work in its browser window, which belongs to Edge, not
+# to HomerView.exe, a helper that runs and exits. Both of its runs waited thirty seconds for a HomerView window that
+# never comes, so it is left out, with a sentence saying why, until recordWalk can find HomerView's browser.
+setNotYet = {"homerview"}
+
+
 def runSuite(oArgs):
     """From HomerDev: this script once for each app, in the app's folder, with the same options."""
-    lsApps = suiteApps()
+    lsApps = [s for s in suiteApps() if os.path.basename(s).lower() not in setNotYet]
     if oArgs.apps: lsApps = [s for s in lsApps if os.path.basename(s).lower() in [t.strip().lower() for t in oArgs.apps.split(",")]]
     logLine("suite run over: " + "; ".join(lsApps))
     if not lsApps:
@@ -197,6 +203,9 @@ def main():
     logLine("settings: app=%s; project=%s; only=%s; letters=%s; wait=%d; describer=%s; check=%s; folder=%s" % (
         sApp, sProject, oArgs.only or "all", sLetters or "all", oArgs.wait, "no" if oArgs.no_describer else "yes", oArgs.check, sOutDir))
     if sApp.lower() == "homerdev" or oArgs.apps: return runSuite(oArgs)
+    if sApp.lower() in setNotYet:
+        say("testSay cannot test %s yet: its Say commands work in its browser window, which testSay cannot find yet. Nothing was pressed." % sApp)
+        return 2
     sRunMacro = findRunMacro()
     if not sRunMacro:
         say("runMacro.py was not found in this app's scripts or the kit's, so nothing was pressed.")
@@ -216,6 +225,11 @@ def main():
         iMinutes = max(1, iSteps * (oArgs.wait + 3) // 60)
         if iMinutes > 10: say("This takes about %d minutes. Control+C stops it." % iMinutes)
         say("testSay: %d Say command%s in %s, %d key%s, about %d minute%s." % (len(lsChosen), "" if len(lsChosen) == 1 else "s", sApp, iSteps, "" if iSteps == 1 else "s", iMinutes, "" if iMinutes == 1 else "s"))
+    # THE COPY THAT IS OPEN IS THE ONE TESTED (17 November 2026). FileDir's run at 13:30 pressed the keys of the new key
+    # file in a FileDir opened at 11:29, before the build that moved Say Yield on Drive, so Alt+Shift+Y ran the old
+    # command. Say so before starting, while it can still be fixed.
+    if not oArgs.check and oRunMacro.appIsOpen(sApp):
+        say("%s is open already, so the copy that is open is the one tested. After a build, close it first to test the new one." % sApp)
     nStart = time.time()
     logLine("run: " + subprocess.list2cmdline(lCommand) + " in " + sProject)
     try:

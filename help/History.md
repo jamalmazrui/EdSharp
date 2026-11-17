@@ -2,6 +2,11 @@
 
 
 
+## 17 November 2026 -- Clearer Say Status and Say Selected
+
+- **Say Status says its parts apart:** "Modified, Wrap" rather than "ModifiedWrap", which a modified document ran together.
+- **Say Selected, Say Chunk and Read All say "No text" when there is none,** on either press. The second press spelled "N o space t e x t !", and the suite's messages carry no exclamation mark.
+
 ## 17 November 2026 -- Export on Control+Shift+X, and testSay
 
 - **Export Format is Control+Shift+X,** as Export Data in DbDo and Export Type in FileDir, beside Control+Shift+E, R and Y for Extract, Replace and Yield with Regex. It was Alt+Shift+X.

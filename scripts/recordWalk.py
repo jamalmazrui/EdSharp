@@ -720,6 +720,18 @@ def speechLogFiles(sApp):
     return sorted(set(lFiles), key=os.path.getmtime)
 
 
+def appLogTail(sApp, iLines=25):
+    """The last lines of the app's newest session log, to say why it closed; "" when there is none."""
+    lsLogs = [s for s in speechLogFiles(sApp) if "peech" not in os.path.basename(s)]
+    if not lsLogs: return ""
+    try:
+        with open(lsLogs[-1], "rb") as fIn:
+            lsText = fIn.read().decode("utf-8-sig", "replace").splitlines()
+        return lsLogs[-1] + ":\n" + "\n".join("    " + sLine for sLine in lsText[-iLines:])
+    except OSError as exceptionError:
+        return "its log could not be read: " + str(exceptionError)
+
+
 def speechSizes(sApp):
     return {s: os.path.getsize(s) for s in speechLogFiles(sApp)}
 
@@ -970,6 +982,7 @@ def main():
 
     from pywinauto.keyboard import send_keys
     iMatched, iChecked, iNoisySteps = 0, 0, 0
+    lsClosed = []
     lsReport.extend(["# recordWalk: " + oArgs.app + ", " + os.path.basename(oArgs.walk), "",
                      "Recorded " + datetime.datetime.now().strftime("%d %B %Y at %H:%M") + ". Each step: the key pressed, what the walk expected, "
                      "what was heard, what UI Automation says has focus, and what " + oArgs.app + " itself said.", ""])
@@ -997,6 +1010,14 @@ def main():
         # 106 because the command prompt running testSay had come to the front. When the window in front is a console
         # -- the one running this walk -- the app is brought back once and the walk goes on; any other window stops it,
         # as before, so keys never go where they were not meant to.
+        # THE APP CLOSING IS NEWS, NOT A RESTART TO PASS OVER (17 November 2026). DbDo's live test of 14:37 closed
+        # during Say Position and again after the Alternate Menu's Escape; the walk started it again each time and the
+        # report did not say so. Now the console says which step it closed during, and the log keeps the end of the
+        # app's own session log, which says why.
+        if iIndex > 1 and not windowsOf(oArgs.app + ".exe"):
+            sayLine("%s closed during step %d (%s)." % (oArgs.app, iIndex - 1, lSteps[iIndex - 2].get("sKey") or "no key"))
+            lsClosed.append(iIndex - 1)
+            logLine("%s was not running before step %d; the end of its session log:\n%s" % (oArgs.app, iIndex, appLogTail(oArgs.app) or "(no session log found)"))
         if sExeNow.lower() != (oArgs.app + ".exe").lower() and sExeNow.lower() in ("cmd.exe", "conhost.exe", "windowsterminal.exe", "openconsole.exe", "python.exe", "py.exe", "powershell.exe", "pwsh.exe"):
             logLine("before step %d the console %s %r was in front; bringing %s back" % (iIndex, sExeNow, sTitleNow, oArgs.app))
             if bringForward(oArgs.app):
@@ -1046,17 +1067,23 @@ def main():
             return float(numpy.sqrt(numpy.mean(numpy.square(aOne)))) if aOne.size else 0.0
         with oMicrophone.recorder(samplerate=iSampleRate) as oRecorder:
             nQuiet, nWaited = 0.0, 0.0
-            while nQuiet < nQuietBefore and nWaited < nMaxSettle:
+            # WITH OTHER SOUND PLAYING, QUIET NEVER COMES (17 November 2026). A talk playing beside DbDo's and FileDir's
+            # live tests made each step wait ten seconds for quiet and then listen the full fifteen, nearly a minute a
+            # step, and the run looked hung. Once two steps have found other sound, the walk stops waiting for quiet
+            # and listens only for the step's own wait.
+            nSettle = 0.0 if iNoisySteps >= 2 else nMaxSettle
+            while nQuiet < nQuietBefore and nWaited < nSettle:
                 nLevel = levelOf(oRecorder.record(numframes=iChunk))
                 nQuiet = nQuiet + nChunkSeconds if nLevel < nSpeechLevel else 0.0
                 nWaited += nChunkSeconds
-            bNoisy = nWaited >= nMaxSettle
+            bNoisy = nWaited >= nSettle
             if bNoisy:
-                logLine("  still sound after %d s of waiting for quiet; pressed anyway" % nMaxSettle)
+                logLine("  still sound after %d s of waiting for quiet; pressed anyway" % nMaxSettle if nSettle else "  other sound playing; pressed without waiting for quiet")
                 iNoisySteps += 1
                 # OTHER SOUND IS SAID ONCE (17 November 2026): DbDo's first live test recorded a talk playing elsewhere,
                 # and its words were written down as what JAWS said. The console says so, once, while it still matters.
                 if iNoisySteps == 1: sayLine("Other sound is playing, so what was heard may not be the screen reader. Pause it for a cleaner run.")
+                if iNoisySteps == 2: sayLine("Other sound is still playing, so each step now listens only %d seconds rather than waiting for quiet." % oArgs.wait)
             if dStep["sType"]: send_keys(escapeText(dStep["sType"]), with_spaces=True, pause=0.05)
             # A KEY IS A KEY, NOT A CHARACTER (17 November 2026): send_keys sends a plain character with no modifier as a
             # Unicode packet, not as its key. FileDir's testSay pressed Apostrophe for Say Item Name, JAWS's pass-through
@@ -1076,6 +1103,7 @@ def main():
                 if bSpoke and nQuiet >= nQuietAfter: break
                 if not bSpoke and nElapsed >= iWait: break
                 if nElapsed >= nMaxListen: break
+                if iNoisySteps >= 2 and nElapsed >= iWait: break
             aFrames = numpy.concatenate(lChunks)
             bCutOff = bSpoke and nQuiet < nQuietAfter
         logLine("  listened %.2f s; speech %.2f s%s" % (nElapsed, nSpoken, "; STILL SPEAKING at the limit" if bCutOff else ""))
@@ -1179,6 +1207,7 @@ def main():
                         " -- STILL SPEAKING at %d s, so the end is missing" % nMaxListen if bCutOff else ""))
         lsReport.append("")
         logLine("step " + str(iIndex) + " recorded")
+    if lsClosed: lsReport.insert(3, "**%s closed during step%s %s.** The run's log keeps the end of %s's own log each time, which says why." % (oArgs.app, "" if len(lsClosed) == 1 else "s", ", ".join(str(i) for i in lsClosed), oArgs.app))
     lsReport.insert(3, "**" + str(iMatched) + " of " + str(iChecked) + " expected lines heard.**" + (" Other sound was playing at %d of the steps, so what was heard there may not be the reader; the app's own log is the surer witness." % iNoisySteps if iNoisySteps else ""))
     lsReport.insert(4, "")
     if sAxeCli: lsReport.insert(5, "**Axe.Windows: " + str(iAxeErrors) + (" error" if iAxeErrors == 1 else " errors") + " across the steps; each .a11ytest file opens in Accessibility Insights for Windows.**\n")

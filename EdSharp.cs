@@ -5499,13 +5499,13 @@ return;
 
 if (menuItem == menuQueryStatus) {
 if (this.KeyRepeat % 2 == 0) {
-sText = rtb.Modified ? "Modified" : "Unmodified" + "\t";
-sText += rtb.WordWrap ? "Wrap" : "Unwrap";
-sText += rtb.ReadOnly ? "Guard" : "";
+// ONE PHRASE, PARTS SEPARATED (17 November 2026): the tab came only after "Unmodified", by operator precedence, so a
+// modified document said "ModifiedWrap" as one word, and Guard ran on the same way. testSay heard "Unmodified<tab>Wrap".
+sText = (rtb.Modified ? "Modified" : "Unmodified") + ", " + (rtb.WordWrap ? "Wrap" : "Unwrap") + (rtb.ReadOnly ? ", Guard" : "");
 //sText += App.ReadData("Compiler", "Default");
 }
 else {
-if (child == null || child.YieldEncoding == null) sText = "No disk file with encoding information is open!";
+if (child == null || child.YieldEncoding == null) sText = "No disk file with encoding information is open.";
 else if (child.IsUnixLineBreak) sText = "Encoding Unicode (UTF-8N)";
 else sText = "Encoding " + child.YieldEncoding.EncodingName + " = " + child.YieldEncoding.CodePage;
 }
@@ -5519,8 +5519,10 @@ AddMessage("Folder " + Path.GetFileName(Directory.GetCurrentDirectory()));
 
 if (menuItem == menuQuerySelected) {
 sText = rtb.SelectedText;
-if (sText.Length == 0) sText = "No text!";
-if (this.KeyRepeat % 2 == 0) AddMessage(sText);
+// NOTHING TO SPELL (17 November 2026): with no text, both presses say "No text"; testSay heard the second press
+// spell "N o space t e x t !". The suite's messages carry no exclamation mark.
+if (sText.Length == 0) { AddMessage("No text"); }
+else if (this.KeyRepeat % 2 == 0) AddMessage(sText);
 else {
 Util.Spell(sText);
 }
@@ -5529,8 +5531,10 @@ Util.Spell(sText);
 if (menuItem == menuQueryChunk) {
 object[] a = GetChunk();
 sText = (string) a[1];
-if (sText.Length == 0) sText = "No text!";
-if (this.KeyRepeat % 2 == 0) AddMessage(sText);
+// NOTHING TO SPELL (17 November 2026): with no text, both presses say "No text"; testSay heard the second press
+// spell "N o space t e x t !". The suite's messages carry no exclamation mark.
+if (sText.Length == 0) { AddMessage("No text"); }
+else if (this.KeyRepeat % 2 == 0) AddMessage(sText);
 else {
 Util.Spell(sText);
 }
@@ -5538,9 +5542,9 @@ Util.Spell(sText);
 
 if (menuItem == menuQueryReadAll) {
 sText = rtb.Text;
-if (sText.Length == 0) sText = "No text!";
-sText = Util.ConvertQuotes(sText);
-if (this.KeyRepeat % 2 == 0) AddMessage(sText);
+if (sText.Length > 0) sText = Util.ConvertQuotes(sText);
+if (sText.Length == 0) AddMessage("No text");
+else if (this.KeyRepeat % 2 == 0) AddMessage(sText);
 else {
 Util.Spell(sText);
 }
@@ -5550,7 +5554,7 @@ if (menuItem == menuQueryWindowsOpen) {
 WindowsOpen();
 }
 
-// THE SUITE'S SHARED COMMANDS (kit 1.74.0). Say Clipboard, Say Time, Copy Log
+// THE SUITE'S SHARED COMMANDS (kit 1.74.0). Say Clipboard, Copy Log
 // and History of Changes run the kit's Homer.SuiteCommands, the same code as in
 // every Homer app: one press speaks, two spell, three show a review window.
 if (menuItem == menuQueryClipboard) {

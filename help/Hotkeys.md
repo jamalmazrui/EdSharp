@@ -1,6 +1,6 @@
 ﻿# EdSharp Hotkeys
 
-**Version 5.0.162**  
+**Version 5.0.163**  
 
 Generated from the key file on 17 November 2026. Do not edit this page; edit the key file in configs and build again.
 
