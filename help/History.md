@@ -6,7 +6,7 @@
 
 - **JAWS keeps four keys EdSharp never used:** Control+Shift+F11 (the system tray), Shift+NumPad5 (say the control's hotkey), and Alt+Shift+UpArrow and DownArrow (mouse up and down). The JAWS key map had handed them to EdSharp. Nothing changes in EdSharp, and its own mouse scripts still run on those arrows.
 - **The ReadMe and the install scripts say "mark" a box,** never "tick", so the release check passes.
-- **This needs HomerDev 1.272.0.**
+- **This needs HomerDev 1.273.0.**
 
 ## 22 November 2026 -- Marked, not ticked
 

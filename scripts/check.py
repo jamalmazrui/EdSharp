@@ -1707,6 +1707,26 @@ def installerFindings(sText):
     lsKeys = [re.sub(r"^the\s+", "", x.lower()) for x in lsSaid if not x.lower().startswith("which ")]
     if lsKeys != sorted(lsKeys):
         lBad.append("says its own Checking lines out of alphabetical order: " + ", ".join(lsKeys))
+    # FINISH-PAGE BOXES IN ALPHABETICAL ORDER TOO (22 November 2026). The order rule was in every installer's comments,
+    # but nothing checked it: FileDir listed Whisper between ffmpeg and ImageMagick, so its boxes and its installs after
+    # Finish said Whisper before PDF tools, and DbDo listed the NVDA add-on before mpv. Within each group of [Run]
+    # entries (Install, Update, Reinstall), the boxes named by {code:labelX} or {code:descX} must be in lowercase
+    # alphabetical order; an AI model, whose name varies, is left out.
+    # PDF TOOLS ARE A PYTHON PACKAGE (22 November 2026): FileDir still registered them under winget's Python 3.13, as
+    # HomerDev did before 3 November, so its box offered an Update that installPdfTools could never make.
+    if re.search(r"homerAdd\(\s*'PDF tools'\s*,\s*'(?!pip:)", s):
+        lBad.append("registers PDF tools under a winget id instead of pip:pymupdf4llm, so its box compares Python's versions")
+    mRunBoxes = re.search(r"(?ms)^\[Run\]\s*\n(.*?)(?=^\[[A-Za-z]+\]\s*$)", s)
+    if mRunBoxes:
+        lsGroups = [[]]
+        for sRunLine in mRunBoxes.group(1).splitlines():
+            if re.match(r"\s*;\s*-{3,}", sRunLine): lsGroups.append([]); continue
+            mLabel = re.search(r"\{code:(?:label|desc)(\w+)\}", sRunLine)
+            if mLabel and "model" not in mLabel.group(1).lower(): lsGroups[-1].append(mLabel.group(1).lower())
+        for lsGroup in lsGroups:
+            if lsGroup != sorted(lsGroup):
+                lBad.append("lists its finish-page boxes out of alphabetical order: " + ", ".join(lsGroup))
+                break
     return lBad
 
 def checkVersionInTitle():
