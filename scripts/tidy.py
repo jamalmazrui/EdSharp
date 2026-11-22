@@ -263,7 +263,7 @@ def logWindows():
 
 
 def sayLine(sText=""):
-    print(sText)
+    print(sText, flush=True)
     logLine("CONSOLE: " + sText)
     return True
 
@@ -543,9 +543,26 @@ def surveyFolder(lsNamed):
             if os.path.isfile(sFull) and os.path.getsize(sFull) == 0:
                 lsEmpty.append(os.path.relpath(sFull, sRoot))
 
+    # A FOLDER NAMED WHOLE IS NOT WALKED (17 November 2026). AppHelpGuides' build_release seemed to hang in tidy:
+    # the survey read and hashed every file in data\harvests -- every page of more than three hundred harvests -- to
+    # look for strays and duplicates, with nothing on the console for many minutes. A folder that RepoFiles.txt,
+    # LocalFiles.txt or the installer names whole ("data/harvests/") belongs, all of it, so nothing in it can be a
+    # stray, and copies inside a harvest are the harvest's business. Such folders are passed over, and the console
+    # says how far the survey has got every ten seconds.
+    setWhole = set(s.replace("\\", "/").strip("/").lower() for s in lsNamed
+                   if s.replace("\\", "/").endswith("/") and "*" not in s and s.strip("/"))
+    iFiles, nLastSaid = 0, time.time()
     for sDirPath, lsDirs, lsFiles in os.walk(sRoot):
-        lsDirs[:] = [s for s in lsDirs if s.lower() not in lsSkipFolders]
+        sHere = os.path.relpath(sDirPath, sRoot).replace("\\", "/").lower()
+        sHere = "" if sHere == "." else sHere + "/"
+        lsWhole = [s for s in lsDirs if (sHere + s.lower()) in setWhole]
+        for s in lsWhole: logLine("Folder survey: %s%s is named whole, so it is not walked" % (sHere, s))
+        lsDirs[:] = [s for s in lsDirs if s.lower() not in lsSkipFolders and s not in lsWhole]
         for sName in sorted(lsFiles):
+            iFiles += 1
+            if time.time() - nLastSaid >= 10:
+                sayLine("  surveying the folder: %s so far, now in %s" % (countNoun(iFiles, "file"), sHere or "the top"))
+                nLastSaid = time.time()
             sFull = os.path.join(sDirPath, sName)
             sRelative = os.path.relpath(sFull, sRoot)
             if os.path.getsize(sFull) == 0:

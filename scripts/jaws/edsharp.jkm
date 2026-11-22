@@ -1,5 +1,6 @@
 ﻿[Common Keys]
 ; Homer suite pass-through -- written by the kit's tidy from data\KeyOwnership.inix; do not edit
+Control+A=TypeCurrentScriptKey
 Alt+Delete=TypeCurrentScriptKey
 ; end of Homer suite pass-through
 Control+JAWSKey+Space=UIWebClientUtilities
@@ -198,7 +199,10 @@ F11=TypeCurrentScriptKey
 Alt+F11=TypeCurrentScriptKey
 Control+F11=TypeCurrentScriptKey
 Alt+Shift+F11=TypeCurrentScriptKey
-Control+Shift+F11=TypeCurrentScriptKey
+; JAWS KEEPS ITS OWN KEYS (22 November 2026): Control+Shift+F11 (system tray), Shift+NumPad5 (say the
+; control's hotkey) and Alt+Shift+UpArrow and DownArrow (mouse up and down) are no longer listed here. EdSharp binds
+; none of them, and its MouseUp and MouseDown scripts still run on Alt+Shift+UpArrow and DownArrow through JAWS's
+; default key map, since a script in EdSharp.jss takes the place of the default one with the same name.
 Shift+Space=TypeCurrentScriptKey
 Control+Space=TypeCurrentScriptKey
 Alt+Shift+Space=TypeCurrentScriptKey
@@ -282,7 +286,6 @@ Alt+Home=TypeCurrentScriptKey
 Alt+End=TypeCurrentScriptKey
 Alt+Shift+Home=TypeCurrentScriptKey
 Alt+Shift+End=TypeCurrentScriptKey
-Shift+NumPad5=TypeCurrentScriptKey
 Alt+Shift+NumPad5=TypeCurrentScriptKey
 ; NO SPEECH TWEAKS (10 November 2026): the voice, punctuation and indentation keys are freed; JAWS's own keys set its voice.
 Control+Backslash=TypeCurrentScriptKey
@@ -321,8 +324,6 @@ Control+Period=TypeCurrentScriptKey
 Control+Shift+Period=TypeCurrentScriptKey
 ;Alt+Period=TypeCurrentScriptKey
 ;Alt+Shift+Period=TypeCurrentScriptKey
-Alt+Shift+UpArrow=MouseUp
-Alt+Shift+DownArrow=MouseDown
 ; Paragraph navigation: use SilentKey (silent pass-through) rather than
 ; TypeCurrentScriptKey.  EdSharp's TypeCurrentScriptKey script speaks the key
 ; name via SayCurrentScriptKeyLabel() whenever UIIsEditorWindow() returns false,

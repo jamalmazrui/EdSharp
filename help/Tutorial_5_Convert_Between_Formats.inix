@@ -56,8 +56,8 @@ Note=Confirm the wording with a live run: buildTutorials -live.
 
 [step]
 
-Say=Control plus Shift plus T, Text Combine, takes the same list but puts every file's text together in one new window, one after another.
-Key=Control+Shift+T
+Say=Alt plus Shift plus T, Text Combine, takes the same list but puts every file's text together in one new window, one after another.
+Key=Alt+Shift+T
 Hear=Untitled, edit, multiline
 Note=Confirm the wording with a live run: buildTutorials -live.
 
@@ -101,7 +101,7 @@ Hear=
 
 Say=A planned misstep. Export to PDF with the document tools not installed, and EdSharp says so and names the box on the installer's last page that provides them; nothing hangs and nothing half-converts.
 Key=
-Hear=PDF export needs the document tools. Run the installer and tick Document tools.
+Hear=PDF export needs the document tools. Run the installer and mark Document tools.
 
 [step]
 

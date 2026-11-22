@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="generator" content="pandoc 3.14" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>EdSharp ReadMe</title>
   <style>
@@ -35,27 +35,6 @@
       }
       h1 {
         font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        color-scheme: light only;
-      }
-      html, body, pre, code {
-        background-color: transparent;
-      }
-      body, a, a:visited, blockquote {
-        color: black;
-      }
-      pre, code {
-        padding: 0;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
       }
     }
     p {
@@ -163,6 +142,12 @@
       text-decoration: none;
     }
     span.smallcaps{font-variant: small-caps;}
+    em, em em em, em em em em em {
+      font-style: italic;
+    }
+    em em, em em em em {
+      font-style: normal;
+    }
     div.columns{display: flex; gap: 1.5em;}
     div.column{flex: auto;}
     @media screen {
@@ -179,7 +164,27 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-  </style>
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }  </style>
 </head>
 <body>
 <nav id="TOC" role="doc-toc" aria-label="Contents">
@@ -219,14 +224,14 @@ offered optional pieces as checkboxes, each saying what it will do and
 how much space it needs:</p>
 <ul>
 <li><strong>Python</strong> and the <strong>document tools</strong> are
-ticked. Together they cost about a hundred and fifty megabytes and give
+marked. Together they cost about a hundred and fifty megabytes and give
 rich PDF conversion and the thesaurus.</li>
 <li><strong>Git</strong>, <strong>Node.js</strong> and
-<strong>Ollama</strong> with its AI models are not ticked. Each backs a
+<strong>Ollama</strong> with its AI models are not marked. Each backs a
 real feature, but each serves some people and not others, and the models
 are large.</li>
 </ul>
-<p>Whatever you tick installs after you press Finish, and one summary
+<p>Whatever you mark installs after you press Finish, and one summary
 then reports each item by name. That summary is saved in the logs folder
 under your local application data, and you can see it again by running
 summarizeSetup.cmd from the program folder.</p>

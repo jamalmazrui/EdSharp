@@ -18,14 +18,14 @@ Run the installer and accept the defaults. On its last page you are offered
 optional pieces as checkboxes, each saying what it will do and how much space
 it needs:
 
-- **Python** and the **document tools** are ticked. Together they cost about
+- **Python** and the **document tools** are marked. Together they cost about
   a hundred and fifty megabytes and give rich PDF conversion and the
   thesaurus.
-- **Git**, **Node.js** and **Ollama** with its AI models are not ticked. Each
+- **Git**, **Node.js** and **Ollama** with its AI models are not marked. Each
   backs a real feature, but each serves some people and not others, and the
   models are large.
 
-Whatever you tick installs after you press Finish, and one summary then
+Whatever you mark installs after you press Finish, and one summary then
 reports each item by name. That summary is saved in the logs folder under your
 local application data, and you can see it again by running
 summarizeSetup.cmd from the program folder.

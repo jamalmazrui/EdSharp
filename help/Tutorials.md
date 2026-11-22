@@ -236,7 +236,7 @@ that does not compile here.
 ### Setup
 
 Translation needs Ollama and a model, both offered as checkboxes on the
-last page of the installer. Tick Ollama, which brings llama3.2, and tick
+last page of the installer. Mark Ollama, which brings llama3.2, and mark
 qwen2.5:7b, the translation model; translation then uses the better one
 by itself. Everything runs on your computer, so there is no account, no
 limit and no document leaving the machine.
@@ -382,7 +382,7 @@ lists.
 
 ### Setup
 
-Tick Ollama on the installer's last page so F12 has a model to talk to.
+Mark Ollama on the installer's last page so F12 has a model to talk to.
 
 The loop is short. Open the document -- Control+Shift+O converts a PDF,
 Word file, slide deck or spreadsheet into Markdown with its headings and
@@ -424,7 +424,7 @@ intact -- far quieter than a browser, and searchable with Control+F.
 PDFs are the usual currency of research, and they open the same way:
 Control+Shift+O converts a PDF into Markdown with headings, lists and
 tables preserved, so Control+B walks it by block and Alt+F9 reports
-anything malformed. Tick the document tools on the installer's last page
+anything malformed. Mark the document tools on the installer's last page
 so PDF conversion is available.
 
 The gathering itself is the clipboard. Alt+7, Append from Clipboard,
@@ -611,7 +611,7 @@ EdSharp lets you divide a document into named sections, which is the basis of th
 - Control+F6 and Control+Shift+F6 = Move to the next and previous section.
 - F6 = Go to Section: jump from a table-of-contents line to its section. Shift+F6 = Go to Contents: jump from a section back to its table-of-contents line.
 - Alt+T = Speak the current section's topic (its first line).
-- Alt+Shift+T = Text Contents: build a table of contents from the first line of each section.
+- Control+Shift+T = Text Contents: build a table of contents from the first line of each section.
 - Alt+F6 = Search for a topic by name. F3, Search Next, finds that topic again.
 
 #### Spell Checker and Thesaurus
@@ -714,7 +714,7 @@ Email:
 - Move to the first line, replace it with a real last name, comma, and first name, for example `Jones, Joe`. Optionally add a middle initial by pressing End, Space, and a capital letter.
 - Fill in the remaining lines. As long as you do not change the clipboard, you can keep pasting the template (Control+V) under new section breaks to add more entries. Create a few until the process feels comfortable.
 
-**Build the table of contents.** Press Alt+Shift+T (Text Contents). EdSharp adds a "Contents" line near the top of the file followed by the first line of each section, which here is the name line of each entry. A blank line in the table of contents means a section break is missing or misplaced.
+**Build the table of contents.** Press Control+Shift+T (Text Contents). EdSharp adds a "Contents" line near the top of the file followed by the first line of each section, which here is the name line of each entry. A blank line in the table of contents means a section break is missing or misplaced.
 
 **Check the sections.** Use Control+F6 and Control+Shift+F6 to confirm the cursor lands on the first line of each entry. If you land on a blank line, delete any text between the previous entry's last line and the new entry's first line, place the cursor on the first character of the new entry, and press Control+Enter to recreate the section break. When the sections are correct, make sure the table of contents has a line for each one.
 
@@ -1204,11 +1204,11 @@ Screen reader:
 
 ### Step 3
 
-The last page offers optional pieces as boxes, each saying what it does and how much space it needs. Python and the document tools are ticked: about a hundred and fifty megabytes, for rich PDF conversion and the thesaurus. Git, Node and Ollama with its AI models are not ticked; each backs a real feature, and each serves some people and not others. Spacebar changes a box.
+The last page offers optional pieces as boxes, each saying what it does and how much space it needs. Python and the document tools are marked: about a hundred and fifty megabytes, for rich PDF conversion and the thesaurus. Git, Node and Ollama with its AI models are not marked; each backs a real feature, and each serves some people and not others. Spacebar changes a box.
 
 ### Step 4: Enter
 
-Enter on Finish. Whatever was ticked installs now, and one summary then reports each item by name. The summary is saved in the logs folder, and summarizeSetup, in the program folder, shows it again.
+Enter on Finish. Whatever was marked installs now, and one summary then reports each item by name. The summary is saved in the logs folder, and summarizeSetup, in the program folder, shows it again.
 
 Screen reader:
 
@@ -1237,7 +1237,7 @@ Git is for people who keep code in repositories; Node for web developers who run
 
 ### Step 9
 
-A box ticked by mistake is no disaster: the same installer, run again later, offers the same page, and an item already present says so and does nothing. Nothing is installed twice.
+A box marked by mistake is no disaster: the same installer, run again later, offers the same page, and an item already present says so and does nothing. Nothing is installed twice.
 
 ### Step 10
 
@@ -1715,9 +1715,9 @@ Screen reader:
 
 Confirm the wording with a live run: buildTutorials -live.
 
-### Step 9: Control+Shift+T
+### Step 9: Alt+Shift+T
 
-Control plus Shift plus T, Text Combine, takes the same list but puts every file's text together in one new window, one after another.
+Alt plus Shift plus T, Text Combine, takes the same list but puts every file's text together in one new window, one after another.
 
 Screen reader:
 
@@ -1759,7 +1759,7 @@ A planned misstep. Export to PDF with the document tools not installed, and EdSh
 
 Screen reader:
 
-- PDF export needs the document tools. Run the installer and tick Document tools.
+- PDF export needs the document tools. Run the installer and mark Document tools.
 
 ### Step 17
 
@@ -1803,7 +1803,7 @@ Screen reader:
 
 One want: a program that will not run, fixed. Choosing the compiler once, compiling with the cursor landing on the error, moving by blocks of code, hearing indentation, and scripts. This walk assumes walks three and five.
 
-**Before you start:** EdSharp is open on a short Python file with one mistake, and Python was ticked when EdSharp was installed.
+**Before you start:** EdSharp is open on a short Python file with one mistake, and Python was marked when EdSharp was installed.
 
 ### Step 1: Control+Shift+F5
 
@@ -1942,7 +1942,7 @@ Screen reader:
 
 One want: a question about a document, answered with nothing sent off the machine. Chatting about the document, chatting with no document, and translating it, all with the model Ollama runs on your own computer. This walk assumes walks three to six.
 
-**Before you start:** EdSharp is open on a document, and Ollama with a model was ticked when EdSharp was installed, or installed since.
+**Before you start:** EdSharp is open on a document, and Ollama with a model was marked when EdSharp was installed, or installed since.
 
 ### Step 1
 

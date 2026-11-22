@@ -388,8 +388,8 @@ installed</li>
 <h2 id="language-translator">Language Translator</h2>
 <h3 id="setup-5">Setup</h3>
 <p>Translation needs Ollama and a model, both offered as checkboxes on
-the last page of the installer. Tick Ollama, which brings llama3.2, and
-tick qwen2.5:7b, the translation model; translation then uses the better
+the last page of the installer. Mark Ollama, which brings llama3.2, and
+mark qwen2.5:7b, the translation model; translation then uses the better
 one by itself. Everything runs on your computer, so there is no account,
 no limit and no document leaving the machine.</p>
 <p>Translate Language, Alt+Shift+F7, translates the selection, or the
@@ -508,7 +508,7 @@ one; a notes div holds speaker notes</li>
 </ul>
 <h2 id="document-summarizer">Document Summarizer</h2>
 <h3 id="setup-9">Setup</h3>
-<p>Tick Ollama on the installer’s last page so F12 has a model to talk
+<p>Mark Ollama on the installer’s last page so F12 has a model to talk
 to.</p>
 <p>The loop is short. Open the document – Control+Shift+O converts a
 PDF, Word file, slide deck or spreadsheet into Markdown with its
@@ -547,7 +547,7 @@ searchable with Control+F.</p>
 <p>PDFs are the usual currency of research, and they open the same way:
 Control+Shift+O converts a PDF into Markdown with headings, lists and
 tables preserved, so Control+B walks it by block and Alt+F9 reports
-anything malformed. Tick the document tools on the installer’s last page
+anything malformed. Mark the document tools on the installer’s last page
 so PDF conversion is available.</p>
 <p>The gathering itself is the clipboard. Alt+7, Append from Clipboard,
 turns the current window into a collector: everything you copy is added
@@ -797,7 +797,7 @@ section.</li>
 section. Shift+F6 = Go to Contents: jump from a section back to its
 table-of-contents line.</li>
 <li>Alt+T = Speak the current section’s topic (its first line).</li>
-<li>Alt+Shift+T = Text Contents: build a table of contents from the
+<li>Control+Shift+T = Text Contents: build a table of contents from the
 first line of each section.</li>
 <li>Alt+F6 = Search for a topic by name. F3, Search Next, finds that
 topic again.</li>
@@ -974,8 +974,8 @@ clipboard, you can keep pasting the template (Control+V) under new
 section breaks to add more entries. Create a few until the process feels
 comfortable.</li>
 </ul>
-<p><strong>Build the table of contents.</strong> Press Alt+Shift+T (Text
-Contents). EdSharp adds a “Contents” line near the top of the file
+<p><strong>Build the table of contents.</strong> Press Control+Shift+T
+(Text Contents). EdSharp adds a “Contents” line near the top of the file
 followed by the first line of each section, which here is the name line
 of each entry. A blank line in the table of contents means a section
 break is missing or misplaced.</p>
@@ -1412,12 +1412,12 @@ Accept the defaults; the one page that asks a decision is the last.</p>
 <h3 id="step-3">Step 3</h3>
 <p>The last page offers optional pieces as boxes, each saying what it
 does and how much space it needs. Python and the document tools are
-ticked: about a hundred and fifty megabytes, for rich PDF conversion and
-the thesaurus. Git, Node and Ollama with its AI models are not ticked;
+marked: about a hundred and fifty megabytes, for rich PDF conversion and
+the thesaurus. Git, Node and Ollama with its AI models are not marked;
 each backs a real feature, and each serves some people and not others.
 Spacebar changes a box.</p>
 <h3 id="step-4-enter">Step 4: Enter</h3>
-<p>Enter on Finish. Whatever was ticked installs now, and one summary
+<p>Enter on Finish. Whatever was marked installs now, and one summary
 then reports each item by name. The summary is saved in the logs folder,
 and summarizeSetup, in the program folder, shows it again.</p>
 <p>Screen reader:</p>
@@ -1449,7 +1449,7 @@ developers who run JavaScript tools; Ollama for the AI features, with a
 model that is a few gigabytes. Each box says its size, so the decision
 is yours and informed.</p>
 <h3 id="step-9-1">Step 9</h3>
-<p>A box ticked by mistake is no disaster: the same installer, run again
+<p>A box marked by mistake is no disaster: the same installer, run again
 later, offers the same page, and an item already present says so and
 does nothing. Nothing is installed twice.</p>
 <h3 id="step-10-1">Step 10</h3>
@@ -1878,8 +1878,8 @@ becomes a text file beside it, ending in dot t x t.</p>
 <li>Converted 3 files</li>
 </ul>
 <p>Confirm the wording with a live run: buildTutorials -live.</p>
-<h3 id="step-9-controlshiftt">Step 9: Control+Shift+T</h3>
-<p>Control plus Shift plus T, Text Combine, takes the same list but puts
+<h3 id="step-9-altshiftt">Step 9: Alt+Shift+T</h3>
+<p>Alt plus Shift plus T, Text Combine, takes the same list but puts
 every file’s text together in one new window, one after another.</p>
 <p>Screen reader:</p>
 <ul>
@@ -1925,7 +1925,7 @@ installed, and EdSharp says so and names the box on the installer’s last
 page that provides them; nothing hangs and nothing half-converts.</p>
 <p>Screen reader:</p>
 <ul>
-<li>PDF export needs the document tools. Run the installer and tick
+<li>PDF export needs the document tools. Run the installer and mark
 Document tools.</li>
 </ul>
 <h3 id="step-17-4">Step 17</h3>
@@ -1966,7 +1966,7 @@ once, compiling with the cursor landing on the error, moving by blocks
 of code, hearing indentation, and scripts. This walk assumes walks three
 and five.</p>
 <p><strong>Before you start:</strong> EdSharp is open on a short Python
-file with one mistake, and Python was ticked when EdSharp was
+file with one mistake, and Python was marked when EdSharp was
 installed.</p>
 <h3 id="step-1-controlshiftf5">Step 1: Control+Shift+F5</h3>
 <p>The want: a Python program that will not run, fixed. With hello dot p
@@ -2093,7 +2093,7 @@ the machine. Chatting about the document, chatting with no document, and
 translating it, all with the model Ollama runs on your own computer.
 This walk assumes walks three to six.</p>
 <p><strong>Before you start:</strong> EdSharp is open on a document, and
-Ollama with a model was ticked when EdSharp was installed, or installed
+Ollama with a model was marked when EdSharp was installed, or installed
 since.</p>
 <h3 id="step-1-2">Step 1</h3>
 <p>The want: a question about the document, answered without sending it

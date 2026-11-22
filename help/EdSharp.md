@@ -33,7 +33,7 @@ Almost every EdSharp command may be done through a mnemonic keystroke, as well a
 
 ## Installation
 
-The last page of the installer offers optional parts as checkboxes. Each is ticked or not according to what EdSharp itself gains from it. Python and the document tools, which give rich PDF conversion and the thesaurus, are ticked: together they take about 155 megabytes, and every user benefits. Git with the GitHub command line, Node.js, and Ollama with its chat model are not ticked. Each serves a real feature, but each serves some people and not others, and Ollama alone takes about three gigabytes.
+The last page of the installer offers optional parts as checkboxes. Each is marked or not according to what EdSharp itself gains from it. Python and the document tools, which give rich PDF conversion and the thesaurus, are marked: together they take about 155 megabytes, and every user benefits. Git with the GitHub command line, Node.js, and Ollama with its chat model are not marked. Each serves a real feature, but each serves some people and not others, and Ollama alone takes about three gigabytes.
 
 The boxes are in order of what they will do: those that install something come first, then those that update something, and last anything already current, offered only for repair. Each label says whether its tool is missing, out of date or already current, with version numbers. They run after you press Finish, each in its own window that shows progress and closes when it is done. None of them ever waits for a key press. When they have all finished, one Results box reports everything: the JAWS scripts, the NVDA add-on, pandoc, and each optional install by name. It says what is installed and which version, or what to run later for anything that is not. The summary is saved as EdSharp_setup_summary.txt in the logs folder under your local application data. You can see it again at any time by running summarizeSetup.cmd from the program folder.
 
@@ -169,7 +169,7 @@ Use the Run command, F5, to run the current file as if you had typed its name in
 
 Press Shift+F5 to execute a file path, email address, or web URL at the cursor position.  If text is selected, it will be used instead -- after removing any line break characters.  You also have a chance to adjust it before execution.
 
-Use the Mail command, Control+M, to send the current file as the body of a message, or Control+Shift+M to send it as an attachment.  These commands invoke a Windows feature similar to the "Send To" feature of Microsoft Word.
+Use the Mail command, Control+M, to send the current file by email: its text goes in the body, and the file is attached when it is saved on disk.  The command invokes a Windows feature similar to the "Send To" feature of Microsoft Word.
 
   Press Shift+F2 to rename the current file, both in EdSharp and on disk.  Press Alt+Shift+D to delete it.
 
@@ -184,7 +184,7 @@ Press Alt+V to pick one of the available scripts and paste it into the current d
 
 A script collection grows over the years, so each row in the list says where its script came from. A name alone means the Default folder. A name followed by a language in parentheses means that language's folder. A name followed by "shipped" means a script that came with EdSharp, not one you saved. The name still comes first in each row, so typing part of a name finds it as before. Scripts are divided by compiler on purpose, which keeps a large collection manageable. Save a script while a compiler is chosen, and it belongs to that language; save it with no compiler chosen, and it is available everywhere.
 
-Use the View Script command, Alt+Shift+V, to open a script file in EdSharp to read or edit it, rather than run it.  You can also manage script files with the Open in Explorer command, Alt+Backslash, which opens Windows Explorer in the folder that holds them.
+Use the Edit Script command, Alt+Shift+V, to open a script file in EdSharp to read or edit it, rather than run it. It was called View Script; DbDo uses the same name and key.  You can also manage script files with the Open in Explorer command, Alt+Backslash, which opens Windows Explorer in the folder that holds them.
 
 EdSharp runs a script with a .js extension as JScript .NET code.  Such a file can do almost anything in EdSharp, as the section about scripting explains.  For example, the "ul from selected.js" file makes an HTML unordered list from the selected lines of text.
 
@@ -472,7 +472,7 @@ Use the Infer Indent command, Alt+RightBracket, to hear what indent unit the cur
 
 ### Mailing a Document
 
-Two commands send the open document by mail, and neither needs Microsoft Word. Mail Body opens a new message in whatever mail program this computer uses, with the document as the message text and its name as the subject. A document too long for a mail link is offered as an attachment instead, since a cut-off message helps nobody. Mail Attach writes the document to a temporary file and opens a new message. It also puts the file on the clipboard as a file, so pressing Control+V in the message attaches it, even in mail programs that ignore attachments on a link. If you prefer the old way and have Word, set the Mailer option to Word.
+Mail, Control+M, sends the open document by mail through the mail program this computer uses, and does not need Microsoft Word. The document's text goes in the body and its name in the subject. When the document is saved on disk, the file is attached too. If the mail program does not accept the message that way, EdSharp opens a plain new message with the text in the body instead. Until 21 November 2026 this was two commands, Mail Body and Mail Attachment; the Alternate Menu still finds Mail by either old name.
 
 ### Thesaurus
 
@@ -490,7 +490,7 @@ A Web folder inside it also holds browser versions: React, Vue, and a custom ele
 
 EdSharp turns a PDF into Markdown, HTML, a Word document or plain text, with its structure kept: headings stay headings, lists stay lists, tables stay tables, and bold and italic remain. This matters more with a screen reader than on paper, because headings and lists are how you move through a document.
 
-The work is done by a free PDF reader that EdSharp can install for you. Tick the PDF box on the last page of the installer, or run installPdfTools.cmd in the EdSharp program folder at any time; it needs Python, which the same installer offers. Nothing here needs Microsoft Word, and nothing costs anything.
+The work is done by a free PDF reader that EdSharp can install for you. Mark the PDF box on the last page of the installer, or run installPdfTools.cmd in the EdSharp program folder at any time; it needs Python, which the same installer offers. Nothing here needs Microsoft Word, and nothing costs anything.
 
 Every PDF conversion follows one path. The reader turns the PDF into rich Markdown, and EdSharp finishes from there: Markdown as it is, HTML in the binary, plain text in the binary, or a Word document with Pandoc. If the reader is missing, the conversion stops with a message telling you which script to run. If a PDF is a scan of images rather than text, no converter can help; that needs optical character recognition first.
 
@@ -504,7 +504,7 @@ Two settings shape the check. SpellLanguage names the language, "en-US" unless y
 
 ### Asking About Code
 
-When the window holds a source file, F12 sends your question to a model trained on code, not the general chat model. It works the same way Compile picks a compiler by the kind of file you are editing. The installer offers qwen2.5-coder:7b as a checkbox, about five gigabytes, beside the Ollama box. Tick it, and the switch happens by itself.
+When the window holds a source file, F12 sends your question to a model trained on code, not the general chat model. It works the same way Compile picks a compiler by the kind of file you are editing. The installer offers qwen2.5-coder:7b as a checkbox, about five gigabytes, beside the Ollama box. Mark it, and the switch happens by itself.
 
 It is good at anything about the file in front of you: explain this error message, what does this method do, write a function that does such and such, review this for mistakes, change this loop to the other style, or add comments. In that kind of work the whole subject fits in the question, which is where a model this size does well. It cannot reason about a program spread over many files, because it sees only what you send it, and a large file may not fit at once. A method or a class is the practical unit.
 
@@ -516,7 +516,7 @@ Press Alt+Shift+F7 to translate the selection, or the whole document when nothin
 
 The work is done by the same AI model on your computer that Chat with AI uses. So nothing is sent over the internet, there is no account, and there is no limit on how much you translate. Quality is good between widely written languages, such as Spanish, French, German, Portuguese and Italian. It is useful, but less reliable, for languages with less written material behind them.
 
-A larger model translates better, at the cost of disk space and time. The installer offers qwen2.5:7b as a checkbox, about five gigabytes, beside the Ollama box. Tick it, and translation uses it by itself, while Chat with AI keeps llama3.2, the smaller and quicker model. Nothing needs setting. If you would rather use another model, name it in the TranslateModel option with Edit Settings, Alt+Shift+E.
+A larger model translates better, at the cost of disk space and time. The installer offers qwen2.5:7b as a checkbox, about five gigabytes, beside the Ollama box. Mark it, and translation uses it by itself, while Chat with AI keeps llama3.2, the smaller and quicker model. Nothing needs setting. If you would rather use another model, name it in the TranslateModel option with Edit Settings, Alt+Shift+E.
 
 ### Chat with AI
 
@@ -653,7 +653,7 @@ Extract=true
 
 The first task has an empty Replace, so it deletes each match; the second supplies replacement text; the third collects matches to the clipboard instead of changing the file.  A copy of this job ships as Transform_Example.inix in the EdSharp program folder.
 
-Press Alt+Shift+Semicolon to insert the current time and date at the cursor position.  The configurable format defaults to text like the following:\
+Press Control+Semicolon to insert the current time and date, as Control+Semicolon inserts the date in Excel at the cursor position.  The configurable format defaults to text like the following:\
 `5:43 AM Sunday, May 13, 2007`
 
 Configuration settings let you adjust the date and time formats according to templates explained in [Microsoft's custom date and time format reference](<https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings>).
@@ -681,9 +681,9 @@ Result: Tuesday, December 25, 2007
 
 Use the HTML Format command, Control+H, to convert the current document to HTML in a new window.  The document is treated as Markdown source and rendered to a complete HTML page by the bundled Pandoc, so Markdown headings, lists, links, tables, and emphasis become their HTML equivalents.  Plain text with no Markdown markup converts cleanly as well.
 
-In a structured text file, the first line is assumed to be the title of the resulting web page.  Lines beginning with a web or email address are converted to links.  Typically, you would use this command after creating sections with Control+Enter and generating a table of contents with Alt+Shift+T.
+In a structured text file, the first line is assumed to be the title of the resulting web page.  Lines beginning with a web or email address are converted to links.  Typically, you would use this command after creating sections with Control+Enter and generating a table of contents with Control+Shift+T.
 
-Use the Text Convert command, Control+T, to convert a list of files in the current editing window to text files with the same names except for .txt extensions.  Press Control+Shift+T to convert and append source files to text in a new document instead.
+Use the Text Convert command, Control+T, to convert a list of files in the current editing window to text files with the same names except for .txt extensions.  Press Alt+Shift+T, Text Combine, to convert and append source files to text in a new document instead.
 
 The Web Download command, Alt+Shift+W, lets you pick one or more files to download from a page whose address you give.  If Internet Explorer is open, EdSharp offers the address in its address bar.  Each item in the list of checkboxes shows both the link's text and the name of the file it leads to.  Press Spacebar to check or uncheck an item.  After you pick files, EdSharp asks for the folder to save them in.  If a link's address does not end in a valid file name, EdSharp makes a name from other characters in the address.  If a file with that name already exists, it adds a number to make the name unique, such as page_001.htm, page_002.htm and so on.  
   
@@ -746,7 +746,7 @@ Some configuration options belong to the current compiler rather than to EdSharp
 
 A compiler's configuration is stored in the EdSharp data folder, in a file with the compiler's name and a .ini extension.  For example, if you made settings for the "Delphi" compiler, EdSharp would add a Delphi entry to the Compilers section of your EdSharp.inix. It would then keep that compiler's favorites, bookmarks and user-defined tokens in Delphi.ini.  Press Alt+0 to hear the current compiler and folder.
 
-Press F4 to switch to one of the editing windows that are open, from a list.  Press Control+F4 to close the current window, or Control+Shift+F4 to close all the others.  EdSharp's windows can be arranged on screen in the usual ways for programs with several document windows.  The Window menu has these commands: Arrange Icons, Alt+F11; Cascade, Control+F11; Tile Horizontal, Alt+Shift+F11; and Tile Vertical, Shift+F11.
+Press F4 to switch to one of the editing windows that are open, from a list.  Press Control+F4 to close the current window, or Control+Shift+F4 to close all the others.  EdSharp's windows can be arranged on screen in the usual ways for programs with several document windows.  EdSharp has no Window menu; these commands are on the File menu, with Next Window (Control+Tab) and Previous Window (Control+Shift+Tab): Arrange Icons, Alt+F11; Cascade, Control+F11; Tile Horizontal, Alt+Shift+F11; and Tile Vertical, Shift+F11.
 
 Use the Alternate Menu command, Alt+F10, to execute a command from a single, alphebetized list.
 

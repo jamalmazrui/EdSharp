@@ -420,7 +420,7 @@ Filename: "{cmd}"; \
   Description: "{code:descPython}"; \
   Flags: postinstall skipifsilent runascurrentuser; Check: pythonNeedsUpdate
 
-; ---- 3. Reinstall, unticked -------------------------------------------------
+; ---- 3. Reinstall, unmarked -------------------------------------------------
 Filename: "{cmd}"; \
   Parameters: "/c """"{app}\scripts\installPdfTools.cmd"""" noPause";  \
   WorkingDir: "{app}"; \
@@ -473,8 +473,8 @@ Filename: "{cmd}"; \
 
 
 ; ---- After the components: what to do now ----
-; LAUNCH IS TICKED, AS IN EVERY HOMER INSTALLER (29 September 2026): Enter on
-; the finish page starts the app (help\FinishPage.md). It was unticked here,
+; LAUNCH IS MARKED, AS IN EVERY HOMER INSTALLER (29 September 2026): Enter on
+; the finish page starts the app (help\FinishPage.md). It was unmarked here,
 ; so pressing Enter installed EdSharp and never opened it. The entry only
 ; leaves a marker; EdSharp starts when the Results box is closed, so the box
 ; is not hidden behind the editor, and it starts as the ordinary user, not
@@ -519,7 +519,7 @@ Root: HKA; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\EdSharp.
 
 [Code]
 // THE KIT'S COMPONENTS AND SCREEN READER FUNCTIONS (10 October 2026). EdSharp had its own copy of each; the
-// screen reader boxes are now worded and ticked by HomerComponents.iss, which asks EdSharp's installJawsScripts.cmd
+// screen reader boxes are now worded and marked by HomerComponents.iss, which asks EdSharp's installJawsScripts.cmd
 // the kit's question. The kit comes from the build as /DHomerDev=; compiled by hand, C:\HomerDev.
 #define HomerReaderScript "installJawsScripts.cmd"
 #ifndef HomerDev
@@ -1237,7 +1237,7 @@ end;
 { ---------------------------------------------------------------------------
   WHAT THE INSTALLER ACTUALLY DID -- one message box at the very end, read
   properly by a screen reader, following the HomerView model.  Every line is
-  an OBSERVED FACT, not a checkbox that was ticked: a ticked box says what was
+  an OBSERVED FACT, not a checkbox that was marked: a marked box says what was
   ASKED FOR; the folder on disk says what HAPPENED, and those differ often
   enough to matter -- most of all for the NVDA add-on, which silently does
   nothing when NVDA is not running.  No console window anywhere waits on a
@@ -1276,9 +1276,9 @@ begin
   SaveStringsToFile(AddBackslash(sFolder) + 'EdSharp-setup-' + logStamp() + '.log', lSetupLines, True);
 end;
 
-{ THE RESULTS BOX REPORTS WHAT WAS TICKED (29 September 2026), as every
+{ THE RESULTS BOX REPORTS WHAT WAS MARKED (29 September 2026), as every
   Homer installer's does: where EdSharp is and where the logs are, then one
-  line for each box ticked on the finish page, and nothing else. The captions
+  line for each box marked on the finish page, and nothing else. The captions
   are written down when Finish is pressed -- before any of those steps run --
   for summarizeSetup, which reports only on them. }
 var
@@ -1323,7 +1323,7 @@ var
   sFlag: string;
 begin
   sFlag := ExpandConstant('{localappdata}\EdSharp\logs\EdSharp_launch.flag');
-  //  When the Launch box was ticked, setup waits for the Results box to be
+  //  When the Launch box was marked, setup waits for the Results box to be
   //  closed and then starts EdSharp as the ordinary user; otherwise the box
   //  is shown without waiting, as before.
   try
@@ -1354,19 +1354,35 @@ begin
     WizardForm.StatusLabel.Caption := 'Checking which components are installed ...';
     WizardForm.ProgressGauge.Style := npbstMarquee;
     WizardForm.Refresh();
+    homerSay('Checking which components are installed', True);
 
-    WizardForm.StatusLabel.Caption := 'Checking Git ...';
-    devToolState(0, 'Git.Git', 'git');
-    WizardForm.StatusLabel.Caption := 'Checking Node.js ...';
-    devToolState(1, 'OpenJS.NodeJS.LTS;OpenJS.NodeJS', 'node');
-    WizardForm.StatusLabel.Caption := 'Checking Python ...';
-    devToolState(2, 'Python.Python.3.14;Python.Python.3.13;Python.Python.3.12', 'python');
-    WizardForm.StatusLabel.Caption := 'Checking Ollama ...';
-    devToolState(3, 'Ollama.Ollama', 'ollama');
-    WizardForm.StatusLabel.Caption := 'Checking the document tools ...';
-    docToolsPresent();
+    // IN LOWERCASE ALPHABETICAL ORDER (22 November 2026, Jamal's ruling), a leading "the" set aside, the screen
+    // readers among the rest: how far the names have got through the alphabet says how far the checking has got.
+    // The kit's homerProbeAll, called after this, finds nothing left to ask and says nothing.
     WizardForm.StatusLabel.Caption := 'Checking the AI models ...';
+    homerSay('Checking the AI models', False);
     ollamaModelList();
+    WizardForm.StatusLabel.Caption := 'Checking the document tools ...';
+    homerSay('Checking the document tools', False);
+    docToolsPresent();
+    WizardForm.StatusLabel.Caption := 'Checking Git ...';
+    homerSay('Checking Git', False);
+    devToolState(0, 'Git.Git', 'git');
+    WizardForm.StatusLabel.Caption := 'Checking the JAWS scripts ...';
+    WizardForm.Refresh();
+    homerReaderState('jaws');
+    WizardForm.StatusLabel.Caption := 'Checking Node.js ...';
+    homerSay('Checking Node.js', False);
+    devToolState(1, 'OpenJS.NodeJS.LTS;OpenJS.NodeJS', 'node');
+    WizardForm.StatusLabel.Caption := 'Checking the NVDA add-on ...';
+    WizardForm.Refresh();
+    homerReaderState('nvda');
+    WizardForm.StatusLabel.Caption := 'Checking Ollama ...';
+    homerSay('Checking Ollama', False);
+    devToolState(3, 'Ollama.Ollama', 'ollama');
+    WizardForm.StatusLabel.Caption := 'Checking Python ...';
+    homerSay('Checking Python', False);
+    devToolState(2, 'Python.Python.3.14;Python.Python.3.13;Python.Python.3.12', 'python');
     // The labels themselves, so the page has nothing left to compute.
     descGitHub(''); descNode(''); descPython(''); descOllama('');
     descDocTools(''); descTranslateModel(''); descCodeModel('');
@@ -1386,6 +1402,9 @@ begin
   begin
     gbInstalled := True;
     warmComponentProbes();
+    //  THE SCREEN READERS TOO (22 November 2026): warmComponentProbes asks EdSharp's own components; the kit's
+    //  homerProbeAll asks the JAWS and NVDA state, so every box's verb is known before the finish page appears.
+    homerProbeAll(True);
   end;
 end;
 
@@ -1417,8 +1436,8 @@ begin
     sLogDir := sJawsLogDir;
   end;
 
-  // Where it is, then one line for each ticked screen reader box; the other
-  // ticked boxes are reported by summarizeSetup, which runs after them.
+  // Where it is, then one line for each marked screen reader box; the other
+  // marked boxes are reported by summarizeSetup, which runs after them.
   sMessage := 'EdSharp {#MyAppVersion} is installed in ' + ExpandConstant('{app}') + '.' + sBreak + sBreak;
 
   if wasTicked('JAWS') then

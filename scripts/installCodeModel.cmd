@@ -40,7 +40,7 @@ exit /b 0
 
 :no_ollama
 echo Ollama is not installed, so the coding model cannot be fetched.
-echo Tick the Ollama box as well, or run installOllama.cmd first.
+echo Mark the Ollama box as well, or run installOllama.cmd first.
 echo [installCodeModel] FAILED: no ollama >> "%log%"
 exit /b 7
 

@@ -1,8 +1,8 @@
 ﻿# EdSharp Hotkeys
 
-**Version 5.0.164**  
+**Version 5.0.174**  
 
-Generated from the key file on 17 November 2026. Do not edit this page; edit the key file in configs and build again.
+Generated from the key file on 22 November 2026. Do not edit this page; edit the key file in configs and build again.
 
 Every EdSharp command, given three ways so you can find a command however you think of it. Press Control+F1 to turn on the Key Describer, which says a command's name, key and description instead of running it, and Alt+F10 for the Alternate Menu, which lists every command and finds one by a former name too.
 
@@ -34,7 +34,7 @@ Commands in alphabetical order.
 - **Clear Bookmark**, Control+Shift+B -- Remove the bookmark at the cursor
 - **Clear Clipboard**, Alt+Shift+Apostrophe -- Empty the clipboard
 - **Clear Favorite**, Control+Shift+L -- Clear current file from the list of favorites
-- **Close All but Current Window**, Control+Shift+F4 -- Close all editing windows except the current one
+- **Close All but Current Window**, Control+Shift+F4 -- Close every window but the current one
 - **Close Window**, Control+F4 -- Close the current window
 - **Compile**, Control+F5 -- Compile source code, say output, and jump to error position
 - **Complete Selection**, Shift+F8 -- Select text from starting point to cursor
@@ -57,6 +57,7 @@ Commands in alphabetical order.
 - **Delete Up**, Alt+Shift+Backspace -- Delete from cursor to top of file
 - **Developer Guide**, no key -- Open the guide for developers
 - **Documentation**, F1 -- Open the EdSharp guide
+- **Edit Script**, Alt+Shift+V -- Pick a script to edit
 - **Edit Settings**, Alt+Shift+E -- Edit EdSharp's settings file
 - **Elevate Version**, F11 -- Download and install the latest EdSharp
 - **End Character**, Alt+End -- Go to last non-blank character of line and read it
@@ -97,7 +98,7 @@ Commands in alphabetical order.
 - **Infer Indent**, Alt+RightBracket -- Infer the current document's indent unit, or set it on a second press
 - **Insert All Users Path**, Control+Shift+I -- Insert JAWS All Users path in Open or Save Dialog
 - **Insert Script Path**, Control+I -- Insert JAWS script path in Open or Save Dialog
-- **Insert Time**, Alt+Shift+Semicolon -- Insert current time and date
+- **Insert Time**, Control+Semicolon -- Insert current time and date
 - **Invoke Script**, Alt+V -- Pick a script to run or paste
 - **Join Lines**, Control+Shift+J -- Word wrap lines in all or selected paragraphs
 - **Jump to Line**, Control+J -- Jump to line number or to line, column position
@@ -113,8 +114,7 @@ Commands in alphabetical order.
 - **List Favorites**, Alt+L -- Open a file from the list of favorites
 - **Lookup Term**, Alt+F7 -- Look up information from dictionary.com, thesaurus.com, and wikipedia.org
 - **Lower Case**, Control+Shift+U -- Convert current or selected characters to lower case
-- **Mail Attachment**, Control+Shift+M -- Send the current file as email attachments
-- **Mail Body**, Control+M -- Send the current file's text as the body of an email message
+- **Mail**, Control+M -- Email the current file, its text in the body and the file attached when it is saved
 - **Markdown to Plain Text**, no key -- Convert the Markdown in this window to plain text
 - **New**, Control+N -- Open a new editing window
 - **New from Clipboard**, Control+Shift+N -- Open a new editing window containing clipboard text
@@ -224,8 +224,8 @@ Commands in alphabetical order.
 - **Start Tag**, Control+Shift+Comma -- Go to opening tag of HTML element
 - **Style**, no key -- Set the style of the cursor or selected text
 - **Swap Case**, Alt+Shift+U -- Convert lower case characters to upper case, and vice versa
-- **Text Combine**, Control+Shift+T -- Convert other formats to text and combine them in a new editing window
-- **Text Contents**, Alt+Shift+T -- Generate and prepend a table of contents to the current document
+- **Text Combine**, Alt+Shift+T -- Convert other formats to text and combine them in a new editing window
+- **Text Contents**, Control+Shift+T -- Generate and prepend a table of contents to the current document
 - **Text Convert**, Control+T -- Convert files of other formats to text files
 - **Thesaurus**, Shift+F7 -- Look up synonyms for word at cursor
 - **Tile Horizontal**, Alt+Shift+F11 -- Tile the open windows across
@@ -240,8 +240,7 @@ Commands in alphabetical order.
 - **Unselect All**, Control+Shift+A -- Clear text selection
 - **Unwrap**, Control+Shift+W -- Unwrap lines
 - **Upper Case**, Control+U -- Convert current or selected characters to upper case
-- **View Script**, Alt+Shift+V -- Pick script file to view or edit
-- **Web Client Utilities**, Alt+Shift+Space -- Pick a web client utility to run
+- **Web Client Utilities**, JAWS+Control+Space -- Pick a web client utility to run, with JAWS
 - **Web Download**, Alt+Shift+W -- Download files linked from a web page or the current document
 - **What This Does**, Shift+F1 -- Say what the control with focus does
 - **Where Am I**, Control+Slash -- Say where you are, what has focus and its keys
@@ -328,11 +327,9 @@ The same commands, in alphabetical order of the key that runs them.
 - **Alt+Shift+R** -- Reverse Items: Reverse order of all or selected items of text
 - **Alt+Shift+RightBracket** -- Say Braces: Say number of braces on either side of cursor
 - **Alt+Shift+S** -- Save Copy: Save copy of document using a different name
-- **Alt+Shift+Semicolon** -- Insert Time: Insert current time and date
-- **Alt+Shift+Space** -- Web Client Utilities: Pick a web client utility to run
-- **Alt+Shift+T** -- Text Contents: Generate and prepend a table of contents to the current document
+- **Alt+Shift+T** -- Text Combine: Convert other formats to text and combine them in a new editing window
 - **Alt+Shift+U** -- Swap Case: Convert lower case characters to upper case, and vice versa
-- **Alt+Shift+V** -- View Script: Pick script file to view or edit
+- **Alt+Shift+V** -- Edit Script: Pick a script to edit
 - **Alt+Shift+W** -- Web Download: Download files linked from a web page or the current document
 - **Alt+Shift+Y** -- Yield Encoding: Render all or selected text based on a character encoding
 - **Alt+Slash** -- Say Styles: Say the styles at the cursor, or set them on a second press
@@ -377,7 +374,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+L** -- Set Favorite: Add current file to the list of favorites
 - **Control+LeftArrow** -- Previous Word: Go to previous word and read it
 - **Control+LeftBracket** -- Previous Alignment: Go to previous change in justification
-- **Control+M** -- Mail Body: Send the current file's text as the body of an email message
+- **Control+M** -- Mail: Email the current file, its text in the body and the file attached when it is saved
 - **Control+N** -- New: Open a new editing window
 - **Control+O** -- Open: Open file
 - **Control+Q** -- Quote: Add the quote prefix to the current or selected lines
@@ -385,6 +382,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+RightArrow** -- Next Word: Go to next word and read it
 - **Control+RightBracket** -- Next Alignment: Go to next change in justification
 - **Control+S** -- Save: Save the current file
+- **Control+Semicolon** -- Insert Time: Insert current time and date
 - **Control+Shift+6** -- Previous Baseline: Go to previous change in baseline
 - **Control+Shift+A** -- Unselect All: Clear text selection
 - **Control+Shift+Apostrophe** -- Append Clipboard: Add the clipboard text to the end of a file you name
@@ -404,7 +402,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+Shift+F12** -- Go to Environment: Go to the current compiler's interactive environment
 - **Control+Shift+F2** -- Sample Programs: List the sample programs that ship with EdSharp and open one
 - **Control+Shift+F3** -- Reverse Find with Regex: Search backward for a regular expression in all or selected text
-- **Control+Shift+F4** -- Close All but Current Window: Close all editing windows except the current one
+- **Control+Shift+F4** -- Close All but Current Window: Close every window but the current one
 - **Control+Shift+F5** -- Pick Compiler: Pick a compiler or interpreter from the list of those configured
 - **Control+Shift+F6** -- Previous Section: Go to previous section
 - **Control+Shift+F7** -- No Guard: Clear read-only status
@@ -416,7 +414,6 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+Shift+J** -- Join Lines: Word wrap lines in all or selected paragraphs
 - **Control+Shift+L** -- Clear Favorite: Clear current file from the list of favorites
 - **Control+Shift+LeftBracket** -- Left Brace: Search backward for matching left brace character
-- **Control+Shift+M** -- Mail Attachment: Send the current file as email attachments
 - **Control+Shift+N** -- New from Clipboard: Open a new editing window containing clipboard text
 - **Control+Shift+O** -- Open Other Format: Open file in another format and convert it to text
 - **Control+Shift+P** -- Path List: Generate a list of files in a new editing window
@@ -426,7 +423,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+Shift+RightBracket** -- Right Brace: Search forward for matching right brace character
 - **Control+Shift+S** -- Save As: Save a copy of the current file under another name or format
 - **Control+Shift+Semicolon** -- Calculate Date: Calculate and insert date
-- **Control+Shift+T** -- Text Combine: Convert other formats to text and combine them in a new editing window
+- **Control+Shift+T** -- Text Contents: Generate and prepend a table of contents to the current document
 - **Control+Shift+Tab** -- Previous Window: Switch to the previous window
 - **Control+Shift+U** -- Lower Case: Convert current or selected characters to lower case
 - **Control+Shift+V** -- Paste File: Insert another file at cursor position
@@ -456,6 +453,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **F6** -- Go to Section: Go to section in body from topic in table of contents
 - **F7** -- Spell Check: Spell check all or selected text
 - **F8** -- Start Selection: Mark starting point of text to be selected
+- **JAWS+Control+Space** -- Web Client Utilities: Pick a web client utility to run, with JAWS
 - **Shift+Backspace** -- Say Chunk: Say chunk at cursor
 - **Shift+Enter** -- Indent New Line: Start new line with same indentation as current one
 - **Shift+F1** -- What This Does: Say what the control with focus does
@@ -486,13 +484,13 @@ Grouped by the modifier key a command starts with.
 - **Alt+Shift+Delete** -- Delete Down
 - **Alt+Shift+D** -- Delete File
 - **Alt+Shift+Backspace** -- Delete Up
+- **Alt+Shift+V** -- Edit Script
 - **Alt+Shift+E** -- Edit Settings
 - **Alt+Shift+F** -- File Find
 - **Alt+Shift+G** -- Go to Part
 - **Alt+Shift+F8** -- Go to Start of Selection
 - **Alt+Shift+I** -- Indent Mode
 - **Alt+Shift+Enter** -- Indent New Line Previous
-- **Alt+Shift+Semicolon** -- Insert Time
 - **Alt+Shift+J** -- Justify
 - **Alt+Shift+K** -- Keep Unique Items
 - **Alt+Shift+L** -- List Different Items
@@ -512,11 +510,9 @@ Grouped by the modifier key a command starts with.
 - **Alt+Shift+Equals** -- Set Default Font and Color
 - **Alt+Shift+Dash** -- Set Selection Font
 - **Alt+Shift+U** -- Swap Case
-- **Alt+Shift+T** -- Text Contents
+- **Alt+Shift+T** -- Text Combine
 - **Alt+Shift+F11** -- Tile Horizontal
 - **Alt+Shift+F7** -- Translate Language
-- **Alt+Shift+V** -- View Script
-- **Alt+Shift+Space** -- Web Client Utilities
 - **Alt+Shift+W** -- Web Download
 - **Alt+Shift+Y** -- Yield Encoding
 
@@ -546,7 +542,6 @@ Grouped by the modifier key a command starts with.
 - **Control+Shift+J** -- Join Lines
 - **Control+Shift+LeftBracket** -- Left Brace
 - **Control+Shift+U** -- Lower Case
-- **Control+Shift+M** -- Mail Attachment
 - **Control+Shift+N** -- New from Clipboard
 - **Control+Shift+F7** -- No Guard
 - **Control+Shift+O** -- Open Other Format
@@ -569,7 +564,7 @@ Grouped by the modifier key a command starts with.
 - **Control+Shift+S** -- Save As
 - **Control+Shift+Backslash** -- Show in FileDir
 - **Control+Shift+Comma** -- Start Tag
-- **Control+Shift+T** -- Text Combine
+- **Control+Shift+T** -- Text Contents
 - **Control+Shift+Enter** -- Trim Blanks
 - **Control+Shift+Q** -- Unquote
 - **Control+Shift+A** -- Unselect All
@@ -648,9 +643,10 @@ Grouped by the modifier key a command starts with.
 - **Control+F7** -- Guard Document
 - **Control+H** -- HTML Format
 - **Control+I** -- Insert Script Path
+- **Control+Semicolon** -- Insert Time
 - **Control+J** -- Jump to Line
 - **Control+F1** -- Key Describer Toggle
-- **Control+M** -- Mail Body
+- **Control+M** -- Mail
 - **Control+N** -- New
 - **Control+RightBracket** -- Next Alignment
 - **Control+6** -- Next Baseline
@@ -719,3 +715,4 @@ Grouped by the modifier key a command starts with.
 
 - **Enter** -- Enter New Line
 - **Tab** -- Indent
+- **JAWS+Control+Space** -- Web Client Utilities

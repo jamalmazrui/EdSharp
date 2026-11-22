@@ -366,12 +366,16 @@ try {
   writeLog "Script: $($MyInvocation.MyCommand.Path)"
   writeLog "PowerShell: $($PSVersionTable.PSVersion), user: $env:USERNAME"
   writeLog "Arguments: bQuiet=$bQuiet bUninstall=$bUninstall pathLogFile=$pathLogFile"
-  # Installed in scripts: the installer script is one level up.
-  $sIssFile = Join-Path (Split-Path -Parent $sScriptDir) "EdSharp_setup.iss"
-  if (Test-Path -LiteralPath $sIssFile) {
-    $matchVersion = [regex]::Match([System.IO.File]::ReadAllText($sIssFile), "(?m)^AppVersion=(.+)$")
-    if ($matchVersion.Success) { writeLog "EdSharp version: $($matchVersion.Groups[1].Value.Trim())" }
-  }
+  # THE VERSION FROM THE PROGRAM ITSELF (18 November 2026). This read the AppVersion= line of EdSharp_setup.iss,
+  # which now says {#MyAppVersion} because the installer works the version out from version.txt, so the log said
+  # "EdSharp version: {#MyAppVersion}". The program file beside the scripts folder carries the real one; version.txt
+  # is the fallback in a source folder.
+  $sAppDir = Split-Path -Parent $sScriptDir
+  $sExe = Join-Path $sAppDir "EdSharp.exe"
+  $sVersionFile = Join-Path $sAppDir "version.txt"
+  if (Test-Path -LiteralPath $sExe) { writeLog "EdSharp version: $((Get-Item -LiteralPath $sExe).VersionInfo.ProductVersion)" }
+  elseif (Test-Path -LiteralPath $sVersionFile) { writeLog "EdSharp version: $(([System.IO.File]::ReadAllText($sVersionFile)).Trim())" }
+  else { writeLog "EdSharp version: unknown, since neither EdSharp.exe nor version.txt is beside the scripts folder" }
 
   # The source layout drives everything: subfolders of Scripts map onto
   # Settings subfolders by name, and root files belong to enu.

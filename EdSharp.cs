@@ -999,13 +999,13 @@ public static string EOD = LB + DD + LB + "End of Document" + LB;
 
 public static Dictionary<Keys, ToolStripMenuItem> hashKey = new Dictionary<Keys, ToolStripMenuItem>();
 public MenuStrip menuMain;
-public ToolStripMenuItem menuFile, menuFileNew, menuFileNewFromClipboard, menuFileOpen, menuFileOpenOtherFormat, menuFileOpenAgain, menuFileRecent, menuFileSetFavorite, menuFileClearFavorite, menuFileListFavorites, menuFileFind, menuFileSave, menuFileSaveAs, menuFileSaveCopy, menuFileExport, menuFileRename, menuFileProperties, menuFileMailBody, menuFileMailAttach, menuFilePrint, menuFileRun, menuFileCurrentWindows, menuFileClose, menuFileCloseAllButCurrentWindow, menuFileExit;
+public ToolStripMenuItem menuFile, menuFileNew, menuFileNewFromClipboard, menuFileOpen, menuFileOpenOtherFormat, menuFileOpenAgain, menuFileRecent, menuFileSetFavorite, menuFileClearFavorite, menuFileListFavorites, menuFileFind, menuFileSave, menuFileSaveAs, menuFileSaveCopy, menuFileExport, menuFileRename, menuFileProperties, menuFileMailBody, menuFilePrint, menuFileRun, menuFileCurrentWindows, menuFileClose, menuFileCloseAllButCurrentWindow, menuFileExit;
 public ToolStripMenuItem menuEdit, menuEditSelectAll, menuEditUnselectAll, menuEditCopy, menuEditCopyAppend, menuEditCopyRichText, menuEditCut, menuEditCutAppend, menuEditPaste, menuEditPasteFile, menuEditUndo, menuEditRedo, menuEditStartSelection, menuEditCompleteSelection, menuEditReselect, menuEditCopyAll, menuEditSelectChunk, menuEditAppendFromClipboard, menuEditQuote, menuEditUnquote, menuEditUpperCase, menuEditLowerCase, menuEditProperCase, menuEditSwapCase, menuEditYieldEncoding, menuEditJoinLines, menuEditHardLineBreak, menuEditEnterNewLine, menuEditIndentNewLine, menuEditIndentNewLinePrior, menuEditIndent, menuEditOutdent, menuEditAlign, menuEditIndentMode, menuEditJustify, menuEditStyle, menuEditBaseline, menuEditSetSelectionFont, menuEditSaveClipboard, menuEditAppendClipboard, menuEditClearClipboard;
 public ToolStripMenuItem menuDelete, menuDeleteReplaceRegular, menuDeleteReplaceWithRegExp, menuDeleteHardLine, menuDeleteParagraph, menuDeleteLine, menuDeleteRight, menuDeleteLeft, menuDeleteDown, menuDeleteUp, menuDeleteFile, menuDeleteTrimBlanks;
 public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateNextBlock, menuNavigatePriorBlock, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateGoToStartOfSelection;
 public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryPosition, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles;
 public ToolStripMenuItem menuMisc, menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscShowInFileDir, menuMiscBurnToCD, menuMiscWebDownload;
-public ToolStripMenuItem menuWindow, menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
+public ToolStripMenuItem menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical;
 public ToolStripMenuItem menuHelpWhatThisDoes, menuHelpWhereAmI;
 public ToolStripMenuItem menuHelp, menuHelpAbout, menuHelpDocumentation, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion;
 public StatusStrip statusBar;
@@ -1037,8 +1037,10 @@ menuFileSaveCopy = CreateMenuItem("Save Copy ...", "Alt+Shift+S", menuItem_Click
 menuFileExport = CreateMenuItem("Export Format ...", "Control+Shift+X", menuItem_Click, "child silent");
 menuFileRename = CreateMenuItem("Rename ...", "Shift+F2", menuItem_Click, "child silent");
 menuFileProperties = CreateMenuItem("Properties", "Alt+Enter", menuItem_Click, "child speak");
-menuFileMailBody = CreateMenuItem("&Mail Body ...", "Control+M", menuItem_Click, "child speak");
-menuFileMailAttach = CreateMenuItem("Mail Attachment ...", "Control+Shift+M", menuItem_Click, "child speak");
+// ONE MAIL COMMAND (21 November 2026): Mail Body and Mail Attachment were one job done two ways. Mail, Control+M,
+// puts the text in the body and attaches the file when it is saved on disk, as FileDir's Mail does. Control+Shift+M
+// is free, so FileDir's Move to Folder can take it.
+menuFileMailBody = CreateMenuItem("&Mail ...", "Control+M", menuItem_Click, "child speak");
 // NO KEY, ON THE MISC MENU (9 November 2026): Control+P plays media in every Homer app, and few people print now.
 menuFilePrint = CreateMenuItem("&Print", "", menuItem_Click, "child silent");
 menuFileRun = CreateMenuItem("Run", "F5", menuItem_Click, "child speak");
@@ -1046,7 +1048,7 @@ menuFileCurrentWindows = CreateMenuItem("Current Windows ...", "F4", menuItem_Cl
 menuFileClose = CreateMenuItem("Close Window", "Control+F4", menuItem_Click, "child speak");
 menuFileCloseAllButCurrentWindow = CreateMenuItem("Close All but Current Window", "Control+Shift+F4", menuItem_Click, "child speak");
 menuFileExit = CreateMenuItem("Exit EdSharp", "Alt+F4", menuItem_Click, "frame speak");
-menuFile.DropDownItems.AddRange(new ToolStripItem[] {menuFileNew, menuFileNewFromClipboard, menuFileOpen, menuFileOpenOtherFormat, menuFileOpenAgain, menuFileRecent, menuFileSetFavorite, menuFileClearFavorite, menuFileListFavorites, menuFileFind, menuFileSave, menuFileSaveAs, menuFileSaveCopy, menuFileExport, menuFileRename, menuFileProperties, menuFileMailBody, menuFileMailAttach, menuFileRun, menuFileCurrentWindows, menuFileClose, menuFileCloseAllButCurrentWindow, menuFileExit});
+menuFile.DropDownItems.AddRange(new ToolStripItem[] {menuFileNew, menuFileNewFromClipboard, menuFileOpen, menuFileOpenOtherFormat, menuFileOpenAgain, menuFileRecent, menuFileSetFavorite, menuFileClearFavorite, menuFileListFavorites, menuFileFind, menuFileSave, menuFileSaveAs, menuFileSaveCopy, menuFileExport, menuFileRename, menuFileProperties, menuFileMailBody, menuFileRun, menuFileCurrentWindows, menuFileClose, menuFileCloseAllButCurrentWindow, menuFileExit});
 //Homer.LbcAsk.message("File.", menuFile.DropDownItems.Count);
 
 menuEdit = CreateMenu("&Edit");
@@ -1217,7 +1219,9 @@ menuMiscRepeatLine = CreateMenuItem("Repeat Line", "Control+Y", menuItem_Click, 
 menuMiscSectionBreak = CreateMenuItem("Section Break", "Control+Enter", menuItem_Click, "child speak");
 menuMiscPathToClipboard = CreateMenuItem("Path to Clipboard", "Alt+Shift+P", menuItem_Click, "child speak");
 menuMiscPathList = CreateMenuItem("Path List", "Control+Shift+P", menuItem_Click, "frame speak");
-menuMiscInsertTime = CreateMenuItem("Insert Time", "Alt+Shift+OemSemicolon", menuItem_Click, "child speak");
+// CONTROL+SEMICOLON (21 November 2026): a command that changes the text takes Control, and Control+Semicolon inserts
+// the date in Excel. It was Alt+Shift+Semicolon.
+menuMiscInsertTime = CreateMenuItem("Insert Time", "Control+OemSemicolon", menuItem_Click, "child speak");
 menuMiscCalculateDate = CreateMenuItem("Calculate Date ...", "Control+Shift+OemSemicolon", menuItem_Click, "child silent");
 menuMiscHTMLFormat = CreateMenuItem("HTML Format", "Control+H", menuItem_Click, "child speak");
 menuMiscMarkdownToText = CreateMenuItem("Markdown to Plain Text", "", menuItem_Click, "child speak");
@@ -1230,8 +1234,10 @@ menuMiscRunCodeBlocks = CreateMenuItem("Run Code Blocks", "Alt+Shift+F9", menuIt
 menuMiscChatWithAI = CreateMenuItem("Chat with AI", "F12", menuItem_Click, "child speak");
 menuMiscChatWithDocument = CreateMenuItem("Chat about Document", "Shift+F12", menuItem_Click, "child speak");
 menuMiscTextConvert = CreateMenuItem("&Text Convert", "Control+T", menuItem_Click, "child speak");
-menuMiscTextCombine = CreateMenuItem("Text Combine", "Control+Shift+T", menuItem_Click, "child speak");
-menuMiscTextContents = CreateMenuItem("Text Contents", "Alt+Shift+T", menuItem_Click, "child speak");
+// SWAPPED (21 November 2026): Text Contents changes the document, so it takes Control; Text Combine makes a new
+// window and changes nothing, so it takes Alt.
+menuMiscTextCombine = CreateMenuItem("Text Combine", "Alt+Shift+T", menuItem_Click, "child speak");
+menuMiscTextContents = CreateMenuItem("Text Contents", "Control+Shift+T", menuItem_Click, "child speak");
 menuMiscYieldWithRegExp = CreateMenuItem("Yield with Regex ...", "Control+Shift+Y", menuItem_Click, "child silent");
 //menuMiscYieldWithRegExp.ShortcutKeys = Util.String2Key("Control+Shift+Y");
 menuMiscExtractWithRegExp = CreateMenuItem("Extract with Regex ...", "Control+Shift+E", menuItem_Click, "child silent");
@@ -1247,7 +1253,8 @@ menuMiscPromptCommand = CreateMenuItem("Prompt Command", "Alt+F5", menuItem_Clic
 menuMiscReviewOutput = CreateMenuItem("Review Output", "Alt+Shift+F5", menuItem_Click, "child speak");
 menuMiscSaveScript = CreateMenuItem("Save Script", "Alt+S", menuItem_Click, "child speak");
 menuMiscInvokeScript = CreateMenuItem("Invoke Script", "Alt+V", menuItem_Click, "child speak");
-menuMiscViewScript = CreateMenuItem("View Script", "Alt+Shift+V", menuItem_Click, "frame speak");
+// EDIT SCRIPT (21 November 2026, key groups): View Script is Edit Script, its name in DbDo, on the same key.
+menuMiscViewScript = CreateMenuItem("Edit Script", "Alt+Shift+V", menuItem_Click, "frame speak");
 menuMiscKeepUniqueItems = CreateMenuItem("Keep Unique Items", "Alt+Shift+K", menuItem_Click, "child speak");
 menuMiscNumberItems = CreateMenuItem("Number Items ...", "Alt+Shift+N", menuItem_Click, "child silent");
 menuMiscOrderItems = CreateMenuItem("Order Items", "Alt+Shift+O", menuItem_Click, "child speak");
@@ -1266,15 +1273,19 @@ menuMiscWebDownload = CreateMenuItem("Web Download", "Alt+Shift+W", menuItem_Cli
 menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscShowInFileDir, menuMiscBurnToCD, menuMiscWebDownload, menuFilePrint});
 //Homer.LbcAsk.message("Misc.", menuMisc.DropDownItems.Count);
 
-menuWindow = CreateMenu("&Window");
+// NO WINDOW MENU (21 November 2026, Jamal's ruling, as in DbDo and FileDir): the window commands join Current
+// Windows and Close Window on the File menu. Each has a function key or Tab, so none takes a letter.
 menuWindowNext = CreateMenuItem("Next Window", "Control+Tab", menuItem_Click, "child speak");
 menuWindowPrior = CreateMenuItem("Previous Window", "Control+Shift+Tab", menuItem_Click, "child speak");
 menuWindowArrangeIcons = CreateMenuItem("Arrange Icons", "Alt+F11", menuItem_Click, "child speak");
 menuWindowCascade = CreateMenuItem("Cascade", "Control+F11", menuItem_Click, "child speak");
 menuWindowTileHorizontal = CreateMenuItem("Tile Horizontal", "Alt+Shift+F11", menuItem_Click, "child speak");
 menuWindowTileVertical = CreateMenuItem("Tile Vertical", "Shift+F11", menuItem_Click, "child speak");
-menuWindow.DropDownItems.AddRange(new ToolStripMenuItem[] {menuWindowNext, menuWindowPrior, menuWindowArrangeIcons, menuWindowCascade, menuWindowTileHorizontal, menuWindowTileVertical});
-//Homer.LbcAsk.message("Window.", menuWindow.DropDownItems.Count);
+int iAt = menuFile.DropDownItems.IndexOf(menuFileCurrentWindows) + 1;
+menuFile.DropDownItems.Insert(iAt, menuWindowPrior);
+menuFile.DropDownItems.Insert(iAt, menuWindowNext);
+iAt = menuFile.DropDownItems.IndexOf(menuFileExit);
+foreach (ToolStripMenuItem menuLayout in new ToolStripMenuItem[] {menuWindowTileVertical, menuWindowTileHorizontal, menuWindowCascade, menuWindowArrangeIcons}) menuFile.DropDownItems.Insert(iAt, menuLayout);
 
 menuHelp = CreateMenu("&Help");
 menuHelpAbout = CreateMenuItem("About ...", "Alt+F1", menuItem_Click, "frame silent");
@@ -1312,13 +1323,16 @@ ToolStripMenuItem menuHelpLicense = CreateMenuItem("License", "", delegate(objec
 menuHelp.DropDownItems.AddRange(new ToolStripItem[] {menuHelpAbout, menuHelpDocumentation, menuHelpWhatThisDoes, menuHelpWhereAmI, menuHelpTutorial, menuHelpHistoryOfChanges, menuHelpReadMe, menuHelpHotkeys, menuHelpFrequentlyAskedQuestions, menuHelpTutorialsTranscript, menuHelpAnnouncement, menuHelpDeveloperGuide, menuHelpLicense, menuHelpSamplePrograms, menuHelpCopyLog, menuHelpKeyDescriber, menuHelpHotKeySummary, menuHelpAlternateMenu, menuHelpContextMenu, menuHelpSendToMenu, menuHelpElevateVersion});
 //Homer.LbcAsk.message("Help.", menuHelp.DropDownItems.Count);
 
-menuMain.Items.AddRange(new ToolStripItem[] {menuFile, menuEdit, menuDelete, menuNavigate, menuQuery, menuMisc, menuWindow, menuHelp});
+menuMain.Items.AddRange(new ToolStripItem[] {menuFile, menuEdit, menuDelete, menuNavigate, menuQuery, menuMisc, menuHelp});
 //menuMain.Items.AddRange(new ToolStripItem[] {menuFile, menuEdit, menuDelete, menuNavigate, menuQuery, menuMisc, menuHelp});
 statusBar = CreateStatusBar();
 // this.Controls.AddRange(new Control[] {menuMain, statusBar});
 this.Controls.AddRange(new Control[] {statusBar, menuMain});
 this.MainMenuStrip = menuMain;
-menuMain.MdiWindowListItem = menuWindow;
+// No MdiWindowListItem: with no Window menu, F4 (Current Windows) lists the open windows.
+Homer.KeyMap.addFormerName("Edit Script", "View Script");
+Homer.KeyMap.addFormerName("Mail", "Mail Body");
+Homer.KeyMap.addFormerName("Mail", "Mail Attachment");
 //this.AutoSize = true;
 this.Size = new Size(600, 600);
 this.StartPosition = FormStartPosition.CenterScreen;
@@ -2219,7 +2233,7 @@ static readonly string[] aCommandSummaries = new string[] {
 "Say Yield\tAlt+Y, Say number of characters, words, and lines in all or selected text, or also paragraphs, sentences, reading time, reading grade and long sentences if repeated",
 "Say Status\tAlt+Z, Say whether current file has been modified since last save to disk, or say its character encoding if repeated",
 "Say Clipboard\tAlt+Apostrophe, Say clipboard text, or spell if repeated",
-"Insert Time\tAlt+Shift+Semi-colon, Insert current time and date",
+"Insert Time\tControl+Semicolon, Insert current time and date",
 "Calculate Date\tControl+Shift+Semi-colon, Calculate and insert date",
 "Edit Settings\tAlt+Shift+E, Adjust configuration options through a dialog",
 "Set Default Font and Color\tAlt+Shift+Equals, Set default font and color for editing window",
@@ -2236,7 +2250,7 @@ static readonly string[] aCommandSummaries = new string[] {
 "Redo\tControl+Shift+Z, Redo the last action that was undone",
 "Save Script\tAlt+S, Save all or selected text to a script file",
 "Invoke Script\tAlt+V, Pick script file to paste or execute",
-"View Script\tAlt+Shift+V, Pick script file to view or edit",
+"Edit Script\tAlt+Shift+V, Pick a script to edit",
 "Yield with Regex\tControl+Shift+Y, Count parts of text matching a regular expression",
 "Extract with Regex\tControl+Shift+E, Extract text matching a regular expression, putting matches in a new window",
 "Replace with Regex\tControl+Shift+R, Search and replace regular expression in all or selected text",
@@ -2281,11 +2295,10 @@ static readonly string[] aCommandSummaries = new string[] {
 "Save Copy\tAlt+Shift+S, Save copy of document using a different name",
 "Export Format\tControl+Shift+X, Export document to another format",
 "Print\tControl+P, Print current file",
-"Mail Body\tControl+M, Mail current file as body of an email message",
-"Mail Attachment\tControl+Shift+M, Mail current file as an email attachment",
+"Mail\tControl+M, Mail the current file, its text in the body and the saved file attached",
 "Burn to CD\tAlt+Shift+B, Burn a list of files or folders to a CD",
 "Web Download\tAlt+Shift+W, Pick files to download from a web page or the current document",
-"Web Client Utilities\tAlt+Shift+Space, Pick a web client utility to run",
+"Web Client Utilities\tJAWS+Control+Space, Pick a web client utility to run, with JAWS",
 "Run\tF5, Execute current file, based on its extension",
 "Run at Cursor\tShift+F5, Execute a web URL or email address at cursor position or in selected text",
 "Prompt Command\tAlt+F5, Prompt for a command line to execute and say its standard output",
@@ -2344,11 +2357,11 @@ static readonly string[] aCommandSummaries = new string[] {
 "Go to Contents\tShift+F6, Go to topic in table of contents from section in body",
 "Search for Topic\tAlt+F6, Search for a topic based on text in its heading; Search Next (F3) finds the next one",
 "Topic\tAlt+T, Say topic of current section",
-"Text Contents\tAlt+Shift+T, Generate and prepend a table of contents to the current document",
+"Text Contents\tControl+Shift+T, Generate and prepend a table of contents to the current document",
 "Section Break\tControl+Enter, Insert a section break at the cursor position",
 "HTML Format\tControl+H, Convert current document to HTML in a new window",
 "Text Convert\tControl+T, Convert other formats to text files with the same name except for a .txt extension",
-"Text Combine\tControl+Shift+T, Convert other formats to text and combine them in a new editing window",
+"Text Combine\tAlt+Shift+T, Convert other formats to text and combine them in a new editing window",
 "Justify\tAlt+Shift+J, Set justification of cursor or selected text",
 "Style\t, Set the style of the cursor or selected text",
 "Baseline\tAlt+Shift+6, Set vertical alignment of cursor or selected text",
@@ -2806,53 +2819,19 @@ SetRecent(sNewFile);
 }
 
 if (menuItem == menuFileMailBody) {
+// MAIL (21 November 2026): the text in the body, and the file attached when it is saved on disk.
 string sSubject = Path.GetFileNameWithoutExtension(child.Text);
 string sBody = rtb.Text;
-// string sRecipient = "";
+KeyValuePair<string, string>[] aAttachments = null;
+sFile = child.File;
+if (sFile.Contains(@"") && File.Exists(sFile)) aAttachments = new KeyValuePair<string, string>[] {new KeyValuePair<String, String>(Path.GetFileName(sFile), sFile)};
 try {
-MapiMail.SendMail(sSubject, sBody, null, null);
+MapiMail.SendMail(sSubject, sBody, null, aAttachments);
 }
 catch {
 Util.MailMessage("", sSubject, sBody);
 }
 return;
-
-/*
-try {
-sText = rtb.Text;
-sText = Util.Convert2WinLineBreak(sText);
-sText = Util.RegExpReplaceCase(sText, "\r\n", "%0D%0A");
-sText = Util.RegExpReplaceCase(sText, " ", "%20");
-sText = Util.RegExpReplaceCase(sText, "\t", "%09");
-sText = Util.RegExpReplaceCase(sText, "\"", "%22");
-sText = Util.RegExpReplaceCase(sText, "'", "%27");
-sText = Util.RegExpReplaceCase(sText, "\\\\", "%5C");
-string sCommand = "mailto:?BODY=" + sText;
-Process.Start(sCommand);
-}
-catch {
-Mail(false);
-}
-*/
-}
-
-if (menuItem == menuFileMailAttach) {
-sFile = child.File;
-if (!sFile.Contains(@"\")) {
-AddMessage("No disk file is open for this command!");
-return;
-}
-
-string sSubject = Path.GetFileName(child.Text) + " attached";
-KeyValuePair<string, string>[] aAttachments = {new KeyValuePair<String, String>(Path.GetFileName(sFile), sFile)};
-try {
-MapiMail.SendMail(sSubject, "", null, aAttachments);
-}
-catch {
-}
-return;
-
-//Mail(true);
 }
 
 if (menuItem == menuFileRun) {

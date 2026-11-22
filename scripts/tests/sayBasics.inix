@@ -1,0 +1,26 @@
+﻿; sayBasics.inix -- a live test of EdSharp, played by tidy after a build.
+;
+; Tidy plays every macro in scripts\tests when EdSharp is closed, a screen reader is running, and the macro, the program
+; or the key file changed since its last pass. It opens the build just made, presses these keys, listens to the reader
+; and checks what Windows shows. It only says things and opens and closes the Alternate Menu, so it changes nothing.
+; Play it by hand with: scripts\runMacro, which plays every macro here when none is named.
+; Written 17 November 2026, when runMacro with no macro named found none for EdSharp and stopped.
+
+FileTask = macroScript
+App = EdSharp
+; Say Position says the column, or "Blank" in an empty document, so either passes (17 November 2026).
+
+Name = The Say family speaks, and the Key Describer describes
+
+[steps]
+Say Position
+Expect speech column | blank
+Say Status
+Expect speech wrap
+Alternate Menu
+Expect window Alternate Menu
+Press Escape
+Key Describer Toggle
+Say Position
+Expect speech position
+Key Describer Toggle

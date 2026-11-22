@@ -19,11 +19,11 @@ you can search.
 No. EdSharp runs on the .NET Framework built into every modern Windows. The
 optional pieces offered by the installer add features but nothing essential.
 
-### Which boxes should I tick in the installer?
+### Which boxes should I mark in the installer?
 
-Python and the document tools are ticked already, and they are the ones that
+Python and the document tools are marked already, and they are the ones that
 make EdSharp itself better: rich PDF conversion and the thesaurus, about a
-hundred and fifty megabytes together. Tick Ollama if you want the AI features,
+hundred and fifty megabytes together. Mark Ollama if you want the AI features,
 and its two extra models if you want better translation and code help. Leave
 Git and Node unless you already know you want them.
 
@@ -180,7 +180,7 @@ itself is in Program Files, and nothing personal is kept there.
 ### An installer checkbox says Reinstall when I have not installed it.
 
 It means the tool is already on your computer, perhaps from another program.
-Reinstall entries are never ticked by default, because there is nothing to
+Reinstall entries are never marked by default, because there is nothing to
 gain.
 
 Jamal Mazrui

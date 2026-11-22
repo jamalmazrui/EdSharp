@@ -1177,8 +1177,11 @@ def main():
         lsReport.append("## Step " + str(iIndex) + ": " + (("type " + dStep["sType"] + ", then ") if dStep["sType"] else "") + (dStep["sKey"] or ""))
         lsReport.append("")
         if dStep["sSay"]: lsReport.append("- **Walk says:** " + dStep["sSay"])
+        # EITHER OF TWO THINGS MAY BE RIGHT (17 November 2026). Say Position in a blank EdSharp document says "Top! |
+        # Blank", and in an empty FileDir folder "No items.", so "column" and "percent" were not heard, though the app
+        # spoke correctly. An expectation may now list alternatives split by a bar, "column | blank"; the best one counts.
         for sWant in dStep["lHear"]:
-            nShare = hearMatch(sWant, sHeard + " " + sApp)
+            nShare = max(hearMatch(sOne.strip(), sHeard + " " + sApp) for sOne in sWant.split("|") if sOne.strip()) if sWant.replace("|", "").strip() else 0.0
             bHeard = nShare >= nMatchNeeded
             iChecked += 1; iMatched += 1 if bHeard else 0
             lsReport.append("- **Expected:** " + sWant + " -- " + ("heard" if bHeard else "NOT HEARD") + " (" + str(int(nShare * 100)) + "% of its words)")

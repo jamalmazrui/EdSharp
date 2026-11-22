@@ -41,7 +41,7 @@ Say Clipboard=Alt+Apostrophe, Say the clipboard text
 Save Clipboard=Control+Apostrophe, Save the clipboard text to a file you name
 Append Clipboard=Control+Shift+Apostrophe, Add the clipboard text to the end of a file you name
 Clear Clipboard=Alt+Shift+Apostrophe, Empty the clipboard
-Insert Time=Alt+Shift+Semicolon, Insert current time and date
+Insert Time=Control+Semicolon, Insert current time and date
 Calculate Date=Control+Shift+Semicolon, Calculate and insert date
 
 Edit Settings=Alt+Shift+E, Edit EdSharp's settings file
@@ -62,7 +62,7 @@ Redo=Control+Shift+Z, Redo the last action that was undone
 
 Save Script=Alt+S, Save all or selected text to a script file
 Invoke Script=Alt+V, Pick a script to run or paste
-View Script=Alt+Shift+V, Pick script file to view or edit
+Edit Script=Alt+Shift+V, Pick a script to edit
 
 Yield with Regex=Control+Shift+Y, Count parts of text matching a regular expression
 Extract with Regex=Control+Shift+E, Copy every match of a regular expression in the text, into a new window
@@ -112,11 +112,10 @@ Save Copy=Alt+Shift+S, Save copy of document using a different name
 Export Format=Control+Shift+X, Export document to another format
 
 Print=, Print the selected text or the current line
-Mail Body=Control+M, Send the current file's text as the body of an email message
-Mail Attachment=Control+Shift+M, Send the current file as email attachments
+Mail=Control+M, Email the current file, its text in the body and the file attached when it is saved
 Burn to CD=Alt+Shift+B, Burn the files or folders the document lists to a CD
 Web Download=Alt+Shift+W, Download files linked from a web page or the current document
-Web Client Utilities=Alt+Shift+Space, Pick a web client utility to run
+Web Client Utilities=JAWS+Control+Space, Pick a web client utility to run, with JAWS
 
 Run=F5, Execute current file, based on its extension
 Run at Cursor=Shift+F5, Execute a web URL or email address at cursor position or in selected text
@@ -185,12 +184,12 @@ Go to Contents=Shift+F6, Go to topic in table of contents from section in body
 Search for Topic=Alt+F6, Search for a topic based on text in its heading
 
 Topic=Alt+T, Say the current section's topic
-Text Contents=Alt+Shift+T, Generate and prepend a table of contents to the current document
+Text Contents=Control+Shift+T, Generate and prepend a table of contents to the current document
 Section Break=Control+Enter, Insert a section break at the cursor position
 
 HTML Format=Control+H, Convert current document to HTML in a new window
 Text Convert=Control+T, Convert files of other formats to text files
-Text Combine=Control+Shift+T, Convert other formats to text and combine them in a new editing window
+Text Combine=Alt+Shift+T, Convert other formats to text and combine them in a new editing window
 
 Justify=Alt+Shift+J, Set justification of cursor or selected text
 Style=, Set the style of the cursor or selected text
@@ -248,7 +247,7 @@ Previous Window=Control+Shift+Tab, Switch to the previous window
 Say Windows Open=Shift+F4, Say how many windows are open, and their titles
 Current Windows=F4, Switch to a window you pick from the list
 Close Window=Control+F4, Close the current window
-Close All but Current Window=Control+Shift+F4, Close all editing windows except the current one
+Close All but Current Window=Control+Shift+F4, Close every window but the current one
 Exit EdSharp=Alt+F4, Close EdSharp
 
 Arrange Icons=Alt+F11, Arrange the open windows

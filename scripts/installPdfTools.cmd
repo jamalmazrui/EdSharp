@@ -83,7 +83,7 @@ echo.
 echo Windows may have a stub named python that only advertises the Microsoft
 echo Store; that is not Python and cannot install anything. Run
 echo installPython.cmd in this folder, or rerun the EdSharp installer and
-echo tick the Python box on its last page, then run this script again.
+echo mark the Python box on its last page, then run this script again.
 echo [installPdfTools] FAILED: no python >> "%log%"
 exit /b 7
 

@@ -2,6 +2,37 @@
 
 
 
+## 22 November 2026 -- JAWS keeps its keys
+
+- **JAWS keeps four keys EdSharp never used:** Control+Shift+F11 (the system tray), Shift+NumPad5 (say the control's hotkey), and Alt+Shift+UpArrow and DownArrow (mouse up and down). The JAWS key map had handed them to EdSharp. Nothing changes in EdSharp, and its own mouse scripts still run on those arrows.
+- **The ReadMe and the install scripts say "mark" a box,** never "tick", so the release check passes.
+- **This needs HomerDev 1.272.0.**
+
+## 22 November 2026 -- Marked, not ticked
+
+- **The installer checks in alphabetical order** and says each name as it goes: the AI models, the document tools, Git, the JAWS scripts, Node.js, the NVDA add-on, Ollama, Python.
+- **The installer script's own comments say mark, not tick,** so the release check passes.
+
+- **The guides say "mark" a box on the installer's last page,** as every Homer guide does, never "tick".
+- **The installer asks about the screen reader support before its last page,** with everything else, so each box's Install, Update or Reinstall is decided before the page appears.
+
+## 21 November 2026 -- The Space bar
+
+- **Web Client Utilities is listed on its real key,** JAWS+Control+Space, a JAWS script. The key list named Alt+Shift+Space, which EdSharp never bound. Alt+Shift+Space and Control+Shift+Space stay free in the suite.
+
+## 21 November 2026 -- Key groups
+
+- **View Script is Edit Script,** DbDo's name for it, on the same key, Alt+Shift+V. The Alternate Menu finds it by either name.
+- **Close All but Current Window** says the suite's sentence and is checked with the suite's other shared commands.
+
+## 21 November 2026 -- One Mail, and Control for changes
+
+- **Mail, Control+M, does what Mail Body and Mail Attachment did:** the text goes in the body, and the file is attached when it is saved on disk. Control+Shift+M is free.
+- **Insert Time is Control+Semicolon,** as Control+Semicolon inserts the date in Excel. It was Alt+Shift+Semicolon. A key that changes the text takes Control.
+- **Text Contents is Control+Shift+T and Text Combine is Alt+Shift+T,** swapped: Text Contents changes the document, and Text Combine makes a new window.
+- **No Window menu.** Next and Previous Window join Current Windows on the File menu, and Arrange Icons, Cascade and the two Tile commands come just before Exit EdSharp. No key changed.
+- **This needs HomerDev 1.269.0.**
+
 ## 17 November 2026 -- Clearer Say Status and Say Selected
 
 - **Say Status says its parts apart:** "Modified, Wrap" rather than "ModifiedWrap", which a modified document ran together.

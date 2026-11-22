@@ -109,6 +109,23 @@ lsTextExtensions = (".cs", ".py", ".ps1", ".md", ".htm", ".inix", ".txt", ".iss"
 sScriptDir = os.path.dirname(os.path.abspath(__file__))
 
 
+
+def gitCarriedFiles(sProject):
+    """The files git tracks or would add in a project, as whole paths, from git ls-files; [] when there is no repository
+    or git cannot be run, and the caller then reads the whole tree."""
+    if not os.path.isdir(os.path.join(sProject, ".git")): return []
+    try:
+        oRun = subprocess.run(["git", "-C", sProject, "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+                              capture_output=True, timeout=300)
+    except Exception as oError:
+        logLine("git ls-files could not run: %s" % oError)
+        return []
+    logLine("git ls-files: exit %d, %d bytes" % (oRun.returncode, len(oRun.stdout)))
+    if oRun.returncode != 0: return []
+    lsFiles = sorted({s for s in oRun.stdout.decode("utf-8", "replace").split("\0") if s})
+    return [os.path.join(sProject, s.replace("/", os.sep)) for s in lsFiles]
+
+
 def projectRoot(sStart):
     """The project is the current folder, or its parent when the current
     folder is the project's scripts or exec folder. One rule for every tool;
@@ -1113,11 +1130,148 @@ def checkLaunchWords():
                 for iArg, sLabel in lsWhich:
                     if iArg < len(lsArgs) and lsArgs[iArg] not in ('""', "''", "null", "None"):
                         lsHits.append("%s: %s has its own tip, %s; pass \"\" for the kit's sentence" % (os.path.basename(sPath), sLabel, lsArgs[iArg][:60]))
+    # THE STANDARD SWITCHES IN THE KIT'S WORDS (1.258.0, 18 November 2026). The 12 November alignment of -f, -u, -v, -d
+    # and -h never reached four apps' repositories, and nothing failed: their help still said "exit" in one, "Overwrite
+    # an existing csv" in another. A launch app's own code must now name each switch's sentence -- LaunchDialog's
+    # constant, or its words -- read from the kit's Lbc.cs.
+    lsLaunchCode = [p for p in sourceFiles() if p.lower().endswith((".cs", ".py")) and os.path.dirname(os.path.abspath(p)) == os.path.abspath(sRoot)]
+    if any(re.search(r"\baddOperationBands\s*\(", readText(p)) for p in lsLaunchCode):
+        try:
+            import kind
+            sKitLbc = os.path.join(kind.findKit([sRoot]) or "", "exec", "CSharp", "Lbc.cs")
+        except Exception:
+            sKitLbc = ""
+        if sKitLbc and os.path.isfile(sKitLbc):
+            sLbc = readText(sKitLbc)
+            sCode = "\n".join(readText(p) for p in lsLaunchCode)
+            for sConst, sSwitch in (("forceSwitch", "-f"), ("useConfigSwitch", "-u"), ("viewOutputSwitch", "-v"), ("defaultSettingsSwitch", "-d"), ("helpSwitch", "-h")):
+                oConst = re.search(r"public const string " + sConst + r'\s*=\s*"((?:[^"\\]|\\.)*)"', sLbc)
+                if not oConst: continue
+                if ("LaunchDialog." + sConst) not in sCode and oConst.group(1) not in sCode:
+                    lsHits.append("%s is not in the kit's words, \"%s\"; use LaunchDialog.%s" % (sSwitch, oConst.group(1)[:50], sConst))
+        else:
+            logLine("launch words: the kit's Lbc.cs was not found, so the switches were not compared")
     if not lsHits:
         return finding("launch words", "pass" if any(re.search(r"\baddOperationBands\s*\(", readText(p)) for p in sourceFiles() if p.lower().endswith((".cs", ".py"))) else "skip",
                        "the standard launch controls use the kit's sentences" )
     for sHit in lsHits: logLine("launch words: " + sHit)
     return finding("launch words", "fail", "; ".join(lsHits))
+
+
+def checkReaderKeys():
+    """THE READER'S OWN KEYS STAY THE READER'S (1.259.0, 18 November 2026). Homer never breaks a screen reader's key
+    (the author's rule of 2 November 2026), and data\\KeyOwnership.inix marks JAWS's voice-rate keys, its mouse keys
+    and the like "never bind". The suite's key gate reads only SuiteCommands.inix, so DbDo's grid keys, handled outside
+    the router, went unread: Column Top and Column Bottom took Alt+Control+PageUp and PageDown, JAWS's temporary voice
+    rate, and DbDo's JAWS key map handed them on, though Control+Home and Control+End did the same thing. This reads
+    the app's own key file -- configs\\Hotkeys.inix, or the [Hotkeys] section of configs\\<App>.inix -- and fails a
+    key that KeyOwnership.inix gives to Windows or a reader everywhere and does not approve. HomerView, which runs in
+    the reader's own browser and adds keys only where its reader has none, is left to the suite gate."""
+    if appName().lower() == "homerview": return finding("reader keys", "skip", "HomerView's keys are checked by the suite gate")
+    lsFiles = [os.path.join(sRoot, "configs", "Hotkeys.inix"), os.path.join(sRoot, "configs", appName() + ".inix")]
+    dKeys = {}
+    for sPath in lsFiles:
+        if not os.path.isfile(sPath): continue
+        sSection = ""
+        for sLine in readText(sPath).splitlines():
+            sTrim = sLine.strip()
+            if not sTrim or sTrim.startswith(";"): continue
+            if sTrim.startswith("[") and sTrim.endswith("]"): sSection = sTrim[1:-1].strip().lower(); continue
+            if os.path.basename(sPath).lower() != "hotkeys.inix" and sSection != "hotkeys": continue
+            if "=" not in sTrim: continue
+            sName, sValue = sTrim.split("=", 1)
+            for sKey in re.split(r"\s+or\s+", sValue.split(",")[0].strip()):
+                if sKey.strip(): dKeys.setdefault(sKey.strip().lower(), []).append(sName.strip())
+    if not dKeys: return finding("reader keys", "skip", "no key file in configs")
+    try:
+        import kind
+        sOwnership = os.path.join(kind.findKit([sRoot]) or "", "data", "KeyOwnership.inix")
+    except Exception:
+        sOwnership = ""
+    if not os.path.isfile(sOwnership): return finding("reader keys", "skip", "the kit's KeyOwnership.inix was not found")
+    lsBad = []
+    sKey, dNow = "", {}
+    lsEntries = []
+    for sLine in readText(sOwnership).splitlines() + ["[end]"]:
+        sTrim = sLine.strip()
+        if sTrim.startswith("[") and sTrim.endswith("]"):
+            if sKey: lsEntries.append((sKey, dNow))
+            sKey, dNow = (sTrim[5:-1].strip() if sTrim.lower().startswith("[key ") else ""), {}
+        elif "=" in sTrim and not sTrim.startswith(";"):
+            sName, sValue = sTrim.split("=", 1); dNow[sName.strip().lower()] = sValue.strip()
+    for sOwned, dOwner in lsEntries:
+        if dOwner.get("kind", "") not in ("system", "reader global") or dOwner.get("disposition", "").startswith("approved"): continue
+        lsNames = dKeys.get(sOwned.lower())
+        if lsNames: lsBad.append("%s binds %s, %s's %s (%s)" % (", ".join(lsNames), sOwned, dOwner.get("owner", ""), dOwner.get("what", ""), dOwner.get("disposition", "")))
+    # A KEY JAWS OWNS EVERYWHERE IS NEVER HANDED ON BY HAND. DbDo's key map passed Alt+Control+PageUp and PageDown to
+    # DbDo with lines of its own, so JAWS lost its voice rate there; only the kit's pass-through block, written by tidy
+    # from passThrough=yes, may hand such a key on.
+    sJkm = os.path.join(sRoot, "scripts", "jaws", appName() + ".jkm")
+    if os.path.isfile(sJkm):
+        dGlobal = dict((s.lower(), d) for s, d in lsEntries if d.get("kind", "") == "reader global" and "jaws" in d.get("owner", "").lower() and d.get("passthrough", "").lower() != "yes")
+        # A SCRIPT THAT FALLS BACK TO JAWS'S OWN IS NOT A TAKING (22 November 2026). EdSharp's latex-access scripts sit
+        # on Alt+Control+PageUp and PageDown: in a math matrix they read the row or column, and everywhere else they
+        # perform JAWS's own voice-rate script, so JAWS's key still does what JAWS says. A line naming a script of the
+        # app's own whose body ends in PerformScript is logged as kept; TypeCurrentScriptKey and SilentKey, which hand
+        # the key on, still fail.
+        dWraps = {}
+        sJawsDir = os.path.dirname(sJkm)
+        for sJss in os.listdir(sJawsDir):
+            if not sJss.lower().endswith(".jss"): continue
+            for oMatch in re.finditer(r"(?ims)^\s*Script\s+(\w+)\s*\((.*?)^\s*EndScript", readText(os.path.join(sJawsDir, sJss))):
+                if re.search(r"(?i)\bPerformScript\b", oMatch.group(2)) and not re.search(r"(?i)\bTypeCurrentScriptKey\b|\bTypeKey\b", oMatch.group(2)): dWraps[oMatch.group(1).lower()] = True
+        for sLine in readText(sJkm).splitlines():
+            sTrim = sLine.strip()
+            if not sTrim or sTrim.startswith((";", "[")) or "=" not in sTrim: continue
+            sJkmKey, sScript = [s.strip() for s in sTrim.split("=", 1)]
+            if sJkmKey.lower() in dGlobal and sScript.lower() in dWraps:
+                logLine("reader keys: kept %s=%s, which falls back to JAWS's own %s" % (sJkmKey, sScript, dGlobal[sJkmKey.lower()].get("what", "")))
+                continue
+            if sJkmKey.lower() in dGlobal:
+                lsBad.append("%s.jkm hands %s to the app, taking JAWS's %s" % (appName(), sJkmKey, dGlobal[sJkmKey.lower()].get("what", "")))
+    if not lsBad: return finding("reader keys", "pass", "no key of Windows's or a reader's own is bound")
+    for sBad in lsBad: logLine("reader keys: " + sBad)
+    return finding("reader keys", "fail", "; ".join(lsBad))
+
+
+def checkLbcMessages():
+    """EVERY DIALOG ANSWERS SHIFT+F1 AND CONTROL+SLASH (1.258.0, 18 November 2026, the author's ruling: "Shift+F1 and
+    Control+Slash should work in every dialog"). A Windows message box answers neither, and six launch apps showed
+    forty-four of them -- sign-in pauses, "Create it?", errors. An app's own code asks through LbcMessage.show (C#) or
+    lbcnet.message (Python), which take MessageBox.Show's own arguments, or through LaunchDialog.confirmOutput and
+    LbcMessage.showOnTop; the kit's LbcMessage.native is the one sanctioned Windows box, for FileDir's Yes and No."""
+    lsHits = []
+    for sPath in sourceFiles():
+        if not sPath.lower().endswith((".cs", ".py")) or os.path.basename(sPath).lower() == "lbc.cs": continue
+        if os.path.dirname(os.path.abspath(sPath)) != os.path.abspath(sRoot): continue
+        for iLine, sLine in enumerate(readText(sPath).splitlines(), 1):
+            sCode = sLine.strip()
+            if sCode.startswith(("//", "#", "*")): continue
+            if re.search(r"(?<![\w.])MessageBox\.Show\s*\(", sCode): lsHits.append("%s line %d" % (os.path.basename(sPath), iLine))
+    if not lsHits:
+        return finding("Lbc messages", "pass", "every message is an Lbc dialog, so Shift+F1 and Control+Slash work in it")
+    for sHit in lsHits: logLine("Lbc messages: a Windows message box at " + sHit)
+    return finding("Lbc messages", "fail", "%d Windows message box%s, which answer neither Shift+F1 nor Control+Slash; use LbcMessage.show: %s"
+                   % (len(lsHits), "" if len(lsHits) == 1 else "es", "; ".join(lsHits[:8])))
+
+
+def checkHelpKeysDocumented():
+    """THE DIALOG HELP KEYS, IN THE SUITE'S WORDS, IN EVERY HOTKEYS PAGE (1.258.0, 18 November 2026). FileDir, DbDo and
+    EdSharp list What This Does (Shift+F1), Where Am I (Control+Slash) and Elevate Version (F11); the six launch apps
+    called the first "Say the focus tip", "the tip for the field with the focus" or "read the tip for this field", called
+    F11 "Check for a newer version", and did not list Control+Slash at all. An app whose help\\Hotkeys.md exists names
+    each command with its key, within a few lines of each other, as the suite's pages do."""
+    sPage = os.path.join(sRoot, "help", "Hotkeys.md")
+    if not os.path.isfile(sPage): return finding("help keys", "skip", "no help\\Hotkeys.md")
+    lsLines = readText(sPage).splitlines()
+    lsMissing = []
+    for sName, sKey in (("Elevate Version", "F11"), ("What This Does", "Shift+F1"), ("Where Am I", "Control+Slash")):
+        bFound = False
+        for iAt, sLine in enumerate(lsLines):
+            if sName in sLine and any(re.search(r"(?<![\w+])" + re.escape(sKey) + r"(?![\w+])", s) for s in lsLines[max(0, iAt - 2):iAt + 3]): bFound = True; break
+        if not bFound: lsMissing.append("%s (%s)" % (sName, sKey))
+    if not lsMissing: return finding("help keys", "pass", "Hotkeys.md names Elevate Version, What This Does and Where Am I with their keys")
+    return finding("help keys", "fail", "help\\Hotkeys.md does not name " + ", ".join(lsMissing) + " in the suite's words")
 
 
 def checkConversions():
@@ -1541,7 +1695,38 @@ def installerFindings(sText):
         mRunAll = re.search(r"(?ms)^\[Run\]\s*\n(.*?)(?=^\[[A-Za-z]+\]\s*$)", s)
         if not mRunAll or sScript not in mRunAll.group(1): lBad.append("never runs %s, the script whose state decides its screen reader boxes" % sScript)
         if re.search(r"(?i)\b(jaws)\b", s) and not re.search(r"(?i)Check:\s*(?:homerFinishRuns\s+and\s+)?isInstallJaws", s): lBad.append("offers no Install box for the JAWS scripts")
+    # EVERY VERB BEFORE THE CHECKBOXES (22 November 2026, a long-standing rule Jamal restated): what is installed is asked
+    # in CurStepChanged(ssPostInstall), through the kit's homerProbeAll, so the finish page appears with each Install,
+    # Update or Reinstall already known and nothing is checked after it.
+    if re.search(r'(?mi)^\s*#include\b.*HomerComponents\.iss', s) and not re.search(r"(?i)\bhomerProbeAll\s*\(", s):
+        lBad.append("never calls homerProbeAll in CurStepChanged(ssPostInstall), so its components are first asked while the finish page is being drawn")
+    # CHECKED IN ALPHABETICAL ORDER (22 November 2026, Jamal's ruling): the kit's homerProbeAll sorts what it asks; an
+    # installer that speaks its own "Checking ..." lines must say them in lowercase alphabetical order too, a leading
+    # "the" set aside, so how far the names have got through the alphabet says how far the checking has got.
+    lsSaid = [m.group(1) for m in re.finditer(r"homerSay\('Checking ([^']+)'", s)]
+    lsKeys = [re.sub(r"^the\s+", "", x.lower()) for x in lsSaid if not x.lower().startswith("which ")]
+    if lsKeys != sorted(lsKeys):
+        lBad.append("says its own Checking lines out of alphabetical order: " + ", ".join(lsKeys))
     return lBad
+
+def checkVersionInTitle():
+    """NO VERSION IN A WINDOW'S TITLE (22 November 2026, a Homer guideline at Jamal's request). A screen reader says
+    the title every time the window or dialog gains the focus, and a version number there is noise to the person
+    using the program. The version belongs in the documents, the help screen (F1, About) and Elevate Version (F11).
+    This fails a C# line that puts a version into a form's Text or an Lbc dialog's title."""
+    oTitle = re.compile(r"(?:\bnew\s+LbcDialog\s*\(|\b(?:this|form|frame|dlg\.form)\.Text\s*=|^\s*Text\s*=)[^;\n]*\b(?:BuildVersion\.Version|sVersion|ProductVersion|Application\.ProductVersion|sAppVersion)\b", re.M)
+    lsBad = []
+    for sPath in sourceFiles():
+        if not sPath.lower().endswith(".cs"): continue
+        sText = readText(sPath)
+        for oMatch in oTitle.finditer(sText):
+            lsBad.append("%s line %d" % (os.path.relpath(sPath, sRoot), sText.count("\n", 0, oMatch.start()) + 1))
+    for s in lsBad: logLine("VERSION IN TITLE: " + s)
+    if lsBad:
+        return finding("version in title", "fail", "%d window or dialog title%s name the version, which the reader repeats as noise; put it in the help and About instead: %s"
+                       % (len(lsBad), "" if len(lsBad) == 1 else "s", ", ".join(lsBad[:6])))
+    return finding("version in title", "pass", "no window or dialog title names the version")
+
 
 def checkInstaller():
     """The Homer installer pattern: the kit's HomerComponents.iss, its screen reader functions and script, and a
@@ -1920,6 +2105,40 @@ def checkDescriptions():
     return finding("command descriptions", "pass", "every description begins with its verb, as the suite's do")
 
 
+def checkMarkedWord():
+    """MARKED, NOT TICKED (11 November 2026, and again 17 November 2026). Homer says a checkbox is "marked", as records
+    and files are marked, never "ticked"; the rule was set on 11 November and some two hundred "tick" words were still
+    in installers, guides, tutorials and messages six days later. This reads the project's installer, ReadMe, help
+    pages (History, a record of what was, aside), configs and scripts, and fails on any "tick", "ticked" or "untick"
+    as a word; a timer's Tick event and DateTime's Ticks are code, not words, and are not counted."""
+    # ONLY WHAT THE PROJECT PUBLISHES (17 November 2026, evening). The first version read every file in the folder and
+    # stopped DbDo's, EdSharp's and FileDir's pushes over files git does not hold: DbDo's own notes in help\self.md, and
+    # stray older copies of summarizeSetup.ps1 and Developer.md at the top of EdSharp and FileDir, which tidy files away.
+    # Words a person reads in the program, its installer or its pages are in git; so the check reads what git tracks,
+    # and the folder only when there is no repository.
+    oWord = re.compile(r"(?<![\w.$])(un)?tick(s|ed|ing)?(?!\w)", re.I)
+    lsFound, lsPaths = [], []
+    try:
+        oGit = subprocess.run(["git", "-C", sRoot, "ls-files"], capture_output=True, text=True, timeout=60)
+        if oGit.returncode == 0: lsPaths = [os.path.join(sRoot, s) for s in oGit.stdout.splitlines() if s.strip()]
+    except Exception as oError:
+        logLine("marked, not ticked: git ls-files did not run (%s); reading the folder" % oError)
+    if not lsPaths:
+        for sDir, lsDirs, lsFiles in os.walk(sRoot):
+            lsDirs[:] = [s for s in lsDirs if s.lower() not in ("logs", ".git", "exec", "results", "work", "notes", "__pycache__", "bin", "obj")]
+            lsPaths += [os.path.join(sDir, s) for s in lsFiles]
+    for sPath in lsPaths:
+        sFile = os.path.basename(sPath)
+        if sFile.lower() in ("history.md", "tutorialfeed.xml") or not sFile.lower().endswith((".iss", ".md", ".inix", ".cmd", ".ps1")): continue
+        if not os.path.isfile(sPath): continue
+        for iLine, sLine in enumerate(readText(sPath).splitlines(), 1):
+            if oWord.search(sLine): lsFound.append("%s:%d: %s" % (os.path.relpath(sPath, sRoot), iLine, sLine.strip()[:100]))
+    for sNote in lsFound: logLine("TICK: " + sNote)
+    if lsFound:
+        return finding("marked, not ticked", "fail", "%d line%s say tick where Homer says mark; each is in the log" % (len(lsFound), "" if len(lsFound) == 1 else "s"))
+    return finding("marked, not ticked", "pass", "checkboxes are marked, never ticked, in the installer and the guides")
+
+
 def checkSuiteCommands():
     """THE HOMER SUITE SPEAKS WITH ONE VOICE (10 November 2026). A command DbDo, EdSharp and FileDir share has one name,
     one suite key and one sentence, word for word but for the app's own words, as HomerDev\\data\\SuiteCatalog.inix
@@ -2256,7 +2475,14 @@ def main():
             # --FRESH MEANS EVERY FILE IS READ (14 October 2026, from an audit by another AI): a fresh check also verifies
             # the fingerprint, so a file changed without changing its size or time is not trusted by them.
             oCache = fingerprint.Cache(sRoot, logLine, True if dArguments.fresh else None)
-            sPrint = oCache.fingerprint([sRoot], [sKind, platform.python_version()])
+            # ONLY WHAT GIT WOULD CARRY IS FINGERPRINTED (1.265.1, 20 November 2026). Every file in the project was read,
+            # and with HomerVerify=1 read in full: AppHelpGuides holds gigabytes of harvested pages in data\harvests and
+            # results, none of them pushed, and push's check sat 25 minutes on them, saying nothing, until it was stopped.
+            # The pass now covers the files git tracks or would add, from git's own list; with no repository or no git,
+            # the whole tree as before. The count is logged and said, so a long read is never silent.
+            lsCheckInputs = gitCarriedFiles(sRoot) or [sRoot]
+            logLine("fingerprint inputs: %s" % ("%d files git carries" % len(lsCheckInputs) if lsCheckInputs != [sRoot] else "the whole project, as git gave no list"))
+            sPrint = oCache.fingerprint(lsCheckInputs, [sKind, platform.python_version()])
     except Exception as oError:
         logLine("fingerprint unavailable, so every check runs: %s" % oError)
         oCache = None
@@ -2311,6 +2537,7 @@ def main():
         checkSharedCode()
         checkIssComments()
         checkInstaller()
+        checkVersionInTitle()
         checkInstallerNames()
         checkShipped()
         checkMainThread()
@@ -2320,6 +2547,9 @@ def main():
         checkSuite()
         checkConversions()
         checkLaunchWords()
+        checkLbcMessages()
+        checkReaderKeys()
+        checkHelpKeysDocumented()
         checkBuild(dArguments.build)
         checkSmoke(dArguments.build)
         checkAccessibility(not dArguments.noscan)
@@ -2327,6 +2557,7 @@ def main():
         checkKitClasses()
         checkMenuLetters()
         checkDescriptions()
+        checkMarkedWord()
         checkSuiteCommands()
         checkExportedKeys()
         checkAccept()
@@ -2354,7 +2585,7 @@ def main():
             # checks was recorded, but a passing check runs the app's acceptance build, which rewrites the program, the
             # installer and generated pages; so release's check, a minute after push's, found "its inputs changed" and
             # built DbDo a third time. The files as they stand after a pass are the ones that passed.
-            oCache.record("check pass", oCache.fingerprint([sRoot], [sKind, platform.python_version()]), [], lsFindings)
+            oCache.record("check pass", oCache.fingerprint(gitCarriedFiles(sRoot) or [sRoot], [sKind, platform.python_version()]), [], lsFindings)
     logLine("check end")
     return 1 if iFailed else 0
 

@@ -41,7 +41,7 @@ exit /b 0
 
 :no_ollama
 echo Ollama is not installed, so the translation model cannot be fetched.
-echo Tick the Ollama box as well, or run installOllama.cmd first.
+echo Mark the Ollama box as well, or run installOllama.cmd first.
 echo [installTranslateModel] FAILED: no ollama >> "%log%"
 exit /b 7
 

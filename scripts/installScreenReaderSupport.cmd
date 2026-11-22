@@ -357,7 +357,18 @@ if ($env:HS_MODE -eq "state") {
         if ($iPlaces -gt 0) {
             $sState = if ($iAny -eq 0) { "install" } elseif ($iSame -eq $iPlaces) { "reinstall" } else { "update" }
         }
-        logLine "state $($env:HS_READER): $iPlaces place(s), $iAny with ours, $iSame current; $sState"
+        # SAY WHY A BOX IS NOT OFFERED (kit 1.260.0, 18 November 2026). BatCon's log read "state jaws: 0 place(s), 0
+        # with ours, 0 current; none" while JAWS was running: BatCon ships no JAWS scripts, so nothing was looked for,
+        # but the line read like JAWS not being found.
+        $sPackage = if ($env:HS_READER -eq "jaws") { $sZip } else { $sAddon }
+        $sReaderName = if ($env:HS_READER -eq "jaws") { "JAWS scripts" } else { "NVDA add-on" }
+        if ((-not $sPackage) -or -not (Test-Path -LiteralPath $sPackage)) {
+            logLine "state $($env:HS_READER): $sApp ships no $sReaderName, so its box is not offered; none"
+        } elseif ($iPlaces -eq 0) {
+            logLine "state $($env:HS_READER): $sApp ships $sReaderName, but no $(if ($env:HS_READER -eq 'jaws') { 'JAWS' } else { 'NVDA' }) was found, so its box is not offered; none"
+        } else {
+            logLine "state $($env:HS_READER): $iPlaces place(s), $iAny with ours, $iSame current; $sState"
+        }
     } catch {
         logLine ("state $($env:HS_READER): ERROR " + $_.Exception.Message + "; offered as install")
         $sState = "install"

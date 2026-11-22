@@ -18,13 +18,13 @@ Hear=Next button
 
 [step]
 
-Say=The last page offers optional pieces as boxes, each saying what it does and how much space it needs. Python and the document tools are ticked: about a hundred and fifty megabytes, for rich PDF conversion and the thesaurus. Git, Node and Ollama with its AI models are not ticked; each backs a real feature, and each serves some people and not others. Spacebar changes a box.
+Say=The last page offers optional pieces as boxes, each saying what it does and how much space it needs. Python and the document tools are marked: about a hundred and fifty megabytes, for rich PDF conversion and the thesaurus. Git, Node and Ollama with its AI models are not marked; each backs a real feature, and each serves some people and not others. Spacebar changes a box.
 Key=
 Hear=
 
 [step]
 
-Say=Enter on Finish. Whatever was ticked installs now, and one summary then reports each item by name. The summary is saved in the logs folder, and summarizeSetup, in the program folder, shows it again.
+Say=Enter on Finish. Whatever was marked installs now, and one summary then reports each item by name. The summary is saved in the logs folder, and summarizeSetup, in the program folder, shows it again.
 Key=Enter
 Hear=EdSharp Setup, Install Python: installed. Install document tools: installed.
 
@@ -54,7 +54,7 @@ Hear=
 
 [step]
 
-Say=A box ticked by mistake is no disaster: the same installer, run again later, offers the same page, and an item already present says so and does nothing. Nothing is installed twice.
+Say=A box marked by mistake is no disaster: the same installer, run again later, offers the same page, and an item already present says so and does nothing. Nothing is installed twice.
 Key=
 Hear=
 
