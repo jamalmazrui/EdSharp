@@ -479,10 +479,48 @@ if (-not $bSapi -and -not $bLive) {
   $bKokoro = ($sSherpa -ne "") -and ($sKokoroModel -ne "")
   note ("kokoro: " + $bKokoro + ", engine " + $sSherpa + ", model folder " + $sKokoroDir)
   if (-not $bKokoro -and $bFetch) { say "Kokoro is not available, so piper speaks these." }
+  # PHONON, THROUGH PTTS: THE READER'S VOICE SINCE 22 NOVEMBER 2026. Jamal found piper's john "too grumpy" and
+  # chose, by ear from scripts\auditionVoices, reader 16: Phonon 31m's Russell. Phonon 31m and its runtime, ptts
+  # (gradium-ai/xn-ptts), are under Apache 2.0 terms, so audio made with them can be published beside MIT code; the
+  # non-commercial 40m models are never fetched. ptts.exe is fetched once into the voices folder, as auditionVoices
+  # fetches it, and its 31m model downloads on first use. If it cannot be had, piper's john reads as before.
+  # The reader's defaults are set again below with the other voice settings; they are needed here first, to decide
+  # whether to fetch. A walk's [global] ReaderEngine=piper is read later, per walk, so the engine is fetched anyway.
+  if ($null -eq $sReaderEngine) { $sReaderEngine = "phonon" }
+  if ($null -eq $sPhononReader) { $sPhononReader = "Russell" }
+  $sPtts = ""
+  $oFound = Get-ChildItem -LiteralPath $sTools -Filter "ptts.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+  if ($oFound) { $sPtts = $oFound.FullName }
+  if ($sPtts -eq "" -and $bFetch -and $sReaderEngine -eq "phonon") {
+    say "Fetching the Phonon engine for the reader's voice. This happens once."
+    try {
+      $lsPttsReleases = @(Invoke-RestMethod -Uri "https://api.github.com/repos/gradium-ai/xn-ptts/releases" -Headers @{ "User-Agent" = "HomerDev-buildTutorials" } -UseBasicParsing)
+      $oPttsAsset = $null
+      foreach ($oPttsRelease in $lsPttsReleases) {
+        $oPttsAsset = $oPttsRelease.assets | Where-Object { $_.name -match "x86_64-pc-windows-msvc\.zip$" } | Select-Object -First 1
+        if ($oPttsAsset) { note ("ptts release " + $oPttsRelease.tag_name + ", asset " + $oPttsAsset.name); break }
+      }
+      if ($oPttsAsset) {
+        $sPttsZip = Join-Path $sTools $oPttsAsset.name
+        if (fetchTo $oPttsAsset.browser_download_url $sPttsZip) {
+          Expand-Archive -LiteralPath $sPttsZip -DestinationPath (Join-Path $sTools "ptts") -Force
+          try { Remove-Item -LiteralPath $sPttsZip -Force } catch { }
+        }
+      }
+      else { note "no Windows x64 ptts archive among the releases" }
+    }
+    catch { note ("the ptts releases could not be read: " + $_.Exception.Message) }
+    $oFound = Get-ChildItem -LiteralPath $sTools -Filter "ptts.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($oFound) { $sPtts = $oFound.FullName }
+  }
+  note ("ptts: " + $sPtts + "; reader engine " + $sReaderEngine + ", voice " + $sPhononReader)
+  if ($sReaderEngine -eq "phonon" -and $sPtts -eq "") { say "The Phonon engine is not available, so piper's john reads instead." }
+
   # ONE LINE SAYING WHICH VOICES, AND FROM WHERE. On 25 Sep 2026 a build was
   # stopped by hand because its screen said nothing for three minutes and the
   # person took the silence for a second download of the voices.
-  if ($bKokoro) { say ("Voices: Kokoro for the narrator, piper for the reader, from " + $sTools + ". Nothing is downloaded.") }
+  if ($bKokoro -and $sReaderEngine -eq "phonon" -and $sPtts -ne "") { say ("Voices: Kokoro for the narrator, Phonon " + $sPhononReader + " for the reader, from " + $sTools + ".") }
+  elseif ($bKokoro) { say ("Voices: Kokoro for the narrator, piper for the reader, from " + $sTools + ". Nothing is downloaded.") }
   elseif ($sPiper -ne "" -and $sPiperVoice -ne "") { say ("Voices: piper, from " + $sTools + ". Nothing is downloaded.") }
 
   # TWO NEURAL VOICES, ONE ENGINE.
@@ -742,6 +780,14 @@ $dReaderNoise = 0.333
 $iKokoroNarrator = 3
 $iKokoroReader = 6
 $bKokoroForReader = $false
+# THE READER'S ENGINE (22 November 2026): phonon, Phonon 31m's Russell, chosen by Jamal by ear from auditionVoices
+# (reader 16). ptts has no rate setting, so the reader is sped up by PhononTempo after it speaks, 1.3 as in the
+# audition he chose from, which brings it near piper's 0.70 pace. ReaderEngine=piper in [global] goes back to john;
+# PhononReader picks another Phonon voice.
+$sReaderEngine = "phonon"
+$sPhononReader = "Russell"
+$dPhononTempo = 1.30
+if ($null -eq $sPtts) { $sPtts = "" }
 $dReaderGain = 1.0
 if ($null -eq $bKokoro) { $bKokoro = $false }
 if ($null -eq $sSherpa) { $sSherpa = "" }
@@ -810,7 +856,8 @@ function applyGlobal($dGlobal) {
   if ($null -eq $dGlobal) { return }
   foreach ($sKey in @("NarratorVoice", "ReaderVoice", "NarratorPitch", "NarratorScale", "ReaderScale",
                       "ReaderFlatness", "LeadIn", "Gap", "VoiceFolder", "PiperPath", "FfmpegPath",
-                      "KokoroNarrator", "KokoroReader", "Engine", "ReaderGain", "ReaderOnKokoro")) {
+                      "KokoroNarrator", "KokoroReader", "Engine", "ReaderGain", "ReaderOnKokoro",
+                      "ReaderEngine", "PhononReader", "PhononTempo")) {
     if (-not $dGlobal.ContainsKey($sKey)) { continue }
     $sValue = ([string] $dGlobal[$sKey][0]).Trim()
     if ($sValue -eq "") { continue }
@@ -834,6 +881,9 @@ function applyGlobal($dGlobal) {
       "Engine"         { if ($sValue -eq "piper") { $script:bKokoro = $false } }
       "ReaderGain"     { $script:dReaderGain = [double] $sValue }
       "ReaderOnKokoro" { $script:bKokoroForReader = ($sValue -eq "1" -or $sValue.ToLower() -eq "yes") }
+      "ReaderEngine"   { $script:sReaderEngine = $sValue.ToLower() }
+      "PhononReader"   { $script:sPhononReader = $sValue }
+      "PhononTempo"    { $script:dPhononTempo = [double] $sValue }
     }
     note ("[global] " + $sKey + " = " + $sValue)
   }
@@ -894,8 +944,11 @@ function audioName([string] $sScript) {
 # unchanged walk with unchanged voices is still left alone.
 function voiceSettings() {
   $oInv = [System.Globalization.CultureInfo]::InvariantCulture
-  return [string]::Format($oInv, "reader={0};narrator={1};narratorPitch={2};message={3};menu={4};keyboard={5};sapiReader={6};sapiNarrator={7};espeak={8}",
-    $dReaderScale, $dNarratorScale, $dNarratorPitch, $dReaderPitchMessage, $dReaderPitchMenu, $dReaderPitchKeyboard, $iSapiReaderRate, $iSapiNarratorRate, $iEspeakRate)
+  # The reader's engine and voice joined on 22 November 2026, so the move to Phonon Russell respeaks every walk once.
+  $sEngine = $sReaderEngine
+  if ($sEngine -eq "phonon") { if ($sPtts -eq "") { $sEngine = "piper" } else { $sEngine = "phonon:" + $sPhononReader + "@" + [string]::Format($oInv, "{0:0.00}", $dPhononTempo) } }
+  return [string]::Format($oInv, "reader={0};narrator={1};narratorPitch={2};message={3};menu={4};keyboard={5};sapiReader={6};sapiNarrator={7};espeak={8};readerEngine={9}",
+    $dReaderScale, $dNarratorScale, $dNarratorPitch, $dReaderPitchMessage, $dReaderPitchMenu, $dReaderPitchKeyboard, $iSapiReaderRate, $iSapiNarratorRate, $iEspeakRate, $sEngine)
 }
 
 function walkFingerprint([string] $sScript) {
@@ -1211,7 +1264,24 @@ function buildOne([string] $sScript) {
     # the narrator. ReaderOnKokoro=1 in [global] puts the reader on Kokoro too, as speaker KokoroReader
     # (corrected 15 November 2026: this line named KokoroReader, which picks the speaker, not the engine).
     # scripts\auditionVoices renders candidate readers side by side, to choose one by ear.
-    if ($bKokoro -and $bKokoroForReader -and -not $bWindowsVoices) {
+    $bSpoken = $false
+    if ($sReaderEngine -eq "phonon" -and $sPtts -ne "" -and -not $bWindowsVoices) {
+      # PHONON RUSSELL (22 November 2026). ptts writes its own sample rate at its own pace; ffmpeg brings it to the
+      # walk's 22050 mono and speeds it by PhononTempo, so the pitch shift and loudness below treat it like any piece.
+      # Straight quotes become curly ones, as for Kokoro, so a quote never splits the argument.
+      $sRaw = $sFile + ".ptts.wav"
+      runVoice $sPtts @("--lang", "en", "--voice", $sPhononReader, (typographicQuotes $sText), "-o", $sRaw) $null "ptts-sr" | Out-Null
+      if (Test-Path -LiteralPath $sRaw) {
+        $sInvTempo = [System.Globalization.CultureInfo]::InvariantCulture
+        runVoice $sFfmpeg @("-y", "-loglevel", "error", "-i", $sRaw, "-af", ("atempo=" + [string]::Format($sInvTempo, "{0:0.00}", $dPhononTempo)),
+                            "-ar", "22050", "-ac", "1", $sFile) $null "ffmpeg-ptts" | Out-Null
+        try { Remove-Item -LiteralPath $sRaw -Force } catch { }
+      }
+      $bSpoken = (Test-Path -LiteralPath $sFile)
+      if (-not $bSpoken) { note ("  Phonon gave no audio for this line, so piper's john reads it: " + $sText) }
+    }
+    if ($bSpoken) { }
+    elseif ($bKokoro -and $bKokoroForReader -and -not $bWindowsVoices) {
       speakKokoro $sText $iKokoroReader $dReaderScale $sFile "kokoro-sr"
     }
     elseif (-not $bWindowsVoices) {
