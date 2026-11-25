@@ -1,8 +1,8 @@
 ﻿# EdSharp Hotkeys
 
-**Version 5.0.180**  
+**Version 5.0.181**  
 
-Generated from the key file on 24 November 2026. Do not edit this page; edit the key file in configs and build again.
+Generated from the key file on 25 November 2026. Do not edit this page; edit the key file in configs and build again.
 
 Every EdSharp command, given three ways so you can find a command however you think of it. Press Control+F1 to turn on the Key Describer, which says a command's name, key and description instead of running it, and Alt+F10 for the Alternate Menu, which lists every command and finds one by a former name too.
 
@@ -22,11 +22,8 @@ Commands in alphabetical order.
 - **Announcement**, no key -- Open the announcement of this version
 - **Append Clipboard**, Control+Shift+Apostrophe -- Add the clipboard text to the end of a file you name
 - **Append from Clipboard**, Alt+7 -- Toggle saving everything copied to the clipboard to a file
-- **Arrange Icons**, Alt+F11 -- Arrange the open windows
 - **Baseline**, Alt+Shift+6 -- Set vertical alignment of cursor or selected text
-- **Burn to CD**, Alt+Shift+B -- Burn the files or folders the document lists to a CD
 - **Calculate Date**, Control+Shift+Semicolon -- Calculate and insert date
-- **Cascade**, Control+F11 -- Cascade the open windows
 - **Chat about Document**, Shift+F12 -- Ask the AI model on this computer about the selection or document
 - **Chat with AI**, F12 -- Ask the AI model on this computer a question
 - **Check Markdown**, Alt+F9 -- Report problems in this Markdown, such as heading jumps
@@ -78,7 +75,6 @@ Commands in alphabetical order.
 - **Go to Environment**, Control+Shift+F12 -- Go to the current compiler's interactive environment
 - **Go to Part**, Alt+Shift+G -- Pick a part to go to
 - **Go to Percent**, Control+G -- Go to percentage point in document
-- **Go to Percent Again**, Alt+G -- Repeat Go command
 - **Go to Section**, F6 -- Go to section in body from topic in table of contents
 - **Go to Special Folder**, Control+Shift+G -- Go to a Windows special folder you pick
 - **Go to Start of Selection**, Alt+Shift+F8 -- Return to start position of selection
@@ -102,7 +98,6 @@ Commands in alphabetical order.
 - **Invoke Script**, Alt+V -- Pick a script to run or paste
 - **Join Lines**, Control+Shift+J -- Word wrap lines in all or selected paragraphs
 - **Jump to Line**, Control+J -- Jump to line number or to line, column position
-- **Jump to Line Again**, Alt+J -- Repeat Jump command
 - **Justify**, Alt+Shift+J -- Set justification of cursor or selected text
 - **Keep Unique Items**, Alt+Shift+K -- Discard repetitive items in all or selected text
 - **Key Describer Toggle**, Control+F1 -- Turn key describing on or off: a key says its command instead of running it
@@ -209,8 +204,8 @@ Commands in alphabetical order.
 - **Say Windows Open**, Shift+F4 -- Say how many windows are open, and their titles
 - **Say Yield**, Alt+Y -- Say how many characters, words and lines are in all or the selected text
 - **Search for Topic**, Alt+F6 -- Search for a topic based on text in its heading
-- **Search Next**, F3 -- Repeat the last search, forward
-- **Search Previous**, Shift+F3 -- Repeat the last search, backward
+- **Search Next**, F3 -- Repeat the last search, Jump to Line or Go to Percent, forward
+- **Search Previous**, Shift+F3 -- Repeat the last search, Jump to Line or Go to Percent, backward
 - **Section Break**, Control+Enter -- Insert a section break at the cursor position
 - **Select All**, Control+A -- Select all text
 - **Select Chunk**, Control+Space -- Select the run of non-blank characters at the cursor, or the next one
@@ -229,8 +224,6 @@ Commands in alphabetical order.
 - **Text Contents**, Control+Shift+T -- Generate and prepend a table of contents to the current document
 - **Text Convert**, Control+T -- Convert files of other formats to text files
 - **Thesaurus**, Shift+F7 -- Look up synonyms for word at cursor
-- **Tile Horizontal**, Alt+Shift+F11 -- Tile the open windows across
-- **Tile Vertical**, Shift+F11 -- Tile the open windows down
 - **Topic**, Alt+T -- Say the current section's topic
 - **Transform Files**, Alt+Equals -- Apply a list of search and replace tasks to files
 - **Translate Language**, Alt+Shift+F7 -- Translate the selection or the document into another language
@@ -270,7 +263,6 @@ The same commands, in alphabetical order of the key that runs them.
 - **Alt+Equals** -- Transform Files: Apply a list of search and replace tasks to files
 - **Alt+F1** -- About: Say EdSharp's version and release date
 - **Alt+F10** -- Alternate Menu: Pick any command from one list, in menu, name or key order
-- **Alt+F11** -- Arrange Icons: Arrange the open windows
 - **Alt+F12** -- Play Tutorials: Play the spoken tutorials
 - **Alt+F3** -- Forward Find at Cursor: Search forward for chunk or selected text
 - **Alt+F4** -- Exit EdSharp: Close EdSharp
@@ -279,10 +271,8 @@ The same commands, in alphabetical order of the key that runs them.
 - **Alt+F7** -- Lookup Term: Look up information from dictionary.com, thesaurus.com, and wikipedia.org
 - **Alt+F8** -- Read All: Say all the text without moving the cursor
 - **Alt+F9** -- Check Markdown: Report problems in this Markdown, such as heading jumps
-- **Alt+G** -- Go to Percent Again: Repeat Go command
 - **Alt+Home** -- Home Character: Go to first non-blank character of line and read it
 - **Alt+I** -- Say Indentation: Say the current line's indentation
-- **Alt+J** -- Jump to Line Again: Repeat Jump command
 - **Alt+L** -- List Favorites: Open a file from the list of favorites
 - **Alt+LeftArrow** -- Previous Chunk: Go to previous chunk and read it
 - **Alt+LeftBracket** -- PyDent: Convert PyBrace or Python code to indented PyDent form
@@ -299,7 +289,6 @@ The same commands, in alphabetical order of the key that runs them.
 - **Alt+Shift+6** -- Baseline: Set vertical alignment of cursor or selected text
 - **Alt+Shift+A** -- Align: Indent the current or selected lines to match the line before
 - **Alt+Shift+Apostrophe** -- Clear Clipboard: Empty the clipboard
-- **Alt+Shift+B** -- Burn to CD: Burn the files or folders the document lists to a CD
 - **Alt+Shift+Backspace** -- Delete Up: Delete from cursor to top of file
 - **Alt+Shift+D** -- Delete File: Delete current file on disk
 - **Alt+Shift+Dash** -- Set Selection Font: Set font of cursor or selected text
@@ -309,7 +298,6 @@ The same commands, in alphabetical order of the key that runs them.
 - **Alt+Shift+Equals** -- Set Default Font and Color: Set default font and color for editing window
 - **Alt+Shift+F** -- File Find: Find files by name and content in this folder and below, and open one
 - **Alt+Shift+F1** -- ReadMe: Open the quick start
-- **Alt+Shift+F11** -- Tile Horizontal: Tile the open windows across
 - **Alt+Shift+F3** -- Reverse Find at Cursor: Search backward for chunk or selected text
 - **Alt+Shift+F5** -- Review Output: Open standard output of last prompt or compile command in a new editing window
 - **Alt+Shift+F7** -- Translate Language: Translate the selection or the document into another language
@@ -358,7 +346,6 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+F** -- Forward Find: Search forward for string in all or selected text
 - **Control+F1** -- Key Describer Toggle: Turn key describing on or off: a key says its command instead of running it
 - **Control+F10** -- SendTo Menu: Send the current file to a Send To choice you pick
-- **Control+F11** -- Cascade: Cascade the open windows
 - **Control+F12** -- Copy Log: Copy the session log to the clipboard as a file
 - **Control+F3** -- Forward Find with Regex: Search forward for regular expression in all or selected text
 - **Control+F4** -- Close Window: Close the current window
@@ -449,7 +436,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **F11** -- Elevate Version: Download and install the latest EdSharp
 - **F12** -- Chat with AI: Ask the AI model on this computer a question
 - **F2** -- Special Character: Insert character indirectly by specifying its Unicode value
-- **F3** -- Search Next: Repeat the last search, forward
+- **F3** -- Search Next: Repeat the last search, Jump to Line or Go to Percent, forward
 - **F4** -- Current Windows: Switch to a window you pick from the list
 - **F5** -- Run: Execute current file, based on its extension
 - **F6** -- Go to Section: Go to section in body from topic in table of contents
@@ -460,10 +447,9 @@ The same commands, in alphabetical order of the key that runs them.
 - **Shift+Enter** -- Indent New Line: Start new line with same indentation as current one
 - **Shift+F1** -- What This Does: Say what the control with focus does
 - **Shift+F10** -- Context Menu: Open the Windows context menu for the current file
-- **Shift+F11** -- Tile Vertical: Tile the open windows down
 - **Shift+F12** -- Chat about Document: Ask the AI model on this computer about the selection or document
 - **Shift+F2** -- Rename: Rename the current file on disk
-- **Shift+F3** -- Search Previous: Repeat the last search, backward
+- **Shift+F3** -- Search Previous: Repeat the last search, Jump to Line or Go to Percent, backward
 - **Shift+F4** -- Say Windows Open: Say how many windows are open, and their titles
 - **Shift+F5** -- Run at Cursor: Execute a web URL or email address at cursor position or in selected text
 - **Shift+F6** -- Go to Contents: Go to topic in table of contents from section in body
@@ -481,7 +467,6 @@ Grouped by the modifier key a command starts with.
 
 - **Alt+Shift+A** -- Align
 - **Alt+Shift+6** -- Baseline
-- **Alt+Shift+B** -- Burn to CD
 - **Alt+Shift+Apostrophe** -- Clear Clipboard
 - **Alt+Shift+Delete** -- Delete Down
 - **Alt+Shift+D** -- Delete File
@@ -513,7 +498,6 @@ Grouped by the modifier key a command starts with.
 - **Alt+Shift+Dash** -- Set Selection Font
 - **Alt+Shift+U** -- Swap Case
 - **Alt+Shift+T** -- Text Combine
-- **Alt+Shift+F11** -- Tile Horizontal
 - **Alt+Shift+F7** -- Translate Language
 - **Alt+Shift+W** -- Web Download
 - **Alt+Shift+Y** -- Yield Encoding
@@ -579,7 +563,6 @@ Grouped by the modifier key a command starts with.
 - **Alt+F1** -- About
 - **Alt+F10** -- Alternate Menu
 - **Alt+7** -- Append from Clipboard
-- **Alt+F11** -- Arrange Icons
 - **Alt+F9** -- Check Markdown
 - **Alt+C** -- Copy Append
 - **Alt+X** -- Cut Append
@@ -587,11 +570,9 @@ Grouped by the modifier key a command starts with.
 - **Alt+End** -- End Character
 - **Alt+F4** -- Exit EdSharp
 - **Alt+F3** -- Forward Find at Cursor
-- **Alt+G** -- Go to Percent Again
 - **Alt+Home** -- Home Character
 - **Alt+RightBracket** -- Infer Indent
 - **Alt+V** -- Invoke Script
-- **Alt+J** -- Jump to Line Again
 - **Alt+B** -- List Bookmarks
 - **Alt+L** -- List Favorites
 - **Alt+F7** -- Lookup Term
@@ -628,7 +609,6 @@ Grouped by the modifier key a command starts with.
 
 ### Control
 
-- **Control+F11** -- Cascade
 - **Control+0** -- Choose Folder
 - **Control+F4** -- Close Window
 - **Control+F5** -- Compile
@@ -698,7 +678,6 @@ Grouped by the modifier key a command starts with.
 - **Shift+F4** -- Say Windows Open
 - **Shift+F3** -- Search Previous
 - **Shift+F7** -- Thesaurus
-- **Shift+F11** -- Tile Vertical
 - **Shift+F1** -- What This Does
 
 ### Function keys

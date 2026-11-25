@@ -2,6 +2,19 @@
 
 
 
+## 25 November 2026, late afternoon -- F3 repeats Jump to Line and Go to Percent
+
+- **F3 and Shift+F3 repeat Jump to Line or Go to Percent** when one of them came after the last search, and either key does it again the same way.
+- **Jump to Line Again (Alt+J) and Go to Percent Again (Alt+G) are retired,** and those keys are free.
+- **After Compile, F3 goes back to the error's place.** The guide always said the repeat would; the place was being saved where nothing read it.
+- **In a list dialog, F3 finds the next match,** and Alt+J no longer does, as in every Homer list.
+
+## 25 November 2026 -- Menu review: window layouts and Burn to CD retired
+
+- **Arrange Icons, Cascade, Tile Horizontal and Tile Vertical are retired.** They arrange windows on the screen, which a screen reader user does not see, and every window opens maximized; they also held four F11 keys, the family for the version. Next Window, Previous Window and Current Windows stay on the File menu.
+- **Burn to CD is retired,** and Alt+Shift+B is free. Copying files to a writable disc is rare work now, and File Explorer does it.
+- A retired command keeps its code, so it can come back, but has no key and is on no menu, so the Alternate Menu does not list it either.
+
 ## 24 November 2026, late night -- JAWS+A on laptops stays Say All
 
 - **JAWS+A answers only in JAWS's desktop layout.** In the laptop layout, JAWS+A is Say All, and EdSharp's key map had taken it there too. The address key now sits in the key map's desktop section, checked against JAWS 2026's own key map.

@@ -496,12 +496,12 @@ name in the document, you could enter<br />
 <code>c:\\temp\\temp.txt</code> To search for text that itself begins
 with the @ character, put a backslash before it. For example,
 <code>\@domain.com</code> follows the user name in an email address.</p>
-<p>Press Control+G to go to a percentage point in the document, or Alt+G
-to repeat the command with the previous value. Similarly, press
-Control+J to jump to a line number, or Alt+J to repeat. A column number
-may be specified after the line number and a comma. If no line number is
-specified before the comma, EdSharp jumps to the column on the current
-line.</p>
+<p>Press Control+G to go to a percentage point in the document, or
+Control+J to jump to a line number. F3 or Shift+F3 does either one
+again, as it repeats a search, until another search runs. A column
+number may be specified after the line number and a comma. If no line
+number is specified before the comma, EdSharp jumps to the column on the
+current line.</p>
 <p>Press Control+RightArrow or Control+LeftArrow to read by word --
 stopping at embedded symbols. Press Alt+RightArrow or Alt+LeftArrow to
 read by chunk -- text delimited only by white space characters. Press
@@ -1397,7 +1397,8 @@ finds that place in the output with a regular expression, the
 JumpPosition setting. The expression should be written so that the first
 number it matches is the line number, and the second number, if any, is
 the column number. EdSharp goes to that place by itself. It also
-remembers it, so the Jump Again command, Alt+J, goes back there.</p>
+remembers it, so F3 goes back there, until another search or go
+runs.</p>
 <p>Another regular expression may be configured for navigating among
 routines in source code. The NavigatePart setting is used by
 Alt+PageDown and Alt+PageUp to go to the next or previous function,
@@ -1657,12 +1658,12 @@ page_002.htm and so on.</p>
 <p>To make moving through a long list quicker and easier, EdSharp adds
 these features to its dialogs that show lists.</p>
 <p>Control+J prompts for text within an item, going to the first match
-if a new search, or the next match if the previous value is accepted.
-Alt+J or F3 goes to the next match without prompting for a value, and
-Shift+F3 to the one before. The item with focus when the dialog is
-closed -- but not canceled -- becomes the current item the next time
-that the same list dialog is invoked (you are notified when it is not
-the first item). The Jump value of that dialog is also remembered.</p>
+if a new search, or the next match if the previous value is accepted. F3
+goes to the next match without prompting for a value, and Shift+F3 to
+the one before. The item with focus when the dialog is closed -- but not
+canceled -- becomes the current item the next time that the same list
+dialog is invoked (you are notified when it is not the first item). The
+Jump value of that dialog is also remembered.</p>
 <p>Control+F sets a filter, so only matching items are shown, in the
 search syntax below: * matches any run of characters, ? a single one,
 &amp; means all, | any, and ! not. For example, to browse the commands
@@ -1824,12 +1825,9 @@ that compiler's favorites, bookmarks and user-defined tokens in
 Delphi.ini. Press Alt+0 to hear the current compiler and folder.</p>
 <p>Press F4 to switch to one of the editing windows that are open, from
 a list. Press Control+F4 to close the current window, or
-Control+Shift+F4 to close all the others. EdSharp's windows can be
-arranged on screen in the usual ways for programs with several document
-windows. EdSharp has no Window menu; these commands are on the File
-menu, with Next Window (Control+Tab) and Previous Window
-(Control+Shift+Tab): Arrange Icons, Alt+F11; Cascade, Control+F11; Tile
-Horizontal, Alt+Shift+F11; and Tile Vertical, Shift+F11.</p>
+Control+Shift+F4 to close all the others. EdSharp has no Window menu:
+Next Window (Control+Tab) and Previous Window (Control+Shift+Tab) are on
+the File menu.</p>
 <p>Use the Alternate Menu command, Alt+F10, to execute a command from a
 single, alphebetized list.</p>
 <p>The Context Menu command, Shift+F10, lets you choose an action for
@@ -1853,20 +1851,6 @@ directory. Changes to process settings affect the current session of
 EdSharp, but not the next time it is run. User settings take effect when
 you log in again. System settings take affect when you restart the
 computer.</p>
-<p>The Burn to CD command, Alt+Shift+B, operates on a path list in the
-current document. Each file or folder path should be placed on a
-separate line. If a parent folder is not specified, the last one in the
-list is used. The default parent folder is the current directory. For
-example, the following list specifies the EdSharp program folder and two
-test files from the temp folder:\</p>
-<pre><code>C:\Program Files\EdSharp
-C:\temp\test.txt
-test.doc</code></pre>
-<p>You can create a path list manually, or use the Path List command,
-Control+Shift+P, to generate one for you. The paths found are burned to
-the default CD drive. The CD may be blank or include content already.
-The new content is added to it. The CD must be writable. At this time,
-DVDs do not work, only CDs.</p>
 <p>Use the Elevate Version command, F11, to update EdSharp to the latest
 version published on its <a
 href="https://github.com/JamalMazrui/EdSharp/releases/latest">GitHub

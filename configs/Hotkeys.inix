@@ -77,8 +77,8 @@ Forward Find with Regex=Control+F3, Search forward for regular expression in all
 Reverse Find with Regex=Control+Shift+F3, Search backward for a regular expression in all or selected text
 Forward Find at Cursor=Alt+F3, Search forward for chunk or selected text
 Reverse Find at Cursor=Alt+Shift+F3, Search backward for chunk or selected text
-Search Next=F3, Repeat the last search, forward
-Search Previous=Shift+F3, Repeat the last search, backward
+Search Next=F3, Repeat the last search, Jump to Line or Go to Percent, forward
+Search Previous=Shift+F3, Repeat the last search, Jump to Line or Go to Percent, backward
 
 Word Wrap=Control+W, Word wrap lines
 Unwrap=Control+Shift+W, Unwrap lines
@@ -86,9 +86,7 @@ Guard Document=Control+F7, Make document read-only
 No Guard=Control+Shift+F7, Clear read-only status
 
 Go to Percent=Control+G, Go to percentage point in document
-Go to Percent Again=Alt+G, Repeat Go command
 Jump to Line=Control+J, Jump to line number or to line, column position
-Jump to Line Again=Alt+J, Repeat Jump command
 
 Save Bookmark=Control+B, Bookmark the cursor's place
 Clear Bookmark=Control+Shift+B, Remove the bookmark at the cursor
@@ -114,7 +112,6 @@ Export Format=Control+Shift+X, Export document to another format
 
 Print=, Print the selected text or the current line
 Mail=Control+M, Email the current file, its text in the body and the file attached when it is saved
-Burn to CD=Alt+Shift+B, Burn the files or folders the document lists to a CD
 Web Download=Alt+Shift+W, Download files linked from a web page or the current document
 Web Client Utilities=JAWS+Control+Space, Pick a web client utility to run, with JAWS
 
@@ -251,10 +248,6 @@ Close Window=Control+F4, Close the current window
 Close All but Current Window=Control+Shift+F4, Close every window but the current one
 Exit EdSharp=Alt+F4, Close EdSharp
 
-Arrange Icons=Alt+F11, Arrange the open windows
-Cascade=Control+F11, Cascade the open windows
-Tile Horizontal=Alt+Shift+F11, Tile the open windows across
-Tile Vertical=Shift+F11, Tile the open windows down
 
 Elevate Version=F11, Download and install the latest EdSharp
 

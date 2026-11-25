@@ -112,7 +112,7 @@ rather than\
 `c:\\temp\\temp.txt`
 To search for text that itself begins with the @ character, put a backslash before it. For example, `\@domain.com` follows the user name in an email address.
 
-Press Control+G to go to a percentage point in the document, or Alt+G to repeat the command with the previous value.  Similarly, press Control+J to jump to a line number, or Alt+J to repeat.  A column number may be specified after the line number and a comma.  If no line number is specified before the comma, EdSharp jumps to the column on the current line.
+Press Control+G to go to a percentage point in the document, or Control+J to jump to a line number.  F3 or Shift+F3 does either one again, as it repeats a search, until another search runs.  A column number may be specified after the line number and a comma.  If no line number is specified before the comma, EdSharp jumps to the column on the current line.
 
 Press Control+RightArrow or Control+LeftArrow to read by word -- stopping at embedded symbols.  Press Alt+RightArrow or Alt+LeftArrow to read by chunk -- text delimited only by white space characters.  Press Alt+DownArrow or Alt+UpArrow to read by sentence.  Press Control+DownArrow or Control+UpArrow to read by paragraph.
 
@@ -560,7 +560,7 @@ Use the Compile command, Control+F5, for a programming language that involves co
 
 These tool commands usually start with the file name of the compiler or interpreter.  Any parameters can follow.  If the command includes the token %SourceDir%, EdSharp first changes to the folder of the source file, just while the tool runs.
 
-The first line and column number in the output, if there is one, is taken to be the place of a compile error in the source code.  EdSharp finds that place in the output with a regular expression, the JumpPosition setting.  The expression should be written so that the first number it matches is the line number, and the second number, if any, is the column number.  EdSharp goes to that place by itself.  It also remembers it, so the Jump Again command, Alt+J, goes back there.
+The first line and column number in the output, if there is one, is taken to be the place of a compile error in the source code.  EdSharp finds that place in the output with a regular expression, the JumpPosition setting.  The expression should be written so that the first number it matches is the line number, and the second number, if any, is the column number.  EdSharp goes to that place by itself.  It also remembers it, so F3 goes back there, until another search or go runs.
 
 Another regular expression may be configured for navigating among routines in source code.  The NavigatePart setting is used by Alt+PageDown and Alt+PageUp to go to the next or previous function, method, or class definition.  The Go to Part command, Alt+Shift+G, lets you pick one of these locations from a list.
 
@@ -691,7 +691,7 @@ The Web Download command, Alt+Shift+W, lets you pick one or more files to downlo
   
 To make moving through a long list quicker and easier, EdSharp adds these features to its dialogs that show lists.
 
-Control+J prompts for text within an item, going to the first match if a new search, or the next match if the previous value is accepted.  Alt+J or F3 goes to the next match without prompting for a value, and Shift+F3 to the one before.  The item with focus when the dialog is closed -- but not canceled -- becomes the current item the next time that the same list dialog is invoked (you are notified when it is not the first item).  The Jump value of that dialog is also remembered.
+Control+J prompts for text within an item, going to the first match if a new search, or the next match if the previous value is accepted.  F3 goes to the next match without prompting for a value, and Shift+F3 to the one before.  The item with focus when the dialog is closed -- but not canceled -- becomes the current item the next time that the same list dialog is invoked (you are notified when it is not the first item).  The Jump value of that dialog is also remembered.
 
 Control+F sets a filter, so only matching items are shown, in the search syntax below: * matches any run of characters, ? a single one, & means all, | any, and ! not.  For example, to browse the commands about replacing in the Alternate Menu, Alt+F10, press Control+F in that list and type *replace* as the filter.  Control+Shift+F clears the filter, so all items show again.  You can also change the order of items: Alt+A for alphabetical order, Alt+Shift+A for reverse alphabetical order, Alt+D for the default order, or Alt+Shift+D for the default order reversed.
 
@@ -748,7 +748,7 @@ Some configuration options belong to the current compiler rather than to EdSharp
 
 A compiler's configuration is stored in the EdSharp data folder, in a file with the compiler's name and a .ini extension.  For example, if you made settings for the "Delphi" compiler, EdSharp would add a Delphi entry to the Compilers section of your EdSharp.inix. It would then keep that compiler's favorites, bookmarks and user-defined tokens in Delphi.ini.  Press Alt+0 to hear the current compiler and folder.
 
-Press F4 to switch to one of the editing windows that are open, from a list.  Press Control+F4 to close the current window, or Control+Shift+F4 to close all the others.  EdSharp's windows can be arranged on screen in the usual ways for programs with several document windows.  EdSharp has no Window menu; these commands are on the File menu, with Next Window (Control+Tab) and Previous Window (Control+Shift+Tab): Arrange Icons, Alt+F11; Cascade, Control+F11; Tile Horizontal, Alt+Shift+F11; and Tile Vertical, Shift+F11.
+Press F4 to switch to one of the editing windows that are open, from a list.  Press Control+F4 to close the current window, or Control+Shift+F4 to close all the others.  EdSharp has no Window menu: Next Window (Control+Tab) and Previous Window (Control+Shift+Tab) are on the File menu.
 
 Use the Alternate Menu command, Alt+F10, to execute a command from a single, alphebetized list.
 
@@ -758,16 +758,6 @@ The Context Menu command, Shift+F10, lets you choose an action for the current f
 Press Control+Slash to hear where you are, and twice for a window with every EdSharp key.  Press F1 to load this documentation, or Alt+F1 to simply confirm the version.  Control+F1 toggles a Key Describer mode in which pressing a key describes its action.  If you switch to another application window, the mode is automatically turned off.
 
 Use the Environment Variables command, Control+E, to review or change such settings of Windows.  Choose those of the current process, user, or system as a whole.  Jump quickly to a particular variable based on its initial letter, e.g., Alt+P for the PATH setting that determines where Windows searches for an executable file that is not found in the current directory.  Changes to process settings affect the current session of EdSharp, but not the next time it is run.  User settings take effect when you log in again.  System settings take affect when you restart the computer.
-
-The Burn to CD command, Alt+Shift+B, operates on a path list in the current document.  Each file or folder path should be placed on a separate line.  If a parent folder is not specified, the last one in the list is used.  The default parent folder is the current directory.  For example, the following list specifies the EdSharp program folder and two test files from the temp folder:\
-
-```
-C:\Program Files\EdSharp
-C:\temp\test.txt
-test.doc
-```
-
-You can create a path list manually, or use the Path List command, Control+Shift+P, to generate one for you.  The paths found are burned to the default CD drive.  The CD may be blank or include content already.  The new content is added to it.  The CD must be writable.  At this time, DVDs do not work,  only CDs.
 
 Use the Elevate Version command, F11, to update EdSharp to the latest version published on its [GitHub releases page](<https://github.com/JamalMazrui/EdSharp/releases/latest>).  EdSharp checks that page and, if a newer release is available, offers to download and run its installer.
 ### Hotkey Summary

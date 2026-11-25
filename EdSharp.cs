@@ -986,6 +986,10 @@ value.Activate();
 public bool FindWithRegExp = false;
 // True after Search for Topic, so Search Next (F3) finds the next topic rather than the last find.
 public bool bLastSearchTopic = false;
+// THE LAST GO, FOR F3 (25 November 2026, Jamal: "retire Alt+G and Alt+J for repeating a go-to or jump. Instead, use the
+// F3 and Shift+F3 mechanism."): "line" after Jump to Line, "percent" after Go to Percent, and empty once a search runs,
+// so Search Next and Search Previous repeat whichever came last. A go has no direction, so both keys do it again.
+public string sLastGoKind = "";
 public bool bCommandComplete = true;
 public static string CR = "\r";
 public static string LF = "\n";
@@ -1130,9 +1134,11 @@ menuNavigateReverseFindAtCursor = CreateMenuItem("Reverse Find at Cursor", "Alt+
 menuNavigateForwardFindAgain = CreateMenuItem("Search Next", "F3", menuItem_Click, "child silent");
 menuNavigateReverseFindAgain = CreateMenuItem("Search Previous", "Shift+F3", menuItem_Click, "child silent");
 menuNavigateJumpToLine = CreateMenuItem("&Jump to Line ...", "Control+J", menuItem_Click, "child silent");
-menuNavigateJumpToLineAgain = CreateMenuItem("Jump to Line Again", "Alt+J", menuItem_Click, "child silent");
+// RETIRED (25 November 2026): F3 and Shift+F3 repeat Jump to Line and Go to Percent, as they repeat a search (see
+// sLastGoKind). Made, with no key and on no menu, for a rollback; Alt+J and Alt+G are free.
+menuNavigateJumpToLineAgain = CreateMenuItem("Jump to Line Again", "", menuItem_Click, "child silent");
 menuNavigateGoToPercent = CreateMenuItem("&Go to Percent ...", "Control+G", menuItem_Click, "child silent");
-menuNavigateGoToPercentAgain = CreateMenuItem("Go to Percent Again", "Alt+G", menuItem_Click, "child silent");
+menuNavigateGoToPercentAgain = CreateMenuItem("Go to Percent Again", "", menuItem_Click, "child silent");
 menuNavigateGoToPart = CreateMenuItem("Go to Part", "Alt+Shift+G", menuItem_Click, "child silent");
 menuNavigateSetBookmark = CreateMenuItem("Save &Bookmark", "Control+B", menuItem_Click, "child speak");
 menuNavigateClearBookmark = CreateMenuItem("Clear Bookmark", "Control+Shift+B", menuItem_Click, "child speak");
@@ -1173,7 +1179,7 @@ menuNavigateGoToSection= CreateMenuItem("Go to Section", "F6", menuItem_Click, "
 menuNavigateGoToContents = CreateMenuItem("Go to Contents", "Shift+F6", menuItem_Click, "child speak");
 menuNavigateSearchForTopic = CreateMenuItem("Search for Topic ...", "Alt+F6", menuItem_Click, "child silent");
 menuNavigateGoToStartOfSelection = CreateMenuItem("Go to Start of Selection", "Alt+Shift+F8", menuItem_Click, "child speak");
-menuNavigate.DropDownItems.AddRange(new ToolStripItem[] {menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateGoToStartOfSelection});
+menuNavigate.DropDownItems.AddRange(new ToolStripItem[] {menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateGoToPercent, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateGoToStartOfSelection});
 //Homer.LbcAsk.message("Navigate.", menuNavigate.DropDownItems.Count);
 
 menuQuery = CreateMenu("&Query");
@@ -1275,24 +1281,26 @@ menuMiscCommandPrompt = CreateMenuItem("Open Command Prompt", "Control+Oem5", me
 // with Alt, a command prompt with Control, the other Homer app with Control+Shift. The kit's openInHomerApp finds
 // FileDir and says so when it is not installed.
 menuMiscShowInFileDir = CreateMenuItem("Show in FileDir", "Control+Shift+Oem5", menuItem_Click, "child silent");
-menuMiscBurnToCD = CreateMenuItem("Burn to CD", "Alt+Shift+B", menuItem_Click, "child speak");
+menuMiscBurnToCD = CreateMenuItem("Burn to CD", "", menuItem_Click, "child speak");
 menuMiscWebDownload = CreateMenuItem("Web Download", "Alt+Shift+W", menuItem_Click, "frame speak");
-menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscShowInFileDir, menuMiscBurnToCD, menuMiscWebDownload, menuFilePrint});
+menuMisc.DropDownItems.AddRange(new ToolStripItem[] {menuMiscSetDefaultFont, menuMiscConfigurationOptions, menuMiscResetConfiguration, menuMiscGoToFolder, menuMiscGoToSpecialFolder, menuMiscWordWrap, menuMiscUnwrap, menuMiscEnvironmentVariables, menuMiscSpellCheck, menuMiscThesaurus, menuMiscLookupTerm, menuMiscTranslateLanguage, menuMiscGuardDocument, menuMiscNoGuard, menuMiscPyBrace, menuMiscPyDent, menuMiscInferIndent, menuMiscFormatCode, menuMiscRepeatLine, menuMiscSectionBreak, menuMiscPathToClipboard, menuMiscPathList, menuMiscInsertTime, menuMiscCalculateDate, menuMiscHTMLFormat, menuMiscMarkdownToText, menuMiscHtmlToMarkdown, menuMiscHtmlToText, menuMiscPreviewMarkdown, menuMiscPreviewMarkdownBrowser, menuMiscCheckMarkdown, menuMiscRunCodeBlocks, menuMiscChatWithAI, menuMiscChatWithDocument, menuMiscTextConvert, menuMiscTextCombine, menuMiscTextContents, menuMiscYieldWithRegExp, menuMiscExtractWithRegExp, menuMiscRunAtCursor, menuMiscSpecialCharacter, menuMiscEvaluateExpression, menuMiscReplaceTokens, menuMiscTransformFiles, menuMiscGoToEnvironment, menuMiscCompile, menuMiscPickCompiler, menuMiscPromptCommand, menuMiscReviewOutput, menuMiscSaveScript, menuMiscInvokeScript, menuMiscViewScript, menuMiscKeepUniqueItems, menuMiscNumberItems, menuMiscOrderItems, menuMiscReverseItems, menuMiscListDifferentItems, menuMiscQueryCommonItems, menuMiscExplorerFolder, menuMiscCommandPrompt, menuMiscShowInFileDir, menuMiscWebDownload, menuFilePrint});
 //Homer.LbcAsk.message("Misc.", menuMisc.DropDownItems.Count);
 
 // NO WINDOW MENU (21 November 2026, Jamal's ruling, as in DbDo and FileDir): the window commands join Current
 // Windows and Close Window on the File menu. Each has a function key or Tab, so none takes a letter.
 menuWindowNext = CreateMenuItem("Next Window", "Control+Tab", menuItem_Click, "child speak");
 menuWindowPrior = CreateMenuItem("Previous Window", "Control+Shift+Tab", menuItem_Click, "child speak");
-menuWindowArrangeIcons = CreateMenuItem("Arrange Icons", "Alt+F11", menuItem_Click, "child speak");
-menuWindowCascade = CreateMenuItem("Cascade", "Control+F11", menuItem_Click, "child speak");
-menuWindowTileHorizontal = CreateMenuItem("Tile Horizontal", "Alt+Shift+F11", menuItem_Click, "child speak");
-menuWindowTileVertical = CreateMenuItem("Tile Vertical", "Shift+F11", menuItem_Click, "child speak");
+// RETIRED (25 November 2026, the menu review Jamal asked for): Arrange Icons, Cascade, Tile Horizontal, Tile Vertical and
+// Burn to CD. The four layouts arrange windows on the screen, which a screen reader user does not see, and every window
+// opens maximized; they also held four F11 keys, the version family. Burning a CD is rare work now. They stay made, with
+// no key and on no menu, so the code is there for a rollback; a command on no menu is not in the Alternate Menu either.
+menuWindowArrangeIcons = CreateMenuItem("Arrange Icons", "", menuItem_Click, "child speak");
+menuWindowCascade = CreateMenuItem("Cascade", "", menuItem_Click, "child speak");
+menuWindowTileHorizontal = CreateMenuItem("Tile Horizontal", "", menuItem_Click, "child speak");
+menuWindowTileVertical = CreateMenuItem("Tile Vertical", "", menuItem_Click, "child speak");
 int iAt = menuFile.DropDownItems.IndexOf(menuFileCurrentWindows) + 1;
 menuFile.DropDownItems.Insert(iAt, menuWindowPrior);
 menuFile.DropDownItems.Insert(iAt, menuWindowNext);
-iAt = menuFile.DropDownItems.IndexOf(menuFileExit);
-foreach (ToolStripMenuItem menuLayout in new ToolStripMenuItem[] {menuWindowTileVertical, menuWindowTileHorizontal, menuWindowCascade, menuWindowArrangeIcons}) menuFile.DropDownItems.Insert(iAt, menuLayout);
 
 menuHelp = CreateMenu("&Help");
 menuHelpAbout = CreateMenuItem("About ...", "Alt+F1", menuItem_Click, "frame silent");
@@ -2271,8 +2279,8 @@ static readonly string[] aCommandSummaries = new string[] {
 "Reverse Find with Regex\tControl+Shift+F3, Search forward for regular expression in all or selected text",
 "Forward Find at Cursor\tAlt+F3, Search forward for chunk or selected text",
 "Reverse Find at Cursor\tAlt+Shift+F3, Search backward for chunk or selected text",
-"Search Next\tF3, Search forward for next match",
-"Search Previous\tShift+F3, Search backward for previous match",
+"Search Next\tF3, Repeat the last search, Jump to Line or Go to Percent, forward",
+"Search Previous\tShift+F3, Repeat the last search, Jump to Line or Go to Percent, backward",
 "Word Wrap\tControl+W, Word wrap lines",
 "Unwrap\tControl+Shift+W, Unwrap lines",
 "Guard Document\tControl+F7, Make document read-only",
@@ -2283,9 +2291,7 @@ static readonly string[] aCommandSummaries = new string[] {
 "Voice Faster\tControl+Grave, Increase JAWS voice rate by 5%",
 "Voice Slower\tControl+Shift+Grave, Decrease JAWS voice rate by 5%",
 "Go to Percent\tControl+G, Go to percentage point in document",
-"Go to Percent Again\tAlt+G, Repeat Go command",
 "Jump to Line\tControl+J, Jump to line number or to line, column position",
-"Jump to Line Again\tAlt+J, Repeat Jump command",
 "Save Bookmark\tControl+B, Save a bookmark at the cursor position",
 "Clear Bookmark\tControl+Shift+B, Clear bookmark at cursor position",
 "List Bookmarks\tAlt+B, Go to bookmark in current file",
@@ -2529,6 +2535,10 @@ int iLength, iStart, iEnd, iResult, iIndex, iLine, iPercent, iCount;
 string sFile, sMatch, sReplace, sPattern, sSubstitute, sLine, sTitle, sText, sResult, sLabel, sValue;
 
 ToolStripMenuItem menuItem = (ToolStripMenuItem) sender;
+if ((menuItem == menuNavigateForwardFindAgain || menuItem == menuNavigateReverseFindAgain) && sLastGoKind.Length > 0) menuItem = sLastGoKind == "line" ? menuNavigateJumpToLineAgain : menuNavigateGoToPercentAgain;
+else if (menuItem == menuNavigateJumpToLine) sLastGoKind = "line";
+else if (menuItem == menuNavigateGoToPercent) sLastGoKind = "percent";
+else if (menuItem == menuNavigateForwardFind || menuItem == menuNavigateReverseFind || menuItem == menuNavigateForwardFindWithRegExp || menuItem == menuNavigateReverseFindWithRegExp || menuItem == menuNavigateForwardFindAtCursor || menuItem == menuNavigateReverseFindAtCursor || menuItem == menuNavigateSearchForTopic) sLastGoKind = "";
 string sOptions = (string) menuItem.Tag;
 sOptions = " " + sOptions.Trim().ToLower() + " ";
 //sLabel = menuItem.Text.Replace("&", "").Replace(" ...", "").Split('\t')[0];
@@ -6399,7 +6409,10 @@ catch (Exception) {}
 int iCaretColumn = Util.CaretMarkerColumn(sOutput, sDocLine);
 if (iCaretColumn > 1) iEarliestColumn = iCaretColumn;
 }
-App.WriteData("Line", iEarliestLine + ", " + iEarliestColumn);
+// THE ERROR'S PLACE IS JUMP'S (25 November 2026): it was saved as "Line", which nothing read, so the repeat the guide
+// promised never came; saved as Jump's entry, F3 goes back to it while no search has run since.
+App.WriteData("Jump", iEarliestLine + ", " + iEarliestColumn);
+sLastGoKind = "line";
 try {
 rtb.Line = iEarliestLine;
 rtb.Column = iEarliestColumn;
@@ -9801,7 +9814,8 @@ Util.Say(i);
 e.Handled = true;
 }
 }
-else if(e.KeyCode == Keys.J && ((e.Alt && !e.Control) || (!e.Alt && e.Control)) && !e.Shift) {
+// F3, NOT ALT+J (25 November 2026, Jamal: retire Alt+J for repeating a jump; use F3 and Shift+F3), as in every Homer list.
+else if((e.KeyCode == Keys.J && e.Control && !e.Alt && !e.Shift) || (e.KeyCode == Keys.F3 && !e.Alt && !e.Control && !e.Shift)) {
 string sText = Dialog.Jump;
 if (e.Control) {
 sText = Homer.LbcAsk.input("Jump", "Text", sText, "Jump");
@@ -9809,7 +9823,7 @@ if (sText.Length == 0) return;
 }
 
 int iIndex = lst.SelectedIndex;
-if (e.Alt || sText == Dialog.Jump) iIndex++;
+if (e.KeyCode == Keys.F3 || sText == Dialog.Jump) iIndex++;
 else iIndex = 0;
 Dialog.Jump = sText;
 
@@ -10445,7 +10459,6 @@ return true;
 // name by Homer.Search, from the cursor round to the top; Alt+J and F3 find the
 // next, Shift+F3 the one before, as in every Homer list.
 case Keys.Control | Keys.J :
-case Keys.Alt | Keys.J :
 case Keys.F3 :
 case Keys.Shift | Keys.F3 :
 string sTitle = this.Text;
