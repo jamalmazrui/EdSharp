@@ -413,7 +413,7 @@ PerformScript PasteFromClipboard()
 EndIf
 EndScript
 
-; SayActiveCursor (JAWS+NumPadDelete): where the cursor is. In the editor, EdSharp's Say Position (Alt+Delete) -- the
+; SayActiveCursor (JAWS's Alt+Delete, which the key map already hands to EdSharp, and braille displays' keys for it): where the cursor is. In the editor, EdSharp's Say Position (Alt+Delete) -- the
 ; line, the column and the percent -- as DbDo and FileDir answer the same key with their own position (24 November
 ; 2026; it sent Alt+A, Say Address, which now answers JAWS+A).
 Script SayActiveCursor()
@@ -425,8 +425,8 @@ EndIf
 EndScript
 
 ; JAWS+A (24 November 2026): the address. In the editor, EdSharp's Say Address (Alt+A), with the page as well as the
-; line and column, as DbDo's JAWS+A says a cell's address and FileDir's the folder's path. The key map names Insert+A,
-; not JAWSKey+A, so a laptop's CapsLock+A stays Say All. Elsewhere the key goes on, as when unbound.
+; line and column, as DbDo's JAWS+A says a cell's address and FileDir's the folder's path. The key map binds it in
+; [Desktop Keys] only, since in the laptop layout Insert+A is Say All. Elsewhere the key goes on, as when unbound.
 Script sayEdSharpAddress()
 if UIIsEditorWindow() Then
 TypeKey("Alt+A")

@@ -3,8 +3,6 @@
 Control+A=TypeCurrentScriptKey
 Alt+Delete=TypeCurrentScriptKey
 ; end of Homer suite pass-through
-; JAWS+A (24 November 2026): Say Address in the editor.
-Insert+A=sayEdSharpAddress
 Control+JAWSKey+Space=UIWebClientUtilities
 Control+Insert+Space=UIWebClientUtilities
 Tab=SilentKey
@@ -373,6 +371,12 @@ Alt+Control+PageDown=SayCurrentColumn
 ;Control+Alt+0=SayColumn(10)
 Alt+PageDown=TypeCurrentScriptKey
 Alt+PageUp=TypeCurrentScriptKey
+[Desktop Keys]
+; JAWS+A only in the desktop layout (24 November 2026, checked against JAWS 2026's default.jkm): in the laptop layout
+; Insert+A and JAWSKey+A are Say All, which must keep working; the desktop layout leaves Insert+A unbound.
+; Say Address in the editor.
+Insert+A=sayEdSharpAddress
+
 [Keyboard Layouts]
 Desktop=Common
 Laptop=Common

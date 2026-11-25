@@ -2,6 +2,11 @@
 
 
 
+## 24 November 2026, late night -- JAWS+A on laptops stays Say All
+
+- **JAWS+A answers only in JAWS's desktop layout.** In the laptop layout, JAWS+A is Say All, and EdSharp's key map had taken it there too. The address key now sits in the key map's desktop section, checked against JAWS 2026's own key map.
+- **JAWS's key for where the cursor is was Alt+Delete all along,** which EdSharp's key map already hands to EdSharp's Say Position. JAWS+Number Pad Delete is JAWS's Route Virtual to PC and is left to JAWS. The guide is corrected.
+
 ## 24 November 2026, night -- JAWS+A and JAWS+Number Pad Delete
 
 - **JAWS+A says the address** in a document, as Alt+A does, with the page as well as the line and column. DbDo and FileDir answer JAWS+A with their own address.
