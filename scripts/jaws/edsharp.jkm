@@ -3,6 +3,8 @@
 Control+A=TypeCurrentScriptKey
 Alt+Delete=TypeCurrentScriptKey
 ; end of Homer suite pass-through
+; JAWS+A (24 November 2026): Say Address in the editor.
+Insert+A=sayEdSharpAddress
 Control+JAWSKey+Space=UIWebClientUtilities
 Control+Insert+Space=UIWebClientUtilities
 Tab=SilentKey

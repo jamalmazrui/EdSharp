@@ -2,6 +2,12 @@
 
 
 
+## 24 November 2026, night -- JAWS+A and JAWS+Number Pad Delete
+
+- **JAWS+A says the address** in a document, as Alt+A does, with the page as well as the line and column. DbDo and FileDir answer JAWS+A with their own address.
+- **JAWS+Number Pad Delete says the position,** as Alt+Delete does: the line, the column and the percent. It sent Alt+A before. DbDo and FileDir answer the key with their own position, so it means the same thing across the suite.
+- In dialogs and boxes, both keys do what JAWS always does.
+
 ## 24 November 2026, late night -- Merge File on Control+Shift+M
 
 - **Merge File moves to Control+Shift+M,** where DbDo's Merge Data now is too. Merging changes the document, and a command that changes data takes Control. Alt+Shift+M is free.
