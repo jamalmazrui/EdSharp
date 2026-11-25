@@ -20,7 +20,7 @@
 #      (which supports only C# 5 -- the log says which one it chose).
 #   6. Compiles EdSharp.dll from the support sources, then EdSharp.exe from
 #      EdSharp.cs, logging the full compiler command line and all output.
-#   7. Compiles EdSharp_Setup.exe with Inno Setup's ISCC when Inno Setup 6
+#   7. Compiles EdSharp_setup.exe with Inno Setup's ISCC when Inno Setup 6
 #      is installed, following the buildHomerScribe pattern: a machine
 #      without Inno Setup still finishes successfully, with a note saying
 #      how to compile the installer by hand.
@@ -385,7 +385,7 @@ try {
   writeLog "Settings: ReverseMarkdown=$sReverseMarkdownVersion, HtmlAgilityPack=$sHtmlAgilityPackVersion, Markdig=$sMarkdigVersion, Hunspell=$sHunspellVersion, log=$sLogFile"
 
   # ---- version: bump the iss AppVersion past every released tag ----------
-  # EdSharp's version lives in EdSharp_Setup.iss (the plain AppVersion=
+  # EdSharp's version lives in EdSharp_setup.iss (the plain AppVersion=
   # directive; that file is the single source, playing the role version.txt
   # plays for the other Homer Tools). v5.0 through v5.0.10 are already
   # released, so a build that leaves the number alone hands scripts\release a
@@ -777,7 +777,7 @@ try {
   # (HomerDescribe, DbDo, bookFido): the build generates Version.cs declaring
   # a static class BuildVersion, gitignored and never committed, so the
   # version literal lives in one source. For EdSharp that source is the
-  # AppVersion line of EdSharp_Setup.iss. The class sits in the GLOBAL
+  # AppVersion line of EdSharp_setup.iss. The class sits in the GLOBAL
   # namespace, which every namespace can see, so this works no matter how
   # EdSharp.cs is organized. The cleanup that removed the fetched dlls
   # evidently removed the generated Version.cs too, which is why the compile
@@ -1117,12 +1117,22 @@ try {
   } else {
   $sIsccFile = findIscc
   if ($sIsccFile -eq "") {
-    writeLog "Inno Setup was not found, so no installer was built. To produce EdSharp_Setup.exe, install Inno Setup 6 or open EdSharp_Setup.iss in Inno Setup and choose Compile."
+    writeLog "Inno Setup was not found, so no installer was built. To produce EdSharp_setup.exe, install Inno Setup 6 or open EdSharp_setup.iss in Inno Setup and choose Compile."
   } else {
     writeLog "Inno Setup: $sIsccFile"
     if (-not (Test-Path -LiteralPath (Join-Path $sScriptDir "EdSharp_setup.iss"))) { throw "EdSharp_setup.iss was not found beside the build script, so the installer cannot be compiled." }
-    if ((runTool $sIsccFile @("EdSharp_setup.iss") "compile EdSharp_Setup.exe") -ne 0) { throw "The installer build failed; the Inno Setup output above names the reason." }
-    writeLog "Built EdSharp_Setup.exe."
+    # THE OLD CAPITALS GO FIRST (24 November 2026). The installer was EdSharp_Setup.exe and is now EdSharp_setup.exe,
+    # as every Homer installer is spelled. Windows ignores capitals in a name, so a file left from an earlier build
+    # could keep its old spelling when written over, and the release would publish it under the old name. Any copy
+    # is removed before compiling, so Inno Setup writes the file new, with the new spelling.
+    $sOldSetup = Join-Path $sScriptDir "EdSharp_setup.exe"
+    if (Test-Path -LiteralPath $sOldSetup) {
+      $sOldName = (Get-Item -LiteralPath $sOldSetup).Name
+      Remove-Item -LiteralPath $sOldSetup -Force
+      writeLog "Removed the previous installer, $sOldName, so the new one is written as EdSharp_setup.exe."
+    }
+    if ((runTool $sIsccFile @("EdSharp_setup.iss") "compile EdSharp_setup.exe") -ne 0) { throw "The installer build failed; the Inno Setup output above names the reason." }
+    writeLog "Built EdSharp_setup.exe."
     # OLD STAND-ALONE JAWS SCRIPT INSTALLERS, which nothing builds now, are
     # removed (30 September 2026): EdSharp_Scripts_Setup.iss in scripts and in
     # scripts\jaws.
@@ -1154,11 +1164,11 @@ try {
   # controller DLL is optional, as step 4 says.
   writeLog "Artifacts:"
   $lMissing = @()
-  foreach ($sArtifact in @("EdSharp.exe", "EdSharp.dll", "ReverseMarkdown.dll", "HtmlAgilityPack.dll", "Markdig.dll", "nvdaControllerClient.dll", "EdSharp_Setup.exe")) {
-    $sArtifactDir = if ($sArtifact -eq "EdSharp_Setup.exe") { $sScriptDir } else { $sExecDir }
+  foreach ($sArtifact in @("EdSharp.exe", "EdSharp.dll", "ReverseMarkdown.dll", "HtmlAgilityPack.dll", "Markdig.dll", "nvdaControllerClient.dll", "EdSharp_setup.exe")) {
+    $sArtifactDir = if ($sArtifact -eq "EdSharp_setup.exe") { $sScriptDir } else { $sExecDir }
     $sArtifactFile = Join-Path $sArtifactDir $sArtifact
     if (Test-Path -LiteralPath $sArtifactFile) { writeLog "  $sArtifact  $((Get-Item -LiteralPath $sArtifactFile).Length) bytes, in $sArtifactDir" }
-    elseif ($sArtifact -eq "EdSharp_Setup.exe") { writeLog "  $sArtifact  not built (Inno Setup was not found)" }
+    elseif ($sArtifact -eq "EdSharp_setup.exe") { writeLog "  $sArtifact  not built (Inno Setup was not found)" }
     elseif ($sArtifact -eq "nvdaControllerClient.dll") { writeLog "  $sArtifact  not present (optional: NVDA speech falls back without it, as step 4 says)" }
     else { writeLog "  $sArtifact  MISSING from $sArtifactDir"; $lMissing += $sArtifact }
   }

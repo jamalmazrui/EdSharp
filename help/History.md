@@ -2,6 +2,18 @@
 
 
 
+## 24 November 2026, late night -- Merge File on Control+Shift+M
+
+- **Merge File moves to Control+Shift+M,** where DbDo's Merge Data now is too. Merging changes the document, and a command that changes data takes Control. Alt+Shift+M is free.
+- **The installer is EdSharp_setup.exe,** spelled as every Homer installer is. The download link in the ReadMe already used that spelling, and so do the kit's links and updater. The build removes the old EdSharp_Setup.exe first, so the new spelling sticks, and Elevate Version on F11 now asks for the new name.
+- **This needs HomerDev 1.289.1,** which carries the Conversion.cs that Paste as Markdown uses. The build stopped on a kit without it.
+
+## 24 November 2026 -- Paste as Markdown
+
+- **Control+Shift+V pastes as Markdown.** Copy from a web page or a Word document, press Control+Shift+V, and the headings, lists, links, emphasis and tables arrive as clean Markdown instead of bare words. The clipboard's web format is used first, then its rich text, and Pandoc writes the Markdown, without the extra markup web pages carry. If the clipboard holds only plain text, it is pasted as Control+V would, and EdSharp says so. It is the partner of Copy Rich Text on Control+Shift+C, and the same stronger paste as FileDir's Paste Move.
+- **Paste File is now Merge File, on Alt+Shift+M.** It still inserts another file at the cursor. Alt+Shift+M and the word "merge" match DbDo's Merge Data, which brings another file's contents into the one open. The Alternate Menu still finds it by its old name.
+- **This needs HomerDev 1.288.0.**
+
 ## 22 November 2026 -- JAWS keeps its keys
 
 - **JAWS keeps four keys EdSharp never used:** Control+Shift+F11 (the system tray), Shift+NumPad5 (say the control's hotkey), and Alt+Shift+UpArrow and DownArrow (mouse up and down). The JAWS key map had handed them to EdSharp. Nothing changes in EdSharp, and its own mouse scripts still run on those arrows.

@@ -55,7 +55,8 @@ Cut=Control+X, Cut the selected text or the current line to the clipboard
 Cut Append=Alt+X, Cut the selection, or the line, and append it to the clipboard
 
 Paste=Control+V, Paste the clipboard text at the cursor
-Paste File=Control+Shift+V, Insert another file at cursor position
+Paste as Markdown=Control+Shift+V, Paste the clipboard's rich text, such as a copied web page, as Markdown
+Merge File=Control+Shift+M, Insert another file at the cursor
 Append from Clipboard=Alt+7, Toggle saving everything copied to the clipboard to a file
 Undo=Control+Z, Undo the last editing action
 Redo=Control+Shift+Z, Redo the last action that was undone

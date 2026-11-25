@@ -34,7 +34,7 @@ Expect = 0
 
 [check]
 Name = the installer was built, at the top of the project
-Run = dir /b EdSharp_Setup.exe
+Run = dir /b EdSharp_setup.exe
 Expect = 0
 
 [check]

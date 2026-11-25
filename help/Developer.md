@@ -18,14 +18,14 @@ Then, in C:\EdSharp:
 1. **build** -- steps version.txt, writes Version.cs, refreshes the
    kit's tools into scripts, puts the files into the Homer encoding, speaks
    any tutorial with no audio yet, then compiles into exec and builds
-   EdSharp_Setup.exe at the top of the project.
+   EdSharp_setup.exe at the top of the project.
 2. **exec\EdSharp.exe** -- the quick test.
 3. **scripts\check --build** -- the checks that decide whether a
    release may happen.
 4. **scripts\push "a message"** -- rewrites the ignore whitelist from
    RepoFiles.txt, commits and pushes.
 5. **scripts\release** -- runs scripts\check, then tags the pushed commit with
-   the version stamped in EdSharp_Setup.exe and publishes the installer.
+   the version stamped in EdSharp_setup.exe and publishes the installer.
 
 `build nobump` keeps the current number. `scripts\tidy` is the
 periodic clean, and `scripts\unpushed` undoes a local commit that

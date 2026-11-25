@@ -1,8 +1,8 @@
-﻿; EdSharp_Setup.iss -- Inno Setup script for the AnyCPU EdSharp baseline (x64 and ARM64).
+﻿; EdSharp_setup.iss -- Inno Setup script for the AnyCPU EdSharp baseline (x64 and ARM64).
 ;
 ; Compile with ISCC.exe (Inno Setup 6.3+ required for x64compatible and for the
 ; per-user fallback described below). Run Build.cmd first so EdSharp.exe,
-; EdSharp.dll, and nvdaControllerClient.dll exist. Produces EdSharp_Setup.exe
+; EdSharp.dll, and nvdaControllerClient.dll exist. Produces EdSharp_setup.exe
 ; in C:\EdSharp.
 ;
 ; Robustness revisions in this version:
@@ -42,7 +42,7 @@
 ; Azure Artifact Signing, formerly Trusted Signing, is Microsoft's low-cost
 ; service); publish to winget; or tell users to unblock the file before
 ; running it (file Properties dialog, Unblock checkbox on the General page, or
-; in PowerShell: unblock-file EdSharp_Setup.exe).
+; in PowerShell: unblock-file EdSharp_setup.exe).
 
 #define MyAppVersion Trim(FileRead(FileOpen("version.txt")))
 ; The version comes from version.txt, which the build steps. Nothing
@@ -78,7 +78,9 @@ ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0
 Compression=lzma2/max
 SolidCompression=yes
-OutputBaseFilename=EdSharp_Setup
+OutputBaseFilename=EdSharp_setup
+; THE INSTALLER IS EdSharp_setup.exe (24 November 2026), spelled as every Homer
+; installer is, <App>_setup.exe, so the kit's links and updater find it by name.
 ; THE INSTALLER IS WRITTEN TO THE TOP OF THE PROJECT, as in every Homer app:
 ; scripts\release looks for it there, and LocalFiles.txt names it, so tidy
 ; leaves it in place and git never takes it. Written into exec until
@@ -92,7 +94,7 @@ SourceDir=C:\EdSharp
 ; destination C:\Program Files\EdSharp.  The commandline value adds no UI; it
 ; only enables the /ALLUSERS and /CURRENTUSER switches, so documentation can
 ; tell a user whose account cannot elevate to run:
-;   EdSharp_Setup.exe /CURRENTUSER
+;   EdSharp_setup.exe /CURRENTUSER
 PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=commandline
 ; The [Dirs] section below intentionally creates per-user data folders under

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc 3.13" />
+  <meta name="generator" content="pandoc 3.14" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>EdSharp Developer</title>
   <style>
@@ -35,27 +35,6 @@
       }
       h1 {
         font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        color-scheme: light only;
-      }
-      html, body, pre, code {
-        background-color: transparent;
-      }
-      body, a, a:visited, blockquote {
-        color: black;
-      }
-      pre, code {
-        padding: 0;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
       }
     }
     p {
@@ -163,6 +142,12 @@
       text-decoration: none;
     }
     span.smallcaps{font-variant: small-caps;}
+    em, em em em, em em em em em {
+      font-style: italic;
+    }
+    em em, em em em em {
+      font-style: normal;
+    }
     div.columns{display: flex; gap: 1.5em;}
     div.column{flex: auto;}
     @media screen {
@@ -179,7 +164,27 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-  </style>
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }  </style>
 </head>
 <body>
 <nav id="TOC" role="doc-toc" aria-label="Contents">
@@ -222,14 +227,14 @@ compiler.</p>
 <li><strong>build</strong> -- steps version.txt, writes Version.cs,
 refreshes the kit's tools into scripts, puts the files into the Homer
 encoding, speaks any tutorial with no audio yet, then compiles into exec
-and builds EdSharp_Setup.exe at the top of the project.</li>
+and builds EdSharp_setup.exe at the top of the project.</li>
 <li><strong>exec\EdSharp.exe</strong> -- the quick test.</li>
 <li><strong>scripts\check --build</strong> -- the checks that decide
 whether a release may happen.</li>
 <li><strong>scripts\push "a message"</strong> -- rewrites the ignore
 whitelist from RepoFiles.txt, commits and pushes.</li>
 <li><strong>scripts\release</strong> -- runs scripts\check, then tags
-the pushed commit with the version stamped in EdSharp_Setup.exe and
+the pushed commit with the version stamped in EdSharp_setup.exe and
 publishes the installer.</li>
 </ol>
 <p><code>build nobump</code> keeps the current number.

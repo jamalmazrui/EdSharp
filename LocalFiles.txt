@@ -23,7 +23,7 @@ sqlean.exe
 EdSharp.nvda-addon
 
 ; Built at the top of the project, where scripts\release looks for it.
-EdSharp_Setup.exe
+EdSharp_setup.exe
 
 ; The release scripts come from their own project and stay out of every
 ; repository.

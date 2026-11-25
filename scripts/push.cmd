@@ -208,6 +208,26 @@ rem every failed commit was called "nothing to commit" and ended with success,
 rem hiding a sign-in, hook or lock failure; and commits already made but not
 rem pushed were never pushed from a clean tree. Git is asked first whether
 rem anything is staged; a commit that then fails is a failure.
+rem A REFUSED COMMIT IS FOLDED INTO THE NEXT ONE (1.287.1, 24 November 2026). GitHub's push protection refused
+rem AppHelpGuides' commit of Stripe.htm because the page held Stripe's sample secret keys. The build now cuts such keys,
+rem but the refused commit stayed in the history waiting to go up, and every later push carried it and was refused
+rem again. So when there is something new to commit and earlier commits never reached GitHub, they are undone softly
+rem (git reset --soft to the upstream, which keeps every file and every staged change) and go up as one new commit
+rem made from the files as they are now. Nothing on GitHub is rewritten: only commits GitHub never accepted are folded.
+git diff --cached --quiet >> "%log%" 2>&1
+if not errorlevel 1 goto :noFold
+set "sAheadFold=0"
+for /f "delims=" %%c in ('git rev-list --count @{u}..HEAD 2^>nul') do set "sAheadFold=%%c"
+if "%sAheadFold%"=="0" goto :noFold
+>> "%log%" echo FOLD: %sAheadFold% commit^(s^) never pushed are folded into this one:
+git log --oneline @{u}..HEAD >> "%log%" 2>&1
+git reset --soft @{u} >> "%log%" 2>&1
+if errorlevel 1 (
+  echo FOLD FAILED; committing on top of the earlier commits as before>> "%log%"
+) else (
+  echo Folded %sAheadFold% earlier commit^(s^) that never reached GitHub into this one.
+)
+:noFold
 git diff --cached --quiet >> "%log%" 2>&1
 if errorlevel 1 goto :commit
 set "sAhead=0"

@@ -50,7 +50,7 @@ public class App : WindowsFormsApplicationBase {
 // the latest GitHub release tag.  Bump this on each release; the About dialog
 // shows the friendly "5.0 beta" label separately.
 // The version number is NOT stored here.  It lives in exactly one place --
-// AppVersion in EdSharp_Setup.iss -- and Build.cmd generates Version.cs
+// AppVersion in EdSharp_setup.iss -- and Build.cmd generates Version.cs
 // from it at build time, defining BuildVersion.Version.  That makes it
 // impossible for the running program and the installer (and therefore the
 // release tag that F11 compares against) to disagree.
@@ -1000,7 +1000,7 @@ public static string EOD = LB + DD + LB + "End of Document" + LB;
 public static Dictionary<Keys, ToolStripMenuItem> hashKey = new Dictionary<Keys, ToolStripMenuItem>();
 public MenuStrip menuMain;
 public ToolStripMenuItem menuFile, menuFileNew, menuFileNewFromClipboard, menuFileOpen, menuFileOpenOtherFormat, menuFileOpenAgain, menuFileRecent, menuFileSetFavorite, menuFileClearFavorite, menuFileListFavorites, menuFileFind, menuFileSave, menuFileSaveAs, menuFileSaveCopy, menuFileExport, menuFileRename, menuFileProperties, menuFileMailBody, menuFilePrint, menuFileRun, menuFileCurrentWindows, menuFileClose, menuFileCloseAllButCurrentWindow, menuFileExit;
-public ToolStripMenuItem menuEdit, menuEditSelectAll, menuEditUnselectAll, menuEditCopy, menuEditCopyAppend, menuEditCopyRichText, menuEditCut, menuEditCutAppend, menuEditPaste, menuEditPasteFile, menuEditUndo, menuEditRedo, menuEditStartSelection, menuEditCompleteSelection, menuEditReselect, menuEditCopyAll, menuEditSelectChunk, menuEditAppendFromClipboard, menuEditQuote, menuEditUnquote, menuEditUpperCase, menuEditLowerCase, menuEditProperCase, menuEditSwapCase, menuEditYieldEncoding, menuEditJoinLines, menuEditHardLineBreak, menuEditEnterNewLine, menuEditIndentNewLine, menuEditIndentNewLinePrior, menuEditIndent, menuEditOutdent, menuEditAlign, menuEditIndentMode, menuEditJustify, menuEditStyle, menuEditBaseline, menuEditSetSelectionFont, menuEditSaveClipboard, menuEditAppendClipboard, menuEditClearClipboard;
+public ToolStripMenuItem menuEdit, menuEditSelectAll, menuEditUnselectAll, menuEditCopy, menuEditCopyAppend, menuEditCopyRichText, menuEditCut, menuEditCutAppend, menuEditPaste, menuEditPasteMarkdown, menuEditMergeFile, menuEditUndo, menuEditRedo, menuEditStartSelection, menuEditCompleteSelection, menuEditReselect, menuEditCopyAll, menuEditSelectChunk, menuEditAppendFromClipboard, menuEditQuote, menuEditUnquote, menuEditUpperCase, menuEditLowerCase, menuEditProperCase, menuEditSwapCase, menuEditYieldEncoding, menuEditJoinLines, menuEditHardLineBreak, menuEditEnterNewLine, menuEditIndentNewLine, menuEditIndentNewLinePrior, menuEditIndent, menuEditOutdent, menuEditAlign, menuEditIndentMode, menuEditJustify, menuEditStyle, menuEditBaseline, menuEditSetSelectionFont, menuEditSaveClipboard, menuEditAppendClipboard, menuEditClearClipboard;
 public ToolStripMenuItem menuDelete, menuDeleteReplaceRegular, menuDeleteReplaceWithRegExp, menuDeleteHardLine, menuDeleteParagraph, menuDeleteLine, menuDeleteRight, menuDeleteLeft, menuDeleteDown, menuDeleteUp, menuDeleteFile, menuDeleteTrimBlanks;
 public ToolStripMenuItem menuNavigate, menuNavigateForwardFind, menuNavigateReverseFind, menuNavigateForwardFindWithRegExp, menuNavigateReverseFindWithRegExp,  menuNavigateForwardFindAtCursor, menuNavigateReverseFindAtCursor, menuNavigateForwardFindAgain, menuNavigateReverseFindAgain, menuNavigateJumpToLine, menuNavigateJumpToLineAgain, menuNavigateGoToPercent, menuNavigateGoToPercentAgain, menuNavigateGoToPart, menuNavigateSetBookmark, menuNavigateClearBookmark, menuNavigateGoToBookmark, menuNavigateHomeCharacter, menuNavigateEndCharacter, menuNavigateStartTag, menuNavigateEndTag,  menuNavigateNextJustify, menuNavigatePriorJustify, menuNavigateNextStyle, menuNavigatePriorStyle, menuNavigateNextBaseline, menuNavigatePriorBaseline, menuNavigateNextFont, menuNavigatePriorFont, menuNavigateRightBrace, menuNavigateNextBlock, menuNavigatePriorBlock, menuNavigateLeftBrace, menuNavigateNextIndent, menuNavigatePriorIndent, menuNavigateNextChunk,  menuNavigatePriorChunk, menuNavigateNextSentence, menuNavigatePriorSentence, menuNavigateNextParagraph, menuNavigatePriorParagraph, menuNavigateNextPart, menuNavigatePriorPart, menuNavigateNextSection, menuNavigatePriorSection, menuNavigateGoToSection, menuNavigateGoToContents, menuNavigateSearchForTopic, menuNavigateGoToStartOfSelection;
 public ToolStripMenuItem menuQuery, menuQueryAddress, menuQueryPosition, menuQueryBraces, menuQueryBlock, menuQueryIndent, menuQueryPath, menuQueryTopic, menuQueryYield, menuQueryStatus, menuQueryCompiler, menuQuerySelected, menuQueryChunk, menuQueryReadAll, menuQueryWindowsOpen, menuQueryClipboard, menuQueryTime, menuQueryStyles;
@@ -1039,7 +1039,7 @@ menuFileRename = CreateMenuItem("Rename ...", "Shift+F2", menuItem_Click, "child
 menuFileProperties = CreateMenuItem("Properties", "Alt+Enter", menuItem_Click, "child speak");
 // ONE MAIL COMMAND (21 November 2026): Mail Body and Mail Attachment were one job done two ways. Mail, Control+M,
 // puts the text in the body and attaches the file when it is saved on disk, as FileDir's Mail does. Control+Shift+M
-// is free, so FileDir's Move to Folder can take it.
+// is Merge File here (24 November 2026), as it is Merge Data in DbDo; FileDir's Move to Folder has it there.
 menuFileMailBody = CreateMenuItem("&Mail ...", "Control+M", menuItem_Click, "child speak");
 // NO KEY, ON THE MISC MENU (9 November 2026): Control+P plays media in every Homer app, and few people print now.
 menuFilePrint = CreateMenuItem("&Print", "", menuItem_Click, "child silent");
@@ -1060,7 +1060,14 @@ menuEditCopyRichText = CreateMenuItem("Copy Rich Text", "Control+Shift+C", menuI
 menuEditCut = CreateMenuItem("Cut", "Control+&X", menuItem_Click, "child speak");
 menuEditCutAppend = CreateMenuItem("Cut Append", "Alt+X", menuItem_Click, "child speak");
 menuEditPaste = CreateMenuItem("Paste", "Control+&V", menuItem_Click, "child speak");
-menuEditPasteFile = CreateMenuItem("Paste File ...", "Control+Shift+V", menuItem_Click, "child speak");
+// PASTE AS MARKDOWN AND MERGE FILE (24 November 2026). Control+Shift+V pastes the clipboard's rich text --
+// a web page or a Word document copied -- as Markdown, the partner of Copy Rich Text on Control+Shift+C and
+// of FileDir's Paste Move: Control+Shift+V is the suite's stronger paste. Inserting another file, which held the
+// key as Paste File, is now Merge File on Control+Shift+M (24 November 2026; Alt+Shift+M for a day), the key and
+// the word DbDo's Merge Data uses for bringing another file's contents into the one open: merging changes the
+// document, which prefers Control.
+menuEditPasteMarkdown = CreateMenuItem("Paste as Markdown", "Control+Shift+V", menuItem_Click, "child speak");
+menuEditMergeFile = CreateMenuItem("Merge File ...", "Control+Shift+M", menuItem_Click, "child speak");
 menuEditUndo = CreateMenuItem("Undo", "Control+&Z", menuItem_Click, "child speak");
 menuEditRedo = CreateMenuItem("Redo", "Control+Shift+Z", menuItem_Click, "child speak");
 menuEditStartSelection = CreateMenuItem("Start Selection", "F8", menuItem_Click, "child speak");
@@ -1095,7 +1102,7 @@ menuEditJustify = CreateMenuItem("Justify ...", "Alt+Shift+J", menuItem_Click, "
 menuEditStyle = CreateMenuItem("Style ...", "", menuItem_Click, "child silent");
 menuEditBaseline = CreateMenuItem("Baseline ...", "Alt+Shift+D6", menuItem_Click, "child silent");
 menuEditSetSelectionFont = CreateMenuItem("Set Selection Font ...", "Alt+Shift+OemMinus", menuItem_Click, "child speak");
-menuEdit.DropDownItems.AddRange(new ToolStripItem[] {menuEditSelectAll, menuEditUnselectAll, menuEditCopy, menuEditCopyAppend, menuEditCopyRichText, menuEditCut, menuEditCutAppend, menuEditPaste, menuEditPasteFile, menuEditUndo, menuEditRedo, menuEditStartSelection, menuEditCompleteSelection, menuEditReselect, menuEditCopyAll, menuEditSelectChunk, menuEditAppendFromClipboard, menuEditSaveClipboard, menuEditAppendClipboard, menuEditClearClipboard, menuEditQuote, menuEditUnquote, menuEditUpperCase, menuEditLowerCase, menuEditProperCase, menuEditSwapCase, menuEditYieldEncoding, menuEditJoinLines, menuEditHardLineBreak, menuEditEnterNewLine, menuEditIndentNewLine, menuEditIndentNewLinePrior, menuEditIndent, menuEditOutdent, menuEditAlign, menuEditIndentMode, menuEditJustify, menuEditStyle, menuEditBaseline, menuEditSetSelectionFont});
+menuEdit.DropDownItems.AddRange(new ToolStripItem[] {menuEditSelectAll, menuEditUnselectAll, menuEditCopy, menuEditCopyAppend, menuEditCopyRichText, menuEditCut, menuEditCutAppend, menuEditPaste, menuEditPasteMarkdown, menuEditMergeFile, menuEditUndo, menuEditRedo, menuEditStartSelection, menuEditCompleteSelection, menuEditReselect, menuEditCopyAll, menuEditSelectChunk, menuEditAppendFromClipboard, menuEditSaveClipboard, menuEditAppendClipboard, menuEditClearClipboard, menuEditQuote, menuEditUnquote, menuEditUpperCase, menuEditLowerCase, menuEditProperCase, menuEditSwapCase, menuEditYieldEncoding, menuEditJoinLines, menuEditHardLineBreak, menuEditEnterNewLine, menuEditIndentNewLine, menuEditIndentNewLinePrior, menuEditIndent, menuEditOutdent, menuEditAlign, menuEditIndentMode, menuEditJustify, menuEditStyle, menuEditBaseline, menuEditSetSelectionFont});
 //Homer.LbcAsk.message("Edit.", menuEdit.DropDownItems.Count);
 
 menuDelete = CreateMenu("&Delete");
@@ -1331,6 +1338,7 @@ this.Controls.AddRange(new Control[] {statusBar, menuMain});
 this.MainMenuStrip = menuMain;
 // No MdiWindowListItem: with no Window menu, F4 (Current Windows) lists the open windows.
 Homer.KeyMap.addFormerName("Edit Script", "View Script");
+Homer.KeyMap.addFormerName("Merge File", "Paste File");
 Homer.KeyMap.addFormerName("Mail", "Mail Body");
 Homer.KeyMap.addFormerName("Mail", "Mail Attachment");
 //this.AutoSize = true;
@@ -2244,7 +2252,8 @@ static readonly string[] aCommandSummaries = new string[] {
 "Cut\tControl+X, Cut selected text to clipboard, or cut current line if no selection",
 "Cut Append\tAlt+X, Cut and append selected text to clipboard, or cut and append current line if no selection",
 "Paste\tControl+V, Paste text from clipboard",
-"Paste File\tControl+Shift+V, Insert another file at cursor position",
+"Paste as Markdown\tControl+Shift+V, Paste rich text from the clipboard as Markdown",
+"Merge File\tControl+Shift+M, Insert another file at cursor position",
 "Append from Clipboard\tAlt+7, Toggle a mode in which text copied to the clipboard is also saved to a file",
 "Undo\tControl+Z, Undo the last editing action",
 "Redo\tControl+Shift+Z, Redo the last action that was undone",
@@ -2995,7 +3004,23 @@ rtb.Index = iIndex + sText.Length;
 }
 }
 
-if (menuItem == menuEditPasteFile) {
+if (menuItem == menuEditPasteMarkdown) {
+// The kit reads the clipboard's HTML, else its rich text, and Pandoc writes clean Markdown. With
+// only plain text there, it is pasted as Paste would, and the reason is said.
+string sMdError;
+string sMd = Homer.Conversion.clipboardMarkdown(out sMdError);
+if (sMd.Length == 0) {
+if (sMdError.Length > 0) { Util.Say("Not pasted: " + sMdError); return; }
+sMd = Util.Convert2UnixLineBreak(Util.GetClipboardText());
+if (sMd.Length == 0) { Util.Say("Clipboard empty"); return; }
+AddMessage("No rich text, so pasted as plain text");
+}
+else sMd = Util.Convert2UnixLineBreak(sMd);
+rtb.SelectedText = sMd;
+Util.Say(rtb.RowText);
+}
+
+if (menuItem == menuEditMergeFile) {
 sFile = Dialog.OpenFile("", "");
 if (sFile.Length == 0) return;
 
@@ -8967,7 +8992,7 @@ public void ElevateVersion() {
 // running EdSharp and offers to close it before proceeding.
 string sOwnerRepo = "JamalMazrui/EdSharp";
 string sReleasesUrl = "https://github.com/" + sOwnerRepo + "/releases/latest";
-string sName = "EdSharp_Setup.exe";
+string sName = "EdSharp_setup.exe"; // spelled as every Homer installer is (24 November 2026)
 
 Util.Say("Checking for updates");
 string sTag = Util.FetchLatestReleaseTag(sOwnerRepo);

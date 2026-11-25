@@ -290,7 +290,7 @@ run later for anything that is not. The summary is saved as
 EdSharp_setup_summary.txt in the logs folder under your local
 application data. You can see it again at any time by running
 summarizeSetup.cmd from the program folder.</p>
-<p>The installation program for EdSharp is called EdSharp_Setup.exe.
+<p>The installation program for EdSharp is called EdSharp_setup.exe.
 When run, it asks for a program folder, the default being<br />
 <code>C:\Program Files\EdSharp</code> The installer also creates a
 program group for EdSharp on the Windows Start menu, with choices to
@@ -340,7 +340,12 @@ start position with Alt+Shift+F8.</p>
 <p>As usual, Control+A selects all text. Control+Shift+A clears any
 selection. Press Control+F8 to copy all text to the clipboard with a
 single command. Control+V pastes clipboard text at the cursor position.
-Control+Shift+V inserts the content of a file instead.</p>
+Control+Shift+V pastes as Markdown: when you have copied from a web page
+or a Word document, the headings, lists, links, emphasis and tables come
+in as Markdown rather than as bare text. If the clipboard holds only
+plain text, it is pasted as Control+V would, and EdSharp says so.
+Control+Shift+M, Merge File, inserts the content of another file
+instead.</p>
 <p>Press Control+Space to select a chunk of text at the cursor position.
 A chunk is defined as a contiguous sequence of non-space characters. It
 may be more than what the hotkey Control+Shift+RightArrow selects, since
@@ -1893,14 +1898,14 @@ for detecting encodings, and current portable builds of the Convert
 tools (Pandoc, HTML Tidy, liblouis, Xpdf and Artistic Style). So a fresh
 copy of the source needs nothing but <code>Build.cmd</code>; everything
 made or downloaded is produced again when needed.</p>
-<p>To build the Windows installer, <code>EdSharp_Setup.exe</code>,
+<p>To build the Windows installer, <code>EdSharp_setup.exe</code>,
 install <a href="https://jrsoftware.org/isinfo.php">Inno Setup</a> and
-compile <code>EdSharp_Setup.iss</code> with it (after a successful
+compile <code>EdSharp_setup.iss</code> with it (after a successful
 <code>Build.cmd</code>, so the compiled files exist).</p>
 <p>Because the built and fetched files are reproducible, they are kept
 out of source control by <code>.gitignore</code>:
 <code>EdSharp.exe</code>, <code>EdSharp.dll</code>,
-<code>EdSharp_Setup.exe</code>, <code>Build.log</code>, the fetched
+<code>EdSharp_setup.exe</code>, <code>Build.log</code>, the fetched
 <code>Ude.dll</code>, and the downloaded tool folders under
 <code>Convert</code>. Committed binaries that are not produced by the
 build, such as <code>Tektosyne.dll</code>,

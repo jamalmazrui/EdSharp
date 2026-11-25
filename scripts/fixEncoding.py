@@ -271,6 +271,7 @@ def oneTitleHeading(sHtml):
 
 sLang = "en-US"
 reAnchor = re.compile(r"<a\b([^>]*)>(.*?)</a>", re.S | re.I)
+reInnermostAnchor = re.compile(r"<a\b([^>]*)>((?:(?!<a\b).)*?)</a>", re.S | re.I)
 reBareDomain = re.compile(r"^(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:ai|app|au|ca|co|com|de|dev|edu|fr|gov|info|io|me|net|org|tv|uk|us)(?:[/?#]|$)", re.I)
 
 
@@ -351,7 +352,17 @@ def finishPage(sHtml, setLocal=None, dFixes=None):
         return sInner
     oBody = re.search(r"<body\b[^>]*>", sHtml)
     iBody = oBody.end() if oBody else 0
-    sHtml = sHtml[:iBody] + reAnchor.sub(fnAnchor, sHtml[iBody:])
+    # A LINK INSIDE A LINK (1.287.2, 24 November 2026). Quarto.htm kept one site-relative link after finishing, and fixPages
+    # failed the AppHelpGuides build for it: the anchor pattern runs from an <a to the first </a>, so a link nested in
+    # another was read as part of the outer one and never checked. The innermost links are settled first, as often as
+    # it takes, and then each remaining link once, as before; a settled link is left as it is, so a second pass changes
+    # nothing it already did.
+    sRest = sHtml[iBody:]
+    for iPass in range(6):
+        sNext = reInnermostAnchor.sub(fnAnchor, sRest)
+        if sNext == sRest: break
+        sRest = sNext
+    sHtml = sHtml[:iBody] + reAnchor.sub(fnAnchor, sRest)
     # The main landmark: after the contents list, or else after the title block, or else the whole body.
     if not re.search(r"<main\b", sHtml) and oBody:
         iEnd = sHtml.rfind("</body>")

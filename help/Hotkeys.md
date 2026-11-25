@@ -1,8 +1,8 @@
 ﻿# EdSharp Hotkeys
 
-**Version 5.0.177**  
+**Version 5.0.178**  
 
-Generated from the key file on 22 November 2026. Do not edit this page; edit the key file in configs and build again.
+Generated from the key file on 24 November 2026. Do not edit this page; edit the key file in configs and build again.
 
 Every EdSharp command, given three ways so you can find a command however you think of it. Press Control+F1 to turn on the Key Describer, which says a command's name, key and description instead of running it, and Alt+F10 for the Alternate Menu, which lists every command and finds one by a former name too.
 
@@ -116,6 +116,7 @@ Commands in alphabetical order.
 - **Lower Case**, Control+Shift+U -- Convert current or selected characters to lower case
 - **Mail**, Control+M -- Email the current file, its text in the body and the file attached when it is saved
 - **Markdown to Plain Text**, no key -- Convert the Markdown in this window to plain text
+- **Merge File**, Control+Shift+M -- Insert another file at the cursor
 - **New**, Control+N -- Open a new editing window
 - **New from Clipboard**, Control+Shift+N -- Open a new editing window containing clipboard text
 - **Next Alignment**, Control+RightBracket -- Go to next change in justification
@@ -140,7 +141,7 @@ Commands in alphabetical order.
 - **Order Items**, Alt+Shift+O -- Sort items alphabetically in all or selected text
 - **Outdent**, Shift+Tab -- Indent the current or selected lines one unit less
 - **Paste**, Control+V -- Paste the clipboard text at the cursor
-- **Paste File**, Control+Shift+V -- Insert another file at cursor position
+- **Paste as Markdown**, Control+Shift+V -- Paste the clipboard's rich text, such as a copied web page, as Markdown
 - **Path List**, Control+Shift+P -- Generate a list of files in a new editing window
 - **Path to Clipboard**, Alt+Shift+P -- Copy the full path of the current file to the clipboard
 - **Pick Compiler**, Control+Shift+F5 -- Pick a compiler or interpreter from the list of those configured
@@ -414,6 +415,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+Shift+J** -- Join Lines: Word wrap lines in all or selected paragraphs
 - **Control+Shift+L** -- Clear Favorite: Clear current file from the list of favorites
 - **Control+Shift+LeftBracket** -- Left Brace: Search backward for matching left brace character
+- **Control+Shift+M** -- Merge File: Insert another file at the cursor
 - **Control+Shift+N** -- New from Clipboard: Open a new editing window containing clipboard text
 - **Control+Shift+O** -- Open Other Format: Open file in another format and convert it to text
 - **Control+Shift+P** -- Path List: Generate a list of files in a new editing window
@@ -426,7 +428,7 @@ The same commands, in alphabetical order of the key that runs them.
 - **Control+Shift+T** -- Text Contents: Generate and prepend a table of contents to the current document
 - **Control+Shift+Tab** -- Previous Window: Switch to the previous window
 - **Control+Shift+U** -- Lower Case: Convert current or selected characters to lower case
-- **Control+Shift+V** -- Paste File: Insert another file at cursor position
+- **Control+Shift+V** -- Paste as Markdown: Paste the clipboard's rich text, such as a copied web page, as Markdown
 - **Control+Shift+W** -- Unwrap: Unwrap lines
 - **Control+Shift+X** -- Export Format: Export document to another format
 - **Control+Shift+Y** -- Yield with Regex: Count parts of text matching a regular expression
@@ -542,10 +544,11 @@ Grouped by the modifier key a command starts with.
 - **Control+Shift+J** -- Join Lines
 - **Control+Shift+LeftBracket** -- Left Brace
 - **Control+Shift+U** -- Lower Case
+- **Control+Shift+M** -- Merge File
 - **Control+Shift+N** -- New from Clipboard
 - **Control+Shift+F7** -- No Guard
 - **Control+Shift+O** -- Open Other Format
-- **Control+Shift+V** -- Paste File
+- **Control+Shift+V** -- Paste as Markdown
 - **Control+Shift+P** -- Path List
 - **Control+Shift+F5** -- Pick Compiler
 - **Control+Shift+6** -- Previous Baseline

@@ -525,7 +525,7 @@ EdSharp works like Notepad, so you can begin using it with the same commands you
 
 ### Installation
 
-The installation program for EdSharp is called EdSharp_Setup.exe. When you run it, it does the following:
+The installation program for EdSharp is called EdSharp_setup.exe. When you run it, it does the following:
 
 - Prompts for a program folder. The default is `C:\Program Files (x86)\EdSharp`.
 - Creates a program group on the Windows Start menu with choices to launch EdSharp, read the documentation, or uninstall the program.

@@ -54,7 +54,7 @@ if not defined homerDev (
 )
 set "homerVer=0.0.0"
 if exist "!homerDev!\version.txt" set /p homerVer=<"!homerDev!\version.txt"
-set "kitNeeded=1.273.0"
+set "kitNeeded=1.289.1"
 powershell -NoProfile -Command "if ([version]'!homerVer!' -lt [version]'!kitNeeded!') { exit 1 } else { exit 0 }" >nul
 if errorlevel 1 (
   echo EdSharp needs HomerDev !kitNeeded! or later, and the kit is !homerVer!.
@@ -254,7 +254,7 @@ if not "!iCompile!"=="0" (
 for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.fffzzz'"`) do set "sIso=%%i"
 >> "%log%" echo %sIso% INFO  build end result=succeeded
 echo(
-echo Built exec\EdSharp.exe and EdSharp_Setup.exe version !ver!.
+echo Built exec\EdSharp.exe and EdSharp_setup.exe version !ver!.
 echo Quick test: exec\EdSharp.exe
 echo To publish: scripts\push "message", then scripts\release.
 endlocal

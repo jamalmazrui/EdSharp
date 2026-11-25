@@ -192,6 +192,13 @@
 <li><a href="#edsharp-history" id="toc-edsharp-history">EdSharp
 History</a>
 <ul>
+<li><a
+href="#24-november-2026-late-night----merge-file-on-controlshiftm"
+id="toc-24-november-2026-late-night----merge-file-on-controlshiftm">24
+November 2026, late night -- Merge File on Control+Shift+M</a></li>
+<li><a href="#24-november-2026----paste-as-markdown"
+id="toc-24-november-2026----paste-as-markdown">24 November 2026 -- Paste
+as Markdown</a></li>
 <li><a href="#22-november-2026----jaws-keeps-its-keys"
 id="toc-22-november-2026----jaws-keeps-its-keys">22 November 2026 --
 JAWS keeps its keys</a></li>
@@ -440,6 +447,40 @@ id="toc-earlier-in-august-2026">Earlier in August 2026</a></li>
 </nav>
 <main>
 <h1 id="edsharp-history">EdSharp History</h1>
+<h2 id="24-november-2026-late-night----merge-file-on-controlshiftm">24
+November 2026, late night -- Merge File on Control+Shift+M</h2>
+<ul>
+<li><strong>Merge File moves to Control+Shift+M,</strong> where DbDo's
+Merge Data now is too. Merging changes the document, and a command that
+changes data takes Control. Alt+Shift+M is free.</li>
+<li><strong>The installer is EdSharp_setup.exe,</strong> spelled as
+every Homer installer is. The download link in the ReadMe already used
+that spelling, and so do the kit's links and updater. The build removes
+the old EdSharp_Setup.exe first, so the new spelling sticks, and Elevate
+Version on F11 now asks for the new name.</li>
+<li><strong>This needs HomerDev 1.289.1,</strong> which carries the
+Conversion.cs that Paste as Markdown uses. The build stopped on a kit
+without it.</li>
+</ul>
+<h2 id="24-november-2026----paste-as-markdown">24 November 2026 -- Paste
+as Markdown</h2>
+<ul>
+<li><strong>Control+Shift+V pastes as Markdown.</strong> Copy from a web
+page or a Word document, press Control+Shift+V, and the headings, lists,
+links, emphasis and tables arrive as clean Markdown instead of bare
+words. The clipboard's web format is used first, then its rich text, and
+Pandoc writes the Markdown, without the extra markup web pages carry. If
+the clipboard holds only plain text, it is pasted as Control+V would,
+and EdSharp says so. It is the partner of Copy Rich Text on
+Control+Shift+C, and the same stronger paste as FileDir's Paste
+Move.</li>
+<li><strong>Paste File is now Merge File, on Alt+Shift+M.</strong> It
+still inserts another file at the cursor. Alt+Shift+M and the word
+"merge" match DbDo's Merge Data, which brings another file's contents
+into the one open. The Alternate Menu still finds it by its old
+name.</li>
+<li><strong>This needs HomerDev 1.288.0.</strong></li>
+</ul>
 <h2 id="22-november-2026----jaws-keeps-its-keys">22 November 2026 --
 JAWS keeps its keys</h2>
 <ul>
