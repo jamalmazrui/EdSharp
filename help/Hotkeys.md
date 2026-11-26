@@ -1,8 +1,8 @@
 ﻿# EdSharp Hotkeys
 
-**Version 5.0.182**  
+**Version 5.0.183**  
 
-Generated from the key file on 25 November 2026. Do not edit this page; edit the key file in configs and build again.
+Generated from the key file on 26 November 2026. Do not edit this page; edit the key file in configs and build again.
 
 Every EdSharp command, given three ways so you can find a command however you think of it. Press Control+F1 to turn on the Key Describer, which says a command's name, key and description instead of running it, and Alt+F10 for the Alternate Menu, which lists every command and finds one by a former name too.
 

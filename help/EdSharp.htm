@@ -1664,19 +1664,19 @@ the one before. The item with focus when the dialog is closed -- but not
 canceled -- becomes the current item the next time that the same list
 dialog is invoked (you are notified when it is not the first item). The
 Jump value of that dialog is also remembered.</p>
-<p>Control+F sets a filter, so only matching items are shown, in the
-search syntax below: * matches any run of characters, ? a single one,
-&amp; means all, | any, and ! not. For example, to browse the commands
-about replacing in the Alternate Menu, Alt+F10, press Control+F in that
-list and type <em>replace</em> as the filter. Control+Shift+F clears the
-filter, so all items show again. You can also change the order of items:
-Alt+A for alphabetical order, Alt+Shift+A for reverse alphabetical
-order, Alt+D for the default order, or Alt+Shift+D for the default order
-reversed.</p>
-<h3 id="search-syntax">Search syntax</h3>
-<p>Every Homer search that is not a regular expression reads what you
-type the same way. A plain word is enough most of the time; the symbols
-are there when you need more.</p>
+<p>Control+F sets a filter, so only matching items are shown, as a Homer
+pattern, described below: * matches any run of characters, ? a single
+one, &amp; means all, | any, and ! not. For example, to browse the
+commands about replacing in the Alternate Menu, Alt+F10, press Control+F
+in that list and type <em>replace</em> as the filter. Control+Shift+F
+clears the filter, so all items show again. You can also change the
+order of items: Alt+A for alphabetical order, Alt+Shift+A for reverse
+alphabetical order, Alt+D for the default order, or Alt+Shift+D for the
+default order reversed.</p>
+<h3 id="homer-patterns">Homer patterns</h3>
+<p>Every Homer search that is not a regex pattern reads what you type as
+a <strong>Homer pattern</strong>. A plain word is enough most of the
+time; the symbols are there when you need more.</p>
 <ul>
 <li><strong>A word</strong> is found anywhere, whatever its case:
 <code>river</code> finds "Riverside".</li>
@@ -1693,6 +1693,9 @@ green.</li>
 <code>!draft</code>.</li>
 <li><strong>Quotes</strong> find exactly what is inside, symbols and
 all: <code>"C#"</code>, <code>"a &amp; b"</code>.</li>
+<li><strong>Quotes and a tilde</strong> find words near each other:
+<code>"guide dog"~5</code> finds guide and dog with at most five words
+between them, in either order.</li>
 </ul>
 <p>Where a wildcard counts depends on what is searched. When the search
 reads a <strong>name</strong> -- a file name, a line of a list, one

@@ -693,11 +693,11 @@ To make moving through a long list quicker and easier, EdSharp adds these featur
 
 Control+J prompts for text within an item, going to the first match if a new search, or the next match if the previous value is accepted.  F3 goes to the next match without prompting for a value, and Shift+F3 to the one before.  The item with focus when the dialog is closed -- but not canceled -- becomes the current item the next time that the same list dialog is invoked (you are notified when it is not the first item).  The Jump value of that dialog is also remembered.
 
-Control+F sets a filter, so only matching items are shown, in the search syntax below: * matches any run of characters, ? a single one, & means all, | any, and ! not.  For example, to browse the commands about replacing in the Alternate Menu, Alt+F10, press Control+F in that list and type *replace* as the filter.  Control+Shift+F clears the filter, so all items show again.  You can also change the order of items: Alt+A for alphabetical order, Alt+Shift+A for reverse alphabetical order, Alt+D for the default order, or Alt+Shift+D for the default order reversed.
+Control+F sets a filter, so only matching items are shown, as a Homer pattern, described below: * matches any run of characters, ? a single one, & means all, | any, and ! not.  For example, to browse the commands about replacing in the Alternate Menu, Alt+F10, press Control+F in that list and type *replace* as the filter.  Control+Shift+F clears the filter, so all items show again.  You can also change the order of items: Alt+A for alphabetical order, Alt+Shift+A for reverse alphabetical order, Alt+D for the default order, or Alt+Shift+D for the default order reversed.
 
-### Search syntax
+### Homer patterns
 
-Every Homer search that is not a regular expression reads what you type the same way. A plain word is enough most of the time; the symbols are there when you need more.
+Every Homer search that is not a regex pattern reads what you type as a **Homer pattern**. A plain word is enough most of the time; the symbols are there when you need more.
 
 - **A word** is found anywhere, whatever its case: `river` finds "Riverside".
 - **`*`** stands for any run of characters, and **`?`** for any one character: `chap*`, `c?t`.
@@ -705,6 +705,7 @@ Every Homer search that is not a regular expression reads what you type the same
 - **`|`** means any of them: `red | blue`. `&` is read first, so `red & blue | green` means red and blue, or else green.
 - **`!`** before a word means not: `!draft`.
 - **Quotes** find exactly what is inside, symbols and all: `"C#"`, `"a & b"`.
+- **Quotes and a tilde** find words near each other: `"guide dog"~5` finds guide and dog with at most five words between them, in either order.
 
 Where a wildcard counts depends on what is searched. When the search reads a **name** -- a file name, a line of a list, one field -- a word with `*` or `?` must match the whole name, so `*.md` means a name ending in .md, and `chap*` one starting with chap. When it reads **text** -- a file's contents, a whole record -- every word may match anywhere. A word with no wildcard is found anywhere in both.
 

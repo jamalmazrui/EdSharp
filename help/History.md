@@ -2,6 +2,10 @@
 
 
 
+## 26 November 2026, afternoon -- The Homer pattern
+
+- **The search syntax is now called the Homer pattern,** the parallel of a regex pattern, and it gains near: `"guide dog"~5` finds the words with at most five between them. It works wherever EdSharp takes a Homer pattern -- Search for Topic, File Find and the pick lists -- with the kit's 1.294.0.
+
 ## 25 November 2026, night -- A database goes to DbDo
 
 - **Opening a database or workbook offers DbDo first.** A .db, .xlsx, .xls, .dbf or Access file opened here would become flat text, losing its tables and fields, so EdSharp asks: Open in DbDo, which Enter takes, or Text here, which converts it as Open Other Format does. CSV and TSV are text and open here without asking. With DbDo not installed, nothing is asked.
