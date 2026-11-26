@@ -9314,6 +9314,17 @@ return;
 }
 }
 
+// A DATABASE OR WORKBOOK GOES TO DbDo FIRST (25 November 2026). Opened here, a .db, .xlsx, .dbf or Access file
+// becomes flat text and loses its tables, its rows and its fields, so the suite's database program is offered
+// first, with Text here beside it to convert it as before. CSV and TSV are text, so they open here without asking.
+// With DbDo not installed, nothing is asked.
+string sOpenExt = Path.GetExtension(sFile).ToLower();
+if (Array.IndexOf(new string[] {".accdb", ".db", ".db3", ".dbf", ".mdb", ".sqlite", ".sqlite3", ".xls", ".xlsm", ".xlsx"}, sOpenExt) >= 0) {
+string sNext = Homer.SuiteCommands.offerHomerApps(this, "Open", Path.GetFileName(sFile) + " holds tables of data.", sFile, "EdSharp", new string[] {"&Text here"}, "");
+if (sNext == "homer" || sNext == "") return;
+if (sNext == "&Text here" && iConvert == 0) iConvert = 2;
+}
+
 string sTargetExt = "txt";
 if (iConvert == 0) sText = "";
 else {

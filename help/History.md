@@ -2,6 +2,10 @@
 
 
 
+## 25 November 2026, night -- A database goes to DbDo
+
+- **Opening a database or workbook offers DbDo first.** A .db, .xlsx, .xls, .dbf or Access file opened here would become flat text, losing its tables and fields, so EdSharp asks: Open in DbDo, which Enter takes, or Text here, which converts it as Open Other Format does. CSV and TSV are text and open here without asking. With DbDo not installed, nothing is asked.
+
 ## 25 November 2026, late afternoon -- F3 repeats Jump to Line and Go to Percent
 
 - **F3 and Shift+F3 repeat Jump to Line or Go to Percent** when one of them came after the last search, and either key does it again the same way.
